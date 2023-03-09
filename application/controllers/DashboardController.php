@@ -11,7 +11,9 @@ class DashboardController extends MY_AuthController
 	}
 
 	public function index(){
-		$this->load->view('dashboard/index');
+
+		
+		$this->load->view('dashboard/index11');
 	}
 
 	public function users(){
