@@ -1,8 +1,14 @@
-<div class="footer">
-    <div class="pull-right">
-        Powered by <strong><a href="https://www.bluebanyan.co.in" target="_blank">BlueBanyan</a></strong>
+<footer class="footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                copyright - <script>document.write(new Date().getFullYear())</script> © <a href="#">Quick Service</a>
+            </div>
+            <div class="col-sm-6">
+                <!-- <div class="text-sm-right d-none d-sm-block">
+                    Developed <i class="mdi mdi-heart text-danger"></i> by vijayyadav132200@gmail.com
+                </div> -->
+            </div>
+        </div>
     </div>
-    <div>
-        Copyright<strong> Vijay Yadav </strong> &copy; <script>document.write(new Date().getFullYear())</script>
-    </div>
-</div>
+</footer>

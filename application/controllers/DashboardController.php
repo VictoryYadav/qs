@@ -1,27 +1,22 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class DashboardController extends MY_AuthController
+// MY_AuthController
+class DashboardController extends CI_Controller
 {
+	private $db2;
 	public function __construct()
 	{
 		parent::__construct();
 		$this->load->model('User', 'user');
-		$this->load->helper(array('my_helper','generic_helper'));
+
+		$my_db = $this->session->userdata('my_db');
+        $this->db2 = $this->load->database($my_db, TRUE);
 	}
 
 	public function index(){
-
-		
-		$this->load->view('dashboard/index11');
-	}
-
-	public function users(){
-		$this->load->view('dashboard/user');	
-	}
-
-	public function form(){
-		$this->load->view('dashboard/form');
+		$data['title'] = "Dashboard";
+		$this->load->view('dashboard/index',$data);
 	}
 
 	public function getpost()

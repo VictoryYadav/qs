@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="icon" href="assets_admin/img/favicon.png" type="image/x-icon" />
 	<meta name="robots" content="noindex, nofollow">
-    <title>Login | Common</title>
+    <title>Login | Quick Service</title>
     <link href="assets_admin/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets_admin/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="assets_admin/css/animate.css" rel="stylesheet">
@@ -19,11 +19,11 @@
 		<div class="middle-box text-center loginscreen animated fadeInDown" style="background: rgba(14, 89, 136, 0.55); margin-top:0;">
 			<div style="padding:20px;">
 				<div style="margin-bottom: 30px;">
-					<img src="assets_admin/img/logo.png" style="width: 120px; height: auto; border-radius: 7px;" alt="Title" />
+					<img src="assets_admin/images/QSLogo.png" style="width: 120px; height: auto; border-radius: 7px;" alt="Title" />
 				</div>
-				<form class="m-t" role="form" action="<?=base_url() ?>member/checklogin" method="POST">
+				<form class="m-t" role="form" action="<?=base_url('login?o='.$_GET['o'].'&c='.$_GET['c']) ?>" method="POST">
 					<div class="form-group">
-						<input type="email" class="form-control" placeholder="Email" name="email" required="" autocomplete="off" />
+						<input type="tel" class="form-control" placeholder="Phone" name="phone" required="" autocomplete="off" maxlength="10" minlength="10"/>
 					</div>
 					<div class="form-group">
 						<input type="password" class="form-control" placeholder="Password" name="password" required="" autocomplete="off" />

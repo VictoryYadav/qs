@@ -1,55 +1,73 @@
-<?php
-	$_SESSION["page"] = "index";
-?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Common</title>
-    <?php $this->load->view('layouts/admin/head'); ?>
-</head>
-<body>
-    <div id="wrapper">
-		<?php $this->load->view('layouts/admin/navbar'); ?>
-		<div id="page-wrapper" class="gray-bg">
-			<?php $this->load->view('layouts/admin/topbar'); ?>
-			<div class="wrapper wrapper-content">
-				<div class="row">
-					<a href="<?= base_url()?>admin/home">
-						<div class="col-lg-3">
-							<div class="ibox float-e-margins">
-								<div class="ibox-title">
-									<span class="label label-success pull-right"><i class="fa fa-list"></i></span>
-									<h5>Leads</h5>
-								</div>
-								<div class="ibox-content">
-									<h1 class="no-margins">321</h1>
-									<small>Total leads</small>
-								</div>
-							</div>
-						</div>
-					</a>
-					<a href="<?= base_url()?>admin/user">
-						<div class="col-lg-3">
-							<div class="ibox float-e-margins">
-								<div class="ibox-title">
-									<span class="label label-info pull-right"><i class="fa fa-briefcase"></i></span>
-									<h5>Job Post</h5>
-								</div>
-								<div class="ibox-content">
-									<h1 class="no-margins">123</h1>
-									<small>Total job post</small>
-								</div>
-							</div>
-						</div>
-					</a>
-					
-				</div>
-			</div>
-			<?php $this->load->view('layouts/admin/footer'); ?>
+<?php $this->load->view('layouts/admin/head'); ?>
+        <?php $this->load->view('layouts/admin/top'); ?>
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="vertical-menu">
+
+                <div data-simplebar class="h-100">
+
+                    <!--- Sidemenu -->
+                    <?php $this->load->view('layouts/admin/sidebar'); ?>
+                    <!-- Sidebar -->
+                </div>
+            </div>
+            <!-- Left Sidebar End -->
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+
+                <div class="page-content">
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-flex align-items-center justify-content-between">
+                                    <h4 class="mb-0 font-size-18"><?php echo $title; ?>
+                                    </h4>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <div class="row">
+                        
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quidem. Exercitationem, beatae error. Nulla exercitationem iusto velit minima eveniet aspernatur atque voluptates veritatis corrupti dicta? Vel mollitia enim animi nobis!
+                                    </div>
+                                </div>
+                            </div>
+                            
+                                                                                             
+                        </div><!--end row-->
+
+                        
+                    </div> <!-- container-fluid -->
+                </div>
+                <!-- End Page-content -->
+
+                <?php $this->load->view('layouts/admin/footer'); ?>
+            </div>
+            <!-- end main content-->
+
         </div>
-    </div>
-	<?php $this->load->view('layouts/admin/scripts'); ?>
-</body>
-</html>
+        <!-- END layout-wrapper -->
+
+        <!-- Right Sidebar -->
+        <?php $this->load->view('layouts/admin/color'); ?>
+        <!-- /Right-bar -->
+
+        <!-- Right bar overlay-->
+        <div class="rightbar-overlay"></div>
+        
+        <?php $this->load->view('layouts/admin/script'); ?>
+
+
+<script type="text/javascript">
+
+
+</script>
