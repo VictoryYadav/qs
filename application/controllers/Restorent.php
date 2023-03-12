@@ -62,6 +62,25 @@ class Restorent extends CI_Controller {
 		$this->load->view('rest/dispense_orders',$data);	
     }
 
+    public function change_password(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $status = 'success';
+            $response = $this->rest->passwordUpdate($_POST);
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] = 'Change Password';
+        $this->load->view('rest/password_change',$data);   
+    }
+
 
 
 }

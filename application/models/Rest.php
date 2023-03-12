@@ -34,5 +34,24 @@ class Rest extends CI_Model{
 	public function getOffersList(){
 		return $this->db2->order_by('SchCd', 'desc')->get('CustOffers')->result_array();
 	}
+
+	public function passwordUpdate($data){
+		$res = '';
+
+		if($data['password'] == $data['c_password']){
+			$check = $this->db2->select('Passwd')->get_where('UsersRest', array('RUserId' => authuser()->RUserId))->row_array();
+			 if(!empty($check)){
+			 	if($check['Passwd'] == $data['old_password']){
+			 		$this->db2->update('UsersRest', array('Passwd' => $data['password']), array('RUserId' => authuser()->RUserId));
+			 		$res = "Password has been Changed";
+			 	}
+			 }else{
+			 	$res = "Failed to Validate User";
+			 }
+		}else{
+			$res = "Passwords Don't Match";
+		}
+		return $res;
+	}
 	
 }
