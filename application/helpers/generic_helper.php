@@ -70,3 +70,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		}
 	}
 
+	function getTransType($trans_type_id){
+
+		$trans_type = array(1=>'Transfer To EID', 6=>'Purchase Return', 9=>'Issue to Kit', 11=>'Return From EID', 16 =>'Purchase', 19=>'Return from Kit', 25=>'Inward Adjust', 26=>'Outward Adjust', 27 => 'Stock Adjust');
+		return $trans_type[$trans_type_id];
+
+	}
+

@@ -35,16 +35,22 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form>
+                                        <form method="post" action="<?php echo base_url('restorent/item_list'); ?>">
                                             <div class="row">
                                                 <div class="col-md-3">
-                                                    <select class="form-control">
-                                                        <option value="All">All</option>
+                                                    <select class="form-control" name="cuisine" id="cuisine" onchange="getCategory()">
+                                                        <option value="">All</option>
+                                                        <?php foreach($cuisine as $key){?>
+                                                        <option value="<?= $key['CID']?>" <?php if($key['CID'] == $CID){ echo 'selected';}?>><?= $key['Name']?></option>
+                                                    <?php }?>
                                                     </select>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <select class="form-control">
-                                                        <option value="All">All</option>
+                                                    <select class="form-control" name="menucat" id="menucat">
+                                                        <option value="">ALL</option>
+                                                        <?php foreach($menucat as $key){?>
+                                                            <option value="<?= $key['MCatgId']?>" <?php if($key['MCatgId'] == $catid){ echo 'selected';}?>><?= $key['MCatgNm']?></option>
+                                                        <?php }?>
                                                     </select>
                                                 </div>
                                                 <div class="col-md-3">
@@ -69,15 +75,21 @@
             
                                                 <tbody>
                                                     <?php
-                                                    if(!empty($companies)){
-                                                        foreach ($companies as $key) {
+                                                    if(!empty($menuItemData)){
+                                                        $i=0;
+                                                        foreach ($menuItemData as $key) {
                                                      ?>
                                                     
                                                 <tr>
-                                                    <td><?php echo $key['Name']; ?></td>
-                                                    <td><?php echo $key['country_name']; ?></td>
-                                                    <td><?php echo $key['city_name']; ?></td>
-                                                    <td><?php echo $key['insName']; ?></td>
+                                                    <td><?php echo $i++; ?></td>
+                                                    <td><?php echo $key['ItemNm']; ?></td>
+                                                    <td><?php echo $key['Portion']; ?></td>
+                                                    <td>
+                                                        <label class="switch">Disabled
+                                                <input type="checkbox" onchange="enableDisable(<?= $key['ItemId'];?>, this);" <?= ($key['deactive'] != '' ? '' : 'checked');?> >
+                                                <span class="slider round"></span>
+                                            </label>
+                                                    </td>
                                                 </tr>
                                                 <?php }
                                                  }
@@ -117,4 +129,81 @@
         $('#item_lists').DataTable();
     });
 
+</script>
+
+<script>
+function enableDisable(id, input) {
+    console.log(id);
+    if ($(input).prop('checked') == false) {
+        console.log("Enter Data");
+        $.ajax({
+            url: "ajax/rest_item_list_ajax.php",
+            type: "post",
+            data:{
+                insertMenuItemDisabled : 1,
+                id : id
+            },
+            dataType: "json",
+            success: response => {
+                console.log(response.msg);
+            },
+            error: (xhr, status, error) => {
+                console.log(xhr);
+                console.log(status);
+                console.log(error);
+            }
+        });
+    }else{
+        console.log("Delete Data");
+        $.ajax({
+            url: "ajax/rest_item_list_ajax.php",
+            type: "post",
+            data:{
+                deleteMenuItemDisabled : 1,
+                id : id
+            },
+            dataType: "json",
+            success: response => {
+                console.log(response.msg);
+            },
+            error: (xhr, status, error) => {
+                console.log(xhr);
+                console.log(status);
+                console.log(error);
+            }
+        });
+    }
+}
+
+$(document).ready(function() {
+    $("#item-list").DataTable();
+});
+function validate(){
+    var cui = $('#cuisine').val();
+    var cat = $('#menucat').val();
+    if(cui == '' && cat == ''){
+        alert("Please select atleast one out of Cuisine or Catgeory");
+        return false;
+    }
+    return true;
+}
+function getCategory(){
+    var cui = $('#cuisine').val();
+    // alert(cui);
+    $.ajax({
+        url: "ajax/rest_item_list_get_category.php",
+        type: "post",
+        data:{'CID': cui},
+        success: function(data){
+            // alert(data);
+            data = JSON.parse(data);
+            var b = '<option value = "">ALL</option>';
+            for(i = 0;i<data.length;i++){
+                b = b+'<option value="'+data[i].MCatgId+'">'+data[i].MCatgNm+'</option>';
+            }
+            // alert(b);
+            $('#menucat').html(b);
+        }
+    });
+}
 </script>

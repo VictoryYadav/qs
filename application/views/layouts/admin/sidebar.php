@@ -31,7 +31,7 @@
 
 
         <li>
-            <a href="<?php echo base_url('Course'); ?>" class="waves-effect">
+            <a href="<?php echo base_url('restorent/merge_table'); ?>" class="waves-effect">
                 <i class="mdi mdi-speedometer"></i>
                 <span>Table Join/Unjoin</span>
             </a>
@@ -66,14 +66,14 @@
         </li>
 
         <li>
-            <a href="<?php echo base_url(''); ?>" class="waves-effect">
+            <a href="<?php echo base_url('restorent/set_theme'); ?>" class="waves-effect">
                 <i class="mdi mdi-speedometer"></i>
                 <span>Set Theme</span>
             </a>
         </li>
 
         <li>
-            <a href="<?php echo base_url(''); ?>" class="waves-effect">
+            <a href="<?php echo base_url('restorent/stock_list'); ?>" class="waves-effect">
                 <i class="mdi mdi-speedometer"></i>
                 <span>Stock</span>
             </a>

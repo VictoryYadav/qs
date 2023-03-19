@@ -36,57 +36,61 @@
                             <div class="col-md-8 mx-auto">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form method="post">
+                                        <?php if($this->session->flashdata('success')): ?>
+                                            <div class="alert alert-success" role="alert" id="alertBlock"><?= $this->session->flashdata('success') ?></div>
+                                            <?php endif; ?>
+                                            
+                                        <form method="post" action="<?php echo base_url('restorent/add_user'); ?>">
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>First Name</label>
-                                                        <input type="text" name="" class="form-control" placeholder="First Name">
+                                                        <input type="text" name="FName" class="form-control" placeholder="First Name" required="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Last Name</label>
-                                                        <input type="text" name="" class="form-control" placeholder="Last Name">
+                                                        <input type="text" name="LName" class="form-control" placeholder="Last Name" required="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Mobile</label>
-                                                        <input type="tel" name="" class="form-control" placeholder="Phone">
+                                                        <input type="tel" name="MobileNo" class="form-control" placeholder="Phone" required="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Date</label>
-                                                        <input type="date" name="" class="form-control" >
+                                                        <input type="date" name="DOB" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Email</label>
-                                                        <input type="email" name="" class="form-control" >
+                                                        <input type="email" name="Email" class="form-control" required="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>User Gender</label><br>
+                                                        <label>Gender</label><br>
                                                         <div class="form-check-inline my-1">
                                                             <div class="custom-control custom-radio">
-                                                                <input type="radio" id="customRadio7" name="dd" class="custom-control-input">
-                                                                <label class="custom-control-label" for="customRadio7">HTML</label>
+                                                                <input type="radio" id="customRadio7" name="Gender" class="custom-control-input" value="0" required="">
+                                                                <label class="custom-control-label" for="customRadio7">Male</label>
                                                             </div>
                                                         </div>
 
                                                         <div class="form-check-inline my-1">
                                                             <div class="custom-control custom-radio">
-                                                                <input type="radio" id="customRadio8" name="dd" class="custom-control-input">
-                                                                <label class="custom-control-label" for="customRadio8">css</label>
+                                                                <input type="radio" id="customRadio8" name="Gender" class="custom-control-input" value="1" required="">
+                                                                <label class="custom-control-label" for="customRadio8">Female</label>
                                                             </div>
                                                         </div>
 
@@ -96,11 +100,11 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>User Type</label>
-                                                        <select class="form-control" required="">
+                                                        <select class="form-control" required="" name="UTyp">
                                                             <option value="">Choose</option>
-                                                            <option value="">Normal</option>
-                                                            <option value="">Manager</option>
-                                                            <option value="">Admin</option>
+                                                            <option value="1">Normal</option>
+                                                            <option value="5">Manager</option>
+                                                            <option value="9">Admin</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -108,8 +112,13 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Restorent Name</label>
-                                                        <select class="form-control" required="">
-                                                            <option value=""><?php echo authuser()->RestName; ?></option>
+                                                        <select class="form-control" required="" name="EID">
+                                                            <option value="">Choose</option>
+                                                            <?php
+                                                            foreach ($restorent as $res) {
+                                                            ?>
+                                                            <option value="<?php echo $res['EID']; ?>"><?php echo $res['Name']; ?></option>
+                                                            <?php } ?>
                                                         </select>
                                                     </div>
                                                 </div>
