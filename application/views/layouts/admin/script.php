@@ -1,3 +1,4 @@
+                <!-- JAVASCRIPT -->
         <script src="<?= base_url() ?>assets_admin/libs/jquery/jquery.min.js"></script>
         <script src="<?= base_url() ?>assets_admin/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="<?= base_url() ?>assets_admin/libs/metismenu/metisMenu.min.js"></script>
@@ -11,9 +12,11 @@
         <script src="<?= base_url() ?>assets_admin/libs/jquery-knob/jquery.knob.min.js"></script>
         <script src="<?= base_url() ?>assets_admin/libs/metrojs/release/MetroJs.Full/MetroJs.min.js"></script>
 
-        <script src="<?= base_url() ?>assets_admin/js/pages/dashboard.init.js"></script>
+        <!-- <script src="<?= base_url() ?>assets_admin/js/pages/dashboard.init.js"></script> -->
 
         <script src="<?= base_url() ?>assets_admin/js/app.js"></script>
+
+        
 
         <script src="<?= base_url() ?>assets_admin/libs/select2/js/select2.min.js"></script>
 

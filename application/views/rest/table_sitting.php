@@ -333,6 +333,7 @@
                                                                             <th>Ord AMT</th>
                                                                             <th>From Time</th>
                                                                             <th>Cell NO</th>
+                                                                            <th>Action</th>
                                                                             <!-- <th>Acc/Rej</th> -->
                                                                         </tr>
                                                                     </thead>
@@ -432,6 +433,476 @@
         <?php $this->load->view('layouts/admin/script'); ?>
 
 
+<!-- Modal -->
+    <div class="modal fade" id="meargeModel" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Merge / UnMerge</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        
+                        <label for="sel1">Select table:</label>
+                        <select onchange="selectParentTable()" class="form-control" id="mainTable">
+                            <option value="" hidden>Select Main Table No</option>
+                            <?php
+                            foreach ($selectMergeTable as $key => $value) {
+                                echo '  <option value="' . $value['TableNo'] . '">' . $value['TableNo'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <form id="meargeForm" method="post">
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+    <!-- The Modal -->
+    <div class="modal" id="allocate-item">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header text-center" style="background-color: rgb(243, 243, 103); padding: 5px; display: block;">
+                    <h4 class="modal-title">Item Auto-Assign</h4>
+                    <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="row form-group">
+                        <div class="col-md-8">
+                            <input readonly="" type="text" name="itemName" class="form-control" id="item-name">
+                        </div>
+                        <div class="col-md-2">
+                            <input readonly="" type="text" name="itemPortion" class="form-control" id="item-portion">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" name="itemQty" class="form-control" id="item-qty" min="1">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <input type="text" name="customerRemarks" readonly="" id="customer-remarks" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <button type="button" class="btn btn-primary" id="auto-item-prepare" data-dismiss="modal">Auto Assign</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Modal -->
+    <div class="modal" id="manual-item">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Item</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    Modal Body
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <!-- The Modal -->
+    <div class="modal" id="order-detail-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Order Details</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                </div>
+                <!-- Modal footer -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Reassign Modal -->
+    <!-- The Modal -->
+    <div class="modal" id="reassign-order-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Order Reassign</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>From Table</label>
+                        <select class="form-control" id="from-assign-table" read-only="">
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>To Table</label>
+                        <select class="form-control" id="to-assign-table" onchange="">
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Qty</label>
+                        <input id="from-reassign-qty" type="number" max="" min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <button id="assign-order" class="btn btn-primary">Assign</button>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Decline reason Modal -->
+    <!-- The Modal -->
+    <div class="modal" id="decline-order-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="decline-title">Decline Reason</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Select Decline Reason</label>
+                        <select class="form-control" id="decline-order" onchange="">
+                            <option value="0">Select</option>
+                            <option value="1">Out of stock</option>
+                            <option value="2">No longer Prepared</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="new_orders" style="max-height: 600px;overflow: auto;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header text-center" style="background-color: #51519a !important;color: #FFF;">
+                    <h6>NEW ORDERS</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true" style="color: #FFF;">&times;</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+
+                    <table class="table table-bordered text-center">
+                        <thead>
+                            <tr style="background: #b5bbea;">
+                                <th>Table No</th>
+                                <th>Order Value</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="new_order_list">
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<div class="modal" id="merge_table_modal">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background: #e7e7e7;">
+            <div class="modal-header text-center" style="background-color: #51519a !important;color: #FFF;">
+                <h6>TABLE - JOIN / UNJOIN</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true" style="color: #FFF;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 500px;overflow: auto;">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Join</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Unjoin</a>
+                  </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <form method="post">
+                        <div class="merge-table-main text-center">
+                            <div class="row text-center" style="margin-left: 0px;margin-right: 0px;">
+
+
+                                <div class="col-md-12 text-center" style="padding-top: 20px;padding-left: 30px;padding-right: 45px;">
+
+                                    
+
+                                <div class="row row-margin text-center" id="unmerge-table">
+
+                                    
+
+                                    <div class="col-md-12 merge-table-data">
+
+                                        <div id="unmerge_tables" class="row" style="padding: 15px;">
+                                            
+                                        </div>
+
+                                        <div class="text-center">
+
+                                            <button id="merge-table" type="button" class="btn btn-primary" style="box-shadow: inset 0 0 0 2000px rgb(31 35 60 / 80%);">Join Tables</button>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-2"></div>
+
+                                </div>
+
+                                <div class="col-md-12 text-center" id="no-tables" style="display: none;">
+
+                                    <h1 style="margin-top: 30px;">No Tables are Free</h1>
+
+                                </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </form>
+                  </div>
+                  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <form method="post">
+                        <div class="merge-table-main text-center">
+                            <div class="row text-center" style="margin-left: 0px;margin-right: 0px;">
+
+
+                                <div class="col-md-10 text-center" style="padding-top: 20px;padding-left: 30px;padding-right: 45px;">
+                                    <select class="form-control" id="merged_tables" onchange="get_each_table()">
+                                        <option value="">Select Tables</option>
+                                    </select>
+                                    
+
+                                <div class="row row-margin text-center" id="mergeed-table">
+
+                                    
+
+                                    <div class="col-md-8 merge-table-data">
+
+                                        <table class="table text-center">
+
+                                            <thead>
+
+                                                <tr>
+
+                                                    <!-- <th>Free Tables</th> -->
+
+                                                    <!-- <th>Capacity</th> -->
+
+                                                    <th>Action</th>
+
+                                                </tr>
+
+                                            </thead>
+
+                                            <tbody id="merged-table-body"></tbody>
+
+                                        </table>
+
+                                        <div class="text-center">
+                                            <input type="hidden" id="selected_merge_no">
+                                            <button type="button" id="unmerge-table-btn" class="btn btn-primary" style="box-shadow: inset 0 0 0 2000px rgb(31 35 60 / 80%);">Unjoin Tables</button>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-2"></div>
+
+                                </div>
+
+                                <div class="col-md-12 text-center" id="no-tables" style="display: none;">
+
+                                    <h1 style="margin-top: 30px;">No Tables are Free</h1>
+
+                                </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </form>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="move_table_modal">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background: #e7e7e7;">
+            <div class="modal-header text-center" style="background-color: #51519a !important;color: #FFF;">
+                <h6>MOVE TABLE</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true" style="color: #FFF;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 500px;overflow: auto;">
+                <form method="post" action="ajax/sittin_table_view_ajax.php" style="margin: 0;">
+                    <input type="hidden" name="move_table" value="1">
+                    <div class="merge-table-main text-center">
+                        <div class="row text-center" style="margin-left: 0px;margin-right: 0px;">
+
+
+                            <div class="col-md-6 text-left">
+                                <label>FROM</label>
+                                <select class="form-control" required="" name="from_table" id="from_table" onchange="get_phone_num()">
+                                    <option value="">Table No</option>
+                                    <?php foreach($captured_tables as $key){?>
+                                        <option value="<?= $key['TableNo']?>"><?= $key['TableNo']?></option>
+                                    <?php }?>
+                                </select>
+                                
+                            </div>
+                            <div class="col-md-6 text-left" >
+                                <div class="">
+                                    <label>TO</label>
+                                    <select class="form-control" required="" name="to_table">
+                                        <option value="">Table No</option>
+                                        <?php foreach($available_tables as $key){?>
+                                            <option value="<?= $key['TableNo']?>"><?= $key['TableNo']?></option>
+                                        <?php }?>
+                                    </select>
+
+                                </div>
+
+                            </div>
+                            <br>
+                            <div class="col-md-12 text-left" id="num_list">
+                                
+                            </div>
+
+                            <div class="text-right p-4 col-md-12"><button type="submit" class="btn btn-sm btn-primary">MOVE</button></div>
+
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="modal" id="help">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title" style="color: black;">Table <button class="btn btn-lg btn-warning" style="border-radius: 50px;" id="help_table"></button> need assist</h4>
+                    <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                </div>
+                <!-- Modal body -->
+                <!-- <div class="modal-body">
+                    <div>
+                        <span>
+                            Can you Please help me out.
+                        </span>
+                        <button class="btn btn-primary" onclick="view_help()">OK</button>
+                    </div>
+                </div> -->
+                <!-- Modal footer -->
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="print_kot">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="text-center pt-2">
+                    <div class="text-center"><h5 onclick="print_kots()" style="cursor: pointer;">Print KOT No <span id="kot_no"> </span></h5></div>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div>
+                        <table class="table text-center">
+                            <thead>
+                                <tr style="background-color: #51519a;color: #FFF;">
+                                    <th></th>
+                                    <th>Kitchen</th>
+                                </tr>
+                            </thead>
+                            <tbody id="print_kot_data">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="settled_table">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <!-- <div class="text-center bg-success text-white" style="cursor: pointer;">
+                    <b>Confirm Settlements</b>
+                </div> -->
+                <div class="modal-header bg-success text-white">
+                    <h6 onclick="confirm_settle('all')" style="cursor: pointer;">Confirm All Settlements</h6>
+                    <button type="button" class="close text-white" style="background-color: #4407ff;" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    
+                    <table class="table table-bordered text-center">
+                        <thead>
+                            <tr style="background: #b5bbea;">
+                                <th>Table No</th>
+                                <th>Bill No</th>
+                                <th>Amount</th>
+                                <!-- <th>Action</th> -->
+                            </tr>
+                        </thead>
+                        <tbody id="settled_table_data">
+                            
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Modal footer -->
+            </div>
+        </div>
+    </div>
+
 <script type="text/javascript">
     // $(document).ready(function () {
     //     $('#table_view').DataTable();
@@ -445,7 +916,7 @@
         if ($("#kitchen-code option:selected").attr("settle") == 0) {
             $('#cashBill_settle').css('display', 'inline-block');
         }
-
+        // not completed
         function printReport() {
             $.ajax({
                 url: 'ajax/printReport.php'
@@ -517,6 +988,7 @@
                 <td>${item.Amt}</td>
                 <td>${item.StTime}</td>
                 <td>${item.CellNo}</td>
+                <td><button class="btn btn-sm btn-success" onclick="handleKot(${item.TableNo},${item.CustId},${item.CNo})"><i class="fa fa-eye"></i></button></td>
                 `;
             } else if (item.NEW_KOT == 1) {
                 template += `<tr onclick="getRowBill(0)" id="${item.TableNo}" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"   style="background-color: #FDCF76;" class="${item.BillStat > 0 ? ' bill-paid' : ''} ${item.NEW_KOT > 0 ? ' new_order' : ''} " >
@@ -524,6 +996,7 @@
             <td>${item.Amt}</td>
             <td>${item.StTime}</td>
             <td>${item.CellNo}</td>
+            <td><button class="btn btn-sm btn-success" onclick="handleKot(${item.TableNo},${item.CustId},${item.CNo})"><i class="fa fa-eye"></i></button></td>
             `;
             } else {
                 template += `<tr id="${item.TableNo}" onclick="getRowBill(0)" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"  class="${item.BillStat > 0 ? ' bill-paid' : ''}  ${item.NEW_KOT > 0 ? 'new_order' : ''} " >
@@ -531,6 +1004,7 @@
             <td>${item.Amt}</td>
             <td>${item.StTime}</td>
             <td>${item.CellNo}</td>
+            <td><button class="btn btn-sm btn-success" onclick="handleKot(${item.TableNo},${item.CustId},${item.CNo})"><i class="fa fa-eye"></i></button></td>
             `;
 
             }
@@ -782,6 +1256,7 @@
 
     <!-- handle Casher Action -->
     <script>
+        // not completed
         function payCash(TableNo, custId, cNo, mergeNo) {
 
             $.ajax({
@@ -868,7 +1343,7 @@
         }
 
         function handleKot(tableNo, custId, cNo) {
-            // console.log(tableNo, custId);
+            console.log(tableNo, custId, cNo);
             var eid = '<?= $_SESSION['EID']; ?>';
             // console.log('SES_EID'+eid);
             // $('#mydiv').show();
@@ -1104,7 +1579,7 @@
                         success: response => {
                             // console.log(response);
                             $.ajax({
-                                url: "ajax/sentNotification.php",
+                                url: "<?php echo base_url('restorent/sentNotification'); ?>",
                                 type: "GET",
                                 data: {
                                     CustId: globalCustId,
@@ -1299,7 +1774,7 @@
                     var name = response.msg;
                     console.log(name);
                     $.ajax({
-                        url: "ajax/sentNotification.php",
+                        url: "<?php echo base_url('sentNotification'); ?>",
                         type: "GET",
                         data: {
                             CustId: globalCustId,
@@ -1385,7 +1860,7 @@
         function selectParentTable() {
 
             $.ajax({
-                url: 'ajax/mergetable_ajax.php',
+                url: "<?php echo base_url('restorent/mergetable_ajax'); ?>",
                 type: 'POST',
                 data: {
                     tableNo: $('#mainTable').val()
@@ -1412,7 +1887,7 @@
 
             $.ajax({
                 type: 'post',
-                url: 'ajax/savemergedata_ajax.php',
+                url: "<?php echo base_url('restorent/savemergedata_ajax'); ?>",
                 data: $('#meargeForm').serialize(),
                 success: function(response) {
                     //   if(response){
@@ -1451,7 +1926,7 @@
                     formData.append('billAmt', billAmt);
                     formData.append('pymtMode', pymtMode);
                     // console.log($('#selRt').val());
-                    axios.post("ajax/rest_cash_bill_ajax.php", formData)
+                    axios.post("<?php echo base_url('restorent/rest_cash_bill_ajax'); ?>", formData)
                     .then(response => {
                         // console.log(response.data);
                         if(response.data.status == 1) {
@@ -1486,7 +1961,7 @@
                 formData.append('CNo', CNo);
                 formData.append('TableNo', TableNo);
                 formData.append('CustId', CustId);
-                axios.post("ajax/rest_cash_bill_ajax.php", formData)
+                axios.post("<?php echo base_url('restorent/rest_cash_bill_ajax'); ?>", formData)
                 .then(response => {
                     // console.log(response.data);
                     if (response.data.status ==1) {
@@ -1683,9 +2158,9 @@
                 }
             });
         }
-        // setInterval(function(){ check_call_bell(); }, 3000);
-        // setInterval(function(){ check_new_orders(); }, 5000);
-        // setInterval(function(){ check_settled_table(); }, 7000);
+        setInterval(function(){ check_call_bell(); }, 3000);
+        setInterval(function(){ check_new_orders(); }, 5000);
+        setInterval(function(){ check_settled_table(); }, 7000);
         check_new_orders();
         // $(function () {
           $('[data-toggle="tooltip"]').tooltip()

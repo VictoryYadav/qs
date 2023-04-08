@@ -1508,6 +1508,7 @@ class Restorent extends CI_Controller {
 
         $data['captured_tables'] = $this->db2->query("SELECT * from Eat_tables where Stat = 1 and EID = ".$EID)->result_array();
         $data['available_tables'] = $this->db2->query("SELECT * from Eat_tables where Stat = 0 and EID = ".$EID)->result_array();
+        $data['selectMergeTable'] = $this->db2->query("SELECT TableNo , MergeNo FROM `Eat_tables` where EID = $EID")->result_array();
         $data['title'] = 'Table View';
         // echo "<pre>";
         // print_r($data);exit();
@@ -2270,15 +2271,213 @@ class Restorent extends CI_Controller {
         }
     }
 
+    public function rest_cash_bill_ajax(){
+        // GenTableData db objec
+        // require_once '../db/tables/CustPymt.class.php';
+
+        // Session Variables
+        $RUserId = authuser()->RUserId;
+        $EID = authuser()->EID;
+        $ChainId = authuser()->ChainId;
+        $EType = $this->session->userdata('EType');
+
+        if(isset($_POST['selectpaymentopt']) && $_POST['selectpaymentopt']){
+        $pymtModes = $this->db2->query("SELECT PMNo, Name FROM `PymtModes`WHERE Stat = 0 AND Country = 'India' AND PMNo NOT IN (SELECT PMNo FROM PymtMode_Eat_Disable WHERE EID = $EID)")->result_array();
+
+            $response = [
+                "status" => 1,
+                "pymntModes" => $pymtModes
+            ];
+
+            echo json_encode($response);
+            die();                
+        }
+
+        if (isset($_POST['getBill'])) {
+            $STVcd = $_POST['STVcd'];
+
+            if ($EType == 5) {
+    
+                $q = "SELECT b.TableNo, BillId, BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND et.CCd = $STVcd AND b.EID = $EID AND b.Stat = 0 AND  b.TableNo = et.TableNo";
+                if(isset($_POST['BillId']) && $_POST['BillId'] > 0){
+                    $bid = $_POST['BillId'];
+                    $q.=" and b.BillId = '$bid'";
+                }
+                $q.=" Order By BillId Asc";
+                $billData = $this->db2->query($q)->result_array();
+                // print_r($billData);
+                // exit;
+            }else {
+                $q = "SELECT TableNo, BillId, BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue , PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u WHERE b.PaymtMode = 'Cash' AND b.CustId=u.CustId AND EID = $EID AND b.Stat = 0";
+                if(isset($_POST['BillId']) && $_POST['BillId'] > 0){
+                    $bid = $_POST['BillId'];
+                    $q.=" and b.BillId = '$bid'";
+                }
+                $q.=" Order By BillId Asc";
+                $billData = $this->db2->query($q)->result_array();
+            }
+
+            // for($i=0;$i<count($billData);$i)
+            // $temp = 0;
+
+            if (!empty($billData)) {
+                $response = [
+                    "status" => 1,
+                    "billData" => $billData,
+                    "PymtModes"=>$PymtModesObj
+                ];
+            }else {
+                $response = [
+                    "status" => 0,
+                    "msg" => "No Bill Found"
+                ];
+            }
+
+            echo json_encode($response);
+            die();
+        }
+
+        if ($_POST['setPaidAmount']) {
+            extract($_POST);
+            $paidAmount = $_POST['paidAmount'];
+            $id = $_POST['id'];
+            $mode = $_POST['mode'];
+            $cNo = $_POST['CNo'];
+            $q1 = "UPDATE Billing SET PaidAmt = $paidAmount, PaymtMode = '".$mode."', Stat = 1  WHERE BillId = $id AND EID = $EID";
+            // print_r($q1);
+            $billData = $this->db2->query($q1)->result_array();
+
+            if($EType == 1){
+                
+                $stat = 1;
+
+                //Session::set('KOTNo',0);
+                $q2 = "UPDATE Kitchen k, KitchenMain km SET  k.Stat = $stat, k.payRest=1, km.payRest=1 WHERE km.BillStat = $id AND (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
+                // print_r($q2);
+                $kitchenUpdate = $this->db2->query($q2)->result_array();
+            }
+
+            if ($EType == 5) {
+                $stat = 9;
+
+                $q3 = "DELETE from Eat_tables_Occ where EID=$EID and CNo = $cNo AND ((TableNo = '$TableNo' AND CustId = $CustId) OR (MergeNo = '$TableNo'))";
+                $deleteETO = $this->db2->query($q3);
+
+                $q4 = "UPDATE Eat_tables SET Stat = 0 WHERE EID = $EID AND ((TableNo = '$TableNo') OR (MergeNo = '$TableNo'))";
+                $updateEatTable = $this->db2->query($q4);
+                
+            }
+
+            $q2 = "UPDATE Kitchen k, KitchenMain km SET  k.Stat = $stat, k.payRest=1, km.payRest=1 WHERE km.BillStat = $id AND (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
+                // print_r($q2);
+            $kitchenUpdate = $this->db2->query($q2);
+
+            // store to gen db
+            $custPymtObj['BillId'] = $id;
+            $custPymtObj['BillNo'] = $billNo;
+            $custPymtObj['EID'] = $EID;
+            $custPymtObj['PaidAmt'] = $billAmt;
+            $custPymtObj['PaymtMode'] = $pymtMode;
+            insertRecord('CustPymts', $custPymtObj);
+
+            $response = [
+                "status" => 1,
+                "msg" => "Billing Updated"
+            ];
+
+            echo json_encode($response);
+            die();
+        }
+
+        if(isset($_POST['rejectBill'])) {
+            $id = $_POST['id'];
+            $cNo = $_POST['CNo'];
+            $tableNo = $_POST['TableNo'];
+            $custId = $_POST['CustId'];
+
+            $billData = $this->db2->query("UPDATE Billing SET Stat = 99 WHERE BillId = $id AND EID = $EID");
+
+            $kitchenUpdate = $this->db2->query("UPDATE Kitchen k, KitchenMain km SET  k.Stat = 99 WHERE km.BillStat = $id AND (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)");
+
+            // $kitchenUpdate = $kitchenObj->exec("UPDATE Kitchen SET Stat = 99 WHERE BillStat = $id AND EID = $EID");
+
+            $kitchenMainUpdate = $this->db2->query("UPDATE KitchenMain SET Stat = 99 WHERE BillStat = $id AND EID = $EID and (CNo = $cNo OR MCNo = $cNo)");
+
+            if($EType == 5) {
+                $deleteETO = $this->db2->query("DELETE from Eat_tables_Occ eto, KitchenMain km where eto.TableNo= km.TableNo and eto.CustId=km.CustId and eto.EID=km.EID AND km.BillStat = $id AND km.EID = $EID and km.CNo = $cNo");
+
+                //$updateEatTable = $eatTablesObj->exec("UPDATE Eat_tables SET Stat = 0 WHERE EID = $EID AND TableNo = '$TableNo'");
+                $updateEatTable = $this->db2->query("UPDATE Eat_tables et, KitchenMain km SET Stat = 0 WHERE et.TableNo= km.TableNo and et.EID=km.EID AND km.BillStat = $id AND km.EID = $EID");
+            }
+
+            $response = [
+                "status" => 1,
+                "msg" => "Billing Rejected"
+            ];
+
+            echo json_encode($response);
+            die();
+        }
+    }
+
+    public function savemergedata_ajax(){
+        $EID = authuser()->EID;
+        $selectmaintb = $this->session->userdata('selectmaintb');
+
+        // select table number which is already mearge with this table
+        $updateTable1 = $this->db2->query("UPDATE Eat_tables set MergeNo = 0 where  EID = $EID AND MergeNo = '$selectmaintb' AND TableNo != '$selectmaintb'");
+
+        $query = "UPDATE Eat_tables set MergeNo = $selectmaintb where EID = $EID AND (";
+
+        $count = 1;
+        $responseMsg = '';
+        $alreadymearge = array();
+        foreach ($_POST as $key => $value) {
+            $array=explode("&",$key); 
+            $child_tableNo  = $array[0];
+            $query .= " TableNo = '". $child_tableNo."'";
+            $responseMsg .=$child_tableNo;
+            $alreadymearge = array($count => "$child_tableNo");
+            if($count < count($_POST)){
+                $query .= ' OR ';
+                $responseMsg .=', ';
+            }
+            $count ++; 
+        }
+
+
+        $query .= ')';
+
+        $updateTable = $this->db2->query($query);
+        echo $responseMsg;
+
+    }
+
+    public function mergetable_ajax(){
+        $EID = authuser()->EID;
+        
+        extract($_POST);
+        $selectmaintb = $this->session->set_userdata('selectmaintb', $tableNo);
+
+        $selectTable = $this->db2->query("SELECT TableNo , MergeNo FROM `Eat_tables` where EID = $EID AND TableNo != $tableNo")->result_array();
+                    
+        foreach ($selectTable as $key => $value) {
+            if(($value['MergeNo'] != '0' || $value['MergeNo'] != '-') && $value['MergeNo'] != $tableNo){
+                echo '<div class="checkbox"> <label><input onclick="alreadyMearge(this)" name="'.$value['TableNo'].'&'.$EID.'" type="checkbox" value="'.$value['TableNo'].'">  Table No '.$value['TableNo'].'</label>
+                </div>';
+            }else if($value['MergeNo'] == $tableNo){
+                echo '<div class="checkbox"> <label><input name="'.$value['TableNo'].'&'.$EID.'" type="checkbox" value="'.$value['TableNo'].'" checked>  Table No '.$value['TableNo'].'</label>
+                </div>';
+            }else{
+                echo '<div class="checkbox"> <label><input name="'.$value['TableNo'].'&'.$EID.'" type="checkbox" value="'.$value['TableNo'].'">  Table No '.$value['TableNo'].'</label>
+                </div>';
+            }                   
+        }
+    }
+
     public function test(){
-        $data = array(
-                    array("ItemAmt"=>"350","ItemNm"=>"Indonesian Style Paneer","ItmRate"=>350,"Qty"=>"1","Tx"=>1,"TaxType"=>2,"Stat"=>9,"Name"=>"Tequila Sunrise","Addr"=>"41 Ardeshir Mension, Station Road,","city"=>"Mumbai","pincode"=>"400054","cinno"=>"-","fssaino"=>"-","GSTno"=>"27ACZFS7957F1Z3","BillPrefix"=>"","BillSuffix"=>"","TaxInclusive"=>0,"PhoneNos"=>"02226494782","Remarks"=>"-","Tagline"=>"Visit again","BillNo"=>20,"TotItemDisc"=>0,"BillDiscAmt"=>0,"TotPckCharge"=>0,"DelCharge"=>0,"totamt"=>"1085.70","bservecharge"=>"10.00","tip"=>"0.00","BillDt"=>"2023-01-21 22=>08=>00","Portion"=>"Std","Itm_Portion"=>1),
-                    array("ItemAmt"=>"240","ItemNm"=>"Murg Yakhni Shorba","ItmRate"=>240,"Qty"=>"1","Tx"=>1,"TaxType"=>2,"Stat"=>9,"Name"=>"Tequila Sunrise","Addr"=>"41 Ardeshir Mension, Station Road,","city"=>"Mumbai","pincode"=>"400054","cinno"=>"-","fssaino"=>"-","GSTno"=>"27ACZFS7957F1Z3","BillPrefix"=>"","BillSuffix"=>"","TaxInclusive"=>0,"PhoneNos"=>"02226494782","Remarks"=>"-","Tagline"=>"Visit again","BillNo"=>20,"TotItemDisc"=>0,"BillDiscAmt"=>0,"TotPckCharge"=>0,"DelCharge"=>0,"totamt"=>"1085.70","bservecharge"=>"10.00","tip"=>"0.00","BillDt"=>"2023-01-21 22=>08=>00","Portion"=>"Std","Itm_Portion"=>1),
-                    array("ItemAmt"=>"350","ItemNm"=>"Paneer Tikka  Lahori","ItmRate"=>350,"Qty"=>"1","Tx"=>1,"TaxType"=>2,"Stat"=>9,"Name"=>"Tequila Sunrise","Addr"=>"41 Ardeshir Mension, Station Road,","city"=>"Mumbai","pincode"=>"400054","cinno"=>"-","fssaino"=>"-","GSTno"=>"27ACZFS7957F1Z3","BillPrefix"=>"","BillSuffix"=>"","TaxInclusive"=>0,"PhoneNos"=>"02226494782","Remarks"=>"-","Tagline"=>"Visit again","BillNo"=>20,"TotItemDisc"=>0,"BillDiscAmt"=>0,"TotPckCharge"=>0,"DelCharge"=>0,"totamt"=>"1085.70","bservecharge"=>"10.00","tip"=>"0.00","BillDt"=>"2023-01-21 22=>08=>00","Portion"=>"Std","Itm_Portion"=>1)
-                    );
-        echo "<pre>";
-        print_r($data);
-        die;
+        
+        $this->load->view('test');
     }
 
 
