@@ -58,7 +58,6 @@ class Rest extends CI_Model{
 		return $this->db2->select('EID, Name')
 						->order_by('EID DESC')
 						->get_where('Eatary', array('ChainId' => $ChainId))->result_array();
-		// SELECT EID, Name FROM `Eatary` WHERE ChainId = $ChainId ORDER BY EID = 2 DESC, EID ASC
 	}
 
 	public function addUser($data){
@@ -112,9 +111,7 @@ class Rest extends CI_Model{
 
 		if (isset($postdata['getUnmergeTables']) && $postdata['getUnmergeTables']) {
 			// $tables = $eatTableObj->exec("SELECT TableNo, MergeNo from Eat_tables where TableNo = MergeNo and Stat=0 order by TableNo ASC");
-			$tables = $this->db2->select('TableNo, MergeNo')
-								->order_by('TableNo', 'ASC')
-								->get_where('Eat_tables', array('TableNo' => 'MergeNo','Stat' => 0))
+			$tables = $this->db2->query("SELECT TableNo, MergeNo from Eat_tables where TableNo = MergeNo and Stat=0 order by TableNo ASC")
 								->result_array();
 			if (!empty($tables)) {
 				$response = [
@@ -132,152 +129,144 @@ class Rest extends CI_Model{
 			return $response;
 		}
 
-// test
+		if (isset($postdata['mergeTables']) && $postdata['mergeTables']) {
+			$selectedTables = json_decode($postdata['selectedTables']);
 
-if (isset($postdata['mergeTables']) && $postdata['mergeTables']) {
-	$selectedTables = json_decode($postdata['selectedTables']);
+			if (count($selectedTables) > 1) {
+			
+					$mergeNo = implode("~", $selectedTables);
 
-	if (count($selectedTables) > 1) {
-	
-			$mergeNo = implode("~", $selectedTables);
+					$selectedTablesString = implode(',', $selectedTables); 
+					$q = "UPDATE Eat_tables set MergeNo = '$mergeNo', Stat = 1 where TableNo in ($selectedTablesString)";
+					// print_r($q);exit();
+					$result = $this->db2->query($q);
+					$result1 = $this->db2->query("UPDATE KitchenMain set MergeNo = '$mergeNo' where TableNo in ($selectedTablesString) and BillStat = 0");
+					// Update KitchenMain set MergeNo = $MergeNo where (TableNo="22" OR TableNo="23" or TableNo="24") and BillStat=0 and date(LstModDt) = date(curdate())
 
-			$selectedTablesString = implode(',', $selectedTables); 
-			$q = "UPDATE Eat_tables set MergeNo = '$mergeNo', Stat = 1 where TableNo in ($selectedTablesString)";
-			// print_r($q);exit();
-			$result = $this->db2->query($q);
-			$result1 = $this->db2->query("UPDATE KitchenMain set MergeNo = '$mergeNo' where TableNo in ($selectedTablesString) and BillStat = 0");
-			// Update KitchenMain set MergeNo = $MergeNo where (TableNo="22" OR TableNo="23" or TableNo="24") and BillStat=0 and date(LstModDt) = date(curdate())
+					if($result){
+						$response = [
+							"status" => 1,
+							"msg" => "ok"
+						];
+					}else{
+						$response = [
+							"status" => 3,
+							"msg" => "Fail to update in  Eat_tables table"
+						];
+					}
 
-			if($result){
+
+			}else {
 				$response = [
-					"status" => 1,
-					"msg" => "ok"
-				];
-			}else{
-				$response = [
-					"status" => 3,
-					"msg" => "Fail to update in  Eat_tables table"
+					"status" => 0,
+					"msg" => "You can select Min 2 and Max 4 Tables"
 				];
 			}
 
+			// echo json_encode($response);
+			return $response;
+		}
+		if (isset($postdata['getMergedTables']) && $postdata['getMergedTables']) {
 
-	}else {
-		$response = [
-			"status" => 0,
-			"msg" => "You can select Min 2 and Max 4 Tables"
-		];
-	}
-
-	// echo json_encode($response);
-	return $response;
-}
-if (isset($postdata['getMergedTables']) && $postdata['getMergedTables']) {
-	// $q = "SELECT distinct MergeNo from Eat_tables where TableNo != MergeNo order by MergeNo ASC";
-
-	$tables = $this->db2->select('MergeNo')->distinct('MergeNo')->order_by('MergeNo','asc')->get_where('Eat_tables', array('TableNo !=' => 'MergeNo'))->result_array();
-	// print_r($tables);exit();
-	if (!empty($tables)) {
-		$response = [
-			"status" => 1,
-			"tables" => $tables
-		];
-	}else {
-		$response = [
-			"status" => 0,
-			"msg" => "No table is merged"
-		];
-	}
-	// print_r($response);exit();
-	// echo json_encode($response);
-	return $response;
-}
-if (isset($postdata['getEachTable']) && $postdata['getEachTable']) {
-	$merge_no = $postdata['MergeNo'];
-	// $q = "SELECT CNo, TableNo FROM `KitchenMain` where BillStat=0 ORDER BY TableNo ASC";
-	$q = "SELECT TableNo from Eat_tables where MergeNo = '$merge_no'";
-	$tables = $this->db2->select('TableNo')->get_where('Eat_tables', array('MergeNo' => $merge_no))->result_array();
-	// print_r($tables);exit();
-	if (!empty($tables)) {
-		$response = [
-			"status" => 1,
-			"tables" => $tables
-		];
-	}else {
-		$response = [
-			"status" => 0,
-			"msg" => "No table is merged"
-		];
-	}
-
-	// echo json_encode($response);
-	return $response;
-}
-
-if(isset($postdata['unmergeTables']) && $postdata['unmergeTables']){
-	$selectedTables = json_decode($postdata['selectedTables']);
-	$deselectedTables = json_decode($postdata['deselectedTables']);
-	$old_merge_no = $postdata['MergeNo'];
-	$q1 = "UPDATE Eat_tables set MergeNo = TableNo, stat=0 where MergeNo = '$old_merge_no'";
-	$tables = $this->db2->query($q1);
-
-
-
-	$selectedTables = json_decode($postdata['selectedTables']);
-	$response = [
-		"status" => 4,
-		"msg" => "Success"
-	];
-	if (count($selectedTables) > 1) {
-		$mergeNo = implode("~", $selectedTables);
-
-		$update_merge = "UPDATE KitchenMain set MergeNo = '$mergeNo'where MergeNo = '$old_merge_no'";
-		$tables = $this->db2->query($update_merge);
-
-		$deselectedTablesString = implode(',', $deselectedTables);
-		$update_table = "UPDATE KitchenMain set MergeNo = TableNo where TableNo in ($deselectedTablesString)";
-		$result = $this->db2->query($update_table);
-
-
-		$selectedTablesString = implode(',', $selectedTables); 
-		$q = "UPDATE Eat_tables set MergeNo = '$mergeNo', Stat = 1 where TableNo in ($selectedTablesString)";
-		$result = $this->db2->query($q);
-		$result1 = $this->db2->query("UPDATE KitchenMain set MergeNo = '$mergeNo' where TableNo in ($selectedTablesString) and BillStat = 0");
-		// $eatTableObj->executeTransaction();
-		if($result){
-			$response = [
-				"status" => 1,
-				"msg" => "ok"
-			];
-		}else{
-			$response = [
-				"status" => 3,
-				"msg" => "Fail to update in  Eat_tables table"
-			];
+			$tables = $this->db2->query("SELECT distinct MergeNo from Eat_tables where TableNo != MergeNo order by MergeNo ASC")->result_array();
+			if (!empty($tables)) {
+				$response = [
+					"status" => 1,
+					"tables" => $tables
+				];
+			}else {
+				$response = [
+					"status" => 0,
+					"msg" => "No table is merged"
+				];
+			}
+			
+			return $response;
 		}
 
-	}
-	// echo json_encode($response);
-	return $response;
-}
-if(isset($postdata['UnmergeTable']) && $postdata['UnmergeTable']){
-	// $selectedTables = json_decode($postdata['selectedTables']);
-	// print_r($postdata);exit();
-	$mergeNo = $postdata['MergeNo'];
-	$table = $postdata['TableNo'];
-	$q1 = "UPDATE Eat_tables set MergeNo = TableNo where MergeNo = '$mergeNo'";
+		if (isset($postdata['getEachTable']) && $postdata['getEachTable']) {
+			$merge_no = $postdata['MergeNo'];
+			// $q = "SELECT CNo, TableNo FROM `KitchenMain` where BillStat=0 ORDER BY TableNo ASC";
+			$q = "SELECT TableNo from Eat_tables where MergeNo = '$merge_no'";
+			$tables = $this->db2->select('TableNo')->get_where('Eat_tables', array('MergeNo' => $merge_no))->result_array();
+			// print_r($tables);exit();
+			if (!empty($tables)) {
+				$response = [
+					"status" => 1,
+					"tables" => $tables
+				];
+			}else {
+				$response = [
+					"status" => 0,
+					"msg" => "No table is merged"
+				];
+			}
+
+			// echo json_encode($response);
+			return $response;
+		}
+
+		if(isset($postdata['unmergeTables']) && $postdata['unmergeTables']){
+			$selectedTables = json_decode($postdata['selectedTables']);
+			$deselectedTables = json_decode($postdata['deselectedTables']);
+			$old_merge_no = $postdata['MergeNo'];
+			$q1 = "UPDATE Eat_tables set MergeNo = TableNo, stat=0 where MergeNo = '$old_merge_no'";
+			$tables = $this->db2->query($q1);
 
 
 
-	$tables = $this->db2->query($q1);
-	// $q2 = 
-}
+			$selectedTables = json_decode($postdata['selectedTables']);
+			$response = [
+				"status" => 4,
+				"msg" => "Success"
+			];
+			if (count($selectedTables) > 1) {
+				$mergeNo = implode("~", $selectedTables);
+
+				$update_merge = "UPDATE KitchenMain set MergeNo = '$mergeNo'where MergeNo = '$old_merge_no'";
+				$tables = $this->db2->query($update_merge);
+
+				$deselectedTablesString = implode(',', $deselectedTables);
+				$update_table = "UPDATE KitchenMain set MergeNo = TableNo where TableNo in ($deselectedTablesString)";
+				$result = $this->db2->query($update_table);
+
+
+				$selectedTablesString = implode(',', $selectedTables); 
+				$q = "UPDATE Eat_tables set MergeNo = '$mergeNo', Stat = 1 where TableNo in ($selectedTablesString)";
+				$result = $this->db2->query($q);
+				$result1 = $this->db2->query("UPDATE KitchenMain set MergeNo = '$mergeNo' where TableNo in ($selectedTablesString) and BillStat = 0");
+				// $eatTableObj->executeTransaction();
+				if($result){
+					$response = [
+						"status" => 1,
+						"msg" => "ok"
+					];
+				}else{
+					$response = [
+						"status" => 3,
+						"msg" => "Fail to update in  Eat_tables table"
+					];
+				}
+
+			}
+			// echo json_encode($response);
+			return $response;
+		}
+
+		if(isset($postdata['UnmergeTable']) && $postdata['UnmergeTable']){
+			// $selectedTables = json_decode($postdata['selectedTables']);
+			// print_r($postdata);exit();
+			$mergeNo = $postdata['MergeNo'];
+			$table = $postdata['TableNo'];
+			$this->db2->query("UPDATE Eat_tables set MergeNo = TableNo where MergeNo = '$mergeNo'");
+		}
 
 	}
 
 
 	public function getUserAccessRole($postdata){
 		$EID = authuser()->EID;
-			if ($postdata['getUser']) {
+			if (isset($postdata['getUser']) && $postdata['getUser']==1) {
 				$mobileNumber =  $postdata['mobileNumber'];
 				// $user = $userRestObj->search(["MobileNo" => $mobileNumber, "EID" => $EID]);
 				$user = $this->db2->get_where('UsersRest', array("MobileNo" => $mobileNumber, "EID" => $EID))->row_array();
@@ -297,11 +286,11 @@ if(isset($postdata['UnmergeTable']) && $postdata['UnmergeTable']){
 				return $response;
 			}
 
-			if ($postdata['getAvailableRoles']) {
+			if (isset($postdata['getAvailableRoles']) && $postdata['getAvailableRoles']==1) {
 			$userId =  $postdata['userId'];
 
 			// $availableRoles = $userRolesObj->exec("SELECT ur.RoleId, ur.Name FROM UserRoles ur WHERE  ur.Stat = 0 AND ur.RoleId NOT IN (SELECT RoleId FROM UserRolesAccess WHERE RUserId = $userId AND EID = $EID) Order by ur.Name");
-			$availableRoles = $this->db2->query("SELECT ur.RoleId, ur.Name FROM UserRoles ur WHERE  ur.Stat = 0 AND ur.RoleId NOT IN (SELECT RoleId FROM UserRolesAccess WHERE RUserId = $userId AND EID = $EID) Order by ur.Name")->row_array();
+			$availableRoles = $this->db2->query("SELECT ur.RoleId, ur.Name FROM UserRoles ur WHERE  ur.Stat = 0 AND ur.RoleId NOT IN (SELECT RoleId FROM UserRolesAccess WHERE RUserId = $userId AND EID = $EID) Order by ur.Name")->result_array();
 			if (!empty($availableRoles)) {
 				$response = [
 					"status" => 1,
@@ -318,7 +307,7 @@ if(isset($postdata['UnmergeTable']) && $postdata['UnmergeTable']){
 			return $response;
 		}
 
-		if ($postdata['setRoles']) {
+		if (isset($postdata['setRoles']) && $postdata['setRoles']==1) {
 			$roles = explode(",", $postdata['roles']);
 			$userId = $postdata['userId'];
 			$response = [
@@ -332,7 +321,7 @@ if(isset($postdata['UnmergeTable']) && $postdata['UnmergeTable']){
 				$userRolesAccessObj['RoleId'] = $role;
 				$this->db2->insert('UserRolesAccess',$userRolesAccessObj);
 				$idd = $this->db2->insert_id();
-				if(!empty($idd)){
+				if(empty($idd)){
 					$response = [
 						"status" => 0,
 						"msg" => "Failed to insert in UserRolesAccess table"
@@ -345,11 +334,11 @@ if(isset($postdata['UnmergeTable']) && $postdata['UnmergeTable']){
 
 		}
 
-		if ($postdata['getAssignedRoles']) {
+		if (isset($postdata['getAssignedRoles']) && $postdata['getAssignedRoles']==1) {
 			$userId = $postdata['userId'];
 			// $getAssignedRoles = $userRolesAccessObj->exec("SELECT ura.URNo, ur.Name FROM `UserRolesAccess` ura, UserRoles ur WHERE ura.RoleId = ur.RoleId AND ur.Stat = 0 AND ura.EID = $EID AND ura.RUserId = $userId Order by ur.Name");
 
-			$getAssignedRoles = $this->db2->query("SELECT ura.URNo, ur.Name FROM `UserRolesAccess` ura, UserRoles ur WHERE ura.RoleId = ur.RoleId AND ur.Stat = 0 AND ura.EID = $EID AND ura.RUserId = $userId Order by ur.Name")->row_array();
+			$getAssignedRoles = $this->db2->query("SELECT ura.URNo, ur.Name FROM `UserRolesAccess` ura, UserRoles ur WHERE ura.RoleId = ur.RoleId AND ur.Stat = 0 AND ura.EID = $EID AND ura.RUserId = $userId Order by ur.Name")->result_array();
 
 			if (!empty($getAssignedRoles)) {
 				$response = [
@@ -367,7 +356,7 @@ if(isset($postdata['UnmergeTable']) && $postdata['UnmergeTable']){
 			return $response;
 		}
 
-		if ($postdata['removeRoles']) {
+		if (isset($postdata['removeRoles']) && $postdata['removeRoles']==1) {
 			$roles = $postdata['roles'];
 			$userId = $postdata['userId'];
 
@@ -499,6 +488,142 @@ if(isset($postdata['UnmergeTable']) && $postdata['UnmergeTable']){
 		}
 
 		return $data;
+	}
+
+	private function getTaxarrayData($billData, $EID, $billId){
+		$intial_value = $billData[0]['TaxType'];
+		$tax_type_array = array();
+		$tax_type_array[$intial_value] = $intial_value;
+		
+		foreach ($billData as $key) {
+
+		    if($key['TaxType'] != $intial_value){
+
+		        $intial_value = $key['TaxType'];
+
+		        $tax_type_array[$intial_value] = $key['TaxType'];
+		    }
+		}
+
+		$taxDataArray = array();
+		foreach ($tax_type_array as $key => $value) {
+			$q = "SELECT t.ShortName, t.TaxPcent, t.TaxType, t.Included, Sum(bt.TaxAmt) as SubAmtTax, t.rank from Tax t, BillingTax bt where bt.EID=t.EID and bt.TNo=t.TNo and bt.EID=$EID and bt.BillId = $billId and bt.TNo=t.TNo and t.TaxType = $value group by t.ShortName,t.TaxPcent, t.TaxType, t.Included ,t.rank order by t.rank";
+			// print_r($q);exit();
+		    $TaxData = $this->db2->query($q)->result_array();   
+		    $taxDataArray[$value] = $TaxData;
+
+		}
+		return $taxDataArray;
+	}
+	public function getBillBody($billData, $EID, $billId){
+		// Repository : billing/bill_print_body.repo.php
+		foreach ( $billData as $key => $value ) {
+		    $TaxType = $value['TaxType'];
+		    if( $key != 0 ){
+		        $TaxType = $billData[$key-1]['TaxType'];
+		    }
+
+		    if( $value['TaxType'] != $TaxType || $key == 0){
+		        // build table with title
+		        $sameTaxType  = '';
+		        $itemTotal = 0;
+		        foreach ($billData as $keyData => $data) {
+		            if($data['TaxType'] == $value['TaxType']){
+		                    $sameTaxType .= ' <tr> ';
+		                    if($data['Itm_Portion'] > 4 ){
+		                        
+		                        $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].' ( '.$data['Portion'].' ) </td> ';
+
+		                    }else{
+
+		                        $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].'</td> ';
+
+		                    }
+		                    
+		                    $sameTaxType .= ' <td style="text-align: right;"> '.$data['Qty'].' </td>';
+		                    $sameTaxType .= ' <td style="text-align: right;">'.$data['ItmRate'].'</td> ';
+		                    $sameTaxType .= ' <td style="text-align: right;">'.$data['ItemAmt'].'</td> ';
+		                    $sameTaxType .= ' </tr> ';
+		                    $itemTotal +=$data['ItemAmt'];
+		            }
+		        }
+		        $taxDataArray = $this->getTaxarrayData($billData, $EID, $billId);
+		        $res = $this->newTaxType( $value ,$sameTaxType,$value['TaxType'],$taxDataArray,$itemTotal);
+		        $result[0] = $res;
+		        $result[1] = $itemTotal;
+		        return $result;
+		    }
+		    
+		}
+	}
+
+	private function newTaxType($data,$sameTaxType,$TaxType,$taxDataArray,$itemTotal){
+	    $newTaxType  = ' <div style="margin-bottom: 15px;"> ';
+	    $newTaxType .= ' <table style="width:100%;"> ';
+	    $newTaxType .= ' <tbody> ';
+	    $newTaxType .= ' <tr style="text-align: right;"> ';
+	    $newTaxType .= ' <th style="float: left;">Menu Item </th> ';
+	    $newTaxType .= ' <th>Qty</th> ';
+	    $newTaxType .= ' <th>Rate</th> ';
+	    $newTaxType .= ' <th>Amt</th> ';
+	    $newTaxType .= ' </tr> ';
+
+	    $newTaxType .=  $sameTaxType;
+
+	    $newTaxType .= ' <tr style="border-top: 1px solid;"> ';
+	    $newTaxType .= ' <td></td> <td></td> <td></td> <td></td>';
+	    $newTaxType .= ' </tr> ';
+	    $newTaxType .= ' <tr> ';
+	    $newTaxType .= ' <td style="text-align: left;"><i>Item Total</i></td> ';
+	    $newTaxType .= ' <td></td> <td></td>';
+	    $newTaxType .= ' <td style="float: right;">'.$itemTotal.'</td> ';
+	    $newTaxType .= ' </tr> ';
+	    $sub_total = 0;
+	    foreach ($taxDataArray as $key => $value) {
+	        $total_tax = 0;
+	        foreach ($value as $key1=> $dataTax) {
+
+	            if($dataTax['TaxType'] == $TaxType && $dataTax['Included'] > 0){
+
+	                // $total_tax = $this->calculatTotalTax($total_tax,number_format($dataTax['SubAmtTax'],2));
+
+	                    $newTaxType .= ' <tr> ';
+	                    $newTaxType .= ' <td style="text-align: left;"> <i> '.$dataTax['ShortName'].''.$dataTax['TaxPcent'].'% </i></td> ';
+	                    $newTaxType .= ' <td></td> ';
+	                    $newTaxType .= ' <td></td> ';
+	                    $newTaxType .= ' <td style="text-align: right;">'.$dataTax['SubAmtTax'].'</td> ';
+	                    $newTaxType .= ' </tr> ';
+	                
+	            }
+
+	            if( $dataTax['TaxType'] == $TaxType && $dataTax['Included'] >= 5 ){
+
+	                $sub_total = $sub_total + $dataTax['SubAmtTax'];
+
+	            }
+	        }
+
+	    }
+	    $sub_total = $sub_total  + $itemTotal;
+
+	    $newTaxType .= ' <tr style="background: #80808052;"> ';
+	    $newTaxType .= ' <td style="text-align: left; font-weight: bold;">Sub Total</td> ';
+	    $newTaxType .= ' <td></td> <td></td>';
+	    $newTaxType .= ' <td style="float: right;">'.$sub_total.'</td> ';
+	    $newTaxType .= ' </tr> ';
+	    $newTaxType .= ' </tbody> ';
+	    $newTaxType .= ' </table> ';
+	    $newTaxType .= ' </div> ';
+
+	    // echo $newTaxType;
+	    // echo "<pre>";
+	    // print_r($newTaxType);
+	    // die;
+	    return $newTaxType;
+	}
+
+	private function calculatTotalTax($total_tax, $new_tax){
+	    return $total_tax + $new_tax;
 	}
 
 	

@@ -1,3 +1,5 @@
+var base_url = 'http://localhost/qs/';
+
 $(document).ready(function () {
 
   RevenueAndDiscounts();
@@ -20,7 +22,7 @@ function RevenueAndDiscounts() {
 
   $.ajax({
 
-    url: "/ajax/graphs/food_ajax.php",
+    url: base_url+'DashboardController/food_graph',
 
     type: "POST",
 
@@ -126,7 +128,7 @@ function RevenueAndDiscountsModel() {
 var range = $('#rev_dis_range').val();
   $.ajax({
 
-    url: "/ajax/graphs/food_ajax.php",
+    url: base_url+'DashboardController/food_graph',
 
     type: "POST",
 
@@ -235,7 +237,7 @@ function OrdersByHour() {
 
   $.ajax({
 
-    url: "/ajax/graphs/food_ajax.php",
+    url: base_url+'DashboardController/food_graph',
 
     type: "POST",
 
@@ -335,7 +337,7 @@ function OrdersByHourModel() {
 var range = $('#orders_by_hour_range').val();
   $.ajax({
 
-    url: "/ajax/graphs/food_ajax.php",
+    url: base_url+'DashboardController/food_graph',
 
     type: "POST",
 
@@ -438,7 +440,7 @@ function BillsAndRatings() {
 
   $.ajax({
 
-    url: "/ajax/graphs/food_ajax.php",
+    url: base_url+'DashboardController/food_graph',
 
     type: "POST",
 
@@ -538,7 +540,7 @@ function BillsAndRatingsModel() {
   var range = $('#bills_rating_range').val();
   $.ajax({
 
-    url: "/ajax/graphs/food_ajax.php",
+    url: base_url+'DashboardController/food_graph',
 
     type: "POST",
 

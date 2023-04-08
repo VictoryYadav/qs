@@ -360,7 +360,7 @@ $(document).ready(function() {
 
             $.ajax({
 
-                url: "ajax/merge_table_ajax.php",
+                url: "<?php echo base_url('restorent/merge_table'); ?>",
 
                 type: "post",
 
@@ -448,7 +448,7 @@ $("#unmerge-table-btn").click(function(event) {
 
             $.ajax({
 
-                url: "ajax/merge_table_ajax.php",
+                url: "<?php echo base_url('restorent/merge_table'); ?>",
 
                 type: "post",
 

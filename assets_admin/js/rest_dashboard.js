@@ -1,3 +1,5 @@
+var base_url = 'http://localhost/qs/';
+
 $(document).ready(function () {
 
   TakeAways();
@@ -24,7 +26,7 @@ function TakeAways() {
 
   $.ajax({
 
-    url: "ajax/graphs/rest_ajax.php",
+    url: base_url+'DashboardController/rest_graph',
 
     type: "POST",
 
@@ -124,7 +126,7 @@ function TakeAwaysModel() {
  var range = $('#take_away_range').val();
   $.ajax({
 
-    url: "ajax/graphs/rest_ajax.php",
+    url: base_url+'DashboardController/rest_graph',
 
     type: "POST",
 
@@ -227,7 +229,7 @@ function Offers() {
 
   $.ajax({
 
-    url: "ajax/graphs/rest_ajax.php",
+    url: base_url+'DashboardController/rest_graph',
 
     type: "POST",
 
@@ -325,7 +327,7 @@ function trends() {
 
   $.ajax({
 
-    url: "ajax/graphs/rest_ajax.php",
+    url: base_url+'DashboardController/rest_graph',
 
     type: "POST",
 
@@ -379,7 +381,7 @@ function trends_model() {
   var range = $('#trends_range').val();
   $.ajax({
 
-    url: "ajax/graphs/rest_ajax.php",
+    url: base_url+'DashboardController/rest_graph',
 
     type: "POST",
 
@@ -436,7 +438,7 @@ function OffersModel() {
 var range = $('#offer_range').val();
   $.ajax({
 
-    url: "ajax/graphs/rest_ajax.php",
+    url: base_url+'DashboardController/rest_graph',
 
     type: "POST",
 
@@ -536,7 +538,7 @@ var range = $('#offer_range').val();
 function tableWiseOccupencyLunch() {
   $.ajax({
 
-    url: "ajax/graphs/rest_ajax.php",
+    url: base_url+'DashboardController/rest_graph',
 
     type: "POST",
 
@@ -587,7 +589,7 @@ function tableWiseOccupencyLunch() {
 function tableWiseOccupencyDinner() {
   $.ajax({
 
-    url: "ajax/graphs/rest_ajax.php",
+    url: base_url+'DashboardController/rest_graph',
 
     type: "POST",
 
@@ -638,7 +640,7 @@ function tableWiseOccupencyDinner() {
 function TakeWays() {
   $.ajax({
 
-    url: "ajax/graphs/rest_ajax.php",
+    url: base_url+'DashboardController/rest_graph',
 
     type: "POST",
 
@@ -689,7 +691,7 @@ function TakeWays() {
 function TrendKitchenOrders() {
   $.ajax({
 
-    url: "ajax/graphs/rest_ajax.php",
+    url: base_url+'DashboardController/rest_graph',
 
     type: "POST",
 
@@ -740,7 +742,7 @@ function TrendKitchenOrders() {
 function TrendByWeek() {
   $.ajax({
 
-    url: "ajax/graphs/rest_ajax.php",
+    url: base_url+'DashboardController/rest_graph',
 
     type: "POST",
 
@@ -791,7 +793,7 @@ function TrendByWeek() {
 function RatingsTrend() {
   $.ajax({
 
-    url: "ajax/graphs/rest_ajax.php",
+    url: base_url+'DashboardController/rest_graph',
 
     type: "POST",
 
@@ -848,7 +850,7 @@ function RatingsTrend() {
 function tableWiseCount() {
   $.ajax({
 
-    url: "ajax/graphs/rest_ajax.php",
+    url: base_url+'DashboardController/rest_graph',
 
     type: "POST",
 

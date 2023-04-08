@@ -20,7 +20,10 @@
         <link href="<?= base_url() ?>assets_admin/libs/metrojs/release/MetroJs.Full/MetroJs.min.css" rel="stylesheet" type="text/css" />
 
         <!-- Bootstrap Css -->
-        <link href="<?= base_url() ?>assets_admin/css/bootstrap-dark.min.css" rel="stylesheet" type="text/css" />
+        <!-- <link href="<?= base_url() ?>assets_admin/css/bootstrap-dark.min.css" rel="stylesheet" type="text/css" /> -->
+
+        <link href="<?= base_url() ?>assets_admin/css/bootstrap.min.css"  rel="stylesheet" type="text/css" />
+        <link href="<?= base_url() ?>assets_admin/css/app.min.css"  rel="stylesheet" type="text/css" />
         <!-- Icons Css -->
         <link href="<?= base_url() ?>assets_admin/css/icons.min.css" rel="stylesheet" type="text/css" />
         <!-- App Css-->

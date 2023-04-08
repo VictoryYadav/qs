@@ -1,10 +1,22 @@
 <style type="text/css">
-    body[data-topbar=dark] #page-topbar {
+    /*body[data-topbar=dark] #page-topbar {
     background-color: #000500 !important;
+}*/
+
+.vertical-menu {
+    width: 240px;
+    z-index: 1001;
+    background: #fff;
+    bottom: 0;
+    margin-top: 0;
+    position: fixed;
+    top: 70px;
+    -webkit-box-shadow: 0 0 24px 0 rgba(0,0,0,.06), 0 1px 0 0 rgba(0,0,0,.02);
+    box-shadow: 0 0 24px 0 rgba(0,0,0,.06), 0 1px 0 0 rgba(0,0,0,.02);
 }
 </style>
 <body data-topbar="dark">
-
+<input type="hidden" id="base_url" value="<?php echo base_url(); ?>">
         <!-- Begin page -->
         <div id="layout-wrapper">
 

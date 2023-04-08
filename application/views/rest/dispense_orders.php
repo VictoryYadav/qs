@@ -1,10 +1,5 @@
-<?php $this->load->view('layouts/admin/head');
-
-$CheckOTP = $this->session->userdata('DeliveryOTP');
-$EID = authuser()->EID;
-$EType = $this->session->userdata('EType');
-$RestName = authuser()->RestName;
- ?>
+<?php $this->load->view('layouts/admin/head'); ?>
+ 
         <?php $this->load->view('layouts/admin/top'); ?>
             <!-- ========== Left Sidebar Start ========== -->
             <div class="vertical-menu">
@@ -41,60 +36,241 @@ $RestName = authuser()->RestName;
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <select class="col-md-4" id="kitchen-code" onchange="getTableView();" class="form-control">  
-                                            <?php
-                                            if(count($DispenseAccess) == 1){?>
-                                                <option value="<?= $DispenseAccess[0]['DCd']?>"><?= $DispenseAccess[0]['Name']?></option>
-                                            <?php }else{
-                                            ?>
-                                            <option value="0" style='display:none;'>Select</option>
-                                            <?php foreach($DispenseAccess as $key => $data):?>
-                                            <option value="<?= $data['DCd']?>"><?= $data['Name']?></option>
-                                            <?php endforeach;} ?>
-                                        </select>
-                                        <div class="table-responsive">
-                                            <div class="items-data" id="order-view-parent">
-                                                <table class="display" id="order-view-table" style="width:100%">
-                                                    <thead class="table-header">
-                                                        <tr style="background-color: #51519a !important;color: #FFF;">
-                                                            <th>Bill No</th>
-                                                            <th>OQty</th>
-                                                            <th class="hidden-sm">AQty</th>
-                                                            <th>Cell NO</th>
-                                                            <th>3P</th>
-                                                            <th>3P Ref</th>
-                                                            <th>Deliver</th>
-                                                            <th>Order</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="table-view"></tbody>
-                                                </table>
+                                        <div class="Po_to_land" style="width:100%;height:100%;">
+                                        <!-- <img src="assets/img/ptl.gif" alt="" width:33px; style="padding-left:29px;"> -->
+                                        </div>
+                                        <div class="Po_to_land1">
+                                            <div class="pending-kitchen-body">
+                                                <div class="row" style="margin-left: 0px;margin-right: 0px;">
+                                                    <div class="col-md-7  col-sm-7 table-numbers" style="padding-top: 20px;">
+                                                        <div id="mydiv" style="display: none;">
+                                                            <div class="card" style="border:3px solid rgba(0,0,0,.125)">
+                                                                <div class="card-header" style="background-color: lightgreen; padding: 0px;">
+                                                                    <h4 class="modal-title">Order Details</h4>
+                                                                </div>
+                                                                <div class="">
+                                                                    <table class="table table-bordered">
+                                                                        <thead class="table-header">
+                                                                            <tr>
+                                                                                <th>Item Name</th>
+                                                                                <th>Qty</th>
+                                                                                <th>AMT</th>
+                                                                                <th>AQty</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="order-list"></tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <div class="tableView-table">
+                                                                <div class="form-group" style="color: white">
+                                                                    <span style="color: #000;">Dispense :</span>
+                                                                    <select class="col-md-4" id="kitchen-code" onchange="getTableView();" style="width: auto;">  
+                                                                        <?php
+                                                                        if(count($DispenseAccess) == 1){?>
+                                                                            <option value="<?= $DispenseAccess[0]['DCd']?>"><?= $DispenseAccess[0]['Name']?></option>
+                                                                        <?php }else{
+                                                                        ?>
+                                                                        <option value="0" style='display:none;'>Select</option>
+                                                                        <?php foreach($DispenseAccess as $key => $data):?>
+                                                                        <option value="<?= $data['DCd']?>"><?= $data['Name']?></option>
+                                                                        <?php endforeach;} ?>
+                                                                    </select>
+                                                                <?php
+                                                                 if(($EType == 1 && $Cash>0) || $EType == 5){ 
+                                                                ?>
+                                                                    <!-- <a
+                                                                        href="/rest_cash_bill.php"
+                                                                        style="cursor: pointer; position: absolute; right: 18px;cursor:pointer;">
+                                                                        <img src="assets/img/coin.png" width="20px" height="20px" style="cursor:pointer;">
+                                                                    </a> -->
+
+                                                                 <?php } 
+                                                                     ?>
+                                                                    
+                                                                    
+                                                                </div>
+                                                                <div class="items-data" id="order-view-parent">
+                                                                    <table class="display" id="order-view-table">
+                                                                        <thead class="table-header">
+                                                                            <tr>
+                                                                                <th>Bill No</th>
+                                                                                <th>OQty</th>
+                                                                                <th class="hidden-sm">AQty</th>
+                                                                                <th>Cell NO</th>
+                                                                                <th>3P</th>
+                                                                                <th>3P Ref</th>
+                                                                                <th>Deliver</th>
+                                                                                <th>Order</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="table-view"></tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5 col-sm-5 items-table" style="padding-top: 20px;">
+                                                        <div>
+                                                            <!-- Header -->
+                                                            <?php //include_once 'rest_header.php'; ?>
+                                                            <div class="text-left form-group">
+                                                                <span style="color: #000;">Order Details :</span>
+                                                                <!-- <?php foreach($kitchenData as $data): ?>
+                                                                <label style="margin-left: 10px;">
+                                                                    <input type="radio" name="kitchen" value="<?= $data['KitCd']; ?>">
+                                                                    <?= $data['KitName']; ?>
+                                                                </label>
+                                                                <?php endforeach; ?> -->
+                                                            </div>
+                                                            <div class="items-data" id="item-table-parent">
+                                                                <table class="display" id="item-view-table" style="width:100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Item Name</th>
+                                                                            <th>PQty</th>
+                                                                            <th>Take Away</th>
+                                                                            <th>Remark</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="item-view-tbody1" style="color:white;"></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- The Modal -->
+                                            <div class="modal" id="allocate-item">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <!-- Modal Header -->
+                                                        <div
+                                                            class="modal-header text-center"
+                                                            style="background-color: rgb(243, 243, 103); padding: 5px; display: block;">
+                                                            <h4 class="modal-title">Item Auto-Assign</h4>
+                                                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                            -->
+                                                        </div>
+                                                        <!-- Modal body -->
+                                                        <div class="modal-body">
+                                                            <div class="row form-group">
+                                                                <div class="col-md-8">
+                                                                    <input
+                                                                        readonly=""
+                                                                        type="text"
+                                                                        name="itemName"
+                                                                        class="form-control"
+                                                                        id="item-name">
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <input
+                                                                        readonly=""
+                                                                        type="text"
+                                                                        name="itemPortion"
+                                                                        class="form-control"
+                                                                        id="item-portion">
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <input type="number" name="itemQty" class="form-control" id="item-qty" min="1">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row form-group">
+                                                                <div class="col-md-12">
+                                                                    <input
+                                                                        type="text"
+                                                                        name="customerRemarks"
+                                                                        readonly=""
+                                                                        id="customer-remarks"
+                                                                        class="form-control">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12 text-center">
+                                                                    <button
+                                                                        type="button"
+                                                                        class="btn btn-primary"
+                                                                        id="auto-item-prepare"
+                                                                        data-dismiss="modal">Auto Assign</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- The Modal -->
+                                            <div class="modal" id="manual-item">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <!-- Modal Header -->
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Item</h4>
+                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        </div>
+                                                        <!-- Modal body -->
+                                                        <div class="modal-body">
+                                                            Modal Body
+                                                        </div>
+                                                        <!-- Modal footer -->
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-primary" id="" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Order Detail Modal -->
+                                            <div class="modal" id="order-detail-modal">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <!-- Modal Header -->
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Order Details</h4>
+                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        </div>
+                                                        <!-- Modal body -->
+                                                        <div class="modal-body">
+                                                            <!-- <table class="table table-bordered"> <thead> <tr> <th>Item Name</th>
+                                                            <th>Qty</th> <th>AMT</th> <th>AQty</th> </tr> </thead> <tbody
+                                                            id="order-list"></tbody> </table> -->
+                                                        </div>
+                                                        <!-- Modal footer -->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- order_deliver_otp Modal -->
+                                            <div class="modal fade" id="order_deliver_otp" role="dialog">
+                                                <div class="modal-dialog modal-sm">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                    <h4 class="modal-title order_deliver_header">OTP for </h4>
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body" style="padding: 1.3rem;">
+                                                    <form class="form-inline" style="margin-bottom: 1px;place-content: center;">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" id="confirm_otp_field" placeholder="Please Enter OTP">
+                                                        </div>
+                                                    </form>
+                                                    <p id="confirm_order_error" style=" position: absolute; display: none; color: red; font-weight: 600;">OTP is Incorret</p>
+                                                    <p id="confirm_order_success" style=" position: absolute; display: none; color: green; font-weight: 600;">Order Delivered Successfully.</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                    <button id="order_verify_button" CNo="" custId="" billNo="" start="" type="button" class="btn btn-primary" style="width: 100%;" >Verify</button>
+                                                    </div>
+                                                </div>
+                                                </div>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
 
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h3>Order Details</h3>
-                                        <div class="table-responsive">
-                                            <div class="items-data" id="item-table-parent">
-                                                <table class="display" id="item-view-table" style="width:100%">
-                                                    <thead class="" style="color:white;">
-                                                        <tr style="background-color: #51519a !important;color: #FFF;">
-                                                            <th>Item Name</th>
-                                                            <th>PQty</th>
-                                                            <th>Take Away</th>
-                                                            <th>Remark</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="item-view-tbody1" style="color:white;"></tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
 
@@ -116,6 +292,10 @@ $RestName = authuser()->RestName;
 
         <!-- Right bar overlay-->
         <div class="rightbar-overlay"></div>
+
+
+      
+
         
         <?php $this->load->view('layouts/admin/script'); ?>
 
@@ -129,7 +309,7 @@ $RestName = authuser()->RestName;
 
 </script>
 
- <script>
+<script>
             // Global Variables var kotNo = 0; var pQty = ''; var aQty = '';
 
             function getTableView() {
@@ -172,17 +352,21 @@ $RestName = authuser()->RestName;
                                     <td>${item.TPRefNo}</td>
                                     <td>
 
-                                        <button onclick="handleDelivery('${item.CNo}', ${item.CustId},${item.BillNo}, ${start})">
+                                        <button onclick="handleDelivery('${item.CNo}', ${item.CustId},${item.BillNo}, ${start})" class="btn btn-sm btn-primary">
                                             <i class="fa fa-thumbs-up" aria-hidden="true"></i>
                                         </button>
                                     </td>
                                     <td>
-                                        
-                                        <a href="vtrend:billid=0&eid=<?= $EID;?>&kotno=${item.UKOTNo}">
+
+                                        <button onclick="handleDetails('${item.CNo}')" class="btn btn-sm btn-success">
+                                        <i class="fa fa-eye"></i>
+                                        </button>
+
+                                        <a href="vtrend:billid=0&eid=<?= $EID;?>&kotno=${item.UKOTNo}" class="btn btn-sm btn-warning">
                                             <i class="fa fa-print" aria-hidden="true"></i>
                                         </a>
 
-                                        <a onclick="sendNotification(${item.CustId},0,${item.BillNo},1)"   style="margin-left:15px; cursor: pointer;">
+                                        <a onclick="sendNotification(${item.CustId},0,${item.BillNo},1)" class="btn btn-sm btn-danger">
                                             <i class="fa fa-bullhorn"></i>
                                         </a>
 
@@ -233,7 +417,7 @@ $RestName = authuser()->RestName;
                     var message = "OTP : " +otp;
                 }
                 $.ajax({
-                    url: "ajax/sentNotification.php",
+                    url: "<?php echo base_url('restorent/sentNotification'); ?>",
                     type: "get",
                     data: {
                         CustId: CustId,
@@ -323,7 +507,9 @@ $RestName = authuser()->RestName;
             }
 
             function dataTableForOrder() {
+
                 var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
                     if (isMobile) {
                         var orderTable = $('#order-view-table').DataTable({
                             keys: true,
@@ -352,7 +538,6 @@ $RestName = authuser()->RestName;
                         });
                     }
                 
-
                 orderTable.on('key-focus', function (e, datatable, cell) {
                     // $('tr').css('background-color', 'white'); $('#mydiv').show();
                     $('table#order-view-table > tbody > tr').css('background-color', 'white');
@@ -362,6 +547,7 @@ $RestName = authuser()->RestName;
                     var cno = $('td.focus')
                         .parent()
                         .attr('cno');
+                        
                     handleDetails(cno);
                 });
             }
@@ -590,6 +776,7 @@ $RestName = authuser()->RestName;
             }
 
             function handleDelivery(CNo, custId, billNo, start) {
+               
                 var v = <?= $CheckOTP?>;
                 if (CNo !== 0 && v == 1) {
                     $.ajax({
@@ -721,7 +908,7 @@ $RestName = authuser()->RestName;
                 }
             }
 
-            var tableStructure = '<table class="table" id="order-view-table" class="display"  style="width:100%"' + '> \ <thead class="table-header">\ <tr style="background-color: #51519a !important;color: #FFF;">\
+            var tableStructure = '<table class="table" id="order-view-table" class="display" ' + '> \ <thead>\ <tr>\
                 <th>Bill No</th>\
                 <th>OQty</t' +
                         'h>\
@@ -738,7 +925,7 @@ $RestName = authuser()->RestName;
                 </tbody>\
                 </table>';
 
-            var tableStructureItem = '<table class="table" id="item-view-table" class="display" style="width:100%">' + '\ <thead class="table-header">\ <tr style="background-color: #51519a !important;color: #FFF;">\
+            var tableStructureItem = '<table class="table" id="item-view-table" class="display" >' + '\ <thead>\ <tr>\
                 <th>Item Name</th>\
                 <th>PQty</t' +
                         'h>\
@@ -747,3 +934,4 @@ $RestName = authuser()->RestName;
                 </tr>\ </thead>\ <tbody id=' + '"item-view-tbody1"></tbody>\ </table>'
         
         </script>
+

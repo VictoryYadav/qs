@@ -1,5 +1,7 @@
 // customer_graph
-
+// var base_url = $('#base_url').val();
+// var base_url = "<?php echo base_url(); ?>";
+var base_url = 'http://localhost/qs/';
 
 
 $(document).ready(function () {
@@ -61,7 +63,7 @@ function customersFootfalls() {
 
   $.ajax({
 
-    url: "/ajax/graphs/customer_ajax.php",
+    url: base_url+'DashboardController/customer_graph',
 
     type: "POST",
 
@@ -162,7 +164,7 @@ function customersFootfallsModel() {
   // alert(range);
   $.ajax({
 
-    url: "/ajax/graphs/customer_ajax.php",
+    url: base_url+'DashboardController/customer_graph',
 
     type: "POST",
 
@@ -265,7 +267,7 @@ function customersOrderValue() {
   // var range = $('#order_value_range').val();
   $.ajax({
 
-    url: "/ajax/graphs/customer_ajax.php",
+    url: base_url+'DashboardController/customer_graph',
 
     type: "POST",
 
@@ -369,7 +371,7 @@ function customersOrderValueModel() {
   // alert(range);
   $.ajax({
 
-    url: "/ajax/graphs/customer_ajax.php",
+    url: base_url+'DashboardController/customer_graph',
 
     type: "POST",
 
@@ -472,7 +474,7 @@ function paymentModeModel() {
   // alert(range);
   $.ajax({
 
-    url: "/ajax/graphs/customer_ajax.php",
+    url: base_url+'DashboardController/customer_graph',
 
     type: "POST",
 
@@ -571,7 +573,7 @@ function paymentModeModel() {
 function paymentMode(){
    $.ajax({
 
-      url: "/ajax/graphs/customer_ajax.php",
+      url: base_url+'DashboardController/customer_graph',
 
       type: "POST",
 

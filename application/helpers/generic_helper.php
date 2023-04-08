@@ -19,10 +19,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $CI->User->recordInsert($tbl,$data);
 	}
 
-	function updateRecord($tbl,$where,$data){
+	function updateRecord($tbl,$data, $where){
 		$CI = & get_instance();
 		$CI->load->model('User');
-		$CI->User->recordUpdate($tbl,$where,$data);
+		$CI->User->recordUpdate($tbl,$data, $where);
 	}
 
 	function deleteRecord($tbl,$where){
@@ -76,4 +76,48 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $trans_type[$trans_type_id];
 
 	}
+
+	function getDay($day_id){
+		$days=array(1=>'Sunday', 2=>'Monday', 3=>'Tuesday', 4=>'Wednesday', 5=>'Thursday', 6=>'Friday', 7=>'Saturday');
+		return $days[$day_id];
+	}
+
+	function getSchemeType($id){
+		$sch_typ = array('1'=>'BillBased', '21'=>'CID based', '22'=>'MenuCatg based', '23'=>'ItmTyp Based', '24'=>'ItemID based', '25'=>'Itm_Portion based','26'=>'CID and Itm_Portion based', '27'=>'MenuCatg and Itm_Portion based', '28'=>'ItemTyp and Itm_Portion based','29'=>'ItemID and Itm_Portion based');
+		return $sch_typ[$id];
+	}
+
+	function getSchemeCat($id){
+		$sch_cat = array('1'=>'Bill Discount', '2'=>'Free Item with BillAmt','3'=>'Discount on minBillAmt/month', '4'=>'First time use of QS (2% discount)', '5'=> 'Rating Discount', '21'=>'Gen. Discount', '22'=>'Buy x get y free (1+1) / (2+1) lowest rate', '23'=>'Buy x get y free (1+1) / (2+1) highest rate', '24'=>'Buy x get y discounted; 51-Discounts using promo codes');
+		return $sch_cat[$id];
+	}
+
+	function do_upload($control,$filename,$upload_path,$allowed_type){
+		$CI =& get_instance();
+		$config['upload_path'] = $upload_path;
+		$config['file_name'] = $filename;
+		$config['max_size'] = 0;
+		$config['remove_spaces'] = FALSE;
+		$config['allowed_types'] = $allowed_type;
+
+		$CI->load->library('upload', $config);
+
+		$CI->upload->initialize($config);
+
+		if (!$CI->upload->do_upload($control)) {
+			echo $CI->upload->display_errors();
+			return FALSE;
+		} else {
+			return TRUE;
+		}
+	}
+
+	function getBillData($dbname, $EID, $billId){
+		$CI = & get_instance();
+		$CI->load->model('User');
+		return $CI->User->gettingBiliingData($dbname, $EID, $billId);
+	}
+
+
+
 

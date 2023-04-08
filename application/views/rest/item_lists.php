@@ -76,19 +76,22 @@
                                                 <tbody>
                                                     <?php
                                                     if(!empty($menuItemData)){
-                                                        $i=0;
+                                                        $i=1;
                                                         foreach ($menuItemData as $key) {
                                                      ?>
                                                     
                                                 <tr>
                                                     <td><?php echo $i++; ?></td>
                                                     <td><?php echo $key['ItemNm']; ?></td>
-                                                    <td><?php echo $key['Portion']; ?></td>
+                                                    <td><?php echo $key['Portions']; ?></td>
                                                     <td>
-                                                        <label class="switch">Disabled
+                                                       <!--  <label class="switch">Disabled
                                                 <input type="checkbox" onchange="enableDisable(<?= $key['ItemId'];?>, this);" <?= ($key['deactive'] != '' ? '' : 'checked');?> >
                                                 <span class="slider round"></span>
-                                            </label>
+                                            </label> -->
+
+                                            <input type="checkbox" id="switch3" switch="bool" onchange="enableDisable(<?= $key['ItemId'];?>, this);" <?= ($key['deactive'] != '' ? '' : 'checked');?>>
+                                            <label for="switch3" data-on-label="Yes" data-off-label="No"></label>
                                                     </td>
                                                 </tr>
                                                 <?php }
@@ -137,7 +140,7 @@ function enableDisable(id, input) {
     if ($(input).prop('checked') == false) {
         console.log("Enter Data");
         $.ajax({
-            url: "ajax/rest_item_list_ajax.php",
+            url: "<?php echo base_url('restorent/rest_item_list'); ?>",
             type: "post",
             data:{
                 insertMenuItemDisabled : 1,
@@ -156,7 +159,7 @@ function enableDisable(id, input) {
     }else{
         console.log("Delete Data");
         $.ajax({
-            url: "ajax/rest_item_list_ajax.php",
+            url: "<?php echo base_url('restorent/rest_item_list'); ?>",
             type: "post",
             data:{
                 deleteMenuItemDisabled : 1,
@@ -191,7 +194,7 @@ function getCategory(){
     var cui = $('#cuisine').val();
     // alert(cui);
     $.ajax({
-        url: "ajax/rest_item_list_get_category.php",
+        url: "<?php echo base_url('restorent/item_list_get_category'); ?>",
         type: "post",
         data:{'CID': cui},
         success: function(data){

@@ -31,6 +31,11 @@
                                                 <i class="fa fa-plus"></i> New Offer
                                             </a>
                                 </div>
+
+                                <?php if($this->session->flashdata('success')): ?>
+                                    <div class="alert alert-success" role="alert"><?= $this->session->flashdata('success') ?></div>
+                                <?php endif; ?>
+
                             </div>
                         </div>
                         <!-- end page title -->
@@ -65,14 +70,14 @@
                                                 <tr>
                                                     <td><?php echo $i++; ?></td>
                                                     <td><?php echo $key['SchNm']; ?></td>
-                                                    <td><?php echo $key['SchTyp']; ?></td>
-                                                    <td><?php echo $key['SchCatg']; ?></td>
+                                                    <td><?php echo !empty($key['SchTyp'])?getSchemeType($key['SchTyp']):'-'; ?></td>
+                                                    <td><?php echo !empty($key['SchCatg'])?getSchemeCat($key['SchCatg']):'-'; ?></td>
                                                     <td><?php echo $key['FrmDt']; ?></td>
                                                     <td><?php echo $key['ToDt']; ?></td>
-                                                    <td><?php echo $key['FrmDayNo']; ?></td>
-                                                    <td><?php echo $key['ToDayNo']; ?></td>
+                                                    <td><?php echo !empty($key['FrmDayNo'])?getDay($key['FrmDayNo']):'-'; ?></td>
+                                                    <td><?php echo !empty($key['ToDayNo'])?getDay($key['ToDayNo']):'-'; ?></td>
                                                     <td>
-                                                        <a class="btn btn-sm btn-info" href="<?php echo base_url('company/add_company/'.$key['SchCd']); ?>" title="Edit">
+                                                        <a class="btn btn-sm btn-info" href="<?php echo base_url('restorent/edit_offer/'.$key['SchCd']); ?>" title="Edit">
                                                             <i class="fa fa-edit"></i>
                                                         </a> 
                                                     </td>

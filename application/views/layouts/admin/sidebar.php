@@ -23,7 +23,7 @@
         </li>
         
         <li>
-            <a href="<?php echo base_url('company'); ?>" class="waves-effect">
+            <a href="<?php echo base_url('restorent/role_assign'); ?>" class="waves-effect">
                 <i class="mdi mdi-speedometer"></i>
                 <span>Roles Assignment</span>
             </a>
@@ -45,14 +45,14 @@
         </li>
 
         <li>
-            <a href="<?php echo base_url(''); ?>" class="waves-effect">
+            <a href="<?php echo base_url('restorent/cash_bill'); ?>" class="waves-effect">
                 <i class="mdi mdi-speedometer"></i>
                 <span>Bill Settlement</span>
             </a>
         </li>
 
         <li>
-            <a href="<?php echo base_url(''); ?>" class="waves-effect">
+            <a href="<?php echo base_url('restorent/sitting_table'); ?>" class="waves-effect">
                 <i class="mdi mdi-speedometer"></i>
                 <span>Table View</span>
             </a>

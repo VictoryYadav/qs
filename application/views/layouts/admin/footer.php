@@ -1,3 +1,8 @@
+<style>
+    .footer{
+        border-top :1px solid #1f233c1f;
+    }
+</style>
 <footer class="footer">
     <div class="container-fluid">
         <div class="row">

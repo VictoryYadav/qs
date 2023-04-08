@@ -9,12 +9,12 @@
 	<link rel="icon" href="assets_admin/img/favicon.png" type="image/x-icon" />
 	<meta name="robots" content="noindex, nofollow">
     <title>Login | Quick Service</title>
-    <link href="assets_admin/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets_admin/font-awesome/css/font-awesome.css" rel="stylesheet">
-    <link href="assets_admin/css/animate.css" rel="stylesheet">
-    <link href="assets_admin/css/style.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets_admin/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets_admin/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets_admin/css/animate.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets_admin/css/style.css" rel="stylesheet">
 </head>
-<body style="background-image:url(assets_admin/img/bg.jpg); background-repeat:no-repeat; background-size: cover;">
+<body style="background-image:url(<?php echo base_url(); ?>assets_admin/images/bg.jpg); background-repeat:no-repeat; background-size: cover;">
     <div style="background: rgba(0, 0, 0, 0); padding-top:10%; min-height: 100%;">
 		<div class="middle-box text-center loginscreen animated fadeInDown" style="background: rgba(14, 89, 136, 0.55); margin-top:0;">
 			<div style="padding:20px;">
@@ -36,7 +36,7 @@
 			</div>
 		</div>
     </div>
-    <script src="assets_admin/js/jquery-3.1.1.min.js"></script>
-    <script src="assets_admin/js/bootstrap.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets_admin/js/jquery-3.1.1.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets_admin/js/bootstrap.min.js"></script>
 </body>
 </html>
