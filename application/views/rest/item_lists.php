@@ -35,7 +35,7 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form method="post" action="<?php echo base_url('restorent/item_list'); ?>">
+                                        <form method="post" action="<?php echo base_url('restaurant/item_list'); ?>">
                                             <div class="row">
                                                 <div class="col-md-3">
                                                     <select class="form-control" name="cuisine" id="cuisine" onchange="getCategory()">
@@ -140,7 +140,7 @@ function enableDisable(id, input) {
     if ($(input).prop('checked') == false) {
         console.log("Enter Data");
         $.ajax({
-            url: "<?php echo base_url('restorent/rest_item_list'); ?>",
+            url: "<?php echo base_url('restaurant/rest_item_list'); ?>",
             type: "post",
             data:{
                 insertMenuItemDisabled : 1,
@@ -159,7 +159,7 @@ function enableDisable(id, input) {
     }else{
         console.log("Delete Data");
         $.ajax({
-            url: "<?php echo base_url('restorent/rest_item_list'); ?>",
+            url: "<?php echo base_url('restaurant/rest_item_list'); ?>",
             type: "post",
             data:{
                 deleteMenuItemDisabled : 1,
@@ -194,7 +194,7 @@ function getCategory(){
     var cui = $('#cuisine').val();
     // alert(cui);
     $.ajax({
-        url: "<?php echo base_url('restorent/item_list_get_category'); ?>",
+        url: "<?php echo base_url('restaurant/item_list_get_category'); ?>",
         type: "post",
         data:{'CID': cui},
         success: function(data){

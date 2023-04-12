@@ -83,7 +83,7 @@
                                 <a class="dropdown-item" href="#"><i class="dripicons-wallet d-inlne-block text-muted mr-2"></i> My Wallet</a>
                                 <a class="dropdown-item d-block" href="#"><i class="dripicons-gear d-inlne-block text-muted mr-2"></i> Settings</a> -->
                                 <a class="dropdown-item" href="<?php echo base_url('dashboard'); ?>"><i class="mdi mdi-speedometer"></i> Dashboard</a>
-                                <a class="dropdown-item" href="<?php echo base_url('restorent/change_password'); ?>"><i class="dripicons-lock d-inlne-block text-muted mr-2"></i> Change Password</a>
+                                <a class="dropdown-item" href="<?php echo base_url('restaurant/change_password'); ?>"><i class="dripicons-lock d-inlne-block text-muted mr-2"></i> Change Password</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="<?php echo base_url('logout'); ?>"><i class="dripicons-exit d-inlne-block text-muted mr-2"></i> Logout</a>
                             </div>

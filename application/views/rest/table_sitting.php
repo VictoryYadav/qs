@@ -939,7 +939,7 @@
         function getTableView() {
             var STVCd = $('#kitchen-code').val();
             $.ajax({
-                url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                 type: "post",
                 data: {
                     getTableOrderDetails: 1,
@@ -1070,7 +1070,7 @@
             if(id > 0){
                 var STVCd = $('#kitchen-code').val();
                 $.ajax({
-                    url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                    url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                     type: "post",
                     data: {
                         BillId: id,
@@ -1287,7 +1287,7 @@
 
             if (confirm(`Orders from Table No ${tableNo} will be accepted`)) {
                 $.ajax({
-                    url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                    url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                     type: "post",
                     data: {
                         acceptTable: 1,
@@ -1317,7 +1317,7 @@
 
             if (confirm(`Table No ${tableNo} is Rejected`)) {
                 $.ajax({
-                    url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                    url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                     type: "post",
                     data: {
                         rejectTable: 1,
@@ -1349,7 +1349,7 @@
             // $('#mydiv').show();
 
             $.ajax({
-                url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                 type: "POST",
                 data: {
                     getKot_data: 1,
@@ -1414,7 +1414,7 @@
         }
         function getKitchenData(CNo, FKOTNo){
             $.ajax({
-                url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                 type: "POST",
                 data: {
                     getKitchenData: 1,
@@ -1457,7 +1457,7 @@
         function getAllItems(tableNo, custId, cNo) {
             // console.log("TABLE_"+tableNo+"CUSTID_"+custId);
             $.ajax({
-                url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                 type: "POST",
                 data: {
                     getAllItems: 1,
@@ -1502,7 +1502,7 @@
             resetGlobal();
 
             $.ajax({
-                url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                 type: "POST",
                 data: {
                     getItemsByKot: 1,
@@ -1566,7 +1566,7 @@
                 // Check item is assigned
                 if (globalAQty !== 0) {
                     $.ajax({
-                        url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                        url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                         type: "post",
                         data: {
                             deliverOrder: 1,
@@ -1579,7 +1579,7 @@
                         success: response => {
                             // console.log(response);
                             $.ajax({
-                                url: "<?php echo base_url('restorent/sentNotification'); ?>",
+                                url: "<?php echo base_url('restaurant/sentNotification'); ?>",
                                 type: "GET",
                                 data: {
                                     CustId: globalCustId,
@@ -1629,7 +1629,7 @@
                     $("#from-reassign-qty").attr('max', globalAQty);
 
                     $.ajax({
-                        url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                        url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                         type: "post",
                         data: {
                             handleReassign: 1,
@@ -1678,7 +1678,7 @@
                 alert("Please Select the Table Where You Want The Item Assigned");
             } else {
                 $.ajax({
-                    url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                    url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                     type: "post",
                     data: {
                         reassignOrder: 1,
@@ -1712,7 +1712,7 @@
             } else {
                 // Check Item Stat
                 $.ajax({
-                    url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                    url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                     type: "post",
                     data: {
                         checkStatForDecline: 1,
@@ -1750,7 +1750,7 @@
             // console.log(declineReason);
             // Decline Item
             $.ajax({
-                url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                 type: "post",
                 data: {
                     declineItem: 1,
@@ -1801,7 +1801,7 @@
 
         function declineItemForEid() {
             $.ajax({
-                url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                 type: "post",
                 data: {
                     declineItemForEid: 1,
@@ -1827,7 +1827,7 @@
 
         function disableFromMenu() {
             $.ajax({
-                url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                 type: "post",
                 data: {
                     disableFromMenu: 1,
@@ -1860,7 +1860,7 @@
         function selectParentTable() {
 
             $.ajax({
-                url: "<?php echo base_url('restorent/mergetable_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/mergetable_ajax'); ?>",
                 type: 'POST',
                 data: {
                     tableNo: $('#mainTable').val()
@@ -1887,7 +1887,7 @@
 
             $.ajax({
                 type: 'post',
-                url: "<?php echo base_url('restorent/savemergedata_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/savemergedata_ajax'); ?>",
                 data: $('#meargeForm').serialize(),
                 success: function(response) {
                     //   if(response){
@@ -1926,7 +1926,7 @@
                     formData.append('billAmt', billAmt);
                     formData.append('pymtMode', pymtMode);
                     // console.log($('#selRt').val());
-                    axios.post("<?php echo base_url('restorent/rest_cash_bill_ajax'); ?>", formData)
+                    axios.post("<?php echo base_url('restaurant/rest_cash_bill_ajax'); ?>", formData)
                     .then(response => {
                         // console.log(response.data);
                         if(response.data.status == 1) {
@@ -1961,7 +1961,7 @@
                 formData.append('CNo', CNo);
                 formData.append('TableNo', TableNo);
                 formData.append('CustId', CustId);
-                axios.post("<?php echo base_url('restorent/rest_cash_bill_ajax'); ?>", formData)
+                axios.post("<?php echo base_url('restaurant/rest_cash_bill_ajax'); ?>", formData)
                 .then(response => {
                     // console.log(response.data);
                     if (response.data.status ==1) {
@@ -1979,7 +1979,7 @@
         var list_id = '';
         function check_call_bell(){
             $.ajax({
-                url: "<?php echo base_url('restorent/customer_landing_page_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/customer_landing_page_ajax'); ?>",
                 type: "post",
                 data: {
                     check_call_help: 1,
@@ -2010,7 +2010,7 @@
         }
         function view_help(){
             $.ajax({
-                url: "<?php echo base_url('restorent/customer_landing_page_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/customer_landing_page_ajax'); ?>",
                 type: "post",
                 data: {
                     view_call_help: 1,
@@ -2030,7 +2030,7 @@
         function respond_call_help(id){
             if(confirm("Assistance Provided?")){
                 $.ajax({
-                    url: "<?php echo base_url('restorent/customer_landing_page_ajax'); ?>",
+                    url: "<?php echo base_url('restaurant/customer_landing_page_ajax'); ?>",
                     type: "post",
                     data: {
                         respond_call_help: 1,
@@ -2054,7 +2054,7 @@
                 var v = '<?= $TableAcceptReqd?>';
                 if(v == 0){
                     $.ajax({
-                        url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                        url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                         type: "post",
                         data: {
                             check_new_orders: 1
@@ -2077,7 +2077,7 @@
             // if(confirm("Assistance Provided?")){
                 // if(v == 0){
                     $.ajax({
-                        url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                        url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                         type: "post",
                         data: {
                             check_settled_table: 1
@@ -2099,7 +2099,7 @@
             // if(confirm("Assistance Provided?")){
                 // if(v == 0){
                     $.ajax({
-                        url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                        url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                         type: "post",
                         data: {
                             confirm_settle: 1,
@@ -2120,7 +2120,7 @@
         }
         function accept_order(id){
             $.ajax({
-                url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                 type: "post",
                 data: {
                     change_order_status: 1,
@@ -2140,7 +2140,7 @@
         }
         function reject_order(id){
             $.ajax({
-                url: "<?php echo base_url('restorent/sittin_table_view_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                 type: "post",
                 data: {
                     change_order_status: 1,
@@ -2173,7 +2173,7 @@
 
     $.ajax({
 
-        url: '<?php echo base_url('restorent/merge_table_ajax'); ?>',
+        url: '<?php echo base_url('restaurant/merge_table_ajax'); ?>',
 
         type: 'POST',
 
@@ -2236,7 +2236,7 @@ function getMmergedTables(){
 
     $.ajax({
 
-        url: '<?php echo base_url('restorent/merge_table_ajax'); ?>',
+        url: '<?php echo base_url('restaurant/merge_table_ajax'); ?>',
 
         type: 'POST',
 
@@ -2342,7 +2342,7 @@ $(document).ready(function() {
 
             $.ajax({
 
-                url: "<?php echo base_url('restorent/merge_table_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/merge_table_ajax'); ?>",
 
                 type: "post",
 
@@ -2430,7 +2430,7 @@ $("#unmerge-table-btn").click(function(event) {
 
             $.ajax({
 
-                url: "<?php echo base_url('restorent/merge_table_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/merge_table_ajax'); ?>",
 
                 type: "post",
 
@@ -2491,7 +2491,7 @@ function get_each_table(){
     if(v != ''){
         $.ajax({
 
-            url: '<?php echo base_url('restorent/merge_table_ajax'); ?>',
+            url: '<?php echo base_url('restaurant/merge_table_ajax'); ?>',
 
             type: 'POST',
 
@@ -2572,7 +2572,7 @@ function unmerge_table(el){
     // var v = $('#el.')
     $.ajax({
 
-        url: '<?php echo base_url('restorent/merge_table_ajax'); ?>',
+        url: '<?php echo base_url('restaurant/merge_table_ajax'); ?>',
 
         type: 'POST',
 
@@ -2595,7 +2595,7 @@ function get_phone_num(){
     var v = $('#from_table').val();
     $.ajax({
 
-        url: '<?php echo base_url('restorent/sittin_table_view_ajax'); ?>',
+        url: '<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>',
 
         type: 'POST',
 

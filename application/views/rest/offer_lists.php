@@ -27,7 +27,7 @@
                                     <h4 class="mb-0 font-size-18"><?php echo $title; ?>
                                     </h4>
 
-                                    <a class="btn btn-sm btn-primary float-right" href="<?php echo base_url('restorent/new_offer'); ?>">
+                                    <a class="btn btn-sm btn-primary float-right" href="<?php echo base_url('restaurant/new_offer'); ?>">
                                                 <i class="fa fa-plus"></i> New Offer
                                             </a>
                                 </div>
@@ -77,7 +77,7 @@
                                                     <td><?php echo !empty($key['FrmDayNo'])?getDay($key['FrmDayNo']):'-'; ?></td>
                                                     <td><?php echo !empty($key['ToDayNo'])?getDay($key['ToDayNo']):'-'; ?></td>
                                                     <td>
-                                                        <a class="btn btn-sm btn-info" href="<?php echo base_url('restorent/edit_offer/'.$key['SchCd']); ?>" title="Edit">
+                                                        <a class="btn btn-sm btn-info" href="<?php echo base_url('restaurant/edit_offer/'.$key['SchCd']); ?>" title="Edit">
                                                             <i class="fa fa-edit"></i>
                                                         </a> 
                                                     </td>

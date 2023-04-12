@@ -41,7 +41,7 @@ $RestName = authuser()->RestName;
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form method="post" action="<?php echo base_url('restorent/add_stock'); ?>">
+                                        <form method="post" action="<?php echo base_url('restaurant/add_stock'); ?>">
                                             <input type="hidden" name="edit_stock" value="1">
                                             <input type="hidden" name="trans_id" value="<?= $TransId?>">
                                             <div class="row">
@@ -188,7 +188,7 @@ var cntr = <?= sizeof($stock_details)?>;
 function getUOM(el, n){
     var item_id = el.value;
     $.ajax({
-        url: "<?php echo base_url('restorent/rm_ajax'); ?>",
+        url: "<?php echo base_url('restaurant/rm_ajax'); ?>",
         type: "post",
         data: {'getUOM':1, 'RMCd':item_id},
         success: response => {
@@ -216,7 +216,7 @@ function getUOM(el, n){
 function delete_details(id){
     if(confirm("Are you sure want to continue?")){
         $.ajax({
-            url: "<?php echo base_url('restorent/add_stock'); ?>",
+            url: "<?php echo base_url('restaurant/add_stock'); ?>",
             type: "post",
             data: {'delete_details':1, 'RMDetId':id},
             success: response => {
@@ -232,7 +232,7 @@ function delete_details(id){
 function delete_trans(id){
     if(confirm("Are you sure want to continue?")){
         $.ajax({
-            url: "<?php echo base_url('restorent/add_stock'); ?>",
+            url: "<?php echo base_url('restaurant/add_stock'); ?>",
             type: "post",
             data: {'delete_trans':1, 'TransId':id},
             success: response => {
@@ -288,7 +288,7 @@ function set_uom(){
         var item_id = $('#items'+temp).val();
         var uom = $('#uomcd'+temp).val();
         $.ajax({
-            url: "<?php echo base_url('restorent/rm_ajax'); ?>",
+            url: "<?php echo base_url('restaurant/rm_ajax'); ?>",
             type: "post",
             data: {'getUOM':1, 'RMCd':item_id},
             success: response => {

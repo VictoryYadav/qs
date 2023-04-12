@@ -42,11 +42,11 @@ $RestName = authuser()->RestName;
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="text-right mt-2">
-                                            <a target="_blank" href="<?php echo base_url('restorent/stock_consumption'); ?>" class="btn btn-info btn-sm">Consumption</a>
-                                            <a target="_blank" href="<?php echo base_url('restorent/stock_report'); ?>" class="btn btn-warning btn-sm">Report</a>
-                                            <a href="<?php echo base_url('restorent/add_stock'); ?>" class="btn btn-primary btn-sm">Add Stock</a>
+                                            <a target="_blank" href="<?php echo base_url('restaurant/stock_consumption'); ?>" class="btn btn-info btn-sm">Consumption</a>
+                                            <a target="_blank" href="<?php echo base_url('restaurant/stock_report'); ?>" class="btn btn-warning btn-sm">Report</a>
+                                            <a href="<?php echo base_url('restaurant/add_stock'); ?>" class="btn btn-primary btn-sm">Add Stock</a>
                                         </div>
-                                        <form method="post" action="<?php echo base_url('restorent/stock_list'); ?>">
+                                        <form method="post" action="<?php echo base_url('restaurant/stock_list'); ?>">
                                             <div class="row">
                                                 <div class="col-md-2">
                                                     <label>Transaction ID</label>
@@ -176,6 +176,6 @@ $RestName = authuser()->RestName;
 
 <script type="text/javascript">
     function edit(id){
-        window.location.href="<?php echo base_url();?>restorent/edit_stock?TransId="+id;
+        window.location.href="<?php echo base_url();?>restaurant/edit_stock?TransId="+id;
     }
 </script>

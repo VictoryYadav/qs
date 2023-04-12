@@ -41,7 +41,7 @@ $RestName = authuser()->RestName;
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form method="post" action="<?php echo base_url('restorent/add_stock'); ?>">
+                                        <form method="post" action="<?php echo base_url('restaurant/add_stock'); ?>">
                                             <input type="hidden" name="add_stock" value="1">
                                             <div class="row">
                                                 <div class="col-6">
@@ -185,7 +185,7 @@ var cntr = 1;
 function getUOM(el, n){
     var item_id = el.value;
     $.ajax({
-            url: "<?php echo base_url('restorent/rm_ajax'); ?>",
+            url: "<?php echo base_url('restaurant/rm_ajax'); ?>",
             type: "post",
             data: {'getUOM':1, 'RMCd':item_id},
             success: response => {

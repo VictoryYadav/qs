@@ -40,7 +40,7 @@
                                             <div class="alert alert-success" role="alert" id="alertBlock"><?= $this->session->flashdata('success') ?></div>
                                             <?php endif; ?>
                                             
-                                        <form method="post" action="<?php echo base_url('restorent/add_user'); ?>">
+                                        <form method="post" action="<?php echo base_url('restaurant/add_user'); ?>">
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
@@ -59,7 +59,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Mobile</label>
-                                                        <input type="tel" name="MobileNo" class="form-control" placeholder="Phone" required="">
+                                                        <input type="tel" name="MobileNo" class="form-control" placeholder="Phone" required="" pattern="[6789][0-9]{9}" maxlength="10" minlength="10">
                                                     </div>
                                                 </div>
 
@@ -111,13 +111,14 @@
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>Restorent Name</label>
+
+                                                        <label>Outlet Name</label>
                                                         <select class="form-control" required="" name="EID">
                                                             <option value="">Choose</option>
                                                             <?php
-                                                            foreach ($restorent as $res) {
+                                                            foreach ($restaurant as $res) {
                                                             ?>
-                                                            <option value="<?php echo $res['EID']; ?>"><?php echo $res['Name']; ?></option>
+                                                            <option value="<?php echo $res['EID']; ?>" <?php if($EID == $res['EID']){ echo 'selected'; } ?>><?php echo $res['Name']; ?></option>
                                                             <?php } ?>
                                                         </select>
                                                     </div>

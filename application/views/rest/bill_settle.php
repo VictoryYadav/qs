@@ -54,11 +54,11 @@
                                                 </div>
                                                 <div class="col-6 text-right form-group">
                                                     <?php if($EType == 5){?>
-                                                    <a href="<?php echo base_url('restorent/sitting_table'); ?>">
+                                                    <a href="<?php echo base_url('restaurant/sitting_table'); ?>">
                                                         <button class="btn btn-primary" style="background: darkblue;">Back</button>
                                                     </a>
                                                 <?php } else{?>
-                                                    <a href="<?php echo base_url('restorent/order_dispense'); ?>">
+                                                    <a href="<?php echo base_url('restaurant/order_dispense'); ?>">
                                                         <button class="btn btn-primary" style="background: darkblue;">Back</button>
                                                     </a>
                                                     <?php } ?>
@@ -86,7 +86,7 @@
                                                     <tbody>
                                                         <tr v-if="billData.length > 0" v-for="(data, index) in billData">
                                                             <td>
-                                                                <a v-bind:href="'<?php echo base_url('restorent/'); ?>bill_rcpt?restaurant=1&billId=' + data.BillNo" target="_blank" >
+                                                                <a v-bind:href="'<?php echo base_url('restaurant/'); ?>bill_rcpt?restaurant=1&billId=' + data.BillNo" target="_blank" >
                                                                     {{ data.BillNo }}
                                                                 </a>
                                                             </td>
@@ -182,7 +182,7 @@ var vueApp = new Vue({
         getPaymentOpt() {
             formData = new FormData();
             formData.append('selectpaymentopt', 1);
-            axios.post("<?php echo base_url('restorent/cash_bill_ajax'); ?>", formData)
+            axios.post("<?php echo base_url('restaurant/cash_bill_ajax'); ?>", formData)
             .then(response => {
                 console.log(response.data);
                 if (response.data.status == 1) {
@@ -198,7 +198,7 @@ var vueApp = new Vue({
             formData = new FormData();
             formData.append('getBill', 1);
             formData.append('STVcd', STVCd);
-            axios.post("<?php echo base_url('restorent/cash_bill_ajax'); ?>", formData)
+            axios.post("<?php echo base_url('restaurant/cash_bill_ajax'); ?>", formData)
             .then(response => {
                 // console.log(response.data);
                 if (response.data.status == 1) {
@@ -232,7 +232,7 @@ var vueApp = new Vue({
                     formData.append('billAmt', billAmt);
                     formData.append('pymtMode', pymtMode);
                     // console.log($('#selRt').val());
-                    axios.post("<?php echo base_url('restorent/cash_bill_ajax'); ?>", formData)
+                    axios.post("<?php echo base_url('restaurant/cash_bill_ajax'); ?>", formData)
                     .then(response => {
                         // console.log(response.data);
                         if(response.data.status == 1) {
@@ -265,7 +265,7 @@ var vueApp = new Vue({
                 formData.append('CNo', CNo);
                 formData.append('TableNo', TableNo);
                 formData.append('CustId', CustId);
-                axios.post("<?php echo base_url('restorent/cash_bill_ajax'); ?>", formData)
+                axios.post("<?php echo base_url('restaurant/cash_bill_ajax'); ?>", formData)
                 .then(response => {
                     // console.log(response.data);
                     if (response.data.status ==1) {
@@ -290,7 +290,7 @@ var vueApp = new Vue({
 
 <script type="text/javascript">
     // $.ajax({
-    //  url:"<?php echo base_url('restorent/cash_bill_ajax'); ?>",
+    //  url:"<?php echo base_url('restaurant/cash_bill_ajax'); ?>",
     //  type:"POST",
     //  data:{
     //      selectpaymentopt : 1

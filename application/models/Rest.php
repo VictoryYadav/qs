@@ -35,26 +35,12 @@ class Rest extends CI_Model{
 		return $this->db2->order_by('SchCd', 'desc')->get('CustOffers')->result_array();
 	}
 
-	public function passwordUpdate($data){
-		$res = '';
-
-		if($data['password'] == $data['c_password']){
-			$check = $this->db2->select('Passwd')->get_where('UsersRest', array('RUserId' => authuser()->RUserId))->row_array();
-			 if(!empty($check)){
-			 	if($check['Passwd'] == $data['old_password']){
-			 		$this->db2->update('UsersRest', array('Passwd' => $data['password']), array('RUserId' => authuser()->RUserId));
-			 		$res = "Password has been Changed";
-			 	}
-			 }else{
-			 	$res = "Failed to Validate User";
-			 }
-		}else{
-			$res = "Passwords Don't Match";
-		}
-		return $res;
+	public function passwordUpdate($password){
+ 		$this->db2->update('UsersRest', array('Passwd' => $password), array('RUserId' => authuser()->RUserId));
+			 	
 	}
 
-	public function getRestorentList($ChainId){
+	public function getRestaurantList($ChainId){
 		return $this->db2->select('EID, Name')
 						->order_by('EID DESC')
 						->get_where('Eatary', array('ChainId' => $ChainId))->result_array();
@@ -72,27 +58,27 @@ class Rest extends CI_Model{
 			$data['ONo'] = $createrData['ONo'];
 			$data['Stat'] = $createrData['Stat'];
 			$data['LoginCd'] = $createrData['LoginCd'];
-
-			 $this->db2->insert('UsersRest', $data);
-			 $newRUserId = $this->db2->insert_id();
+			$data['token'] = $this->generateToken();
+			 $newRUserId = insertRecord('UsersRest', $data);
 			if(!empty($newRUserId)){
+				$this->sendUserLoginMsg();
 				$res = "user created successfully";
 				if($data['UTyp'] == 9){
 
 					$userRolesAccessObj['EID'] = $createrData['EID'];
 					$userRolesAccessObj['RUserId'] = $newRUserId;
 					$userRolesAccessObj['RoleId']= 21;
-					$this->db2->insert('UserRolesAccess', $userRolesAccessObj);
+					insertRecord('UserRolesAccess', $userRolesAccessObj);
 
 					$userRolesAccessObj['EID'] = $createrData['EID'];
 					$userRolesAccessObj['RUserId'] = $newRUserId;
 					$userRolesAccessObj['RoleId']= 22;
-					$this->db2->insert('UserRolesAccess', $userRolesAccessObj);
+					insertRecord('UserRolesAccess', $userRolesAccessObj);
 
 					$userRolesAccessObj['EID'] = $createrData['EID'];
 					$userRolesAccessObj['RUserId'] = $newRUserId;
 					$userRolesAccessObj['RoleId']= 26;
-					$this->db2->insert('UserRolesAccess', $userRolesAccessObj);
+					insertRecord('UserRolesAccess', $userRolesAccessObj);
 				}
 			}else{
 				$res = "failed to create user";
@@ -105,6 +91,17 @@ class Rest extends CI_Model{
 			$res = "Mobile No is Allready Exists";
 		}
 		return $res;
+	}
+
+	// not completed generateToken
+	private function generateToken(){
+		return 'hjklkjhjkjhjkjhh';
+	}
+
+	private function sendUserLoginMsg(){
+		// this function is not completed
+		// msg= login has been created
+		// RuserId / token from restusers
 	}
 
 	public function mergeTables($postdata){
@@ -624,6 +621,14 @@ class Rest extends CI_Model{
 
 	private function calculatTotalTax($total_tax, $new_tax){
 	    return $total_tax + $new_tax;
+	}
+
+	public function getThirdOrderData(){
+		return $this->db2->get_where('3POrders', array("Stat" => 0))->result_array();
+	}
+
+	public function getTablesAllotedData($EID){
+		return $this->db2->get_where('Eat_tables', array("Stat" => 1, "EID" => $EID))->result_array();
 	}
 
 	

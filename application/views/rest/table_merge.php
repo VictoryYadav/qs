@@ -191,7 +191,7 @@ function getUnmergeTables(){
 
     $.ajax({
 
-        url: "<?php echo base_url('restorent/merge_table'); ?>",
+        url: "<?php echo base_url('restaurant/merge_table'); ?>",
 
         type: 'POST',
 
@@ -254,7 +254,7 @@ function getMmergedTables(){
 
     $.ajax({
 
-        url: "<?php echo base_url('restorent/merge_table'); ?>",
+        url: "<?php echo base_url('restaurant/merge_table'); ?>",
 
         type: 'POST',
 
@@ -360,7 +360,7 @@ $(document).ready(function() {
 
             $.ajax({
 
-                url: "<?php echo base_url('restorent/merge_table'); ?>",
+                url: "<?php echo base_url('restaurant/merge_table'); ?>",
 
                 type: "post",
 
@@ -448,7 +448,7 @@ $("#unmerge-table-btn").click(function(event) {
 
             $.ajax({
 
-                url: "<?php echo base_url('restorent/merge_table'); ?>",
+                url: "<?php echo base_url('restaurant/merge_table'); ?>",
 
                 type: "post",
 
@@ -509,7 +509,7 @@ function get_each_table(){
     if(v != ''){
         $.ajax({
 
-            url: "<?php echo base_url('restorent/merge_table'); ?>",
+            url: "<?php echo base_url('restaurant/merge_table'); ?>",
 
             type: 'POST',
 
@@ -590,7 +590,7 @@ function unmerge_table(el){
     // var v = $('#el.')
     $.ajax({
 
-        url: "<?php echo base_url('restorent/merge_table'); ?>",
+        url: "<?php echo base_url('restaurant/merge_table'); ?>",
 
         type: 'POST',
 

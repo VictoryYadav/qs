@@ -118,6 +118,38 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $CI->User->gettingBiliingData($dbname, $EID, $billId);
 	}
 
+	function firebaseNotification($fcmRegIds, $msg){
+
+		$fields = array(
+          'registration_ids'  => $fcmRegIds,
+          'notification'      => $msg
+        );
+
+		$API_ACCESS_KEY = "AAAAZEeZrX8:APA91bHgs5fs23mXqClnQ8-xPTNIg9We1-0nFfWGEi5DQmbs2HRzC0d9MneblYbR1WLNCVR9PYX86Qx6NBZUedIq3lyQ_jYyjRdkOCrk56P_eD26bmGIuk78VbX4ZxrdFKDeiHaJXTcm";
+        $headers = array(
+          'Authorization: key=' . $API_ACCESS_KEY,
+          'Content-Type: application/json'
+        );
+
+		$ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+        // $result = curl_exec($ch);
+        $response = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
+
+        if ($err) {
+          return  "cURL Error #:" . $err;
+        } else {
+          return $response;
+        }
+	}
+
 
 
 

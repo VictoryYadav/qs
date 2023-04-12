@@ -79,6 +79,10 @@ class AuthController extends CI_Controller {
                     );
                     $this->session->set_userdata('logged_in', $session_data);
 
+                        // if pass = QS1234 go to change password page_not_found
+                        if($checkNumber['Passwd'] == 'QS1234'){
+                            redirect(base_url('restaurant/change_password'));    
+                        }
                         redirect(base_url('dashboard'));
                     }else{
                        $this->session->set_flashdata('error','Unable to Validate User'); 

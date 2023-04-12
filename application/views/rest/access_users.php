@@ -33,51 +33,48 @@
                         <!-- end page title -->
 
                         <div class="row">
-                            <div class="col-md-8 mx-auto">
+                            <div class="col-md-10 mx-auto">
                                 <div class="card">
                                     <div class="card-body">
                                         <div id="app1">
                                             <div class="row form-group">
-                                                <div class="col-md-5">
+                                                <div class="col-md-5 col-6">
                                                     <input type="number" class="form-control" placeholder="Enter User Mobile No" v-model="mobileNumber" v-on:focusout="getUser();">
                                                 </div>
 
-                                                <div class="col-md-2"></div>
+                                                <div class="col-md-2  d-none d-sm-block"></div>
 
-                                                <div class="col-md-5">
+                                                <div class="col-md-5 col-6">
                                                     <input type="text" class="form-control" readonly="" v-model="userName">
                                                 </div>
                                             </div>
                                             <div class="row form-group">
-                                                <div class="col-md-5 text-center">
-                                                    <h3 style="color: white;">Available Roles</h3>
-                                                </div>
-                                                <div class="col-md-2"></div>
-                                                <div class="col-md-5 text-center">
-                                                    <h3 style="color: white;">Assigned Roles</h3>
-                                                </div>
-                                                <div class="col-md-5 roles-div items-data" style="border: 1px solid;">
+                                                
+                                                <div class="col-md-5 roles-div items-data col-5" style="border: 1px solid #dddbdb;padding-top: 3px;">
+                                                    <h5 class="card-title text-center">Available Roles</h5><hr>
                                                     <ul v-if="availableRoles.length > 0">
-                                                        <div class="ck-button" v-for="role in availableRoles">
+                                                        <div class="ck-button" v-for="role in availableRoles" style="margin-left:-40px;">
                                                            <label>
-                                                              <input type="checkbox" v-bind:value="role.RoleId" v-model="selectedAvailableRoles"><span>{{ role.Name }}</span>
+                                                              <input type="checkbox" v-bind:value="role.RoleId" v-model="selectedAvailableRoles">&nbsp;&nbsp;<span>{{ role.Name }}</span>
                                                            </label>
                                                         </div>
                                                     </ul>
                                                 </div>
-                                                <div class="col-md-2 text-center" style="padding-top: 180px;">
+                                                <div class="col-md-2 text-center col-2" style="padding-top: 180px;">
                                                     <div class="form-group">
-                                                        <button class="btn btn-success" v-on:click="setRoles();" style="width: 82px; background: #48bd48;">Assign</button>
+                                                        <button class="btn btn-success btn-sm btn-rounded" v-on:click="setRoles();"><i class="fa fa-plus"></i></button>
                                                     </div>
                                                     <div class="form-group">
-                                                        <button class="btn btn-danger" v-on:click="removeRoles();">Remove</button>
+                                                        <button class="btn btn-danger btn-sm btn-rounded" v-on:click="removeRoles();"><i class="fa fa-trash"></i></button>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-5 roles-div items-data" style="border: 1px solid;">
+                                                <div class="col-md-5 roles-div items-data col-5" style="border: 1px solid #dddbdb;padding-top: 3px;">
+                                                    <h5 class="card-title text-center">Assigned Roles</h5>
+                                                    <hr>
                                                     <ul v-if="assignRoles.length > 0">
-                                                        <div class="ck-button" v-for="role in assignRoles">
+                                                        <div class="ck-button" v-for="role in assignRoles"style="margin-left:-40px;">
                                                            <label>
-                                                              <input type="checkbox" v-bind:value="role.URNo" v-model="selectedAssignedRoles"><span>{{ role.Name }}</span>
+                                                              <input type="checkbox" v-bind:value="role.URNo" v-model="selectedAssignedRoles">&nbsp;&nbsp;<span>{{ role.Name }}</span>
                                                            </label>
                                                         </div>
                                                     </ul>
@@ -132,7 +129,7 @@
                     formData = new FormData();
                     formData.append('mobileNumber', this.mobileNumber);
                     formData.append('getUser', 1);
-                    axios.post("<?php echo base_url('restorent/user_access'); ?>", formData)
+                    axios.post("<?php echo base_url('restaurant/user_access'); ?>", formData)
                     .then(response => {
                         // console.log(response.data);
                         if (response.data.status == 1) {
@@ -167,7 +164,7 @@
                 formData = new FormData();
                 formData.append('getAvailableRoles', 1);
                 formData.append('userId', this.userId);
-                axios.post("<?php echo base_url('restorent/user_access'); ?>", formData)
+                axios.post("<?php echo base_url('restaurant/user_access'); ?>", formData)
                 .then(response => {
                     console.log(response.data);
                     if (response.data.status == 1) {
@@ -185,7 +182,7 @@
                     formData.append('setRoles', 1);
                     formData.append('roles', this.selectedAvailableRoles);
                     formData.append('userId', this.userId);
-                    axios.post("<?php echo base_url('restorent/user_access'); ?>", formData)
+                    axios.post("<?php echo base_url('restaurant/user_access'); ?>", formData)
                     .then(response => {
                         console.log(response.data);
                         if (response.data.status == 1) {
@@ -206,7 +203,7 @@
                 formData = new FormData();
                 formData.append('getAssignedRoles', 1);
                 formData.append('userId', this.userId);
-                axios.post("<?php echo base_url('restorent/user_access'); ?>", formData)
+                axios.post("<?php echo base_url('restaurant/user_access'); ?>", formData)
                 .then(response => {
                     console.log(response.data);
                     if (response.data.status == 1) {
@@ -224,7 +221,7 @@
                     formData.append('removeRoles', 1);
                     formData.append('roles', this.selectedAssignedRoles);
                     formData.append('userId', this.userId);
-                    axios.post("<?php echo base_url('restorent/user_access'); ?>", formData)
+                    axios.post("<?php echo base_url('restaurant/user_access'); ?>", formData)
                     .then(response => {
                         console.log(response.data);
                         if (response.data.status == 1) {

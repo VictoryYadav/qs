@@ -118,7 +118,7 @@ $RestName = authuser()->RestName;
                     </div>
                     <!-- Modal body -->
                     <div class="modal-body">
-                        <form method="post" action="<?php echo base_url('restorent/itemstockreport'); ?>">
+                        <form method="post" action="<?php echo base_url('restaurant/itemstockreport'); ?>">
                             <input type="hidden" name="RMCd" id="RMCdReport">
                             <div class="form-group">
                                 <label>From Date</label>

@@ -226,7 +226,7 @@ var vueApp = new Vue({
 
             formData.append("getUsers", 1);
 
-            axios.post("<?php echo base_url('restorent/rest_manager'); ?>", formData)
+            axios.post("<?php echo base_url('restaurant/rest_manager'); ?>", formData)
 
             .then(response => {
 
@@ -270,7 +270,7 @@ var vueApp = new Vue({
 
 
 
-            axios.post("<?php echo base_url('restorent/rest_manager'); ?>", formData)
+            axios.post("<?php echo base_url('restaurant/rest_manager'); ?>", formData)
 
             .then(response => {
 
@@ -310,7 +310,7 @@ var vueApp = new Vue({
 
 
 
-            axios.post("<?php echo base_url('restorent/rest_manager'); ?>", formData)
+            axios.post("<?php echo base_url('restaurant/rest_manager'); ?>", formData)
 
             .then(response => {
 
@@ -350,7 +350,7 @@ var vueApp = new Vue({
 
 
 
-            axios.post("<?php echo base_url('restorent/rest_manager'); ?>", formData)
+            axios.post("<?php echo base_url('restaurant/rest_manager'); ?>", formData)
 
             .then(response => {
 

@@ -40,6 +40,9 @@
     <!-- Datatable init js -->
     <script src="<?= base_url() ?>assets_admin/js/pages/datatables.init.js"></script>
 
+    <script src="<?= base_url() ?>assets_admin/libs/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+    <script src="<?= base_url() ?>assets_admin/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js"></script>
+
       
 
     </body>

@@ -1,8 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Restorent extends CI_Controller {
-
+class Restaurant extends CI_Controller {
+// Restaurant 
     private $db2;
 	public function __construct()
 	{
@@ -13,6 +13,11 @@ class Restorent extends CI_Controller {
         $this->db2 = $this->load->database($my_db, TRUE);
 	}
 
+    public function index(){
+        $data['title'] = 'Dashboard';
+        $this->load->view('rest/index',$data);
+    }
+
     public function add_user(){
         if($this->input->method(true)=='POST'){
             // echo "<pre>";
@@ -20,11 +25,12 @@ class Restorent extends CI_Controller {
             // die;
             $res = $this->rest->addUser($_POST);
             $this->session->set_flashdata('success',$res); 
-            redirect(base_url('restorent/add_user'));
+            redirect(base_url('restaurant/add_user'));
         }
 
 		$data['title'] = 'Add User';
-        $data['restorent'] = $this->rest->getRestorentList(authuser()->ChainId);
+        $data['EID'] = authuser()->EID;
+        $data['restaurant'] = $this->rest->getrestaurantList(authuser()->ChainId);
 		$this->load->view('rest/add_user',$data);
     }
 
@@ -399,7 +405,7 @@ class Restorent extends CI_Controller {
               }
               insertRecord('CustOffersDet', $CustOffersDetObj);
             $this->session->set_flashdata('success','Offer has been added.'); 
-            redirect(base_url('restorent/offers_list'));
+            redirect(base_url('restaurant/offers_list'));
         }
 
         if (isset($_POST['updateOffer'])) {
@@ -462,7 +468,7 @@ class Restorent extends CI_Controller {
                 }
             }
             $this->session->set_flashdata('success','Offer has been updated.'); 
-            redirect(base_url('restorent/offers_list'));
+            redirect(base_url('restaurant/offers_list'));
         }
         if(isset($_POST['getCategory']) && $_POST['getCategory']){
             $cid = $_POST['cid'];
@@ -971,22 +977,81 @@ class Restorent extends CI_Controller {
     }
 
     public function change_password(){
+
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
 
-            $status = 'success';
-            $response = $this->rest->passwordUpdate($_POST);
+            $res = '';
+            $data = $_POST;
+            if($data['password'] == $data['c_password']){
+                $check = $this->db2->select('Passwd')->get_where('UsersRest', array('RUserId' => authuser()->RUserId))->row_array();
+                 if(!empty($check)){
+                    if($check['Passwd'] == $data['old_password']){
+                        $status = 'success';
+                        $this->session->set_userdata('new_pwd', $data['password']);
+                        $this->session->set_userdata('old_pwd', $data['old_password']);
+                        $this->generateOTP(authuser()->RUserId);
+                        $res = "OTP has been send.";
+                    }else{
+                        $res = "OLD Password does not matched.";
+                    }
+                 }else{
+                    $res = "Failed to Validate User";
+                 }
+            }else{
+                $res = "Passwords Don't Match";
+            }
+
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
-                'response' => $response
+                'response' => $res
               ));
              die;
         }
 
         $data['title'] = 'Change Password';
         $this->load->view('rest/password_change',$data);   
+    }
+
+    private function generateOTP($RUserId){
+        $check = $this->db2->select('token')->get_where('UsersRest', array('RUserId' => $RUserId))->row_array();
+        if(!empty($check)){
+            $otp = rand(9999,1000);
+            $this->session->set_userdata('new_otp', $otp);
+            $msg = 'Your One Time Password is '.$otp;
+            $message = array(
+              'body'   => $msg,
+              'title'   => 'Your OTP',
+              'vibrate' => 1,
+              'sound'   => 1
+            );
+            // firebaseNotification($check['token'], $message);
+        }
+    }
+
+    public function verifyOTP(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $otp = $this->session->userdata('new_otp');
+            if($_POST['otp'] == $otp){
+                $password = $this->session->userdata('new_pwd');
+                $this->rest->passwordUpdate($password);
+                $res = "Password has been updated.";
+                $status = 'success';
+            }else{
+                $res = "OTP Doesn't Matched";
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $res
+              ));
+             die;
+        }
     }
 
     public function merge_table(){
@@ -1039,17 +1104,22 @@ class Restorent extends CI_Controller {
                 echo "<pre>";
                 print_r($Theme);
                 die;
-                    $this->db2->insert('ConfigTheme',$Theme);
+                    insertRecord('ConfigTheme',$Theme);
                 }
             }
-            $data['data11'] = $this->db2->query("SELECT * from ConfigTheme order by ThemeId desc")->result_array();
-            if(!empty($data11)){
-                $data['data11'] = $data['data11'][0];
-            }else{
-                $data['data11'] = $this->db2->query("SELECT * from ConfigTheme order by ThemeId")->result_array();
-                $data['data11'] = $data['data11'][0];
-            }
         }
+
+        $data['data11'] = $this->db2->query("SELECT * from ConfigTheme order by ThemeId desc")->result_array();
+        if(!empty($data['data11'])){
+            $data['data11'] = $data['data11'][0];
+        }else{
+            $data['data11'] = $this->db2->query("SELECT * from ConfigTheme order by ThemeId")->result_array();
+            $data['data11'] = $data['data11'][0];
+        }
+
+        // echo "<pre>";
+        // print_r($data['data11']);
+        // die;
 
         $data['title'] = 'Theme Setting';
         $this->load->view('rest/theme_setting',$data);   
@@ -1945,7 +2015,7 @@ class Restorent extends CI_Controller {
             $update_et = $this->db2->query($q3);
             $update_et = $this->db2->query("UPDATE Eat_tables set Stat = 1 where EID = ".$EID." and TableNo = ".$to);
             // header('Location: ../sittin_table_view.php');
-            redirect(base_url('restorent/sitting_table'));
+            redirect(base_url('restaurant/sitting_table'));
         }
 
         if(isset($_POST['get_phone_num']) && !empty($_POST['get_phone_num'])){
@@ -2474,6 +2544,392 @@ class Restorent extends CI_Controller {
             }                   
         }
     }
+
+    public function offline_orders(){
+        $EID = authuser()->EID;
+        $data['EID'] = $EID;
+        $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
+        $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $data['title'] = 'Offline Orders';
+        $this->load->view('rest/offline_order', $data);
+    }
+// 3p_order_ajax
+    public function order_ajax_3p(){
+        $CustId = $this->session->userdata('CustId');
+        $COrgId = $this->session->userdata('COrgId');
+        $EID = authuser()->EID;
+        $ChainId = authuser()->ChainId;
+        $EType = $this->session->userdata('EType');
+        //$Stall = Session::get('Stall');
+        //$Ops = Session::get('Ops');
+        $CellNo = $this->session->userdata('CellNo');
+        $CustNo = $this->session->userdata('CustNo');
+        $MultiKitchen = $this->session->userdata('MultiKitchen');
+        //$ONo = Session::get('ONo');
+        // $CNo = Session::get('CNo');
+        // $TableNo = Session::get('TableNo');
+        // $KOTNo = Session::get('KOTNo');
+        $CNo = 0;
+        $TableNo = 0;
+        $KOTNo = 0;
+        $ONo = 0;
+
+        if (isset($_POST['searchItem']) && $_POST['searchItem']) {
+            $itemName = $_POST['itemName'];
+
+            $items = $this->db2->query("SELECT i.ItemId, i.ItemNm, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType  FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and ItemNm like '$itemName%' AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId order by i.Rank")->result_array();
+            
+            if (!empty($items)) {
+                $response = [
+                    "status" => 1,
+                    "items" => $items
+                ];
+            } else {
+                $response = [
+                    "status" => 0,
+                    "msg" => "NO Item Found"
+                ];
+            }
+
+            echo json_encode($response);
+            die();
+        }
+
+        if (isset($_POST['searchItemCust']) && $_POST['searchItemCust']) {
+            $itemName = $_POST['itemName'];
+
+            if ($ChainId == 0) {
+                $items = $this->db2->query("SELECT ItemId, ItemNm, Itm_Portion, i.Value, AvgRtng, ItmDesc, ItemNm as imgSrc, ItemTyp, KitCd, MCatgId FROM MenuItem i where ItemNm like '$itemName%' AND Stat = 0 AND i.EID = $EID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.eid=$EID and md.Chainid=i.ChainId) order by Rank")->result_array();
+            } else {
+                $items = $this->db2->query("SELECT ItemId, ItemNm, Itm_Portion, Value, AvgRtng, ItmDesc, ItemNm as imgSrc, ItemTyp, KitCd, MCatgId FROM MenuItem i where ItemNm like '$itemName%' AND Stat = 0 AND i.ChainId = $ChainId AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.eid=$EID and md.ChainId=i.ChainId) order by Rank")->result_array();
+            }
+
+            if (!empty($items)) {
+
+                foreach ($items as $key => $data) {
+                    if ($ChainId > 0) {
+                        $imgSrc = "../uploads/c$ChainId/" . trim($data['imgSrc']) . ".jpg";
+                    } else {
+                        $imgSrc = "../uploads/e$EID/" . trim($data['imgSrc']) . ".jpg";
+                    }
+                    if (!file_exists($imgSrc)) {
+                        $imgSrc = "../uploads/general/" . trim($data['imgSrc']) . ".jpg";
+                    }
+
+                    $items[$key]['imgSrc'] = ltrim($imgSrc, "../");
+                }
+
+                $response = [
+                    "status" => 1,
+                    "items" => $items
+                ];
+            } else {
+                $response = [
+                    "status" => 0,
+                    "msg" => "NO Item Found"
+                ];
+            }
+
+            echo json_encode($response);
+            die();
+        }
+
+        if (isset($_POST['sendToKitchen']) && $_POST['sendToKitchen']) {
+            $orderType = $_POST['orderType'];
+            $tableNo = $_POST['tableNo'];
+            $thirdParty = $_POST['thirdParty'];
+            $thirdPartyRef = $_POST['thirdPartyRef'];
+            $itemIds = $_POST['itemIds'];
+            $itemKitCds = $_POST['itemKitCds'];
+            $itemQty = $_POST['itemQty'];
+            $Itm_Portion = $_POST['Itm_Portion'];
+            $ItmRate = $_POST['ItmRates'];
+            $itemRemarks = $_POST['itemRemarks'];
+            $Stat = $_POST['Stat'];
+            $phone = $_POST['phone'];
+            $pckValue = $_POST['pckValue'];
+            $data_type = $_POST['data_type'];
+            $CNo = $_POST['CNo'];
+            $taxtype = $_POST['taxtype'];
+            $take_away = $_POST['take_away'];
+            // print_r($_POST);
+            // exit;
+
+            if ($CNo == 0) {
+                $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo,$data_type);
+            }
+
+            // For KOTNo == 0 Generate New KOT
+            // echo $KOTNo;
+            if ($KOTNo == 0) {
+
+                // To generate new KOTNo
+                $kotNoCount = $this->db2->query("SELECT Max(KOTNo + 1) as tKot from Kitchen where DATE(LstModDt) = CURDATE() AND EID = $EID")->result_array();
+
+                if ($kotNoCount[0]['tKot'] == '') {
+                    $kotNo = 1;
+                } else {
+                    $kotNo = $kotNoCount[0]['tKot'];
+                }
+
+                $KOTNo = $kotNo;
+                $oldKitCd = 0;
+
+                $this->session->set_userdata('KOTNo', $kotNo);
+                $this->session->set_userdata('oldKitCd', 0);
+            }
+            $oldKitCd = $this->session->userdata('oldKitCd');
+            $fKotNo = $KOTNo;
+
+            $success = [];
+
+            // For MultiKitchen 
+            #code come from order_detail_ajax
+            // $fkotArray = array();
+            $oldKitCd = 0;
+            
+            $orderAmount = 0;
+            for ($i = 0; $i < sizeof($itemIds); $i++) {
+
+                if ($MultiKitchen > 1) {
+                    if ($oldKitCd != $itemKitCds[$i]) {
+                        $itemKitCd = $itemKitCds[$i];
+                        $getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID=$EID AND KitCd = $itemKitCd")->result_array();
+                        $fKotNo = $getFKOT[0]['FKOTNO'];
+                        $fKotNo = $fKotNo + 1;
+                        $fkotArray[$i] = $fKotNo;
+                        $newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
+                    } else {
+                        $newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
+                    }
+                    $oldKitCd = $itemKitCd;
+                } else {
+                    $fkotArray = $KOTNo;
+                }
+
+                $kitchenObj['CNo'] = $CNo;
+                $kitchenObj['CustId'] = 0;
+                $kitchenObj['EID'] = $EID;
+                $kitchenObj['ChainId'] = $ChainId;
+                $kitchenObj['OType'] = $orderType;
+                if ($orderType == 1) {
+                    $kitchenObj['TPRefNo'] = $thirdPartyRef;
+                    $kitchenObj['TPId'] = $thirdParty;
+                }
+                $kitchenObj['KitCd'] = $itemKitCd;        //$itemKitCds[$i];
+                $kitchenObj['FKOTNo'] = $fKotNo;          //$fkotArray[$i];
+                $kitchenObj['KOTNo'] = $kotNo;
+                $kitchenObj['UKOTNo'] = $newUKOTNO;       //$newUKOTNOArray[$i];
+                $kitchenObj['TableNo'] = $tableNo;
+                $kitchenObj['MergeNo'] = $tableNo;
+                $kitchenObj['ItemId'] = $itemIds[$i];
+                $kitchenObj['Qty'] = $itemQty[$i];
+                $kitchenObj['TA'] = $take_away[$i];
+                $kitchenObj['CustRmks'] = $itemRemarks[$i];
+                $kitchenObj['ItmRate'] = $ItmRate[$i];
+                $kitchenObj['PckCharge'] = $pckValue[$i];
+                $kitchenObj['Stat'] = 1;
+                $kitchenObj['CellNo'] = $phone;
+                $kitchenObj['Itm_Portion'] = $Itm_Portion[$i];
+                $kitchenObj['TaxType'] = $taxtype[$i];
+                // echo "<pre>";print_r($kitchenObj);exit();
+                insertRecord('Kitchen', $kitchenObj);
+
+                $orderAmount = $orderAmount + $ItmRate[$i];
+            }
+
+            if ($data_type == 'bill') {
+                # code...
+                $kitcheData = $this->db2->query("SELECT SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (date(km.LstModDt)) as OrdDt, c.CGSTRate, c.SGSTRate, c.GSTInclusiveRates, c.ServChrg, c.Tips from Kitchen k, KitchenMain km, MenuItem m, Config c where k.CNo=km.CNo AND c.EID=km.EID AND k.ItemId=m.ItemId AND (k.Stat<>4 AND k.Stat<>6 AND k.Stat<>7 AND k.Stat<>9 AND k.Stat<>99) AND km.EID=$EID And km.CNo=$CNo AND (km.CNo=$CNo OR km.MCNo=$CNo) AND k.BillStat=0 group by  date(km.LstModDt), c.CGSTRate, c.SGSTRate, c.GSTInclusiveRates, c.ServChrg, c.Tips order by date(km.LstModDt) Asc")->result_array();
+
+                $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7 AND k1.Stat<>9  AND k1.Stat<>99) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7  AND k1.Stat<>9 AND k1.Stat<>99) GROUP BY k1.EID) as TotPckCharge,  ip.Name as Portion, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,c.OnPymt,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7  AND k.Stat<>9 AND k.Stat<>10 AND k.Stat<>99) and km.EID = k.EID and km.EID = $EID And k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) AND km.BillStat=0 AND TIMEDIFF(Now(), km.LstModDt) < '10:00:00' group by km.CNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips, c.OnPymt  order by TaxType, m.ItemNm Asc")->result_array();
+
+                // include('../repository/payment/payment.repo.php');
+
+                $lastBillNo = $this->db2->query("SELECT max(BillNo) as BillNo from Billing where EID = $EID")->result_array();
+
+                if ($lastBillNo[0]['BillNo'] == '') {
+                    $newBillNo = 1;
+                } else {
+                    $newBillNo = $lastBillNo[0]['BillNo'] + 1;
+                }
+
+                $cgst = 0;
+                $sgst = 0;
+                $gst = 0;
+                $ServChrg = 0;
+                $Tips = 0;
+
+                // $cgst = $kitcheData[0]['CGSTRate'];
+                // $sgst = $kitcheData[0]['SGSTRate'];
+                // $gst = $kitcheData[0]['GSTInclusiveRates'];
+                // $ServChrg = $kitcheData[0]['ServChrg'];
+                // $Tips = $kitcheData[0]['Tips'];
+
+                // $orderAmount = 0;
+                // foreach ($kitcheData as $key => $data) {
+                //  $orderAmount += $data['OrdAmt'];
+                // }
+
+
+
+                if ($ServChrg > 0) {
+                    $serviceCharge = $ServChrg * ($orderAmount / 100);
+                } else {
+                    $serviceCharge = 0;
+                }
+
+                if ($gst == 0) {
+                    $CGST = number_format((float) ($orderAmount * $cgst / 100), 2, '.', '');
+                    $SGST = number_format((float) ($orderAmount * $sgst / 100), 2, '.', '');
+                } else {
+                    $CGST = 0;
+                    $SGST = 0;
+                }
+
+                $totalAmount = $orderAmount + $CGST + $SGST + 0 + $serviceCharge;
+
+                $billingObj['EID'] = $EID;
+                $billingObj['TableNo'] = $tableNo;
+                $billingObj['ChainId'] = $ChainId;
+                $billingObj['ONo'] = $ONo;
+                $billingObj['CNo'] = $CNo;
+                $billingObj['BillNo'] = $newBillNo;
+                $billingObj['CustId'] = 0;
+                $billingObj['COrgId'] = 0;
+                $billingObj['CustNo'] = 0;
+                $billingObj['TotAmt'] = $totalAmount;
+                $billingObj['SGSTpcent'] = $sgst;
+                $billingObj['CGSTpcent'] = $cgst;
+                $billingObj['CGSTAmt'] = $CGST;
+                $billingObj['SGSTAmt'] = $SGST;
+                $billingObj['SerCharge'] = $ServChrg;
+                $billingObj['Tip'] = 0;
+                $billingObj['PaymtMode'] = "Cash";
+                $billingObj['PymtRef'] = "NA";
+                $lastInsertBillId = insertRecord('Billing', $billingObj);
+                if (!empty($lastInsertBillId)) {
+                    // $lastInsertBillId = $billingObj->lastInsertId();
+
+                    foreach ($taxDataArray as $key => $value1) {
+                        foreach ($value1 as $key => $value) {
+                            $BillingTax['BillId'] = $lastInsertBillId;
+                            $BillingTax['TNo'] = $value['TNo'];
+                            $BillingTax['TaxPcent'] = $value['TaxPcent'];
+                            $BillingTax['TaxAmt'] = $value['SubAmtTax'];
+                            $BillingTax['EID'] = $EID;
+                            $BillingTax['TaxIncluded'] = $value['Included'];
+                            $BillingTax['TaxType'] = $value['TaxType'];
+                            // print_r($BillingTax);exit();
+                            $BillingTax->create();
+                            insertRecord('BillingTax', $BillingTax);
+                            // print_r($BillingTax->lastInsertId());exit();
+                        }
+                    }
+
+                    if ($EType == 1) {
+                        $stat = 1;
+                    } else {
+                        $stat = 9;
+                    }
+                    // echo "<pre>";print_r($taxDataArray);exit();
+                    // here was there billstat 
+                    $kitchenUpdate = $this->db2->query("UPDATE Kitchen k, KitchenMain km SET k.BillStat = $lastInsertBillId, k.Stat = $stat, k.payRest = 1  WHERE (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99)  and k.EID = $EID AND km.EID = k.EID and ( (km.CNo = $CNo OR km.MCNo = $CNo) )  AND k.BillStat = 0 AND k.CNo = km.CNo");
+
+
+                    $kitchenMainUpdate = $this->db2->query("UPDATE KitchenMain SET BillStat = $lastInsertBillId, payRest = 1 WHERE (CNo = $CNo OR MCNo = $CNo)  AND BillStat = 0 AND EID = $EID ");
+                    //AND ((TableNo = $TableNo AND CustId = $CustId) OR (MergeNo  = $TableNo))
+
+                    array_push($success, 1);
+                    // print_r($success);exit();
+
+                    $response = [
+                        "status" => 1,
+                        "msg" => "success",
+                        "billId" => $lastInsertBillId
+                    ];
+                } else {
+                    array_push($success, 0);
+                    $response = [
+                        "status" => 1,
+                        "msg" => "Fail to insert to Billing"
+                    ];
+                }
+            }else{
+                $response = [
+                        "status" => 1,
+                        "msg" => "success",
+                    ];
+            }
+
+            // print_r($response);exit();
+            $CNo = 0;
+            $KOTNo = 0;
+            echo json_encode($response);
+            die();
+        }
+        if(isset($_POST['get_table_order_items'])){
+            // print_r("ljjgf");exit();
+            $tableno = $_POST['table_no'];
+            $q = "SELECT k.*,i.ItemNm,i.Value from KitchenMain as km, Kitchen as k, MenuItem as i where km.CNo = k.CNo and km.MergeNo = '$tableno' and k.stat not in(0,10, 4, 6, 9, 99, 7) and i.Itemid = k.Itemid";
+            $data = $this->db2->query($q)->result_array();
+            echo json_encode($data);
+        }
+    }
+
+    // functions
+    private function insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $CellNo, $EID, $ChainId, $ONo, $TableNo)
+    {
+        // global $CNo, $EType, $CustId, $COrgId, $CustNo, $CellNo, $EID, $ChainId, $ONo;
+        $CustId = 0;
+        $COrgId = 0;
+        $CustNo = 0;
+
+        //  // Check CNo is 0 or not
+        if ($CNo == 0) {
+            if ($EType == 5) {
+                $orderType = 7;
+            } else {
+                $orderType = 0;
+            }
+
+            // here was there  tableNo not TableNo 
+            // pass the parameter
+            $TableNo = $TableNo;
+
+            // $kitchenMainObj
+            $kitchenMainObj['CustId'] = $CustId;
+            $kitchenMainObj['COrgId'] = $COrgId;
+            $kitchenMainObj['CustNo'] = $CustNo;
+            $kitchenMainObj['CellNo'] = $CellNo;
+            $kitchenMainObj['EID'] = $EID;
+            $kitchenMainObj['ChainId'] = $ChainId;
+            $kitchenMainObj['ONo'] = $ONo;
+            $kitchenMainObj['OType'] = $orderType;
+            $kitchenMainObj['TableNo'] = $TableNo;
+            $kitchenMainObj['MergeNo'] = $TableNo;
+            $kitchenMainObj['Stat'] = 0;
+            $kitchenMainObj['LoginCd'] = 1;
+            $kitchenMainObj['TPRefNo'] = '';
+            $kitchenMainObj['TPId'] = 0;
+            $kitchenMainObj['MngtRmks'] = '';
+            $kitchenMainObj['BillStat'] = 0;
+            $kitchenMainObj['BillRefNo'] = 0;
+            $kitchenMainObj['payRest'] = 0;
+            $CNo = insertRecord('KitchenMain', $kitchenMainObj);
+            if (!empty($CNo)) {
+                $this->session->set_userdata('CNo', $CNo);
+                return $CNo;
+            }
+        } else {
+            return $CNo = $CNo;
+        }
+    }
+
+
 
     public function test(){
         

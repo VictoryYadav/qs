@@ -58,11 +58,11 @@
                                                     <td><?php echo $key['FName'].' '.$key['LName']; ?></td>
                                                     <td><?php echo $key['MobileNo']; ?></td>
                                                     <td>
-                                                        <label>Disabled
-                                                            <input type="checkbox" onchange="enableDisable(<?= $key['RUserId'];?>, this);" <?= ($key['Stat'] == 3 ? 'checked' : '');?>>
-                                                        </label>
-                                                            
-                                                        </td>
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck1" onchange="enableDisable(<?= $key['RUserId'];?>, this);" <?= ($key['Stat'] == 3 ? 'checked' : '');?>>
+                                                            <label class="custom-control-label" for="customCheck1"><?= ($key['Stat'] == 3) ? 'Disabled' : 'Enabled';?></label>
+                                                        </div>     
+                                                    </td>
                                                 </tr>
                                                 <?php }
                                                  }
@@ -107,7 +107,7 @@
     if ($(input).prop('checked') == true) {
         console.log("Disable User");
 
-        $.post('<?= base_url('restorent/user_disable') ?>',{type:'disable',id:id},function(res){
+        $.post('<?= base_url('restaurant/user_disable') ?>',{type:'disable',id:id},function(res){
             if(res.status == 'success'){
               alert(res.response);
               location.reload();
@@ -118,7 +118,7 @@
 
     }else{
         console.log("Enable User");
-        $.post('<?= base_url('restorent/user_disable') ?>',{type:'enable',id:id},function(res){
+        $.post('<?= base_url('restaurant/user_disable') ?>',{type:'enable',id:id},function(res){
             if(res.status == 'success'){
               alert(res.response);
               location.reload();

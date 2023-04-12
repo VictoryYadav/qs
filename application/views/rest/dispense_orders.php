@@ -316,7 +316,7 @@
                 var DispCd = $('#kitchen-code').val();
                 if(DispCd > 0){
                     $.ajax({
-                        url: "<?php echo base_url('restorent/order_delivery'); ?>",
+                        url: "<?php echo base_url('restaurant/order_delivery'); ?>",
                         type: "post",
                         data: {
                             getOrderDetails: 1,
@@ -417,7 +417,7 @@
                     var message = "OTP : " +otp;
                 }
                 $.ajax({
-                    url: "<?php echo base_url('restorent/sentNotification'); ?>",
+                    url: "<?php echo base_url('restaurant/sentNotification'); ?>",
                     type: "get",
                     data: {
                         CustId: CustId,
@@ -442,7 +442,7 @@
             function itemView() {
                 // var DispCd = $('#kitchen-code').val();
                 $.ajax({
-                    url: "<?php echo base_url('restorent/order_delivery'); ?>",
+                    url: "<?php echo base_url('restaurant/order_delivery'); ?>",
                     type: "post",
                     data: {
                         getKtichenItem: 1
@@ -660,7 +660,7 @@
                     alert("Please Select the Table Where You Want The Item Assigned");
                 } else {
                     $.ajax({
-                        url: "<?php echo base_url('restorent/order_delivery'); ?>",
+                        url: "<?php echo base_url('restaurant/order_delivery'); ?>",
                         type: "post",
                         data: {
                             assignOrder: 1,
@@ -697,7 +697,7 @@
                 // console.log(itemId, itemPortion, itemQty, customerRemarks);
 
                 $.ajax({
-                    url: "<?php echo base_url('restorent/order_delivery'); ?>",
+                    url: "<?php echo base_url('restaurant/order_delivery'); ?>",
                     type: "post",
                     data: {
                         autoItemPrepare: 1,
@@ -730,7 +730,7 @@
                     // console.log(uKotNo);
                     // $("#order-detail-modal").modal('show');
                     $.ajax({
-                        url: "<?php echo base_url('restorent/order_delivery'); ?>",
+                        url: "<?php echo base_url('restaurant/order_delivery'); ?>",
                         type: "post",
                         data: {
                             getOrderList: 1,
@@ -780,7 +780,7 @@
                 var v = <?= $CheckOTP?>;
                 if (CNo !== 0 && v == 1) {
                     $.ajax({
-                        url:"<?php echo base_url('restorent/order_delivery'); ?>",
+                        url:"<?php echo base_url('restaurant/order_delivery'); ?>",
                         type:'post',
                         data:{
                             otpUpdate:1,
@@ -807,7 +807,7 @@
                             var billNo = billNo;
                             var start = start;
                             $.ajax({
-                                url: "<?php echo base_url('restorent/order_delivery'); ?>",
+                                url: "<?php echo base_url('restaurant/order_delivery'); ?>",
                                 type: "post",
                                 data: {
                                     deliverOrder: 1,
@@ -855,7 +855,7 @@
                     var billNo = $(this).attr('billNo');
                     var start = $(this).attr('start');
                     $.ajax({
-                        url: "<?php echo base_url('restorent/order_delivery'); ?>",
+                        url: "<?php echo base_url('restaurant/order_delivery'); ?>",
                         type: "post",
                         data: {
                             deliverOrder: 1,

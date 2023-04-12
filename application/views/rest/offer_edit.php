@@ -27,7 +27,7 @@
                                     <h4 class="mb-0 font-size-18"><?php echo $title; ?>
                                     </h4>
 
-                                    <a class="btn btn-sm btn-primary float-right" href="<?php echo base_url('restorent/new_offer'); ?>">
+                                    <a class="btn btn-sm btn-primary float-right" href="<?php echo base_url('restaurant/new_offer'); ?>">
                                                 <i class="fa fa-plus"></i> New Offer
                                             </a>
                                 </div>
@@ -39,13 +39,13 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <div class="text-right p-2"><button class="btn btn-danger" onclick="delete_offer(<?= $SchCd?>)" style="cursor: pointer;">Delete Scheme</button></div>
-                                        <form method="post" action="<?php echo base_url('restorent/offer_ajax'); ?>" enctype="multipart/form-data">
+                                        <div class="text-right p-2"><button class="btn btn-danger btn-sm" onclick="delete_offer(<?= $SchCd?>)" style="cursor: pointer;">Delete Scheme</button></div>
+                                        <form method="post" action="<?php echo base_url('restaurant/offer_ajax'); ?>" enctype="multipart/form-data">
                                             <input type="hidden" name="updateOffer" value="1">
                                             
                                             <input type="hidden" name="SchCd" value="<?= $SchCd?>">
                                             <div class="row">
-                                                <div class="form-group col-12">
+                                                <div class="form-group col-md-4">
                                                     <label for="schnm">Scheme Name</label>
                                                     <input type="text" id="schnm" name="SchNm" class="form-control" placeholder="Enter scheme name" required="" value="<?= $scheme[0]['SchNm']?>" />
                                                 </div>
@@ -53,7 +53,7 @@
                                                     <label for="schdesc">Scheme Description</label>
                                                     <textarea type="text" id="schdesc" name="SchDesc" class="form-control" placeholder="Enter scheme desription" required="" cols="10" ></textarea>
                                                 </div> -->
-                                                <div class="form-group col-6">
+                                                <div class="form-group col-md-4 col-6">
                                                     <label for="sch_typ">Scheme Type</label>
                                                     <select class="form-control" id="sch_typ" name="SchTyp" required="">
                                                         <option value="">Select Scheme Type</option>
@@ -65,7 +65,7 @@
                                                         ?>
                                                     </select>
                                                 </div>
-                                                <div class="form-group col-6">
+                                                <div class="form-group col-md-4 col-6">
                                                     <label for="schcatg">Scheme Category</label>
                                                     <select class="form-control" id="schcatg" name="SchCatg" required="">
                                                         <option value="">Select Scheme Category</option>
@@ -77,7 +77,7 @@
                                                         ?>
                                                     </select>
                                                 </div>
-                                                <div class="form-group col-6">
+                                                <div class="form-group col-md-4 col-6">
                                                     <label for="from_day">From Day</label>
                                                     <select class="form-control" id="from_day" name="FromDayNo" required="">
                                                         <option value="">Select From Day</option>
@@ -89,7 +89,7 @@
                                                         ?>
                                                     </select>
                                                 </div>
-                                                <div class="form-group col-6">
+                                                <div class="form-group col-md-4 col-6">
                                                     <label for="to_day">To Day</label>
                                                     <select class="form-control" id="to_day" name="ToDayNo" required="">
                                                         <option value="">Select To Day</option>
@@ -101,27 +101,27 @@
                                                         ?>
                                                     </select>
                                                 </div>
-                                                <div class="form-group col-6">
+                                                <div class="form-group col-md-4 col-6">
                                                     <label for="from_time">From Time</label>
                                                     <input type="time" name="FrmTime" class="form-control" id="from_time" <?php if(!empty($scheme[0]['FrmTime'])){?> value="<?= $scheme[0]['FrmTime']?>" <?php }?> />
                                                 </div>
-                                                <div class="form-group col-6">
+                                                <div class="form-group col-md-4 col-6">
                                                     <label for="to_time">To Time</label>
                                                     <input type="time" name="ToTime" class="form-control" id="to_time" <?php if(!empty($scheme[0]['ToTime'])){?> value="<?= $scheme[0]['ToTime']?>" <?php }?> />
                                                 </div>
-                                                <div class="form-group col-6">
+                                                <div class="form-group col-md-4 col-6">
                                                     <label for="alt_from_time">Alternate From Time</label>
                                                     <input type="time" name="AltFrmTime" class="form-control" id="alt_from_time" <?php if(!empty($scheme[0]['AltFrmTime'])){?> value="<?= $scheme[0]['AltFrmTime']?>" <?php }?> />
                                                 </div>
-                                                <div class="form-group col-6">
+                                                <div class="form-group col-md-4 col-6">
                                                     <label for="alt_to_time">Alternate To Time</label>
                                                     <input type="time" name="AltToTime" class="form-control" id="alt_to_time" <?php if(!empty($scheme[0]['ToTime'])){?> value="<?= $scheme[0]['ToTime']?>" <?php }?> />
                                                 </div>
-                                                <div class="form-group col-6">
+                                                <div class="form-group col-md-4 col-6">
                                                     <label for="from_date">From Date</label>
                                                     <input type="date" name="FrmDt" class="form-control" id="from_date" <?php if(!empty($scheme[0]['FrmDt'])){?> value="<?= $scheme[0]['FrmDt']?>" <?php }?> />
                                                 </div>
-                                                <div class="form-group col-6">
+                                                <div class="form-group col-md-4 col-6">
                                                     <label for="to_date">To Date</label>
                                                     <input type="date" name="ToDt" class="form-control" id="to_date" <?php if(!empty($scheme[0]['ToDt'])){?> value="<?= $scheme[0]['ToDt']?>" <?php }?> />
                                                 </div>
@@ -134,15 +134,15 @@
                                                         <input type="hidden" name="SDetCd[]" value="<?= $key['SDetCd']?>">
                                                         <div class="text-center"><h3>Offer Description - <?= $n?> <span  onclick="delete_offer_description(<?= $key['SDetCd']?>)" style="cursor: pointer;"><i class="fa fa-trash" style="color: red;"></i></span></h3></div>
                                                         <div class="row">
-                                                            <div class="form-group col-6">
+                                                            <div class="form-group col-md-4 col-6">
                                                                 <label for="description1_description">Description</label>
                                                                 <input type="text" name="description[]" class="form-control" id="description<?= $n?>_description" maxlength="100" placeholder="Enter Scheme Description" value="<?= $key['SchDesc']?>" />
                                                             </div>
-                                                            <div class="form-group col-6">
+                                                            <div class="form-group col-md-4 col-6">
                                                                 <label for="description1_image">Image</label>
                                                                 <input type="file" name="description_image[]" class="form-control" id="description<?= $n?>_image" />
                                                             </div>
-                                                            <div class="form-group col-6">
+                                                            <div class="form-group col-md-4 col-6">
                                                                 <label for="description1_cid">CID</label>
                                                                 <select class="form-control" id="description<?= $n?>_cid" name="description_cid[]" onchange="getCategory(<?= $n?>)">
                                                                     <option value="">Select Cuisine</option>
@@ -153,7 +153,7 @@
                                                                     ?>
                                                                 </select>
                                                             </div>
-                                                            <div class="form-group col-6" id="description<?= $n?>_mcatgid_div" style="display: block;">
+                                                            <div class="form-group col-md-4 col-6" id="description<?= $n?>_mcatgid_div" style="display: block;">
                                                                 <label for="description<?= $n?>_mcatgid">Menu Category</label>
                                                                 <input type="hidden" name="" id="mcatgid<?= $n?>" value="<?= $key['MCatgId']?>">
                                                                 <select class="form-control" id="description<?= $n?>_mcatgid" name="description_mcatgid[]">
@@ -161,7 +161,7 @@
                                                                     
                                                                 </select>
                                                             </div>
-                                                            <div class="form-group col-6" id="description<?= $n?>_itemtyp_div" style="display: block;">
+                                                            <div class="form-group col-md-4 col-6" id="description<?= $n?>_itemtyp_div" style="display: block;">
                                                                 <label for="description<?= $n?>_itemtyp">Item Type</label>
                                                                 <select class="form-control" id="description<?= $n?>_itemtyp" name="description_itemtyp[]" onchange="getItems(<?= $n?>)">
                                                                     <option value="">Select Item Type</option>
@@ -170,7 +170,7 @@
                                                                     <?php }?>
                                                                 </select>
                                                             </div>
-                                                            <div class="form-group col-6" id="description<?= $n?>_item_div" style="display: block;">
+                                                            <div class="form-group col-md-4 col-6" id="description<?= $n?>_item_div" style="display: block;">
                                                                 <label for="description<?= $n?>_item">Item</label>
                                                                 <input type="hidden" name="" id="item_id<?= $n?>" value="<?= $key['ItemId']?>">
                                                                 <select class="form-control" id="description<?= $n?>_item" name="description_item[]" onchange="getItemPortion(<?= $n?>)">
@@ -178,7 +178,7 @@
                                                                     
                                                                 </select>
                                                             </div>
-                                                            <div class="form-group col-6" id="description<?= $n?>_itemportion_div" style="display: block;">
+                                                            <div class="form-group col-md-4 col-6" id="description<?= $n?>_itemportion_div" style="display: block;">
                                                                 <label for="description<?= $n?>_itemportion">Item Portion</label>
                                                                 <input type="hidden" name="" id="ipcd<?= $n?>" value="<?= $key['IPCd']?>">
                                                                 <select class="form-control" id="description<?= $n?>_itemportion" name="description_itemportion[]">
@@ -186,11 +186,11 @@
                                                                     
                                                                 </select>
                                                             </div>
-                                                            <div class="form-group col-6" id="description<?= $n?>_quantity_div" style="display: block;">
+                                                            <div class="form-group col-md-4 col-6" id="description<?= $n?>_quantity_div" style="display: block;">
                                                                 <label for="description<?= $n?>_quantity">Quantity</label>
                                                                 <input type="number" class="form-control" id="description<?= $n?>_quantity" name="description_quantity[]" value="<?= $key['Qty']?>">
                                                             </div>
-                                                            <div class="form-group col-6" id="description<?= $n?>_discountitem_div" style="display: block;">
+                                                            <div class="form-group col-md-4 col-6" id="description<?= $n?>_discountitem_div" style="display: block;">
                                                                 <label for="description<?= $n?>_discountitem">Discount Item</label>
                                                                 <input type="hidden" name="" id="disc_item_id<?= $n?>" value="<?= $key['Disc_ItemId']?>">
                                                                 <select class="form-control" id="description<?= $n?>_discountitem" name="description_discountitem[]" onchange="getDiscItemPortion(<?= $n?>)">
@@ -199,7 +199,7 @@
                                                                 </select>
                                                             </div>
                                                             
-                                                            <div class="form-group col-6" id="description<?= $n?>_discountitemportion_div" style="display: block;">
+                                                            <div class="form-group col-md-4 col-6" id="description<?= $n?>_discountitemportion_div" style="display: block;">
                                                                 <label for="description<?= $n?>_discountitemportion">Discount Item Portion</label>
                                                                 <input type="hidden" name="" id="disc_ipcd<?= $n?>" value="<?= $key['Disc_IPCd']?>">
                                                                 <select class="form-control" id="description<?= $n?>_discountitemportion" name="description_discountitemportion[]">
@@ -207,19 +207,19 @@
                                                                     
                                                                 </select>
                                                             </div>
-                                                            <div class="form-group col-6" id="description<?= $n?>_discountquantity_div" style="display: block;">
+                                                            <div class="form-group col-md-4 col-6" id="description<?= $n?>_discountquantity_div" style="display: block;">
                                                                 <label for="description<?= $n?>_discountquantity">Discount Item Quantity</label>
                                                                 <input type="number" class="form-control" id="description<?= $n?>_discountquantity" name="description_discountquantity[]" value="<?= $key['Disc_Qty']?>">
                                                             </div>
-                                                            <div class="form-group col-6" id="description<?= $n?>_minbillamount_div" style="display: block;">
+                                                            <div class="form-group col-md-4 col-6" id="description<?= $n?>_minbillamount_div" style="display: block;">
                                                                 <label for="description<?= $n?>_minbillamount">Minimum Bill Amount</label>
                                                                 <input type="number" class="form-control" id="description<?= $n?>_minbillamount" name="description_minbillamount[]" value="<?= $key['MinBillAmt']?>">
                                                             </div>
-                                                            <div class="form-group col-6" id="description<?= $n?>_discountpercent_div" style="display: block;">
+                                                            <div class="form-group col-md-4 col-6" id="description<?= $n?>_discountpercent_div" style="display: block;">
                                                                 <label for="description<?= $n?>_discountpercent">Discount Percentage</label>
                                                                 <input type="number" class="form-control" id="description<?= $n?>_discountpercent" name="description_discountpercent[]" value="<?= $key['Disc_pcent']?>">
                                                             </div>
-                                                            <div class="form-group col-6" id="description<?= $n?>_discountamount_div" style="display: block;">
+                                                            <div class="form-group col-md-4 col-6" id="description<?= $n?>_discountamount_div" style="display: block;">
                                                                 <label for="description<?= $n?>_discountamount">Discount Amount</label>
                                                                 <input type="number" class="form-control" id="description<?= $n?>_discountamount" name="description_discountamount[]" value="<?= $key['Disc_Amt']?>">
                                                             </div>
@@ -227,7 +227,7 @@
                                                     </div>
                                                 <?php $n++;}?>
                                             </div>
-                                            <div class="text-center"><button type="button" class="btn btn-primary" onclick="add_more_description()" id="add_more" style="display: block;">Add More Descriptions</button>&nbsp;&nbsp;<button type="submit" class="btn btn-primary" >Submit</button></div>
+                                            <div class="text-center"><button type="button" class="btn btn-primary btn-sm" onclick="add_more_description()" id="add_more" style="display: block;">Add More Descriptions</button>&nbsp;&nbsp;<button type="submit" class="btn btn-primary btn-sm" >Submit</button></div>
                                         </form>
                                     </div>
                                 </div>
@@ -282,7 +282,7 @@
         // alert(cid);
         var mcatgid = $('#mcatgid'+n).val();
         $.ajax({
-            url: '<?php echo base_url('restorent/offer_ajax'); ?>',
+            url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
             type: 'post',
             data: {
                 getCategory: 1,
@@ -312,7 +312,7 @@
         // alert(item);
         if(cat != ''){
             $.ajax({
-                url: '<?php echo base_url('restorent/offer_ajax'); ?>',
+                url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
                 type: 'post',
                 data: {
                     getItems: 1,
@@ -348,7 +348,7 @@
         var ip = $('#ipcd'+n).val();
         // alert(item_id);
         $.ajax({
-            url: '<?php echo base_url('restorent/offer_ajax'); ?>',
+            url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
             type: 'post',
             data: {
                 getItemPortion: 1,
@@ -374,7 +374,7 @@
         var ip = $('#disc_ipcd'+n).val();
         // alert(item_id);
         $.ajax({
-            url: '<?php echo base_url('restorent/offer_ajax'); ?>',
+            url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
             type: 'post',
             data: {
                 getItemPortion: 1,
@@ -400,7 +400,7 @@
     function getCategory2(el, n){
         var cid = el.value;
         $.ajax({
-            url: '<?php echo base_url('restorent/offer_ajax'); ?>',
+            url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
             type: 'post',
             data: {
                 getCategory: 1,
@@ -420,7 +420,7 @@
         var cat = $('#description'+n+'_mcatgid').val();
         if(cat != ''){
             $.ajax({
-                url: '<?php echo base_url('restorent/offer_ajax'); ?>',
+                url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
                 type: 'post',
                 data: {
                     getItems: 1,
@@ -442,7 +442,7 @@
     function getItemPortion2(el, n){
         var item_id = el.value;
         $.ajax({
-            url: '<?php echo base_url('restorent/offer_ajax'); ?>',
+            url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
             type: 'post',
             data: {
                 getItemPortion: 1,
@@ -461,7 +461,7 @@
     function getDiscItemPortion2(el, n){
         var item_id = el.value;
         $.ajax({
-            url: '<?php echo base_url('restorent/offer_ajax'); ?>',
+            url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
             type: 'post',
             data: {
                 getItemPortion: 1,
@@ -481,7 +481,7 @@
     function delete_offer_description(id){
         if(confirm("Are you sure want to delete the scheme description?")){
             $.ajax({
-                url: '<?php echo base_url('restorent/offer_ajax'); ?>',
+                url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
                 type: 'post',
                 data: {
                     delete_offer_description: 1,
@@ -501,7 +501,7 @@
     function delete_offer(id){
         if(confirm("Are you sure want to delete the scheme?")){
             $.ajax({
-                url: "<?php echo base_url('restorent/offer_ajax'); ?>",
+                url: "<?php echo base_url('restaurant/offer_ajax'); ?>",
                 type: "post",
                 data: {'SchCd':id, 'delete_offer':1},
                 success: response => {

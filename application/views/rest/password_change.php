@@ -63,7 +63,23 @@
 
                                             </div>
                                             <div class="text-center">
-                                                <input type="submit" class="btn btn-sm btn-success" value="Update">
+                                                <input type="submit" class="btn btn-sm btn-success" value="GET OTP">
+                                            </div>
+                                        </form>
+
+                                        <form method="post" id="sendOtp" style="display:none;">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label>Enter OTP</label>
+                                                        <input type="number" name="otp" class="form-control" placeholder="OTP" required="" id="otp_text">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="text-center">
+                                                <input type="submit" class="btn btn-sm btn-danger" value="Verify OTP">
+                                                <a href="#" onclick="resend()">Resend OTP</a>
                                             </div>
                                         </form>
                                     </div>
@@ -99,16 +115,51 @@
     $('#changePassword').on('submit', function(e){
         e.preventDefault();
 
-            var data = $(this).serializeArray();
-            $.post('<?= base_url('restorent/change_password') ?>',data,function(res){
-                    if(res.status == 'success'){
-                      alert(res.response);
-                      location.reload();
-                    }else{
-                      alert(res.response);
-                    }
-                });
+        var data = $(this).serializeArray();
+        $.post('<?= base_url('restaurant/change_password') ?>',data,function(res){
+                if(res.status == 'success'){
+                  alert(res.response);
+                  $('#sendOtp').show();
+                  $('#changePassword').hide();
+                  // location.reload();
+                }else{
+                  alert(res.response);
+                  $('#changePassword').show();
+                  $('#sendOtp').hide();
+                }
+            });
 
-        });
+    });
+
+    $('#sendOtp').on('submit', function(e){
+        e.preventDefault();
+
+        var data = $(this).serializeArray();
+        $.post('<?= base_url('restaurant/verifyOTP') ?>',data,function(res){
+                if(res.status == 'success'){
+                  alert(res.response);
+                  location.reload();
+                }else{
+                  alert(res.response);
+                  $('#sendOtp').show();
+                  $('#otp_text').val('');
+                }
+            });
+
+    });
+
+    function resend(){
+        var old = "<?php echo $this->session->userdata('old_pwd'); ?>";
+        var pass = "<?php echo $this->session->userdata('new_pwd'); ?>";
+        $.post('<?= base_url('restaurant/change_password') ?>',{password:pass,c_password:pass,old_password:old},function(res){
+                if(res.status == 'success'){
+                  alert(res.response);
+                }else{
+                  alert(res.response);
+                }
+                $('#sendOtp').show();
+                $('#otp_text').val('');
+            });
+    }
 
 </script>

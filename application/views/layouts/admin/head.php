@@ -22,6 +22,10 @@
         <!-- Bootstrap Css -->
         <!-- <link href="<?= base_url() ?>assets_admin/css/bootstrap-dark.min.css" rel="stylesheet" type="text/css" /> -->
 
+        <link href="<?= base_url() ?>assets_admin/libs/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css" rel="stylesheet">
+        <link href="<?= base_url() ?>assets_admin/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css" rel="stylesheet" />
+        
+
         <link href="<?= base_url() ?>assets_admin/css/bootstrap.min.css"  rel="stylesheet" type="text/css" />
         <link href="<?= base_url() ?>assets_admin/css/app.min.css"  rel="stylesheet" type="text/css" />
         <!-- Icons Css -->
@@ -35,5 +39,7 @@
         <link href="<?= base_url() ?>assets_admin/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 
         <link href="<?= base_url() ?>assets_admin/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+
+
 
     </head>
