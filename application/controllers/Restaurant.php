@@ -1589,10 +1589,8 @@ class Restaurant extends CI_Controller {
         $EID = authuser()->EID;
         $ChainId = authuser()->ChainId;
         if (isset($_POST['getTableOrderDetails']) && $_POST['getTableOrderDetails']) {
-
             // print_r($_POST);
             // exit;
-
             if (isset($_POST['STVCd'])) {
                 $STVCd = $_POST['STVCd'];
             } else {
@@ -2019,9 +2017,10 @@ class Restaurant extends CI_Controller {
         }
 
         if(isset($_POST['get_phone_num']) && !empty($_POST['get_phone_num'])){
+
             $from = $_POST['from_table'];
 
-            $nums = $this->db2->query("SELECT CellNo from KitchenMain where EID = ".$EID." and TableNo = ".$from." or MergeNo = ".$from);
+            $nums = $this->db2->query("SELECT CellNo from KitchenMain where EID = ".$EID." and TableNo = ".$from." or MergeNo = ".$from)->result_array();
             if(!empty($nums)){
                 $b = '';
                 foreach($nums as $key){

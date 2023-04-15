@@ -39,11 +39,12 @@ $RestName = authuser()->RestName;
 
                         <div class="row">
                             <div class="col-md-12">
+                                <form method="post" action="<?php echo base_url('restaurant/add_stock'); ?>">
+
                                 <div class="card">
                                     <div class="card-body">
-                                        <form method="post" action="<?php echo base_url('restaurant/add_stock'); ?>">
-                                            <input type="hidden" name="edit_stock" value="1">
-                                            <input type="hidden" name="trans_id" value="<?= $TransId?>">
+                                        <input type="hidden" name="edit_stock" value="1">
+                                        <input type="hidden" name="trans_id" value="<?= $TransId?>">
                                             <div class="row">
                                                 <?php $label = 'From';?>
                                                 <div class="col-2">
@@ -70,7 +71,7 @@ $RestName = authuser()->RestName;
                                                     <b><?= $fr;?></b>
                                                 </div>
                                                 <div class=" transtype_details col-2" id="eatary_div" style="display: none;">
-                                                    <label><span id="eid_label"></span><?= $label?></label>
+                                                    <label><span id="eid_label"></span><?= $label?></label><br>
                                                     <?php $ea = '';?>
                                                     <select class="form-control d-none" id="eatary" name="eatary">
                                                         <option value="" disabled="">Select EID</option>
@@ -78,7 +79,7 @@ $RestName = authuser()->RestName;
                                                             <option value="<?= $key['EID']?>" <?php if($key['EID'] == $stock[0]['FrmEID'] || $key['EID'] == $stock[0]['ToEID']){echo 'selected';$ea = $key['Name'];}else{echo 'disabled';}?>><?= $key['Name']?></option>
                                                         <?php }?>
                                                     </select>
-                                                    <?= $ea;?>
+                                                    <b><?= $ea;?></b>
                                                 </div>
                                                 <div class=" transtype_details col-2" id="kit_div" style="display: none;">
                                                     <label><span id="kit_label"></span><?= $label?></label><br>
@@ -115,49 +116,56 @@ $RestName = authuser()->RestName;
                                                     <i class="fa fa-trash" style="color: red;" onclick="delete_trans(<?= $TransId?>)"></i>
                                                 </div>
                                             </div>
-                                            <div class="container pt-3">
-                                                <table class="table table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Item Name</th>
-                                                            <th>UOM</th>
-                                                            <th>Rate</th>
-                                                            <th>Qty</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody class="stock_list" id="stock_list">
-                                                        <?php $n=1;foreach($stock_details as $sd){?>
-                                                            <input type="hidden" name="RMDetId[]" value="<?= $sd['RMDetId']?>">
-                                                            <tr>
-                                                                <td>
-                                                                    <select name="ItemId[]" class="items form-control" id="items<?= $n?>" onchange="getUOM(this, <?= $n?>)">
-                                                                        <option value="">SELECT ITEM</option>
-                                                                        <?php foreach($items as $key){?>
-                                                                            <option value="<?= $key['RMCd']?>" <?php if($key['RMCd'] == $sd['RMCd']){echo 'selected';}?>><?= $key['RMName']?></option>
-                                                                        <?php }?>
-                                                                    </select>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="hidden" id="uomcd<?= $n?>" value="<?= $sd['UOMCd']?>">
-                                                                    <select name="UOM[]" class="uom form-control" id="uom<?= $n?>">
-                                                                        <option value="">SELECT UOM</option>
-                                                                        
-                                                                    </select>
-                                                                </td>
-                                                                <td><input type="number" name="Rate[]" value="<?= $sd['Rate']?>" class="form-control"></td>
-                                                                <td><input type="number" name="Qty[]" value="<?= $sd['Qty']?>" class="form-control"></td>
-                                                                <td><i class="fa fa-trash" onclick="delete_details(<?= $sd['RMDetId']?>)" style="color: red;"></i></td>
-                                                            </tr>
-                                                        <?php $n++;}?>
-                                                    </tbody>
-                                                </table>
-                                                <button type="button" class="btn btn-lg btn-primary" style="border-radius: 50px;font-size: 20px;" onclick="add_row()">+</button>
-                                            </div>
-                                            <div class="text-center p-2"><button class="btn btn-primary" type="submit">Submit</button></div>
-                                        </form>
                                     </div>
                                 </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                            <div class="container pt-3">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Item Name</th>
+                                                                <th>UOM</th>
+                                                                <th>Rate</th>
+                                                                <th>Qty</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="stock_list" id="stock_list">
+                                                            <?php $n=1;foreach($stock_details as $sd){?>
+                                                                <input type="hidden" name="RMDetId[]" value="<?= $sd['RMDetId']?>">
+                                                                <tr>
+                                                                    <td>
+                                                                        <select name="ItemId[]" class="items form-control" id="items<?= $n?>" onchange="getUOM(this, <?= $n?>)">
+                                                                            <option value="">SELECT ITEM</option>
+                                                                            <?php foreach($items as $key){?>
+                                                                                <option value="<?= $key['RMCd']?>" <?php if($key['RMCd'] == $sd['RMCd']){echo 'selected';}?>><?= $key['RMName']?></option>
+                                                                            <?php }?>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="hidden" id="uomcd<?= $n?>" value="<?= $sd['UOMCd']?>">
+                                                                        <select name="UOM[]" class="uom form-control" id="uom<?= $n?>">
+                                                                            <option value="">SELECT UOM</option>
+                                                                            
+                                                                        </select>
+                                                                    </td>
+                                                                    <td><input type="number" name="Rate[]" value="<?= $sd['Rate']?>" class="form-control"></td>
+                                                                    <td><input type="number" name="Qty[]" value="<?= $sd['Qty']?>" class="form-control"></td>
+                                                                    <td><i class="fa fa-trash" onclick="delete_details(<?= $sd['RMDetId']?>)" style="color: red;"></i></td>
+                                                                </tr>
+                                                            <?php $n++;}?>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-primary btn-rounded" onclick="add_row()">+</button>
+                                            </div>
+                                            <div class="text-center p-2"><button class="btn btn-primary btn-sm" type="submit">Update</button></div>
+                                        
+                                    </div>
+                                </div>
+                                </form>
                             </div>
                         </div>
 

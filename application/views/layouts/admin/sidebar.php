@@ -93,13 +93,6 @@
             </a>
         </li>
 
-        <li>
-            <a href="<?php echo base_url(''); ?>" class="waves-effect">
-                <i class="mdi mdi-speedometer"></i>
-                <span>Menu Upload</span>
-            </a>
-        </li>
-
 
     </ul>
 </div>

@@ -41,21 +41,21 @@
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label>Current Password</label>
-                                                        <input type="password" name="old_password" class="form-control" placeholder="Password" required="">
+                                                        <input type="text" name="old_password" class="form-control" placeholder="Password" required="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label>New Password</label>
-                                                        <input type="password" name="password" class="form-control" placeholder="New Password" required="">
+                                                        <input type="text" name="password" class="form-control" placeholder="New Password" required="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label>Confirm New Password</label>
-                                                        <input type="password" name="c_password" class="form-control" placeholder="Confirm Password" required="">
+                                                        <input type="text" name="c_password" class="form-control" placeholder="Confirm Password" required="">
                                                     </div>
                                                 </div>
 
@@ -151,6 +151,8 @@
     function resend(){
         var old = "<?php echo $this->session->userdata('old_pwd'); ?>";
         var pass = "<?php echo $this->session->userdata('new_pwd'); ?>";
+        console.log(old);
+        console.log(pass);
         $.post('<?= base_url('restaurant/change_password') ?>',{password:pass,c_password:pass,old_password:old},function(res){
                 if(res.status == 'success'){
                   alert(res.response);

@@ -117,41 +117,43 @@ $RestName = authuser()->RestName;
                                                 </div> -->
                                             </div>
                                             <div class="container pt-3">
-                                                <table class="table table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Item Name</th>
-                                                            <th>UOM</th>
-                                                            <th>Rate</th>
-                                                            <th>Qty</th>
-                                                            <th>Remarks</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody class="stock_list" id="stock_list">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered">
+                                                        <thead>
                                                             <tr>
-                                                                <td>
-                                                                    <select name="ItemId[]" class="items form-control" id="items1" onchange="getUOM(this, 1)" >
-                                                                        <option value="">SELECT ITEM</option>
-                                                                        <?php foreach($items as $key){?>
-                                                                            <option value="<?= $key['RMCd']?>"><?= $key['RMName']?></option>
-                                                                        <?php }?>
-                                                                    </select>
-                                                                </td>
-                                                                <td>
-                                                                    <select name="UOM[]" class="uom form-control" id="uom1" >
-                                                                        <option value="">SELECT UOM</option>
-                                                                        
-                                                                    </select>
-                                                                </td>
-                                                                <td><input type="number" name="Rate[]" class="rate form-control" ></td>
-                                                                <td><input type="number" name="Qty[]" class="form-control"></td>
-                                                                <td><input type="text" name="Remarks[]" class="form-control"></td>
+                                                                <th>Item Name</th>
+                                                                <th>UOM</th>
+                                                                <th>Rate</th>
+                                                                <th>Qty</th>
+                                                                <th>Remarks</th>
                                                             </tr>
-                                                    </tbody>
-                                                </table>
-                                                <button type="button" class="btn btn-lg btn-primary" style="border-radius: 50px;font-size: 20px;" onclick="add_row()">+</button>
+                                                        </thead>
+                                                        <tbody class="stock_list" id="stock_list">
+                                                                <tr>
+                                                                    <td>
+                                                                        <select name="ItemId[]" class="items form-control" id="items1" onchange="getUOM(this, 1)" >
+                                                                            <option value="">SELECT ITEM</option>
+                                                                            <?php foreach($items as $key){?>
+                                                                                <option value="<?= $key['RMCd']?>"><?= $key['RMName']?></option>
+                                                                            <?php }?>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td>
+                                                                        <select name="UOM[]" class="uom form-control" id="uom1" >
+                                                                            <option value="">SELECT UOM</option>
+                                                                            
+                                                                        </select>
+                                                                    </td>
+                                                                    <td><input type="number" name="Rate[]" class="rate form-control" ></td>
+                                                                    <td><input type="number" name="Qty[]" class="form-control"></td>
+                                                                    <td><input type="text" name="Remarks[]" class="form-control"></td>
+                                                                </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-rounded btn-primary" onclick="add_row()">+</button>
                                             </div>
-                                            <div class="text-center p-2"><button class="btn btn-primary" type="submit">Submit</button></div>
+                                            <div class="text-center p-2"><button class="btn btn-primary btn-sm" type="submit">Submit</button></div>
                                         </form>
                                     </div>
                                 </div>

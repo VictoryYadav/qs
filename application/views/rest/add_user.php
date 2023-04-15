@@ -65,15 +65,15 @@
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>Date</label>
-                                                        <input type="date" name="DOB" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
+                                                        <label>Email</label>
+                                                        <input type="email" name="Email" class="form-control" required="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>Email</label>
-                                                        <input type="email" name="Email" class="form-control" required="">
+                                                        <label>DOB</label>
+                                                        <input type="date" name="DOB" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
                                                     </div>
                                                 </div>
 

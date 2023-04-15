@@ -65,7 +65,7 @@
                                         <div class="table-responsive">
                                             <table id="item_lists" class="table table-bordered">
                                                 <thead>
-                                                <tr>
+                                                <tr style="background: #cbc6c6;">
                                                     <th>#</th>
                                                     <th>Item Name</th>
                                                     <th>Portion</th>
@@ -90,8 +90,8 @@
                                                 <span class="slider round"></span>
                                             </label> -->
 
-                                            <input type="checkbox" id="switch3" switch="bool" onchange="enableDisable(<?= $key['ItemId'];?>, this);" <?= ($key['deactive'] != '' ? '' : 'checked');?>>
-                                            <label for="switch3" data-on-label="Yes" data-off-label="No"></label>
+                                                    <input type="checkbox" id="switch3" switch="bool" onchange="enableDisable(<?= $key['ItemId'];?>, this);" <?= ($key['deactive'] != '' ? '' : 'checked');?>>
+                                                    <label for="switch3" data-on-label="Yes" data-off-label="No" style="margin-bottom: -11px;"></label>
                                                     </td>
                                                 </tr>
                                                 <?php }

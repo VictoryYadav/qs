@@ -638,15 +638,16 @@
 
 <div class="modal" id="merge_table_modal">
     <div class="modal-dialog">
-        <div class="modal-content" style="background: #e7e7e7;">
-            <div class="modal-header text-center" style="background-color: #51519a !important;color: #FFF;">
+        <div class="modal-content">
+            <div class="modal-header text-center">
                 <h6>TABLE - JOIN / UNJOIN</h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true" style="color: #FFF;">&times;</span>
+                  <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body" style="max-height: 500px;overflow: auto;">
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+                <ul class="nav nav-tabs nav-tabs-custom" id="myTab" role="tablist">
                   <li class="nav-item">
                     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Join</a>
                   </li>
@@ -654,53 +655,70 @@
                     <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Unjoin</a>
                   </li>
                 </ul>
-                <div class="tab-content" id="myTabContent">
-                  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                    <form method="post">
-                        <div class="merge-table-main text-center">
-                            <div class="row text-center" style="margin-left: 0px;margin-right: 0px;">
-
-
-                                <div class="col-md-12 text-center" style="padding-top: 20px;padding-left: 30px;padding-right: 45px;">
-
-                                    
-
-                                <div class="row row-margin text-center" id="unmerge-table">
-
-                                    
-
-                                    <div class="col-md-12 merge-table-data">
-
-                                        <div id="unmerge_tables" class="row" style="padding: 15px;">
-                                            
-                                        </div>
-
-                                        <div class="text-center">
-
-                                            <button id="merge-table" type="button" class="btn btn-primary" style="box-shadow: inset 0 0 0 2000px rgb(31 35 60 / 80%);">Join Tables</button>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-md-2"></div>
-
+                <div class="tab-content">
+                    <div class="tab-pane p-3 active" id="home" role="tabpanel">
+                        <p class="font-size-13 mb-0">
+                            <form method="post">
+                                <div id="unmerge_tables" class="row">
                                 </div>
-
+                                <div class="text-center">
+                                    <button id="merge-table" type="button" class="btn btn-success btn-rounded btn-sm mt-4">Join Tables</button>
+                                </div>
                                 <div class="col-md-12 text-center" id="no-tables" style="display: none;">
-
-                                    <h1 style="margin-top: 30px;">No Tables are Free</h1>
-
+                                    <h1>No Tables are Free</h1>
                                 </div>
-
+                            </form>
+                        </p>
+                    </div>
+                  <!-- <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <form method="post">
+                        <div class="merge-table-main">
+                            <div class="row" >
+                                <div class="col-md-12 ">
+                                    <div class="row" id="unmerge-table">
+                                        <div class="col-md-12 merge-table-data">
+                                            <div id="unmerge_tables" class="row">
+                                            </div>
+                                            <div class="text-center">
+                                                <button id="merge-table" type="button" class="btn btn-primary" style="box-shadow: inset 0 0 0 2000px rgb(31 35 60 / 80%);">Join Tables</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                                    <div class="col-md-12 text-center" id="no-tables" style="display: none;">
+                                        <h1 style="margin-top: 30px;">No Tables are Free</h1>
+                                    </div>
                                 </div>
-
                             </div>
 
                         </div>
                     </form>
+                  </div> -->
+                  <div class="tab-pane fade p-3 " id="profile" role="tabpanel">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <select class="form-control" id="merged_tables" onchange="get_each_table()">
+                                    <option value="">Select Tables</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3" id="merged-table-body">
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <input type="hidden" id="selected_merge_no">
+                            <button type="button" id="unmerge-table-btn" class="btn btn-danger btn-rounded btn-sm" >Unjoin Tables</button>
+                        </div>
+
+                        <div class="col-md-12 text-center" id="no-tables" style="display: none;">
+                            <h1 style="margin-top: 30px;">No Tables are Free</h1>
+                        </div>
+
+                    </form>
                   </div>
-                  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                  <!-- <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     <form method="post">
                         <div class="merge-table-main text-center">
                             <div class="row text-center" style="margin-left: 0px;margin-right: 0px;">
@@ -723,10 +741,6 @@
                                             <thead>
 
                                                 <tr>
-
-                                                    <!-- <th>Free Tables</th> -->
-
-                                                    <!-- <th>Capacity</th> -->
 
                                                     <th>Action</th>
 
@@ -762,7 +776,7 @@
 
                         </div>
                     </form>
-                  </div>
+                  </div> -->
                 </div>
             </div>
         </div>
@@ -770,51 +784,48 @@
 </div>
 <div class="modal" id="move_table_modal">
     <div class="modal-dialog">
-        <div class="modal-content" style="background: #e7e7e7;">
-            <div class="modal-header text-center" style="background-color: #51519a !important;color: #FFF;">
+        <div class="modal-content" >
+            <div class="modal-header">
                 <h6>MOVE TABLE</h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true" style="color: #FFF;">&times;</span>
+                  <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body" style="max-height: 500px;overflow: auto;">
-                <form method="post" action="ajax/sittin_table_view_ajax.php" style="margin: 0;">
+                <form method="post" action="ajax/sittin_table_view_ajax.php">
                     <input type="hidden" name="move_table" value="1">
-                    <div class="merge-table-main text-center">
-                        <div class="row text-center" style="margin-left: 0px;margin-right: 0px;">
-
-
-                            <div class="col-md-6 text-left">
-                                <label>FROM</label>
-                                <select class="form-control" required="" name="from_table" id="from_table" onchange="get_phone_num()">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>From</label>
+                                <select class="form-control select2 custom-select" required="" name="from_table" id="from_table" onchange="get_phone_num()" style="width: 100%;">
                                     <option value="">Table No</option>
                                     <?php foreach($captured_tables as $key){?>
                                         <option value="<?= $key['TableNo']?>"><?= $key['TableNo']?></option>
                                     <?php }?>
                                 </select>
-                                
                             </div>
-                            <div class="col-md-6 text-left" >
-                                <div class="">
-                                    <label>TO</label>
-                                    <select class="form-control" required="" name="to_table">
-                                        <option value="">Table No</option>
-                                        <?php foreach($available_tables as $key){?>
-                                            <option value="<?= $key['TableNo']?>"><?= $key['TableNo']?></option>
-                                        <?php }?>
-                                    </select>
-
-                                </div>
+                        </div>
+                        
+                        <div class="col-md-6" >
+                            <div class="form-group">
+                                <label>To</label>
+                                <select class="form-control select2 custom-select" required="" name="to_table" style="width: 100%;" id="to_table">
+                                    <option value="">Table No</option>
+                                    <?php foreach($available_tables as $key){?>
+                                        <option value="<?= $key['TableNo']?>"><?= $key['TableNo']?></option>
+                                    <?php }?>
+                                </select>
 
                             </div>
-                            <br>
-                            <div class="col-md-12 text-left" id="num_list">
-                                
-                            </div>
-
-                            <div class="text-right p-4 col-md-12"><button type="submit" class="btn btn-sm btn-primary">MOVE</button></div>
 
                         </div>
+                        <br>
+                        <div class="col-md-12 text-left" id="num_list">
+                            
+                        </div>
+
+                        <div class="text-right p-4 col-md-12"><button type="submit" class="btn btn-sm btn-primary">MOVE</button></div>
 
                     </div>
                 </form>
@@ -912,6 +923,10 @@
 </script>
 
 <script>
+
+    $(document).ready(function () {
+        $('#from_table, #to_table').select2();
+    });
         var bill_data;
         if ($("#kitchen-code option:selected").attr("settle") == 0) {
             $('#cashBill_settle').css('display', 'inline-block');
@@ -922,7 +937,6 @@
                 url: 'ajax/printReport.php'
             });
         }
-
         //Global Variables
         var globalItemId = 0;
         var globalTableNo = 0;
@@ -971,7 +985,6 @@
 
             // set globle variable for paycash transaction.
             window.payCash_settle = $("#kitchen-code option:selected").attr("settle");
-
             //coin hide/display section
             if ($("#kitchen-code option:selected").attr("settle") == 0) {
                 $('#cashBill_settle').css('display', 'inline-block');
@@ -1048,7 +1061,6 @@
                                 <img src="https://pngimage.net/wp-content/uploads/2018/05/cross-png-icon-8.png" width="25" height="25"></img>
                             </button>`;
 
-
                 template+=`</p></td>`;
             }
 
@@ -1107,7 +1119,7 @@
                                 b+='<td>'+data.PaidAmt+'</td><td>0</td><td>Online</td>';
                             }
                             
-                            b+='<td><button class="btn" onclick="setPaidAmount('+data.BillId+','+data.CNo+','+data.TableNo+','+data.CustId+','+data.BillNo+','+data.TotAmt+',\''+data.PaymtMode+'\');" style="background: #FFFFFF; height:25px; padding:0px; margin-right:15px;"><img src="images/tick2.png" width="25" height="15"></img></button><a href="billid='+data.BillId+'&eid=<?= $EID;?>&kotno=0&s=<?= $_SESSION["DynamicDB"]?>"><button class="btn btn-warning" style="background: #FFFFFF; height:25px; padding:0px"><img src="images/printer.png" width="25" height="25"></img></button></a><button class="btn btn-danger" style="background: #FFFFFF; height:25px; padding:0px; margin-left: 10px;" onclick="rejectBill('+data.BillId+','+data+','+ data.CNo+','+ data.TableNo+','+ data.CustId+');"><img src="https://pngimage.net/wp-content/uploads/2018/05/cross-png-icon-8.png" width="25" height="25"></img></button></td>';
+                            b+='<td><button class="btn btn-sm btn-success btn-rounded" onclick="setPaidAmount('+data.BillId+','+data.CNo+','+data.TableNo+','+data.CustId+','+data.BillNo+','+data.TotAmt+',\''+data.PaymtMode+'\');"><i class="fas fa-check-double"></i></button>|<a href="billid='+data.BillId+'&eid=<?= $EID;?>&kotno=0&s=<?= $_SESSION["DynamicDB"]?>"><button class="btn btn-warning btn-rounded btn-sm"><i class="fas fa-print"></i></button></a>|<button class="btn btn-danger btn-rounded btn-sm" onclick="rejectBill('+data.BillId+','+data+','+ data.CNo+','+ data.TableNo+','+ data.CustId+');"><i class="fas fa-window-close"></i></button></td>';
                             // alert(b);
                             $('#bill_table').html(b);
                             bill_data = data;
@@ -1139,7 +1151,6 @@
             console.log('test');
             // destroy datatable
             // $('#order-view-table').destroy();
-
             var orderTable = $('#order-view-table').DataTable({
                 keys: true,
                 searching: false, paging: false, info: false
@@ -2110,9 +2121,7 @@
                             if(data == 1){
                                 $('#settled_table').modal('hide');
                                 alert("Successfully Confirmed");
-
                             }
-                            
                         }
                     });
                 //}
@@ -2158,9 +2167,9 @@
                 }
             });
         }
-        setInterval(function(){ check_call_bell(); }, 3000);
-        setInterval(function(){ check_new_orders(); }, 5000);
-        setInterval(function(){ check_settled_table(); }, 7000);
+        // setInterval(function(){ check_call_bell(); }, 3000);
+        // setInterval(function(){ check_new_orders(); }, 5000);
+        // setInterval(function(){ check_settled_table(); }, 7000);
         check_new_orders();
         // $(function () {
           $('[data-toggle="tooltip"]').tooltip()
@@ -2172,143 +2181,77 @@
         function getUnmergeTables(){
 
     $.ajax({
-
         url: '<?php echo base_url('restaurant/merge_table_ajax'); ?>',
-
         type: 'POST',
-
         data:{
-
             getUnmergeTables: 1
-
         },
-
         dataType: 'json',
-
         success: function(response) {
-
             console.log(response);
-
             if (response.status) {
-
                 $("#unmerge-table").show();
-
-
-
-                availableTables = ``;
-
+                availableTables = '';
                 response.tables.forEach(function(table) {
                     var b = `<div class="col-md-4">`+`<input type="checkbox" class="form-check-input" value="`+table.TableNo+`" id="`+table.TableNo+`"><label class="form-check-label" for="`+table.TableNo+`">TableNo `+table.TableNo+`</label>`;
-                    availableTables += `<div class="col-md-4">`+`<input type="checkbox" class="form-check-input" value="`+table.TableNo+`" id="`+table.TableNo+`"><label class="form-check-label" for="`+table.TableNo+`">TableNo `+table.TableNo+`</label></div>`;
-
+                    availableTables += `<div class="col-md-4">`+`<input type="checkbox" class="form-check-input" value="`+table.TableNo+`" id="`+table.TableNo+`" /><label class="form-check-label" for="`+table.TableNo+`">TableNo `+table.TableNo+`</label></div>`;
                 });
-
-
 
                 $("#unmerge_tables").html(availableTables);
-
             }else {
-
                 $("#merge-table-body").html('');
-
                 $("#unmerge-table").hide();
-
                 $("#no-tables").show();
-
             }
-
         },
-
         error: function(xhr, status, error) {
-
             console.log(xhr);
-
             console.log(status);
-
             console.log(error);
-
         }
-
     });
-
 }
+
 function getMmergedTables(){
-
     $.ajax({
-
         url: '<?php echo base_url('restaurant/merge_table_ajax'); ?>',
-
         type: 'POST',
-
         data:{
-
             getMergedTables: 1
-
         },
-
         dataType: 'json',
-
         success: function(response) {
-
             console.log(response);
-
             if (response.status) {
-
                 $("#merged-table").show();
-
-
-
                 availableTables = ``;
                 opt = '';
-
                 response.tables.forEach(function(table) {
-
                     availableTables += `
-
                         <tr>
-
                             <td>
-
                                 <input type="checkbox" class="form-check-input" id="`+table.MergeNo+`">
-
                                 <label class="form-check-label" for="`+table.MergeNo+`">TableNo `+table.MergeNo+`</label>
-
                             </td>
-
                         </tr>
-
                     `;
                     opt+='<option value="'+table.MergeNo+'">'+table.MergeNo+'</option>';
-
                 });
 
-
                 $('#merged_tables').append(opt);
-
             }else {
-
                 $("#merged-table-body").html('');
-
                 $("#merged-table").hide();
-
                 $("#no-tables").show();
-
             }
-
         },
 
         error: function(xhr, status, error) {
-
             console.log(xhr);
-
             console.log(status);
-
             console.log(error);
-
         }
-
     });
-
 }
 
 
@@ -2318,102 +2261,56 @@ $(document).ready(function() {
     getUnmergeTables();
     getMmergedTables();
 
-
-
     $("#merge-table").click(function(event) {
-
         var selectedTables = [];
-
-
-
         $(".form-check-input").each(function(index, el) {
-
             if($(this).is(':checked')) {
-
                 selectedTables.push($(this).attr('id'));
-
             }
-
         });
 
-
-
         if (selectedTables.length > 1) {
-
             $.ajax({
-
                 url: "<?php echo base_url('restaurant/merge_table_ajax'); ?>",
-
                 type: "post",
-
                 data: {
-
                     mergeTables: 1,
-
                     selectedTables: JSON.stringify(selectedTables)
-
                 },
 
                 dataType: 'json',
-
                 success: function(response) {
-
                     console.log(response);
-
                     if (response.status == 1) {
-
                         getUnmergeTables();
-
                     }else if (response.status == 0) {
-
                         alert(response.msg);
-
                     }else {
-
                         console.log(response.msg);
-
                     }
-
                 },
-
                 error: function(xhr, status, error) {
-
                     console.log(xhr);
-
                     console.log(status);
-
                     console.log(error);
-
                 }
-
             });
-
         }else {
 
-
         }
-
     });
     
-
 });
 $("#unmerge-table-btn").click(function(event) {
-
         var selectedTables = [];
         var deselectedTables = [];
 // alert("sss");
-
-
         $(".form-check-inputt").each(function(index, el) {
-
             if($(this).is(':checked')) {
-
                 selectedTables.push($(this).attr('id'));
-
             }else{
                 deselectedTables.push($(this).attr('id'));
             }
-
         });
 
         // alert(selectedTables);
@@ -2427,27 +2324,18 @@ $("#unmerge-table-btn").click(function(event) {
         }
         // alert(check);
         if (deselectedTables.length > 0 && check) {
-
             $.ajax({
-
                 url: "<?php echo base_url('restaurant/merge_table_ajax'); ?>",
-
                 type: "post",
-
                 data: {
-
                     unmergeTables: 1,
-
                     selectedTables: JSON.stringify(selectedTables),
                     deselectedTables: JSON.stringify(deselectedTables),
                     MergeNo: $('#selected_merge_no').val()
-
                 },
 
                 dataType: 'json',
-
                 success: function(response) {
-
                     // console.log(response);
 
                     // if (response.status == 1) {
@@ -2467,145 +2355,98 @@ $("#unmerge-table-btn").click(function(event) {
                 },
 
                 error: function(xhr, status, error) {
-
                     console.log(xhr);
-
                     console.log(status);
-
                     console.log(error);
-
                 }
-
             });
-
         }else {
-
             // alert("You can select Min 2 and Max 4 Tables");
-
         }
-
     });
 function get_each_table(){
     var v = $('#merged_tables').val();
     $('#selected_merge_no').val(v);
     if(v != ''){
         $.ajax({
-
             url: '<?php echo base_url('restaurant/merge_table_ajax'); ?>',
-
             type: 'POST',
-
             data:{
-
                 getEachTable: 1,
                 MergeNo: v
-
             },
-
             dataType: 'json',
-
             success: function(response) {
-
                 console.log(response);
-
                 if (response.status) {
-
                     $("#merged-table").show();
-
-
-
                     availableTables = ``;
-
                     response.tables.forEach(function(table) {
+                        // availableTables += `
 
-                        availableTables += `
+                        //     <tr>
 
-                            <tr>
+                        //         <td>
 
-                                <td>
+                        //             <input type="checkbox" class="form-check-inputt" id="`+table.TableNo+`" merge_no="`+v+`" value"`+table.TableNo+`" checked onchange="">
 
-                                    <input type="checkbox" class="form-check-inputt" id="`+table.TableNo+`" merge_no="`+v+`" value"`+table.TableNo+`" checked onchange="">
+                        //             <label class="form-check-label" for="`+table.TableNo+`">TableNo `+table.TableNo+`</label>
 
-                                    <label class="form-check-label" for="`+table.TableNo+`">TableNo `+table.TableNo+`</label>
+                        //         </td>
 
-                                </td>
+                        //     </tr>
 
-                            </tr>
+                        // `;
 
-                        `;
+                        availableTables += `<div class="col-md-4">`+`<input type="checkbox" class="form-check-inputt" id="`+table.TableNo+`" merge_no="`+v+`" value"`+table.TableNo+`" checked onchange=""><label class="form-check-label" for="`+table.TableNo+`">&nbsp;TableNo `+table.TableNo+`</label></div>`;
 
                     });
-
-
-
                     $("#merged-table-body").html(availableTables);
-
                 }else {
-
                     $("#merged-table-body").html('');
-
                     $("#merged-table").hide();
-
                     $("#no-tables").show();
-
                 }
-
             },
 
             error: function(xhr, status, error) {
-
                 console.log(xhr);
-
                 console.log(status);
-
                 console.log(error);
-
             }
-
         });
     }else{
         $("#merged-table-body").html('');
     }
 }
+
 function unmerge_table(el){
     // alert(el.value);
     // var v = $('#el.')
     $.ajax({
-
         url: '<?php echo base_url('restaurant/merge_table_ajax'); ?>',
-
         type: 'POST',
-
         data:{
-
             UnmergeTable: 1,
             TableNo: el.id,
             MergeNo:$('#'+el.id).attr('merge_no')
-
         },
-
         dataType: 'json',
-
         success: function(response) {
         }
     });
 }
+
 function get_phone_num(){
     // alert(el.value);
     var v = $('#from_table').val();
     $.ajax({
-
         url: '<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>',
-
         type: 'POST',
-
         data:{
-
             get_phone_num: 1,
             from_table: v
-
         },
-
         success: function(response) {
             if(response != 0){
                 $('#num_list').html(response);
