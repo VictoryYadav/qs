@@ -1,10 +1,4 @@
-<?php $this->load->view('layouts/admin/head');
-
-$CheckOTP = $this->session->userdata('DeliveryOTP');
-$EID = authuser()->EID;
-$EType = $this->session->userdata('EType');
-$RestName = authuser()->RestName;
- ?>
+<?php $this->load->view('layouts/admin/head'); ?>
         <?php $this->load->view('layouts/admin/top'); ?>
             <!-- ========== Left Sidebar Start ========== -->
             <div class="vertical-menu">

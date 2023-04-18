@@ -25,19 +25,23 @@ class AuthController extends CI_Controller {
 
                 $my_db = $this->session->userdata('my_db');
                 $db2 = $this->load->database($my_db, TRUE);
-                
-                $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, c.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,c.Fest,c.ECash ,e.Name, c.CustAssist, c.TableAcceptReqd,c.OrderWithoutTable,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP')
+
+                $login_check = $db2->select('*')
+                        ->group_start() 
+                            ->where('Email', $data['phone'])
+                            ->or_where('MobileNo',$data['phone'])
+                        ->group_end()
+                        ->where('Passwd', $data['password'])
+                        ->get('UsersRest')->row_array();
+
+                if (!empty($login_check)) {
+
+                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, c.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,c.Fest,c.ECash ,e.Name, c.CustAssist, c.TableAcceptReqd,c.OrderWithoutTable,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP')
                             ->join('Eatary e',' u.EID = e.EID', 'inner')
                             ->join('Config c','u.EID = c.EID','inner')
                             // u.ChainId = c.ChainId 
-                            ->get_where('UsersRest u', array('u.MobileNo' => $data['phone']))->row_array();
-                            // echo "<pre>";
-                            // print_r($checkNumber);
-                            // die;
-
-                if (!empty($checkNumber)) {
-                    
-                    if($checkNumber['Passwd'] == $data['password']){
+                            ->get_where('UsersRest u', array('u.MobileNo' => $data['phone']))
+                            ->row_array();
 
                         $this->session->set_userdata('RUserId', $checkNumber['RUserId']);
                         // $this->session->set_userdata('EID', $checkNumber['EID']);
@@ -80,15 +84,10 @@ class AuthController extends CI_Controller {
                     $this->session->set_userdata('logged_in', $session_data);
 
                         // if pass = QS1234 go to change password page_not_found
-                        if($checkNumber['Passwd'] == 'QS1234'){
-                            redirect(base_url('restaurant/change_password'));    
-                        }
-                        redirect(base_url('dashboard'));
-                    }else{
-                       $this->session->set_flashdata('error','Unable to Validate User'); 
-                       $url = 'login?o='.$this->session->userdata('EID').'&c='.$this->session->userdata('ChainId');
-                        redirect(base_url() . $url, 'refresh'); 
+                    if($checkNumber['Passwd'] == 'QS1234'){
+                        redirect(base_url('restaurant/change_password'));    
                     }
+                    redirect(base_url('dashboard'));
                     
                 }else {
                         $this->session->set_flashdata('error','Fail to Validate User'); 

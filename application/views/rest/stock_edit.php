@@ -113,7 +113,9 @@ $RestName = authuser()->RestName;
                                                     <b><?= $to;?></b>
                                                 </div>
                                                 <div class="col-2">
-                                                    <i class="fa fa-trash" style="color: red;" onclick="delete_trans(<?= $TransId?>)"></i>
+                                                    <button class="btn btn-sm btn-danger btn-rounded" onclick="delete_trans(<?= $TransId?>)">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
                                                 </div>
                                             </div>
                                     </div>
@@ -153,13 +155,17 @@ $RestName = authuser()->RestName;
                                                                     </td>
                                                                     <td><input type="number" name="Rate[]" value="<?= $sd['Rate']?>" class="form-control"></td>
                                                                     <td><input type="number" name="Qty[]" value="<?= $sd['Qty']?>" class="form-control"></td>
-                                                                    <td><i class="fa fa-trash" onclick="delete_details(<?= $sd['RMDetId']?>)" style="color: red;"></i></td>
+                                                                    <td>
+                                                                        <button class="btn btn-sm btn-danger btn-rounded" onclick="delete_details(<?= $sd['RMDetId']?>)">
+                                                                            <i class="fa fa-trash"></i>
+                                                                        </button>
+                                                                    </td>
                                                                 </tr>
                                                             <?php $n++;}?>
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                                <button type="button" class="btn btn-sm btn-primary btn-rounded" onclick="add_row()">+</button>
+                                                <!-- <button type="button" class="btn btn-sm btn-primary btn-rounded" onclick="add_row()">+</button> -->
                                             </div>
                                             <div class="text-center p-2"><button class="btn btn-primary btn-sm" type="submit">Update</button></div>
                                         
@@ -245,7 +251,8 @@ function delete_trans(id){
             data: {'delete_trans':1, 'TransId':id},
             success: response => {
                 // console.log(response);
-                window.location.href = 'stock_list.php';
+                window.location.href = '<?php echo base_url('restaurant/stock_list'); ?>';
+                // window.location.href = 'stock_list.php';
             },
             error: (xhr, status, error) => {
                 

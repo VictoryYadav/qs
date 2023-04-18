@@ -52,8 +52,8 @@
                                                     <th>Scheme Name</th>
                                                     <th>Scheme Type</th>
                                                     <th>Scheme Category</th>
-                                                    <th>From Date</th>
-                                                    <th>To Date</th>
+                                                    <th style="width: 65px;">From Date</th>
+                                                    <th style="width: 65px;">To Date</th>
                                                     <th>From Day</th>
                                                     <th>To Day</th>
                                                     <th style="width: 81px;">Action</th>
@@ -72,8 +72,8 @@
                                                     <td><?php echo $key['SchNm']; ?></td>
                                                     <td><?php echo !empty($key['SchTyp'])?getSchemeType($key['SchTyp']):'-'; ?></td>
                                                     <td><?php echo !empty($key['SchCatg'])?getSchemeCat($key['SchCatg']):'-'; ?></td>
-                                                    <td><?php echo $key['FrmDt']; ?></td>
-                                                    <td><?php echo $key['ToDt']; ?></td>
+                                                    <td><?php echo date('d-M-Y',strtotime($key['FrmDt'])); ?></td>
+                                                    <td><?php echo date('d-M-Y',strtotime($key['ToDt'])); ?></td>
                                                     <td><?php echo !empty($key['FrmDayNo'])?getDay($key['FrmDayNo']):'-'; ?></td>
                                                     <td><?php echo !empty($key['ToDayNo'])?getDay($key['ToDayNo']):'-'; ?></td>
                                                     <td>

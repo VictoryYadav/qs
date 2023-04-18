@@ -261,6 +261,114 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 col-6">
+                                                <select class="form-control form-control-sm" id="kitchen-code" onchange="getTableView();">
+                                                    <?php
+                                                    if (count($SettingTableViewAccess) == 1) { ?>
+                                                        <option value="<?= $SettingTableViewAccess[0]['CCd'] ?>" settle="<?= $SettingTableViewAccess[0]['Settle'] ?>"><?= $SettingTableViewAccess[0]['Name'] ?></option>
+                                                    <?php } else {
+                                                        ?>
+                                                        <option value="0" style='display:none;' settle="1">Select Cashier</option>
+                                                        <?php foreach ($SettingTableViewAccess as $key => $data) : ?>
+                                                            <option value="<?= $data['CCd'] ?>" settle="<?= $data['Settle'] ?>"><?= $data['Name'] ?></option>
+                                                    <?php endforeach;
+                                                    } ?>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 col-6">
+                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#move_table_modal" style="margin-left: 10px;right: 90px;position: absolute;height: 24px;cursor: pointer;">
+                                                    <i class="far fa-user"></i>
+                                                </button>
+                                                <?php
+                                                if ($EType == 5) {
+                                                    ?>
+                                                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#merge_table_modal" style="margin-left: 15px;right: 52px;position: absolute;height: 24px;cursor: pointer;">
+                                                        <i class="dripicons-network-3"></i>.
+                                                    </button>
+                                                <?php } ?>
+
+                                                <button class="btn btn-sm btn-danger" onclick="refreshPage()" style="margin-left: 15px;right:18px;position: absolute;cursor: pointer;height: 24px;">
+                                                    <i class="mdi mdi-speedometer-slow"></i>
+                                                </button>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <span id="hlep_table_list"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <div class="items-data" id="order-view-parent">
+                                                <table class="table" id="order-view-table" class="display">
+                                                    <thead class="table-header">
+                                                        <tr>
+                                                            <th>Table No</th>
+                                                            <th>Ord AMT</th>
+                                                            <th>From Time</th>
+                                                            <th>Cell NO</th>
+                                                            <th>Action</th>
+                                                            <!-- <th>Acc/Rej</th> -->
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="table-view">
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <div class="items-table">
+                                                <table id="item-detail-table1" class="table table-bordered">
+                                                    <thead class="table-header">
+                                                        <tr>
+                                                            <th>Item</th>
+                                                            <th>OQty</th>
+                                                            <th>AQty</th>
+                                                            <th>DQty</th>
+                                                            <th>EDT</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="item-detail-body1"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- bill settlement -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p>Bill settlement talbe</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- old -->
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
                                         <div class="pending-kitchen-body">
                                             <div class="row" style="margin-left: 0px;margin-right: 0px;">
                                                 <div class="col-md-7 table-numbers" style="padding-top: 20px;">
@@ -286,9 +394,11 @@
                                                     </div>
                                                     <div >
                                                         <div class="tableView-table">
-                                                            <div class="form-group" style="color: #000">
+
+
+                                                            <div class="form-group">
                                                                 Table View
-                                                                <select class="col-md-4" id="kitchen-code" onchange="getTableView();">
+                                                                <select class="form-control form-control-sm col-md-4" id="kitchen-code" onchange="getTableView();">
                                                                     <?php
                                                                     if (count($SettingTableViewAccess) == 1) { ?>
                                                                         <option value="<?= $SettingTableViewAccess[0]['CCd'] ?>" settle="<?= $SettingTableViewAccess[0]['Settle'] ?>"><?= $SettingTableViewAccess[0]['Name'] ?></option>
@@ -301,14 +411,9 @@
                                                                     } ?>
                                                                 </select>
                                                                 <span id="hlep_table_list">
-                                                                    <!-- <button class="btn btn-sm btn-danger" onclick="respond_call_help(id)">hdgs</button>
-                                                                    <button>sdgsg</button> -->
+                                                                    
                                                                 </span>
 
-
-                                                                <!-- <a id="cashBill_settle" href="rest_cash_bill.php" style="cursor: pointer;margin-left: 15px; position: absolute; right: 90px;display: none;">
-                                                                    <img src="assets/img/coin.png" width="20px" height="20px" style="cursor: pointer;">
-                                                                </a> -->
                                                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#move_table_modal" style="margin-left: 10px;right: 90px;position: absolute;height: 24px;cursor: pointer;">
                                                                     <i class="far fa-user"></i>
                                                                 </button>
@@ -1105,7 +1210,7 @@
                                 b+='<td>'+data.MobileNo+'</td>';
                             }
                             b+='<td>'+ data.TotAmt +'</td>';
-                            if(data.PaymtMode == 'Cash'){
+                            // if(data.PaymtMode == 'Cash'){
                                 b+='<td>'+0+'</td>';
                                 b+='<td><input type="number" name="PaidAmt" id="PaidAmt"  v-model="data.BillValue"  value="data.BillValue" style="width: 125px;"></td>';
                                 var s = '<select id="cash_payment_mode"><option value="">Select Mode</option>';
@@ -1115,9 +1220,9 @@
                                 s+='</select>';
                                 b+='<td>'+s+'</td>';
                                 // b+=';
-                            }else{
-                                b+='<td>'+data.PaidAmt+'</td><td>0</td><td>Online</td>';
-                            }
+                            // }else{
+                            //     b+='<td>'+data.PaidAmt+'</td><td>0</td><td>Online</td>';
+                            // }
                             
                             b+='<td><button class="btn btn-sm btn-success btn-rounded" onclick="setPaidAmount('+data.BillId+','+data.CNo+','+data.TableNo+','+data.CustId+','+data.BillNo+','+data.TotAmt+',\''+data.PaymtMode+'\');"><i class="fas fa-check-double"></i></button>|<a href="billid='+data.BillId+'&eid=<?= $EID;?>&kotno=0&s=<?= $_SESSION["DynamicDB"]?>"><button class="btn btn-warning btn-rounded btn-sm"><i class="fas fa-print"></i></button></a>|<button class="btn btn-danger btn-rounded btn-sm" onclick="rejectBill('+data.BillId+','+data+','+ data.CNo+','+ data.TableNo+','+ data.CustId+');"><i class="fas fa-window-close"></i></button></td>';
                             // alert(b);
@@ -2288,6 +2393,7 @@ $(document).ready(function() {
                     }else {
                         console.log(response.msg);
                     }
+                    location.reload();
                 },
                 error: function(xhr, status, error) {
                     console.log(xhr);
@@ -2352,6 +2458,8 @@ $("#unmerge-table-btn").click(function(event) {
 
                     // }
                     get_each_table();
+                    location.reload();
+
                 },
 
                 error: function(xhr, status, error) {

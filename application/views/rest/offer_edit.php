@@ -26,10 +26,6 @@
                                 <div class="page-title-box d-flex align-items-center justify-content-between">
                                     <h4 class="mb-0 font-size-18"><?php echo $title; ?>
                                     </h4>
-
-                                    <a class="btn btn-sm btn-primary float-right" href="<?php echo base_url('restaurant/new_offer'); ?>">
-                                                <i class="fa fa-plus"></i> New Offer
-                                            </a>
                                 </div>
                             </div>
                         </div>
@@ -132,7 +128,7 @@
                                                     <div class="description1" id="description1" style="display: block;">
                                                         <hr>
                                                         <input type="hidden" name="SDetCd[]" value="<?= $key['SDetCd']?>">
-                                                        <div class="text-center"><h3>Offer Details - <?= $n?> <span  onclick="delete_offer_description(<?= $key['SDetCd']?>)" style="cursor: pointer;"><i class="fa fa-trash" style="color: red;"></i></span></h3></div>
+                                                        <div class="text-center"><h5>Offer Details - <?= $n?> <span  onclick="delete_offer_description(<?= $key['SDetCd']?>)" style="cursor: pointer;"><i class="fa fa-trash" style="color: red;"></i></span></h5></div>
                                                         <div class="row">
                                                             <div class="form-group col-md-4 col-6">
                                                                 <label for="description1_description">Description</label>

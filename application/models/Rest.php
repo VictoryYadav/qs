@@ -32,7 +32,7 @@ class Rest extends CI_Model{
 	}
 
 	public function getOffersList(){
-		return $this->db2->order_by('SchCd', 'desc')->get('CustOffers')->result_array();
+		return $this->db2->order_by('SchCd', 'desc')->get_where('CustOffers', array('Stat' => 0))->result_array();
 	}
 
 	public function passwordUpdate($password){
@@ -58,7 +58,7 @@ class Rest extends CI_Model{
 			$data['ONo'] = $createrData['ONo'];
 			$data['Stat'] = $createrData['Stat'];
 			$data['LoginCd'] = $createrData['LoginCd'];
-			$data['token'] = $this->generateToken();
+			// $data['token'] = $this->generateToken();
 			 $newRUserId = insertRecord('UsersRest', $data);
 			if(!empty($newRUserId)){
 				$this->sendUserLoginMsg();
@@ -465,11 +465,11 @@ class Rest extends CI_Model{
 	}
 
 	public function getStockReport(){
-		return $this->db2->query("SELECT rsd.RMCd, rmi.RMName, rmi.ItemId, rmc.RMCatgName, sum(case when rs.TransType < 10 Then rsd.Qty ELSE 0 end) as sell, sum(case when rs.TransType > 10 Then rsd.Qty else 0 end) as rcvd FROM `RMStockDet` as rsd, RMStock as rs, RMItems as rmi, RMCatg as rmc where rsd.TransId = rs.TransId and rmi.RMCd = rsd.RMCd and rmi.RMCatg = rmc.RMCatgCd group by rsd.RMCd order by rmc.RMCatgName, rmi.RMName")->result_array();
+		return $this->db2->query("SELECT rsd.RMCd, rmi.RMName, rmi.ItemId, rmc.RMCatgName, sum(case when rs.TransType < 10 Then rsd.Qty ELSE 0 end) as sell, sum(case when rs.TransType > 10 Then rsd.Qty else 0 end) as rcvd FROM `RMStockDet` as rsd, RMStock as rs, RMItems as rmi, RMCatg as rmc where rsd.TransId = rs.TransId and rmi.RMCd = rsd.RMCd and rmi.RMCatg = rmc.RMCatgCd and rsd.Stat = 0 and rs.Stat = 0 group by rsd.RMCd order by rmc.RMCatgName, rmi.RMName")->result_array();
 	}
 
 	public function getStockConsumption(){
-		return $report = $this->db2->query("SELECT rsd.RMCd, rmi.RMName, rmi.ItemId, rmi.IPCd, rmc.RMCatgName,(select sum(rsd1.Qty)  from RMStockDet rsd1 where rsd1.TransId=rs.TransId and rs.TransType>10 group by  rsd1.RMCd) as rcvd,(select sum(rsd1.Qty)  from RMStockDet rsd1 where rsd1.TransId=rs.TransId and rs.TransType<10 group by  rsd1.RMCd) as issued,  sum(k.Qty) as Qty FROM RMStockDet as rsd, RMStock as rs, RMItems as rmi, RMCatg as rmc, Kitchen as k where rsd.TransId = rs.TransId and rmi.RMCd = rsd.RMCd and rmi.RMCatg = rmc.RMCatgCd and rmi.ItemId = k.ItemId and rmi.ItemId > 0 group by rs.TransId, rsd.RMCd, rmi.IPCd order by rmc.RMCatgName, rmi.RMName")->result_array();
+		return $report = $this->db2->query("SELECT rsd.RMCd, rmi.RMName, rmi.ItemId, rmi.IPCd, rmc.RMCatgName,(select sum(rsd1.Qty)  from RMStockDet rsd1 where rsd1.TransId=rs.TransId and rs.TransType>10 and rsd1.Stat = 0 group by  rsd1.RMCd) as rcvd,(select sum(rsd1.Qty)  from RMStockDet rsd1 where rsd1.TransId=rs.TransId and rs.TransType<10 and rsd1.Stat = 0 group by  rsd1.RMCd) as issued,  sum(k.Qty) as Qty FROM RMStockDet as rsd, RMStock as rs, RMItems as rmi, RMCatg as rmc, Kitchen as k where rsd.TransId = rs.TransId and rmi.RMCd = rsd.RMCd and rmi.RMCatg = rmc.RMCatgCd and rmi.ItemId = k.ItemId and rmi.ItemId > 0 and rsd.Stat = 0 and rs.Stat = 0 group by rs.TransId, rsd.RMCd, rmi.IPCd order by rmc.RMCatgName, rmi.RMName")->result_array();
 	}
 
 	public function getItemStockReportList($postdata){

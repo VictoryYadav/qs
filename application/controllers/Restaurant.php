@@ -492,16 +492,12 @@ class Restaurant extends CI_Controller {
         }
         if(isset($_POST['delete_offer']) && $_POST['delete_offer']){
             $SchCd = $_POST['SchCd'];
-            $q1 = "DELETE from CustOffersDet where SchCd = ".$SchCd;
-            $this->db2->query($q1);
-            $q2 = "DELETE from CustOffers where SchCd = ".$SchCd;
-            $this->db2->query($q2);
-            echo 1;
+            $this->db2->query("update CustOffersDet set Stat = 9 where SchCd = ".$SchCd);
+            $this->db2->query("update CustOffers set Stat = 9 where SchCd = ".$SchCd);
         }
         if(isset($_POST['delete_offer_description']) && $_POST['delete_offer_description']){
             $SDetCd = $_POST['SDetCd'];
-            $q1 = "DELETE from CustOffersDet where SDetCd = ".$SDetCd;
-            $this->db2->query($q1);
+            $this->db2->query("update CustOffersDet set Stat = 9 where SDetCd = ".$SDetCd);
             echo 1;
         }
 
@@ -519,7 +515,7 @@ class Restaurant extends CI_Controller {
         $data['cuisines'] = $this->db2->query("SELECT c.* from Cuisines as c, EatCuisine as ec where ec.EID = ".$EID." and ec.CID=c.CID and ec.stat = 0")->result_array();
         $data['item_types'] = $this->db2->get('ItemTypes')->result_array();
         $data['scheme'] = $this->db2->get_where('CustOffers', array('SchCd' => $SchCd))->result_array();
-        $data['descriptions'] = $this->db2->get_where('CustOffersDet', array('SchCd' =>$SchCd))->result_array();
+        $data['descriptions'] = $this->db2->get_where('CustOffersDet', array('SchCd' =>$SchCd,'Stat' => 0))->result_array();
 
         // echo "<pre>";
         // print_r($data);
@@ -1143,8 +1139,8 @@ class Restaurant extends CI_Controller {
 
     public function add_stock(){
         if($this->input->method(true)=='POST'){
-            echo "<pre>";print_r($_POST);exit();
-            if($_POST['add_stock'] && $_POST['add_stock'] == 1){
+            
+            if(isset($_POST['add_stock']) && $_POST['add_stock'] == 1){
                 if($_POST){
                     // echo "<pre>";print_r($_POST);exit();
                     $RMStock['TransType'] = $_POST['trans_type'];
@@ -1195,7 +1191,7 @@ class Restaurant extends CI_Controller {
                 }
 
             }
-            if($_POST['edit_stock'] && $_POST['edit_stock'] == 1){
+            if(isset($_POST['edit_stock']) && $_POST['edit_stock'] == 1){
                 if($_POST){
                     // echo "<pre>";print_r($_POST);exit();
                    
@@ -1229,12 +1225,12 @@ class Restaurant extends CI_Controller {
 
             }
             if(isset($_POST['delete_details'])){
-                $this->db2->query("DELETE from RMStockDet where RMDetId=".$_POST['RMDetId']);
+                $this->db2->query("Update RMStockDet Stat = 9 where RMDetId=".$_POST['RMDetId']);
                 echo 1;
             }
             if(isset($_POST['delete_trans'])){
                 // print_r($_POST);exit();
-                $this->db2->query("DELETE from RMStock where TransId=".$_POST['TransId']);
+                $this->db2->query("Update RMStock set Stat = 9 where TransId=".$_POST['TransId']);
                 echo 1;
             }
 
@@ -1264,7 +1260,9 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/stock_consumptions',$data);   
     }
 
+// this is not completed
     public function itemstockreport(){
+        $data['op_stock'] = 0;
         if($this->input->method(true)=='POST'){
             $res = $this->rest->getItemStockReportList($_POST);
             $data['report'] = $res['report'];
@@ -1283,7 +1281,8 @@ class Restaurant extends CI_Controller {
 
             $q = "SELECT * from RMStock where TransId=".$TransId;
             $data['stock'] = $this->db2->query($q)->result_array();
-            $data['stock_details'] = $this->db2->query("SELECT * from RMStockDet where TransId=".$TransId)->result_array();
+            $data['stock_details'] = $this->db2->get_where('RMStockDet', array('TransId' => $TransId, 'Stat' => 0))->result_array();
+
             $data['eatary'] = $this->db2->query("SELECT EID, Name from Eatary")->result_array();
             $data['kit'] = $this->db2->query("SELECT KitCd, KitName from Eat_Kit")->result_array();
             $data['suppliers'] = $this->db2->query("SELECT SuppCd, SuppName from RMSuppliers")->result_array();
