@@ -23,7 +23,7 @@
 				</div>
 				<form class="m-t" role="form" action="<?=base_url('login?o='.$_GET['o'].'&c='.$_GET['c']) ?>" method="POST">
 					<div class="form-group">
-						<input type="tel" class="form-control" placeholder="Phone" name="phone" required="" autocomplete="off" maxlength="10" minlength="10"/>
+						<input type="text" class="form-control" placeholder="Phone / Email" name="phone" required="" autocomplete="off" />
 					</div>
 					<div class="form-group">
 						<input type="password" class="form-control" placeholder="Password" name="password" required="" autocomplete="off" />

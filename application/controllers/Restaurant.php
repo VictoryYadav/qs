@@ -1262,6 +1262,11 @@ class Restaurant extends CI_Controller {
 
 // this is not completed
     public function itemstockreport(){
+        $data['CheckOTP'] = $this->session->userdata('DeliveryOTP');
+        $data['EID'] = authuser()->EID;
+        $data['EType'] = $this->session->userdata('EType');
+        $data['RestName'] = authuser()->RestName;
+
         $data['op_stock'] = 0;
         if($this->input->method(true)=='POST'){
             $res = $this->rest->getItemStockReportList($_POST);
@@ -1597,7 +1602,8 @@ class Restaurant extends CI_Controller {
             }
             
             $kitchenData = $this->db2->query("SELECT (SUM(k.Qty) - SUM(k.DQty)) as AllDelivered, SUM(k.AQty) as AnyAssigned,km.CNo, km.CustId,  SUM(k.ItmRate * k.Qty) as Amt,  IF((SELECT MIN(k1.KOTPrintNo) FROM Kitchen k1 WHERE k1.KOTPrintNo = 1 AND (km.CNo = k1.CNo OR km.MCNo = k1.CNo)  AND k1.MergeNo = km.MergeNo AND k1.EID = km.EID AND ec.EID = km.EID GROUP BY k1.MergeNo, km.EID)=1,0,1) AS NEW_KOT, time(km.LstModDt) as StTime,   km.MergeNo, km.MCNo, km.BillStat, km.EID, km.CNo, km.CellNo, km.TableNo, ec.CCd, ec.Name,b.BillId,b.BillNo,b.TotAmt,b.PaymtMode FROM Kitchen k,  MenuItem i , Eat_tables et, Eat_Casher ec, KitchenMain km left outer join Billing b on b.BillId = km.BillStat WHERE (km.CNo = k.CNo OR km.MCNo = k.CNo) And  et.TableNo = km.TableNo AND k.ItemId = i.ItemId  AND et.EID = km.EID AND km.payRest=0 AND (k.Stat <> 4 and k.Stat <> 6 AND k.Stat <> 7 AND  k.Stat <> 99) AND (k.OType = 7 OR k.OType = 8) AND et.CCd = ec.CCd AND ec.CCd = $STVCd  AND k.EID = km.EID AND k.MergeNo = km.MergeNo AND km.EID = 51 GROUP BY km.CNo,  km.Mergeno, km.MCNo order by MergeNo, km.LstModDt")->result_array();
-            // print_r($kitchenData);echo "<br>";print_r($q);exit();
+            // echo "<pre>";
+            // print_r($kitchenData);exit();
             if (empty($kitchenData)) {
                 $response = [
                     "status" => 0,

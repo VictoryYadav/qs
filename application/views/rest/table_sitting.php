@@ -1,5 +1,6 @@
 <?php $this->load->view('layouts/admin/head'); ?>
 <style>
+
         .h-deliver {
             background-color: lightgreen;
         }
@@ -276,23 +277,28 @@
                                                     } ?>
                                                 </select>
                                             </div>
-                                            <div class="col-md-6 col-6">
-                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#move_table_modal" style="margin-left: 10px;right: 90px;position: absolute;height: 24px;cursor: pointer;">
+                                            <div class="col-md-6 col-6 text-right">
+                                                <button class="btn btn-primary btn-sm" title="Bill">
+                                                    <i class="far fa-eye"></i>
+                                                </button>
+
+                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#move_table_modal" >
                                                     <i class="far fa-user"></i>
                                                 </button>
+                                                
                                                 <?php
                                                 if ($EType == 5) {
                                                     ?>
-                                                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#merge_table_modal" style="margin-left: 15px;right: 52px;position: absolute;height: 24px;cursor: pointer;">
+                                                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#merge_table_modal" >
                                                         <i class="dripicons-network-3"></i>.
                                                     </button>
                                                 <?php } ?>
 
-                                                <button class="btn btn-sm btn-danger" onclick="refreshPage()" style="margin-left: 15px;right:18px;position: absolute;cursor: pointer;height: 24px;">
+                                                <button class="btn btn-sm btn-danger" onclick="refreshPage()" >
                                                     <i class="mdi mdi-speedometer-slow"></i>
                                                 </button>
                                             </div>
-                                            <div class="col-md-12">
+                                            <div class="col-md-12 mt-2">
                                                 <span id="hlep_table_list"></span>
                                             </div>
                                         </div>
@@ -305,6 +311,24 @@
                             <div class="col-md-7">
                                 <div class="card">
                                     <div class="card-body">
+                                        <div class="table-responsive">
+                                            <div id="mydiv" style="display: none;">
+                                                <h6>KOT Details</h6>
+                                                <div class="">
+                                                    <table class="table table-bordered">
+                                                        <thead class="table-header">
+                                                            <tr>
+                                                                <th style="border:1px solid #dee2e6;">KOT</th>
+                                                                <th style="border:1px solid #dee2e6;">Qty</th>
+                                                                <th style="border:1px solid #dee2e6;">PN0</th>
+                                                                <th style="border:1px solid #dee2e6;">Print</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="kot-list"></tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="table-responsive">
                                             <div class="items-data" id="order-view-parent">
                                                 <table class="table" id="order-view-table" class="display">
@@ -353,11 +377,34 @@
                         </div>
 
                         <!-- bill settlement -->
-                        <div class="row">
+                        <div class="row" id="bill_data_table" style="display: none;">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <p>Bill settlement talbe</p>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered text-center">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Bill No</th>
+                                                        <th>Bill Date</th>
+                                                        <?php if($EType == 5){?>
+                                                            <th>Table No</th>
+                                                        <?php } else {?>
+                                                            <th>Cell No</th>
+                                                        <?php } ?>
+
+                                                        <th>Bill Amt</th>
+                                                        <!-- <th>Item Amt</th> -->
+                                                        <th title="online">O.Pymt</th>
+                                                        <th title="manual">M.Pymt</th>
+                                                        <th>Mode</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="bill_table">
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -365,7 +412,7 @@
 
                         <!-- old -->
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
@@ -394,8 +441,6 @@
                                                     </div>
                                                     <div >
                                                         <div class="tableView-table">
-
-
                                                             <div class="form-group">
                                                                 Table View
                                                                 <select class="form-control form-control-sm col-md-4" id="kitchen-code" onchange="getTableView();">
@@ -411,9 +456,7 @@
                                                                     } ?>
                                                                 </select>
                                                                 <span id="hlep_table_list">
-                                                                    
                                                                 </span>
-
                                                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#move_table_modal" style="margin-left: 10px;right: 90px;position: absolute;height: 24px;cursor: pointer;">
                                                                     <i class="far fa-user"></i>
                                                                 </button>
@@ -439,33 +482,21 @@
                                                                             <th>From Time</th>
                                                                             <th>Cell NO</th>
                                                                             <th>Action</th>
-                                                                            <!-- <th>Acc/Rej</th> -->
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody id="table-view">
                                                                     </tbody>
                                                                 </table>
-                                                                
                                                             </div>
                                                         </div>
                                                         
                                                     </div>
                                                 </div>
-                                                <!-- Item Table -->
-                                                <div class="col-md-5" style="padding-top: 20px;">
+                                                
+                                               <div class="col-md-5" style="padding-top: 20px;">
                                                     <div class="form-group" style="color: #000;">
                                                         Item View
-                                                        <?php if ($Kitchen == 1) : ?>
-                                                            <!-- <button style="margin-left: 15px;cursor:pointer;" onclick="handleDelivery()">
-                                                                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                                            </button>
-                                                            <button style="margin-left: 15px;cursor:pointer;" onclick="handleReassign()">
-                                                                <i class="fa fa-retweet" aria-hidden="true"></i>
-                                                            </button> -->
-                                                        <?php endif; ?>
-                                                        <!-- <button class="btn btn-sm btn-primary" style="margin-left: 15px;cursor:pointer;border-radius: 50px;" onclick="handleDecline()">
-                                                            <i class="fa fa-times" aria-hidden="true"></i>
-                                                        </button> -->
+                                                      
                                                     </div>
                                                     <div class="items-table" style="max-height: 370px;overflow: auto;">
                                                         <table id="item-detail-table1" class="table table-bordered">
@@ -482,7 +513,7 @@
                                                         </table>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-12">
+                                                 <div class="col-md-12">
                                                     <div style="">
                                                             <table class="table table-bordered text-center" id="bill_data_table" style="display: none;">
                                                                 <thead>
@@ -506,7 +537,7 @@
                                                                 </tbody>
                                                             </table>
                                                         </div>
-                                                </div>
+                                                </div> 
                                             </div>
                                         </div>
                                     </div>
@@ -514,8 +545,8 @@
                             </div>
 
                             
-                        </div>
-
+                        </div> -->
+                        <!-- end old -->
                         
                     </div> <!-- container-fluid -->
                 </div>
@@ -938,24 +969,15 @@
         </div>
     </div>
 </div>
-    <div class="modal" id="help">
+    <div class="modal" id="help" style="width: 300px;height: 300px;position: absolute;left: 50%;top: 50%;margin-left: -150px; margin-top: -150px;">
         <div class="modal-dialog">
             <div class="modal-content">
-                <!-- Modal Header -->
+                
                 <div class="modal-header">
-                    <h4 class="modal-title" style="color: black;">Table <button class="btn btn-lg btn-warning" style="border-radius: 50px;" id="help_table"></button> need assist</h4>
-                    <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                    <h4 class="modal-title">Table <button class="btn btn-sm btn-warning btn-rounded" id="help_table"></button> Need Assist</h4>
+                    
                 </div>
-                <!-- Modal body -->
-                <!-- <div class="modal-body">
-                    <div>
-                        <span>
-                            Can you Please help me out.
-                        </span>
-                        <button class="btn btn-primary" onclick="view_help()">OK</button>
-                    </div>
-                </div> -->
-                <!-- Modal footer -->
+               
             </div>
         </div>
     </div>
@@ -1201,7 +1223,7 @@
                             data = temp.bill;
                             // alert(temp.payment_modes.length);
                              var et = '<?= $EType?>';
-                            var b = '<tr><td><a v-bind:href="bill_rcpt.php?restaurant=1&billId="' + data.BillNo+'" target="_blank" >'+
+                            var b = '<tr><td><a href="bill_rcpt?restaurant=1&billId='+ data.BillNo+'" target="_blank" >'+
                                     data.BillNo+'</a></td>';
                             b+='<td>'+data.BillDate+'</td>';
                             if(et == 5){
@@ -1210,7 +1232,7 @@
                                 b+='<td>'+data.MobileNo+'</td>';
                             }
                             b+='<td>'+ data.TotAmt +'</td>';
-                            // if(data.PaymtMode == 'Cash'){
+                            if(data.PaymtMode == 'Cash'){
                                 b+='<td>'+0+'</td>';
                                 b+='<td><input type="number" name="PaidAmt" id="PaidAmt"  v-model="data.BillValue"  value="data.BillValue" style="width: 125px;"></td>';
                                 var s = '<select id="cash_payment_mode"><option value="">Select Mode</option>';
@@ -1220,9 +1242,9 @@
                                 s+='</select>';
                                 b+='<td>'+s+'</td>';
                                 // b+=';
-                            // }else{
-                            //     b+='<td>'+data.PaidAmt+'</td><td>0</td><td>Online</td>';
-                            // }
+                            }else{
+                                b+='<td>'+data.PaidAmt+'</td><td>0</td><td>Online</td>';
+                            }
                             
                             b+='<td><button class="btn btn-sm btn-success btn-rounded" onclick="setPaidAmount('+data.BillId+','+data.CNo+','+data.TableNo+','+data.CustId+','+data.BillNo+','+data.TotAmt+',\''+data.PaymtMode+'\');"><i class="fas fa-check-double"></i></button>|<a href="billid='+data.BillId+'&eid=<?= $EID;?>&kotno=0&s=<?= $_SESSION["DynamicDB"]?>"><button class="btn btn-warning btn-rounded btn-sm"><i class="fas fa-print"></i></button></a>|<button class="btn btn-danger btn-rounded btn-sm" onclick="rejectBill('+data.BillId+','+data+','+ data.CNo+','+ data.TableNo+','+ data.CustId+');"><i class="fas fa-window-close"></i></button></td>';
                             // alert(b);
@@ -2113,7 +2135,7 @@
                         }else{
                             list_id += ','+data.id;
                         }
-                        var a = '<button class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="'+data.created_at+'" id="help_table_'+help_table_id+'" onclick="respond_call_help('+help_table_id+')">'+data.table_no+'</button> &nbsp;&nbsp;';
+                        var a = '<button class="btn btn-sm btn-danger btn-rounded" data-toggle="tooltip" data-placement="top" title="'+data.created_at+'" id="help_table_'+help_table_id+'" onclick="respond_call_help('+help_table_id+')">'+data.table_no+'</button> &nbsp;&nbsp;';
                         $('#hlep_table_list').append(a);
                         if(data.viewed == 0){
                             $('#help').modal('show');
@@ -2272,9 +2294,9 @@
                 }
             });
         }
-        // setInterval(function(){ check_call_bell(); }, 3000);
-        // setInterval(function(){ check_new_orders(); }, 5000);
-        // setInterval(function(){ check_settled_table(); }, 7000);
+        setInterval(function(){ check_call_bell(); }, 3000);
+        setInterval(function(){ check_new_orders(); }, 5000);
+        setInterval(function(){ check_settled_table(); }, 7000);
         check_new_orders();
         // $(function () {
           $('[data-toggle="tooltip"]').tooltip()

@@ -38,32 +38,31 @@
                                         <div class="row" id="app1">
                                             <div class="col-md-1"></div>
                                             <div class="col-md-12 row">
-                                                <div class="col-6 form-group text-left">
-                                                Cashier :
-                                                <select class="col-md-4"  id="kitchen-code" v-on:change="getBill();">
-                                                                    <?php
-                                                                    if(count($SettingTableViewAccess) == 1){?>
-                                                                        <option value="<?= $SettingTableViewAccess[0]['CCd']?>"><?= $SettingTableViewAccess[0]['Name']?></option>
-                                                                    <?php }else{
-                                                                        ?>
-                                                                        <option value="0" style='display:none;'>Select Cashier</option>
-                                                                        <?php foreach($SettingTableViewAccess as $key => $data):?>
-                                                                        <option value="<?= $data['CCd']?>"><?= $data['Name']?></option>
-                                                                    <?php endforeach;} ?>
+                                                <div class="col-6 form-group">
+                                                <select class="form-control col-md-4"  id="kitchen-code" v-on:change="getBill();">
+                                                    <?php
+                                                    if(count($SettingTableViewAccess) == 1){?>
+                                                        <option value="<?= $SettingTableViewAccess[0]['CCd']?>"><?= $SettingTableViewAccess[0]['Name']?></option>
+                                                    <?php }else{
+                                                        ?>
+                                                        <option value="0" style='display:none;'>Select Cashier</option>
+                                                        <?php foreach($SettingTableViewAccess as $key => $data):?>
+                                                        <option value="<?= $data['CCd']?>"><?= $data['Name']?></option>
+                                                    <?php endforeach;} ?>
                                                     </select>
                                                 </div>
                                                 <div class="col-6 text-right form-group">
                                                     <?php if($EType == 5){?>
                                                     <a href="<?php echo base_url('restaurant/sitting_table'); ?>">
-                                                        <button class="btn btn-primary" style="background: darkblue;">Back</button>
+                                                        <button class="btn btn-warning btn-rounded btn-sm" >Back</button>
                                                     </a>
                                                 <?php } else{?>
                                                     <a href="<?php echo base_url('restaurant/order_dispense'); ?>">
-                                                        <button class="btn btn-primary" style="background: darkblue;">Back</button>
+                                                        <button class="btn btn-warning btn-rounded btn-sm" >Back</button>
                                                     </a>
                                                     <?php } ?>
 
-                                                    <button class="btn btn-primary" v-on:click="getBill();" style="background: darkblue;">Refresh</button>
+                                                    <button class="btn btn-primary btn-sm btn-rounded" v-on:click="getBill();">Refresh</button>
                                                 </div>
                                                 <table class="table table-bordered">
                                                     <thead>
@@ -76,9 +75,10 @@
                                                                 <th>Cell No</th>
                                                             <?php } ?>
 
+                                                            <!-- <th>Item Amt</th> -->
                                                             <th>Bill Amt</th>
-                                                            <th>Online Amt</th>
-                                                            <th>Amount</th>
+                                                            <th>O.Pymt</th>
+                                                            <th>M.Pymt</th>
                                                             <th>Mode</th>
                                                             <th>Action</th>
                                                         </tr>
