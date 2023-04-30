@@ -36,7 +36,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-md-3 form-group">
+                                            <div class="col-md-3 form-group col-6">
                                                 <label>Order Type</label>
                                                 <select class="form-control" id="order-type">
                                                     <option value="0">Select</option>
@@ -47,7 +47,7 @@
                                                 </select>
                                             </div>
 
-                                            <div class="col-md-3 form-group">
+                                            <div class="col-md-3 form-group col-6">
                                                 <label>Table No</label>
                                                 <select class="form-control" id="table-id" disabled="" onchange="get_table_order_items(this)">
                                                     <option value="0">Select</option>
@@ -57,7 +57,7 @@
                                                 </select>
                                             </div>
 
-                                            <div class="col-md-3 form-group">
+                                            <div class="col-md-3 form-group col-6">
                                                 <label>3rd Party</label>
                                                 <select class="form-control" id="3rd-party" disabled="">
                                                     <option value="0">Select</option>
@@ -67,30 +67,32 @@
                                                 </select>
                                             </div>
 
-                                            <div class="col-md-3 form-group">
+                                            <div class="col-md-3 form-group col-6">
                                                 <label>3rd Party Ref No</label>
                                                 <input type="text" id="3rd-party-refNo" class="form-control" disabled="">
                                             </div>
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-md-8 form-group">
+                                            <div class="col-md-8 form-group col-6">
                                                 <label>Customer Address</label>
                                                 <input type="text" class="form-control" id="cust-address" disabled="">
                                             </div>
 
-                                            <div class="col-md-4 form-group">
+                                            <div class="col-md-4 form-group col-6">
                                                 <label>Phone No</label>
                                                 <input type="text" id="phone" class="form-control" disabled="">
                                             </div>
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-md-4 form-group">
-                                                <button class="btn btn-primary" data-toggle="modal" data-target="#item-list-modal" style="background-color: darkblue;">+Add Item</button>
+                                            <div class="col-md-4 form-group col-4">
+                                                <button class="btn btn-primary btn-sm btn-rounded" data-toggle="modal" data-target="#item-list-modal">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
                                             </div>
 
-                                            <div class="col-md-4 form-group text-center">
+                                            <div class="col-md-4 form-group text-center col-8">
                                                 <button class="btn btn-success send-to-kitchen" data_type="save_to_kitchen">Send to Kitchen</button>
                                                 <button class="btn btn-warning send-to-kitchen" data_type="bill">Bill</button>
                                             </div>
@@ -195,10 +197,15 @@
                 <td><input type="checkbox" value="1" class="is_take_away" `+ch+`></td>
                 <td><input type="text" class=" item-remarks" style="width:100%;"></td>
                 <td style=" text-align: center; ">
-                <i class="fa fa-trash" aria-hidden="true" onclick="deleteItem(this)" style="cursor: pointer;font-size: 24px"></i><input type="hidden" value="${TaxType}" class="taxtype"></td>
+                <button type="button" onclick="deleteItem(this)" class="btn btn-sm btn-danger btn-rounded">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+                <input type="hidden" value="${TaxType}" class="taxtype">
+                </td>
             </tr>`;
 
-            $("#order-table-body").append(template);
+            // $("#order-table-body").append(template);
+            $("#order-table-body").find('tr:first').before(template);
             calculateTotal();
         }
 
@@ -311,6 +318,7 @@
                 var data_type = $(this).attr('data_type');
                 // alert(data_type);
                 var orderType = $("#order-type").val();
+                console.log('vv '+orderType);
                 if (orderType != 8 ) {
                     var tableNo = 'TA';
                 } else {
@@ -379,7 +387,7 @@
                     }
                 }
 
-                console.log(orderType, thirdParty, thirdPartyRef, totalValue, itemCount);
+                console.log(orderType, thirdParty, thirdPartyRef, totalValue, itemCount, formFill);
 
                 if (formFill) {
                     $(".item-id").each(function(index, el) {
@@ -416,7 +424,7 @@
                     });
 
                     var Uphone = $('#phone').val();
-                    // alert(take_away);
+                    console.log(itemIds);
                     $.ajax({
                         url: "<?php echo base_url('restaurant/order_ajax_3p'); ?>",
                         type: "post",

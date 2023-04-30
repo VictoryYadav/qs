@@ -338,7 +338,7 @@
                                                             <th>Ord AMT</th>
                                                             <th>From Time</th>
                                                             <th>Cell NO</th>
-                                                            <th>Action</th>
+                                                            <th>Visit No</th>
                                                             <!-- <th>Acc/Rej</th> -->
                                                         </tr>
                                                     </thead>
@@ -1124,27 +1124,27 @@
             var template = '';
             if (item.BillStat > 0) {
                         template += `<tr onclick="getRowBill(${item.BillId})" id="${item.TableNo}" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"  style="background-color: #FB8E7E;" class="${item.BillStat > 0 ? ' bill-paid' : ''} ${item.NEW_KOT > 0 ? ' new_order' : ''} ">
-                <td>${item.MergeNo}</td>
+                <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})">&nbsp;${item.MergeNo}</td>
                 <td>${item.Amt}</td>
                 <td>${item.StTime}</td>
                 <td>${item.CellNo}</td>
-                <td><button class="btn btn-sm btn-success" onclick="handleKot(${item.TableNo},${item.CustId},${item.CNo})"><i class="fa fa-eye"></i></button></td>
+                <td>${item.visitNo}</td>
                 `;
             } else if (item.NEW_KOT == 1) {
                 template += `<tr onclick="getRowBill(0)" id="${item.TableNo}" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"   style="background-color: #FDCF76;" class="${item.BillStat > 0 ? ' bill-paid' : ''} ${item.NEW_KOT > 0 ? ' new_order' : ''} " >
-            <td>${item.MergeNo}</td>
+            <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})"> &nbsp;${item.MergeNo}</td>
             <td>${item.Amt}</td>
             <td>${item.StTime}</td>
             <td>${item.CellNo}</td>
-            <td><button class="btn btn-sm btn-success" onclick="handleKot(${item.TableNo},${item.CustId},${item.CNo})"><i class="fa fa-eye"></i></button></td>
+            <td>${item.visitNo}</td>
             `;
             } else {
                 template += `<tr id="${item.TableNo}" onclick="getRowBill(0)" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"  class="${item.BillStat > 0 ? ' bill-paid' : ''}  ${item.NEW_KOT > 0 ? 'new_order' : ''} " >
-            <td>${item.MergeNo}</td>
+            <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})"> &nbsp;${item.MergeNo}</td>
             <td>${item.Amt}</td>
             <td>${item.StTime}</td>
             <td>${item.CellNo}</td>
-            <td><button class="btn btn-sm btn-success" onclick="handleKot(${item.TableNo},${item.CustId},${item.CNo})"><i class="fa fa-eye"></i></button></td>
+            <td>${item.visitNo}</td>
             `;
 
             }
@@ -1195,6 +1195,7 @@
             $("#table-view").append(template);
             
         }
+
         function print_kots(){
             var v = document.getElementsByName('ukots[]');
             // alert(v.length);

@@ -1,76 +1,5 @@
 <?php $this->load->view('layouts/admin/head'); ?>
-<style>
-            .h-deliver {
-                background-color: lightgreen;
-            }
-            .login-page {
-                background-color: #1091e8;
-            }
-            .left-components {
-                padding: 20px 15px 20px 20px;
-                margin-bottom: 0;
-            }
-            img {
-                cursor: zoom-in;
-            }
-            .left-menu-logo {
-                padding: 20px;
-                text-align: center;
-            }
-            .left-menu ul li a {
-                padding: 5px 10px;
-                font-size: 1rem;
-                border-radius: 50px;
-                border: 1px solid #fff;
-                display: block;
-                color: #fff;
-                text-decoration: none;
-            }
-            .left-menu .active {
-                background-color: #0073ad;
-            }
-            .left-menu ul li {
-                margin-bottom: 20px;
-                text-align: center;
-            }
-            .arrow-down {
-                width: 0;
-                height: 0;
-                border-left: 15px solid transparent;
-                border-right: 15px solid transparent;
-                margin-left: 20px;
-                border-top: 15px solid #fff;
-                margin-bottom: 20px;
-            }
-            #table-view .tableView-table {
-                background-color: #fff;
-            }
-            .table-numbers .table thead th {
-                font-size: 12px;
-                border: none;
-            }
-            .table-numbers .table td {
-                font-size: 12px;
-            }
-            .tableno {
-                display: inline-block;
-                padding: 10px 20px;
-                background-color: #003779;
-                margin-bottom: 0;
-                color: #fff;
-
-            }
-            .success-table-status {
-                background-color: lightgreen !important;
-            }
-
-            /*thead, tbody { display: block; }
-
-.table-numbers tbody {
-    max-height: 85px;
-    overflow-y: auto;
-    overflow-x: hidden;
-}*/
+<style>            
             #table-view {
                 height: 500px;
                 overflow-y: auto;
@@ -89,7 +18,7 @@
             .items-data {
                 max-height: 500px;
                 overflow-y: auto;
-                overflow-x: auto;
+                overflow-x: hidden;
             }
             .items-data::-webkit-scrollbar-track {
                 -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
@@ -118,65 +47,6 @@
             #table-view::-webkit-scrollbar-thumb {
                 background-color: #aaa;
                 border-radius: 10px;
-            }
-            .dashboard-menu {
-                background-color: #0086ea;
-            }
-            .dropdown-menu.show {
-                right: 0px!important;
-                left: unset;
-                text-align: center;
-            }
-            .tableno-btns {
-                background-color: #f8b500;
-                color: #fff;
-                /*margin-right: 10px;*/
-                padding: 2px 10px;
-                font-size: 14px;
-            }
-            .tableno-row-btns {
-                display: inline-block;
-                position: relative;
-                padding: 7px;
-                background: #f2f2f2;
-                margin-left: 85px;
-                /*margin-left: 0px;
-    text-align: center;
-    width: 100%;*/
-            }
-            .btn-go {
-                background-color: #f8b500;
-                color: #fff;
-                margin-left: -5px;
-                padding: 4px 10px;
-                border-radius: 0;
-                margin-bottom: 4px;
-            }
-            .search-input {
-                border: none;
-                width: 50px;
-                padding: 5px;
-            }
-            .table {
-                margin-bottom: 0;
-            }
-            .tableView-table {
-                /*padding-bottom: 25px;*/
-                margin-bottom: 35px;
-            }
-            .tableno-data {
-                max-height: 500px;
-                overflow-y: auto;
-                overflow-x: hidden;
-            }
-            .cust-img {
-                width: 50px;
-                height: 40px;
-                border-radius: 50%;
-                float: right;
-            }
-            td.focus {
-                border: solid 1px black;
             }
             #mydiv {
                 position: absolute;
@@ -251,11 +121,8 @@
                                                 </div>
                                             </div>
                                             <div class="col-6">
-                                                <div class="text-right">
-                                                    <button class="btn btn-sm btn-rounded btn-danger">A</button>
-                                                    <button class="btn btn-sm btn-rounded btn-danger">A</button>
-                                                    <button class="btn btn-sm btn-rounded btn-danger">A</button>
-                                                    <button class="btn btn-sm btn-rounded btn-danger">A</button>
+                                                <div class="text-right" id="showActionBtn">
+                                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -269,8 +136,8 @@
                                     <div class="card-body">
                                         <div class="table-responsive">
                                             <div class="items-data" id="order-view-parent">
-                                                <table class="display" id="order-view-table">
-                                                    <thead class="table-header">
+                                                <table class="display" id="order-view-table" style="width: 100%;">
+                                                    <thead>
                                                         <tr>
                                                             <th>Bill No</th>
                                                             <th>OQty</th>
@@ -278,8 +145,7 @@
                                                             <th>Cell NO</th>
                                                             <th>3P</th>
                                                             <th>3P Ref</th>
-                                                            <th>Deliver</th>
-                                                            <th>Order</th>
+                                                            <!-- <th>Order</th> -->
                                                         </tr>
                                                     </thead>
                                                     <tbody id="table-view"></tbody>
@@ -307,244 +173,30 @@
                                                     <tbody id="item-view-tbody1"></tbody>
                                                 </table>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- old -->
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="Po_to_land" style="width:100%;height:100%;">
-                                        <!-- <img src="assets/img/ptl.gif" alt="" width:33px; style="padding-left:29px;"> -->
-                                        </div>
-                                        <div class="Po_to_land1">
-                                            <div class="pending-kitchen-body">
-                                                <div class="row" style="margin-left: 0px;margin-right: 0px;">
-                                                    <div class="col-md-7  col-sm-7 table-numbers" style="padding-top: 20px;">
-                                                        <div id="mydiv" style="display: none;">
-                                                            <div class="card" style="border:3px solid rgba(0,0,0,.125)">
-                                                                <div class="card-header" style="background-color: lightgreen; padding: 0px;">
-                                                                    <h4 class="modal-title">Order Details</h4>
-                                                                </div>
-                                                                <div class="">
-                                                                    <table class="table table-bordered">
-                                                                        <thead class="table-header">
-                                                                            <tr>
-                                                                                <th>Item Name</th>
-                                                                                <th>Qty</th>
-                                                                                <th>AMT</th>
-                                                                                <th>AQty</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody id="order-list"></tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div>
-                                                            <div class="tableView-table">
-                                                                <div class="form-group" style="color: white">
-                                                                    <span style="color: #000;">Dispense :</span>
-                                                                    <select class="col-md-4" id="kitchen-code" onchange="getTableView();" style="width: auto;">  
-                                                                        <?php
-                                                                        if(count($DispenseAccess) == 1){?>
-                                                                            <option value="<?= $DispenseAccess[0]['DCd']?>"><?= $DispenseAccess[0]['Name']?></option>
-                                                                        <?php }else{
-                                                                        ?>
-                                                                        <option value="0" style='display:none;'>Select</option>
-                                                                        <?php foreach($DispenseAccess as $key => $data):?>
-                                                                        <option value="<?= $data['DCd']?>"><?= $data['Name']?></option>
-                                                                        <?php endforeach;} ?>
-                                                                    </select>
-                                                                <?php
-                                                                 if(($EType == 1 && $Cash>0) || $EType == 5){ 
-                                                                ?>
-                                                                   
-
-                                                                 <?php } 
-                                                                     ?>
-                                                                    
-                                                                    
-                                                                </div>
-                                                                <div class="items-data" id="order-view-parent">
-                                                                    <table class="display" id="order-view-table">
-                                                                        <thead class="table-header">
-                                                                            <tr>
-                                                                                <th>Bill No</th>
-                                                                                <th>OQty</th>
-                                                                                <th class="hidden-sm">AQty</th>
-                                                                                <th>Cell NO</th>
-                                                                                <th>3P</th>
-                                                                                <th>3P Ref</th>
-                                                                                <th>Deliver</th>
-                                                                                <th>Order</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody id="table-view"></tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                            <div id="mydiv" style="display: none;">
+                                                <div class="card" style="border:3px solid rgba(0,0,0,.125)">
+                                                    <div class="card-header" style="background-color: lightgreen; padding: 0px;">
+                                                        <h4 class="modal-title">Order Details</h4>
                                                     </div>
-                                                    <div class="col-md-5 col-sm-5 items-table" style="padding-top: 20px;">
-                                                        <div>
-                                                            <!-- Header -->
-                                                            <?php //include_once 'rest_header.php'; ?>
-                                                            <div class="text-left form-group">
-                                                                <span style="color: #000;">Order Details :</span>
-                                                                
-                                                            </div>
-                                                            <div class="items-data" id="item-table-parent">
-                                                                <table class="display" id="item-view-table" style="width:100%">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>Item Name</th>
-                                                                            <th>PQty</th>
-                                                                            <th>Take Away</th>
-                                                                            <th>Remark</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody id="item-view-tbody1" style="color:white;"></tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
+                                                    <div class="">
+                                                        <table class="table table-bordered">
+                                                            <thead class="table-header">
+                                                                <tr>
+                                                                    <th>Item Name</th>
+                                                                    <th>Qty</th>
+                                                                    <th>AMT</th>
+                                                                    <th>AQty</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="order-list"></tbody>
+                                                        </table>
                                                     </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- The Modal -->
-                                            <div class="modal" id="allocate-item">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <!-- Modal Header -->
-                                                        <div
-                                                            class="modal-header text-center"
-                                                            style="background-color: rgb(243, 243, 103); padding: 5px; display: block;">
-                                                            <h4 class="modal-title">Item Auto-Assign</h4>
-                                                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                            -->
-                                                        </div>
-                                                        <!-- Modal body -->
-                                                        <div class="modal-body">
-                                                            <div class="row form-group">
-                                                                <div class="col-md-8">
-                                                                    <input
-                                                                        readonly=""
-                                                                        type="text"
-                                                                        name="itemName"
-                                                                        class="form-control"
-                                                                        id="item-name">
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <input
-                                                                        readonly=""
-                                                                        type="text"
-                                                                        name="itemPortion"
-                                                                        class="form-control"
-                                                                        id="item-portion">
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <input type="number" name="itemQty" class="form-control" id="item-qty" min="1">
-                                                                </div>
-                                                            </div>
-                                                            <div class="row form-group">
-                                                                <div class="col-md-12">
-                                                                    <input
-                                                                        type="text"
-                                                                        name="customerRemarks"
-                                                                        readonly=""
-                                                                        id="customer-remarks"
-                                                                        class="form-control">
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-12 text-center">
-                                                                    <button
-                                                                        type="button"
-                                                                        class="btn btn-primary"
-                                                                        id="auto-item-prepare"
-                                                                        data-dismiss="modal">Auto Assign</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- The Modal -->
-                                            <div class="modal" id="manual-item">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <!-- Modal Header -->
-                                                        <div class="modal-header">
-                                                            <h4 class="modal-title">Item</h4>
-                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                        </div>
-                                                        <!-- Modal body -->
-                                                        <div class="modal-body">
-                                                            Modal Body
-                                                        </div>
-                                                        <!-- Modal footer -->
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-primary" id="" data-dismiss="modal">Close</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Order Detail Modal -->
-                                            <div class="modal" id="order-detail-modal">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <!-- Modal Header -->
-                                                        <div class="modal-header">
-                                                            <h4 class="modal-title">Order Details</h4>
-                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                        </div>
-                                                        <!-- Modal body -->
-                                                        <div class="modal-body">
-                                                            <!-- <table class="table table-bordered"> <thead> <tr> <th>Item Name</th>
-                                                            <th>Qty</th> <th>AMT</th> <th>AQty</th> </tr> </thead> <tbody
-                                                            id="order-list"></tbody> </table> -->
-                                                        </div>
-                                                        <!-- Modal footer -->
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- order_deliver_otp Modal -->
-                                            <div class="modal fade" id="order_deliver_otp" role="dialog">
-                                                <div class="modal-dialog modal-sm">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                    <h4 class="modal-title order_deliver_header">OTP for </h4>
-                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                    </div>
-                                                    <div class="modal-body" style="padding: 1.3rem;">
-                                                    <form class="form-inline" style="margin-bottom: 1px;place-content: center;">
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" id="confirm_otp_field" placeholder="Please Enter OTP">
-                                                        </div>
-                                                    </form>
-                                                    <p id="confirm_order_error" style=" position: absolute; display: none; color: red; font-weight: 600;">OTP is Incorret</p>
-                                                    <p id="confirm_order_success" style=" position: absolute; display: none; color: green; font-weight: 600;">Order Delivered Successfully.</p>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                    <button id="order_verify_button" CNo="" custId="" billNo="" start="" type="button" class="btn btn-primary" style="width: 100%;" >Verify</button>
-                                                    </div>
-                                                </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                
                             </div>
                         </div>
 
@@ -567,7 +219,129 @@
         <!-- Right bar overlay-->
         <div class="rightbar-overlay"></div>
 
+<!-- The Modal -->
+    <div class="modal" id="allocate-item">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div
+                    class="modal-header text-center"
+                    style="background-color: rgb(243, 243, 103); padding: 5px; display: block;">
+                    <h4 class="modal-title">Item Auto-Assign</h4>
+                    <!-- <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    -->
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="row form-group">
+                        <div class="col-md-8">
+                            <input
+                                readonly=""
+                                type="text"
+                                name="itemName"
+                                class="form-control"
+                                id="item-name">
+                        </div>
+                        <div class="col-md-2">
+                            <input
+                                readonly=""
+                                type="text"
+                                name="itemPortion"
+                                class="form-control"
+                                id="item-portion">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" name="itemQty" class="form-control" id="item-qty" min="1">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <input
+                                type="text"
+                                name="customerRemarks"
+                                readonly=""
+                                id="customer-remarks"
+                                class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                id="auto-item-prepare"
+                                data-dismiss="modal">Auto Assign</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- The Modal -->
+    <div class="modal" id="manual-item">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Item</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    Modal Body
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div class="modal" id="order-detail-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Order Details</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <!-- <table class="table table-bordered"> <thead> <tr> <th>Item Name</th>
+                    <th>Qty</th> <th>AMT</th> <th>AQty</th> </tr> </thead> <tbody
+                    id="order-list"></tbody> </table> -->
+                </div>
+                <!-- Modal footer -->
+            </div>
+        </div>
+    </div>
+
+    <!-- order_deliver_otp Modal -->
+    <div class="modal fade" id="order_deliver_otp" role="dialog">
+        <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title order_deliver_header">OTP for </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 1.3rem;">
+            <form class="form-inline" style="margin-bottom: 1px;place-content: center;">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="confirm_otp_field" placeholder="Please Enter OTP">
+                </div>
+            </form>
+            <p id="confirm_order_error" style=" position: absolute; display: none; color: red; font-weight: 600;">OTP is Incorret</p>
+            <p id="confirm_order_success" style=" position: absolute; display: none; color: green; font-weight: 600;">Order Delivered Successfully.</p>
+            </div>
+            <div class="modal-footer">
+            <button id="order_verify_button" CNo="" custId="" billNo="" start="" type="button" class="btn btn-primary" style="width: 100%;" >Verify</button>
+            </div>
+        </div>
+        </div>
+    </div>
       
 
         
@@ -606,6 +380,26 @@
                                 response
                                     .kitchenData
                                     .forEach(item => {
+                                        // <input type="radio" name="selectOption" onchange="showAction('${item.CNo}', ${item.CustId},${item.BillNo}, ${start},${item.UKOTNo})" />
+
+                                    //     <td>
+                                    //     <button onclick="handleDelivery('${item.CNo}', ${item.CustId},${item.BillNo}, ${start})" class="btn btn-sm btn-primary">
+                                    //         <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                    //     </button>
+                                    //     <button onclick="handleDetails('${item.CNo}')" class="btn btn-sm btn-success">
+                                    //     <i class="fa fa-eye"></i>
+                                    //     </button>
+
+                                    //     <a href="vtrend:billid=0&eid=<?= $EID;?>&kotno=${item.UKOTNo}" class="btn btn-sm btn-warning">
+                                    //         <i class="fa fa-print" aria-hidden="true"></i>
+                                    //     </a>
+
+                                    //     <a onclick="sendNotification(${item.CustId},0,${item.BillNo},1)" class="btn btn-sm btn-danger">
+                                    //         <i class="fa fa-bullhorn"></i>
+                                    //     </a>
+
+                                    // </td>
+
                                         // alert(item.CellNo);
                                         //if (item.OType > 7) {
                                             template += `
@@ -618,33 +412,12 @@
                                                     ? 'success-table-status'
                                                     : ''
                                             )}" cno="${item.CNo}">
-                                    <td>${item.BillNo}</td>
+                                    <td><input type="radio" name="selectOption" onchange="showAction('${item.CNo}', ${item.CustId},${item.BillNo}, ${start})" /> &nbsp;${item.BillNo}</td>
                                     <td>${item.Qty}</td>
                                     <td>${item.AQty}</td>
                                     <td>${item.CellNo}</td>
                                     <td>${item.TPId}</td>
                                     <td>${item.TPRefNo}</td>
-                                    <td>
-                                        <input type="radio" name="selectOption" />
-                                        <button onclick="handleDelivery('${item.CNo}', ${item.CustId},${item.BillNo}, ${start})" class="btn btn-sm btn-primary">
-                                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                    <td>
-
-                                        <button onclick="handleDetails('${item.CNo}')" class="btn btn-sm btn-success">
-                                        <i class="fa fa-eye"></i>
-                                        </button>
-
-                                        <a href="vtrend:billid=0&eid=<?= $EID;?>&kotno=${item.UKOTNo}" class="btn btn-sm btn-warning">
-                                            <i class="fa fa-print" aria-hidden="true"></i>
-                                        </a>
-
-                                        <a onclick="sendNotification(${item.CustId},0,${item.BillNo},1)" class="btn btn-sm btn-danger">
-                                            <i class="fa fa-bullhorn"></i>
-                                        </a>
-
-                                    </td>
                                 </tr>
                             `;
                                         //}
@@ -665,6 +438,18 @@
                         }
                     });
                 }
+            }
+
+            function showAction(CNo, CustId, BillNo, start){
+                 // <a href="vtrend:billid=0&eid=<?= $EID; ?>&kotno='+UKOTNo+'" class="btn btn-sm btn-warning btn-rounded"><i class="fa fa-print" aria-hidden="true"></i></a>
+                console.log('kk '+CNo);
+                var btn = '';
+                btn += '<button onclick="handleDelivery('+CNo+','+CustId+','+BillNo+','+start+')" class="btn btn-sm btn-primary btn-rounded"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>\
+                    | <a onclick="sendNotification('+CustId+',0,'+BillNo+',1)" class="btn btn-sm btn-danger btn-rounded"><i class="fa fa-bullhorn"></i></a>\
+                    | <a href="#" class="btn btn-sm btn-warning btn-rounded"><i class="fa fa-print" aria-hidden="true"></i></a>                    ';
+
+                $('#showActionBtn').html(btn);
+                handleDetails(CNo);   
             }
 
             function sendNotification(CustId, otp, billNo,flag) {
@@ -1191,8 +976,6 @@
                 <th>3P</th>\
                 <th>3P Ref</th>' +
                         '\
-                <th>Deliver</th>\
-                <th>Order</th>\
                 </tr>\
                 </thead>\
                 <tbody id="table-' + 'view">\

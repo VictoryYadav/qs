@@ -57,11 +57,11 @@
 
                                                 <div class="col-md-12 create_graph_button_div">
 
-                                                    <button type="button" class="btn btn-warning" href="#" id="customer">Customer</button>
+                                                    <button type="button" class="btn btn-warning btn-sm" href="#" id="customer">Customer</button>
 
-                                                    <button type="button" class="btn btn-success" href="#" id="food">Food</button>
+                                                    <button type="button" class="btn btn-success btn-sm" href="#" id="food">Food</button>
 
-                                                    <button type="button" class="btn btn-danger" href="#" id="restaurant">Restaurant</button>
+                                                    <button type="button" class="btn btn-danger btn-sm" href="#" id="restaurant">Restaurant</button>
 
                                                 </div>
 
