@@ -1,7 +1,7 @@
-var base_url = 'http://localhost/qs/';
+var base_url = '';
 
 $(document).ready(function () {
-
+base_url = $('#base_url').val();
   RevenueAndDiscounts();
 
   RevenueAndDiscountsModel();

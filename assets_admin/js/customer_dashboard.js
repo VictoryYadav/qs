@@ -1,10 +1,7 @@
-// customer_graph
-// var base_url = $('#base_url').val();
-// var base_url = "<?php echo base_url(); ?>";
-var base_url = 'http://localhost/qs/';
-
+var base_url = '';
 
 $(document).ready(function () {
+base_url = $('#base_url').val();
 
   $("#customer").click(function (e) {
 
@@ -16,8 +13,6 @@ $(document).ready(function () {
 
   });
 
-
-
   $("#food").click(function (e) {
 
     $("#restaurant-parent-div").css("display", "none");
@@ -27,8 +22,6 @@ $(document).ready(function () {
     $("#customer-parent-div").css("display", "none");
 
   });
-
-
 
   $("#restaurant").click(function (e) {
 

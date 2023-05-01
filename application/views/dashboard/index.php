@@ -6,11 +6,10 @@
     <script type="text/javascript">
       google.charts.load('current', {'packages':['corechart']});
 </script>
+
 <script src="<?= base_url() ?>assets_admin/js/customer_dashboard.js"></script>
-
-    <script src="<?= base_url() ?>assets_admin/js/food_dashboard.js"></script>
-
-    <script src="<?= base_url() ?>assets_admin/js/rest_dashboard.js"></script>
+<script src="<?= base_url() ?>assets_admin/js/food_dashboard.js"></script>
+<script src="<?= base_url() ?>assets_admin/js/rest_dashboard.js"></script>
     
         <?php $this->load->view('layouts/admin/top'); ?>
             <!-- ========== Left Sidebar Start ========== -->
@@ -50,7 +49,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="container">
-
+                                            <input type="hidden" id="base_url" value="<?php echo base_url(); ?>">
                                             <!-- header -->
 
                                             <nav class="navbar navbar-expand-lg navbar-light">
