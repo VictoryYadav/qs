@@ -558,11 +558,9 @@ class DashboardController extends CI_Controller
 	            array_push($data, $a);
 
 	        }
-
-
+	        // echo "<pre>";
 	        // print_r($data);exit();
 	        echo json_encode($data);
-
 	        exit;
 	    }
 	    if(isset($_POST) && $_POST['type'] == "TrendByWeek"){

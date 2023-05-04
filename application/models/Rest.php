@@ -49,6 +49,28 @@ class Rest extends CI_Model{
 	public function addUser($data){
 		// UsersRest
 		// UserRolesAccess
+
+		$genDB = $this->load->database('GenTableData', TRUE);
+		$checkGen = $genDB->get_where('UsersRest', array('MobileNo' => $data['MobileNo'], 'Stat' => 0))->row_array();
+		$genToken = '';
+		$GenRUserId = '';
+		$UTyp = $data['UTyp'];
+		$EID = $data['EID'];
+		if(!empty($checkGen)){
+			$genToken = $checkGen['token'];
+			$GenRUserId = $checkGen['RUserId'];
+		}else{
+			unset($data['UTyp']);
+			unset($data['EID']);
+			$data['token'] = $genToken;
+			$genDB->insert('UsersRest', $data);
+			$GenRUserId = $genDB->insert_id();
+		}
+
+		$data['UTyp'] = $UTyp;
+		$data['EID'] = $EID;
+		$data['GenRUserId'] = $GenRUserId;
+
 		$check = $this->db2->get_where('UsersRest', array('MobileNo' => $data['MobileNo'], 'Stat' => 0))->row_array();
 		if(empty($check)){
 			$createrData = $this->db2->get_where('UsersRest', array('RUserId' => authuser()->RUserId))->row_array();
@@ -62,7 +84,7 @@ class Rest extends CI_Model{
 			 $newRUserId = insertRecord('UsersRest', $data);
 			if(!empty($newRUserId)){
 				$this->sendUserLoginMsg();
-				$res = "user created successfully";
+				$res = $data['FName'].' '.$data['LName']." Created Successfully";
 				if($data['UTyp'] == 9){
 
 					$userRolesAccessObj['EID'] = $createrData['EID'];
@@ -81,14 +103,14 @@ class Rest extends CI_Model{
 					insertRecord('UserRolesAccess', $userRolesAccessObj);
 				}
 			}else{
-				$res = "failed to create user";
+				$res = "Failed to Create ".$data['FName'].' '.$data['LName'];
 			}
 			// echo "<pre>";
 			// print_r($data);
 			// die;
 
 		}else{
-			$res = "Mobile No is Allready Exists";
+			$res = "Mobile No Already Exists";
 		}
 		return $res;
 	}
@@ -266,7 +288,7 @@ class Rest extends CI_Model{
 			if (isset($postdata['getUser']) && $postdata['getUser']==1) {
 				$mobileNumber =  $postdata['mobileNumber'];
 				// $user = $userRestObj->search(["MobileNo" => $mobileNumber, "EID" => $EID]);
-				$user = $this->db2->get_where('UsersRest', array("MobileNo" => $mobileNumber, "EID" => $EID))->row_array();
+				$user = $this->db2->get_where('UsersRest', array("MobileNo" => $mobileNumber, "EID" => $EID, 'Stat' => 0))->row_array();
 				if (!empty($user)) {
 					$response = [
 						"status" => 1,

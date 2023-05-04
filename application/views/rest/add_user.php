@@ -66,7 +66,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Email</label>
-                                                        <input type="email" name="Email" class="form-control" required="">
+                                                        <input type="email" name="PEmail" class="form-control" required="">
                                                     </div>
                                                 </div>
 

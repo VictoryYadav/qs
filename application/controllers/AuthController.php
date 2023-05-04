@@ -28,7 +28,7 @@ class AuthController extends CI_Controller {
 
                 $login_check = $db2->select('*')
                         ->group_start() 
-                            ->where('Email', $data['phone'])
+                            ->where('PEmail', $data['phone'])
                             ->or_where('MobileNo',$data['phone'])
                         ->group_end()
                         ->where('Passwd', $data['password'])
