@@ -150,6 +150,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
 	}
 
+	function menuList(){
+		$CI = & get_instance();
+		$CI->load->model('User');
+		return $CI->User->getMenuList();
+	}
+
 
 
 

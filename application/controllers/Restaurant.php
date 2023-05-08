@@ -1031,9 +1031,9 @@ class Restaurant extends CI_Controller {
     }
 
     public function sentNotification(){
-        echo "<pre>";
-        print_r($_GET);
-        die;
+        // echo "<pre>";
+        // print_r($_GET);
+        // die;
         // this function is not completed
 
         if ($_GET['CustId'] != null) {
@@ -1070,10 +1070,10 @@ class Restaurant extends CI_Controller {
             if ($flag != 0) {
 
               // insert notification to database
-              $sql = $this->db2->query("INSERT INTO `Notification` (`user_id`, `title`, `message`,`billno`)VALUES ($CustId, '$title', '$message',$billno)")->result_array();
+              $sql = $this->db2->query("INSERT INTO `Notification` (`user_id`, `title`, `message`,`billno`)VALUES ($CustId, '$title', '$message',$billno)");
             } else if ($flag == 0) {
               // sql to delete a record
-              $sql = $this->db2->query("DELETE FROM `Notification` WHERE `user_id`=$CustId AND `billno` = $billno")->result_array();
+              $sql = $this->db2->query("DELETE FROM `Notification` WHERE `user_id`=$CustId AND `billno` = $billno");
             }
 
             $msg = array(

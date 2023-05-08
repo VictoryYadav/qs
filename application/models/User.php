@@ -130,6 +130,12 @@ class User extends CI_Model{
 		}
 	}
 
+	public function getMenuList(){
+		return $this->db2->select('Name,RoleTyp,pageUrl,Rank')
+                                ->order_by('Rank','ASC')
+                                ->get_where('UserRoles', array('Stat' => 0))->result_array();
+	}
+
 
 
 	
