@@ -65,11 +65,13 @@ class Restaurant extends CI_Controller {
             echo json_encode($res);
             die;
         }
+        $EID = authuser()->EID;
+        $data['usersRestData'] = $this->db2->select('RUserId, FName, LName, MobileNo')->get_where('UsersRest', array('DeputedEID' => $EID, 'Stat' => 0 ))->result_array(); 
     	$data['title'] = 'User Access';
 		$this->load->view('rest/access_users',$data);
     }
 
-    public function role_assign(){
+    public function role_assign1(){
         $EID = authuser()->EID;
         $data['usersRestData'] = $this->db2->query("SELECT RUserId, FName, LName FROM UsersRest WHERE DeputedEID = $EID AND UTyp = 1 Order By FName ASC")->result_array();
         $data['kitData'] = $this->db2->query("SELECT KitCd, KitName FROM Eat_Kit WHERE EID = $EID")->result_array();
@@ -77,7 +79,154 @@ class Restaurant extends CI_Controller {
         $data['casherData'] = $this->db2->query("SELECT CCd, Name FROM Eat_Casher WHERE EID = $EID")->result_array();
 
         $data['title'] = 'Role Assignment';
+        $this->load->view('rest/assign_role_old',$data);   
+    }
+
+    public function role_assign(){
+        $staus = 'error';
+        $response = 'Something went wrong please try again!';
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+            $data = $_POST;
+            $RUserId = $data['RUserId'];
+            
+            $data['KitCd'] = !empty($data['KitCd'])?implode(",",$data['KitCd']):'';
+            $data['DCd'] = !empty($data['DCd'])?implode(",",$data['DCd']):'';
+            $data['CCd'] = !empty($data['CCd'])?implode(",",$data['CCd']):'';
+            
+            $check = $this->db2->get_where('UsersRoleDaily', array('RUserId' => $RUserId))->row_array();
+            if(!empty($check)){
+                unset($data['RUserId']);
+                updateRecord('UsersRoleDaily', $data, array('RUserId' => $RUserId));
+                $res = 'Role Assigned Updated.';
+            }else{
+                insertRecord('UsersRoleDaily',$data);
+                $res = 'Role Assigned Successfully.';
+            }
+            redirect(base_url('restaurant/role_assign1'));
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $res
+              ));
+             die;
+            
+        }
+        $EID = authuser()->EID;
+        $data['usersRestData'] = $this->db2->select('RUserId, FName, LName, MobileNo')->get_where('UsersRest', array('DeputedEID' => $EID, 'Stat' => 0 ))->result_array();        
+
+        $data['title'] = 'Role Assignment';
         $this->load->view('rest/assign_role',$data);   
+    }
+
+    public function getRoleData(){
+        $EID = authuser()->EID;
+        $status = 'error';
+        $response = 'Some thing went wrong Please try again!';
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+            $RUserId = $_POST['RUserId'];
+
+            $roleData = $this->db2->get_where('UsersRoleDaily', array('RUserId' => $RUserId))->row_array();
+            $kitval = array();
+            $disval = array();
+            $cashval = array();
+            if(!empty($roleData)){
+                $kitval = !empty($roleData['KitCd'])?explode(",",$roleData['KitCd']):array();
+                $disval = !empty($roleData['DCd'])?explode(",",$roleData['DCd']):array();
+                $cashval = !empty($roleData['CCd'])?explode(",",$roleData['CCd']):array();
+            }
+
+            $kitData = $this->db2->query("SELECT KitCd, KitName FROM Eat_Kit WHERE EID = $EID")->result_array();
+            $kitchen = '';
+            foreach ($kitData as $kit) {
+                $checked_kit = '';
+                if(in_array($kit['KitCd'], $kitval))
+                { 
+                    $checked_kit = "checked"; 
+                }
+                $kitchen .='<div class="form-check-inline">
+                  <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" value="'.$kit['KitCd'].'" name="KitCd[]" '.$checked_kit.'>'.$kit['KitName'].'
+                  </label>
+                </div>';
+            }
+            $disData = $this->db2->query("SELECT DCd, Name FROM Eat_DispOutlets WHERE EID = $EID")->result_array();
+            $dispense = '';
+            foreach ($disData as $kit) {
+                $checked_dis = '';
+                if(in_array($kit['DCd'], $disval))
+                { 
+                    $checked_dis = "checked"; 
+                }
+
+                $dispense .='<div class="form-check-inline">
+                  <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" value="'.$kit['DCd'].'" name="DCd[]" '.$checked_dis.'>'.$kit['Name'].'
+                  </label>
+                </div>';
+            }
+
+            $casherData = $this->db2->query("SELECT CCd, Name FROM Eat_Casher WHERE EID = $EID")->result_array();
+
+            $cashier = '';
+            foreach ($casherData as $kit) {
+                $checked_cash = '';
+                if(in_array($kit['CCd'], $cashval))
+                { 
+                    $checked_cash = "checked"; 
+                }
+
+                $cashier .='<div class="form-check-inline">
+                  <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" value="'.$kit['CCd'].'" name="CCd[]" '.$checked_cash.'>'.$kit['Name'].'
+                  </label>
+                </div>';
+            }
+            
+            $data['createForm'] = '<form class="mt-2" id="roleAssignForm" method="POST">
+                <input type="hidden" name="RUserId" value="'.$RUserId.'">
+                <div class="table-responsive">
+                  <table class="table table-condensed">
+                    <thead>
+                      <tr>
+                        <th>Role</th>
+                        <th>Assigned Role</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Chef</td>
+                            <td>'.$kitchen.'</td>
+                        </tr>
+
+                        <tr>
+                            <td>Dispense</td>
+                            <td>'.$dispense.'</td>
+                        </tr>
+
+                        <tr>
+                            <td>Cashier</td>
+                            <td>'.$cashier.'</td>
+                        </tr>
+                    </tbody>
+                  </table>
+              </div>
+              <div class="text-center">
+                <button class="btn btn-sm btn-success" onclick="submitData()">Submit</button>
+              </div>
+            </form>';
+
+            // echo "<pre>";
+            // print_r($data);
+            // die;
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $data
+              ));
+             die;
+        }
     }
 
     public function rest_manager(){
@@ -858,7 +1007,8 @@ class Restaurant extends CI_Controller {
                 $CNo = $_POST['CNo'];
                 
                 $updateKitcheMain = $this->db2->query("UPDATE KitchenMain SET Delivered = 1 where EID = $EID AND CNo = ".$CNo." AND BillStat > 0", ["CNo" => $CNo]);
-                    $kitcheData = $this->db2->query("SELECT SUM(m.Value*k.Qty) as OrdAmt, k.KOTNo, k.UKOTNo, date(k.LstModDt) as OrdDt, c.CGSTRate, c.SGSTRate, c.GSTInclusiveRates, c.ServChrg from Kitchen k, MenuItem m, Config c where c.EID=k.EID and k.ItemId=m.ItemId and (k.Stat<>4 and k.Stat<>6 and k.stat<>7 and k.Stat<>9 and k.Stat<>99) AND k.CNo=".$CNo." and k.EID=$EID AND k.BillStat=0 group by k.UKOTNo, k.KOTNo, date(k.LstModDt), c.CGSTRate, c.SGSTRate, c.GSTInclusiveRates, c.ServChrg order by date(k.LstModDt)Asc, KotNo Asc", ["CNo" => $CNo])->result_array();
+
+                $kitcheData = $this->db2->query("SELECT SUM(m.Value*k.Qty) as OrdAmt, k.KOTNo, k.UKOTNo, date(k.LstModDt) as OrdDt, c.CGSTRate, c.SGSTRate, c.GSTInclusiveRates, c.ServChrg from Kitchen k, MenuItem m, Config c where c.EID=k.EID and k.ItemId=m.ItemId and (k.Stat<>4 and k.Stat<>6 and k.stat<>7 and k.Stat<>9 and k.Stat<>99) AND k.CNo=".$CNo." and k.EID=$EID AND k.BillStat=0 group by k.UKOTNo, k.KOTNo, date(k.LstModDt), c.CGSTRate, c.SGSTRate, c.GSTInclusiveRates, c.ServChrg order by date(k.LstModDt)Asc, KotNo Asc", ["CNo" => $CNo])->result_array();
 
                     $response = [
                         "status" => 1,
@@ -885,10 +1035,6 @@ class Restaurant extends CI_Controller {
         print_r($_GET);
         die;
         // this function is not completed
-        $servername = "139.59.28.122";
-        $username = "root";
-        $password = "sn9750";
-        $dbname = "GenTableData";
 
         if ($_GET['CustId'] != null) {
           $CustId = $_GET['CustId'];
@@ -902,24 +1048,32 @@ class Restaurant extends CI_Controller {
           if (empty($userToken)) {
             $response = [
               "status" => 0,
-              "msg" => "Invalid User"
+              "msg" => "Invalid User Token"
             ];
 
             echo json_encode($response);
             die();
           } else {
             $token = $userToken[0]['token'];
+            
+            if (empty($token)) {
+                $response = [
+                  "status" => 0,
+                  "msg" => "Invalid User Token"
+                ];
+                echo json_encode($response);
+                die();
+            }
             $fcmRegIds = array();
             array_push($fcmRegIds, $token);
 
-            define('API_ACCESS_KEY', 'AAAAZEeZrX8:APA91bHgs5fs23mXqClnQ8-xPTNIg9We1-0nFfWGEi5DQmbs2HRzC0d9MneblYbR1WLNCVR9PYX86Qx6NBZUedIq3lyQ_jYyjRdkOCrk56P_eD26bmGIuk78VbX4ZxrdFKDeiHaJXTcm');
             if ($flag != 0) {
 
               // insert notification to database
-              $sql = mysqli_query($conn, "INSERT INTO `Notification` (`user_id`, `title`, `message`,`billno`)VALUES ($CustId, '$title', '$message',$billno)");
+              $sql = $this->db2->query("INSERT INTO `Notification` (`user_id`, `title`, `message`,`billno`)VALUES ($CustId, '$title', '$message',$billno)")->result_array();
             } else if ($flag == 0) {
               // sql to delete a record
-              $sql = mysqli_query($conn, "DELETE FROM `Notification` WHERE `user_id`=$CustId AND `billno` = $billno");
+              $sql = $this->db2->query("DELETE FROM `Notification` WHERE `user_id`=$CustId AND `billno` = $billno")->result_array();
             }
 
             $msg = array(
@@ -930,35 +1084,8 @@ class Restaurant extends CI_Controller {
               'sound'   => 1
               // 'icon' => $request['n_icon']
             );
-
-            $fields = array(
-              'registration_ids'  => $fcmRegIds,
-              'notification'      => $msg
-            );
-
-            $headers = array(
-              'Authorization: key=' . API_ACCESS_KEY,
-              'Content-Type: application/json'
-            );
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-            // $result = curl_exec($ch);
-            $response = curl_exec($ch);
-            $err = curl_error($ch);
-            curl_close($ch);
-
-            if ($err) {
-              echo "cURL Error #:" . $err;
-            } else {
-              echo $response;
-              die();
-            }
+            // notification
+            $response = firebaseNotification($fcmRegIds, $msg);
           }
         } else {
           $response = [
@@ -2293,8 +2420,9 @@ class Restaurant extends CI_Controller {
                 $q.=" and id not in($list_id)";
             }
             $data = $this->db2->query($q)->result_array();
+            
             if(!empty($data)){
-                $check =  $data[0];
+                $check =  $data;
             }else{
                 $check =  array();
             }
@@ -2937,6 +3065,13 @@ class Restaurant extends CI_Controller {
 
 
     public function test(){
+
+        $menu = $this->db2->select('Name,RoleTyp,pageUrl,Rank')
+                                ->order_by('Rank','ASC')
+                                ->get_where('UserRoles', array('Stat' => 0))->result_array();
+        echo "<pre>";
+        print_r($menu);
+        die;
         
         $this->load->view('test');
     }

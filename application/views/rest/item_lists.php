@@ -23,8 +23,8 @@
                         <!-- start page title -->
                         <div class="row">
                             <div class="col-12">
-                                <div class="page-title-box d-flex align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18"><?php echo $title; ?>
+                                <div class="page-title-box align-items-center justify-content-between">
+                                    <h4 class="mb-0 font-size-18 text-center"><?php echo $title; ?>
                                     </h4>
                                 </div>
                             </div>
@@ -37,24 +37,24 @@
                                     <div class="card-body">
                                         <form method="post" action="<?php echo base_url('restaurant/item_list'); ?>">
                                             <div class="row">
-                                                <div class="col-md-3">
-                                                    <select class="form-control" name="cuisine" id="cuisine" onchange="getCategory()">
+                                                <div class="col-md-3 col-5">
+                                                    <select class="form-control form-control-sm" name="cuisine" id="cuisine" onchange="getCategory()">
                                                         <option value="">All</option>
                                                         <?php foreach($cuisine as $key){?>
                                                         <option value="<?= $key['CID']?>" <?php if($key['CID'] == $CID){ echo 'selected';}?>><?= $key['Name']?></option>
                                                     <?php }?>
                                                     </select>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <select class="form-control" name="menucat" id="menucat">
+                                                <div class="col-md-3 col-5">
+                                                    <select class="form-control select2 custom-select" name="menucat" id="menucat" style="width: 100%;">
                                                         <option value="">ALL</option>
                                                         <?php foreach($menucat as $key){?>
                                                             <option value="<?= $key['MCatgId']?>" <?php if($key['MCatgId'] == $catid){ echo 'selected';}?>><?= $key['MCatgNm']?></option>
                                                         <?php }?>
                                                     </select>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <input type="submit" class="btn btn-info" value="GET">
+                                                <div class="col-md-3 col-2">
+                                                    <input type="submit" class="btn btn-info btn-sm" value="GET">
                                                 </div>
                                             </div>
                                         </form>
@@ -130,6 +130,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('#item_lists').DataTable();
+        $('#menucat').select2();
     });
 
 </script>

@@ -2116,6 +2116,7 @@
         }
         var help_table_id = '';
         var list_id = '';
+        check_call_bell();
         function check_call_bell(){
             $.ajax({
                 url: "<?php echo base_url('restaurant/customer_landing_page_ajax'); ?>",
@@ -2127,19 +2128,25 @@
                 success: function(data) {
                     // alert(data.table_no);
                     data = JSON.parse(data);
-                    // alert();
+                    console.log(data);
                     if(data != ''){
-                        $('#help_table').html(data.table_no);
-                        help_table_id = data.id;
-                        if(list_id == ''){
-                            list_id += data.id;
-                        }else{
-                            list_id += ','+data.id;
+                        // $('#help_table').html(data.table_no);
+                        // help_table_id = data.id;
+                        // if(list_id == ''){
+                        //     list_id += data.id;
+                        // }else{
+                        //     list_id += ','+data.id;
+                        // }
+
+                        var a = '';
+                        for(var i=0; i<data.length; i++){
+                            a += '<button class="btn btn-sm btn-danger btn-rounded" data-toggle="tooltip" data-placement="top" title="'+data[i].created_at+'" id="help_table_'+data[i].id+'" onclick="respond_call_help('+data[i].id+')">'+data[i].table_no+'</button> &nbsp;&nbsp;'
                         }
-                        var a = '<button class="btn btn-sm btn-danger btn-rounded" data-toggle="tooltip" data-placement="top" title="'+data.created_at+'" id="help_table_'+help_table_id+'" onclick="respond_call_help('+help_table_id+')">'+data.table_no+'</button> &nbsp;&nbsp;';
-                        $('#hlep_table_list').append(a);
+                        // var a = '<button class="btn btn-sm btn-danger btn-rounded" data-toggle="tooltip" data-placement="top" title="'+data.created_at+'" id="help_table_'+help_table_id+'" onclick="respond_call_help('+help_table_id+')">'+data.table_no+'</button> &nbsp;&nbsp;';
+                        // $('#hlep_table_list').append(a);
+                        $('#hlep_table_list').html(a);
                         if(data.viewed == 0){
-                            $('#help').modal('show');
+                            // $('#help').modal('show');
                         }
                     }else{
                         $('#help').modal('hide');
@@ -2296,7 +2303,7 @@
             });
         }
         setInterval(function(){ check_call_bell(); }, 3000);
-        setInterval(function(){ check_new_orders(); }, 5000);
+        // setInterval(function(){ check_new_orders(); }, 5000);
         setInterval(function(){ check_settled_table(); }, 7000);
         check_new_orders();
         // $(function () {

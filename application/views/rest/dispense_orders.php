@@ -92,8 +92,8 @@
                         <!-- start page title -->
                         <div class="row">
                             <div class="col-12">
-                                <div class="page-title-box d-flex align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18"><?php echo $title; ?>
+                                <div class="page-title-box align-items-center justify-content-between">
+                                    <h4 class="mb-0 font-size-18 text-center"><?php echo $title; ?>
                                     </h4>
                                 </div>
                             </div>
@@ -104,7 +104,7 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <div class="row">
+                                        <div class="row" style="margin-bottom: -16px;">
                                             <div class="col-6">
                                                 <div class="form-group">
                                                     <select class="form-control" id="kitchen-code" onchange="getTableView();">  
@@ -453,49 +453,50 @@
             }
 
             function sendNotification(CustId, otp, billNo,flag) {
-                if (flag == 1) {
-                <?php if($EType == 1 && $Fest == 1){ ?>
-                            var title = $('#kitchen-code').val();
-                            var message = 'Your order ' + billNo +
-                            ' is ready.\nPlease pick up from counter.';
-                        <?php }else{ ?>
-                            var title = '<?= $RestName;?>';
-                            var message = 'Your order ' + billNo +
-                                ' is ready.\nPlease pick up from counter.';
-                    <?php }?>
-                } else if(flag == 0) {
+                if(confirm("Send Message For Bill No: "+billNo)){
+                    if (flag == 1) {
                     <?php if($EType == 1 && $Fest == 1){ ?>
-                        var title = 'Order Delivery '+$('#kitchen-code').val();
-                        var message = 'Your order ' + billNo + ' has been delivered.';
-                    <?php }else{ ?>
-                        var title = 'Order Delivery <?= $RestName;?>';
-                        var message = 'Your order ' + billNo + ' has been delivered.';
-                    <?php }?>
-                } else if(flag == 2){
-                    var title = "<?= $RestName;?> BillNo " +billNo;
-                    var message = "OTP : " +otp;
-                }
-                $.ajax({
-                    url: "<?php echo base_url('restaurant/sentNotification'); ?>",
-                    type: "get",
-                    data: {
-                        CustId: CustId,
-                        message: message,
-                        title: title,
-                        flag :flag,
-                        billno:billNo
-                    },
-                    dataType: "json",
-                    success: function (response) {
-                        console.log(response);
-                    },
-                    error: function (xhr, status, error) {
-                        console.log(xhr);
-                        console.log(status);
-                        console.log(error);
+                                var title = $('#kitchen-code').val();
+                                var message = 'Your order ' + billNo +
+                                ' is ready.\nPlease pick up from counter.';
+                            <?php }else{ ?>
+                                var title = '<?= $RestName;?>';
+                                var message = 'Your order ' + billNo +
+                                    ' is ready.\nPlease pick up from counter.';
+                        <?php }?>
+                    } else if(flag == 0) {
+                        <?php if($EType == 1 && $Fest == 1){ ?>
+                            var title = 'Order Delivery '+$('#kitchen-code').val();
+                            var message = 'Your order ' + billNo + ' has been delivered.';
+                        <?php }else{ ?>
+                            var title = 'Order Delivery <?= $RestName;?>';
+                            var message = 'Your order ' + billNo + ' has been delivered.';
+                        <?php }?>
+                    } else if(flag == 2){
+                        var title = "<?= $RestName;?> BillNo " +billNo;
+                        var message = "OTP : " +otp;
                     }
-
-                });
+                    $.ajax({
+                        url: "<?php echo base_url('restaurant/sentNotification'); ?>",
+                        type: "get",
+                        data: {
+                            CustId: CustId,
+                            message: message,
+                            title: title,
+                            flag :flag,
+                            billno:billNo
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (xhr, status, error) {
+                            console.log(xhr);
+                            console.log(status);
+                            console.log(error);
+                        }
+                    });
+                }
             }
 
             function itemView() {
@@ -859,7 +860,7 @@
                         }
                     })
                 } else {
-                    if(confirm("Are you sure want to continue?")){
+                    if(confirm("Confirm Delivery For Bill No: "+billNo)){
                         if (CNo !== 0 && v == 0) {
                             var CNo = CNo;
                             var custId =custId;

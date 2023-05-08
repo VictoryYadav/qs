@@ -23,8 +23,8 @@
                         <!-- start page title -->
                         <div class="row">
                             <div class="col-12">
-                                <div class="page-title-box d-flex align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18"><?php echo $title; ?>
+                                <div class="page-title-box align-items-center justify-content-between">
+                                    <h4 class="mb-0 font-size-18 text-center"><?php echo $title; ?>
                                     </h4>
 
                                 </div>
@@ -76,7 +76,21 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4 col-6">
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label>From Date</label>
+                                                        <input type="date" name="FrmDt" class="form-control" id="from_date" value="<?php echo date('Y-m-d'); ?>" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label>To Date</label>
+                                                        <input type="date" name="ToDt" class="form-control" id="to_date" value="<?php echo date('Y-m-d'); ?>" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label>From Day</label>
                                                         <select class="form-control" id="from_day" name="FromDayNo" required="">
@@ -91,7 +105,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4 col-6">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label>To Day</label>
                                                         <select class="form-control" id="to_day" name="ToDayNo" required="">
@@ -106,45 +120,31 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4 col-6">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label>From Time</label>
                                                         <input type="time" name="FrmTime" class="form-control" id="from_time" />
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4 col-6">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label>To Time</label>
                                                         <input type="time" name="ToTime" class="form-control" id="to_time" />
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4 col-6">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label>Alternate From Time</label>
                                                         <input type="time" name="AltFrmTime" class="form-control" id="alt_from_time" />
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4 col-6">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label> Alternate To Time</label>
                                                         <input type="time" name="AltToTime" class="form-control" id="alt_to_time" />
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-4 col-6">
-                                                    <div class="form-group">
-                                                        <label>From Date</label>
-                                                        <input type="date" name="FrmDt" class="form-control" id="from_date" value="<?php echo date('Y-m-d'); ?>" />
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-4 col-6">
-                                                    <div class="form-group">
-                                                        <label>To Date</label>
-                                                        <input type="date" name="ToDt" class="form-control" id="to_date" value="<?php echo date('Y-m-d'); ?>" />
                                                     </div>
                                                 </div>
 

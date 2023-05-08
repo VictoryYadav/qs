@@ -30,12 +30,12 @@
         </li>
 
 
-        <li>
+        <!-- <li>
             <a href="<?php echo base_url('restaurant/merge_table'); ?>" class="waves-effect">
                 <i class="mdi mdi-speedometer"></i>
                 <span>Table Join/Unjoin</span>
             </a>
-        </li>
+        </li> -->
 
         <li>
             <a href="<?php echo base_url('restaurant/offers_list'); ?>" class="waves-effect">

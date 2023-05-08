@@ -1,4 +1,9 @@
 <?php $this->load->view('layouts/admin/head'); ?>
+<style>
+    body{
+        overflow: hidden;
+    }
+</style>
         <?php $this->load->view('layouts/admin/top'); ?>
             <!-- ========== Left Sidebar Start ========== -->
             <div class="vertical-menu">
@@ -21,10 +26,10 @@
                     <div class="container-fluid">
 
                         <!-- start page title -->
-                        <div class="row">
+                        <div class="row text-center">
                             <div class="col-12">
-                                <div class="page-title-box d-flex align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18"><?php echo $title; ?>
+                                <div class="page-title-box">
+                                    <h4 class="mb-0 font-size-18 text-center" ><?php echo $title; ?>
                                     </h4>
 
                                 </div>
@@ -38,27 +43,46 @@
                                     <div class="card-body">
                                         <div id="app1">
                                             <div class="row form-group">
-                                                <div class="col-md-5 col-6">
-                                                    <input type="number" class="form-control" placeholder="Enter User Mobile No" v-model="mobileNumber" v-on:focusout="getUser();">
+                                                <div class="col-md-5 col-12">
+                                                    <select class="form-control" v-model="mobileNumber" v-on:change="getUser();">
+                                                        <option value="">Select</option>
+                                                        <?php
+                                                        foreach ($usersRestData as $key) {
+                                                         ?>
+                                                        <option value="<?php echo $key['MobileNo']; ?>"><?php echo $key['MobileNo'].' ('.$key['FName'].' '.$key['LName'].')'; ?></option>
+                                                    <?php } ?>
+                                                    </select>
+
+                                                    <!-- <input type="number" class="form-control" placeholder="Enter User Mobile No" v-model="mobileNumber" v-on:focusout="getUser();"> -->
                                                 </div>
 
-                                                <div class="col-md-2  d-none d-sm-block"></div>
+                                                <!-- <div class="col-md-2 d-none d-sm-block"></div>
 
                                                 <div class="col-md-5 col-6">
                                                     <input type="text" class="form-control" readonly="" v-model="userName">
-                                                </div>
+                                                </div> -->
                                             </div>
+
                                             <div class="row form-group">
                                                 
-                                                <div class="col-md-5 roles-div items-data col-5" style="border: 1px solid #dddbdb;padding-top: 3px;">
-                                                    <h5 class="card-title text-center">Available Roles</h5><hr>
-                                                    <ul v-if="availableRoles.length > 0">
-                                                        <div class="ck-button" v-for="role in availableRoles" style="margin-left:-40px;">
-                                                           <label>
-                                                              <input type="checkbox" v-bind:value="role.RoleId" v-model="selectedAvailableRoles">&nbsp;&nbsp;<span>{{ role.Name }}</span>
-                                                           </label>
-                                                        </div>
-                                                    </ul>
+                                                <div class="col-md-5 col-5">
+                                                    <div class="card-header">  
+                                                       <div class="row">
+                                                           <div class="col-md-6">
+                                                            <input type="checkbox" v-on:click="selectAll" v-model="allSelected"> &nbsp;Select All
+                                                            </div>
+                                                           <div class="col-md-6">Available Roles</div>
+                                                       </div>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <ul v-if="availableRoles.length > 0" style="height: 375px;overflow: auto;">
+                                                            <div class="ck-button" v-for="role in availableRoles" style="margin-left:-40px;">
+                                                               <label>
+                                                                  <input type="checkbox" v-bind:value="role.RoleId" v-model="selectedAvailableRoles" v-on:click="select">&nbsp;&nbsp;<span>{{ role.Name }}</span>
+                                                               </label>
+                                                            </div>
+                                                        </ul>
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-2 text-center col-2" style="padding-top: 180px;">
                                                     <div class="form-group">
@@ -68,16 +92,24 @@
                                                         <button class="btn btn-danger btn-sm btn-rounded" v-on:click="removeRoles();"><i class="fa fa-trash"></i></button>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-5 roles-div items-data col-5" style="border: 1px solid #dddbdb;padding-top: 3px;">
-                                                    <h5 class="card-title text-center">Assigned Roles</h5>
-                                                    <hr>
-                                                    <ul v-if="assignRoles.length > 0">
-                                                        <div class="ck-button" v-for="role in assignRoles"style="margin-left:-40px;">
-                                                           <label>
-                                                              <input type="checkbox" v-bind:value="role.URNo" v-model="selectedAssignedRoles">&nbsp;&nbsp;<span>{{ role.Name }}</span>
-                                                           </label>
-                                                        </div>
-                                                    </ul>
+                                                <div class="col-md-5 col-5">
+                                                    <div class="card-header">  
+                                                       <div class="row">
+                                                           <div class="col-md-6">
+                                                            <input type="checkbox" v-on:click="selectAll_1" v-model="allSelected_1"> &nbsp;Select All
+                                                            </div>
+                                                           <div class="col-md-6">Assigned Roles</div>
+                                                       </div>
+                                                    </div>
+                                                    <div class="card-body">   
+                                                        <ul v-if="assignRoles.length > 0" style="height: 375px;overflow: auto;">
+                                                            <div class="ck-button" v-for="role in assignRoles"style="margin-left:-40px;">
+                                                               <label>
+                                                                  <input type="checkbox" v-bind:value="role.URNo" v-model="selectedAssignedRoles" v-on:click="select_1">&nbsp;&nbsp;<span>{{ role.Name }}</span>
+                                                               </label>
+                                                            </div>
+                                                        </ul>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -111,6 +143,7 @@
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 <script>
+
     var vueApp = new Vue({
         el: "#app1",
         data: {
@@ -120,7 +153,10 @@
             availableRoles: [],
             mobileNumber: "",
             selectedAvailableRoles: [],
-            selectedAssignedRoles: []
+            selectedAssignedRoles: [],
+            selected: [],
+            allSelected: false,
+            allSelected_1: false,
         },
         methods: {
             getUser() {
@@ -235,6 +271,36 @@
                 }else{
                     alert("Please Select Roles Before Remove");
                 }
+            },
+            selectAll() {
+                console.log('kk')
+
+                this.selectedAvailableRoles = [];
+
+                if (!this.allSelected) {
+                    console.log('vv')
+                    for (user in this.availableRoles) {
+                        this.selectedAvailableRoles.push(this.availableRoles[user].RoleId.toString());
+                    }
+                }
+            },
+            select: function() {
+                this.allSelected = false;
+            },
+
+            selectAll_1() {
+
+                this.selectedAssignedRoles = [];
+
+                if (!this.allSelected_1) {
+                    console.log('vv')
+                    for (user in this.assignRoles) {
+                        this.selectedAssignedRoles.push(this.assignRoles[user].URNo.toString());
+                    }
+                }
+            },
+            select_1: function() {
+                this.allSelected_1 = false;
             }
         }
     })

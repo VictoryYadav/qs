@@ -23,8 +23,8 @@
                         <!-- start page title -->
                         <div class="row">
                             <div class="col-12">
-                                <div class="page-title-box d-flex align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18"><?php echo $title; ?>
+                                <div class="page-title-box align-items-center justify-content-between">
+                                    <h4 class="mb-0 font-size-18 text-center"><?php echo $title; ?>
                                     </h4>
                                 </div>
                             </div>
@@ -73,7 +73,17 @@
                                                         ?>
                                                     </select>
                                                 </div>
-                                                <div class="form-group col-md-4 col-6">
+
+                                                <div class="form-group col-md-3 col-6">
+                                                    <label for="from_date">From Date</label>
+                                                    <input type="date" name="FrmDt" class="form-control" id="from_date" <?php if(!empty($scheme[0]['FrmDt'])){?> value="<?= $scheme[0]['FrmDt']?>" <?php }?> />
+                                                </div>
+                                                <div class="form-group col-md-3 col-6">
+                                                    <label for="to_date">To Date</label>
+                                                    <input type="date" name="ToDt" class="form-control" id="to_date" <?php if(!empty($scheme[0]['ToDt'])){?> value="<?= $scheme[0]['ToDt']?>" <?php }?> />
+                                                </div>
+                                                
+                                                <div class="form-group col-md-3 col-6">
                                                     <label for="from_day">From Day</label>
                                                     <select class="form-control" id="from_day" name="FromDayNo" required="">
                                                         <option value="">Select From Day</option>
@@ -85,7 +95,7 @@
                                                         ?>
                                                     </select>
                                                 </div>
-                                                <div class="form-group col-md-4 col-6">
+                                                <div class="form-group col-md-3 col-6">
                                                     <label for="to_day">To Day</label>
                                                     <select class="form-control" id="to_day" name="ToDayNo" required="">
                                                         <option value="">Select To Day</option>
@@ -97,29 +107,21 @@
                                                         ?>
                                                     </select>
                                                 </div>
-                                                <div class="form-group col-md-4 col-6">
+                                                <div class="form-group col-md-3 col-6">
                                                     <label for="from_time">From Time</label>
                                                     <input type="time" name="FrmTime" class="form-control" id="from_time" <?php if(!empty($scheme[0]['FrmTime'])){?> value="<?= $scheme[0]['FrmTime']?>" <?php }?> />
                                                 </div>
-                                                <div class="form-group col-md-4 col-6">
+                                                <div class="form-group col-md-3 col-6">
                                                     <label for="to_time">To Time</label>
                                                     <input type="time" name="ToTime" class="form-control" id="to_time" <?php if(!empty($scheme[0]['ToTime'])){?> value="<?= $scheme[0]['ToTime']?>" <?php }?> />
                                                 </div>
-                                                <div class="form-group col-md-4 col-6">
+                                                <div class="form-group col-md-3 col-6">
                                                     <label for="alt_from_time">Alternate From Time</label>
                                                     <input type="time" name="AltFrmTime" class="form-control" id="alt_from_time" <?php if(!empty($scheme[0]['AltFrmTime'])){?> value="<?= $scheme[0]['AltFrmTime']?>" <?php }?> />
                                                 </div>
-                                                <div class="form-group col-md-4 col-6">
+                                                <div class="form-group col-md-3 col-6">
                                                     <label for="alt_to_time">Alternate To Time</label>
                                                     <input type="time" name="AltToTime" class="form-control" id="alt_to_time" <?php if(!empty($scheme[0]['ToTime'])){?> value="<?= $scheme[0]['ToTime']?>" <?php }?> />
-                                                </div>
-                                                <div class="form-group col-md-4 col-6">
-                                                    <label for="from_date">From Date</label>
-                                                    <input type="date" name="FrmDt" class="form-control" id="from_date" <?php if(!empty($scheme[0]['FrmDt'])){?> value="<?= $scheme[0]['FrmDt']?>" <?php }?> />
-                                                </div>
-                                                <div class="form-group col-md-4 col-6">
-                                                    <label for="to_date">To Date</label>
-                                                    <input type="date" name="ToDt" class="form-control" id="to_date" <?php if(!empty($scheme[0]['ToDt'])){?> value="<?= $scheme[0]['ToDt']?>" <?php }?> />
                                                 </div>
                                             </div>
                                             <div class="offer_descriptions" id="offer_descriptions">
