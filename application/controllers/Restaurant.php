@@ -1285,10 +1285,8 @@ class Restaurant extends CI_Controller {
                     $RMStock['Stat'] = 0;
                     $RMStock['LoginId'] = 0;
                     $RMStock['TransDt'] = !empty($_POST['TransDt'])?$_POST['TransDt']:date('Y-m-d');
-                    // $this->db2->insert('RMStock', $RMStock);
-                    // $TransId = $this->db2->insert_id();
-                    if($RMStock->create()){
-                        $TransId = $RMStock->lastInsertId();
+                    $TransId = insertRecord('RMStock', $RMStock);
+                    if($TransId){
                         // $TransId = $this->db2->insert_id();
                         $num = sizeof($_POST['ItemId']);
                         for($i = 0;$i<$num;$i++){
@@ -1306,22 +1304,21 @@ class Restaurant extends CI_Controller {
                                 if(!empty($detid)){
                                     // $RMStockDet->RMDetId = $detid;
                                     // $RMStockDet->save();
-                                    // $this->db2->update('RMStockDet',$RMStockDet, array('RMDetId' =>$detid));
+                                    updateRecord('RMStockDet',$RMStockDet, array('RMDetId' =>$detid));
                                 }else{
                                     // $RMStockDet->create();
-                                    // $this->db2->insert('RMStockDet',$RMStockDet);
+                                    insertRecord('RMStockDet',$RMStockDet);
                                 }
                             }
                         }
                     }
-                    header("Location: ../stock_list.php");
+                    redirect(base_url('restaurant/stock_list'));
                 }
 
             }
             if(isset($_POST['edit_stock']) && $_POST['edit_stock'] == 1){
                 if($_POST){
-                    // echo "<pre>";print_r($_POST);exit();
-                   
+
                     $TransId = $_POST['trans_id'];
                     $num = sizeof($_POST['ItemId']);
                     for($i = 0;$i<$num;$i++){
@@ -1332,32 +1329,28 @@ class Restaurant extends CI_Controller {
                         $RMStockDet['Qty'] = !empty($_POST['Qty'][$i])?$_POST['Qty'][$i]:0;
                         $RMStockDet['Rate'] = !empty($_POST['Rate'][$i])?$_POST['Rate'][$i]:0;
                         
-                        // echo "<pre>";print_r($RMStock);exit();
-                        if(!empty($RMStockDet['variables']['RMCd']) && !empty($RMStockDet['variables']['Qty']) && !empty($RMStockDet['variables']['Rate']) && !empty($RMStockDet['variables']['UOMCd'])){
-                            // echo "<pre>";print_r($RMStock);exit();
-                            if(!empty($detid)){
-                                // $RMStockDet['RMDetId'] = $detid;
-                                // $RMStockDet->save();
-                                // $this->db2->update('RMStockDet',$RMStockDet, array('RMDetId' =>$detid));
+                        updateRecord('RMStockDet',array('Stat' => 1),array('TransId' =>$TransId));
 
-                            }else{
-                                // $RMStockDet->create();
-                                // $this->db2->insert('RMStockDet',$RMStockDet);
-                            }
+                        if(!empty($RMStockDet['RMCd']) && !empty($RMStockDet['Qty']) && !empty($RMStockDet['Rate']) && !empty($RMStockDet['UOMCd'])){
+                            
+                            insertRecord('RMStockDet',$RMStockDet);
+                        }else{
+                         $this->session->set_flashdata('error','All Fields Are Required!');
+                         redirect(base_url('restaurant/edit_stock?TransId='.$TransId));   
                         }
                     }
-                    
-                    header("Location: ../stock_list.php");
+                    redirect(base_url('restaurant/stock_list'));
                 }
 
             }
             if(isset($_POST['delete_details'])){
-                $this->db2->query("Update RMStockDet Stat = 9 where RMDetId=".$_POST['RMDetId']);
+                updateRecord('RMStockDet', array('Stat' => 9), array('RMDetId' => $_POST['RMDetId']) );
                 echo 1;
             }
             if(isset($_POST['delete_trans'])){
                 // print_r($_POST);exit();
-                $this->db2->query("Update RMStock set Stat = 9 where TransId=".$_POST['TransId']);
+                updateRecord('RMStock', array('Stat' => 9), array('TransId' => $_POST['TransId']) );
+
                 echo 1;
             }
 
@@ -1428,8 +1421,11 @@ class Restaurant extends CI_Controller {
     public function rm_ajax(){
        if(isset($_POST['getUOM'])){
             $item_id = $_POST['RMCd'];
-            $q = "SELECT riu.*, ru.Name from RMItemsUOM as riu join RMUOM as ru on riu.UOMCd = ru.UOMCd where riu.RMCd = ".$item_id;
-            $uoms = $this->db2->query($q)->result_array();
+
+            $uoms = $this->db2->select('riu.*, ru.Name')
+                              ->join('RMUOM ru','riu.UOMCd = ru.UOMCd','inner')
+                              ->get_where('RMItemsUOM riu', array('riu.RMCd' => $item_id))
+                              ->result_array();
             echo json_encode($uoms);
         } 
     }

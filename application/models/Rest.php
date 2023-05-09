@@ -455,7 +455,7 @@ class Rest extends CI_Model{
 		$trans_type_id = NULL;
 		$from_date = NULL;
 		$to_date =NULL;
-		$stock = $this->db2->query("SELECT r.TransId, r.TransType,  if(r.FrmEID>0, (Select e.Name from Eatary e where e.EID=r.FrmEID),NULL) as FromEID, if(r.FrmStoreId=1, 'MainStore',NULL) as FromMain, if(r.FrmSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.FrmSuppCd),NULL) as FromSupp, if(r.FrmKitCd>0, (Select ek.KitName from Eat_Kit ek where ek.KitCd=r.FrmKitCd),NULL) as FromKit, if(r.ToEID>0, (Select e.Name from Eatary e where e.EID=r.ToEID),NULL) as ToEID, if(r.ToSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.ToSuppCd),NULL) as ToSupp, if(r.ToKitCd>0, (Select ek.KitName from Eat_Kit ek where ek.KitCd=r.ToKitCd),NULL) as ToKit, if(r.ToStoreId=1, 'MainStore',NULL) as ToMain  FROM RMStock r where r.Stat=0 order by TransId desc limit 10")->result_array();
+		$stock = $this->db2->query("SELECT r.TransId, r.TransType,TransDt,  if(r.FrmEID>0, (Select e.Name from Eatary e where e.EID=r.FrmEID),NULL) as FromEID, if(r.FrmStoreId=1, 'MainStore',NULL) as FromMain, if(r.FrmSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.FrmSuppCd),NULL) as FromSupp, if(r.FrmKitCd>0, (Select ek.KitName from Eat_Kit ek where ek.KitCd=r.FrmKitCd),NULL) as FromKit, if(r.ToEID>0, (Select e.Name from Eatary e where e.EID=r.ToEID),NULL) as ToEID, if(r.ToSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.ToSuppCd),NULL) as ToSupp, if(r.ToKitCd>0, (Select ek.KitName from Eat_Kit ek where ek.KitCd=r.ToKitCd),NULL) as ToKit, if(r.ToStoreId=1, 'MainStore',NULL) as ToMain  FROM RMStock r where r.Stat=0 order by TransId desc limit 10")->result_array();
 		// echo "<pre>";
 		// print_r($stock);
 		// die;

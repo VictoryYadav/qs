@@ -131,7 +131,7 @@ $RestName = authuser()->RestName;
                                                                 <th>UOM</th>
                                                                 <th>Rate</th>
                                                                 <th>Qty</th>
-                                                                <th>Action</th>
+                                                                <!-- <th>Action</th> -->
                                                             </tr>
                                                         </thead>
                                                         <tbody class="stock_list" id="stock_list">
@@ -155,11 +155,11 @@ $RestName = authuser()->RestName;
                                                                     </td>
                                                                     <td><input type="number" name="Rate[]" value="<?= $sd['Rate']?>" class="form-control"></td>
                                                                     <td><input type="number" name="Qty[]" value="<?= $sd['Qty']?>" class="form-control"></td>
-                                                                    <td>
+                                                                    <!-- <td>
                                                                         <button class="btn btn-sm btn-danger btn-rounded" onclick="delete_details(<?= $sd['RMDetId']?>)">
                                                                             <i class="fa fa-trash"></i>
                                                                         </button>
-                                                                    </td>
+                                                                    </td> -->
                                                                 </tr>
                                                             <?php $n++;}?>
                                                         </tbody>
@@ -167,6 +167,10 @@ $RestName = authuser()->RestName;
                                                 </div>
                                                 <!-- <button type="button" class="btn btn-sm btn-primary btn-rounded" onclick="add_row()">+</button> -->
                                             </div>
+
+                                            <?php if($this->session->flashdata('error')): ?>
+                                                <div class="alert alert-danger" role="alert" id="alertBlock"><?= $this->session->flashdata('error') ?></div>
+                                            <?php endif; ?>
                                             <div class="text-center p-2"><button class="btn btn-primary btn-sm" type="submit">Update</button></div>
                                         
                                     </div>
@@ -339,4 +343,8 @@ function set_uom(){
     }
 }
 set_uom();
+
+setTimeout(function() {
+  $('#alertBlock').hide()
+}, 4000);
 </script>
