@@ -1064,8 +1064,7 @@ class Restaurant extends CI_Controller {
                 echo json_encode($response);
                 die();
             }
-            $fcmRegIds = array();
-            array_push($fcmRegIds, $token);
+            $fcmRegIds = $token;
 
             if ($flag != 0) {
 

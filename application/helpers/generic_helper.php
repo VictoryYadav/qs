@@ -121,7 +121,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	function firebaseNotification($fcmRegIds, $msg){
 
 		$fields = array(
-          'registration_ids'  => $fcmRegIds,
+          'to'  => $fcmRegIds,
           'notification'      => $msg
         );
 
@@ -148,6 +148,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         } else {
           return $response;
         }
+
 	}
 
 	function menuList(){
