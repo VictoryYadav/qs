@@ -35,7 +35,7 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <div class=""><h3>Item Name: <?php echo !empty($report['RMName'])?$report['RMName']:''; ?>, Opening Stock: <?= $op_stock;?></h3></div>
+                                        <div class=""><h3>Item Name: <?php echo !empty($report[0]['RMName'])?$report[0]['RMName']:''; ?>, Opening Stock: <?= $op_stock;?></h3></div>
                                         <div class="table-responsive">
                                             <table id="stock_report_table" class="table table-bordered">
                                                 <thead>
@@ -71,7 +71,7 @@
                                                   ?>
                                                   <tr>
                                                         <!-- <td><?= $key['RMName']?></td> -->
-                                                        <td><?= $key['TransDt']?></td>
+                                                        <td><?= date('d-M-Y',strtotime($key['TransDt']))?></td>
                                                         <!-- <td><?= $n?></td> -->
                                                         <td><?= getTransType($key['TransType']); ?></td>
                                                         <td><?= $key['UOM']?></td>

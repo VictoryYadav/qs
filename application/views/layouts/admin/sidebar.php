@@ -1,3 +1,5 @@
+<?php
+        if(authuser()->cur_password !='QS1234'){ ?>
 <div id="sidebar-menu">
     <!-- Left Menu Start -->
     <ul class="metismenu list-unstyled" id="side-menu">
@@ -22,7 +24,10 @@
         </li>
         <?php }
              } 
-            } ?>
+            } 
+            ?>
         
     </ul>
 </div>
+
+<?php } ?>

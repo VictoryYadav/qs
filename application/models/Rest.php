@@ -47,29 +47,6 @@ class Rest extends CI_Model{
 	}
 
 	public function addUser($data){
-		// UsersRest
-		// UserRolesAccess
-
-		$genDB = $this->load->database('GenTableData', TRUE);
-		$checkGen = $genDB->get_where('UsersRest', array('MobileNo' => $data['MobileNo'], 'Stat' => 0))->row_array();
-		$genToken = '';
-		$GenRUserId = '';
-		$UTyp = $data['UTyp'];
-		$EID = $data['EID'];
-		if(!empty($checkGen)){
-			$genToken = $checkGen['token'];
-			$GenRUserId = $checkGen['RUserId'];
-		}else{
-			unset($data['UTyp']);
-			unset($data['EID']);
-			$data['token'] = $genToken;
-			$genDB->insert('UsersRest', $data);
-			$GenRUserId = $genDB->insert_id();
-		}
-
-		$data['UTyp'] = $UTyp;
-		$data['EID'] = $EID;
-		$data['GenRUserId'] = $GenRUserId;
 
 		$check = $this->db2->get_where('UsersRest', array('MobileNo' => $data['MobileNo'], 'Stat' => 0))->row_array();
 		if(empty($check)){
@@ -82,6 +59,32 @@ class Rest extends CI_Model{
 			$data['LoginCd'] = $createrData['LoginCd'];
 			// $data['token'] = $this->generateToken();
 			 $newRUserId = insertRecord('UsersRest', $data);
+
+			 // GenTableData loaded
+			$genDB = $this->load->database('GenTableData', TRUE);
+			$checkGen = $genDB->where('MobileNo' , $data['MobileNo'])
+							  ->or_where('PEmail' , $data['PEmail'])
+							  ->get('UsersRest')
+							  ->row_array();
+			
+			$GenUsersRestDet['RUserId'] = $newRUserId;
+			$GenUsersRestDet['EID'] = $data['EID'];
+			$GenUsersRestDet['UTyp'] = $data['UTyp'];
+			$GenUsersRestDet['ChainId'] = authuser()->ChainId;
+			// $GenUsersRestDet['OffEmail'] = $data['PEmail'];
+			if(!empty($checkGen)){
+				$genDB->insert('UsersRestDet', $GenUsersRestDet);
+			}else{
+				$GUsersRest['FName'] = $data['FName'];
+				$GUsersRest['LName'] = $data['LName'];
+				$GUsersRest['MobileNo'] = $data['MobileNo'];
+				$GUsersRest['PEmail'] = $data['PEmail'];
+				$GUsersRest['DOB'] = $data['DOB'];
+				$GUsersRest['Gender'] = $data['Gender'];
+				$genDB->insert('UsersRest', $GUsersRest);
+				$genDB->insert('UsersRestDet', $GenUsersRestDet);
+			}
+
 			if(!empty($newRUserId)){
 				$this->sendUserLoginMsg();
 				$res = $data['FName'].' '.$data['LName']." Created Successfully";

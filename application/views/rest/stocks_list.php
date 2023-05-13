@@ -75,7 +75,7 @@ $RestName = authuser()->RestName;
                                                     <label>&nbsp;</label><br>
                                                     <a target="_blank" href="<?php echo base_url('restaurant/stock_consumption'); ?>" class="btn btn-info btn-sm">Consumption</a>
                                                     <a target="_blank" href="<?php echo base_url('restaurant/stock_report'); ?>" class="btn btn-warning btn-sm">Report</a>
-                                                    <a href="<?php echo base_url('restaurant/add_stock'); ?>" class="btn btn-primary btn-sm">Add Stock</a>
+                                                    <a href="<?php echo base_url('restaurant/add_stock'); ?>" class="btn btn-success btn-sm">Add Stock</a>
                                                 </div>
                                                     <div class="d-sm-block d-md-none text-right">
                                                         <label>&nbsp;</label><br>

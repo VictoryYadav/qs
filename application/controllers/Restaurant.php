@@ -1043,7 +1043,7 @@ class Restaurant extends CI_Controller {
           $flag = $_GET['flag'];
           $billno = $_GET['billno'];
 
-          $userToken = $this->db2->query("SELECT token FROM Users where CustId = $CustId")->result_array();
+          $userToken = $this->db2->select('token')->get_where('Users', array('CustId' => $CustId))->result_array();
 
           if (empty($userToken)) {
             $response = [
@@ -1149,7 +1149,7 @@ class Restaurant extends CI_Controller {
               'vibrate' => 1,
               'sound'   => 1
             );
-            // firebaseNotification($check['token'], $message);
+            firebaseNotification($check['token'], $message);
         }
     }
 
@@ -1290,24 +1290,16 @@ class Restaurant extends CI_Controller {
                         $num = sizeof($_POST['ItemId']);
                         for($i = 0;$i<$num;$i++){
                             $RMStockDet['TransId'] = $TransId;
-                            $detid = !empty($_POST['RMDetId'][$i])?$_POST['RMDetId'][$i]:NULL;
+
                             $RMStockDet['RMCd'] = !empty($_POST['ItemId'][$i])?$_POST['ItemId'][$i]:0;
                             $RMStockDet['UOMCd'] = !empty($_POST['UOM'][$i])?$_POST['UOM'][$i]:0;
                             $RMStockDet['Qty'] = !empty($_POST['Qty'][$i])?$_POST['Qty'][$i]:0;
                             $RMStockDet['Rate'] = !empty($_POST['Rate'][$i])?$_POST['Rate'][$i]:0;
                             $RMStockDet['Rmks'] = !empty($_POST['Remarks'][$i])?$_POST['Remarks'][$i]:"";
                             
-                            // echo "<pre>";print_r($RMStock);exit();
-                            if(!empty($RMStockDet['variables']['RMCd']) && !empty($RMStockDet['variables']['Qty']) && !empty($RMStockDet['variables']['UOMCd'])){
-                                // echo "<pre>";print_r($RMStock);exit();
-                                if(!empty($detid)){
-                                    // $RMStockDet->RMDetId = $detid;
-                                    // $RMStockDet->save();
-                                    updateRecord('RMStockDet',$RMStockDet, array('RMDetId' =>$detid));
-                                }else{
-                                    // $RMStockDet->create();
-                                    insertRecord('RMStockDet',$RMStockDet);
-                                }
+                            if(!empty($RMStockDet['RMCd']) && !empty($RMStockDet['Qty']) && !empty($RMStockDet['UOMCd'])){
+
+                                insertRecord('RMStockDet',$RMStockDet);
                             }
                         }
                     }
@@ -3057,19 +3049,48 @@ class Restaurant extends CI_Controller {
         }
     }
 
+    public function tokenGenerate(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $data['token'] = $_POST['token']; 
+            $data['LstModDt'] = date('Y-m-d H:i:s'); 
+            updateRecord('UsersRest', $data, array('RUserId' => authuser()->RUserId) );
+            $status = 'success';
+            $response = 'Token Generated.';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
 
 
     public function test(){
-
-        $menu = $this->db2->select('Name,RoleTyp,pageUrl,Rank')
-                                ->order_by('Rank','ASC')
-                                ->get_where('UserRoles', array('Stat' => 0))->result_array();
-        echo "<pre>";
-        print_r($menu);
-        die;
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            echo "<pre>";
+            print_r($_POST);
+            die;
+            $status = 'success';
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
         
-        $this->load->view('test');
+        $data['title'] ='dd';
+        $this->load->view('rest/blank',$data);
     }
+
+
 
 
 
