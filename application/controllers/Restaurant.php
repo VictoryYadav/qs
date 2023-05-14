@@ -2402,7 +2402,7 @@ class Restaurant extends CI_Controller {
             $list_id = $_POST['list_id'];
             $check = '';
 
-            $q = "SELECT * from call_bell where response_status = 0";
+            $q = "SELECT * from call_bell where response_status < 3";
             if($list_id != ''){
                 $q.=" and id not in($list_id)";
             }
@@ -2426,12 +2426,12 @@ class Restaurant extends CI_Controller {
             echo $check;
         }
         if(isset($_POST['respond_call_help'])){
-            // $check = $menuCatgModel->respond_call_help($_POST['help_table_id']);
-            $t = date('Y-m-d H:i:s');
-            $id = $_POST['help_table_id'];
-            $q = "UPDATE call_bell set response_status = 1, respond_time='$t' where id = '$id'";
-            // print_r($q);exit();
-            $this->db2->query($q);
+
+            $datas['respond_time']    = date('Y-m-d H:i:s');
+            $datas['response_status'] = $_POST['status'];
+            $id                       = $_POST['help_table_text_id'];
+            updateRecord('call_bell', $datas, array('id' => $id) );
+
             $check = 1;
             echo $check;
         }
@@ -3066,6 +3066,138 @@ class Restaurant extends CI_Controller {
              die;
         }
     }
+
+
+    public function rmcat(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            
+            $RMCatgCd = 0;
+            if(isset($_POST['RMCatgCd']) && !empty($_POST['RMCatgCd'])){
+                $RMCatgCd = $_POST['RMCatgCd'];
+            }
+
+            if(!empty($RMCatgCd)){
+                updateRecord('RMCatg', array('RMCatgName' => $_POST['RMCatgName']), array('RMCatgCd' => $RMCatgCd));
+                $status = 'success';
+                $response = 'Category Updated.';
+            }else{
+                $check = getRecords('RMCatg', array('RMCatgName' => $_POST['RMCatgName']));
+                if(!empty($check)){
+                    $response = 'Category Already Exists';
+                }else{
+                    $cat['RMCatgName'] = $_POST['RMCatgName'];
+                    $cat['Stat'] = 0;
+                    insertRecord('RMCatg', $cat);
+                    $status = 'success';
+                    $response = 'Category Inserted';
+                }
+            }
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['catList'] = getRecords('RMCatg', NULL);
+        $data['title'] ='RMCategory';
+        $this->load->view('rest/rm_category',$data);
+    }
+
+    public function rmitems_list(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            
+            $RMCd = 0;
+            if(isset($_POST['RMCd']) && !empty($_POST['RMCd'])){
+                $RMCd = $_POST['RMCd'];
+            }
+
+            if(!empty($RMCd)){
+                updateRecord('RMItems', array('RMName' => $_POST['RMName']), array('RMCd' => $RMCd));
+                $status = 'success';
+                $response = 'RMItem Updated.';
+            }else{
+                $check = getRecords('RMItems', array('RMName' => $_POST['RMName'], 'RMCatg' => $_POST['RMCatg']));
+                if(!empty($check)){
+                    $response = 'RMItem Already Exists';
+                }else{
+                    $cat['RMName'] = $_POST['RMName'];
+                    $cat['RMCatg'] = $_POST['RMCatg'];
+                    $cat['Stat'] = 0;
+                    insertRecord('RMItems', $cat);
+                    $status = 'success';
+                    $response = 'RMItem Inserted';
+                }
+            }
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['catList'] = getRecords('RMCatg', NULL);
+        $data['rm_items'] = $this->rest->getItemLists();
+        $data['title'] ='RMItems List';
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $this->load->view('rest/rm_items',$data);
+    }
+
+    public function bom_dish_list(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            
+            $RMCd = 0;
+            if(isset($_POST['RMCd']) && !empty($_POST['RMCd'])){
+                $RMCd = $_POST['RMCd'];
+            }
+
+            if(!empty($RMCd)){
+                updateRecord('RMItems', array('RMName' => $_POST['RMName']), array('RMCd' => $RMCd));
+                $status = 'success';
+                $response = 'RMItem Updated.';
+            }else{
+                $check = getRecords('RMItems', array('RMName' => $_POST['RMName'], 'RMCatg' => $_POST['RMCatg']));
+                if(!empty($check)){
+                    $response = 'RMItem Already Exists';
+                }else{
+                    $cat['RMName'] = $_POST['RMName'];
+                    $cat['RMCatg'] = $_POST['RMCatg'];
+                    $cat['Stat'] = 0;
+                    insertRecord('RMItems', $cat);
+                    $status = 'success';
+                    $response = 'RMItem Inserted';
+                }
+            }
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        // $data['catList'] = getRecords('RMCatg', NULL);
+        $data['bom_dish'] = $this->rest->getBomDishLists();
+        $data['title'] ='RMItems List';
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $this->load->view('rest/bom_dish',$data);
+    }
+    
 
 
 

@@ -656,6 +656,22 @@ class Rest extends CI_Model{
 		return $this->db2->get_where('Eat_tables', array("Stat" => 1, "EID" => $EID))->result_array();
 	}
 
+	public function getItemLists(){
+		return $this->db2->select('i.*, c.RMCatgName')
+						->join('RMCatg c','c.RMCatgCd = i.RMCatg', 'inner')
+						->get_where('RMItems i', array('i.Stat' => 0))
+						->result_array();
+	}
+
+	public function getBomDishLists(){
+		return 	$this->db2->select('b.*')
+						->join('MenuItem m','m.MCatgId = b.ItemId', 'inner')
+						->join('RMItems r','r.RMCd = b.RMCd', 'inner')
+						->join('RMItemsUOM ru', 'ru.RCd= b.RMUOM', 'inner')
+						->get('BOM_Dish b')
+						->result_array();
+	}
+
 	
 
 	

@@ -1041,6 +1041,40 @@
         </div>
     </div>
 
+    <div class="modal fade" id="assistModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Eatout&nbsp; &nbsp;&nbsp;[Table No. <span id="tbl_no"></span>]</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="assistForm">
+                <input type="hidden" id="help_table_text_id" name="help_table_text_id">
+                <input type="hidden" name="respond_call_help" value="1">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <select name="status" class="form-control" required="">
+                                <option value="">Select</option>
+                                <option value="1">Assign</option>
+                                <option value="3">Close</option>
+                                <option value="0">Pending</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <input type="submit" class="btn btn-sm btn-success" value="Submit">
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
 <script type="text/javascript">
     // $(document).ready(function () {
     //     $('#table_view').DataTable();
@@ -2140,7 +2174,11 @@
 
                         var a = '';
                         for(var i=0; i<data.length; i++){
-                            a += '<button class="btn btn-sm btn-danger btn-rounded" data-toggle="tooltip" data-placement="top" title="'+data[i].created_at+'" id="help_table_'+data[i].id+'" onclick="respond_call_help('+data[i].id+')">'+data[i].table_no+'</button> &nbsp;&nbsp;'
+                            var sts = 'danger';
+                            if(data[i].response_status == 1){
+                                sts = 'success';
+                            }
+                            a += '<button class="btn btn-sm btn-'+sts+' btn-rounded" data-toggle="tooltip" data-placement="top" title="'+data[i].created_at+'" id="help_table_'+data[i].id+'" onclick="respond_call_help('+data[i].id+','+data[i].table_no+')">'+data[i].table_no+'</button> &nbsp;&nbsp;'
                         }
                         // var a = '<button class="btn btn-sm btn-danger btn-rounded" data-toggle="tooltip" data-placement="top" title="'+data.created_at+'" id="help_table_'+help_table_id+'" onclick="respond_call_help('+help_table_id+')">'+data.table_no+'</button> &nbsp;&nbsp;';
                         // $('#hlep_table_list').append(a);
@@ -2173,28 +2211,48 @@
                 }
             });
         }
-        function respond_call_help(id){
-            if(confirm("Assistance Provided?")){
-                $.ajax({
+        function respond_call_help(id, tblNo){
+            $('#assistModal').modal('show');
+            $('#help_table_text_id').val(id);
+            $('#tbl_no').html(tblNo);
+            // if(confirm("Assistance Provided?")){
+            //     $.ajax({
+            //         url: "<?php echo base_url('restaurant/customer_landing_page_ajax'); ?>",
+            //         type: "post",
+            //         data: {
+            //             respond_call_help: 1,
+            //             help_table_id :id
+            //         },
+            //         success: function(data) {
+            //             // alert(data);
+            //             if(data == 1){
+            //                 $('#help_table_'+id).hide();
+            //                 alert("Successfully Updated");
+            //             }else{
+            //                 // $('#help').modal('hide');
+            //                 alert("Something went wrong");
+            //             }
+            //         }
+            //     });
+            // }
+        }
+
+        $('#assistForm').on('submit', function(e){
+            e.preventDefault();
+            var id = $('#help_table_text_id').val();
+            var data = $(this).serializeArray();
+
+            $.ajax({
                     url: "<?php echo base_url('restaurant/customer_landing_page_ajax'); ?>",
                     type: "post",
-                    data: {
-                        respond_call_help: 1,
-                        help_table_id :id
-                    },
+                    data: data,
                     success: function(data) {
                         // alert(data);
-                        if(data == 1){
-                            $('#help_table_'+id).hide();
-                            alert("Successfully Updated");
-                        }else{
-                            // $('#help').modal('hide');
-                            alert("Something went wrong");
-                        }
+                        $('#assistModal').modal('hide');
                     }
-                });
-            }
-        }
+                });            
+        })
+
         function check_new_orders(){
             // if(confirm("Assistance Provided?")){
                 var v = '<?= $TableAcceptReqd?>';

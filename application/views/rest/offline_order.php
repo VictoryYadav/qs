@@ -74,32 +74,38 @@
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-md-8 form-group col-6">
+                                            <div class="col-md-9 form-group col-6">
                                                 <label>Customer Address</label>
                                                 <input type="text" class="form-control" id="cust-address" disabled="">
                                             </div>
 
-                                            <div class="col-md-4 form-group col-6">
+                                            <div class="col-md-3 form-group col-6">
                                                 <label>Phone No</label>
                                                 <input type="text" id="phone" class="form-control" disabled="">
                                             </div>
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-md-4 form-group col-4">
-                                                <button class="btn btn-primary btn-sm btn-rounded" data-toggle="modal" data-target="#item-list-modal">
+                                            <div class="col-md-7 form-group col-6">
+                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#item-list-modal" title="Kitchen Order Ticket">KOT 
                                                     <i class="fa fa-plus"></i>
                                                 </button>
+
+                                                <button class="btn btn-success btn-sm send-to-kitchen" data_type="save_to_kitchen">Send to Kitchen</button>
+                                                <button class="btn btn-warning btn-sm send-to-kitchen" data_type="bill">Bill</button>
+
                                             </div>
 
-                                            <div class="col-md-4 form-group text-center col-8">
+                                            <!-- <div class="col-md-4 form-group text-center col-8">
+
                                                 <button class="btn btn-success send-to-kitchen" data_type="save_to_kitchen">Send to Kitchen</button>
                                                 <button class="btn btn-warning send-to-kitchen" data_type="bill">Bill</button>
+                                            </div> -->
+                                            <div class="col-md-2 form-group text-right d-none d-sm-block">
+                                                <label>Bill Amount : </label>
                                             </div>
-
-                                            <div class="col-md-4 form-group">
-                                                <label>Total Bill Amount : </label>
-                                                <div style="display: inline-block;">
+                                            <div class="col-md-3 form-group col-6">
+                                                <div>
                                                     <input type="text" id="total-value" readonly="" value="0" class="form-control">
                                                 </div>
                                             </div>
