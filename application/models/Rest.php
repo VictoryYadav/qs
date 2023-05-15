@@ -664,12 +664,16 @@ class Rest extends CI_Model{
 	}
 
 	public function getBomDishLists(){
-		return 	$this->db2->select('b.*')
+		return 	$this->db2->select('b.*, rm.Name,r.RMName,m.ItemNm')
 						->join('MenuItem m','m.MCatgId = b.ItemId', 'inner')
 						->join('RMItems r','r.RMCd = b.RMCd', 'inner')
-						->join('RMItemsUOM ru', 'ru.RCd= b.RMUOM', 'inner')
+						->join('RMUOM rm', 'rm.UOMCd= b.RMUOM', 'inner')
 						->get('BOM_Dish b')
 						->result_array();
+	}
+
+	public function getRMUOMList(){
+		return $this->db2->get_where('RMUOM', array('Stat' => 0))->result_array();
 	}
 
 	

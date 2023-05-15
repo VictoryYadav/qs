@@ -35,30 +35,22 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form method="post" id="catForm">
-                                            <input type="hidden" id="RMCd" name="RMCd">
+                                        <form method="post" id="bomForm">
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <select name="RMCatg" id="RMCatg" class="form-control" required="">
-                                                            <option value="">Select</option>
-                                                            <?php
-                                                    if(!empty($catList)){
-                                                        foreach ($catList as $row) { ?>
-                                                            <option value="<?= $row['RMCatgCd'] ?>"><?= $row['RMCatgName']; ?></option>
-                                                        <?php } } ?>
+                                                        <select name="cuisine" id="cuisine" class="form-control" required="" onchange="getCategory()">
+                                                            <option value="">Select Cuisine</option>
+                                                            <?php foreach($cuisine as $key){?>
+                                                        <option value="<?= $key['CID']?>"><?= $key['Name']?></option>
+                                                        <?php }?>
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <select name="RMCatg" id="RMCatg" class="form-control" required="">
+                                                        <select name="menucat" id="menucat" class="form-control" required="" onchange="getItem()">
                                                             <option value="">Select</option>
-                                                            <?php
-                                                    if(!empty($catList)){
-                                                        foreach ($catList as $row) { ?>
-                                                            <option value="<?= $row['RMCatgCd'] ?>"><?= $row['RMCatgName']; ?></option>
-                                                        <?php } } ?>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -66,11 +58,7 @@
                                                     <div class="form-group">
                                                         <select name="ItemId" id="ItemId" class="form-control" required="">
                                                             <option value="">Select</option>
-                                                            <?php
-                                                    if(!empty($catList)){
-                                                        foreach ($catList as $row) { ?>
-                                                            <option value="<?= $row['RMCatgCd'] ?>"><?= $row['RMCatgName']; ?></option>
-                                                        <?php } } ?>
+                                                            
                                                         </select>
                                                     </div>
                                                 </div>
@@ -79,9 +67,9 @@
                                                         <select name="RMCd" id="RMCd" class="form-control" required="">
                                                             <option value="">Select</option>
                                                             <?php
-                                                    if(!empty($catList)){
-                                                        foreach ($catList as $row) { ?>
-                                                            <option value="<?= $row['RMCatgCd'] ?>"><?= $row['RMCatgName']; ?></option>
+                                                    if(!empty($rm_items)){
+                                                        foreach ($rm_items as $row) { ?>
+                                                            <option value="<?= $row['RMCd'] ?>"><?= $row['RMName']; ?></option>
                                                         <?php } } ?>
                                                         </select>
                                                     </div>
@@ -94,21 +82,20 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <select name="RMUOM" id="RMUOM" class="form-control" required="">
-                                                            <option value="">Select</option>
+                                                            <option value="">Select RMUOM</option>
                                                             <?php
-                                                    if(!empty($catList)){
-                                                        foreach ($catList as $row) { ?>
-                                                            <option value="<?= $row['RMCatgCd'] ?>"><?= $row['RMCatgName']; ?></option>
+                                                    if(!empty($RMUOM)){
+                                                        foreach ($RMUOM as $row) { ?>
+                                                            <option value="<?= $row['UOMCd'] ?>"><?= $row['Name']; ?></option>
                                                         <?php } } ?>
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <input type="submit" class="btn btn-success" value="Submit">
-                                                </div>
-                                                <!-- <div class="col-md-3">
-                                                    <div class="text-success" id="msgText"></div>
-                                                </div> -->
+                                            </div>
+                                            <div class="">
+                                                <input type="submit" class="btn btn-success" value="Submit">
+                                            
+                                                <div class="text-success" id="msgText"></div>
                                             </div>
                                         </form>
                                     </div>
@@ -120,26 +107,30 @@
                                                 <thead>
                                                 <tr >
                                                     <th>#</th>
+                                                    <th>Item Name</th>
                                                     <th>RMName</th>
-                                                    <th>RMCat</th>
-                                                    <th>Action</th>
+                                                    <th>RMUOM</th>
+                                                    <th>Quantity</th>
+                                                    <!-- <th>Action</th> -->
                                                 </tr>
                                                 </thead>
             
                                                 <tbody>
                                                     <?php
-                                                    if(!empty($rm_items)){
+                                                    if(!empty($bom_dish)){
                                                         $i = 1;
-                                                        foreach ($rm_items as $row) { ?>
+                                                        foreach ($bom_dish as $row) { ?>
                                                     <tr>
                                                         <td><?= $i++; ?></td>
+                                                        <td><?= $row['ItemNm']; ?></td>
                                                         <td><?= $row['RMName']; ?></td>
-                                                        <td><?= $row['RMCatgName']; ?></td>
-                                                        <td>
+                                                        <td><?= $row['RMQty']; ?></td>
+                                                        <td><?= $row['Name']; ?></td>
+                                                        <!-- <td>
                                                             <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['RMCd'] ?>,<?= $row['RMCatg'] ?>, '<?= $row['RMName'] ?>')">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
-                                                        </td>
+                                                        </td> -->
                                                     </tr>
                                                     <?php    }
                                                     } 
@@ -180,14 +171,54 @@
         $('#rm_cat_list').DataTable();
     });
 
-    $('#catForm').on('submit', function(e){
+    function getCategory(){
+        var cui = $('#cuisine').val();
+        // alert(cui);
+        $.ajax({
+            url: "<?php echo base_url('restaurant/item_list_get_category'); ?>",
+            type: "post",
+            data:{'CID': cui},
+            success: function(data){
+                // alert(data);
+                data = JSON.parse(data);
+                var b = '<option value = "">ALL</option>';
+                for(i = 0;i<data.length;i++){
+                    b = b+'<option value="'+data[i].MCatgId+'">'+data[i].MCatgNm+'</option>';
+                }
+                // alert(b);
+                $('#menucat').html(b);
+            }
+        });
+    }
+
+    function getItem(){
+        var mcatg = $('#menucat').val();
+        $.ajax({
+            url: "<?php echo base_url('restaurant/getMenuItemList'); ?>",
+            type: "post",
+            data:{'MCatgId': mcatg},
+            success: function(data){
+                // alert(data);
+                data = JSON.parse(data);
+                var b = '<option value = "">Select</option>';
+                for(i = 0;i<data.length;i++){
+                    b = b+'<option value="'+data[i].ItemId+'">'+data[i].ItemNm+'</option>';
+                }
+                // alert(b);
+                $('#ItemId').html(b);
+            }
+        });
+    }
+
+
+    $('#bomForm').on('submit', function(e){
         e.preventDefault();
 
         var data = $(this).serializeArray();
-        $.post('<?= base_url('restaurant/rmitems_list') ?>',data,function(res){
+        $.post('<?= base_url('restaurant/bom_dish_list') ?>',data,function(res){
             if(res.status == 'success'){
               $('#msgText').html(res.response);
-            location.reload();
+            // location.reload();
             }else{
               $('#msgText').html(res.response);
             }
@@ -195,10 +226,5 @@
 
     });
 
-    function editData(itemid,catid, rmname){
-        console.log(itemid+' '+catid+' '+rmname);
-        $('#RMCd').val(itemid);
-        $('#RMCatg').val(catid);
-        $('#RMName').val(rmname);
-    }
+  
 </script>

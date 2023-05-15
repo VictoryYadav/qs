@@ -3158,28 +3158,13 @@ class Restaurant extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
             
-            $RMCd = 0;
-            if(isset($_POST['RMCd']) && !empty($_POST['RMCd'])){
-                $RMCd = $_POST['RMCd'];
-            }
-
-            if(!empty($RMCd)){
-                updateRecord('RMItems', array('RMName' => $_POST['RMName']), array('RMCd' => $RMCd));
-                $status = 'success';
-                $response = 'RMItem Updated.';
-            }else{
-                $check = getRecords('RMItems', array('RMName' => $_POST['RMName'], 'RMCatg' => $_POST['RMCatg']));
-                if(!empty($check)){
-                    $response = 'RMItem Already Exists';
-                }else{
-                    $cat['RMName'] = $_POST['RMName'];
-                    $cat['RMCatg'] = $_POST['RMCatg'];
-                    $cat['Stat'] = 0;
-                    insertRecord('RMItems', $cat);
-                    $status = 'success';
-                    $response = 'RMItem Inserted';
-                }
-            }
+            $bom = $_POST;
+            unset($bom['cuisine']);
+            unset($bom['menucat']);
+            insertRecord('BOM_Dish', $bom);
+            
+            $status = 'success';
+            $response = 'Data inserted.';
             
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -3189,13 +3174,25 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        // $data['catList'] = getRecords('RMCatg', NULL);
+        $data['cuisine'] = $this->db2->get('Cuisines')->result_array();
         $data['bom_dish'] = $this->rest->getBomDishLists();
+        $data['rm_items'] = $this->rest->getItemLists();
+        $data['RMUOM'] = $this->rest->getRMUOMList();
         $data['title'] ='RMItems List';
         // echo "<pre>";
         // print_r($data);
         // die;
         $this->load->view('rest/bom_dish',$data);
+    }
+
+    public function getMenuItemList(){
+        if($_POST){
+            $mcatid = $_POST['MCatgId'];
+            $data = $this->db2->select('ItemId, ItemNm')
+                              ->get_where('MenuItem', array('MCatgId' => $mcatid))
+                              ->result_array();
+            echo json_encode($data);
+        }
     }
     
 
