@@ -162,6 +162,25 @@
         });
     }
 
+    function getRMItemsUOM(){
+        var RMCd = $('#RMCd').val();
+        $.ajax({
+            url: "<?php echo base_url('restaurant/getRMItemsUOMList'); ?>",
+            type: "post",
+            data:{'RMCd': RMCd},
+            success: function(data){
+                // alert(data);
+                data = JSON.parse(data);
+                var b = '<option value = "">Select Item</option>';
+                for(i = 0;i<data.length;i++){
+                    b = b+'<option value="'+data[i].UOMCd+'">'+data[i].Name+'</option>';
+                }
+                // alert(b);
+                $('#RMUOM').html(b);
+            }
+        });
+    }
+
     function showBlock(){
         var item = $('#ItemId').val();
         if(item){
@@ -190,7 +209,7 @@
 
         var template = `<tr>
                             <td>
-                            <select name="RMCd[]" id="RMCd" class="form-control" required="">
+                            <select name="RMCd[]" id="RMCd" class="form-control" required="" onchange="getRMItemsUOM()">
                                 <option value="">Select</option>
                                 <?php
                         if(!empty($rm_items)){
@@ -207,11 +226,6 @@
                             <td>
                             <select name="RMUOM[]" id="RMUOM" class="form-control" required="">
                                 <option value="">Select RMUOM</option>
-                                <?php
-                        if(!empty($RMUOM)){
-                            foreach ($RMUOM as $row) { ?>
-                                <option value="<?= $row['UOMCd'] ?>"><?= $row['Name']; ?></option>
-                            <?php } } ?>
                             </select>
                                 
                             </td>

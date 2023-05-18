@@ -3207,6 +3207,17 @@ class Restaurant extends CI_Controller {
         }
     }
 
+    public function getRMItemsUOMList(){
+        if($_POST){
+            $RMCd = $_POST['RMCd'];
+            $data = $this->db2->select('r.*, rm.RMCd')
+                            ->join('RMUOM r','r.UOMCd = rm.UOMCd', 'inner')
+                              ->get_where('RMItemsUOM rm', array('rm.RMCd' => $RMCd))
+                              ->result_array();
+            echo json_encode($data);
+        }
+    }
+
     public function get_bom_dish(){
         $status = "error";
         $response = "Something went wrong! Try again later.";
