@@ -50,47 +50,38 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <select name="menucat" id="menucat" class="form-control" required="" onchange="getItem()">
-                                                            <option value="">Select</option>
+                                                            <option value="">Select Category</option>
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <select name="ItemId" id="ItemId" class="form-control" required="">
-                                                            <option value="">Select</option>
+                                                        <select name="ItemId" id="ItemId" class="form-control" required="" onchange="showBlock()">
+                                                            <option value="">Select Item</option>
                                                             
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <select name="RMCd" id="RMCd" class="form-control" required="">
-                                                            <option value="">Select</option>
-                                                            <?php
-                                                    if(!empty($rm_items)){
-                                                        foreach ($rm_items as $row) { ?>
-                                                            <option value="<?= $row['RMCd'] ?>"><?= $row['RMName']; ?></option>
-                                                        <?php } } ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <input type="number" class="form-control" name="RMQty" placeholder="Quantity" required="" id="RMQty">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <select name="RMUOM" id="RMUOM" class="form-control" required="">
-                                                            <option value="">Select RMUOM</option>
-                                                            <?php
-                                                    if(!empty($RMUOM)){
-                                                        foreach ($RMUOM as $row) { ?>
-                                                            <option value="<?= $row['UOMCd'] ?>"><?= $row['Name']; ?></option>
-                                                        <?php } } ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
+                                            </div>
+                                            <div id="rowBlock" style="display:none;">
+                                            <button class="btn btn-sm btn-success btn-rounded mb-1" onclick="addRow()"><i class="fa fa-plus"></i></button>
+
+                                                <div class="table-responsive">          
+                                                  <table class="table table-bordered">
+                                                    <thead>
+                                                      <tr>
+                                                        <th>RMCd</th>
+                                                        <th>Quantiry</th>
+                                                        <th>RMUOM</th>
+                                                        <th>Action</th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody id="box_body">
+                                                        
+                                                    </tbody>
+                                                  </table>
+                                                  </div>
+
                                             </div>
                                             <div class="">
                                                 <input type="submit" class="btn btn-success" value="Submit">
@@ -100,46 +91,7 @@
                                         </form>
                                     </div>
                                 </div>
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table id="rm_cat_list" class="table table-bordered">
-                                                <thead>
-                                                <tr >
-                                                    <th>#</th>
-                                                    <th>Item Name</th>
-                                                    <th>RMName</th>
-                                                    <th>RMUOM</th>
-                                                    <th>Quantity</th>
-                                                    <!-- <th>Action</th> -->
-                                                </tr>
-                                                </thead>
-            
-                                                <tbody>
-                                                    <?php
-                                                    if(!empty($bom_dish)){
-                                                        $i = 1;
-                                                        foreach ($bom_dish as $row) { ?>
-                                                    <tr>
-                                                        <td><?= $i++; ?></td>
-                                                        <td><?= $row['ItemNm']; ?></td>
-                                                        <td><?= $row['RMName']; ?></td>
-                                                        <td><?= $row['RMQty']; ?></td>
-                                                        <td><?= $row['Name']; ?></td>
-                                                        <!-- <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['RMCd'] ?>,<?= $row['RMCatg'] ?>, '<?= $row['RMName'] ?>')">
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
-                                                        </td> -->
-                                                    </tr>
-                                                    <?php    }
-                                                    } 
-                                                    ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
 
@@ -200,7 +152,7 @@
             success: function(data){
                 // alert(data);
                 data = JSON.parse(data);
-                var b = '<option value = "">Select</option>';
+                var b = '<option value = "">Select Item</option>';
                 for(i = 0;i<data.length;i++){
                     b = b+'<option value="'+data[i].ItemId+'">'+data[i].ItemNm+'</option>';
                 }
@@ -210,12 +162,79 @@
         });
     }
 
+    function showBlock(){
+        var item = $('#ItemId').val();
+        if(item){
+
+            $.post('<?= base_url('restaurant/get_bom_dish') ?>',{item:item},function(res){
+                if(res.status == 'success'){
+                    var data = res.response;
+                    console.log(data);
+
+                    var b = '';
+                    
+                    // // alert(b);
+                    $('#box_body').html(res.response);
+
+                  // $('#box_body').html(res.response);
+                }else{
+                  $('#box_body').html(res.response);
+                }
+            });
+
+            $('#rowBlock').show();
+        }
+    }
+
+    function addRow(){
+
+        var template = `<tr>
+                            <td>
+                            <select name="RMCd[]" id="RMCd" class="form-control" required="">
+                                <option value="">Select</option>
+                                <?php
+                        if(!empty($rm_items)){
+                            foreach ($rm_items as $row) { ?>
+                                <option value="<?= $row['RMCd'] ?>"><?= $row['RMName']; ?></option>
+                            <?php } } ?>
+                            </select>
+                                
+                            </td>
+                            <td>
+                            <input type="number" class="form-control" name="RMQty[]" placeholder="Quantity" required="" id="RMQty">
+                                
+                            </td>
+                            <td>
+                            <select name="RMUOM[]" id="RMUOM" class="form-control" required="">
+                                <option value="">Select RMUOM</option>
+                                <?php
+                        if(!empty($RMUOM)){
+                            foreach ($RMUOM as $row) { ?>
+                                <option value="<?= $row['UOMCd'] ?>"><?= $row['Name']; ?></option>
+                            <?php } } ?>
+                            </select>
+                                
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-danger btn-rounded" onclick="deleteItem(this)">
+                                    <i class="fa fa-trash"></i></button>
+                            </td>
+                        </tr>`;
+
+            $("#box_body").append(template);
+
+    }
+    // Delete item from table
+    function deleteItem(event) {
+        $(event).parent().parent().remove();
+    }
+
 
     $('#bomForm').on('submit', function(e){
         e.preventDefault();
 
         var data = $(this).serializeArray();
-        $.post('<?= base_url('restaurant/bom_dish_list') ?>',data,function(res){
+        $.post('<?= base_url('restaurant/bom_dish') ?>',data,function(res){
             if(res.status == 'success'){
               $('#msgText').html(res.response);
             // location.reload();

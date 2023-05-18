@@ -3153,18 +3153,30 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/rm_items',$data);
     }
 
-    public function bom_dish_list(){
+    public function bom_dish(){
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
-            
-            $bom = $_POST;
-            unset($bom['cuisine']);
-            unset($bom['menucat']);
-            insertRecord('BOM_Dish', $bom);
-            
+
+            $bom['ItemId'] = $_POST['ItemId'];
+            for ($i=0; $i < sizeof($_POST['RMCd']) ; $i++) { 
+                $BOMNo = 0;
+                if(isset($_POST['BOMNo'][$i]) && !empty($_POST['BOMNo'][$i])){
+                    $BOMNo = $_POST['BOMNo'][$i];
+                }
+                $bom['RMCd'] = $_POST['RMCd'][$i];
+                $bom['RMQty'] = $_POST['RMQty'][$i];
+                $bom['RMUOM'] = $_POST['RMUOM'][$i];
+                if(!empty($BOMNo)){
+                    updateRecord('BOM_Dish', $bom, array('BOMNo' => $BOMNo) );
+                    $response = 'Data updated.';
+                }else{
+                    insertRecord('BOM_Dish', $bom);
+                    $response = 'Data inserted.';
+                }
+            }
+
             $status = 'success';
-            $response = 'Data inserted.';
             
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -3175,10 +3187,10 @@ class Restaurant extends CI_Controller {
         }
 
         $data['cuisine'] = $this->db2->get('Cuisines')->result_array();
-        $data['bom_dish'] = $this->rest->getBomDishLists();
+        // $data['bom_dish'] = $this->rest->getBomDishLists();
         $data['rm_items'] = $this->rest->getItemLists();
         $data['RMUOM'] = $this->rest->getRMUOMList();
-        $data['title'] ='RMItems List';
+        $data['title'] ='Bill Of Material';
         // echo "<pre>";
         // print_r($data);
         // die;
@@ -3193,6 +3205,70 @@ class Restaurant extends CI_Controller {
                               ->result_array();
             echo json_encode($data);
         }
+    }
+
+    public function get_bom_dish(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+           
+            $response = 'No data found!';
+            $data = $this->db2->get_where('BOM_Dish', array('ItemId' => $_POST['item']))->result_array();
+            $temp = '';
+            if(!empty($data)){
+                foreach ($data as $key) {
+                    $temp .= '<tr>
+                            <td>'.$this->getRMName($key['RMCd']).'</td>
+                            <td>
+                            <input type="number" class="form-control" name="RMQty[]" placeholder="Quantity" required="" id="RMQty" value="'.$key['RMQty'].'">
+                            </td>
+                            <td>'.$this->getRMUOM($key['RMUOM']).'</td>
+                            <td>
+                            <input type="hidden" name="BOMNo[]" value="'.$key['BOMNo'].'" />
+                            </td>
+                        </tr>';
+                }
+                $response = $temp;
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    private function getRMName($RMCd){
+        $rm_items = $this->rest->getItemLists();
+        $temp = '<select name="RMCd[]" id="RMCd" class="form-control" required="">
+                                <option value="">Select</option>';
+        foreach ($rm_items as $row ) {
+            $select = '';
+            if($row['RMCd'] == $RMCd){
+                $select = 'selected';
+            }
+            $temp .= '<option value="'.$row['RMCd'].'" '.$select.'>'.$row['RMName'].'</option>';
+        }
+        $temp .= '</select>';
+        return $temp;
+    }
+
+    private function getRMUOM($UOMCd){
+        $data['RMUOM'] = $this->rest->getRMUOMList();
+        $temp = '<select name="RMUOM[]" id="RMUOM" class="form-control" required="">
+                                <option value="">Select RMUOM</option>';
+        foreach ($data['RMUOM']as $row ) {
+            $select = '';
+            if($row['UOMCd'] == $UOMCd){
+                $select = 'selected';
+            }
+            $temp .= '<option value="'.$row['UOMCd'].'" '.$select.'>'.$row['Name'].'</option>';
+        }
+        $temp .= '</select>';
+        return $temp;
     }
     
 
