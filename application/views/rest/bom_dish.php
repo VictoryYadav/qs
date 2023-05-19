@@ -239,6 +239,7 @@
     }
     // Delete item from table
     function deleteItem(event) {
+        count--;
         $(event).parent().parent().remove();
     }
 
@@ -249,8 +250,9 @@
         var data = $(this).serializeArray();
         $.post('<?= base_url('restaurant/bom_dish') ?>',data,function(res){
             if(res.status == 'success'){
-              $('#msgText').html(res.response);
-            // location.reload();
+              // $('#msgText').html(res.response);
+              alert(res.response);
+            location.reload();
             }else{
               $('#msgText').html(res.response);
             }

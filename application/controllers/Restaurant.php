@@ -3209,10 +3209,7 @@ class Restaurant extends CI_Controller {
     public function getRMItemsUOMList(){
         if($_POST){
             $RMCd = $_POST['RMCd'];
-            $data = $this->db2->select('r.*, rm.RMCd')
-                            ->join('RMUOM r','r.UOMCd = rm.UOMCd', 'inner')
-                              ->get_where('RMItemsUOM rm', array('rm.RMCd' => $RMCd))
-                              ->result_array();
+            $data = $this->rest->getRmUOMlist($RMCd);
             echo json_encode($data);
         }
     }
@@ -3226,13 +3223,15 @@ class Restaurant extends CI_Controller {
             $data = $this->db2->get_where('BOM_Dish', array('ItemId' => $_POST['item']))->result_array();
             $temp = '';
             if(!empty($data)){
+                $count = 0;
                 foreach ($data as $key) {
+                    $count++;
                     $temp .= '<tr>
-                            <td>'.$this->getRMName($key['RMCd']).'</td>
+                            <td>'.$this->getRMName($key['RMCd'], $count).'</td>
                             <td>
                             <input type="number" class="form-control" name="RMQty[]" placeholder="Quantity" required="" id="RMQty" value="'.$key['RMQty'].'">
                             </td>
-                            <td>'.$this->getRMUOM($key['RMUOM']).'</td>
+                            <td>'.$this->getRMUOM($key['RMCd'], $key['RMUOM'], $count).'</td>
                             <td>
                             <input type="hidden" name="BOMNo[]" value="'.$key['BOMNo'].'" />
                             </td>
@@ -3251,9 +3250,9 @@ class Restaurant extends CI_Controller {
         }
     }
 
-    private function getRMName($RMCd){
+    private function getRMName($RMCd, $count){
         $rm_items = $this->rest->getItemLists();
-        $temp = '<select name="RMCd[]" id="RMCd" class="form-control" required="">
+        $temp = '<select name="RMCd[]" id="RMCd_'.$count.'" class="form-control" required="" onchange="getRMItemsUOM('.$count.')">
                                 <option value="">Select</option>';
         foreach ($rm_items as $row ) {
             $select = '';
@@ -3266,9 +3265,9 @@ class Restaurant extends CI_Controller {
         return $temp;
     }
 
-    private function getRMUOM($UOMCd){
-        $data['RMUOM'] = $this->rest->getRMUOMList();
-        $temp = '<select name="RMUOM[]" id="RMUOM" class="form-control" required="">
+    private function getRMUOM($RMCd, $UOMCd, $count){
+        $data['RMUOM'] = $this->rest->getRmUOMlist($RMCd);
+        $temp = '<select name="RMUOM[]" id="RMUOM_'.$count.'" class="form-control" required="">
                                 <option value="">Select RMUOM</option>';
         foreach ($data['RMUOM']as $row ) {
             $select = '';

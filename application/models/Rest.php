@@ -672,8 +672,15 @@ class Rest extends CI_Model{
 						->result_array();
 	}
 
-	public function getRMUOMList(){
-		return $this->db2->get_where('RMUOM', array('Stat' => 0))->result_array();
+	// public function getRMUOMList(){
+	// 	return $this->db2->get_where('RMUOM', array('Stat' => 0))->result_array();
+	// }
+
+	public function getRmUOMlist($RMCd){
+		return $this->db2->select('r.*, rm.RMCd')
+                            ->join('RMUOM r','r.UOMCd = rm.UOMCd', 'inner')
+                              ->get_where('RMItemsUOM rm', array('rm.RMCd' => $RMCd))
+                              ->result_array();
 	}
 
 	
