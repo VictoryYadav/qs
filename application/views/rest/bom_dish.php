@@ -57,7 +57,7 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <select name="ItemId" id="ItemId" class="form-control" required="" onchange="showBlock()">
-                                                            <option value="">Select Item</option>
+                                                            <option value="">Select Dish</option>
                                                             
                                                         </select>
                                                     </div>
@@ -70,9 +70,9 @@
                                                   <table class="table table-bordered">
                                                     <thead>
                                                       <tr>
-                                                        <th>RMCd</th>
+                                                        <th>Item</th>
                                                         <th>Quantiry</th>
-                                                        <th>RMUOM</th>
+                                                        <th>UOM</th>
                                                         <th>Action</th>
                                                       </tr>
                                                     </thead>
@@ -152,7 +152,7 @@
             success: function(data){
                 // alert(data);
                 data = JSON.parse(data);
-                var b = '<option value = "">Select Item</option>';
+                var b = '<option value = "">Select Dish</option>';
                 for(i = 0;i<data.length;i++){
                     b = b+'<option value="'+data[i].ItemId+'">'+data[i].ItemNm+'</option>';
                 }
@@ -162,8 +162,8 @@
         });
     }
 
-    function getRMItemsUOM(){
-        var RMCd = $('#RMCd').val();
+    function getRMItemsUOM(count){
+        var RMCd = $('#RMCd_'+count).val();
         $.ajax({
             url: "<?php echo base_url('restaurant/getRMItemsUOMList'); ?>",
             type: "post",
@@ -171,12 +171,12 @@
             success: function(data){
                 // alert(data);
                 data = JSON.parse(data);
-                var b = '<option value = "">Select Item</option>';
+                var b = '<option value = "">Select UOM</option>';
                 for(i = 0;i<data.length;i++){
                     b = b+'<option value="'+data[i].UOMCd+'">'+data[i].Name+'</option>';
                 }
                 // alert(b);
-                $('#RMUOM').html(b);
+                $('#RMUOM_'+count).html(b);
             }
         });
     }
@@ -205,35 +205,34 @@
         }
     }
 
+    var count = 0;
     function addRow(){
-
-        var template = `<tr>
-                            <td>
-                            <select name="RMCd[]" id="RMCd" class="form-control" required="" onchange="getRMItemsUOM()">
-                                <option value="">Select</option>
+        count++;
+        console.log(count);
+        var template = '<tr>\
+                            <td>\
+                            <select name="RMCd[]" id="RMCd_'+count+'" class="form-control" required="" onchange="getRMItemsUOM('+count+')">\
+                                <option value="">Select Item</option>\
                                 <?php
                         if(!empty($rm_items)){
                             foreach ($rm_items as $row) { ?>
-                                <option value="<?= $row['RMCd'] ?>"><?= $row['RMName']; ?></option>
+                                <option value="<?= $row['RMCd'] ?>"><?= $row['RMName']; ?></option>\
                             <?php } } ?>
-                            </select>
-                                
-                            </td>
-                            <td>
-                            <input type="number" class="form-control" name="RMQty[]" placeholder="Quantity" required="" id="RMQty">
-                                
-                            </td>
-                            <td>
-                            <select name="RMUOM[]" id="RMUOM" class="form-control" required="">
-                                <option value="">Select RMUOM</option>
-                            </select>
-                                
-                            </td>
-                            <td>
-                                <button class="btn btn-sm btn-danger btn-rounded" onclick="deleteItem(this)">
-                                    <i class="fa fa-trash"></i></button>
-                            </td>
-                        </tr>`;
+                            </select>\
+                            </td>\
+                            <td>\
+                            <input type="number" class="form-control" name="RMQty[]" placeholder="Quantity" required="" id="RMQty">\
+                            </td>\
+                            <td>\
+                            <select name="RMUOM[]" id="RMUOM_'+count+'" class="form-control" required="">\
+                                <option value="">Select UOM</option>\
+                            </select>\
+                            </td>\
+                            <td>\
+                                <button class="btn btn-sm btn-danger btn-rounded" onclick="deleteItem(this)">\
+                                    <i class="fa fa-trash"></i></button>\
+                            </td>\
+                        </tr>';
 
             $("#box_body").append(template);
 

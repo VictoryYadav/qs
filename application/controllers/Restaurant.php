@@ -3189,7 +3189,6 @@ class Restaurant extends CI_Controller {
         $data['cuisine'] = $this->db2->get('Cuisines')->result_array();
         // $data['bom_dish'] = $this->rest->getBomDishLists();
         $data['rm_items'] = $this->rest->getItemLists();
-        $data['RMUOM'] = $this->rest->getRMUOMList();
         $data['title'] ='Bill Of Material';
         // echo "<pre>";
         // print_r($data);
@@ -3223,7 +3222,7 @@ class Restaurant extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
            
-            $response = 'No data found!';
+            $response = '';
             $data = $this->db2->get_where('BOM_Dish', array('ItemId' => $_POST['item']))->result_array();
             $temp = '';
             if(!empty($data)){
