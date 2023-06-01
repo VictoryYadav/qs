@@ -7,6 +7,13 @@ class Restaurant extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+
+        if ($this->session->userdata('logged_in')) {
+            $this->authuser = $this->session->userdata('logged_in');
+        } else {
+            redirect(base_url());
+            // redirect(base_url('login?o='.authuser()->EID.'&c='.authuser()->ChainId));
+        }
 		$this->load->model('Rest', 'rest');
 
         $my_db = $this->session->userdata('my_db');

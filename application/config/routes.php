@@ -49,7 +49,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['default_controller'] = 'Dbcheck';
+$route['default_controller'] = 'Rcheck';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
@@ -58,8 +58,11 @@ $route['login'] = 'AuthController/index';
 $route['member/checklogin'] = 'AuthController/checklogin';
 
 $route['dashboard'] = 'DashboardController';
-$route['page_not_found'] = 'Dbcheck/page_not_found';
 $route['admin/add-form'] = 'DashboardController/form';
 
 $route['logout'] = 'AuthController/logout';
 
+// restaurant
+
+$route['page_not_found'] = 'Rcheck/page_not_found';
+$route['qr'] = 'Rcheck/index';

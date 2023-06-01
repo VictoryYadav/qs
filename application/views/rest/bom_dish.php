@@ -37,7 +37,7 @@
                                     <div class="card-body">
                                         <form method="post" id="bomForm">
                                             <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-4 col-6">
                                                     <div class="form-group">
                                                         <select name="cuisine" id="cuisine" class="form-control" required="" onchange="getCategory()">
                                                             <option value="">Select Cuisine</option>
@@ -47,18 +47,17 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-4 col-6">
                                                     <div class="form-group">
                                                         <select name="menucat" id="menucat" class="form-control" required="" onchange="getItem()">
                                                             <option value="">Select Category</option>
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-4 col-6">
                                                     <div class="form-group">
                                                         <select name="ItemId" id="ItemId" class="form-control" required="" onchange="showBlock()">
-                                                            <option value="">Select Dish</option>
-                                                            
+                                                            <option value="">Select Dish</option>   
                                                         </select>
                                                     </div>
                                                 </div>
