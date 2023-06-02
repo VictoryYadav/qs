@@ -116,6 +116,16 @@
 
         /* end grid view */
 
+        /*mobile screen only*/
+        @media only screen and (max-width: 480px) {
+          .product__item__pic{
+            height: 150px;
+          }
+          .mblclass{
+            margin-bottom: -30px;
+          }
+        }
+
     </style>
 </head>
 
@@ -307,7 +317,7 @@
                 var MCatgId = mCatList[0].MCatgId;
                 mcatIdg = MCatgId;
               // console.log(mCatList[0].MCatgId);
-              // console.log(filter);
+              console.log('ff'+filter.length);
               var mcat = '';
               var fltr = '';
               if(mCatList.length > 0){
@@ -329,9 +339,9 @@
                     fltr += '<label class="btn btn-b veg-btn active">\
                         <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" checked="" onchange="filterChange(0)">ALL</label>\
                     <label class="btn btn-b nonveg-btn">\
-                        <input type="radio" value="'+filter.FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter.FID+')">'+filter.Opt+'</label>\
+                        <input type="radio" value="'+filter[0].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[0].FID+')">'+filter[0].Opt+'</label>\
                     <label class="btn btn-b both-btn">\
-                        <input type="radio" value="'+filter.FIdA+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter.FIdA+')">'+filter.AltOpt+'</label>';
+                        <input type="radio" value="'+filter[0].FIdA+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[0].FIdA+')">'+filter[0].AltOpt+'</label>';
                     $('#filters').html(fltr);
                 }else{
                     $('#filterBlock').hide();
@@ -376,7 +386,7 @@
                       temp += '<div class="col-lg-3 col-md-6 col-sm-6 col-6">\
                                 <div class="product__item">\
                                     <div class="product__item__pic set-bg" data-setbg="<?= base_url(); ?>assets/img/product/product-7.jpg">\
-                                    <img src="<?= base_url(); ?>assets/img/product/product-7.jpg" alt="" style="width:100%;">\
+                                    <img src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="" style="width:100%;">\
                                         <ul class="product__item__pic__hover">\
                                             <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>\
                                             <li><a href="#"><i class="fa fa-plus"></i></a></li>\
@@ -385,11 +395,14 @@
                                     </div>\
                                     <div class="footer__widget">\
                                         <div class="row" style="margin-bottom: -33px;">\
-                                            <div class="col-lg-8 col-md-8 col-sm-8 col-12">\
+                                            <div class="col-lg-8 col-md-8 col-sm-8 col-12 mblclass">\
                                                 <p>'+data[i].ItemNm+'</p>\
                                             </div>\
-                                            <div class="col-lg-4 col-md-4 col-sm-4 col-12">\
-                                                <p class="text-right">\
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-12 ">\
+                                                <p class="text-right d-none d-sm-block">\
+                                                    <i class="fa fa-inr " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
+                                                </p>\
+                                                <p class="d-block d-sm-none">\
                                                     <i class="fa fa-inr " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
                                                 </p>\
                                             </div>\

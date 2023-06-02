@@ -38,28 +38,26 @@ class Cust extends CI_Model{
 		if ($foodTyp == 1) {				
 			$data['filter'] = $this->db2->select('FID, Opt, FIdA, AltOpt')
 							->get_where('Food', array('CTyp' => $data['mcat'][0]['CTyp']))
-							->row_array();
+							->result_array();
 		}
 		return $data;
 	}
 
 	function getItemDetailLists($CID, $mcat, $fl){
-// AND i.Stat = 0 and (DAYOFWEEK(CURDATE()) = i.DayNo OR i.DayNo = 0)  AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.ItemId from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID = $EID and md.Chainid=i.ChainId) order by i.Rank
-
 
 		$EID = authuser()->EID;
         $tableNo = authuser()->TableNo;
 
 		$where = "mi.Stat = 0 and (DAYOFWEEK(CURDATE()) = mi.DayNo OR mi.DayNo = 0)  AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and mi.ItemId Not in (Select md.ItemId from MenuItem_Disabled md where md.ItemId=mi.ItemId and md.EID = $EID and md.Chainid=mi.ChainId)";
-// ask for ctype filter
-        $sql = "mc.TaxType, mc.KitCd, mi.ItemId, mi.ItemNm, mi.ItemNm2, mi.ItemNm3, mi.ItemNm4, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, mi.ItmDesc, mi.ItmDesc2, mi.ItmDesc3, mi.ItmDesc4, mi.Ingeredients, mi.Ingeredients2, mi.Ingeredients3, mi.Ingeredients4, mi.Rmks, mi.Rmks2, mi.Rmks3, mi.Rmks4, mi.PrepTime, mi.AvgRtng, mi.FID, (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$tableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate";
+
+        $sql = "mc.TaxType, mc.KitCd, mi.ItemId, mi.ItemNm, mi.ItemNm2, mi.ItemNm3, mi.ItemNm4, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, mi.ItmDesc, mi.ItmDesc2, mi.ItmDesc3, mi.ItmDesc4, mi.Ingeredients, mi.Ingeredients2, mi.Ingeredients3, mi.Ingeredients4, mi.Rmks, mi.Rmks2, mi.Rmks3, mi.Rmks4, mi.PrepTime, mi.AvgRtng, mi.FID,ItemNm as imgSrc, mi.UItmCd,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$tableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate";
         if(!empty($mcat)){
             $this->db2->where('mc.MCatgId', $mcat);
         }
         if(!empty($fl)){
         	$this->db2->where('mi.FID', $fl);
         }
-        return $this->db2->select($sql)
+        $data =  $this->db2->select($sql)
         				->order_by('mi.Rank', 'ASC')
                         ->join('MenuItem mi', 'mi.MCatgId = mc.MCatgId')
                         // ->join('MenuItem_Disabled mid', 'mid.ItemId = mi.ItemId', 'inner')
@@ -69,11 +67,31 @@ class Cust extends CI_Model{
                             'mc.EID' => $EID
                         ))
                         ->result_array();
+         $ChainId = authuser()->ChainId;
+         if(!empty($data)){
+	        foreach ($data as &$key) {
+				if ($ChainId > 0) {
+					$imgSrc = "uploads/c$ChainId/" . trim($key['imgSrc']) . ".jpg";
+				} else {
+					$imgSrc = "uploads/e$EID/" . trim($key['imgSrc']) . ".jpg";
+				}
 
+				if (!file_exists($imgSrc)) {
+					$imgSrc = "uploads/general/" . trim($key['imgSrc']) . ".jpg";
+					if (!file_exists("../$imgSrc")) {
+						$imgSrc = "uploads/uItem/" . $key['UItmCd'] . ".jpg";
+					}
+				}
 
-        // echo "<pre>";
-        // print_r($data);
-        // die;
+				$key['imgSrc'] = ltrim($imgSrc);
+			}
+         }
+
+         return $data;
+
+        echo "<pre>";
+        print_r($data);
+        die;
 	}
 	
 }
