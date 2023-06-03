@@ -93,6 +93,7 @@
         /*grid view */
         .product{
             margin-top: -72px;
+            margin-bottom: -72px;
             /*padding-top: 10px !important;*/
         }
 
@@ -126,14 +127,37 @@
           }
         }
 
+        /*footer*/
+        .menu-footer {
+            margin-bottom: 0px;
+            background: #F3F6FA;
+        }
+        .btn-group, .btn-group-vertical {
+            position: relative;
+            display: -ms-inline-flexbox;
+            display: inline-flex;
+            vertical-align: middle;
+        }
+        .navbar a{    
+            display: block;
+            color: #000;
+            text-align: center;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .navbar .dropdown-toggle {
+            color:#fff;
+        }
+
     </style>
 </head>
 
 <body>
     <!-- Page Preloder -->
-    <div id="preloder">
+    <!-- <div id="preloder">
         <div class="loader"></div>
-    </div>
+    </div> -->
 
     <!-- Header Section Begin -->
     <header class="header" style="background: #f5f5f5;">
@@ -143,23 +167,29 @@
                         <div class="header__top__left">
                             <ul>
                                 <li><img src="<?= base_url() ?>assets_admin/images/QSLogo.png" alt="" style="width: 30px;height: 28px;"></li>
-                                <li><img src="<?= base_url() ?>assets/img/search.png" alt="" style="width: 30px;height: 28px;"></li>
+                                <li><img src="<?= base_url() ?>assets/img/search.png" alt="Quick Service" style="width: 30px;height: 28px;" data-toggle="modal" data-target="#item-list-modal"></li>
                             </ul>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-6">
                         <div class="header__top__right">
                             
-                            <div class="header__top__right__language">
+                            <!-- <div class="header__top__right__language">
                                 <div>English</div>
                                 <span class="arrow_carrot-down"></span>
                                 <ul>
                                     <li><a href="#">Spanis</a></li>
                                     <li><a href="#">English</a></li>
                                 </ul>
-                            </div>
+                            </div> -->
                             <div class="header__top__right__auth">
-                                <a href="#"><i class="fa fa-user"></i> Login</a>
+                                <span onclick="call_help()" style="cursor: pointer;" id="yellow_bell">
+                                    <img src="<?= base_url() ?>assets/img/yellow_bell.jpg" style="height: 28px;">
+                                </span>
+                                <span id="red_bell" style="display: none;">
+                                    <img src="<?= base_url() ?>assets/img/red_bell1.png" style="height: 30px;">
+                                </span>
+                                <img src="<?= base_url() ?>uploads/e51/logo.jpg" width="auto" height="28px;">
                             </div>
                         </div>
                     </div>
@@ -219,73 +249,286 @@
     </section>
     <!-- Product Section End -->
 
-    <!-- Footer Section Begin -->
-    <footer class="footer spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="footer__about">
-                        <div class="footer__about__logo">
-                            <a href="./index.html"><img src="<?= base_url(); ?>assets/img/logo.png" alt=""></a>
-                        </div>
-                        <ul>
-                            <li>Address: 60-49 Road 11378 New York</li>
-                            <li>Phone: +65 11.188.888</li>
-                            <li>Email: hello@colorlib.com</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
-                    <div class="footer__widget">
-                        <h6>Useful Links</h6>
-                        <ul>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">About Our Shop</a></li>
-                            <li><a href="#">Secure Shopping</a></li>
-                            <li><a href="#">Delivery infomation</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Our Sitemap</a></li>
-                        </ul>
-                        <ul>
-                            <li><a href="#">Who We Are</a></li>
-                            <li><a href="#">Our Services</a></li>
-                            <li><a href="#">Projects</a></li>
-                            <li><a href="#">Contact</a></li>
-                            <li><a href="#">Innovation</a></li>
-                            <li><a href="#">Testimonials</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-12">
-                    <div class="footer__widget">
-                        <h6>Join Our Newsletter Now</h6>
-                        <p>Get E-mail updates about our latest shop and special offers.</p>
-                        <form action="#">
-                            <input type="text" placeholder="Enter your mail">
-                            <button type="submit" class="site-btn">Subscribe</button>
-                        </form>
-                        <div class="footer__widget__social">
-                            <a href="#"><i class="fa fa-facebook"></i></a>
-                            <a href="#"><i class="fa fa-instagram"></i></a>
-                            <a href="#"><i class="fa fa-twitter"></i></a>
-                            <a href="#"><i class="fa fa-pinterest"></i></a>
-                        </div>
-                    </div>
-                </div>
+    <div class="navbar menu-footer" >
+        <div class="btn-group dropup">
+            <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
+                <img src="assets/img/menu.svg" width="33" height="20">
+                <h6 style="font-size: 12px;">Account</h6>           
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="/cust_registration.php">Edit Profile</a>
+                <a class="dropdown-item" href="/cust_registration.php">Transaction</a>
+                <a class="dropdown-item" href="reserve_table.php">Book Table</a>
+                <a class="dropdown-item" href="/cust_registration.php">Refer Outlet</a>
+                <a class="dropdown-item" href="/cust_registration.php">Login</a>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="footer__copyright">
-                        <div class="footer__copyright__text"><p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-  Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p></div>
-                        <div class="footer__copyright__payment"><img src="<?= base_url(); ?>assets/img/payment-item.png" alt=""></div>
+        </div>
+
+        <div class="btn-group dropup">
+            <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
+                <img src="assets/img/feedback.svg" width="33" height="20">
+                <h6 style="font-size: 12px;">About Us</h6>          
+                </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">T &amp; C</a>
+                <a class="dropdown-item" href="#">Testimonials</a>
+                <a class="dropdown-item" href="#">Contact Us</a>
+            </div>
+        </div>
+        <div class="btn-group dropup">
+            <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
+                <!-- <a data-toggle="modal" data-target="#offers-modal"> -->
+                <img src="assets/img/home.svg" width="33" height="20">
+            <h6 style="font-size: 12px;">Offers</h6>
+            </a>
+        </div>
+        
+
+        <div class="btn-group dropup">
+            <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
+                <img src="assets/img/inbox.svg" width="33" height="20">
+            <h6 style="font-size: 12px;">Order List</h6>
+            </a>
+            <div class="dropdown-menu" style="right: 0; left: auto;">
+                <a class="dropdown-item" href="order_details.php">Order List</a>
+                <a class="dropdown-item" href="send_to_kitchen.php">Current Order</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- item-list-modal -->
+    <div class="modal" id="item-list-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-center" style="display: block; padding: 5px; background-color: darkblue;">
+                    <h4 class="modal-title text-white">Search Item</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="text" id="search-item" class="form-control" placeholder="Enter the item Name">
+                            <div id="item-search-result"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </footer>
-    <!-- Footer Section End -->
+    </div>
+
+    <!-- itemModal Modal -->
+    <div class="modal product-modal" id="itemModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <img id="product-img" class="modal-item-img" src="assets/img/sample-foods.jpg">
+                <div class="modal-header" style="border-bottom: none;padding-bottom: 0px;">
+
+                    <div class="items-modal">
+                        <h6 id="item-name-modal">Item name </h6><span id="item_offer_remark"></span>
+                        <input type="hidden" id="sdetcd" value="">
+                        <input type="hidden" id="schcd" value="">
+                        <p id="item-prepare-time" time="" style="font-size: 12px;color: blue;margin-bottom: 2px;">45 min to prepare</p>
+                    </div>
+
+                    <div class="items-rating-modal">
+                        <i class="fa fa-star ratings" aria-hidden="true">
+                            <p id="item-rating-modal" class="rating-no" style="color: #000;">4.5</p>
+                        </i>
+                        <p class="modal-price price" id="product-price">20</p>
+                        <input type="text" id="TaxType" hidden>
+                    </div>
+
+                </div>
+                
+                <div class="modal-body" style="padding-top: 0px;">
+                    <p id="item-desc-modal" style="font-size: 12px;"></p>
+
+                    <div class="row" style="margin-left: 0px;margin-right: 0px;position: relative;">
+                        <div class="form-group" style="width: 156px; margin-bottom: 4px;">
+                            <label for="item_portions" style="margin: 0px;font-size: 14px;"><?= $language['portion']?>:</label>
+                            <select class="form-control" id="item_portions" name="item_portions"  style="font-size: 13px; height: 30px; padding: 4px; width: 103px; font-weight: 600;" <?php if ($Itm_Portion == 0) {echo "disabled";} ?>>
+                            </select>
+                        </div>
+                        <div style="position: absolute;right: 2pc;">
+                            <label style="margin: 0px;font-size: 14px;"><?= $language['quantity']?>:</label>
+                            <div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;">
+                                <span class="input-group-btn">
+                                    <button type="button" id="minus-qty" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;" disabled="">-
+                                    </button>
+                                </span>
+                                <input type="text" readonly="" id="qty-val" class="form-control input-number" value="1" min="1" max="10" style="height :28px;">
+                                <span class="input-group-btn">
+                                    <button type="button" id="add-qty" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;">+
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php if ($EType < 25) { ?>
+                        <div class="row" style="margin-left: 0px;margin-right: 0px;margin-bottom: 10px;">
+                            <div>
+                                <label for="sel1" style="margin: 0px;font-size: 14px;"><?= $language['delivery_time']?></label>
+                                <div id="waiting-btn" class="your-class1 btn-group btn-group-toggle" data-toggle="buttons" style="width: 96px;display: block;">
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button type="button" id="minus-serve" class="btn btn-default btn-number active" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;" aria-pressed="true" disabled="">-
+                                            </button>
+                                        </span>
+                                        <input type="text" readonly="" id="serve-val" class="form-control input-number" value="5" min="5" max="30" style="height: 28px;">
+                                        <span class="input-group-btn">
+                                            <button type="button" id="add-serve" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;" aria-pressed="false" >+
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="position: absolute;right: 2pc;width: 109px;">
+                                <label style="display: grid;margin: 0px;font-size: 14px;"><?= $language['take_away']?></label>
+                                <label class="switch">
+                                    <input type="checkbox" id="take-away">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    <?php } ?>
+
+                    <div class="row" style="margin: 0px;">
+                        <div class="remark" style="width: 100%">
+                            <input id="cust-remarks" type="text" class="form-control Remarks-input" placeholder="Enter Remarks" name="remark-box">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-footer" style="border-top: none;">
+            <button type="button" class="btn modal-back" data-dismiss="modal" width="50%"><img src="assets/img/back.svg" width="40" style="    margin-right: 10px;"><?= $language['back']?></button>
+            <button type="button" class="btn modal-confirm" data-dismiss="modal" width="50%" id="confirm-order" tax_type="" tbltyp=""><?= $language['add_item']?></button>
+        </div>
+    </div>
+
+    <!-- customizeModal Modal -->
+    <div class="modal" id="customizeModal">
+        <div class="modal-dialog" style="position: fixed;right: 0;bottom: 40px;left: 0;z-index: 1050;outline: 0;position: fixed;">
+            <div>
+                <div class="modal-content" style="height: 400px;z-index: -1;overflow: auto;bottom: 0px;">
+                    
+                    <div>
+                        <img :src="itemImg" class="modal-item-img" style=" width: 100%; background-size: cover;">
+                    </div>
+
+                    <div class="modal-header" style="border-bottom: none;padding-bottom: 0px;">
+                        <div class="items-modal">
+                            <h6 id="item-name-modal_custome">{{itemName}}</h6><span id="item_offer_remark"></span>
+                            <p id="item-prepare-time_custome" time="" style="font-size: 12px;color: blue;margin-bottom: 2px;">{{item_prepTime}} min to prepare</p>
+                        </div>
+                        <div class="items-rating-modal">
+                            <i class="fa fa-star ratings" aria-hidden="true">
+                                <p id="item-rating-modal" class="rating-no" style="color: #000;">4.5</p>
+                            </i>
+                            <p class="modal-price price" id="product-price"> {{defaultPrice}}</p>
+                        </div>
+                    </div>
+
+
+                    <div class="modal-body" style="padding-top: 0px;">
+                        <p style=" padding-left: 20px; font-size: 10px; font-family: Montserrat Regular; padding-bottom: -14px; ">{{itemDescription}}</p>
+
+                        <div class="row" style="margin-left: 0px;margin-right: 0px;position: relative;">
+                            <div class="form-group" style="width: 156px; margin-bottom: 4px;">
+                                <label for="item_portions_custome" style="margin: 0px;font-size: 14px;"><?= $language['portion']?>:</label>
+                            <select class="form-control" id="item_portions_custome" name="item_portions"   @change="selectPortion()" style="font-size: 13px; height: 30px; padding: 4px; width: 103px; font-weight: 600;" <?php if ($Itm_Portion == 0) {                                    echo "disabled";
+                               } ?>>
+                                </select>
+                            </div>
+                            <div style="position: absolute;right: 2pc;">
+                                <label style="margin: 0px;font-size: 14px;"><?= $language['quantity']?>:</label>
+                                <div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;">
+                                    <span class="input-group-btn">
+                                        <button type="button" @click="(qty > 1 ? qty-- : qty = 1)" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;">-
+                                        </button>
+                                    </span>
+                                    <input type="text" readonly="" type="number" v-model="qty" min="1" class="form-control input-number" value="1" max="10" style="height :28px;">
+                                    <span class="input-group-btn">
+                                        <button type="button" @click="qty++" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;">+
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <?php if ($EType < 25) { ?>
+                            <div class="row" style="margin-left: 0px;margin-right: 0px;margin-bottom: 10px;">
+                                <div>
+                                    <label for="sel1" style="margin: 0px;font-size: 14px;"><?= $language['delivery_time']?></label>
+                                    <div id="waiting-btn" class="your-class1 btn-group btn-group-toggle" data-toggle="buttons" style="width: 96px;display: block;">
+                                        <div class="input-group">
+                                            <span class="input-group-btn">
+                                                <button type="button" @click="(del > 1 ? del-- : del = 1)" class="btn btn-default btn-number active" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;" aria-pressed="true">-
+                                                </button>
+                                            </span>
+                                            <input type="text" readonly="" v-model="del" class="form-control input-number" value="5" min="5" max="30" style="height: 28px;">
+                                            <span class="input-group-btn">
+                                                <button type="button" @click="(del < 5 ? del++ : del = 5)" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;" aria-pressed="false">+
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="position: absolute;right: 2pc;width: 109px;">
+                                    <label style="display: grid;margin: 0px;font-size: 14px;"><?= $language['take_away']?></label>
+                                    <label class="switch">
+                                        <input type="checkbox" v-model="takeAway">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        <?php } ?>
+
+
+                        <div class="form-group">
+                            <input class="form-control" type="text" placeholder="Enter Remarks" v-model="custRemarks" style="background: #ced4da; padding: 3px;">
+                        </div>
+
+                        <div>
+                            <!-- <p>{{itemDescription}}</p> -->
+                        </div>
+
+                        <div v-for="(form, index) in customForm" :key="index">
+                            <div v-if="form.GrpType == 1">
+                                <h4>{{form.ItemGrpName}}</h4>
+                                <div v-for="detail in form.Details">
+                                    <label>
+                                        <input type="radio" :value="detail.ItemOptCd" :name="form.ItemGrpName" :rate="detail.Rate" v-model="radioVal[index]" @click="calculateTotal(form.ItemGrpCd, index, detail.Name, $event)">
+                                        {{detail.Name}}
+                                    </label>
+                                    <label class="float-right">{{detail.Rate}}</label>
+                                </div>
+                            </div>
+                            <div v-if="form.GrpType == 2">
+                                <h4>{{form.ItemGrpName}}</h4>
+                                <div v-for="(detail,checkIndex) in form.Details">
+                                    <label>
+                                        <input type="checkbox" :value="detail.ItemOptCd" v-model="checkboxVal[checkIndex]" :rate="detail.Rate" @click="calculateTotal(form.ItemGrpCd, checkIndex, detail.Name, $event)">
+                                        {{detail.Name}}
+                                    </label>
+                                    <label class="float-right">{{detail.Rate}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer" style="bottom: 0px;background-color: #ffffff;padding: 3px;padding-left: 15px;/right: 0px;bottom: 0px;left: 0px;z-index: 1050;outline: 0px;position: fixed; width: 100%;">
+            <button type="button" class="btn col-5" data-dismiss="modal">Back</button>
+            <label class="col-2" style="padding: 3px;height: 25px;text-align: center;"><b>{{parseInt(total) + parseInt(defaultPrice)}}</b></label>
+            <button type="button" class="btn col-5" @click="addItem()" style="background: #ffc245;">Add</button>
+        </div>
+    </div>
 
     <!-- Js Plugins -->
     <script src="<?= base_url(); ?>assets/js/jquery-3.3.1.min.js"></script>
@@ -296,6 +539,8 @@
     <script src="<?= base_url(); ?>assets/js/mixitup.min.js"></script>
     <script src="<?= base_url(); ?>assets/js/owl.carousel.min.js"></script>
     <script src="<?= base_url(); ?>assets/js/main.js"></script>
+    <!-- call ajax common js-->
+    <script src="<?= base_url(); ?>assets/js/ajax.js"></script>
     
 
 
@@ -444,5 +689,160 @@
             $(this).addClass('active');
         });
 </script>
+
+<script>
+        $("#search-item").keyup(function(event) {
+            var itemName = $(this).val();
+            if (itemName != '') {
+                $.ajax({
+                    url: '<?= base_url('restaurant/order_ajax_3p') ?>',
+                    type: "post",
+                    data: {
+                        searchItemCust: 1,
+                        itemName: itemName
+                    },
+                    dataType: "json",
+                    success: (response) => {
+                        console.log(response);
+                        if (response.status) {
+                            var template = `<ul style='list-style-type:none;padding:5px;'>`;
+                            response.items.forEach((item) => {
+                                var targetModal = "#itemModal";
+                                if (item.ItemTyp > 0) {
+                                    targetModal = "#customizeModal";
+                                }
+                                // add cid and mcatgid to me
+                                template += `
+                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Portion}" item-value="${item.Value}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" style="cursor: pointer;">${item.ItemNm}</li>
+                            `;
+                            });
+                            template += `</ul>`;
+                        } else {
+                            var template = `
+                            <ul>
+                                <li>No Item Found</li>
+                            </ul>
+                        `;
+                        }
+                        $("#item-search-result").html(template);
+                    },
+                    error: (xhr, status, error) => {
+                        console.log(xhr);
+                        console.log(status);
+                        console.log(error);
+                    }
+                });
+            } else {
+                $("#item-search-result").html('');
+            }
+        });
+
+        function getItemDeatils(item, itemTyp) {
+            window.itemMaxQtyValidation = $(item).attr('item-maxqty');
+            $('#item-list-modal').modal('hide');
+            // console.log(item);
+
+            itemId = $(item).attr('item-id');
+            cid = $(item).attr('cid');
+            itemTyp = $(item).attr('item-type');
+            mCatgId = $(item).attr('mcatgid');
+            itemPortion = $(item).attr('item-portion');
+            PrepTime = $(item).attr('item-prepTime');
+            
+            // console.log('itemPortion - '+itemPortion);
+            // 
+
+            itemKitCd = $(item).attr('item-kitcd');
+            // console.log('itemKitCd - '+itemKitCd);
+
+            //get item portion from data base 
+            getItemPortion(itemId, itemPortion, cid, itemTyp, mCatgId);
+
+            $('#minus-serve').attr("disabled", true);
+            $('#serve-val').val($(item).attr('item-preptime'));
+            $('#confirm-order').attr('tax_type',$(item).attr('taxtype'));
+            $('#confirm-order').attr('tbltyp',$(item).attr('tbltyp'));
+
+            if (itemTyp == 0) {
+
+                $("#item-name-modal").text($(item).attr('item-nm'));
+                // console.log('item-nm - '+$(item).attr('item-nm'));
+
+                $("#item-prepare-time").text(PrepTime + ' min to prepare');
+                $("#item-prepare-time").attr('time', PrepTime);
+
+                // console.log('itemPortion - '+itemPortion+' min to prepare');
+
+                $("#item-rating-modal").text($(item).attr('item-avgrtng'));
+                // console.log('item-avgrtng - '+$(item).attr('item-avgrtng'));
+
+                $("#item-desc-modal").text($(item).attr('item-dedc'));
+                // console.log('item-dedc - '+$(item).attr('item-dedc'));
+
+                $("#product-img").attr('src', $(item).attr('item-imgsrc'));
+                // console.log('item-imgsrc - '+$(item).attr('item-imgsrc'));
+
+                $("#product-price").text(' ' + $(item).attr('item-value'));
+                // console.log('item-value - '+$(item).attr('item-value'));
+            } else {
+                customizeModalVue.getCustomItem($(item).attr('item-id'), itemTyp, $(item).attr('item-nm'), $(item).attr('item-value'), itemPortion, itemKitCd, $(item).attr('item-dedc'), $(item).attr('item-imgsrc'), $(item).attr('item-prepTime'), $(item).attr('item-portion-code'));
+            }
+            getCustOffer(itemId, $(item).attr('item-nm'), cid, itemTyp, mCatgId);
+        }
+
+        function getItemPortion(itemId, itemPortion, cid, itemTyp, mCatgId) {
+            var data = {
+                getItemPortion: 1,
+                itemId: itemId,
+                cid : cid,
+                ItemTyp:itemTyp,
+                MCatgId:mCatgId
+            };
+            function handleData(response) {
+                if (response.length != 0) {
+                    var html = '';
+                    for (let index = 0; index < response.length; index++) {
+                        html += `<option value="`+response[index]['IPCode']+`" rate="` + response[index]['ItmRate'] + `" offer_remark="` + response[index]['Remarks'] + `"  sdetcd="` + response[index]['SDetCd'] + `"  schcd="` + response[index]['SchCd'] + `"> ` + response[index]['Name'] + ` </option>`;
+                    }
+                    $('#item_portions').html(html);
+                    $('#item_portions_custome').html(html);
+                    $("#item_offer_remark").text(response[0]['Remarks']);
+                    // $('#sdetcd').val(response[0]['SDetCd']);
+                    // $('#schcd').val(response[0]['SchCd']);
+                } else {
+                    var html = `<option> ` + itemPortion + ` </option>`;
+                    $('#item_portions').html(html);
+                    $('#item_portions_custome').html(html);
+                }
+            }
+
+            ajaxCall('<?= base_url('customer/get_item_portion_ajax') ?>', 'post', data, handleData);
+        }
+
+        function getCustOffer(itemId, itemNm, cid, itemTyp, mCatgId) {
+
+            $.ajax({
+                url: '<?= base_url('customer/offer_cust_ajax') ?>',
+                type: 'post',
+                data: {
+                    getOrderData: 1,
+                    itemId: itemId,
+                    cid:cid,
+                    itemTyp:itemTyp,
+                    MCatgId:mCatgId
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response != 0) {
+                        
+                            $('#itemOffer').modal('show');
+                            $('#carouselExampleCaptions').html(response);
+                            $('.modal-title').html(itemNm + ' Offer');
+                        
+                    }
+                }
+            });
+        }
+    </script>
 
 </html>

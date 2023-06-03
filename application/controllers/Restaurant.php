@@ -2727,24 +2727,38 @@ class Restaurant extends CI_Controller {
             $itemName = $_POST['itemName'];
 
             if ($ChainId == 0) {
-                $items = $this->db2->query("SELECT ItemId, ItemNm, Itm_Portion, i.Value, AvgRtng, ItmDesc, ItemNm as imgSrc, ItemTyp, KitCd, MCatgId FROM MenuItem i where ItemNm like '$itemName%' AND Stat = 0 AND i.EID = $EID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.eid=$EID and md.Chainid=i.ChainId) order by Rank")->result_array();
+                $items = $this->db2->query("SELECT ItemId, ItemNm, Itm_Portion, i.Value, AvgRtng, ItmDesc, ItemNm as imgSrc, ItemTyp, KitCd, MCatgId,i.CID FROM MenuItem i where ItemNm like '$itemName%' AND Stat = 0 AND i.EID = $EID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.eid=$EID and md.Chainid=i.ChainId) order by Rank")->result_array();
             } else {
-                $items = $this->db2->query("SELECT ItemId, ItemNm, Itm_Portion, Value, AvgRtng, ItmDesc, ItemNm as imgSrc, ItemTyp, KitCd, MCatgId FROM MenuItem i where ItemNm like '$itemName%' AND Stat = 0 AND i.ChainId = $ChainId AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.eid=$EID and md.ChainId=i.ChainId) order by Rank")->result_array();
+                $items = $this->db2->query("SELECT ItemId, ItemNm, Itm_Portion, Value, AvgRtng, ItmDesc, ItemNm as imgSrc, ItemTyp, KitCd, MCatgId,i.CID FROM MenuItem i where ItemNm like '$itemName%' AND Stat = 0 AND i.ChainId = $ChainId AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.eid=$EID and md.ChainId=i.ChainId) order by Rank")->result_array();
             }
 
             if (!empty($items)) {
 
                 foreach ($items as $key => $data) {
+                    // if ($ChainId > 0) {
+                    //     $imgSrc = base_url()."uploads/c$ChainId/" . trim($data['imgSrc']) . ".jpg";
+                    // } else {
+                    //     $imgSrc = base_url()."uploads/e$EID/" . trim($data['imgSrc']) . ".jpg";
+                    // }
+                    // // print_r($imgSrc);
+                    // if (!file_exists($imgSrc)) {
+                    //     $imgSrc = base_url()."uploads/general/" . trim($data['imgSrc']) . ".jpg";
+                    // }
+
+                    // $items[$key]['imgSrc'] = $imgSrc;
+                    // $items[$key]['imgSrc'] = ltrim($imgSrc, "../");
+
                     if ($ChainId > 0) {
-                        $imgSrc = base_url()."uploads/c$ChainId/" . trim($data['imgSrc']) . ".jpg";
+                        $imgSrc = "uploads/cChainId/" . trim($data['imgSrc']) . ".jpg";
                     } else {
-                        $imgSrc = base_url()."uploads/e$EID/" . trim($data['imgSrc']) . ".jpg";
-                    }
-                    if (!file_exists($imgSrc)) {
-                        $imgSrc = base_url()."uploads/general/" . trim($data['imgSrc']) . ".jpg";
+                        $imgSrc = "uploads/e$EID/" . trim($data['imgSrc']) . ".jpg";
                     }
 
-                    $items[$key]['imgSrc'] = ltrim($imgSrc, "../");
+                    if (!file_exists($imgSrc)) {
+                        $imgSrc = "uploads/general/" . trim($data['imgSrc']) . ".jpg";
+                    }
+
+                    $items[$key]['imgSrc'] =  base_url().$imgSrc;
                 }
 
                 $response = [

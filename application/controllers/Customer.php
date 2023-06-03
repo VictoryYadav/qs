@@ -47,6 +47,8 @@ class Customer extends CI_Controller {
         }
 
         $data['title'] = 'Order Details';
+        $data['language'] = languageArray();
+        $data['EType'] = $this->session->userdata('EType');
         $this->load->view('cust/index', $data);
     }
 
@@ -64,6 +66,26 @@ class Customer extends CI_Controller {
               ));
              die;
         }        
+    }
+
+    public function get_item_portion_ajax(){
+        if($this->input->method(true)=='POST'){
+            $EID = authuser()->EID;
+            $tableNo = authuser()->TableNo;
+            $data['EType'] = $this->session->userdata('EType');
+            extract($_POST);
+
+            $MenuItemRates = $this->cust->getMenuItemRates($EID, $itemId, $TableNo, $cid, $MCatgId, $ItemTyp );
+            print_r(json_encode($MenuItemRates));
+            die;
+        }        
+    }
+
+    public function offer_cust_ajax(){
+        if($this->input->method(true)=='POST'){
+            $res = $this->cust->getOfferCustAjax($_POST);
+            echo $res;
+        }
     }
 
 
