@@ -186,6 +186,9 @@
                                 <span onclick="call_help()" style="cursor: pointer;" id="yellow_bell">
                                     <img src="<?= base_url() ?>assets/img/yellow_bell.jpg" style="height: 28px;">
                                 </span>
+                                <span>
+                                    <img src="<?= base_url() ?>assets/img/language1.png" style="height: 22px;">
+                                </span>
                                 <span id="red_bell" style="display: none;">
                                     <img src="<?= base_url() ?>assets/img/red_bell1.png" style="height: 30px;">
                                 </span>
@@ -547,11 +550,31 @@
 </body>
 
 <script type="text/javascript">
+   $(document).ready(function() {
+        // $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+
+        $('#add-qty').click(function() {
+            $('#qty-val').val(parseInt($('#qty-val').val()) + 1);
+            $('#minus-qty').prop('disabled', false);
+            if ($('#qty-val').val() == 99) {
+                $('#add-qty').prop('disabled', true);
+            }
+        });
+        $('#minus-qty').click(function() {
+            $('#qty-val').val(parseInt($('#qty-val').val()) - 1);
+            $('#add-qty').prop('disabled', false);
+            if ($('#qty-val').val() == 1) {
+                $('#minus-qty').prop('disabled', true);
+            }
+        });
+    });
+
     var cidg = '<?= $cid; ?>';
     var mcatIdg = '';
     var filterg = '';
     getCuisineList(cidg);
     function getCuisineList(cid){
+
         cidg = cid;
         console.log('cid='+cidg);
         $.post('<?= base_url('customer') ?>',{cid:cid},function(res){
@@ -641,7 +664,7 @@
                                     <div class="footer__widget">\
                                         <div class="row" style="margin-bottom: -33px;">\
                                             <div class="col-lg-8 col-md-8 col-sm-8 col-12 mblclass">\
-                                                <p>'+data[i].ItemNm+'</p>\
+                                                <p title="'+data[i].ItemNm+'">'+data[i].short_ItemNm+'</p>\
                                             </div>\
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-12 ">\
                                                 <p class="text-right d-none d-sm-block">\

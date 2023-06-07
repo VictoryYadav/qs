@@ -86,6 +86,7 @@ class Cust extends CI_Model{
 				}
 
 				$key['imgSrc'] = ltrim($imgSrc);
+				$key['short_ItemNm'] = $this->strTruncate($key['ItemNm']);
 			}
          }
 
@@ -95,6 +96,14 @@ class Cust extends CI_Model{
         print_r($data);
         die;
 	}
+
+	function strTruncate($str){
+	    $len = strlen($str);
+	      if ($len > 20) {
+	          $str = substr($str, 0, 20) . "...";
+	      }
+	      return $str;
+	  }
 
 	public function getMenuItemRates($EID, $itemId, $TableNo,$cid,$MCatgId,$ItemTyp){
 		return $this->db2->query("SELECT ip.Name, mi.ItemId as mtemid, mi.ItemTyp as mitype, mi.MCatgId as micat, mi.CID as micid, mi.ItemId, m.ItmRate,ip.IPCd as IPCode, cod.* FROM MenuItem as mi join MenuItemRates m on mi.ItemId = m.ItemId join ItemPortions ip on ip.IPCd = m.Itm_Portion join Eat_tables et on m.SecId=et.SecId left outer join CustOffersDet as cod on ((mi.ItemId = cod.ItemId and cod.ItemId>0) or (mi.MCatgId = cod.MCatgId and cod.MCatgId>0) or (mi.ItemTyp = cod.ItemTyp and cod.ItemTyp>0) or (mi.CID = cod.CID and cod.CID>0) or (ip.IPCd = cod.IPCd and cod.IPCd > 0)) where m.EID=".$EID." and mi.ItemId=$itemId and et.TableNo='".$TableNo."' and m.EID=et.EID Order by ItmRate Asc")->result_array();
