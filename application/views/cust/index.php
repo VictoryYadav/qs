@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="<?= base_url(); ?>assets/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="<?= base_url(); ?>assets/css/font-awesome.min.css" type="text/css">
     <link rel="stylesheet" href="<?= base_url(); ?>assets/css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="<?= base_url(); ?>assets/css/nice-select.css" type="text/css">
+    <!-- <link rel="stylesheet" href="<?= base_url(); ?>assets/css/nice-select.css" type="text/css"> -->
     <link rel="stylesheet" href="<?= base_url(); ?>assets/css/jquery-ui.min.css" type="text/css">
     <link rel="stylesheet" href="<?= base_url(); ?>assets/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="<?= base_url(); ?>assets/css/slicknav.min.css" type="text/css">
@@ -149,6 +149,7 @@
         .navbar .dropdown-toggle {
             color:#fff;
         }
+
 
     </style>
 </head>
@@ -322,7 +323,7 @@
     <div class="modal product-modal" id="itemModal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <img id="product-img" class="modal-item-img" src="assets/img/sample-foods.jpg">
+                <img id="product-img" class="modal-item-img" src="assets/img/sample-foods.jpg" style="height: 200px;">
                 <div class="modal-header" style="border-bottom: none;padding-bottom: 0px;">
 
                     <div class="items-modal">
@@ -333,8 +334,8 @@
                     </div>
 
                     <div class="items-rating-modal">
-                        <i class="fa fa-star ratings" aria-hidden="true">
-                            <p id="item-rating-modal" class="rating-no" style="color: #000;">4.5</p>
+                        <i class="fa fa-star ratings text-warning" aria-hidden="true">
+                            <span id="item-rating-modal" class="rating-no" style="color: #000;">4.5</span>
                         </i>
                         <p class="modal-price price" id="product-price">20</p>
                         <input type="text" id="TaxType" hidden>
@@ -388,10 +389,17 @@
 
                             <div style="position: absolute;right: 2pc;width: 109px;">
                                 <label style="display: grid;margin: 0px;font-size: 14px;"><?= $language['take_away']?></label>
-                                <label class="switch">
+                                <!-- <label class="switch">
                                     <input type="checkbox" id="take-away">
                                     <span class="slider round"></span>
-                                </label>
+                                </label> -->
+                                <select class="form-control form-control-xs" style="font-size: 13px; height: 30px; padding: 4px;">
+                                    <option value="0">Sit In</option>
+                                    <option value="1">Take Away</option>
+                                    <?php if($Charity == 1){ ?>
+                                    <option value="2">Charity</option>
+                                    <?php } ?>
+                                </select>
                             </div>
                         </div>
                     <?php } ?>
@@ -482,10 +490,17 @@
 
                                 <div style="position: absolute;right: 2pc;width: 109px;">
                                     <label style="display: grid;margin: 0px;font-size: 14px;"><?= $language['take_away']?></label>
-                                    <label class="switch">
+                                    <!-- <label class="switch">
                                         <input type="checkbox" v-model="takeAway">
                                         <span class="slider round"></span>
-                                    </label>
+                                    </label> -->
+                                    <select name="" id="" v-model="takeAway" class="form-control">
+                                        <option value="0">Sit In</option>
+                                        <option value="1">Take Away</option>
+                                        <?php if($Charity == 1){ ?>
+                                        <option value="2">Charity</option>
+                                        <?php } ?>
+                                    </select>
                                 </div>
                             </div>
                         <?php } ?>
@@ -536,7 +551,7 @@
     <!-- Js Plugins -->
     <script src="<?= base_url(); ?>assets/js/jquery-3.3.1.min.js"></script>
     <script src="<?= base_url(); ?>assets/js/bootstrap.min.js"></script>
-    <script src="<?= base_url(); ?>assets/js/jquery.nice-select.min.js"></script>
+    <!-- <script src="<?= base_url(); ?>assets/js/jquery.nice-select.min.js"></script> -->
     <script src="<?= base_url(); ?>assets/js/jquery-ui.min.js"></script>
     <script src="<?= base_url(); ?>assets/js/jquery.slicknav.js"></script>
     <script src="<?= base_url(); ?>assets/js/mixitup.min.js"></script>
@@ -736,7 +751,7 @@
                                 }
                                 // add cid and mcatgid to me
                                 template += `
-                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Portion}" item-value="${item.Value}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" style="cursor: pointer;">${item.ItemNm}</li>
+                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Portion}" item-value="${item.Value}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" style="cursor: pointer;" item-prepTime="${item.PrepTime}">${item.ItemNm}</li>
                             `;
                             });
                             template += `</ul>`;
@@ -866,6 +881,27 @@
                 }
             });
         }
+
+        $('#item_portions').change(function(){
+            // alert("aaaa");
+            var element = $(this);
+            var rate = $('option:selected', this).attr('rate');
+            $("#product-price").text(' ' + rate);
+            var remarks = $('option:selected', this).attr('offer_remark');
+            // var det = $('option:selected', this).attr('sdetcd');
+            // var sch = $('option:selected', this).attr('schcd');
+            // alert(remarks);
+            if(remarks !== 'null'){
+                // remarks comment by me
+                // $("#item_offer_remark").text(remarks);
+                // $("#sdetcd").val(det);
+                // $('#schcd').val(sch);
+            }else{
+                $("#item_offer_remark").text('');
+                // $("#sdetcd").val("");
+                // $('#schcd').val("");
+            }
+        });
     </script>
 
 </html>

@@ -106,7 +106,19 @@ class Cust extends CI_Model{
 	  }
 
 	public function getMenuItemRates($EID, $itemId, $TableNo,$cid,$MCatgId,$ItemTyp){
-		return $this->db2->query("SELECT ip.Name, mi.ItemId as mtemid, mi.ItemTyp as mitype, mi.MCatgId as micat, mi.CID as micid, mi.ItemId, m.ItmRate,ip.IPCd as IPCode, cod.* FROM MenuItem as mi join MenuItemRates m on mi.ItemId = m.ItemId join ItemPortions ip on ip.IPCd = m.Itm_Portion join Eat_tables et on m.SecId=et.SecId left outer join CustOffersDet as cod on ((mi.ItemId = cod.ItemId and cod.ItemId>0) or (mi.MCatgId = cod.MCatgId and cod.MCatgId>0) or (mi.ItemTyp = cod.ItemTyp and cod.ItemTyp>0) or (mi.CID = cod.CID and cod.CID>0) or (ip.IPCd = cod.IPCd and cod.IPCd > 0)) where m.EID=".$EID." and mi.ItemId=$itemId and et.TableNo='".$TableNo."' and m.EID=et.EID Order by ItmRate Asc")->result_array();
+		return $this->db2->select('ip.IPCd as IPCode, mir.ItmRate, ip.Name')
+						->order_by('ItmRate', 'ASC')
+						->join('MenuItemRates mir', 'mir.ItemId = mi.ItemId', 'inner')
+						->join('ItemPortions ip', 'ip.IPCd = mir.Itm_Portion', 'inner')
+						->join('Eat_tables et', 'et.SecId = mir.SecId', 'inner')
+						->get_where('MenuItem mi', array(
+							'mi.ItemId' => $itemId,
+							'mir.EID' => $EID,
+							'et.TableNo' => $TableNo))
+						->result_array();
+		// return $this->db2->query("SELECT ip.Name, mi.ItemId as mtemid, mi.ItemTyp as mitype, mi.MCatgId as micat, mi.CID as micid, mi.ItemId, m.ItmRate,ip.IPCd as IPCode, cod.* FROM MenuItem as mi join MenuItemRates m on mi.ItemId = m.ItemId join ItemPortions ip on ip.IPCd = m.Itm_Portion join Eat_tables et on m.SecId=et.SecId left outer join CustOffersDet as cod on ((mi.ItemId = cod.ItemId and cod.ItemId>0) or (mi.MCatgId = cod.MCatgId and cod.MCatgId>0) or (mi.ItemTyp = cod.ItemTyp and cod.ItemTyp>0) or (mi.CID = cod.CID and cod.CID>0) or (ip.IPCd = cod.IPCd and cod.IPCd > 0)) where m.EID=".$EID." and mi.ItemId=$itemId and et.TableNo='".$TableNo."' and m.EID=et.EID Order by ItmRate Asc")->result_array();
+
+		// SELECT ip.Name, mi.ItemId as mtemid, mi.ItemTyp as mitype, mi.MCatgId as micat, mi.CID as micid, mi.ItemId, m.ItmRate,ip.IPCd as IPCode FROM MenuItem as mi join MenuItemRates m on mi.ItemId = m.ItemId join ItemPortions ip on ip.IPCd = m.Itm_Portion join Eat_tables et on m.SecId=et.SecId  where m.EID=51 and mi.ItemId=167 and et.TableNo='22' and m.EID=et.EID Order by ItmRate Asc
 	}
 
 	public function getOfferCustAjax($postData){

@@ -49,6 +49,9 @@ class Customer extends CI_Controller {
         $data['title'] = 'Order Details';
         $data['language'] = languageArray();
         $data['EType'] = $this->session->userdata('EType');
+        $data['Charity'] = $this->session->userdata('Charity');
+        $data['Itm_Portion'] = 1;
+        
         $this->load->view('cust/index', $data);
     }
 
@@ -70,14 +73,15 @@ class Customer extends CI_Controller {
 
     public function get_item_portion_ajax(){
         if($this->input->method(true)=='POST'){
+
             $EID = authuser()->EID;
-            $tableNo = authuser()->TableNo;
+            $TableNo = authuser()->TableNo;
             $data['EType'] = $this->session->userdata('EType');
             extract($_POST);
 
             $MenuItemRates = $this->cust->getMenuItemRates($EID, $itemId, $TableNo, $cid, $MCatgId, $ItemTyp );
             print_r(json_encode($MenuItemRates));
-            die;
+            
         }        
     }
 
