@@ -117,8 +117,78 @@
 
         /* end grid view */
 
+        .item_img{
+            height:200px;
+            margin:0 auto;
+            background-size: cover;
+            display:block;
+        }
+        .product__item__pic{
+            height: 205px !important;
+        }
+
+        .product__item__pic .product__discount__percent {
+            height: 30px;
+            width: 30px;
+            background: #dd2222;
+            border-radius: 50%;
+            font-size: 10px;
+            color: #ffffff;
+            line-height: 30px;
+            text-align: center;
+            position: absolute;
+            left: 2px;
+            top: 1px;
+        }
+
+        .product__item__pic .product__discount__percent1 {
+            height: 30px;
+            width: 30px;
+            background: #dd2222;
+            border-radius: 50%;
+            font-size: 10px;
+            color: #ffffff;
+            line-height: 30px;
+            text-align: center;
+            position: absolute;
+            left: 35px;
+            top: 1px;
+        }
+
+        .product__item__pic .product__discount__percent2 {
+            height: 30px;
+            width: 30px;
+            background: #dd2222;
+            border-radius: 50%;
+            font-size: 10px;
+            color: #ffffff;
+            line-height: 30px;
+            text-align: center;
+            position: absolute;
+            left: 70px;
+            top: 1px;
+        }
+
+        .product__item__pic .product__discount__percent3 {
+            height: 30px;
+            width: 30px;
+            background: #dd2222;
+            border-radius: 50%;
+            font-size: 10px;
+            color: #ffffff;
+            line-height: 30px;
+            text-align: center;
+            position: absolute;
+            left: 105px;
+            top: 1px;
+        }
+
+
         /*mobile screen only*/
         @media only screen and (max-width: 480px) {
+            .col-6{
+                padding: 0.5rem !important;
+            }
           .product__item__pic{
             height: 150px;
           }
@@ -149,6 +219,48 @@
         .navbar .dropdown-toggle {
             color:#fff;
         }
+
+        /*modal button */
+        .modal-footer {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+             flex-wrap: nowrap; 
+            -ms-flex-align: center;
+            align-items: center;
+            -ms-flex-pack: end;
+            justify-content: flex-end;
+            padding: 0.75rem;
+            border-top: 1px solid #dee2e6;
+            border-bottom-right-radius: calc(0.3rem - 1px);
+            border-bottom-left-radius: calc(0.3rem - 1px);
+        }
+        .modal-confirm {
+            width: 50%;
+            background: #ffc245;
+            color: #fff;
+            margin-left: 0px !important;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .modal-back {
+            width: 50%;
+            margin-right: 0px !important;
+            border-radius: 0.5rem 0 0 0.5rem;
+            background-color: #dedee2;
+        }
+
+        .modal-item-img {
+            margin:0 auto;
+            width: 200px;
+            height: 140px;
+            background-size: cover;
+            /*border-radius: 0 0 175px 175px;*/
+        }
+
+        /*.modal-footer {
+            padding: 0.5rem;
+        }*/
 
 
     </style>
@@ -189,6 +301,14 @@
                                 </span>
                                 <span>
                                     <img src="<?= base_url() ?>assets/img/language1.png" style="height: 22px;">
+                                    <div class="header__top__right__language">
+                                        <span class="arrow_carrot-down"></span>
+                                        <ul>
+                                            <li><a href="#">Spanis</a></li>
+                                            <li><a href="#">English</a></li>
+                                        </ul>
+                                    </div>
+
                                 </span>
                                 <span id="red_bell" style="display: none;">
                                     <img src="<?= base_url() ?>assets/img/red_bell1.png" style="height: 30px;">
@@ -271,7 +391,7 @@
         <div class="btn-group dropup">
             <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
                 <img src="assets/img/feedback.svg" width="33" height="20">
-                <h6 style="font-size: 12px;">About Us</h6>          
+                <h6 style="font-size: 12px;"><?= $language['about_us']?></h6>          
                 </a>
             <div class="dropdown-menu">
                 <a class="dropdown-item" href="#">T &amp; C</a>
@@ -280,10 +400,10 @@
             </div>
         </div>
         <div class="btn-group dropup">
-            <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
+            <a href="#news" class="dropdown-toggle" data-toggle="modal" data-target="#offers-modal">
                 <!-- <a data-toggle="modal" data-target="#offers-modal"> -->
                 <img src="assets/img/home.svg" width="33" height="20">
-            <h6 style="font-size: 12px;">Offers</h6>
+            <h6 style="font-size: 12px;"><?= $language['offers']?></h6>
             </a>
         </div>
         
@@ -323,14 +443,14 @@
     <div class="modal product-modal" id="itemModal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <img id="product-img" class="modal-item-img" src="assets/img/sample-foods.jpg" style="height: 200px;">
+                <img id="product-img" class="modal-item-img" src="assets/img/sample-foods.jpg">
                 <div class="modal-header" style="border-bottom: none;padding-bottom: 0px;">
 
                     <div class="items-modal">
                         <h6 id="item-name-modal">Item name </h6><span id="item_offer_remark"></span>
                         <input type="hidden" id="sdetcd" value="">
                         <input type="hidden" id="schcd" value="">
-                        <p id="item-prepare-time" time="" style="font-size: 12px;color: blue;margin-bottom: 2px;">45 min to prepare</p>
+                        <!-- <p id="item-prepare-time" time="" style="font-size: 12px;color: blue;margin-bottom: 2px;">45 min to prepare</p> -->
                     </div>
 
                     <div class="items-rating-modal">
@@ -393,7 +513,7 @@
                                     <input type="checkbox" id="take-away">
                                     <span class="slider round"></span>
                                 </label> -->
-                                <select class="form-control form-control-xs" style="font-size: 13px; height: 30px; padding: 4px;">
+                                <select class="form-control" style="font-size: 13px; height: 30px; padding: 4px;" id="take-away">
                                     <option value="0">Sit In</option>
                                     <option value="1">Take Away</option>
                                     <?php if($Charity == 1){ ?>
@@ -414,7 +534,9 @@
         </div>
         
         <div class="modal-footer" style="border-top: none;">
-            <button type="button" class="btn modal-back" data-dismiss="modal" width="50%"><img src="assets/img/back.svg" width="40" style="    margin-right: 10px;"><?= $language['back']?></button>
+            <button type="button" class="btn modal-back" data-dismiss="modal" width="50%">
+                <?= $language['back']?>
+            </button>
             <button type="button" class="btn modal-confirm" data-dismiss="modal" width="50%" id="confirm-order" tax_type="" tbltyp=""><?= $language['add_item']?></button>
         </div>
     </div>
@@ -494,7 +616,7 @@
                                         <input type="checkbox" v-model="takeAway">
                                         <span class="slider round"></span>
                                     </label> -->
-                                    <select name="" id="" v-model="takeAway" class="form-control">
+                                    <select v-model="takeAway" class="form-control" style="font-size: 13px; height: 30px; padding: 4px;">
                                         <option value="0">Sit In</option>
                                         <option value="1">Take Away</option>
                                         <?php if($Charity == 1){ ?>
@@ -548,6 +670,55 @@
         </div>
     </div>
 
+    <!-- offers modal -->
+    <div class="modal" id="offers-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title offers-txt">Offers</p>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <div class="modal-body" style="border: none;padding: 0px;overflow-y: scroll;overflow-x: auto;height: 425px;">
+                    <?php if(!empty($offers)){?>
+                        <div class="blog__sidebar__item">
+                            <div class="blog__sidebar__recent" style="padding: 5px;">
+                            <?php foreach($offers as $key){
+                                $name = '';
+                                if(!empty($key['ItemNm'])){
+                                    $name  .=  $key['ItemNm'];
+                                }
+                                if(!empty($key['portionName'])){
+                                    $name  .=  ' ('.$key['portionName'].')';
+                                }
+                                if(!empty($key['MCatgNm'])){
+                                    $name  .=  ' - '.$key['MCatgNm'];
+                                }
+                                if(!empty($key['Name'])){
+                                    $name  .=  ' - '.$key['Name'];
+                                }
+                                ?>
+                                <a href="#" class="blog__sidebar__recent__item">
+                                    <div class="blog__sidebar__recent__item__pic">
+                                        <img src="<?= $key['SchImg']?>" alt="" style="height: 80px;width: 100px;background-size: cover;">
+                                    </div>
+                                    <div class="blog__sidebar__recent__item__text">
+                                        <h6><?= $key['SchNm'].' - '.$key['SchDesc'];?></h6>
+                                        <span><?= $name; ?></span>
+                                    </div>
+                                </a>
+                                
+                            <?php }?>
+                            </div>
+                        </div>
+                    <?php }?>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Js Plugins -->
     <script src="<?= base_url(); ?>assets/js/jquery-3.3.1.min.js"></script>
     <script src="<?= base_url(); ?>assets/js/bootstrap.min.js"></script>
@@ -559,6 +730,10 @@
     <script src="<?= base_url(); ?>assets/js/main.js"></script>
     <!-- call ajax common js-->
     <script src="<?= base_url(); ?>assets/js/ajax.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
     
 
 
@@ -666,10 +841,19 @@
               var temp = '';
               if(total > 0){
                   for (var i = 0; i< data.length; i++) {
+                    var openModal = '#itemModal';
+                    if(data[i].ItemTyp > 0 )
+                    {
+                        openModal = '#customizeModal';
+                    }
                       temp += '<div class="col-lg-3 col-md-6 col-sm-6 col-6">\
                                 <div class="product__item">\
                                     <div class="product__item__pic set-bg" data-setbg="<?= base_url(); ?>assets/img/product/product-7.jpg">\
-                                    <img src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="" style="width:100%;">\
+                                    <img src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'" data-toggle="modal" data-target="'+openModal+'" class="item_img" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'">\
+                                    <div class="product__discount__percent">-20%</div>\
+                                    <div class="product__discount__percent1">-20%</div>\
+                                    <div class="product__discount__percent2">-20%</div>\
+                                    <div class="product__discount__percent3">-20%</div>\
                                         <ul class="product__item__pic__hover">\
                                             <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>\
                                             <li><a href="#"><i class="fa fa-plus"></i></a></li>\
@@ -749,9 +933,10 @@
                                 if (item.ItemTyp > 0) {
                                     targetModal = "#customizeModal";
                                 }
+
                                 // add cid and mcatgid to me
                                 template += `
-                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Portion}" item-value="${item.Value}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" style="cursor: pointer;" item-prepTime="${item.PrepTime}">${item.ItemNm}</li>
+                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.Value}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" style="cursor: pointer;" item-prepTime="${item.PrepTime}">${item.ItemNm}</li>
                             `;
                             });
                             template += `</ul>`;
@@ -778,7 +963,7 @@
         function getItemDeatils(item, itemTyp) {
             window.itemMaxQtyValidation = $(item).attr('item-maxqty');
             $('#item-list-modal').modal('hide');
-            // console.log(item);
+            console.log(item);
 
             itemId = $(item).attr('item-id');
             cid = $(item).attr('cid');
@@ -823,7 +1008,7 @@
                 $("#product-price").text(' ' + $(item).attr('item-value'));
                 // console.log('item-value - '+$(item).attr('item-value'));
             } else {
-                customizeModalVue.getCustomItem($(item).attr('item-id'), itemTyp, $(item).attr('item-nm'), $(item).attr('item-value'), itemPortion, itemKitCd, $(item).attr('item-dedc'), $(item).attr('item-imgsrc'), $(item).attr('item-prepTime'), $(item).attr('item-portion-code'));
+                customizeModalVue.getCustomItem($(item).attr('item-id'), itemTyp, $(item).attr('item-nm'), $(item).attr('item-value'), itemPortion, itemKitCd, $(item).attr('item-dedc'), $(item).attr('item-imgsrc'), $(item).attr('item-prepTime'), $(item).attr('item-portion-code'), $(item).attr('item-fid'));
             }
             getCustOffer(itemId, $(item).attr('item-nm'), cid, itemTyp, mCatgId);
         }
@@ -900,6 +1085,244 @@
                 $("#item_offer_remark").text('');
                 // $("#sdetcd").val("");
                 // $('#schcd').val("");
+            }
+        });
+
+
+        var customizeModalVue = new Vue({
+            el: "#customizeModal",
+            data: {
+                itemId: 0,
+                itemTyp: 0,
+                defaultPrice: 0,
+                msg: "test",
+                customForm: [],
+                radioVal: [],
+                radioRate: [],
+                raidoGrpCd: [],
+                reqIndex: [],
+                radioName: [],
+                checkboxVal: [],
+                checkboxRate: [],
+                checkboxItemCd: [],
+                checkboxGrpCd: "",
+                checkboxName: [],
+                total: 0,
+                itemName: '',
+                itemPortion: '',
+                custRemarks: '',
+                qty: 1,
+                del: 5,
+                itemKitCd: '',
+                takeAway: false,
+                itemDescription: '',
+                itemImg: '',
+                item_prepTime: '',
+                TaxType:''
+            },
+            methods: {
+                addItem() {
+
+                    var mandatory = false;
+                    this.reqIndex.forEach(item => {
+                        if (this.radioVal[item] == 0) {
+                            alert(this.customForm[item].ItemGrpName + " is Mandatory");
+                            mandatory = true;
+                        }
+                    });
+
+                    if (mandatory) {
+                        return;
+                    }
+
+                    var setCustomItem = false;
+
+                    if (this.total == 0) {
+                        if (confirm("Place Order For Item Without Customisation?")) {
+                            setCustomItem = true;
+                        }
+                    } else {
+                        setCustomItem = true;
+                    }
+
+                    if (setCustomItem) {
+
+                        formData = new FormData();
+                        formData.append('setCustomItem', 1);
+                        formData.append('itemId', this.itemId);
+                        formData.append('itemTyp', this.itemTyp);
+                        formData.append('radioVal', this.radioVal);
+                        formData.append('radioRate', this.radioRate);
+                        formData.append('raidoGrpCd', this.raidoGrpCd);
+                        formData.append('radioName', this.radioName);
+                        formData.append('checkboxVal', this.checkboxVal);
+                        formData.append('checkboxRate', this.checkboxRate);
+                        formData.append('checkboxItemCd', this.checkboxItemCd);
+                        formData.append('checkboxGrpCd', this.checkboxGrpCd);
+                        formData.append('checkboxName', this.checkboxName);
+                        formData.append('itemPortion', $('#item_portions').val());
+                        formData.append('custRemarks', this.custRemarks);
+                        formData.append('item_prepTime', this.item_prepTime);
+                        formData.append('qty', this.qty);
+                        formData.append('del', this.del);
+                        formData.append('itemKitCd', this.itemKitCd);
+                        formData.append('tax_type',$('#confirm-order').attr('tax_type'));
+                        
+
+                        if (this.takeAway) {
+                            this.takeAway = 1;
+                        } else {
+                            this.takeAway = 0;
+                        }
+
+                        formData.append('takeAway', this.takeAway);
+                        formData.append('rate', parseInt(this.total) + parseInt(this.defaultPrice));
+                        formData.append('total', parseInt(this.total));
+
+                        axios.post("<?php echo base_url('customer/item_details_ajax'); ?>", formData)
+                            .then(response => {
+                                if (response.data.status == 100) {
+                                    alert(response.msg);
+                                    window.location.reload();
+                                } else if (response.data.status == 1) {
+                                    console.log(response.data);
+                                    window.location = `${response.data.redirectTo}`;
+                                } else {
+                                    console.log(response.data);
+                                }
+                            }).
+                        catch(err => console.log(err));
+                    }
+                },
+                calculateTotal(itemGrpCd, index, itemName, event) {
+                    element = event.currentTarget;
+                    var rate = element.getAttribute('rate');
+                    // console.log(index);
+                    if (event.target.type == "radio") {
+                        this.radioRate[index] = parseInt(rate);
+                        this.raidoGrpCd[index] = itemGrpCd;
+                        this.radioName[index] = itemName;
+                    } else {
+                        // console.log(event.target.checked);
+                        if (event.target.checked) {
+                            this.checkboxRate[index] = parseInt(rate);
+                            this.checkboxName[index] = itemName;
+                        } else {
+                            this.checkboxRate[index] = 0;
+                            this.checkboxName[index] = 0;
+                            // console.log(index);
+                        }
+                    }
+
+                    this.getTotal();
+                    // console.log(event.target.type);
+                },
+
+                getCustomItem(itemId, itemTyp, itemName, defaultPrice, itemPortion, itemKitCd, itemDescription, itemImg, item_prepTime, itemPortionCode, FID) {
+                    this.itemId = itemId;
+                    this.itemTyp = itemTyp;
+                    this.defaultPrice = defaultPrice;
+                    this.customForm = [];
+                    this.radioVal = [];
+                    this.radioRate = [];
+                    this.reqIndex = [];
+                    this.radioName = [];
+                    this.checkboxVal = [];
+                    this.checkboxRate = [];
+                    this.checkboxItemCd = [];
+                    this.checkboxName = [];
+                    this.total = 0;
+                    this.itemName = itemName;
+                    this.itemPortion = itemPortion;
+                    this.custRemarks = '';
+                    this.qty = 1;
+                    this.del = 5;
+                    this.itemKitCd = itemKitCd;
+                    this.itemDescription = itemDescription;
+                    this.itemImg = itemImg;
+                    this.item_prepTime = item_prepTime;
+                    this.FID = FID;
+
+                    var formData = new FormData();
+                    formData.append('getCustomItem', 1);
+                    formData.append('itemId', itemId);
+                    formData.append('itemTyp', itemTyp);
+                    formData.append('itemPortionCode', itemPortionCode);
+                    formData.append('FID', FID);
+
+                    axios.post("<?php echo base_url('customer/item_details_ajax'); ?>", formData)
+                        .then(response => {
+                            if (response.data.status == 100) {
+                                alert(response.msg);
+                                window.location.reload();
+                            } else if (response.data.status == 1) {
+                                console.log(response.data);
+                                this.customForm = response.data.customDetails;
+                                response.data.customDetails.forEach((item, index) => {
+                                    if (item.GrpType == 1) {
+                                        this.radioVal.push(0);
+                                        this.radioRate.push(0);
+                                        this.raidoGrpCd.push(0);
+                                        this.radioName.push(0);
+                                        if (item.Reqd == 1) {
+                                            this.reqIndex.push(index);
+                                        }
+                                        // console.log(this.radioVal);
+                                    } else {
+                                        this.checkboxGrpCd = item.ItemGrpCd;
+                                        item.Details.forEach(checkboxItem => {
+                                            this.checkboxRate.push(0);
+                                            this.checkboxVal.push(0);
+                                            this.checkboxItemCd.push(checkboxItem.ItemOptCd);
+                                            this.checkboxName.push(0);
+                                        });
+                                    }
+                                });
+                            } else {
+                                console.log(response.data);
+                            }
+                        }).
+                    catch(err => console.log(err));
+                },
+
+                getTotal() {
+                    var radioTotal = 0;
+
+                    this.radioRate.forEach(item => {
+                        radioTotal += parseInt(item);
+                    });
+
+                    var checkTotal = 0;
+
+                    this.checkboxRate.forEach(item => {
+                        checkTotal += parseInt(item);
+                    });
+
+                    this.total = parseInt(radioTotal) + parseInt(checkTotal);
+                },
+                selectPortion(){
+                    var element = $("option:selected", '#item_portions');
+                    var myTag = $('#item_portions_custome option:selected').attr('rate');
+                    var itemPortionCode = $('#item_portions_custome option:selected').attr('value');
+                    this.total = 0;
+                    this.defaultPrice = myTag;
+                    i=0;
+                    while(i<this.radioVal.length) {
+                        this.radioRate[i] = 0;
+                        i++;
+                    };
+
+                    i=0;
+                    while(i<this.checkboxVal.length) {
+                        this.checkboxRate[i] = 0;
+                        i++;
+                    };
+                    // $("#product-price").text(' ' + myTag);
+                    $('input:checked').prop('checked', false);
+                    $('input:radio:checked').prop('checked', false);
+
+                    this.getCustomItem(this.itemId, this.itemTyp, this.itemName, this.defaultPrice, this.itemPortion, this.itemKitCd, this.itemDescription, this.itemImg, this.item_prepTime, itemPortionCode, FID);
+                }
             }
         });
     </script>

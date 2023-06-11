@@ -46,11 +46,12 @@ class Customer extends CI_Controller {
              die;
         }
 
-        $data['title'] = 'Order Details';
+        $data['title'] = 'Item Details';
         $data['language'] = languageArray();
         $data['EType'] = $this->session->userdata('EType');
         $data['Charity'] = $this->session->userdata('Charity');
         $data['Itm_Portion'] = 1;
+        $data['offers'] = $this->cust->getOffers();
         
         $this->load->view('cust/index', $data);
     }
@@ -90,6 +91,16 @@ class Customer extends CI_Controller {
             $res = $this->cust->getOfferCustAjax($_POST);
             echo $res;
         }
+    }
+
+    public function item_details_ajax(){
+        if($this->input->method(true)=='POST'){
+            echo "<pre>";
+            print_r($_POST);
+            die;
+            $res = $this->cust->getItem_details_ajax($_POST);
+            echo $res;
+        }   
     }
 
 
