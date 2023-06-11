@@ -103,5 +103,13 @@ class Customer extends CI_Controller {
         }   
     }
 
+    // cart details
+    public function cart(){
+
+        $data['title'] = 'Order Details';
+        $data['language'] = languageArray();
+        $this->load->view('cust/cart', $data);
+    }
+
 
 }

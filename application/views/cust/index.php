@@ -1,36 +1,5 @@
-<!DOCTYPE html>
-<html lang="zxx">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="description" content="Ogani Template">
-    <meta name="keywords" content="Ogani, unica, creative, html">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title><?= $title; ?> | Quick Service</title>
-
-    <link rel="shortcut icon" href="<?= base_url() ?>assets_admin/images/QSLogo.png">
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
-
-    <!-- Css Styles -->
-    <link rel="stylesheet" href="<?= base_url(); ?>assets/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="<?= base_url(); ?>assets/css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="<?= base_url(); ?>assets/css/elegant-icons.css" type="text/css">
-    <!-- <link rel="stylesheet" href="<?= base_url(); ?>assets/css/nice-select.css" type="text/css"> -->
-    <link rel="stylesheet" href="<?= base_url(); ?>assets/css/jquery-ui.min.css" type="text/css">
-    <link rel="stylesheet" href="<?= base_url(); ?>assets/css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="<?= base_url(); ?>assets/css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="<?= base_url(); ?>assets/css/style.css" type="text/css">
+<?php $this->load->view('layouts/customer/head'); ?>
     <style>
-        .breadcrumb-section {
-            display: flex;
-            align-items: center;
-            padding: 8px 0 8px;
-            margin-bottom: -10px;
-        }
-
         .responsive__tabs ul.scrollable-tabs {
           /*background-color: #333;*/
           overflow-x: auto;
@@ -187,7 +156,7 @@
         /*mobile screen only*/
         @media only screen and (max-width: 480px) {
             .col-6{
-                padding: 0.5rem !important;
+                padding: 0.2rem !important;
             }
           .product__item__pic{
             height: 150px;
@@ -195,29 +164,6 @@
           .mblclass{
             margin-bottom: -30px;
           }
-        }
-
-        /*footer*/
-        .menu-footer {
-            margin-bottom: 0px;
-            background: #F3F6FA;
-        }
-        .btn-group, .btn-group-vertical {
-            position: relative;
-            display: -ms-inline-flexbox;
-            display: inline-flex;
-            vertical-align: middle;
-        }
-        .navbar a{    
-            display: block;
-            color: #000;
-            text-align: center;
-            text-decoration: none;
-            font-size: 12px;
-        }
-
-        .navbar .dropdown-toggle {
-            color:#fff;
         }
 
         /*modal button */
@@ -252,8 +198,7 @@
 
         .modal-item-img {
             margin:0 auto;
-            width: 200px;
-            height: 140px;
+            height: 180px;
             background-size: cover;
             /*border-radius: 0 0 175px 175px;*/
         }
@@ -273,54 +218,7 @@
     </div> -->
 
     <!-- Header Section Begin -->
-    <header class="header" style="background: #f5f5f5;">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-6">
-                        <div class="header__top__left">
-                            <ul>
-                                <li><img src="<?= base_url() ?>assets_admin/images/QSLogo.png" alt="" style="width: 30px;height: 28px;"></li>
-                                <li><img src="<?= base_url() ?>assets/img/search.png" alt="Quick Service" style="width: 30px;height: 28px;" data-toggle="modal" data-target="#item-list-modal"></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-6">
-                        <div class="header__top__right">
-                            
-                            <!-- <div class="header__top__right__language">
-                                <div>English</div>
-                                <span class="arrow_carrot-down"></span>
-                                <ul>
-                                    <li><a href="#">Spanis</a></li>
-                                    <li><a href="#">English</a></li>
-                                </ul>
-                            </div> -->
-                            <div class="header__top__right__auth">
-                                <span onclick="call_help()" style="cursor: pointer;" id="yellow_bell">
-                                    <img src="<?= base_url() ?>assets/img/yellow_bell.jpg" style="height: 28px;">
-                                </span>
-                                <span>
-                                    <img src="<?= base_url() ?>assets/img/language1.png" style="height: 22px;">
-                                    <div class="header__top__right__language">
-                                        <span class="arrow_carrot-down"></span>
-                                        <ul>
-                                            <li><a href="#">Spanis</a></li>
-                                            <li><a href="#">English</a></li>
-                                        </ul>
-                                    </div>
-
-                                </span>
-                                <span id="red_bell" style="display: none;">
-                                    <img src="<?= base_url() ?>assets/img/red_bell1.png" style="height: 30px;">
-                                </span>
-                                <img src="<?= base_url() ?>uploads/e51/logo.jpg" width="auto" height="28px;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        
-    </header>
+    <?php $this->load->view('layouts/customer/top'); ?>
     <!-- Header Section End -->
 
     <section class="breadcrumb-section">
@@ -348,13 +246,11 @@
 
     <section class="breadcrumb-section" id="mcatgBlock">
         <div class="container" style="background: #f5f5f5;">
-
             <div class="featured__controls">
                 <ul id="mCategory" style="padding-bottom: 5px;">
                     
                 </ul>
             </div>
-
         </div>
     </section>
 
@@ -373,52 +269,9 @@
     </section>
     <!-- Product Section End -->
 
-    <div class="navbar menu-footer" >
-        <div class="btn-group dropup">
-            <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="assets/img/menu.svg" width="33" height="20">
-                <h6 style="font-size: 12px;">Account</h6>           
-            </a>
-            <div class="dropdown-menu">
-                <a class="dropdown-item" href="/cust_registration.php">Edit Profile</a>
-                <a class="dropdown-item" href="/cust_registration.php">Transaction</a>
-                <a class="dropdown-item" href="reserve_table.php">Book Table</a>
-                <a class="dropdown-item" href="/cust_registration.php">Refer Outlet</a>
-                <a class="dropdown-item" href="/cust_registration.php">Login</a>
-            </div>
-        </div>
-
-        <div class="btn-group dropup">
-            <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="assets/img/feedback.svg" width="33" height="20">
-                <h6 style="font-size: 12px;"><?= $language['about_us']?></h6>          
-                </a>
-            <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">T &amp; C</a>
-                <a class="dropdown-item" href="#">Testimonials</a>
-                <a class="dropdown-item" href="#">Contact Us</a>
-            </div>
-        </div>
-        <div class="btn-group dropup">
-            <a href="#news" class="dropdown-toggle" data-toggle="modal" data-target="#offers-modal">
-                <!-- <a data-toggle="modal" data-target="#offers-modal"> -->
-                <img src="assets/img/home.svg" width="33" height="20">
-            <h6 style="font-size: 12px;"><?= $language['offers']?></h6>
-            </a>
-        </div>
-        
-
-        <div class="btn-group dropup">
-            <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="assets/img/inbox.svg" width="33" height="20">
-            <h6 style="font-size: 12px;">Order List</h6>
-            </a>
-            <div class="dropdown-menu" style="right: 0; left: auto;">
-                <a class="dropdown-item" href="order_details.php">Order List</a>
-                <a class="dropdown-item" href="send_to_kitchen.php">Current Order</a>
-            </div>
-        </div>
-    </div>
+    <!-- footer section -->
+    <?php $this->load->view('layouts/customer/footer'); ?>
+    <!-- end footer section -->
 
     <!-- item-list-modal -->
     <div class="modal" id="item-list-modal">
@@ -444,26 +297,31 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <img id="product-img" class="modal-item-img" src="assets/img/sample-foods.jpg">
-                <div class="modal-header" style="border-bottom: none;padding-bottom: 0px;">
-
-                    <div class="items-modal">
-                        <h6 id="item-name-modal">Item name </h6><span id="item_offer_remark"></span>
                         <input type="hidden" id="sdetcd" value="">
                         <input type="hidden" id="schcd" value="">
-                        <!-- <p id="item-prepare-time" time="" style="font-size: 12px;color: blue;margin-bottom: 2px;">45 min to prepare</p> -->
-                    </div>
-
-                    <div class="items-rating-modal">
-                        <i class="fa fa-star ratings text-warning" aria-hidden="true">
-                            <span id="item-rating-modal" class="rating-no" style="color: #000;">4.5</span>
-                        </i>
-                        <p class="modal-price price" id="product-price">20</p>
                         <input type="text" id="TaxType" hidden>
-                    </div>
-
-                </div>
-                
+                        <!-- <p id="item-prepare-time" time="" style="font-size: 12px;color: blue;margin-bottom: 2px;">45 min to prepare</p> -->
                 <div class="modal-body" style="padding-top: 0px;">
+                    <div class="row">
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-8">
+                            <h6 id="item-name-modal">Item name </h6>
+                            <span id="item_offer_remark"></span>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+                                    <i class="fa fa-star ratings text-warning" aria-hidden="true">
+                                    <span id="item-rating-modal" class="rating-no" style="color: #000;">4.5</span>
+                                    </i>
+                                </div>
+
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+                                    <i class="fa fa-inr" style="color:blue;"></i><span class="modal-price price" id="product-price">20</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
                     <p id="item-desc-modal" style="font-size: 12px;"></p>
 
                     <div class="row" style="margin-left: 0px;margin-right: 0px;position: relative;">
@@ -472,14 +330,14 @@
                             <select class="form-control" id="item_portions" name="item_portions"  style="font-size: 13px; height: 30px; padding: 4px; width: 103px; font-weight: 600;" <?php if ($Itm_Portion == 0) {echo "disabled";} ?>>
                             </select>
                         </div>
-                        <div style="position: absolute;right: 2pc;">
-                            <label style="margin: 0px;font-size: 14px;"><?= $language['quantity']?>:</label>
+                        <div style="position: absolute;right: 0pc;">
+                            <label style="margin: 0px;font-size: 14px;">&nbsp;<?= $language['quantity']?>:</label>
                             <div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;">
                                 <span class="input-group-btn">
                                     <button type="button" id="minus-qty" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;" disabled="">-
                                     </button>
                                 </span>
-                                <input type="text" readonly="" id="qty-val" class="form-control input-number" value="1" min="1" max="10" style="height :28px;">
+                                <input type="text" readonly="" id="qty-val" class="form-control input-number" value="1" min="1" max="10" style="height :28px;text-align: center;">
                                 <span class="input-group-btn">
                                     <button type="button" id="add-qty" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;">+
                                     </button>
@@ -490,7 +348,23 @@
 
                     <?php if ($EType < 25) { ?>
                         <div class="row" style="margin-left: 0px;margin-right: 0px;margin-bottom: 10px;">
-                            <div>
+
+                            <div >
+                                <label style="display: grid;margin: 0px;font-size: 14px;"><?= $language['take_away']?></label>
+                                <!-- <label class="switch">
+                                    <input type="checkbox" id="take-away">
+                                    <span class="slider round"></span>
+                                </label> -->
+                                <select class="form-control" style="font-size: 13px; height: 30px; padding: 4px;width: 103px;" id="take-away">
+                                    <option value="0">Sit In</option>
+                                    <option value="1">Take Away</option>
+                                    <?php if($Charity == 1){ ?>
+                                    <option value="2">Charity</option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+
+                            <div style="position: absolute;right: 1pc;">
                                 <label for="sel1" style="margin: 0px;font-size: 14px;"><?= $language['delivery_time']?></label>
                                 <div id="waiting-btn" class="your-class1 btn-group btn-group-toggle" data-toggle="buttons" style="width: 96px;display: block;">
                                     <div class="input-group">
@@ -498,7 +372,7 @@
                                             <button type="button" id="minus-serve" class="btn btn-default btn-number active" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;" aria-pressed="true" disabled="">-
                                             </button>
                                         </span>
-                                        <input type="text" readonly="" id="serve-val" class="form-control input-number" value="5" min="5" max="30" style="height: 28px;">
+                                        <input type="text" readonly="" id="serve-val" class="form-control input-number" value="5" min="5" max="30" style="height: 28px;text-align: center;">
                                         <span class="input-group-btn">
                                             <button type="button" id="add-serve" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;" aria-pressed="false" >+
                                             </button>
@@ -507,24 +381,19 @@
                                 </div>
                             </div>
 
-                            <div style="position: absolute;right: 2pc;width: 109px;">
-                                <label style="display: grid;margin: 0px;font-size: 14px;"><?= $language['take_away']?></label>
-                                <!-- <label class="switch">
-                                    <input type="checkbox" id="take-away">
-                                    <span class="slider round"></span>
-                                </label> -->
-                                <select class="form-control" style="font-size: 13px; height: 30px; padding: 4px;" id="take-away">
-                                    <option value="0">Sit In</option>
-                                    <option value="1">Take Away</option>
-                                    <?php if($Charity == 1){ ?>
-                                    <option value="2">Charity</option>
-                                    <?php } ?>
-                                </select>
-                            </div>
+                            
                         </div>
                     <?php } ?>
 
                     <div class="row" style="margin: 0px;">
+                        <div class="form-group" style="width: 100%;">
+                            <select name="" id="" class="form-control">
+                                <option value="">Select Offer</option>
+                                <option value="">offer1</option>
+                                <option value="">offer2</option>
+                            </select>
+                        </div>
+
                         <div class="remark" style="width: 100%">
                             <input id="cust-remarks" type="text" class="form-control Remarks-input" placeholder="Enter Remarks" name="remark-box">
                         </div>
@@ -720,22 +589,8 @@
     </div>
 
     <!-- Js Plugins -->
-    <script src="<?= base_url(); ?>assets/js/jquery-3.3.1.min.js"></script>
-    <script src="<?= base_url(); ?>assets/js/bootstrap.min.js"></script>
-    <!-- <script src="<?= base_url(); ?>assets/js/jquery.nice-select.min.js"></script> -->
-    <script src="<?= base_url(); ?>assets/js/jquery-ui.min.js"></script>
-    <script src="<?= base_url(); ?>assets/js/jquery.slicknav.js"></script>
-    <script src="<?= base_url(); ?>assets/js/mixitup.min.js"></script>
-    <script src="<?= base_url(); ?>assets/js/owl.carousel.min.js"></script>
-    <script src="<?= base_url(); ?>assets/js/main.js"></script>
-    <!-- call ajax common js-->
-    <script src="<?= base_url(); ?>assets/js/ajax.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
-    
-
+    <?php $this->load->view('layouts/customer/script'); ?>
+    <!-- end Js Plugins -->
 
 </body>
 
@@ -862,27 +717,27 @@
                                     </div>\
                                     <div class="footer__widget">\
                                         <div class="row" style="margin-bottom: -33px;">\
-                                            <div class="col-lg-8 col-md-8 col-sm-8 col-12 mblclass">\
+                                            <div class="col-lg-8 col-md-8 col-sm-8 col-8 mblclass">\
                                                 <p title="'+data[i].ItemNm+'">'+data[i].short_ItemNm+'</p>\
                                             </div>\
-                                            <div class="col-lg-4 col-md-4 col-sm-4 col-12 ">\
-                                                <p class="text-right d-none d-sm-block">\
-                                                    <i class="fa fa-inr " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
-                                                </p>\
-                                                <p class="d-block d-sm-none">\
-                                                    <i class="fa fa-inr " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-4">\
+                                                <p class="text-right">\
+                                                    <i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+data[i].AvgRtng+'\
                                                 </p>\
                                             </div>\
                                         </div>\
                                         <div class="row" style="margin-bottom: -33px;">\
                                             <div class="col-lg-8 col-md-8 col-sm-8 col-6">\
-                                                <p>\
-                                                    <i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+data[i].AvgRtng+'\
+                                                <p >\
+                                                    <i class="fa fa-heartbeat" style="color:green;"></i>  '+data[i].NV+'\
                                                 </p>\
                                             </div>\
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-6">\
-                                                <p class="text-right">\
-                                                    <i class="fa fa-heartbeat" style="color:green;"></i>  '+data[i].NV+'\
+                                                <p class="text-right d-none d-sm-block">\
+                                                    <i class="fa fa-inr " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
+                                                </p>\
+                                                <p class="text-right d-block d-sm-none">\
+                                                    <i class="fa fa-inr " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
                                                 </p>\
                                             </div>\
                                         </div>\
@@ -999,7 +854,9 @@
                 $("#item-rating-modal").text($(item).attr('item-avgrtng'));
                 // console.log('item-avgrtng - '+$(item).attr('item-avgrtng'));
 
-                $("#item-desc-modal").text($(item).attr('item-dedc'));
+                if($(item).attr('item-dedc') != '-'){
+                    $("#item-desc-modal").text($(item).attr('item-dedc'));
+                }
                 // console.log('item-dedc - '+$(item).attr('item-dedc'));
 
                 $("#product-img").attr('src', $(item).attr('item-imgsrc'));
