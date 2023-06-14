@@ -26,13 +26,13 @@
                         </span>
                         <span>
                             <img src="<?= base_url() ?>assets/img/language1.png" style="height: 22px;">
-                            <div class="header__top__right__language">
+                            <!-- <div class="header__top__right__language">
                                 <span class="arrow_carrot-down"></span>
                                 <ul>
                                     <li><a href="#">Spanis</a></li>
                                     <li><a href="#">English</a></li>
                                 </ul>
-                            </div>
+                            </div> -->
 
                         </span>
                         <span id="red_bell" style="display: none;">

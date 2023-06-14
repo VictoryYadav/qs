@@ -155,7 +155,7 @@
 
         /*mobile screen only*/
         @media only screen and (max-width: 480px) {
-            .col-6{
+            .col-mbl{
                 padding: 0.2rem !important;
             }
           .product__item__pic{
@@ -298,9 +298,9 @@
             <div class="modal-content">
                 <img id="product-img" class="modal-item-img" src="assets/img/sample-foods.jpg">
                         <input type="hidden" id="sdetcd" value="">
-                        <input type="hidden" id="schcd" value="">
+                        <!-- <input type="hidden" id="schcd" value=""> -->
                         <input type="text" id="TaxType" hidden>
-                        <!-- <p id="item-prepare-time" time="" style="font-size: 12px;color: blue;margin-bottom: 2px;">45 min to prepare</p> -->
+                        <p id="item-prepare-time" time="" style="font-size: 12px;color: blue;margin-bottom: 2px;">45 min to prepare</p>
                 <div class="modal-body" style="padding-top: 0px;">
                     <div class="row">
                         <div class="col-lg-8 col-md-8 col-sm-8 col-8">
@@ -387,10 +387,8 @@
 
                     <div class="row" style="margin: 0px;">
                         <div class="form-group" style="width: 100%;">
-                            <select name="" id="" class="form-control">
+                            <select name="schcd" id="schcd" class="form-control">
                                 <option value="">Select Offer</option>
-                                <option value="">offer1</option>
-                                <option value="">offer2</option>
                             </select>
                         </div>
 
@@ -701,10 +699,11 @@
                     {
                         openModal = '#customizeModal';
                     }
-                      temp += '<div class="col-lg-3 col-md-6 col-sm-6 col-6">\
+
+                      temp += '<div class="col-lg-3 col-md-6 col-sm-6 col-6 col-mbl">\
                                 <div class="product__item">\
                                     <div class="product__item__pic set-bg" data-setbg="<?= base_url(); ?>assets/img/product/product-7.jpg">\
-                                    <img src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'" data-toggle="modal" data-target="'+openModal+'" class="item_img" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'">\
+                                    <img src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'" data-toggle="modal" data-target="'+openModal+'" class="item_img" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'">\
                                     <div class="product__discount__percent">-20%</div>\
                                     <div class="product__discount__percent1">-20%</div>\
                                     <div class="product__discount__percent2">-20%</div>\
@@ -791,7 +790,7 @@
 
                                 // add cid and mcatgid to me
                                 template += `
-                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.Value}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" style="cursor: pointer;" item-prepTime="${item.PrepTime}">${item.ItemNm}</li>
+                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.Value}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" style="cursor: pointer;" item-prepTime="${item.PrepTime}">${item.ItemNm}</li>
                             `;
                             });
                             template += `</ul>`;
@@ -868,6 +867,8 @@
                 customizeModalVue.getCustomItem($(item).attr('item-id'), itemTyp, $(item).attr('item-nm'), $(item).attr('item-value'), itemPortion, itemKitCd, $(item).attr('item-dedc'), $(item).attr('item-imgsrc'), $(item).attr('item-prepTime'), $(item).attr('item-portion-code'), $(item).attr('item-fid'));
             }
             getCustOffer(itemId, $(item).attr('item-nm'), cid, itemTyp, mCatgId);
+            getItemOffers(itemId, $(item).attr('item-nm'), cid, itemTyp, mCatgId);
+            
         }
 
         function getItemPortion(itemId, itemPortion, cid, itemTyp, mCatgId) {
@@ -923,6 +924,43 @@
                 }
             });
         }
+
+        function getItemOffers(itemId, itemNm, cid, itemTyp, mCatgId) {
+
+            $.ajax({
+                url: '<?= base_url('customer/get_item_offer_ajax') ?>',
+                type: 'post',
+                data: {
+                    getOrderData: 1,
+                    itemId: itemId,
+                    cid:cid,
+                    itemTyp:itemTyp,
+                    MCatgId:mCatgId
+                },
+                success: function(res) {
+                    if(res.status == 'success'){
+                        var data = res.response;
+                        var temp = '<option value="0">Select Offer</option>';
+                        for(i=0; i<data.length; i++){
+                            temp += '<option value="'+data[i].SchCd+'" sdcode="'+data[i].SDetCd+'">'+data[i].SchNm+'-'+data[i].SchDesc+'</option>';
+                        }
+                        $('#schcd').html(temp);
+                    }else{
+                      alert(res.response);
+                    }
+                }
+            });
+        }
+
+        $('#schcd').change(function(){
+            var schcd = $(this).val();
+            // console.log($('option:selected', this).attr('sdcode'));
+            if(schcd > 0){
+                $('#sdetcd').val($('option:selected', this).attr('sdcode'));
+            }else{
+                $('#sdetcd').val(0);
+            }
+        })
 
         $('#item_portions').change(function(){
             // alert("aaaa");
@@ -1182,6 +1220,98 @@
                 }
             }
         });
+
+        $("#confirm-order").click(function(event) {
+            if (window.itemMaxQtyValidation > 0) {
+                $.ajax({
+                    url: "<?php echo base_url('customer/item_details_ajax'); ?>",
+                    type: 'post',
+                    data: {
+                        checkMaxQty: 1,
+                        itemId: itemId,
+                        maxQty: window.itemMaxQtyValidation,
+                        enterQty: $('#qty-val').val(),
+                    },
+                    success: function(response) {
+                        if (parseInt(response) >= 1) {
+                            itemOrderConfirm();
+                        } else {
+                            alert("Sorry, Selected item has gone out of stock.");
+                        }
+                    }
+                })
+            } else {
+                itemOrderConfirm();
+            }
+        });
+
+        function itemOrderConfirm() {
+            var custRemarks = $("#cust-remarks").val();
+            var qty = $("#qty-val").val();
+            var takeAway = 0;
+            var serveTime = $("#serve-val").val();
+            var itmrate = $("#product-price").text();
+            var itemPortionText = itemPortion;
+            var prepration_time = $('#item-prepare-time').attr('time');
+            var tax_type = $('#confirm-order').attr('tax_type');
+            var TblTyp = $('#confirm-order').attr('tbltyp');
+            var sdetcd = $('#sdetcd').val();
+            var schcd = $('#schcd').val();
+
+            if ($("#take-away").prop('checked') == true) {
+                takeAway = 1;
+            }
+            // return false;
+            $.ajax({
+                url: "<?php echo base_url('customer/item_details_ajax'); ?>",
+                type: "post",
+                data: {
+                    confirmOrder: 1,
+                    itemId: itemId,
+                    custRemarks: custRemarks,
+                    qty: qty,
+                    itemPortionText: $('#item_portions').val(),
+                    takeAway: takeAway,
+                    serveTime: serveTime,
+                    itemKitCd: itemKitCd,
+                    itmrate: itmrate,
+                    prepration_time: serveTime,
+                    tax_type:tax_type,
+                    sdetcd:sdetcd,
+                    schcd:schcd,
+                    TblTyp:TblTyp
+                },
+                dataType: "json",
+                beforeSend: function() {
+                    $('.loder_bg').css('display','flex');
+                },
+                success: (response) => {
+                    if (response == 1) {
+                        window.location.assign("cust_registration.php");
+                        // not implement 
+                    }
+                    $("#cust-remarks").val('');
+                    $("#qty-val").val(1);
+                    $('#minus-qty').prop('disabled', true);
+                    $("#take-away").prop('checked', false);
+                    $("#serve-val").val(5);
+                    if (response.status == 100) {
+                        alert(response.msg);
+                        window.location.reload();
+                    } else if (response.status == 1) {
+                        window.location = `${response.redirectTo}`;
+                    } else {
+                        console.log(response.msg);
+                        $('.loder_bg').css('display','none');
+                    }
+                },
+                error: (xhr, status, error) => {
+                    console.log(xhr);
+                    console.log(status);
+                    console.log(error);
+                }
+            });
+        }
     </script>
 
 </html>

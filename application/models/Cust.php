@@ -51,8 +51,8 @@ class Cust extends CI_Model{
         $tableNo = authuser()->TableNo;
 
 		$where = "mi.Stat = 0 and (DAYOFWEEK(CURDATE()) = mi.DayNo OR mi.DayNo = 0)  AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and mi.ItemId Not in (Select md.ItemId from MenuItem_Disabled md where md.ItemId=mi.ItemId and md.EID = $this->EID and md.Chainid=mi.ChainId)";
-
-        $sql = "mc.TaxType, mc.KitCd, mi.ItemId, mi.ItemNm, mi.ItemNm2, mi.ItemNm3, mi.ItemNm4, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, mi.ItmDesc, mi.ItmDesc2, mi.ItmDesc3, mi.ItmDesc4, mi.Ingeredients, mi.Ingeredients2, mi.Ingeredients3, mi.Ingeredients4, mi.Rmks, mi.Rmks2, mi.Rmks3, mi.Rmks4, mi.PrepTime, mi.AvgRtng, mi.FID,ItemNm as imgSrc, mi.UItmCd,mi.CID,mi.Itm_Portion,mi.Value,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$tableNo' AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate";
+// et.TblTyp
+        $sql = "mc.TaxType, mc.KitCd, mi.ItemId, mi.ItemNm, mi.ItemNm2, mi.ItemNm3, mi.ItemNm4, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, mi.ItmDesc, mi.ItmDesc2, mi.ItmDesc3, mi.ItmDesc4, mi.Ingeredients, mi.Ingeredients2, mi.Ingeredients3, mi.Ingeredients4, mi.Rmks, mi.Rmks2, mi.Rmks3, mi.Rmks4, mi.PrepTime, mi.AvgRtng, mi.FID,ItemNm as imgSrc, mi.UItmCd,mi.CID,mi.Itm_Portion,mi.Value,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$tableNo' AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$this->EID' and et1.TableNo = '$tableNo') as TblTyp";
         if(!empty($mcat)){
             $this->db2->where('mc.MCatgId', $mcat);
         }
@@ -99,8 +99,8 @@ class Cust extends CI_Model{
 
 	function strTruncate($str){
 	    $len = strlen($str);
-	      if ($len > 20) {
-	          $str = substr($str, 0, 20) . "...";
+	      if ($len > 15) {
+	          $str = substr($str, 0, 15) . "...";
 	      }
 	      return $str;
 	  }
@@ -116,9 +116,6 @@ class Cust extends CI_Model{
 							'mir.EID' => $EID,
 							'et.TableNo' => $TableNo))
 						->result_array();
-		// return $this->db2->query("SELECT ip.Name, mi.ItemId as mtemid, mi.ItemTyp as mitype, mi.MCatgId as micat, mi.CID as micid, mi.ItemId, m.ItmRate,ip.IPCd as IPCode, cod.* FROM MenuItem as mi join MenuItemRates m on mi.ItemId = m.ItemId join ItemPortions ip on ip.IPCd = m.Itm_Portion join Eat_tables et on m.SecId=et.SecId left outer join CustOffersDet as cod on ((mi.ItemId = cod.ItemId and cod.ItemId>0) or (mi.MCatgId = cod.MCatgId and cod.MCatgId>0) or (mi.ItemTyp = cod.ItemTyp and cod.ItemTyp>0) or (mi.CID = cod.CID and cod.CID>0) or (ip.IPCd = cod.IPCd and cod.IPCd > 0)) where m.EID=".$EID." and mi.ItemId=$itemId and et.TableNo='".$TableNo."' and m.EID=et.EID Order by ItmRate Asc")->result_array();
-
-		// SELECT ip.Name, mi.ItemId as mtemid, mi.ItemTyp as mitype, mi.MCatgId as micat, mi.CID as micid, mi.ItemId, m.ItmRate,ip.IPCd as IPCode FROM MenuItem as mi join MenuItemRates m on mi.ItemId = m.ItemId join ItemPortions ip on ip.IPCd = m.Itm_Portion join Eat_tables et on m.SecId=et.SecId  where m.EID=51 and mi.ItemId=167 and et.TableNo='22' and m.EID=et.EID Order by ItmRate Asc
 	}
 
 	public function getOfferCustAjax($postData){
@@ -169,6 +166,21 @@ class Cust extends CI_Model{
 		    return $html;
 		}
 	}
+	public function getItemOfferAjax($postData){
+		if (isset($postData['getOrderData']) && $postData['getOrderData'] == 1) {
+		    $itemId = $postData['itemId'];
+		    $cid = $postData['cid'];
+		    $itemTyp = $postData['itemTyp'];
+		    $MCatgId = $postData['MCatgId'];
+		    // print_r($itemId);exit();
+
+			$GetOffer = $this->db2->query("SELECT c.SchNm, c.SchCd, cod.SDetCd, cod.SchDesc, c.PromoCode, c.SchTyp, c.Rank, cod.Qty as FreeQty, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId from CustOffersDet as cod join CustOffers as c on c.SchCd=cod.SchCd and  (cod.CID = 10 or cod.MCatgId = 1 or cod.ItemTyp =0 or cod.ItemId = 460) left outer join Cuisines as c1 on cod.CID=c1.CID   left outer join MenuCatg as m on cod.MCatgId = m.MCatgId  left outer join ItemTypes as i on cod.ItemTyp = i.ItmTyp  left outer join MenuItem as mi on mi.ItemId = cod.ItemId where c.EID=".$this->EID." and c.ChainId =".$this->ChainId."  and c.Stat=0 and (time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)  group by c.schcd, cod.sDetCd order by c.Rank, cod.Rank")->result_array();
+			return $GetOffer;
+			echo "<pre>";
+			print_r($GetOffer);
+			die;
+		}
+	}
 
 	public function getItem_details_ajax($postData){
 		
@@ -178,7 +190,7 @@ class Cust extends CI_Model{
 		$ChainId = $this->ChainId;
 		$ONo = $this->session->userdata('ONo');
 		$EType = $this->session->userdata('EType');
-		$TableNo = $this->session->userdata('TableNo');
+		$TableNo = authuser()->TableNo;
 		$KOTNo = $this->session->userdata('KOTNo');
 		$CellNo = $this->session->userdata('CellNo');
 		$MultiKitchen = $this->session->userdata('MultiKitchen');
@@ -408,7 +420,40 @@ class Cust extends CI_Model{
 					$fKotNo = $KOTNo;
 
 					if ($CNo == 0) {
-						$this->insertKitchenMain();
+						
+						// insert kitchen main
+						if ($CNo == 0) {
+							if ($EType == 5) {
+								$orderType = 7;
+							} else {
+								$orderType = 0;
+							}
+							// $kitchenMainObj
+							$kitchenMainObj['CustId'] = $CustId;
+							$kitchenMainObj['COrgId'] = $COrgId;
+							$kitchenMainObj['CustNo'] = $CustNo;
+							$kitchenMainObj['CellNo'] = $CellNo;
+							$kitchenMainObj['EID'] = $EID;
+							$kitchenMainObj['ChainId'] = $ChainId;
+							$kitchenMainObj['ONo'] = $ONo;
+							$kitchenMainObj['OType'] = $orderType;
+							$kitchenMainObj['TableNo'] = $TableNo;
+							$kitchenMainObj['OldTableNo'] = $TableNo;
+							$kitchenMainObj['MergeNo'] = $TableNo;
+							$kitchenMainObj['Stat'] = $this->session->userdata('TableAcceptReqd');
+							$kitchenMainObj['CnfSettle'] = ($this->session->userdata('AutoSettle') == 1)?0:1;
+							$kitchenMainObj['LoginCd'] = 1;
+							$kitchenMainObj['payRest'] = 0;
+
+							$kichnid = insertRecord('KitchenMain', $kitchenMainObj);
+							if ($kichnid) {
+								$CNo = $kichnid;
+								$this->session->set_userdata('CNo', $CNo);
+							}
+						} else {
+							$CNo = $CNo;
+						}
+						// end of kitchen main
 						$MergeNo = $TableNo;
 					} else {
 						$MergeNoGet = $this->db2->query("SELECT MergeNo FROM KitchenMain WHERE EID = $EID AND CNo = $CNo and BillStat = 0")->result_array();
@@ -465,7 +510,8 @@ class Cust extends CI_Model{
 							$fKotNo += 1;
 							// new ukot
 							$newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
-							Session::set('oldKitCd', $itemKitCd);
+
+							$this->session->set_userdata('oldKitCd', $itemKitCd);
 						} else {
 							// next ukot					
 							$newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
@@ -509,10 +555,10 @@ class Cust extends CI_Model{
 					
 					if ($EType == 5) {
 						// $response["redirectTo"] = "send_to_kitchen.php";
-						redirect(base_url('customer/send_to_kitchen'));
+						$response["redirectTo"]  = base_url('customer/cart');
 					} else {
 						// $response["redirectTo"] = "order_details.php";
-						redirect(base_url('customer/order_details'));
+						$response["redirectTo"]  = base_url('customer/order_details');
 					}
 
 					// $DB->executeTransaction();
@@ -526,7 +572,7 @@ class Cust extends CI_Model{
 				}
 				$this->db2->trans_complete();
 				echo json_encode($response);
-				die();
+				
 			} else {
 				echo '1';
 			}
@@ -592,13 +638,45 @@ class Cust extends CI_Model{
 			die();
 		}
 
-		if ($postData['setCustomItem']) {
+		if (isset($postData['setCustomItem']) && !empty($postData['setCustomItem'])) {
 
 			$this->db->trans_start();
 			// $DB->beginTransaction();
 			try {
 				if ($CNo == 0) {
-					insertKitchenMain();
+					// insertKitchenMain();
+					// Check CNo is 0 or not
+					if ($CNo == 0) {
+						if ($EType == 5) {
+							$orderType = 7;
+						} else {
+							$orderType = 0;
+						}
+						// $kitchenMainObj
+						$kitchenMainObj['CustId'] = $CustId;
+						$kitchenMainObj['COrgId'] = $COrgId;
+						$kitchenMainObj['CustNo'] = $CustNo;
+						$kitchenMainObj['CellNo'] = $CellNo;
+						$kitchenMainObj['EID'] = $EID;
+						$kitchenMainObj['ChainId'] = $ChainId;
+						$kitchenMainObj['ONo'] = $ONo;
+						$kitchenMainObj['OType'] = $orderType;
+						$kitchenMainObj['TableNo'] = $TableNo;
+						$kitchenMainObj['OldTableNo'] = $TableNo;
+						$kitchenMainObj['MergeNo'] = $TableNo;
+						$kitchenMainObj['Stat'] = $this->session->userdata('TableAcceptReqd');
+						$kitchenMainObj['CnfSettle'] = ($this->session->userdata('AutoSettle') == 1)?0:1;
+						$kitchenMainObj['LoginCd'] = 1;
+						$kitchenMainObj['payRest'] = 0;
+						$kichnid = insertRecord('KitchenMain', $kitchenMainObj);
+						if ($kichnid) {
+							$CNo = $kichnid;
+							$this->session->set_userdata('CNo', $CNo);
+						}
+					} else {
+						$CNo = $CNo;
+					}
+					
 					$MergeNo = $TableNo;
 				} else {
 					$MergeNoGet = $this->db2->query("SELECT MergeNo FROM KitchenMain WHERE EID = $EID AND CNo = $CNo and BillStat = 0")->result_array();
