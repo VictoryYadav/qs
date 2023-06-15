@@ -187,14 +187,12 @@ class Customer extends CI_Controller {
 
                         // Update kitchen stat = 10 to stat = 0 or 1. This is for EType=5
                         $updateKitchenStat = $this->db2->query("UPDATE Kitchen set Stat = $stat where Stat = 10 AND CustId = $CustId AND EID = $EID AND TableNo = '$TableNo'");
-
                         // set Kot to 0
                         $this->session->set_userdata('KOTNo', 0);
                         $response = [
                             "status" => 1,
                             "msg" => "Order Sent To Kitchen Successfully"
                         ];
-
                         echo json_encode($response);
                         die();
                     }else{
@@ -202,13 +200,13 @@ class Customer extends CI_Controller {
                             "status" => 11,
                             "msg" => "1"
                         ];
-
                         echo json_encode($response);
                         die();
                     }   
 
                 }else{
-                    echo '<script>window.location.assign("cust_registration.php");</script>';
+                   $url =  base_url('customer/cust_registration');
+                    echo '<script>window.location.assign("$url");</script>';
                 }
             }else { 
                 // Session Expire

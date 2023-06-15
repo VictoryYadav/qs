@@ -467,7 +467,7 @@ class Cust extends CI_Model{
 						//$newUKOTNO = date('dmy_') . $KOTNo;
 
 						// Check entry is already inserted in ETO
-						$checkTableEntry = $this->db2->query("SELECT TNo FROM Eat_tables_Occ WHERE EID = $EID AND CNo = $CNo")->result_array();
+						$checkTableEntry = $this->db2->query("SELECT TNo FROM Eat_tables_Occ WHERE EID = $EID AND CNo = $CNo")->row_array();
 				
 						//If Empty insert new record
 						if (empty($checkTableEntry)) {
@@ -490,7 +490,6 @@ class Cust extends CI_Model{
 						//For ETpye 1 Order Type Will Be 0 and Stat = 1
 						$OType = 0;
 						$stat = 0;
-						
 					}
 
 					$newUKOTNO = date('dmy_') . $KOTNo;

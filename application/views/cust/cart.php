@@ -161,10 +161,12 @@
 
     function goBack() {
         <?php
+
         if ($cId != '') {
-            $backUrl = "item_details.php?cId=$cId&mCatgId=$mCatgId&cType=$cType";
+            // $backUrl = "item_details.php?cId=$cId&mCatgId=$mCatgId&cType=$cType";
+            $backUrl = base_url('customer');
         } else {
-            $backUrl = "customer_landing_page.php";
+            $backUrl = base_url('customer/landing_page');
         }
         ?>
         window.location = '<?= "$backUrl" ?>';
@@ -185,10 +187,11 @@
             success: response => {
                 console.log(response);
                 if (response.status == 11) {
-                    window.location = "cust_registration.php";
-                    // window.location.assign("cust_registration.php");
+                    // window.location = "cust_registration.php";
+                    window.location = "<?php echo base_url('customer/registration'); ?>";
                 } else if (response.status == 1) {
-                    window.location = "order_details.php";
+                    // window.location = "order_details.php";
+                    window.location = "<?php echo base_url('customer/order_details'); ?>";
                 }
             },
             error: (xhr, status, error) => {
