@@ -378,6 +378,7 @@ class Cust extends CI_Model{
 						$OType = 0;
 					}
 				}
+
 				$this->db2->trans_start();
 
 				// $DB->beginTransaction();
@@ -570,6 +571,7 @@ class Cust extends CI_Model{
 					// $DB->rollBack();
 				}
 				$this->db2->trans_complete();
+				
 				echo json_encode($response);
 				
 			} else {

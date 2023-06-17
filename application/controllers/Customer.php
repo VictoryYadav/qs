@@ -56,6 +56,42 @@ class Customer extends CI_Controller {
         $this->load->view('cust/index', $data);
     }
 
+    public function index1(){
+
+        $data['cuisinList'] = $this->cust->getCuisineList();
+        $this->session->set_userdata('cuisine', $data['cuisinList'][0]['CID']);
+        $cid = $data['cuisinList'][0]['CID'];
+        $data['cid'] = $cid;
+        
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+            
+            
+            if(isset($_POST['cid']) && !empty($_POST['cid'])){
+                $cid = $_POST['cid'];
+            }
+            $res['list'] = $this->cust->getMcatandCtypList($cid);
+           
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $res
+              ));
+             die;
+        }
+
+        $data['title'] = 'Item Details';
+        $data['language'] = languageArray();
+        $data['EType'] = $this->session->userdata('EType');
+        $data['Charity'] = $this->session->userdata('Charity');
+        $data['Itm_Portion'] = 1;
+        $data['offers'] = $this->cust->getOffers();
+        
+        $this->load->view('cust/main', $data);
+    }
+
     public function getItemDetailsData(){
         $status = "error";
         $response = "Something went wrong! Try again later.";

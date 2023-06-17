@@ -1,33 +1,75 @@
-<?php $this->load->view('layouts/customer/head'); ?>
-    <style>
-        .responsive__tabs ul.scrollable-tabs {
-          /*background-color: #333;*/
-          overflow-x: auto;
-          white-space: nowrap;
-          display: flex;
-          text-transform: uppercase;
-          flex-direction: row;
-          font-weight: 600;
-          font-size: 14px;
-        }
-        .responsive__tabs ul.scrollable-tabs li {
-          list-style-type: none;
-        }
-        .responsive__tabs ul.scrollable-tabs li a {
-          display: inline-block;
-          color: #252525;
-          text-align: center;
-          padding: 14px;
-          text-decoration: none;
-        }
-        .responsive__tabs ul.scrollable-tabs li a:hover, .responsive__tabs ul.scrollable-tabs li a.active {
-          /*background-color: #777;*/
-          color:#008000;
-        }
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
-        /*filter section */
+  <!-- ** Basic Page Needs ** -->
+  <meta charset="utf-8">
+  <title>Classimax | Classified Marketplace Template</title>
+
+  <!-- ** Mobile Specific Metas ** -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Agency HTML Template">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="Themefisher">
+  <meta name="generator" content="Themefisher Classified Marketplace Template v1.0">
+  
+  <!-- theme meta -->
+  <meta name="theme-name" content="classimax" />
+
+  <!-- favicon -->
+  <link href="<?= base_url(); ?>theme/images/favicon.png" rel="shortcut icon">
+
+  <!-- 
+  Essential stylesheets
+  =====================================-->
+  <link href="<?= base_url(); ?>theme/plugins/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link href="<?= base_url(); ?>theme/plugins/bootstrap/bootstrap-slider.css" rel="stylesheet">
+  <link href="<?= base_url(); ?>theme/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <link href="<?= base_url(); ?>theme/plugins/slick/slick.css" rel="stylesheet">
+  <link href="<?= base_url(); ?>theme/plugins/slick/slick-theme.css" rel="stylesheet">
+  <!-- <link href="<?= base_url(); ?>theme/plugins/jquery-nice-select/css/nice-select.css" rel="stylesheet"> -->
+  
+  <link href="<?= base_url(); ?>theme/css/style.css" rel="stylesheet">
+<style>
+	body{
+		margin:0px;
+		padding: 0px;
+	}
+	.common-section{
+		background: #f5f5f5;
+		margin-bottom: 5px;
+	}
+	.section-sm{
+		margin-top: -12px;
+		padding: 0px 0px 70px 0px !important
+	}
+	.responsive__tabs ul.scrollable-tabs {
+      /*background-color: #333;*/
+      overflow-x: auto;
+      white-space: nowrap;
+      display: flex;
+      text-transform: uppercase;
+      flex-direction: row;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .responsive__tabs ul.scrollable-tabs li {
+      list-style-type: none;
+    }
+    .responsive__tabs ul.scrollable-tabs li a {
+      display: inline-block;
+      color: #252525;
+      text-align: center;
+      padding: 14px;
+      text-decoration: none;
+    }
+    .responsive__tabs ul.scrollable-tabs li a:hover, .responsive__tabs ul.scrollable-tabs li a.active {
+      /*background-color: #777;*/
+      color:#008000;
+    }
+
+    /*filter section */
         .sec2-radio-grp {
-            /*padding: 15px 30px;*/
             padding: 5px;
         }
 
@@ -39,9 +81,11 @@
             border-radius: 0 25px 25px 0;
         }
         .btn-b{
+        	width: 80px;
+        	padding: 5px !important;
             border:1px solid #008000;
             background: white;
-            font-size: 14px !important;
+            font-size: 12px !important;
         }
         label.active{
             color:white;
@@ -57,115 +101,52 @@
         }
 
         #mCategory li.active {
-          color:#008000;
+          	color:#008000;
+          	border:1px solid #008000;
+          	padding: 2px;
+          	border-radius: 20px;
         }
-        /*grid view */
-        .product{
-            margin-top: -72px;
-            margin-bottom: -72px;
-            /*padding-top: 10px !important;*/
-        }
+       
+        /*grid view*/
+       .product-item{
+       	transition: all linear 0.3s;
+       	box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);
+       }
 
-        .product__item {
-            padding: 3px;
-            margin-bottom: 10px !important;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-            transition: all ease-in-out 0.3s;
-        }
+       .product-item:hover{
+       	transform: translateY(-10px);
+       }
 
-        .product__item:hover {
-            border-color: #fff;
-            box-shadow: 0 0px 25px 0px rgba(0, 0, 0, 0.1);
-            transform: translateY(-10px);
-        }
+       .col-mbl{
+	        padding: 0.5rem !important;
+	        margin-bottom: -25px !important;
+	   }
 
-        .footer__widget {
-            margin-bottom: 3px !important;
-            overflow: hidden;
-        }
-
-        /* end grid view */
-
-        .item_img{
+       .item_img{
+       		width: 100%;
             height:200px;
             margin:0 auto;
             background-size: cover;
             display:block;
         }
-        .product__item__pic{
-            height: 205px !important;
-        }
 
-        .product__item__pic .product__discount__percent {
-            height: 30px;
-            width: 30px;
-            background: #dd2222;
-            border-radius: 50%;
-            font-size: 10px;
-            color: #ffffff;
-            line-height: 30px;
-            text-align: center;
-            position: absolute;
-            left: 2px;
-            top: 1px;
-        }
+        .product-item .card .card-body {
+		    padding: 0.5rem !important;
+		}
+		.product-item .product-meta {
+			margin-bottom: 0px !important;
+		}
 
-        .product__item__pic .product__discount__percent1 {
-            height: 30px;
-            width: 30px;
-            background: #dd2222;
-            border-radius: 50%;
-            font-size: 10px;
-            color: #ffffff;
-            line-height: 30px;
-            text-align: center;
-            position: absolute;
-            left: 35px;
-            top: 1px;
-        }
+		.strTruncate{
+			font-size: 13px;
+			white-space: nowrap;
+		  	overflow: hidden;
+		  	text-overflow: ellipsis;
+		  	margin-bottom: 1px;
+		}
+       /*end grid view*/
 
-        .product__item__pic .product__discount__percent2 {
-            height: 30px;
-            width: 30px;
-            background: #dd2222;
-            border-radius: 50%;
-            font-size: 10px;
-            color: #ffffff;
-            line-height: 30px;
-            text-align: center;
-            position: absolute;
-            left: 70px;
-            top: 1px;
-        }
-
-        .product__item__pic .product__discount__percent3 {
-            height: 30px;
-            width: 30px;
-            background: #dd2222;
-            border-radius: 50%;
-            font-size: 10px;
-            color: #ffffff;
-            line-height: 30px;
-            text-align: center;
-            position: absolute;
-            left: 105px;
-            top: 1px;
-        }
-
-
-        /*mobile screen only*/
-        @media only screen and (max-width: 480px) {
-            .col-mbl{
-                padding: 0.2rem !important;
-            }
-          .product__item__pic{
-            height: 150px;
-          }
-          .mblclass{
-            margin-bottom: -30px;
-          }
-        }
-
+        
         /*modal button */
         .modal-footer {
             display: -ms-flexbox;
@@ -208,72 +189,213 @@
         }*/
 
 
-    </style>
+
+/*footer*/
+.menu-footer {
+    margin-bottom: 0px !important;
+    background: #F3F6FA;
+}
+
+.menu-footer > .btn-group{
+	position: relative;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    vertical-align: middle;
+    margin-bottom: -23px;
+}
+.btn-group-vertical {
+    position: relative;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    vertical-align: middle;
+}
+.navbar a{    
+    display: block;
+    color: #000;
+    text-align: center;
+    text-decoration: none;
+    font-size: 12px;
+}
+.navbar .dropdown-toggle {
+    color:#fff;
+}
+
+/*for list view*/
+/*.p-4 {
+    padding: 0.5rem!important;
+}*/
+
+/*end of list view */
+/*mobile screen only*/
+@media only screen and (max-width: 480px) {
+   .col-mbl{
+        padding: 0.2rem !important;
+        margin-bottom: -20px !important;
+   }
+  .item_img{
+  	/*width: 100%;*/
+    height: 150px;
+  }
+  .strTruncate{
+		/*border:1px solid red;*/
+		width: 168px !important;
+		white-space: nowrap;
+	  	overflow: hidden;
+	  	text-overflow: ellipsis;
+	}
+	.product-item .product-meta li {
+	    margin-right: 10px;
+	}
+}
+
+.loader {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url("<?= base_url('assets/img/QSLogoName.png') ?>") 50% 50% no-repeat rgb(249,249,249);
+    opacity: .8;
+}
+
+.form-control {
+    border-radius: 2px;
+    height: 30px !important;
+    background-color: transparent;
+    color: #666;
+    box-shadow: none;
+    font-size: 11px !important;
+}
+
+</style>
 </head>
 
-<body>
-    <!-- Page Preloder -->
-    <!-- <div id="preloder">
-        <div class="loader"></div>
-    </div> -->
+<body class="body-wrapper">
 
-    <!-- Header Section Begin -->
-    <?php $this->load->view('layouts/customer/top'); ?>
-    <!-- Header Section End -->
+<section class="header-section">
+	<div class="container">
+		<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magni fugiat quis temporibus rerum quibusdam reiciendis molestiae ex dolor expedita ad consequatur laborum maiores nam aliquam veniam culpa molestias autem, beatae.</p>
+	</div>
+</section>
 
-    <section class="breadcrumb-section">
-        <div class="container" style="background: #f5f5f5;">
-            <div class="responsive__tabs">
-                <ul class="scrollable-tabs">
-                    <?php
-                    foreach ($cuisinList as $key) {
-                    ?>
-                    <li class="nav-item">
-                        <a class="nav-link <?php if($cid == $key['CID']){ echo 'active'; } ?>" data-toggle="tab" href="#home" onclick="getCuisineList(<?php echo $key['CID']; ?>)"><?php echo $key['Name']; ?></a>
-                    </li>
-                <?php } ?>
-                </ul>
-            </div>
+<section class="common-section">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="responsive__tabs">
+	                <ul class="scrollable-tabs">
+	                    <?php
+	                    foreach ($cuisinList as $key) {
+	                    ?>
+	                    <li class="nav-item">
+	                        <a class="nav-link <?php if($cid == $key['CID']){ echo 'active'; } ?>" data-toggle="tab" href="#home" onclick="getCuisineList(<?php echo $key['CID']; ?>)"><?php echo $key['Name']; ?></a>
+	                    </li>
+	                <?php } ?>
+	                </ul>
+	            </div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="common-section" id="filterBlock">
+	<div class="container text-center">
+		<div class="row">
+			<div class="col-md-6 col-6">
+				<div class="sec2-radio-grp btn-group btn-group-toggle" data-toggle="buttons" id="filters">
+		        </div>
+			</div>
+			<div class="col-md-6 col-6 text-right">
+		        <ul class="list-inline view-switcher">
+					<li class="list-inline-item">
+						<a href="#" onclick="showProdct('grid');" class="text-info"><i class="fa fa-th-large"></i></a>
+					</li>
+					<li class="list-inline-item">
+						<a href="#" onclick="showProdct('list');"><i class="fa fa-reorder"></i></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+</section>
+
+<section class="common-section">
+	<div class="container">
+		<div class="featured__controls">
+            <ul id="mCategory" style="padding-bottom: 5px;" class="list-inline">
+            </ul>
         </div>
-    </section>
+	</div>
+</section>
 
-    <section class="breadcrumb-section" id="filterBlock">
-        <div class="container text-center" style="background: #f5f5f5;">
-            <div class="sec2-radio-grp btn-group btn-group-toggle" data-toggle="buttons" id="filters">
-            </div>
+<section class="section-sm">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="product-grid-list">
+					<div class="row mt-4" id="gridView">
+					</div>
+				</div>
+				<!-- list view -->
+				<div class="view" style="display: none;">
+				</div>
+				<!-- end of list view -->
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- footer -->
+<div class="navbar menu-footer fixed-bottom" >
+    <div class="btn-group dropup">
+        <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
+            <img src="<?php echo base_url(); ?>assets/img/menu.svg" width="33" height="20">
+            <h6 style="font-size: 12px;">Account</h6>           
+        </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="/cust_registration.php">Edit Profile</a>
+            <a class="dropdown-item" href="/cust_registration.php">Transaction</a>
+            <a class="dropdown-item" href="reserve_table.php">Book Table</a>
+            <a class="dropdown-item" href="/cust_registration.php">Refer Outlet</a>
+            <a class="dropdown-item" href="/cust_registration.php">Login</a>
         </div>
-    </section>
+    </div>
 
-    <section class="breadcrumb-section" id="mcatgBlock">
-        <div class="container" style="background: #f5f5f5;">
-            <div class="featured__controls">
-                <ul id="mCategory" style="padding-bottom: 5px;">
-                    
-                </ul>
-            </div>
+    <div class="btn-group dropup">
+        <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
+            <img src="<?php echo base_url(); ?>assets/img/feedback.svg" width="33" height="20">
+            <h6 style="font-size: 12px;"><?= $language['about_us']?></h6>          
+            </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">T &amp; C</a>
+            <a class="dropdown-item" href="#">Testimonials</a>
+            <a class="dropdown-item" href="#">Contact Us</a>
         </div>
-    </section>
-
-    <!-- Product Section Begin -->
-    <section class="product spad">
-        <div class="container">
-            <div class="row">
-                
-                <div class="col-lg-12 col-md-12">
-                    <div class="row" id="gridData">
-                        
-                    </div>
-                </div>:
-            </div>
+    </div>
+    <div class="btn-group dropup">
+        <a href="#news" class="dropdown-toggle" data-toggle="modal" data-target="#offers-modal">
+            <!-- <a data-toggle="modal" data-target="#offers-modal"> -->
+            <img src="<?php echo base_url(); ?>assets/img/home.svg" width="33" height="20">
+        <h6 style="font-size: 12px;"><?= $language['offers']?></h6>
+        </a>
+    </div>
+    <div class="btn-group dropup">
+        <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
+            <img src="<?php echo base_url(); ?>assets/img/inbox.svg" width="33" height="20">
+        <h6 style="font-size: 12px;">Order List</h6>
+        </a>
+        <div class="dropdown-menu" style="right: 0; left: auto;">
+            <a class="dropdown-item" href="order_details.php">Order List</a>
+            <a class="dropdown-item" href="send_to_kitchen.php">Current Order</a>
         </div>
-    </section>
-    <!-- Product Section End -->
+    </div>
+</div>
+<!-- end of footer -->
 
-    <!-- footer section -->
-    <?php $this->load->view('layouts/customer/footer'); ?>
-    <!-- end footer section -->
 
-    <!-- search model -->
+<!-- search model -->
     <div class="modal" id="item-list-modal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -296,32 +418,26 @@
     <div class="modal product-modal" id="itemModal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <img id="product-img" class="modal-item-img" src="assets/img/sample-foods.jpg">
+                <img id="product-img" class="modal-item-img" src="<?= base_url(); ?>assets/img/sample-foods.jpg">
                         <input type="hidden" id="sdetcd" value="">
                         <!-- <input type="hidden" id="schcd" value=""> -->
                         <input type="text" id="TaxType" hidden>
                         <!-- <p id="item-prepare-time" time="" style="font-size: 12px;color: blue;margin-bottom: 2px;">45 min to prepare</p> -->
                 <div class="modal-body" style="padding-top: 0px;">
-                    <div class="row">
-                        <div class="col-lg-8 col-md-8 col-sm-8 col-8">
-                            <h6 id="item-name-modal">Item name </h6>
-                            <span id="item_offer_remark"></span>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-4">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-6 col-6">
-                                    <i class="fa fa-star ratings text-warning" aria-hidden="true">
-                                    <span id="item-rating-modal" class="rating-no" style="color: #000;">4.5</span>
-                                    </i>
-                                </div>
+                    <p id="item-name-modal" style="margin-bottom: 1px;">Item name </p>
+                    <span id="item_offer_remark"></span>
+                    <ul class="list-inline product-meta">
+				    	<li class="list-inline-item">
+				    		<i class="fa fa-star ratings text-warning" aria-hidden="true">
+                            </i>
+                            <span id="item-rating-modal" class="rating-no" style="color: #000;">0</span>
+				    	</li>
+				    	<li class="list-inline-item">
+				    		<i class="fa fa-inr" style="color:blue;"></i>
+				    		<span class="modal-price price" id="product-price">000</span>
+				    	</li>
+				    </ul>
 
-                                <div class="col-lg-6 col-md-6 col-sm-6 col-6">
-                                    <i class="fa fa-inr" style="color:blue;"></i><span class="modal-price price" id="product-price">20</span>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
                     <p id="item-desc-modal" style="font-size: 12px;"></p>
 
                     <div class="row" style="margin-left: 0px;margin-right: 0px;position: relative;">
@@ -334,12 +450,12 @@
                             <label style="margin: 0px;font-size: 14px;">&nbsp;<?= $language['quantity']?>:</label>
                             <div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;">
                                 <span class="input-group-btn">
-                                    <button type="button" id="minus-qty" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;" disabled="">-
+                                    <button type="button" id="minus-qty" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;" disabled="">-
                                     </button>
                                 </span>
-                                <input type="text" readonly="" id="qty-val" class="form-control input-number" value="1" min="1" max="10" style="height :28px;text-align: center;">
+                                <input type="text" readonly="" id="qty-val" class="form-control input-number" value="1" min="1" max="10" style="text-align: center;">
                                 <span class="input-group-btn">
-                                    <button type="button" id="add-qty" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;">+
+                                    <button type="button" id="add-qty" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 30px;">+
                                     </button>
                                 </span>
                             </div>
@@ -369,12 +485,12 @@
                                 <div id="waiting-btn" class="your-class1 btn-group btn-group-toggle" data-toggle="buttons" style="width: 96px;display: block;">
                                     <div class="input-group">
                                         <span class="input-group-btn">
-                                            <button type="button" id="minus-serve" class="btn btn-default btn-number active" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;" aria-pressed="true" disabled="">-
+                                            <button type="button" id="minus-serve" class="btn btn-default btn-number active" data-type="minus" style="background-color: #0a88ff;color: #fff;border-radius: 0px; padding: 1px 7px;height: 30px;" aria-pressed="true" disabled="">-
                                             </button>
                                         </span>
-                                        <input type="text" readonly="" id="serve-val" class="form-control input-number" value="5" min="5" max="30" style="height: 28px;text-align: center;">
+                                        <input type="text" readonly="" id="serve-val" class="form-control input-number" value="5" min="5" max="30" style="text-align: center;">
                                         <span class="input-group-btn">
-                                            <button type="button" id="add-serve" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;" aria-pressed="false" >+
+                                            <button type="button" id="add-serve" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;" aria-pressed="false" >+
                                             </button>
                                         </span>
                                     </div>
@@ -419,21 +535,26 @@
                     </div>
 
                     <div class="modal-header" style="border-bottom: none;padding-bottom: 0px;">
-                        <div class="items-modal">
-                            <h6 id="item-name-modal_custome">{{itemName}}</h6><span id="item_offer_remark"></span>
-                            <p id="item-prepare-time_custome" time="" style="font-size: 12px;color: blue;margin-bottom: 2px;">{{item_prepTime}} min to prepare</p>
-                        </div>
-                        <div class="items-rating-modal">
-                            <i class="fa fa-star ratings" aria-hidden="true">
-                                <p id="item-rating-modal" class="rating-no" style="color: #000;">4.5</p>
-                            </i>
-                            <p class="modal-price price" id="product-price"> {{defaultPrice}}</p>
-                        </div>
+                        <p id="item-name-modal_custome"><b>{{itemName}}</b></p>
+                        <span id="item_offer_remark"></span>
+                        <!-- <p id="item-prepare-time_custome" time="" style="font-size: 12px;color: blue;margin-bottom: 2px;">{{item_prepTime}} min to prepare</p> -->
+                        
+                        <ul class="list-inline product-meta">
+					    	<li class="list-inline-item">
+					    		<i class="fa fa-star ratings text-warning" aria-hidden="true">
+	                            </i>
+	                            <span id="item-rating-modal" class="rating-no" style="color: #000;">4.5</span>
+					    	</li>
+					    	<li class="list-inline-item">
+					    		<i class="fa fa-inr" style="color:blue;"></i>
+					    		<span class="modal-price price" id="product-price">{{defaultPrice}}</span>
+					    	</li>
+					    </ul>
+                        
                     </div>
 
-
                     <div class="modal-body" style="padding-top: 0px;">
-                        <p style=" padding-left: 20px; font-size: 10px; font-family: Montserrat Regular; padding-bottom: -14px; ">{{itemDescription}}</p>
+                        <p>{{itemDescription}}</p>
 
                         <div class="row" style="margin-left: 0px;margin-right: 0px;position: relative;">
                             <div class="form-group" style="width: 156px; margin-bottom: 4px;">
@@ -446,12 +567,12 @@
                                 <label style="margin: 0px;font-size: 14px;"><?= $language['quantity']?>:</label>
                                 <div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;">
                                     <span class="input-group-btn">
-                                        <button type="button" @click="(qty > 1 ? qty-- : qty = 1)" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;">-
+                                        <button type="button" @click="(qty > 1 ? qty-- : qty = 1)" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;">-
                                         </button>
                                     </span>
                                     <input type="text" readonly="" type="number" v-model="qty" min="1" class="form-control input-number" value="1" max="10" style="height :28px;">
                                     <span class="input-group-btn">
-                                        <button type="button" @click="qty++" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;">+
+                                        <button type="button" @click="qty++" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 30px;">+
                                         </button>
                                     </span>
                                 </div>
@@ -460,30 +581,14 @@
 
                         <?php if ($EType < 25) { ?>
                             <div class="row" style="margin-left: 0px;margin-right: 0px;margin-bottom: 10px;">
-                                <div>
-                                    <label for="sel1" style="margin: 0px;font-size: 14px;"><?= $language['delivery_time']?></label>
-                                    <div id="waiting-btn" class="your-class1 btn-group btn-group-toggle" data-toggle="buttons" style="width: 96px;display: block;">
-                                        <div class="input-group">
-                                            <span class="input-group-btn">
-                                                <button type="button" @click="(del > 1 ? del-- : del = 1)" class="btn btn-default btn-number active" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;" aria-pressed="true">-
-                                                </button>
-                                            </span>
-                                            <input type="text" readonly="" v-model="del" class="form-control input-number" value="5" min="5" max="30" style="height: 28px;">
-                                            <span class="input-group-btn">
-                                                <button type="button" @click="(del < 5 ? del++ : del = 5)" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;" aria-pressed="false">+
-                                                </button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div style="position: absolute;right: 2pc;width: 109px;">
+                            	<div>
                                     <label style="display: grid;margin: 0px;font-size: 14px;"><?= $language['take_away']?></label>
                                     <!-- <label class="switch">
                                         <input type="checkbox" v-model="takeAway">
                                         <span class="slider round"></span>
                                     </label> -->
-                                    <select v-model="takeAway" class="form-control" style="font-size: 13px; height: 30px; padding: 4px;">
+                                    <select v-model="takeAway" class="form-control" style="font-size: 13px; height: 30px; padding: 4px;width: 103px;">
                                         <option value="0">Sit In</option>
                                         <option value="1">Take Away</option>
                                         <?php if($Charity == 1){ ?>
@@ -491,6 +596,24 @@
                                         <?php } ?>
                                     </select>
                                 </div>
+
+                                <div style="position: absolute;right: 2pc;width: 109px;">
+                                    <label for="sel1" style="margin: 0px;font-size: 14px;"><?= $language['delivery_time']?></label>
+                                    <div id="waiting-btn" class="your-class1 btn-group btn-group-toggle" data-toggle="buttons" style="width: 96px;display: block;">
+                                        <div class="input-group">
+                                            <span class="input-group-btn">
+                                                <button type="button" @click="(del > 1 ? del-- : del = 1)" class="btn btn-default btn-number active" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;" aria-pressed="true">-
+                                                </button>
+                                            </span>
+                                            <input type="text" readonly="" v-model="del" class="form-control input-number" value="5" min="5" max="30" style="height: 28px;">
+                                            <span class="input-group-btn">
+                                                <button type="button" @click="(del < 5 ? del++ : del = 5)" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;" aria-pressed="false">+
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         <?php } ?>
 
@@ -586,13 +709,42 @@
         </div>
     </div>
 
-    <!-- Js Plugins -->
-    <?php $this->load->view('layouts/customer/script'); ?>
-    <!-- end Js Plugins -->
+
+<!-- 
+Essential Scripts
+=====================================-->
+<script src="<?= base_url(); ?>theme/plugins/jquery/jquery.min.js"></script>
+<script src="<?= base_url(); ?>theme/plugins/bootstrap/popper.min.js"></script>
+<script src="<?= base_url(); ?>theme/plugins/bootstrap/bootstrap.min.js"></script>
+<script src="<?= base_url(); ?>theme/plugins/bootstrap/bootstrap-slider.js"></script>
+<script src="<?= base_url(); ?>theme/plugins/tether/js/tether.min.js"></script>
+<script src="<?= base_url(); ?>theme/plugins/raty/jquery.raty-fa.js"></script>
+<script src="<?= base_url(); ?>theme/plugins/slick/slick.min.js"></script>
+<!-- <script src="<?= base_url(); ?>theme/plugins/jquery-nice-select/js/jquery.nice-select.min.js"></script> -->
+
+<script src="<?= base_url(); ?>theme/js/script.js"></script>
+<script src="<?= base_url(); ?>assets/js/ajax.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 
 </body>
-
 <script type="text/javascript">
+	var prList = 'grid';
+	function showProdct(val=''){
+		if(val != ''){
+			prList = val;
+		}
+		if(prList == 'grid'){
+			$('.product-grid-list').show();
+			$('.view').hide();
+		}else{
+			$('.product-grid-list').hide();
+			$('.view').show();
+		}
+	}
+
    $(document).ready(function() {
         // $("body").tooltip({ selector: '[data-toggle=tooltip]' });
 
@@ -639,7 +791,7 @@
                         sts = 'active';
                     }
                     // mcat += '<li role="presentation" ><a href="#" aria-controls="home" role="tab" data-toggle="tab">'+mCatList[i].MCatgNm+'</a></li> data-filter="*"';
-                    mcat +='<li class="'+sts+'" data-filter="*" onclick="clickMcat('+mCatList[i].MCatgId+')" style="font-size:14px;">'+mCatList[i].MCatgNm+'</li>';
+                    mcat +='<li class="list-inline-item '+sts+'" data-filter="*" onclick="clickMcat('+mCatList[i].MCatgId+')" style="font-size:14px;">'+mCatList[i].MCatgNm+'</li>';
                 }
             }else{
                 $('#mcatgBlock').hide();
@@ -686,12 +838,14 @@
         // var cid = '10';
         // var mcatId = '1';
         // var filter = '3';
+        $("#gridView").html('<div class="loader"></div>');
         $.post('<?= base_url('customer/getItemDetailsData') ?>',{cid:cid,mcatId:mcatId,filter:filter},function(res){
             if(res.status == 'success'){
               var data = res.response;
               console.log(data);
               var total = data.length;
-              var temp = '';
+              var listView = '';
+              var grid = '';
               if(total > 0){
                   for (var i = 0; i< data.length; i++) {
                     var openModal = '#itemModal';
@@ -700,54 +854,67 @@
                         openModal = '#customizeModal';
                     }
 
-                      temp += '<div class="col-lg-3 col-md-6 col-sm-6 col-6 col-mbl">\
-                                <div class="product__item">\
-                                    <div class="product__item__pic set-bg" data-setbg="<?= base_url(); ?>assets/img/product/product-7.jpg">\
-                                    <img src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'" data-toggle="modal" data-target="'+openModal+'" class="item_img" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'">\
-                                    <div class="product__discount__percent">-20%</div>\
-                                    <div class="product__discount__percent1">-20%</div>\
-                                    <div class="product__discount__percent2">-20%</div>\
-                                    <div class="product__discount__percent3">-20%</div>\
-                                        <ul class="product__item__pic__hover">\
-                                            <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>\
-                                            <li><a href="#"><i class="fa fa-plus"></i></a></li>\
-                                            <li><a href="#"><i class="fa fa-video-camera"></i></a></li>\
-                                        </ul>\
-                                    </div>\
-                                    <div class="footer__widget">\
-                                        <div class="row" style="margin-bottom: -33px;">\
-                                            <div class="col-lg-8 col-md-8 col-sm-8 col-8 mblclass">\
-                                                <p title="'+data[i].ItemNm+'">'+data[i].short_ItemNm+'</p>\
-                                            </div>\
-                                            <div class="col-lg-4 col-md-4 col-sm-4 col-4">\
-                                                <p class="text-right">\
-                                                    <i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+data[i].AvgRtng+'\
-                                                </p>\
-                                            </div>\
-                                        </div>\
-                                        <div class="row" style="margin-bottom: -33px;">\
-                                            <div class="col-lg-8 col-md-8 col-sm-8 col-6">\
-                                                <p >\
-                                                    <i class="fa fa-heartbeat" style="color:green;"></i>  '+data[i].NV+'\
-                                                </p>\
-                                            </div>\
-                                            <div class="col-lg-4 col-md-4 col-sm-4 col-6">\
-                                                <p class="text-right d-none d-sm-block">\
-                                                    <i class="fa fa-inr " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
-                                                </p>\
-                                                <p class="text-right d-block d-sm-none">\
-                                                    <i class="fa fa-inr " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
-                                                </p>\
-                                            </div>\
-                                        </div>\
-                                    </div>\
-                                </div>\
-                            </div>';
+                      grid += '<div class="col-lg-3 col-md-4 col-sm-6 col-6 col-mbl">\
+							<div class="product-item bg-light">\
+								<div class="card">\
+									<div class="thumb-content">\
+										<div class="price">$200</div>\
+										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'">\
+											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
+										</a>\
+									</div>\
+									<div class="card-body">\
+									    <p data-toggle="tooltip" data-placement="top" title="'+data[i].ItemNm+'" class="strTruncate">'+data[i].ItemNm+'</p>\
+									    <ul class="list-inline product-meta">\
+									    	<li class="list-inline-item">\
+									    		<i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+data[i].AvgRtng+'\
+									    	</li>\
+									    	<li class="list-inline-item">\
+									    		<i class="fa fa-heartbeat" style="color:green;"></i> '+data[i].NV+'\
+									    	</li>\
+									    	<li class="list-inline-item">\
+									    		<i class="fa fa-inr " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
+									    	</li>\
+									    </ul>\
+									</div>\
+								</div>\
+							</div>\
+						</div>';
+
+                      listView += '<div class="ad-listing-list mt-20">\
+					    <div class="row p-lg-3 p-sm-5 p-1">\
+					        <div class="col-lg-4 col-md-4 col-sm-4 col-4 align-self-center">\
+					            <a href="#">\
+					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'">\
+					            </a>\
+					        </div>\
+					        <div class="col-lg-8 col-md-8 col-sm-8 col-8">\
+			                    <div class="ad-listing-content">\
+			                        <div>\
+			                            <a data-toggle="tooltip" data-placement="top" title="'+data[i].ItemNm+'" class="font-weight-bold">'+data[i].ItemNm+'</a>\
+			                        </div>\
+			                        <ul class="list-inline mt-2 mb-3">\
+			                            <li class="list-inline-item">\
+								    		<i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+data[i].AvgRtng+'\
+								    	</li>\
+								    	<li class="list-inline-item">\
+								    		<i class="fa fa-heartbeat" style="color:green;"></i> '+data[i].NV+'\
+								    	</li>\
+								    	<li class="list-inline-item">\
+								    		<i class="fa fa-inr " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
+								    	</li>\
+			                        </ul>\
+			                        <p class="pr-5">'+data[i].ItmDesc+'</p>\
+			                    </div>\
+					        </div>\
+					    </div>\
+					</div>';
                   }
                 }else{
-                    temp += '<div class="text-center text-danger">Data Not Found! </div>';
+                    grid += '<div class="text-center text-danger">Data Not Found! </div>';
                 }
-              $('#gridData').html(temp);
+              $('#gridView').html(grid);
+              $('.view').html(listView);
             }else{
               alert(res.response);
               // show error msg pending
@@ -1313,5 +1480,7 @@
             });
         }
     </script>
-
 </html>
+
+
+
