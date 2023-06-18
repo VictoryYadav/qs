@@ -1,48 +1,34 @@
 <?php $this->load->view('layouts/customer/head'); ?>
 <style>
-.payment-btns {
+.payment-btns 
+{
+    padding-left: 10px;
+    padding-right: 10px;
+}
 
-        padding-left: 10px;
+.paybtn 
+{
+    width: 50%;
+    background: #30b94f;
+    color: #fff;
+    /*background: #000 !important;*/
+    /*color: <?php echo isset($body_btn2text)?$body_btn2text:"#000"?> !important;*/
+    height: 54px;
+    margin-left: 0px !important;
+    border-radius: 0 0.5rem 0.5rem 0;
+}
 
-        padding-right: 10px;
-
-    }
-
-        .paybtn {
-
-        width: 50%;
-
-        background: #30b94f;
-
-        color: #fff;
-        /*background: #000 !important;*/
-        /*color: <?php echo isset($body_btn2text)?$body_btn2text:"#000"?> !important;*/
-
-        height: 54px;
-
-        margin-left: 0px !important;
-
-        border-radius: 0 0.5rem 0.5rem 0;
-
-    }
-
-
-
-    .backbtn {
-
-        width: 50%;
-
-        margin-right: 0px !important;
-
-        border-radius: 0.5rem 0 0 0.5rem;
-
-        background-color: #d3c8c8;
-        color:#fff;
-
-        /*background-color:#000 !important;*/
-        /*color: <?php echo isset($body_btn1text)?$body_btn1text:"#000"?> !important;*/
-
-    }
+.backbtn 
+{
+    width: 50%;
+    margin-right: 0px !important;
+    border-radius: 0.5rem 0 0 0.5rem;
+    background-color: #d3c8c8;
+    color:#fff;
+    height: 54px;
+    /*background-color:#000 !important;*/
+    /*color: <?php echo isset($body_btn1text)?$body_btn1text:"#000"?> !important;*/
+}
 
 
 </style>
@@ -55,40 +41,36 @@
     <!-- Header Section End -->
 
     <!-- Shoping Cart Section Begin -->
-    <section class="shoping-cart spad">
+    <section class="common-section p-2 dashboard-container">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="shoping__cart__table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Order Details</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="order-details-table-body">
-                                
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Order Details</th>
+                        <th>Quantity</th>
+                        <th class="text-center">Price</th>
+                        <th class="text-center">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="order-details-table-body">
+                    </tbody>
+                  </table>
                 </div>
             </div>
-
             <!-- btn -->
-
             <div class="row remove-margin payment-btns fixed-bottom" style=" width: 100%; margin-left: 1px;bottom: 60px !important;">
 
-                <button type="button" class="btn btn-sm backbtn" data-dismiss="modal" width="50%" onclick="goBack()"><img src="<?= base_url(); ?>assets/img/back.svg" width="40" style="margin-right: 10px;">Menu</button>
+                <button type="button" class="btn btn-sm backbtn" data-dismiss="modal" width="50%" onclick="goBack()">Menu</button>
 
                 <button type="button" class="btn btn-sm paybtn" data-dismiss="modal" style="width:50%;" onclick="sendToKitchen()">Continue</button>
 
             </div>
-            
+            <!-- end of btn -->
         </div>
     </section>
+   
     <!-- Shoping Cart Section End -->
 
     <!-- footer section -->
@@ -139,10 +121,11 @@
 
                         template += ` <td class="text-center">${item.Qty}</td> `;
                         template += ` <td class="text-center">${rate}</td> `;
-                        template += ` <td class="text-center"> `;
-                        template += ` <span class="icon_close" onclick="cancelOrder(${item.OrdNo});" style="cursor:pointer;"> `;
-                        template += ` </span> `;
-                        template += ` </td> `;
+                        template += ` <td class="text-center">
+                                        <button onclick="cancelOrder(${item.OrdNo});" style="border-radius:50px;background:red;color:#fff;border:1px solid red;">
+                                        <i class="fa fa-trash"></i>
+                                        </button>
+                                     </td> `;
                         template += ` </tr> `;
                     });
                 } else {

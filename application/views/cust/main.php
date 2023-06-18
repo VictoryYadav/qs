@@ -1,39 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
-  <!-- ** Basic Page Needs ** -->
-  <meta charset="utf-8">
-  <title>Classimax | Classified Marketplace Template</title>
-
-  <!-- ** Mobile Specific Metas ** -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="Agency HTML Template">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="author" content="Themefisher">
-  <meta name="generator" content="Themefisher Classified Marketplace Template v1.0">
-  
-  <!-- theme meta -->
-  <meta name="theme-name" content="classimax" />
-
-  <!-- favicon -->
-  <link href="<?= base_url(); ?>theme/images/favicon.png" rel="shortcut icon">
-
-  <!-- 
-  Essential stylesheets
-  =====================================-->
-  <link href="<?= base_url(); ?>theme/plugins/bootstrap/bootstrap.min.css" rel="stylesheet">
-  <link href="<?= base_url(); ?>theme/plugins/bootstrap/bootstrap-slider.css" rel="stylesheet">
-  <link href="<?= base_url(); ?>theme/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-  <link href="<?= base_url(); ?>theme/plugins/slick/slick.css" rel="stylesheet">
-  <link href="<?= base_url(); ?>theme/plugins/slick/slick-theme.css" rel="stylesheet">
-  <!-- <link href="<?= base_url(); ?>theme/plugins/jquery-nice-select/css/nice-select.css" rel="stylesheet"> -->
-  
-  <link href="<?= base_url(); ?>theme/css/style.css" rel="stylesheet">
+<?php $this->load->view('layouts/customer/head'); ?>
 <style>
-	body{
-		margin:0px;
-		padding: 0px;
+	
+	.list-inline-item > .nav-link {
+		padding: 0px !important;
 	}
 	.common-section{
 		background: #f5f5f5;
@@ -119,7 +88,7 @@
 
        .col-mbl{
 	        padding: 0.5rem !important;
-	        margin-bottom: -25px !important;
+	        margin-bottom: -30px !important;
 	   }
 
        .item_img{
@@ -184,53 +153,11 @@
             /*border-radius: 0 0 175px 175px;*/
         }
 
-        /*.modal-footer {
-            padding: 0.5rem;
-        }*/
-
-
-
-/*footer*/
-.menu-footer {
-    margin-bottom: 0px !important;
-    background: #F3F6FA;
-}
-
-.menu-footer > .btn-group{
-	position: relative;
-    display: -ms-inline-flexbox;
-    display: inline-flex;
-    vertical-align: middle;
-    margin-bottom: -23px;
-}
-.btn-group-vertical {
-    position: relative;
-    display: -ms-inline-flexbox;
-    display: inline-flex;
-    vertical-align: middle;
-}
-.navbar a{    
-    display: block;
-    color: #000;
-    text-align: center;
-    text-decoration: none;
-    font-size: 12px;
-}
-.navbar .dropdown-toggle {
-    color:#fff;
-}
-
-/*for list view*/
-/*.p-4 {
-    padding: 0.5rem!important;
-}*/
-
-/*end of list view */
 /*mobile screen only*/
 @media only screen and (max-width: 480px) {
    .col-mbl{
         padding: 0.2rem !important;
-        margin-bottom: -20px !important;
+        margin-bottom: -28px !important;
    }
   .item_img{
   	/*width: 100%;*/
@@ -259,25 +186,14 @@
     opacity: .8;
 }
 
-.form-control {
-    border-radius: 2px;
-    height: 30px !important;
-    background-color: transparent;
-    color: #666;
-    box-shadow: none;
-    font-size: 11px !important;
-}
-
 </style>
 </head>
 
 <body class="body-wrapper">
 
-<section class="header-section">
-	<div class="container">
-		<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magni fugiat quis temporibus rerum quibusdam reiciendis molestiae ex dolor expedita ad consequatur laborum maiores nam aliquam veniam culpa molestias autem, beatae.</p>
-	</div>
-</section>
+<!-- Header Section Begin -->
+    <?php $this->load->view('layouts/customer/top'); ?>
+<!-- Header Section End -->
 
 <section class="common-section">
 	<div class="container">
@@ -309,10 +225,10 @@
 			<div class="col-md-6 col-6 text-right">
 		        <ul class="list-inline view-switcher">
 					<li class="list-inline-item">
-						<a href="#" onclick="showProdct('grid');" class="text-info"><i class="fa fa-th-large"></i></a>
+						<i class="fa fa-th-large" onclick="showProdct('grid');" style="cursor: pointer;"></i>
 					</li>
 					<li class="list-inline-item">
-						<a href="#" onclick="showProdct('list');"><i class="fa fa-reorder"></i></a>
+						<i class="fa fa-reorder" onclick="showProdct('list');" style="cursor: pointer;"></i>
 					</li>
 				</ul>
 			</div>
@@ -348,50 +264,7 @@
 </section>
 
 <!-- footer -->
-<div class="navbar menu-footer fixed-bottom" >
-    <div class="btn-group dropup">
-        <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
-            <img src="<?php echo base_url(); ?>assets/img/menu.svg" width="33" height="20">
-            <h6 style="font-size: 12px;">Account</h6>           
-        </a>
-        <div class="dropdown-menu">
-            <a class="dropdown-item" href="/cust_registration.php">Edit Profile</a>
-            <a class="dropdown-item" href="/cust_registration.php">Transaction</a>
-            <a class="dropdown-item" href="reserve_table.php">Book Table</a>
-            <a class="dropdown-item" href="/cust_registration.php">Refer Outlet</a>
-            <a class="dropdown-item" href="/cust_registration.php">Login</a>
-        </div>
-    </div>
-
-    <div class="btn-group dropup">
-        <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
-            <img src="<?php echo base_url(); ?>assets/img/feedback.svg" width="33" height="20">
-            <h6 style="font-size: 12px;"><?= $language['about_us']?></h6>          
-            </a>
-        <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">T &amp; C</a>
-            <a class="dropdown-item" href="#">Testimonials</a>
-            <a class="dropdown-item" href="#">Contact Us</a>
-        </div>
-    </div>
-    <div class="btn-group dropup">
-        <a href="#news" class="dropdown-toggle" data-toggle="modal" data-target="#offers-modal">
-            <!-- <a data-toggle="modal" data-target="#offers-modal"> -->
-            <img src="<?php echo base_url(); ?>assets/img/home.svg" width="33" height="20">
-        <h6 style="font-size: 12px;"><?= $language['offers']?></h6>
-        </a>
-    </div>
-    <div class="btn-group dropup">
-        <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
-            <img src="<?php echo base_url(); ?>assets/img/inbox.svg" width="33" height="20">
-        <h6 style="font-size: 12px;">Order List</h6>
-        </a>
-        <div class="dropdown-menu" style="right: 0; left: auto;">
-            <a class="dropdown-item" href="order_details.php">Order List</a>
-            <a class="dropdown-item" href="send_to_kitchen.php">Current Order</a>
-        </div>
-    </div>
-</div>
+<?php $this->load->view('layouts/customer/footer'); ?>
 <!-- end of footer -->
 
 
@@ -405,7 +278,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="text" id="search-item" class="form-control" placeholder="Enter the item Name">
+                            <input type="text" id="search-item" class="form-control" placeholder="Enter item Name" style="border-radius: 20px;">
                             <div id="item-search-result"></div>
                         </div>
                     </div>
@@ -431,6 +304,10 @@
 				    		<i class="fa fa-star ratings text-warning" aria-hidden="true">
                             </i>
                             <span id="item-rating-modal" class="rating-no" style="color: #000;">0</span>
+				    	</li>
+				    	<li class="list-inline-item">
+				    		<i class="fa fa-heartbeat" style="color:green;"></i>
+				    		<span class="" id="nvRating">000</span>
 				    	</li>
 				    	<li class="list-inline-item">
 				    		<i class="fa fa-inr" style="color:blue;"></i>
@@ -544,6 +421,10 @@
 					    		<i class="fa fa-star ratings text-warning" aria-hidden="true">
 	                            </i>
 	                            <span id="item-rating-modal" class="rating-no" style="color: #000;">4.5</span>
+					    	</li>
+					    	<li class="list-inline-item">
+					    		<i class="fa fa-heartbeat" style="color:green;"></i>
+					    		<span class="" id="nvRating">000</span>
 					    	</li>
 					    	<li class="list-inline-item">
 					    		<i class="fa fa-inr" style="color:blue;"></i>
@@ -671,38 +552,38 @@
                     </button>
                 </div>
 
-                <div class="modal-body" style="border: none;padding: 0px;overflow-y: scroll;overflow-x: auto;height: 425px;">
+                <div class="modal-body" style="border: none;padding: 0px;overflow-y: scroll;height: 425px;">
                     <?php if(!empty($offers)){?>
-                        <div class="blog__sidebar__item">
-                            <div class="blog__sidebar__recent" style="padding: 5px;">
-                            <?php foreach($offers as $key){
-                                $name = '';
-                                if(!empty($key['ItemNm'])){
-                                    $name  .=  $key['ItemNm'];
-                                }
-                                if(!empty($key['portionName'])){
-                                    $name  .=  ' ('.$key['portionName'].')';
-                                }
-                                if(!empty($key['MCatgNm'])){
-                                    $name  .=  ' - '.$key['MCatgNm'];
-                                }
-                                if(!empty($key['Name'])){
-                                    $name  .=  ' - '.$key['Name'];
-                                }
-                                ?>
-                                <a href="#" class="blog__sidebar__recent__item">
-                                    <div class="blog__sidebar__recent__item__pic">
-                                        <img src="<?= $key['SchImg']?>" alt="" style="height: 80px;width: 100px;background-size: cover;">
-                                    </div>
-                                    <div class="blog__sidebar__recent__item__text">
-                                        <h6><?= $key['SchNm'].' - '.$key['SchDesc'];?></h6>
-                                        <span><?= $name; ?></span>
-                                    </div>
-                                </a>
-                                
-                            <?php }?>
-                            </div>
-                        </div>
+                        <?php foreach($offers as $key){
+                            $name = '';
+                            if(!empty($key['ItemNm'])){
+                                $name  .=  $key['ItemNm'];
+                            }
+                            if(!empty($key['portionName'])){
+                                $name  .=  ' ('.$key['portionName'].')';
+                            }
+                            if(!empty($key['MCatgNm'])){
+                                $name  .=  ' - '.$key['MCatgNm'];
+                            }
+                            if(!empty($key['Name'])){
+                                $name  .=  ' - '.$key['Name'];
+                            }
+                            ?>
+
+                            <div class="ad-listing-list mt-20">
+							    <div class="row p-1">
+							        <div class="col-lg-4 col-md-4 col-sm-4 col-4 align-self-center">
+							            <img src="<?= base_url($key['SchImg']); ?>" alt="" style="height: 80px;width: 100px;background-size: cover;">
+							        </div>
+							        <div class="col-lg-8 col-md-8 col-sm-8 col-8">
+							            <h6><?= $key['SchNm'].' - '.$key['SchDesc'];?></h6>
+							            <p class="pr-5"><?= $name; ?></p>
+							        </div>
+							    </div>
+							</div>
+                            
+                        <?php }?>
+                            
                     <?php }?>
                 </div>
             </div>
@@ -713,21 +594,7 @@
 <!-- 
 Essential Scripts
 =====================================-->
-<script src="<?= base_url(); ?>theme/plugins/jquery/jquery.min.js"></script>
-<script src="<?= base_url(); ?>theme/plugins/bootstrap/popper.min.js"></script>
-<script src="<?= base_url(); ?>theme/plugins/bootstrap/bootstrap.min.js"></script>
-<script src="<?= base_url(); ?>theme/plugins/bootstrap/bootstrap-slider.js"></script>
-<script src="<?= base_url(); ?>theme/plugins/tether/js/tether.min.js"></script>
-<script src="<?= base_url(); ?>theme/plugins/raty/jquery.raty-fa.js"></script>
-<script src="<?= base_url(); ?>theme/plugins/slick/slick.min.js"></script>
-<!-- <script src="<?= base_url(); ?>theme/plugins/jquery-nice-select/js/jquery.nice-select.min.js"></script> -->
-
-<script src="<?= base_url(); ?>theme/js/script.js"></script>
-<script src="<?= base_url(); ?>assets/js/ajax.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+<?php $this->load->view('layouts/customer/script'); ?>
 
 </body>
 <script type="text/javascript">
@@ -859,7 +726,7 @@ Essential Scripts
 								<div class="card">\
 									<div class="thumb-content">\
 										<div class="price">$200</div>\
-										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'">\
+										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-NV="'+data[i].NV+'">\
 											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
 										</a>\
 									</div>\
@@ -884,8 +751,8 @@ Essential Scripts
                       listView += '<div class="ad-listing-list mt-20">\
 					    <div class="row p-lg-3 p-sm-5 p-1">\
 					        <div class="col-lg-4 col-md-4 col-sm-4 col-4 align-self-center">\
-					            <a href="#">\
-					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'">\
+					            <a data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'" item-NV="'+data[i].NV+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'">\
+					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
 					            </a>\
 					        </div>\
 					        <div class="col-lg-8 col-md-8 col-sm-8 col-8">\
@@ -957,7 +824,7 @@ Essential Scripts
 
                                 // add cid and mcatgid to me
                                 template += `
-                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.Value}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" style="cursor: pointer;" item-prepTime="${item.PrepTime}">${item.ItemNm}</li>
+                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.Value}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" item-NV="${item.NV}" style="cursor: pointer;" item-prepTime="${item.PrepTime}">${item.ItemNm}</li>
                             `;
                             });
                             template += `</ul>`;
@@ -1029,6 +896,7 @@ Essential Scripts
                 // console.log('item-imgsrc - '+$(item).attr('item-imgsrc'));
 
                 $("#product-price").text(' ' + $(item).attr('item-value'));
+                $("#nvRating").text(' ' + $(item).attr('item-NV'));
                 // console.log('item-value - '+$(item).attr('item-value'));
             } else {
                 customizeModalVue.getCustomItem($(item).attr('item-id'), itemTyp, $(item).attr('item-nm'), $(item).attr('item-value'), itemPortion, itemKitCd, $(item).attr('item-dedc'), $(item).attr('item-imgsrc'), $(item).attr('item-prepTime'), $(item).attr('item-portion-code'), $(item).attr('item-fid'));

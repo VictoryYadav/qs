@@ -20,7 +20,7 @@ class Customer extends CI_Controller {
         $this->load->model('Cust', 'cust');
 	}
 
-    public function index(){
+    public function index1(){
 
         $data['cuisinList'] = $this->cust->getCuisineList();
         $this->session->set_userdata('cuisine', $data['cuisinList'][0]['CID']);
@@ -56,7 +56,7 @@ class Customer extends CI_Controller {
         $this->load->view('cust/index', $data);
     }
 
-    public function index1(){
+    public function index(){
 
         $data['cuisinList'] = $this->cust->getCuisineList();
         $this->session->set_userdata('cuisine', $data['cuisinList'][0]['CID']);
@@ -269,6 +269,7 @@ class Customer extends CI_Controller {
 
         $data['title'] = 'Order Details';
         $data['language'] = languageArray();
+
         $this->load->view('cust/cart', $data);
     }
 
