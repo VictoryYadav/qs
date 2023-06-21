@@ -578,6 +578,205 @@ class Cust extends CI_Model{
 				echo '1';
 			}
 		}
+		// order add to cart
+		if (isset($postData['orderToCart']) && !empty($postData['orderToCart'])) {
+			// echo "<pre>";print_r($postData);exit();
+			if (isset($_SESSION['CustId'])) {
+				$CellNo = $this->session->userdata('CellNo');
+				$CustNo = $this->session->userdata('CustNo');
+				$CustId = $this->session->userdata('CustId');
+				$itmrate = str_replace(" ", "", $postData['itmrate']);
+				$serveTime = 0;
+				$newServeTime = 0;
+				$prepration_time = "00:" . $postData['prepration_time'] . ":00";
+
+				$OType = 0;
+				$TblTyp = $postData['TblTyp'];
+				if($TblTyp > 50){
+					if($TblTyp == 51){
+						$OType = 1;
+					}elseif($TblTyp == 55){
+						$OType = 2;
+					}elseif($TblTyp == 60){
+						$OType=3;
+					}elseif($TblTyp == 65){
+						$OType=30;
+					}elseif($TblTyp == 70){
+						$OType=35;
+					}
+				}else{
+					if ($EType == 5) {
+						$OType = 7;
+					} else {
+						$OType = 0;
+					}
+				}
+
+				if ($KOTNo == 0) {
+					// To generate new KOTNo
+					$kotNoCount = $this->db2->query("SELECT Max(KOTNo + 1) as tKot from Kitchen where DATE(LstModDt) = CURDATE() AND EID = $EID")->result_array();
+		
+					if ($kotNoCount[0]['tKot'] == '') {
+						$kotNo = 1;
+					} else {
+						$kotNo = $kotNoCount[0]['tKot'];
+					}
+					$KOTNo = $kotNo;
+					$oldKitCd = 0;
+					$this->session->set_userdata('KOTNo', $kotNo);
+					$this->session->set_userdata('oldKitCd', 0);
+				}
+
+				$oldKitCd = $this->session->userdata('oldKitCd');
+				$fKotNo = $KOTNo;
+
+				$this->db2->trans_start();
+
+				if ($CNo == 0) {
+					// insert kitchen main
+					if ($CNo == 0) {
+						if ($EType == 5) {
+							$orderType = 7;
+						} else {
+							$orderType = 0;
+						}
+						// $kitchenMainObj
+						$kitchenMainObj['CustId'] = $CustId;
+						$kitchenMainObj['COrgId'] = $COrgId;
+						$kitchenMainObj['CustNo'] = $CustNo;
+						$kitchenMainObj['CellNo'] = $CellNo;
+						$kitchenMainObj['EID'] = $EID;
+						$kitchenMainObj['ChainId'] = $ChainId;
+						$kitchenMainObj['ONo'] = $ONo;
+						$kitchenMainObj['OType'] = $orderType;
+						$kitchenMainObj['TableNo'] = $TableNo;
+						$kitchenMainObj['OldTableNo'] = $TableNo;
+						$kitchenMainObj['MergeNo'] = $TableNo;
+						$kitchenMainObj['Stat'] = $this->session->userdata('TableAcceptReqd');
+						$kitchenMainObj['CnfSettle'] = ($this->session->userdata('AutoSettle') == 1)?0:1;
+						$kitchenMainObj['LoginCd'] = 1;
+						$kitchenMainObj['payRest'] = 0;
+
+						$kichnid = insertRecord('KitchenMain', $kitchenMainObj);
+						if ($kichnid) {
+							$CNo = $kichnid;
+							$this->session->set_userdata('CNo', $CNo);
+						}
+					} else {
+						$CNo = $CNo;
+					}
+					// end of kitchen main
+					$MergeNo = $TableNo;
+				} else {
+					$MergeNoGet = $this->db2->query("SELECT MergeNo FROM KitchenMain WHERE EID = $EID AND CNo = $CNo and BillStat = 0")->result_array();
+					$MergeNo = $MergeNoGet[0]['MergeNo'];
+				}
+				// For EType = 5
+				if ($EType == 5) {
+					// $orderType = 7;
+					$stat = 10;
+					//$newUKOTNO = date('dmy_') . $KOTNo;
+
+					// Check entry is already inserted in ETO
+					$checkTableEntry = $this->db2->query("SELECT TNo FROM Eat_tables_Occ WHERE EID = $EID AND CNo = $CNo")->row_array();
+			
+					//If Empty insert new record
+					if (empty($checkTableEntry)) {
+						$eatTablesOccObj['EID'] = $EID;
+						$eatTablesOccObj['TableNo'] = $TableNo;
+						$eatTablesOccObj['MergeNo'] = $MergeNo;
+						$eatTablesOccObj['CustId'] = $CustId;
+						$eatTablesOccObj['CNo'] = $CNo;
+						//$eatTablesOccObj->Stat = 0;
+						$eatobj = insertRecord('Eat_tables_Occ', $eatTablesOccObj);
+						if ($eatobj) {
+							// update Eat_tables for table Allocate
+							$eatTablesUpdate = $this->db2->query("UPDATE Eat_tables set Stat = 1, MergeNo = $MergeNo where EID = $EID AND TableNo = '$TableNo' AND  Stat = 0");
+						} else {
+							//alert "Add another customer to occupied table"
+						}
+					}
+
+				}else{
+					//For ETpye 1 Order Type Will Be 0 and Stat = 1
+					$OType = 0;
+					$stat = 0;
+				}
+
+				$newUKOTNO = date('dmy_') . $KOTNo;
+				$prepration_time = $postData['prepration_time'];
+
+				$date = date("Y-m-d H:i:s");
+				$date = strtotime($date);
+				$time = $prepration_time;
+				$date = strtotime("+" . $time . " minute", $date);
+
+				if ($MultiKitchen > 1) {
+					$itemKitCd = $postData['itemKitCd'];
+					if ($oldKitCd != $postData['itemKitCd']) {
+						$getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID = $EID AND KitCd = $itemKitCd")
+						->result_array();
+						$fKotNo = $getFKOT[0]['FKOTNO'];
+						$fKotNo += 1;
+						// new ukot
+						$newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
+						$this->session->set_userdata('oldKitCd', $itemKitCd);
+					} else {
+						// next ukot					
+						$newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
+					}
+				}
+				// Insert Record to kitchen with Stat 10 For Tem
+				$kitchenObj['CNo'] = $CNo;
+				$kitchenObj['CustId'] = $CustId;
+				$kitchenObj['COrgId'] = $COrgId;
+				$kitchenObj['CustNo'] = $CustNo;
+				$kitchenObj['CellNo'] = $CellNo;
+				$kitchenObj['EID'] = $EID;
+				$kitchenObj['ChainId'] = $ChainId;
+				$kitchenObj['ONo'] = $ONo;
+				$kitchenObj['KitCd'] = $postData['itemKitCd'];
+				$kitchenObj['OType'] = $OType;
+				$kitchenObj['FKOTNo'] = $fKotNo;
+				$kitchenObj['KOTNo'] = $KOTNo;
+				$kitchenObj['UKOTNo'] = $newUKOTNO; 		//date('dmy_').$KOTNo;
+				$kitchenObj['TableNo'] = $TableNo;
+				$kitchenObj['MergeNo'] = $MergeNo;
+				$kitchenObj['ItemId'] = $postData['itemId'];
+				$kitchenObj['TaxType'] =$postData['tax_type'];
+				$kitchenObj['Qty'] = $postData['qty'];
+				$kitchenObj['ItmRate'] = $itmrate;
+				$kitchenObj['OrigRate'] = $itmrate; 	//(m.Value)
+				$kitchenObj['Itm_Portion'] = $postData['itemPortionText'];
+				$kitchenObj['CustRmks'] = $postData['custRemarks'];
+				$kitchenObj['DelTime'] = date('Y-m-d H:i:s', $date);
+				$kitchenObj['TA'] = $postData['takeAway'];
+				$kitchenObj['Stat'] = $stat;
+				$kitchenObj['LoginCd'] = 1;
+				$kitchenObj['SDetCd'] = !empty($postData['sdetcd'])?$postData['sdetcd']:0;
+				$kitchenObj['SchCd'] = !empty($postData['schcd'])?$postData['schcd']:0;
+				insertRecord('Kitchen', $kitchenObj);
+				
+				$response = [
+					"status" => 1,
+					"msg" => "success",
+				];
+				
+				if ($EType == 5) {
+					$response["redirectTo"]  = base_url('customer/cart');
+				} else {
+					// $response["redirectTo"] = "order_details.php";
+					$response["redirectTo"]  = base_url('customer/order_details');
+				}
+
+				$this->db2->trans_complete();
+				
+				echo json_encode($response);
+				
+			} else {
+				echo '1';
+			}
+		}
 
 		//------------ ItemTyp details -----------------
 		if (isset($postData['getCustomItem']) && $postData['getCustomItem']) {

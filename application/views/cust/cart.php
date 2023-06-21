@@ -144,19 +144,15 @@
 
     function goBack() {
         <?php
-
         if ($cId != '') {
             // $backUrl = "item_details.php?cId=$cId&mCatgId=$mCatgId&cType=$cType";
             $backUrl = base_url('customer');
         } else {
-            $backUrl = base_url('customer/landing_page');
+            $backUrl = base_url('customer');
+            // $backUrl = base_url('customer/landing_page');
         }
         ?>
         window.location = '<?= "$backUrl" ?>';
-    }
-
-    function goBill() {
-        window.location = "bill.php";
     }
 
     function sendToKitchen() {
@@ -171,7 +167,7 @@
                 console.log(response);
                 if (response.status == 11) {
                     // window.location = "cust_registration.php";
-                    window.location = "<?php echo base_url('customer/registration'); ?>";
+                    window.location = "<?php echo base_url('customer/signup'); ?>";
                 } else if (response.status == 1) {
                     // window.location = "order_details.php";
                     window.location = "<?php echo base_url('customer/order_details'); ?>";

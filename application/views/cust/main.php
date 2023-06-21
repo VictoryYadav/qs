@@ -397,6 +397,7 @@
             <button type="button" class="btn modal-back" data-dismiss="modal" width="50%">
                 <?= $language['back']?>
             </button>
+            
             <?php if(!empty($this->session->userdata('CustId'))){ ?>
             <button type="button" class="btn modal-confirm" data-dismiss="modal" width="50%" id="confirm-order" tax_type="" tbltyp=""><?= $language['add_item']?></button>
         <?php } else{ ?>
@@ -1306,7 +1307,8 @@ Essential Scripts
                 url: "<?php echo base_url('customer/item_details_ajax'); ?>",
                 type: "post",
                 data: {
-                    confirmOrder: 1,
+                    orderToCart: 1,
+                    // confirmOrder: 1,
                     itemId: itemId,
                     custRemarks: custRemarks,
                     qty: qty,
