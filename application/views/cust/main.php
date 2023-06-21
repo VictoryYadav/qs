@@ -397,7 +397,11 @@
             <button type="button" class="btn modal-back" data-dismiss="modal" width="50%">
                 <?= $language['back']?>
             </button>
+            <?php if(!empty($this->session->userdata('CustId'))){ ?>
             <button type="button" class="btn modal-confirm" data-dismiss="modal" width="50%" id="confirm-order" tax_type="" tbltyp=""><?= $language['add_item']?></button>
+        <?php } else{ ?>
+            <a href="<?= base_url('customer/signup') ?>" class="btn modal-confirm" width="50%" ><?= $language['add_item']?></a>
+            <?php } ?>
         </div>
     </div>
 
@@ -589,6 +593,7 @@
             </div>
         </div>
     </div>
+
 
 
 <!-- 
@@ -1347,6 +1352,8 @@ Essential Scripts
                 }
             });
         }
+
+        
     </script>
 </html>
 

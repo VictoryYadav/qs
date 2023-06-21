@@ -88,7 +88,7 @@ class Customer extends CI_Controller {
         $data['Charity'] = $this->session->userdata('Charity');
         $data['Itm_Portion'] = 1;
         $data['offers'] = $this->cust->getOffers();
-        
+
         $this->load->view('cust/main', $data);
     }
 
@@ -241,7 +241,7 @@ class Customer extends CI_Controller {
                     }   
 
                 }else{
-                   $url =  base_url('customer/cust_registration');
+                   $url =  base_url('customer/signup');
                     echo '<script>window.location.assign("$url");</script>';
                 }
             }else { 
@@ -271,6 +271,104 @@ class Customer extends CI_Controller {
         $data['language'] = languageArray();
 
         $this->load->view('cust/cart', $data);
+    }
+
+    public function signup(){
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+            $this->session->set_userdata('signup', $_POST);
+            // echo "<pre>";
+            // print_r($_SESSION);
+            // die;
+            $otp = $this->generateOTP($_POST['MobileNo']);
+            $status = 'success';
+            $response = "Your otp is $otp";
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] = 'Signup';
+        $data['language'] = languageArray();
+        $this->load->view('cust/signup', $data);
+    }
+
+    private function generateOTP($mobile){
+        $otp = rand(9999,1000);
+        $this->session->set_userdata('cust_otp', '1212');
+        $check = $this->db2->select('token')->get_where('users', array('MobileNo' => $mobile))->row_array();
+        if(!empty($check)){
+            $msg = 'Your One Time Password is '.$otp;
+            $message = array(
+              'body'   => $msg,
+              'title'   => 'Your OTP',
+              'vibrate' => 1,
+              'sound'   => 1
+            );
+            firebaseNotification($check['token'], $message);
+        }else{
+            return $otp;
+            // send otp 
+        }
+    }
+
+    public function verifyOTP(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $otp = $this->session->userdata('cust_otp');
+            if($_POST['otp'] == $otp){
+                $res = "OTP Matched!";
+                $status = 'success';
+                $ses_data = $_SESSION['signup'];
+
+                $check = $this->db2->get_where('Users', array('MobileNo' => $ses_data['MobileNo']))->row_array();
+
+                $EType = $this->session->userdata('EType');
+                $EID = authuser()->EID;
+                $TableNo = authuser()->TableNo;
+
+                if(!empty($check)){
+                    $this->session->set_userdata('CustId', $check['CustId']);
+                }else{
+                    $data = $ses_data;
+                    $genTblDb = $this->load->database('GenTableData', TRUE);
+                    $genTblDb->insert('AllUsers', $data);
+                    $CustId = $genTblDb->insert_id();
+                    $this->session->set_userdata('CustId', $CustId);
+                    $data['CustId'] = $CustId;
+                    insertRecord('Users',$data);
+                }
+
+                //Deleting older orders
+                if ($EType == 5) {
+                    $this->db2->query("UPDATE Kitchen set Stat = 99 WHERE EID = $EID AND CustId = $CustId AND TableNo = '$TableNo' AND Stat = 10 AND BillStat = 0 AND timediff(time(Now()),time(LstModDt))  > time('03:00:00')");
+                    
+                    $this->db2->query("UPDATE KitchenMain set Stat = 99 WHERE EID = $EID AND CustId = $CustId AND TableNo = '$TableNo' AND Stat = 0 AND BillStat = 0 AND timediff(time(Now()),time(LstModDt))  > time('03:00:00')");
+                } else {
+                    $this->db2->query("UPDATE Kitchen set Stat = 99 WHERE EID = $EID AND CustId = $CustId AND BillStat = 0 AND Stat = 0 ");
+
+                    // $this->db2->query("UPDATE Kitchen set Stat = 99 WHERE EID = $EID AND CustId = $CustId AND BillStat = 0 AND KOTNo <> $KOTNo AND (Stat = 0)");
+
+                    $this->db2->query("UPDATE KitchenMain set Stat = 99 WHERE CustId = $CustId AND EID = $EID AND BillStat = 0 AND timediff(time(Now()),time(LstModDt)) > time('00:30:00')");
+                }
+
+            }else{
+                $res = "OTP Doesn't Matched";
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $res
+              ));
+             die;
+        }
     }
 
 

@@ -16,7 +16,7 @@
   <meta name="theme-name" content="classimax" />
 
   <!-- favicon -->
-  <link href="assets_admin/images/QSLogo.png" rel="shortcut icon">
+  <link href="<?= base_url(); ?>assets_admin/images/QSLogo.png" rel="shortcut icon">
 
   <!-- 
   Essential stylesheets

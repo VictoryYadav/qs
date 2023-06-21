@@ -77,7 +77,7 @@ class Rcheck extends CI_Controller {
 
         if (!isset($_SESSION['CustId'])) {
             $temp_custId = mt_rand(500001, 9999999);
-            $this->session->set_userdata('CustId', $temp_custId);
+            // $this->session->set_userdata('CustId', $temp_custId);
             $this->session->set_userdata('TempCustId', $temp_custId);
             $this->session->set_userdata('CellNo', '1111111111');         
         }

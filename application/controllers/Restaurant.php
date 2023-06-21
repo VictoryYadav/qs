@@ -3074,6 +3074,9 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
+            echo "<pre>";
+            print_r($_POST);
+            die;
             $data['token'] = $_POST['token']; 
             $data['LstModDt'] = date('Y-m-d H:i:s'); 
             updateRecord('UsersRest', $data, array('RUserId' => authuser()->RUserId) );

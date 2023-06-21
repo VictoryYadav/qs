@@ -46,3 +46,11 @@ body
     box-shadow: none;
     font-size: 11px !important;
 }
+
+.btn-sm {
+    font-size: 12px;
+    letter-spacing: 1px;
+    display: inline-block;
+    padding: 4px !important; 
+    border-radius: 4px;
+}
