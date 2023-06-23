@@ -51,7 +51,7 @@
                         <th>Order Details</th>
                         <th>Quantity</th>
                         <th class="text-center">Price</th>
-                        <th class="text-center">Action</th>
+                        <th class="text-center"></th>
                       </tr>
                     </thead>
                     <tbody id="order-details-table-body">
