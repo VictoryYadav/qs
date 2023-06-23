@@ -5,11 +5,15 @@
             <h6 style="font-size: 12px;">Account</h6>           
         </a>
         <div class="dropdown-menu">
+            <?php if(!empty($this->session->userdata('CustId'))){ ?>
             <a class="dropdown-item" href="/cust_registration.php">Edit Profile</a>
             <a class="dropdown-item" href="/cust_registration.php">Transaction</a>
             <a class="dropdown-item" href="reserve_table.php">Book Table</a>
             <a class="dropdown-item" href="/cust_registration.php">Refer Outlet</a>
-            <a class="dropdown-item" href="/cust_registration.php">Login</a>
+            <a class="dropdown-item" href="#">Username(<?= $_SESSION['signup']['MobileNo']; ?>)</a>
+        <?php } else { ?>
+            <a class="dropdown-item" href="<?= base_url('customer/signup'); ?>">Login</a>
+        <?php } ?>
         </div>
     </div>
 
@@ -37,7 +41,9 @@
         <h6 style="font-size: 12px;">Order List</h6>
         </a>
         <div class="dropdown-menu" style="right: 0; left: auto;">
-            <a class="dropdown-item" href="order_details.php">Order List</a>
+            <?php if(!empty($this->session->userdata('CustId'))){ ?>
+            <a class="dropdown-item" href="<?= base_url('customer/cart'); ?>">Order List</a>
+        <?php } ?>
             <a class="dropdown-item" href="send_to_kitchen.php">Current Order</a>
         </div>
     </div>

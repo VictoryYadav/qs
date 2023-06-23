@@ -17,7 +17,12 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <input type="tel" name="MobileNo" class="form-control" placeholder="Enter Mobile" required="" autocomplete="off">
+                            <input type="text" name="MobileNo" class="form-control" placeholder="Enter Mobile" required="" autocomplete="off" minlength="10" maxlength="10" pattern="[6-9]{1}[0-9]{9}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="email" name="email" class="form-control" placeholder="Enter Email (Bills will be sent on this Email)" required="" autocomplete="off">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -32,13 +37,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <input type="email" name="email" class="form-control" placeholder="Enter Email">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
                             <select name="Gender" class="form-control">
-                                <option value="">Select Sex</option>
+                                <option value="">Select Gender</option>
                                 <option value="0">Male</option>
                                 <option value="1">Female</option>
                             </select>

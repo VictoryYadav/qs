@@ -59,12 +59,13 @@
                   </table>
                 </div>
             </div>
+
             <!-- btn -->
             <div class="row remove-margin payment-btns fixed-bottom" style=" width: 100%; margin-left: 1px;bottom: 60px !important;">
 
                 <button type="button" class="btn btn-sm backbtn" data-dismiss="modal" width="50%" onclick="goBack()">Menu</button>
 
-                <button type="button" class="btn btn-sm paybtn" data-dismiss="modal" style="width:50%;" onclick="sendToKitchen()">Continue</button>
+                <button type="button" class="btn btn-sm paybtn" data-dismiss="modal" style="width:50%;" onclick="sendToKitchen()">Bill</button>
 
             </div>
             <!-- end of btn -->
@@ -119,7 +120,18 @@
                             template += ` <td>${itemName}</td> `;
                         }
 
-                        template += ` <td class="text-center">${item.Qty}</td> `;
+                        template += ` <td class="text-center">
+                            <div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;">
+                                <span class="input-group-btn">
+                                    <button type="button" id="minus-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;" disabled="" onclick="decQty(${item.OrdNo})">-
+                                    </button>
+                                </span>
+                                <input type="text" readonly="" id="qty-val${item.OrdNo}" class="form-control input-number" value="${item.Qty}" min="1" max="10" style="text-align: center;">
+                                <span class="input-group-btn">
+                                    <button type="button" id="add-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 30px;" onclick="incQty(${item.OrdNo})">+
+                                    </button>
+                                </span>
+                            </div></td> `;
                         template += ` <td class="text-center">${rate}</td> `;
                         template += ` <td class="text-center">
                                         <button onclick="cancelOrder(${item.OrdNo});" style="border-radius:50px;background:red;color:#fff;border:1px solid red;">
@@ -209,6 +221,24 @@
         getSendToKitchenList();
     });
 
+    // quantity increase and decrease
+    function incQty(ord){
+        $('#qty-val'+ord).val(parseInt($('#qty-val'+ord).val()) + 1);
+        $('#minus-qty'+ord).prop('disabled', false);
+        if ($('#qty-val'+ord).val() == 99) {
+            $('#add-qty'+ord).prop('disabled', true);
+        }
+    }
+
+    function decQty(ord){
+        $('#qty-val'+ord).val(parseInt($('#qty-val'+ord).val()) - 1);
+        $('#add-qty'+ord).prop('disabled', false);
+        if ($('#qty-val'+ord).val() == 1) {
+            $('#minus-qty'+ord).prop('disabled', true);
+        }
+    }
+    // end quantity increase and decrease
+    
 </script>
 
 </html>

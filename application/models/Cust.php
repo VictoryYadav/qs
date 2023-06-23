@@ -200,10 +200,11 @@ class Cust extends CI_Model{
 		$CustId = $this->session->userdata('CustId');
 		$CNo = $this->session->userdata('CNo');
 
+		// ask for bcoz $cno assign at login time
 		if(!empty($CustId) && $CustId > 0){
 			$res = $this->db2->query("SELECT * from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND timediff(time(Now()),time(LstModDt))  < time('03:00:00') order by CNo desc limit 1")->result_array();
 			if(!empty($res)){
-				$_SESSION['CNo'] = $res[0]['CNo'];
+				$this->session->set_userdata('CNo', $res[0]['CNo']);
 				$CNo = $res[0]['CNo'];
 			}
 		}

@@ -398,11 +398,7 @@
                 <?= $language['back']?>
             </button>
             
-            <?php if(!empty($this->session->userdata('CustId'))){ ?>
             <button type="button" class="btn modal-confirm" data-dismiss="modal" width="50%" id="confirm-order" tax_type="" tbltyp=""><?= $language['add_item']?></button>
-        <?php } else{ ?>
-            <a href="<?= base_url('customer/signup') ?>" class="btn modal-confirm" width="50%" ><?= $language['add_item']?></a>
-            <?php } ?>
         </div>
     </div>
 
@@ -732,9 +728,15 @@ Essential Scripts
 								<div class="card">\
 									<div class="thumb-content">\
 										<div class="price">$200</div>\
+										<?php if(!empty($this->session->userdata('CustId'))){ ?>
 										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-NV="'+data[i].NV+'">\
 											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
 										</a>\
+										<?php } else{ ?>
+										<a href="<?= base_url('customer/signup') ?>" >\
+											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
+										</a>\
+									<?php } ?>
 									</div>\
 									<div class="card-body">\
 									    <p data-toggle="tooltip" data-placement="top" title="'+data[i].ItemNm+'" class="strTruncate">'+data[i].ItemNm+'</p>\
@@ -757,9 +759,15 @@ Essential Scripts
                       listView += '<div class="ad-listing-list mt-20">\
 					    <div class="row p-lg-3 p-sm-5 p-1">\
 					        <div class="col-lg-4 col-md-4 col-sm-4 col-4 align-self-center">\
+					        <?php if(!empty($this->session->userdata('CustId'))){ ?>
 					            <a data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'" item-NV="'+data[i].NV+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'">\
 					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
 					            </a>\
+					            <?php } else{ ?>
+					            	<a href="<?= base_url('customer/signup') ?>" >\
+					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
+					            </a>\
+					            <?php } ?>
 					        </div>\
 					        <div class="col-lg-8 col-md-8 col-sm-8 col-8">\
 			                    <div class="ad-listing-content">\

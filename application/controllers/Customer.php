@@ -301,7 +301,7 @@ class Customer extends CI_Controller {
     private function generateOTP($mobile){
         $otp = rand(9999,1000);
         $this->session->set_userdata('cust_otp', '1212');
-        $check = $this->db2->select('token')->get_where('users', array('MobileNo' => $mobile))->row_array();
+        $check = $this->db2->select('token')->get_where('Users', array('MobileNo' => $mobile))->row_array();
         if(!empty($check)){
             $msg = 'Your One Time Password is '.$otp;
             $message = array(
@@ -312,8 +312,22 @@ class Customer extends CI_Controller {
             );
             firebaseNotification($check['token'], $message);
         }else{
-            return $otp;
+            $genTblDb = $this->load->database('GenTableData', TRUE);
+            $chckGen = $genTblDb->select('token')->get_where('AllUsers', array('MobileNo' => $mobile))->row_array();
+
+            if(!empty($chckGen)){
+                $msg = 'Your One Time Password is '.$otp;
+                $message = array(
+                  'body'   => $msg,
+                  'title'   => 'Your OTP',
+                  'vibrate' => 1,
+                  'sound'   => 1
+                );
+                firebaseNotification($chckGen['token'], $message);
+            }else{
+                return $otp;
             // send otp 
+            }
         }
     }
 
@@ -335,14 +349,39 @@ class Customer extends CI_Controller {
 
                 if(!empty($check)){
                     $this->session->set_userdata('CustId', $check['CustId']);
+                    $CustId = $check['CustId'];
                 }else{
-                    $data = $ses_data;
                     $genTblDb = $this->load->database('GenTableData', TRUE);
-                    $genTblDb->insert('AllUsers', $data);
-                    $CustId = $genTblDb->insert_id();
-                    $this->session->set_userdata('CustId', $CustId);
-                    $data['CustId'] = $CustId;
-                    insertRecord('Users',$data);
+
+                    $gen_check = $genTblDb->get_where('AllUsers', array('MobileNo' => $ses_data['MobileNo']))->row_array();
+                    if(!empty($gen_check)){
+                        $this->session->set_userdata('CustId', $gen_check['CustId']);
+
+                        $CustId = $gen_check['CustId'];
+                        
+                        $data1['CustId']    = $gen_check['CustId'];
+                        $data1['FName']     = $gen_check['FName'];
+                        $data1['LName']     = $gen_check['LName'];
+                        $data1['Email']     = $gen_check['Email'];
+                        $data1['MobileNo']  = $gen_check['MobileNo'];
+                        $data1['DOB']       = $gen_check['DOB'];
+                        $data1['Gender']    = $gen_check['Gender'];
+                        insertRecord('Users',$data1);    
+                    }else{
+                        $data = $ses_data;
+                        $genTblDb->insert('AllUsers', $data);
+                        $CustId = $genTblDb->insert_id();
+                        $this->session->set_userdata('CustId', $CustId);
+                        $data['CustId'] = $CustId;
+                        insertRecord('Users',$data);
+                    }
+                }
+
+                if(!empty($CustId) && $CustId > 0){
+                    $res = $this->db2->query("SELECT * from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = '$TableNo' AND timediff(time(Now()),time(LstModDt))  < time('03:00:00') order by CNo desc limit 1")->row_array();
+                    if(!empty($res)){
+                        $this->session->set_userdata('CNo', $res['CNo']);
+                    }
                 }
 
                 //Deleting older orders
@@ -353,9 +392,7 @@ class Customer extends CI_Controller {
                 } else {
                     $this->db2->query("UPDATE Kitchen set Stat = 99 WHERE EID = $EID AND CustId = $CustId AND BillStat = 0 AND Stat = 0 ");
 
-                    // $this->db2->query("UPDATE Kitchen set Stat = 99 WHERE EID = $EID AND CustId = $CustId AND BillStat = 0 AND KOTNo <> $KOTNo AND (Stat = 0)");
-
-                    $this->db2->query("UPDATE KitchenMain set Stat = 99 WHERE CustId = $CustId AND EID = $EID AND BillStat = 0 AND timediff(time(Now()),time(LstModDt)) > time('00:30:00')");
+                    $this->db2->query("UPDATE KitchenMain set Stat = 99 WHERE CustId = $CustId AND EID = $EID AND BillStat = 0 AND timediff(time(Now()),time(LstModDt)) > time('03:00:00')");
                 }
 
             }else{
