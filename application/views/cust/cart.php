@@ -45,32 +45,64 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Order Details</th>
-                        <th>Quantity</th>
-                        <th class="text-center">Price</th>
-                        <th class="text-center"></th>
-                      </tr>
-                    </thead>
-                    <tbody id="order-details-table-body">
-                    </tbody>
-                  </table>
+                    <div class="table-responsive" style="height: 380px;">
+                        <table class="table">
+                        <thead>
+                          <tr>
+                            <th>Order Details</th>
+                            <th>Quantity</th>
+                            <th class="text-center">Rate</th>
+                            <th class="text-center"></th>
+                          </tr>
+                        </thead>
+                        <tbody id="order-details-table-body">
+                        </tbody>
+                      </table>
+                  </div>
                 </div>
             </div>
 
             <!-- btn -->
-            <div class="row remove-margin payment-btns fixed-bottom" style=" width: 100%; margin-left: 1px;bottom: 60px !important;">
+            <div class="row remove-margin payment-btns fixed-bottom" style=" width: 100%; margin-left: 1px;bottom: 54px !important;">
 
                 <button type="button" class="btn btn-sm backbtn" data-dismiss="modal" width="50%" onclick="goBack()">Menu</button>
 
-                <button type="button" class="btn btn-sm paybtn" data-dismiss="modal" style="width:50%;" onclick="sendToKitchen()">Bill</button>
+                <button type="button" class="btn btn-sm paybtn" data-dismiss="modal" style="width:50%;" onclick="goBill()">Bill</button>
 
             </div>
             <!-- end of btn -->
         </div>
     </section>
+
+    <div class="modal" id="RecommendationModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div style="margin-left: 14px;">
+                    <h5>Recommendation</h5>
+                    <p>Glen Fiddich</p>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive" >
+                              <table class="table">
+                                <thead>
+                                <tr>
+                                    <td>Item</td>
+                                    <td>Qty</td>
+                                    <td>Rate</td>
+                                </tr>
+                            </thead>
+                            <tbody id="recom-body">
+                            </tbody>
+                              </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
    
     <!-- Shoping Cart Section End -->
 
@@ -115,7 +147,9 @@
 
                         template += ` <tr> `;
                         if(item.Itm_Portion > 4){
-                            template += ` <td>${itemName}  ( ${item.Portions} )</td> `;
+                            template += ` <td><a href="#" onclick="recommendation(${item.ItemId})">
+                                ${itemName}  ( ${item.Portions} )
+                            </a></td> `;
                         }else{
                             template += ` <td>${itemName}</td> `;
                         }
@@ -238,6 +272,58 @@
         }
     }
     // end quantity increase and decrease
+
+    function recommendation(itemId){
+
+        $.post('<?= base_url('customer/recommendation') ?>',{itemId:itemId},function(res){
+
+                if(res.status == 'success'){
+                  var data = res.response;
+                  var temp = '';
+                  for(i=0; i<data.length; i++){
+                    temp += '<tr>\
+                                <td>'+data[i].ItemNm+'</td>\
+                                <td>1</td>\
+                                <td>'+data[i].ItmRate+'</td>\
+                            </tr>';
+                  }
+                  $('#recom-body').html(temp);
+                }else{
+                  alert(res.response);
+                }
+            });
+
+        $('#RecommendationModal').modal();
+    }
+
+    // generate billing page
+
+    function goBill() {
+        // url: "ajax/order_details_ajax.php",
+        $.ajax({
+            url: "<?php echo base_url('customer/checkout'); ?>",
+            type: "post",
+            data: {
+                goBill: 1
+            },
+            success: response => {
+                console.log(response);
+                if (response == 1) {
+                    // debugger;
+                    window.location = "bill.php";
+                } else {
+                    // debugger;
+                    window.location.assign("cust_registration.php");
+                }
+            },
+            error: (xhr, status, error) => {
+                console.log(xhr);
+                console.log(status);
+                console.log(error);
+            }
+        });
+
+    }
     
 </script>
 

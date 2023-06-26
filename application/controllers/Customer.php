@@ -159,9 +159,13 @@ class Customer extends CI_Controller {
 
     // cart details
     public function cart(){
-
+        $sts = 'error';
+        $response = 'Something went wrong';
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
             // send_to_kitchen_ajax
             $CustId = $this->session->userdata('CustId');
             $TempCustId = $this->session->userdata('TempCustId');
@@ -244,6 +248,7 @@ class Customer extends CI_Controller {
                    $url =  base_url('customer/signup');
                     echo '<script>window.location.assign("$url");</script>';
                 }
+
             }else { 
                 // Session Expire
                 $response = [
@@ -271,6 +276,38 @@ class Customer extends CI_Controller {
         $data['language'] = languageArray();
 
         $this->load->view('cust/cart', $data);
+    }
+
+    public function recommendation(){
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+
+            $EID = authuser()->EID;
+            $ChainId = authuser()->ChainId;
+            $TableNo = authuser()->TableNo;
+
+            $status = 'success';
+            $itemId = $_POST['itemId'];
+
+            $select = "mi.ItemId, mi.ItemNm, mi.ItemNm2, mi.ItemNm3, mi.ItemNm4, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, mi.ItmDesc, mi.ItmDesc2, mi.ItmDesc3, mi.ItmDesc4, mi.Ingeredients, mi.Ingeredients2, mi.Ingeredients3, mi.Ingeredients4, mi.Rmks, mi.Rmks2, mi.Rmks3, mi.Rmks4, mi.PrepTime, mi.AvgRtng, mi.FID,ItemNm as imgSrc, mi.UItmCd,mi.CID,mi.Itm_Portion,mi.Value,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
+            $rec = $this->db2->select($select)
+                            ->join('MenuItem mi','mi.ItemId = mr.RcItemId', 'inner')
+                            ->get_where('MenuItem_Recos mr', 
+                                        array('mr.ItemId' => $itemId, 
+                                            'mr.EID' => $EID,
+                                            'mr.ChainId' => $ChainId, 
+                                            'mr.Stat' => 0
+                                        )
+                            )->result_array();
+                 
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $rec
+              ));
+             die;
+        }
     }
 
     public function signup(){
@@ -406,6 +443,42 @@ class Customer extends CI_Controller {
               ));
              die;
         }
+    }
+
+    // order_details_ajax
+    public function checkout(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $res = $this->cust->getBillingData($_POST);
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $res
+              ));
+             die;
+        }
+    }
+
+    public function bill(){
+
+        $data['title'] = 'Billing';
+        $data['language'] = languageArray();
+        $EID = authuser()->EID;
+        $ChainId = authuser()->ChainId;
+        // include_once('config.php');
+        $CustId = $this->session->userdata('CustId');
+        $ONo = $this->session->userdata('ONo');
+        $EType = $this->session->userdata('EType');
+        $Stall = $this->session->userdata('Stall');
+        $ServChrg = $this->session->userdata('ServChrg');
+        $Tips = $this->session->userdata('Tips');
+        $COrgId = $this->session->userdata('COrgId');
+        $PymtOpt = $this->session->userdata('PymtOpt');
+        $Cash = $this->session->userdata('Cash');
+        $KOTNo = $this->session->userdata('KOTNo');
+        $this->load->view('cust/billing', $data);
+        
     }
 
 
