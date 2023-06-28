@@ -21,7 +21,35 @@ class Customer extends CI_Controller {
 	}
 
     public function index1(){
+$mobile = '99';
+$email = 'via';
+        $this->db2->select('token')
+                            ->group_start() 
+                                    ->where('MobileNo', $mobile)
+                                    ->or_where('email',$email)
+                            ->group_end()
+                            ->get('Users')
+                            ->row_array();
+                            print_r($this->db2->last_query());
+                            die;
 
+        $CustId = $this->session->userdata('CustId');
+                $EID = authuser()->EID;
+                $TableNo = authuser()->TableNo;
+
+                $today = date('Y-m-d H:i:s', strtotime("-3 hours"));
+                print_r($today);
+                // die;
+
+
+
+    // $data =    $this->db2->query("select * from Kitchen  WHERE EID = $EID AND CustId = $CustId AND TableNo = '$TableNo' AND Stat = 10 AND BillStat = 0 AND timediff(time(Now()),time(LstModDt))  > time('03:00:00')")->result_array();
+    $data = $this->db2->get_where('Kitchen', array('EID' => $EID , 'CustId' => $CustId,
+        'TableNo' => $TableNo , 'Stat' => 10 , 'BillStat' => 0, 'LstModDt <' => $today))->result_array();
+    print_r($this->db2->last_query());
+echo "<pre>";
+print_r($data);
+die;
         $data['cuisinList'] = $this->cust->getCuisineList();
         $this->session->set_userdata('cuisine', $data['cuisinList'][0]['CID']);
         $cid = $data['cuisinList'][0]['CID'];
@@ -187,6 +215,10 @@ class Customer extends CI_Controller {
                     $kitcheData = $this->db2->query("SELECT k.OrdNo, k.ItemId, k.Qty, k.TA, k.Itm_Portion, (if (k.ItemTyp > 0,(CONCAT(mi.ItemNm, ' - ' , k.CustItemDesc)),(mi.ItemNm ))) as ItemNm,  k.ItmRate as Value, mi.PckCharge, k.OType, k.OrdTime , ip.Name as Portions from Kitchen k, MenuItem mi,ItemPortions ip where k.Itm_Portion = ip.IPCd and k.CustId = $CustId AND k.EID = $EID AND k.TableNo = $TableNo AND k.ItemId = mi.ItemId AND k.BillStat = 0 AND k.Stat = 10 and k.CNo = $CNo")
                     ->result_array();
 
+                    foreach ($kitcheData as &$key) {
+                        $key['recom'] = $this->cust->checkRecommendation($key['ItemId']);
+                    }
+
                     if(empty($kitcheData)){
                         $response = [
                             "status" => 0,
@@ -290,9 +322,10 @@ class Customer extends CI_Controller {
             $status = 'success';
             $itemId = $_POST['itemId'];
 
-            $select = "mi.ItemId, mi.ItemNm, mi.ItemNm2, mi.ItemNm3, mi.ItemNm4, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, mi.ItmDesc, mi.ItmDesc2, mi.ItmDesc3, mi.ItmDesc4, mi.Ingeredients, mi.Ingeredients2, mi.Ingeredients3, mi.Ingeredients4, mi.Rmks, mi.Rmks2, mi.Rmks3, mi.Rmks4, mi.PrepTime, mi.AvgRtng, mi.FID,ItemNm as imgSrc, mi.UItmCd,mi.CID,mi.Itm_Portion,mi.Value,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
+            $select = "mc.TaxType, mc.KitCd, mi.ItemId, mi.ItemNm, mi.ItemNm2, mi.ItemNm3, mi.ItemNm4, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, mi.ItmDesc, mi.ItmDesc2, mi.ItmDesc3, mi.ItmDesc4, mi.Ingeredients, mi.Ingeredients2, mi.Ingeredients3, mi.Ingeredients4, mi.Rmks, mi.Rmks2, mi.Rmks3, mi.Rmks4, mi.PrepTime, mi.AvgRtng, mi.FID,ItemNm as imgSrc, mi.UItmCd,mi.CID,mi.Itm_Portion,mi.Value,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
             $rec = $this->db2->select($select)
                             ->join('MenuItem mi','mi.ItemId = mr.RcItemId', 'inner')
+                            ->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')
                             ->get_where('MenuItem_Recos mr', 
                                         array('mr.ItemId' => $itemId, 
                                             'mr.EID' => $EID,
@@ -310,6 +343,179 @@ class Customer extends CI_Controller {
         }
     }
 
+    public function recomAddCart(){
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+
+            $CustId = $this->session->userdata('CustId');
+            $CNo = $this->session->userdata('CNo');
+            $CellNo = $_SESSION['signup']['MobileNo'];
+            $EType = $this->session->userdata('EType');
+
+            $COrgId = $this->session->userdata('COrgId');
+            $CustNo = $this->session->userdata('CustNo');
+            $EID = authuser()->EID;
+            $ChainId = authuser()->ChainId;
+            $ONo = $this->session->userdata('ONo');
+            $TableNo = authuser()->TableNo;
+            $KOTNo = $this->session->userdata('KOTNo');
+            $MultiKitchen = $this->session->userdata('MultiKitchen');
+            $Kitchen = $this->session->userdata('Kitchen');
+            $TableAcceptReqd = $this->session->userdata('TableAcceptReqd');
+            $AutoSettle = $this->session->userdata('AutoSettle');
+
+            $temp = array();
+            $data = array();
+
+            if(!empty($_POST['recArray'])){
+                foreach ($_POST['recArray'] as $itemId ) {
+                    
+                    $qty = $_POST['qty'][$itemId][0];
+                    $rate = $_POST['rate'][$itemId][0];
+
+                    $OType = 0;
+                    $TblTyp = $_POST['TblTyp'][$itemId][0];
+                    if($TblTyp > 50){
+                        if($TblTyp == 51){
+                            $OType = 1;
+                        }elseif($TblTyp == 55){
+                            $OType = 2;
+                        }elseif($TblTyp == 60){
+                            $OType=3;
+                        }elseif($TblTyp == 65){
+                            $OType=30;
+                        }elseif($TblTyp == 70){
+                            $OType=35;
+                        }
+                    }else{
+                        if ($EType == 5) {
+                            $OType = 7;
+                        } else {
+                            $OType = 0;
+                        }
+                    }
+
+                    if ($KOTNo == 0) {
+                        // To generate new KOTNo
+                        $kotNoCount = $this->db2->query("SELECT Max(KOTNo + 1) as tKot from Kitchen where DATE(LstModDt) = CURDATE() AND EID = $EID")->result_array();
+            
+                        if ($kotNoCount[0]['tKot'] == '') {
+                            $kotNo = 1;
+                        } else {
+                            $kotNo = $kotNoCount[0]['tKot'];
+                        }
+                        $KOTNo = $kotNo;
+                        $oldKitCd = 0;
+                        $this->session->set_userdata('KOTNo', $kotNo);
+                        $this->session->set_userdata('oldKitCd', 0);
+                    }
+
+                    $oldKitCd = $this->session->userdata('oldKitCd');
+                    $fKotNo = $KOTNo;
+
+                    $MergeNoGet = $this->db2->query("SELECT MergeNo FROM KitchenMain WHERE EID = $EID AND CNo = $CNo and BillStat = 0")->result_array();
+                    $MergeNo = $MergeNoGet[0]['MergeNo'];
+
+                    if ($EType == 5) {
+                        // $orderType = 7;
+                        $stat = 10;
+                        //$newUKOTNO = date('dmy_') . $KOTNo;
+
+                        // Check entry is already inserted in ETO
+                        $checkTableEntry = $this->db2->query("SELECT TNo FROM Eat_tables_Occ WHERE EID = $EID AND CNo = $CNo")->row_array();
+                
+                        //If Empty insert new record
+                        if (empty($checkTableEntry)) {
+                            $eatTablesOccObj['EID'] = $EID;
+                            $eatTablesOccObj['TableNo'] = $TableNo;
+                            $eatTablesOccObj['MergeNo'] = $MergeNo;
+                            $eatTablesOccObj['CustId'] = $CustId;
+                            $eatTablesOccObj['CNo'] = $CNo;
+                            //$eatTablesOccObj->Stat = 0;
+                            $eatobj = insertRecord('Eat_tables_Occ', $eatTablesOccObj);
+                            if ($eatobj) {
+                                // update Eat_tables for table Allocate
+                                $eatTablesUpdate = $this->db2->query("UPDATE Eat_tables set Stat = 1, MergeNo = $MergeNo where EID = $EID AND TableNo = '$TableNo' AND  Stat = 0");
+                            } else {
+                                //alert "Add another customer to occupied table"
+                            }
+                        }
+
+                    }else{
+                        //For ETpye 1 Order Type Will Be 0 and Stat = 1
+                        $OType = 0;
+                        $stat = 0;
+                    }
+                    $newUKOTNO = date('dmy_') . $KOTNo;
+                    $prepration_time = $_POST['prepration_time'][$itemId][0];
+
+                    $date = date("Y-m-d H:i:s");
+                    $date = strtotime($date);
+                    $time = $prepration_time;
+                    $date = strtotime("+" . $time . " minute", $date);
+
+                    if ($MultiKitchen > 1) {
+                        $itemKitCd = $_POST['itemKitCd'][$itemId][0];
+                        if ($oldKitCd != $_POST['itemKitCd'][$itemId][0]) {
+                            $getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID = $EID AND KitCd = $itemKitCd")
+                            ->result_array();
+                            $fKotNo = $getFKOT[0]['FKOTNO'];
+                            $fKotNo += 1;
+                            // new ukot
+                            $newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
+                            $this->session->set_userdata('oldKitCd', $itemKitCd);
+                        } else {
+                            // next ukot                    
+                            $newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
+                        }
+                    }
+
+                    $temp['CNo'] = $CNo;
+                    $temp['CustId'] = $CustId;
+                    $temp['COrgId'] = $COrgId;
+                    $temp['CustNo'] = $CustNo;
+                    $temp['CellNo'] = $CellNo;
+                    $temp['EID'] = $EID;
+                    $temp['ChainId'] = $ChainId;
+                    $temp['ONo'] = $ONo;
+                    $temp['KitCd'] = $_POST['itemKitCd'][$itemId][0];
+                    $temp['OType'] = $OType;
+                    $temp['FKOTNo'] = $fKotNo;
+                    $temp['KOTNo'] = $KOTNo;
+                    $temp['UKOTNo'] = $newUKOTNO;         //date('dmy_').$KOTNo;
+                    $temp['TableNo'] = $TableNo;
+                    $temp['MergeNo'] = $MergeNo;
+                    $temp['ItemId'] = $itemId;
+                    $temp['TaxType'] = $_POST['tax_type'][$itemId][0];
+                    $temp['Qty'] = $qty;
+                    $temp['ItmRate'] = $rate;
+                    $temp['OrigRate'] = $rate;  
+                    $temp['Itm_Portion'] = $_POST['Itm_Portions'][$itemId][0];
+                    $temp['CustRmks'] = '';
+                    $temp['DelTime'] = date('Y-m-d H:i:s', $date);
+                    $temp['TA'] = 0;
+                    $temp['Stat'] = $stat;
+                    $temp['LoginCd'] = 1;
+                    $temp['SDetCd'] = 0;
+                    $temp['SchCd'] = 0;
+
+                    $data[] = $temp;
+                }
+            }
+            // echo "<pre>";print_r($data);die;
+            $this->db2->insert_batch('Kitchen', $data);
+            $status = 'success';
+            $response = 'Item Added';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
     public function signup(){
         $status = 'error';
         $response = 'Something went wrong plz try again!';
@@ -318,7 +524,7 @@ class Customer extends CI_Controller {
             // echo "<pre>";
             // print_r($_SESSION);
             // die;
-            $otp = $this->generateOTP($_POST['MobileNo']);
+            $otp = $this->generateOTP($_POST['MobileNo'], $_POST['email']);
             $status = 'success';
             $response = "Your otp is $otp";
 
@@ -335,10 +541,16 @@ class Customer extends CI_Controller {
         $this->load->view('cust/signup', $data);
     }
 
-    private function generateOTP($mobile){
+    private function generateOTP($mobile, $email){
         $otp = rand(9999,1000);
         $this->session->set_userdata('cust_otp', '1212');
-        $check = $this->db2->select('token')->get_where('Users', array('MobileNo' => $mobile))->row_array();
+        $check = $this->db2->select('token')
+                            ->group_start() 
+                                    ->where('MobileNo', $mobile)
+                                    ->or_where('email',$email)
+                            ->group_end()
+                            ->get('Users')
+                            ->row_array();
         if(!empty($check)){
             $msg = 'Your One Time Password is '.$otp;
             $message = array(
@@ -350,7 +562,13 @@ class Customer extends CI_Controller {
             firebaseNotification($check['token'], $message);
         }else{
             $genTblDb = $this->load->database('GenTableData', TRUE);
-            $chckGen = $genTblDb->select('token')->get_where('AllUsers', array('MobileNo' => $mobile))->row_array();
+            $chckGen = $genTblDb->select('token')
+                                ->group_start() 
+                                    ->where('MobileNo', $mobile)
+                                    ->or_where('email',$email)
+                                ->group_end()
+                                ->get('AllUsers')
+                                ->row_array();
 
             if(!empty($chckGen)){
                 $msg = 'Your One Time Password is '.$otp;
@@ -378,7 +596,13 @@ class Customer extends CI_Controller {
                 $status = 'success';
                 $ses_data = $_SESSION['signup'];
 
-                $check = $this->db2->get_where('Users', array('MobileNo' => $ses_data['MobileNo']))->row_array();
+                $check = $this->db2->select('*')
+                                    ->group_start() 
+                                        ->where('MobileNo',  $ses_data['MobileNo'])
+                                        ->or_where('email', $ses_data['email'])
+                                    ->group_end()
+                                    ->get_where('Users')
+                                    ->row_array();
 
                 $EType = $this->session->userdata('EType');
                 $EID = authuser()->EID;
@@ -390,7 +614,13 @@ class Customer extends CI_Controller {
                 }else{
                     $genTblDb = $this->load->database('GenTableData', TRUE);
 
-                    $gen_check = $genTblDb->get_where('AllUsers', array('MobileNo' => $ses_data['MobileNo']))->row_array();
+                    $gen_check = $genTblDb->select('*')
+                                            ->group_start() 
+                                                ->where('MobileNo',  $ses_data['MobileNo'])
+                                                ->or_where('email', $ses_data['email'])
+                                            ->group_end()
+                                            ->get('AllUsers')
+                                            ->row_array();
                     if(!empty($gen_check)){
                         $this->session->set_userdata('CustId', $gen_check['CustId']);
 
@@ -422,14 +652,40 @@ class Customer extends CI_Controller {
                 }
 
                 //Deleting older orders
+                    $hours_3 = date('Y-m-d H:i:s', strtotime("-3 hours"));
                 if ($EType == 5) {
-                    $this->db2->query("UPDATE Kitchen set Stat = 99 WHERE EID = $EID AND CustId = $CustId AND TableNo = '$TableNo' AND Stat = 10 AND BillStat = 0 AND timediff(time(Now()),time(LstModDt))  > time('03:00:00')");
+                    updateRecord('Kitchen', array('Stat' => 99), array('EID' => $EID,
+                            'CustId' => $CustId,
+                            'TableNo' => $TableNo, 
+                            'Stat' => 10 , 
+                            'BillStat' => 0, 
+                            'LstModDt <' => $hours_3
+                            )
+                        );
+                    // $this->db2->query("UPDATE Kitchen set Stat = 99 WHERE EID = $EID AND CustId = $CustId AND TableNo = '$TableNo' AND Stat = 10 AND BillStat = 0 AND timediff(time(Now()),time(LstModDt))  > time('03:00:00')");
                     
-                    $this->db2->query("UPDATE KitchenMain set Stat = 99 WHERE EID = $EID AND CustId = $CustId AND TableNo = '$TableNo' AND Stat = 0 AND BillStat = 0 AND timediff(time(Now()),time(LstModDt))  > time('03:00:00')");
-                } else {
-                    $this->db2->query("UPDATE Kitchen set Stat = 99 WHERE EID = $EID AND CustId = $CustId AND BillStat = 0 AND Stat = 0 ");
+                    // $this->db2->query("UPDATE KitchenMain set Stat = 99 WHERE EID = $EID AND CustId = $CustId AND TableNo = '$TableNo' AND Stat = 0 AND BillStat = 0 AND timediff(time(Now()),time(LstModDt))  > time('03:00:00')");
+                    updateRecord('KitchenMain', array('Stat' => 99), array('EID' => $EID,
+                            'CustId' => $CustId,
+                            'TableNo' => $TableNo, 
+                            'Stat' => 0 , 
+                            'BillStat' => 0, 
+                            'LstModDt <' => $hours_3
+                            )
+                        );
 
-                    $this->db2->query("UPDATE KitchenMain set Stat = 99 WHERE CustId = $CustId AND EID = $EID AND BillStat = 0 AND timediff(time(Now()),time(LstModDt)) > time('03:00:00')");
+                } else {
+                    updateRecord('Kitchen', array('Stat' => 99), array('EID' => $EID,
+                        'CustId' => $CustId , 'BillStat' => 0 , 'Stat' => 0 )
+                                );
+
+                    // $this->db2->query("UPDATE KitchenMain set Stat = 99 WHERE CustId = $CustId AND EID = $EID AND BillStat = 0 AND timediff(time(Now()),time(LstModDt)) > time('03:00:00')");
+                    updateRecord('KitchenMain', array('Stat' => 99), array('EID' => $EID,
+                            'CustId' => $CustId, 
+                            'BillStat' => 0, 
+                            'LstModDt <' => $hours_3
+                            )
+                        );
                 }
 
             }else{

@@ -84,19 +84,24 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="table-responsive" >
-                              <table class="table">
-                                <thead>
-                                <tr>
-                                    <td>Item</td>
-                                    <td>Qty</td>
-                                    <td>Rate</td>
-                                </tr>
-                            </thead>
-                            <tbody id="recom-body">
-                            </tbody>
-                              </table>
-                            </div>
+                            <form method="post" id="recomForm">
+                                <div class="table-responsive" >
+                                  <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <td>Item</td>
+                                            <td>Qty</td>
+                                            <td>Rate</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recom-body">
+                                    </tbody>
+                                  </table>
+                                </div>
+                                <div class="text-right">
+                                    <button class="btn btn-sm btn-success">Add</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -145,9 +150,14 @@
                             var itemName = item.ItemNm;
                         }
 
+                        var recmnd = '';
+                        if(item.recom > 0){
+                            recmnd = `<a onclick="recommendation(${item.ItemId})" style="cursor:pointer;">`;
+                        }
+
                         template += ` <tr> `;
                         if(item.Itm_Portion > 4){
-                            template += ` <td><a href="#" onclick="recommendation(${item.ItemId})">
+                            template += ` <td>${recmnd}
                                 ${itemName}  ( ${item.Portions} )
                             </a></td> `;
                         }else{
@@ -276,25 +286,46 @@
     function recommendation(itemId){
 
         $.post('<?= base_url('customer/recommendation') ?>',{itemId:itemId},function(res){
-
-                if(res.status == 'success'){
-                  var data = res.response;
-                  var temp = '';
-                  for(i=0; i<data.length; i++){
-                    temp += '<tr>\
-                                <td>'+data[i].ItemNm+'</td>\
-                                <td>1</td>\
-                                <td>'+data[i].ItmRate+'</td>\
-                            </tr>';
-                  }
-                  $('#recom-body').html(temp);
-                }else{
-                  alert(res.response);
-                }
-            });
+            if(res.status == 'success'){
+              var data = res.response;
+              var temp = '';
+              for(i=0; i<data.length; i++){
+                temp += '<tr><input type="hidden" name="TblTyp['+data[i].ItemId+'][]" value="'+data[i].TblTyp+'"><input type="hidden" name="itemKitCd['+data[i].ItemId+'][]" value="'+data[i].KitCd+'"><input type="hidden" name="tax_type['+data[i].ItemId+'][]" value="'+data[i].TaxType+'"><input type="hidden" name="prepration_time['+data[i].ItemId+'][]" value="'+data[i].PrepTime+'"><input type="hidden" name="Itm_Portions['+data[i].ItemId+'][]" value="'+data[i].Itm_Portions+'">\
+                            <td><input class="form-check-input" type="checkbox" name="recArray[]" value="'+data[i].ItemId+'">'+data[i].ItemNm+'</td>\
+                            <td><div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;"><span class="input-group-btn">\
+                                    <button type="button" id="minus-qty'+data[i].ItemId+'" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;" disabled="" onclick="decQty('+data[i].ItemId+')">-\
+                                    </button>\
+                                </span>\
+                                <input type="text" readonly="" id="qty-val'+data[i].ItemId+'" class="form-control input-number" value="1" min="1" max="10" style="text-align: center;" name="qty['+data[i].ItemId+'][]">\
+                                <span class="input-group-btn">\
+                                    <button type="button" id="add-qty'+data[i].ItemId+'" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 30px;" onclick="incQty('+data[i].ItemId+')">+\
+                                    </button>\
+                                </span></div></td>\
+                            <td><input type="hidden" name="rate['+data[i].ItemId+'][]" value="'+data[i].ItmRate+'">'+data[i].ItmRate+'</td>\
+                        </tr>';
+              }
+              $('#recom-body').html(temp);
+            }else{
+              alert(res.response);
+            }
+        });
 
         $('#RecommendationModal').modal();
     }
+
+    $('#recomForm').on('submit', function(e){
+        e.preventDefault();
+        var data = $(this).serializeArray();
+
+        $.post('<?= base_url('customer/recomAddCart') ?>', data ,function(res){
+            if(res.status == 'success'){
+               location.reload();
+            }else{
+              alert(res.response);
+            }
+        });
+
+    });
 
     // generate billing page
 

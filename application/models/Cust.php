@@ -1746,6 +1746,18 @@ class Cust extends CI_Model{
 
 	}
 
+	public function checkRecommendation($itemId){
+		$rec = $this->db2->select_max('RecNo')
+						->get_where('MenuItem_Recos', 
+								array('EID' => $this->EID, 'ItemId' => $itemId ))
+						->row_array();
+		$val = 0;
+		if(!empty($rec['RecNo'])){
+			$val = $rec['RecNo'];
+		}
+		return $val;
+	}
+
 
 	
 }
