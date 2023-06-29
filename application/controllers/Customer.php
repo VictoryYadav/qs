@@ -504,6 +504,136 @@ class Customer extends CI_Controller {
         }
     }
 
+    public function login(){
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+            
+            $otp = $this->genOTPLogin($_POST['emailMobile']);
+            $status = 'success';
+            $response = "Your otp is $otp";
+            $this->session->set_userdata('emailMobile', $_POST['emailMobile']);
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] = 'Log In';
+        $data['language'] = languageArray();
+        $this->load->view('cust/login', $data);
+    }
+
+    private function genOTPLogin($emailMobile){
+        $otp = rand(9999,1000);
+        $this->session->set_userdata('cust_otp', '1212');
+        $check = $this->db2->select('token')
+                            ->group_start() 
+                                    ->where('MobileNo', $emailMobile)
+                                    ->or_where('email',$emailMobile)
+                            ->group_end()
+                            ->get('Users')
+                            ->row_array();
+        if(!empty($check)){
+            $msg = 'Your One Time Password is '.$otp;
+            $message = array(
+              'body'   => $msg,
+              'title'   => 'Your OTP',
+              'vibrate' => 1,
+              'sound'   => 1
+            );
+            if(!empty($check['token'])){
+                // firebaseNotification($check['token'], $message);
+            }
+        }
+        return $otp;
+    }
+
+    public function loginVerify(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $otp = $this->session->userdata('cust_otp');
+            if($_POST['otp'] == $otp){
+                $res = "OTP Matched!";
+                $status = 'success';
+                $ses_data = $this->session->userdata('emailMobile');
+
+                $check = $this->db2->select('*')
+                                    ->group_start() 
+                                        ->where('MobileNo',  $ses_data)
+                                        ->or_where('email', $ses_data)
+                                    ->group_end()
+                                    ->get_where('Users')
+                                    ->row_array();
+
+                $EType = $this->session->userdata('EType');
+                $EID = authuser()->EID;
+                $TableNo = authuser()->TableNo;
+
+                if(!empty($check)){
+                    $this->session->set_userdata('CustId', $check['CustId']);
+                    $CustId = $check['CustId'];
+                    $this->session->set_userdata('signup', $check);
+                }
+
+                if(!empty($CustId) && $CustId > 0){
+                    $res = $this->db2->query("SELECT * from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = '$TableNo' AND timediff(time(Now()),time(LstModDt))  < time('03:00:00') order by CNo desc limit 1")->row_array();
+                    if(!empty($res)){
+                        $this->session->set_userdata('CNo', $res['CNo']);
+                    }
+                }
+
+                //Deleting older orders
+                $hours_3 = date('Y-m-d H:i:s', strtotime("-3 hours"));
+                if ($EType == 5) {
+                    updateRecord('Kitchen', array('Stat' => 99), array('EID' => $EID,
+                            'CustId' => $CustId,
+                            'TableNo' => $TableNo, 
+                            'Stat' => 10 , 
+                            'BillStat' => 0, 
+                            'LstModDt <' => $hours_3
+                            )
+                        );
+                    
+                    updateRecord('KitchenMain', array('Stat' => 99), array('EID' => $EID,
+                            'CustId' => $CustId,
+                            'TableNo' => $TableNo, 
+                            'Stat' => 0 , 
+                            'BillStat' => 0, 
+                            'LstModDt <' => $hours_3
+                            )
+                        );
+
+                } else {
+                    updateRecord('Kitchen', array('Stat' => 99), array('EID' => $EID,
+                        'CustId' => $CustId , 'BillStat' => 0 , 'Stat' => 0 )
+                                );
+
+                    updateRecord('KitchenMain', array('Stat' => 99), array('EID' => $EID,
+                            'CustId' => $CustId, 
+                            'BillStat' => 0, 
+                            'LstModDt <' => $hours_3
+                            )
+                        );
+                }
+
+            }else{
+                $res = "OTP Doesn't Matched";
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $res
+              ));
+             die;
+        }
+    }
+
     public function signup(){
         $status = 'error';
         $response = 'Something went wrong plz try again!';
@@ -723,6 +853,15 @@ class Customer extends CI_Controller {
         $KOTNo = $this->session->userdata('KOTNo');
         $this->load->view('cust/billing', $data);
         
+    }
+
+    public function logout(){
+        // $this->session->unset_userdata('logged_in');
+        // $url = 'login?o='.$this->session->userdata('EID').'&c='.$this->session->userdata('ChainId');
+
+        $url = 'customer';
+        $this->session->sess_destroy();
+        redirect(base_url() . $url, 'refresh');
     }
 
 

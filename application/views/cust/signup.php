@@ -51,6 +51,7 @@
                     </div>
                 </div>
                 <input type="submit" class="btn btn-sm btn-success" value="Submit">
+                <a href="<?= base_url('customer/login');?>"><span style="font-size: 12px;">Login</span></a>
             </form>
 
             <form method="post" id="otpForm" style="display: none;">

@@ -11,8 +11,9 @@
             <a class="dropdown-item" href="reserve_table.php">Book Table</a>
             <a class="dropdown-item" href="/cust_registration.php">Refer Outlet</a>
             <a class="dropdown-item" href="#">Username(<?= $_SESSION['signup']['MobileNo']; ?>)</a>
+            <a class="dropdown-item" href="<?= base_url('customer/logout'); ?>">Logout</a>
         <?php } else { ?>
-            <a class="dropdown-item" href="<?= base_url('customer/signup'); ?>">Login</a>
+            <a class="dropdown-item" href="<?= base_url('customer/login'); ?>">Login</a>
         <?php } ?>
         </div>
     </div>
