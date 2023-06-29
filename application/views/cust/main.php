@@ -634,8 +634,9 @@ Essential Scripts
     });
 
     var cidg = '<?= $cid; ?>';
-    var mcatIdg = '';
-    var filterg = '';
+    var mcatIdg = '<?= $fmcat; ?>';
+    var filterg = '<?= $ffid; ?>';
+
     getCuisineList(cidg);
     function getCuisineList(cid){
 

@@ -49,7 +49,7 @@
                         <table class="table">
                         <thead>
                           <tr>
-                            <th>Order Details</th>
+                            <th>Order</th>
                             <th>Quantity</th>
                             <th class="text-center">Rate</th>
                             <th class="text-center"></th>
@@ -79,7 +79,7 @@
             <div class="modal-content">
                 <div style="margin-left: 14px;">
                     <h5>Recommendation</h5>
-                    <p>Glen Fiddich</p>
+                    <p id="item_name"></p>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -152,7 +152,7 @@
 
                         var recmnd = '';
                         if(item.recom > 0){
-                            recmnd = `<a onclick="recommendation(${item.ItemId})" style="cursor:pointer;">`;
+                            recmnd = `<a onclick="recommendation(${item.ItemId}, '${item.ItemNm}')" style="cursor:pointer;background:yellow;">`;
                         }
 
                         template += ` <tr> `;
@@ -167,7 +167,7 @@
                         template += ` <td class="text-center">
                             <div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;">
                                 <span class="input-group-btn">
-                                    <button type="button" id="minus-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;" disabled="" onclick="decQty(${item.OrdNo})">-
+                                    <button type="button" id="minus-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;"  onclick="decQty(${item.OrdNo})">-
                                     </button>
                                 </span>
                                 <input type="text" readonly="" id="qty-val${item.OrdNo}" class="form-control input-number" value="${item.Qty}" min="1" max="10" style="text-align: center;">
@@ -277,13 +277,13 @@
     function decQty(ord){
         $('#qty-val'+ord).val(parseInt($('#qty-val'+ord).val()) - 1);
         $('#add-qty'+ord).prop('disabled', false);
-        if ($('#qty-val'+ord).val() == 1) {
+        if ($('#qty-val'+ord).val() < 1) {
             $('#minus-qty'+ord).prop('disabled', true);
         }
     }
     // end quantity increase and decrease
 
-    function recommendation(itemId){
+    function recommendation(itemId, itemName){
 
         $.post('<?= base_url('customer/recommendation') ?>',{itemId:itemId},function(res){
             if(res.status == 'success'){
@@ -291,12 +291,12 @@
               var temp = '';
               for(i=0; i<data.length; i++){
                 temp += '<tr><input type="hidden" name="TblTyp['+data[i].ItemId+'][]" value="'+data[i].TblTyp+'"><input type="hidden" name="itemKitCd['+data[i].ItemId+'][]" value="'+data[i].KitCd+'"><input type="hidden" name="tax_type['+data[i].ItemId+'][]" value="'+data[i].TaxType+'"><input type="hidden" name="prepration_time['+data[i].ItemId+'][]" value="'+data[i].PrepTime+'"><input type="hidden" name="Itm_Portions['+data[i].ItemId+'][]" value="'+data[i].Itm_Portions+'">\
-                            <td><input class="form-check-input" type="checkbox" name="recArray[]" value="'+data[i].ItemId+'">'+data[i].ItemNm+'</td>\
+                            <td><input type="hidden" name="itemArray[]" value="'+data[i].ItemId+'">'+data[i].ItemNm+'</td>\
                             <td><div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;"><span class="input-group-btn">\
                                     <button type="button" id="minus-qty'+data[i].ItemId+'" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;" disabled="" onclick="decQty('+data[i].ItemId+')">-\
                                     </button>\
                                 </span>\
-                                <input type="text" readonly="" id="qty-val'+data[i].ItemId+'" class="form-control input-number" value="1" min="1" max="10" style="text-align: center;" name="qty['+data[i].ItemId+'][]">\
+                                <input type="text" readonly="" id="qty-val'+data[i].ItemId+'" class="form-control input-number" value="0" min="1" max="10" style="text-align: center;" name="qty['+data[i].ItemId+'][]">\
                                 <span class="input-group-btn">\
                                     <button type="button" id="add-qty'+data[i].ItemId+'" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 30px;" onclick="incQty('+data[i].ItemId+')">+\
                                     </button>\
@@ -304,6 +304,7 @@
                             <td><input type="hidden" name="rate['+data[i].ItemId+'][]" value="'+data[i].ItmRate+'">'+data[i].ItmRate+'</td>\
                         </tr>';
               }
+              $('#item_name').html(itemName);
               $('#recom-body').html(temp);
             }else{
               alert(res.response);

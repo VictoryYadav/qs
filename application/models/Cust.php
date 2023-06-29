@@ -48,16 +48,19 @@ class Cust extends CI_Model{
 	}
 
 	function getItemDetailLists($CID, $mcat, $fl){
+		$this->session->set_userdata('f_cid', $CID);
         $tableNo = authuser()->TableNo;
 
 		$where = "mi.Stat = 0 and (DAYOFWEEK(CURDATE()) = mi.DayNo OR mi.DayNo = 0)  AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and mi.ItemId Not in (Select md.ItemId from MenuItem_Disabled md where md.ItemId=mi.ItemId and md.EID = $this->EID and md.Chainid=mi.ChainId)";
 // et.TblTyp
         $sql = "mc.TaxType, mc.KitCd, mi.ItemId, mi.ItemNm, mi.ItemNm2, mi.ItemNm3, mi.ItemNm4, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, mi.ItmDesc, mi.ItmDesc2, mi.ItmDesc3, mi.ItmDesc4, mi.Ingeredients, mi.Ingeredients2, mi.Ingeredients3, mi.Ingeredients4, mi.Rmks, mi.Rmks2, mi.Rmks3, mi.Rmks4, mi.PrepTime, mi.AvgRtng, mi.FID,ItemNm as imgSrc, mi.UItmCd,mi.CID,mi.Itm_Portion,mi.Value,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$tableNo' AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$this->EID' and et1.TableNo = '$tableNo') as TblTyp";
         if(!empty($mcat)){
+        	$this->session->set_userdata('f_mcat', $mcat);
             $this->db2->where('mc.MCatgId', $mcat);
         }
         if(!empty($fl)){
         	$this->db2->where('mi.FID', $fl);
+        	$this->session->set_userdata('f_fid', $fl);
         }
         $data =  $this->db2->select($sql)
         				->order_by('mi.Rank', 'ASC')
@@ -183,7 +186,9 @@ class Cust extends CI_Model{
 	}
 
 	public function getItem_details_ajax($postData){
-		
+		// echo "<pre>";
+		// print_r($postData);
+		// die;
 		$COrgId = $this->session->userdata('COrgId');
 		$CustNo = $this->session->userdata('CustNo');
 		$EID = $this->EID;
@@ -192,7 +197,7 @@ class Cust extends CI_Model{
 		$EType = $this->session->userdata('EType');
 		$TableNo = authuser()->TableNo;
 		$KOTNo = $this->session->userdata('KOTNo');
-		$CellNo = $this->session->userdata('CellNo');
+		$CellNo = $_SESSION['signup']['MobileNo'];
 		$MultiKitchen = $this->session->userdata('MultiKitchen');
 		$Kitchen = $this->session->userdata('Kitchen');
 		$TableAcceptReqd = $this->session->userdata('TableAcceptReqd');
@@ -442,7 +447,7 @@ class Cust extends CI_Model{
 							$kitchenMainObj['TableNo'] = $TableNo;
 							$kitchenMainObj['OldTableNo'] = $TableNo;
 							$kitchenMainObj['MergeNo'] = $TableNo;
-							$kitchenMainObj['Stat'] = $this->session->userdata('TableAcceptReqd');
+							$kitchenMainObj['Stat'] = 0;
 							$kitchenMainObj['CnfSettle'] = ($this->session->userdata('AutoSettle') == 1)?0:1;
 							$kitchenMainObj['LoginCd'] = 1;
 							$kitchenMainObj['payRest'] = 0;
@@ -465,7 +470,12 @@ class Cust extends CI_Model{
 					// For EType = 5
 					if ($EType == 5) {
 						// $orderType = 7;
-						$stat = 10;
+						if($TableAcceptReqd > 0){
+							$stat = 10;
+							$this->session->set_userdata('TableAcceptReqd', '0');
+						}else{
+							$stat = 0;
+						}
 						//$newUKOTNO = date('dmy_') . $KOTNo;
 
 						// Check entry is already inserted in ETO
@@ -653,7 +663,8 @@ class Cust extends CI_Model{
 						$kitchenMainObj['TableNo'] = $TableNo;
 						$kitchenMainObj['OldTableNo'] = $TableNo;
 						$kitchenMainObj['MergeNo'] = $TableNo;
-						$kitchenMainObj['Stat'] = $this->session->userdata('TableAcceptReqd');
+						$kitchenMainObj['Stat'] = 0;
+						// $kitchenMainObj['Stat'] = $this->session->userdata('TableAcceptReqd');
 						$kitchenMainObj['CnfSettle'] = ($this->session->userdata('AutoSettle') == 1)?0:1;
 						$kitchenMainObj['LoginCd'] = 1;
 						$kitchenMainObj['payRest'] = 0;
@@ -675,7 +686,12 @@ class Cust extends CI_Model{
 				// For EType = 5
 				if ($EType == 5) {
 					// $orderType = 7;
-					$stat = 10;
+					if($TableAcceptReqd > 0){
+						$stat = 10;
+						$this->session->set_userdata('TableAcceptReqd', '0');
+					}else{
+						$stat = 0;
+					}
 					//$newUKOTNO = date('dmy_') . $KOTNo;
 
 					// Check entry is already inserted in ETO
@@ -841,7 +857,7 @@ class Cust extends CI_Model{
 
 		if (isset($postData['setCustomItem']) && !empty($postData['setCustomItem'])) {
 
-			$this->db->trans_start();
+			$this->db2->trans_start();
 			// $DB->beginTransaction();
 			try {
 				if ($CNo == 0) {
@@ -865,7 +881,7 @@ class Cust extends CI_Model{
 						$kitchenMainObj['TableNo'] = $TableNo;
 						$kitchenMainObj['OldTableNo'] = $TableNo;
 						$kitchenMainObj['MergeNo'] = $TableNo;
-						$kitchenMainObj['Stat'] = $this->session->userdata('TableAcceptReqd');
+						$kitchenMainObj['Stat'] = 0;
 						$kitchenMainObj['CnfSettle'] = ($this->session->userdata('AutoSettle') == 1)?0:1;
 						$kitchenMainObj['LoginCd'] = 1;
 						$kitchenMainObj['payRest'] = 0;
@@ -885,24 +901,6 @@ class Cust extends CI_Model{
 				}
 				// For KOTNo == 0 Generate New KOT
 				if ($KOTNo == 0) {
-
-					//Deleting older orders
-					if ($EType == 5) {
-
-						$updateOldUnpaidOrders = $this->db2->query("UPDATE Kitchen set Stat = 99, DelTime = ADDTIME(now(), '$prepration_time') WHERE EID = $EID AND CustId = $CustId AND TableNo = '$TableNo' AND Stat = 10 AND BillStat = 0 AND timediff(time(Now()),time(LstModDt))  > time('03:00:00')");
-
-						//Also update kitchenMain
-						$updatekitchenMain = $this->db2->query("UPDATE KitchenMain set Stat = 99 WHERE EID = $EID AND CustId = $CustId AND TableNo = '$TableNo' AND Stat = 0 AND BillStat = 0 AND timediff(time(Now()),time(LstModDt))  > time('03:00:00')");
-
-					} else {
-
-						$updateOldUnpaidOrders = $this->db2->query("UPDATE Kitchen set Stat = 99, DelTime = ADDTIME(now(), '$prepration_time') WHERE EID = $EID AND CustId = $CustId AND BillStat = 0 AND KOTNo <> $KOTNo AND (Stat = 0)");
-
-						//Also update kitchenMain
-						$updatekitchenMain = $this->db2->query("UPDATE KitchenMain set Stat = 99 WHERE CustId = $CustId AND EID = $EID AND BillStat = 0 AND timediff(time(Now()),time(LstModDt)) > time('00:30:00')");
-
-					}
-			
 					// To generate new KOTNo
 					$kotNoCount = $this->db2->query("SELECT Max(KOTNo + 1) as tKot from Kitchen where DATE(LstModDt) = CURDATE() AND EID = $EID")->result_array();
 			
@@ -929,13 +927,12 @@ class Cust extends CI_Model{
 				$date = strtotime("+" . $time . " minute", $date);
 				$prepration_time = "00:" . $postData['item_prepTime'] . ":00";
 			
-			
 				if ($MultiKitchen > 1) {
 					// $KitCd = $postData['itemKitCd'];
 					// To set FKOTNO
 					$itemKitCd = $postData['itemKitCd'];
 					if ($oldKitCd != $postData['itemKitCd']) {
-						$getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID=$EID AND KitCd = $itemKitCd AND date(LstModDt) = Date(now())")->result_array();
+						$getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID=$EID AND KitCd = $itemKitCd")->result_array();
 						
 						$fKotNo = $getFKOT[0]['FKOTNO'];
 						//$oldFKOTNO = $getFKOT[0]['FKOTNO'];
@@ -951,7 +948,13 @@ class Cust extends CI_Model{
 			
 					//For ETpye 5 Order Type Will Be 7 and Stat = 10 
 					$orderType = 7;
-					$stat = 10;
+
+					if($TableAcceptReqd > 0){
+						$stat = 10;
+						$this->session->set_userdata('TableAcceptReqd', '0');
+					}else{
+						$stat = 0;
+					}
 			
 					// For Entry table in ETO
 					// Check entry is already inserted in ETO
@@ -979,7 +982,6 @@ class Cust extends CI_Model{
 					$stat = 0;
 
 				}
-
 				// Insert Record to kitchen with Stat 10 For Tem
 				$kitchenObj['CNo'] = $CNo;
 				$kitchenObj['CustId'] = $CustId;
@@ -1021,7 +1023,7 @@ class Cust extends CI_Model{
 
 					$custItemDesc = implode(',', $custItemDescArray);
 
-					$kitchenObj->CustItemDesc = $custItemDesc;
+					$kitchenObj['CustItemDesc'] = $custItemDesc;
 				}
 
 				$kitchenObj['ItemTyp'] = $postData['itemTyp'];
@@ -1041,9 +1043,7 @@ class Cust extends CI_Model{
 				$radioValArray = explode(",", $postData['radioVal']);
 				$radioRateArray = explode(",", $postData['radioRate']);
 				$raidoGrpCdArray = explode(",", $postData['raidoGrpCd']);
-
 				// insert radio items
-
 				foreach ($radioValArray as $key => $value) {
 					if ($value == 0) {
 						continue;
@@ -1056,7 +1056,6 @@ class Cust extends CI_Model{
 					// $kitchenDetObj->create();
 					insertRecord('KitchenDet', $kitchenDetObj);
 				}
-
 				// insert Checkbox items
 				$checkboxValArray = explode(",", $postData['checkboxVal']);
 				$checkboxItemCdArray = explode(",", $postData['checkboxItemCd']);
@@ -1081,10 +1080,10 @@ class Cust extends CI_Model{
 
 				if ($EType == 5) {
 					// $response["redirectTo"] = "send_to_kitchen.php";
-					redirect(base_url('customer/send_to_kitchen'));
+					$response["redirectTo"]  = base_url('customer/cart');
 				} else {
 					// $response["redirectTo"] = "order_details.php";
-					redirect(base_url('customer/order_details'));
+					$response["redirectTo"]  = base_url('customer/order_details');
 				}
 
 				// $DB->executeTransaction();
@@ -1096,7 +1095,7 @@ class Cust extends CI_Model{
 				];
 				// $DB->rollBack();
 			}
-			$this->db->trans_complete();
+			$this->db2->trans_complete();
 
 			echo json_encode($response);
 			die();
@@ -1168,7 +1167,7 @@ class Cust extends CI_Model{
 			$kitchenMainObj['TableNo'] = $TableNo;
 			$kitchenMainObj['OldTableNo'] = $TableNo;
 			$kitchenMainObj['MergeNo'] = $TableNo;
-			$kitchenMainObj['Stat'] = $this->session->userdata('TableAcceptReqd');
+			$kitchenMainObj['Stat'] = 0;
 			$kitchenMainObj['CnfSettle'] = ($this->session->userdata('AutoSettle') == 1)?0:1;
 			$kitchenMainObj['LoginCd'] = 1;
 			$kitchenMainObj['payRest'] = 0;
