@@ -67,7 +67,7 @@
 
                 <button type="button" class="btn btn-sm backbtn" data-dismiss="modal" width="50%" onclick="goBack()">Menu</button>
 
-                <button type="button" class="btn btn-sm paybtn" data-dismiss="modal" style="width:50%;" onclick="goBill()">Bill</button>
+                <button type="button" class="btn btn-sm paybtn" data-dismiss="modal" style="width:50%;" onclick="goBill()">Checkout</button>
 
             </div>
             <!-- end of btn -->
@@ -331,9 +331,9 @@
     // generate billing page
 
     function goBill() {
-        // url: "ajax/order_details_ajax.php",
+    
         $.ajax({
-            url: "<?php echo base_url('customer/checkout'); ?>",
+            url: "<?php echo base_url('customer/order_details_ajax'); ?>",
             type: "post",
             data: {
                 goBill: 1
@@ -341,11 +341,7 @@
             success: response => {
                 console.log(response);
                 if (response == 1) {
-                    // debugger;
-                    window.location = "bill.php";
-                } else {
-                    // debugger;
-                    window.location.assign("cust_registration.php");
+                    window.location = "<?= base_url('customer/checkout'); ?>";
                 }
             },
             error: (xhr, status, error) => {
