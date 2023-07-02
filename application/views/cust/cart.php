@@ -45,20 +45,23 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="table-responsive" style="height: 380px;">
-                        <table class="table">
-                        <thead>
-                          <tr>
-                            <th>Order</th>
-                            <th>Quantity</th>
-                            <th class="text-center">Rate</th>
-                            <th class="text-center"></th>
-                          </tr>
-                        </thead>
-                        <tbody id="order-details-table-body">
-                        </tbody>
-                      </table>
-                  </div>
+                    <form method="post" id="cartForm">
+                        <input type="hidden" name="goBill" value="1" />
+                        <div class="table-responsive" style="height: 380px;">
+                            <table class="table">
+                            <thead>
+                              <tr>
+                                <th>Order</th>
+                                <th>Quantity</th>
+                                <th class="text-center">Rate</th>
+                                <th class="text-center"></th>
+                              </tr>
+                            </thead>
+                            <tbody id="order-details-table-body">
+                            </tbody>
+                          </table>
+                      </div>
+                  </form>
                 </div>
             </div>
 
@@ -164,13 +167,13 @@
                             template += ` <td>${itemName}</td> `;
                         }
 
-                        template += ` <td class="text-center">
+                        template += ` <input type="hidden" name="OrdNo[]" value="${item.OrdNo}" /><td class="text-center">
                             <div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;">
                                 <span class="input-group-btn">
                                     <button type="button" id="minus-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;"  onclick="decQty(${item.OrdNo})">-
                                     </button>
                                 </span>
-                                <input type="text" readonly="" id="qty-val${item.OrdNo}" class="form-control input-number" value="${item.Qty}" min="1" max="10" style="text-align: center;">
+                                <input type="text" readonly="" id="qty-val${item.OrdNo}" class="form-control input-number" value="${item.Qty}" min="1" max="10" style="text-align: center;" name="qty[]">
                                 <span class="input-group-btn">
                                     <button type="button" id="add-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 30px;" onclick="incQty(${item.OrdNo})">+
                                     </button>
@@ -331,13 +334,12 @@
     // generate billing page
 
     function goBill() {
-    
+        var data = $('#cartForm').serializeArray();
+
         $.ajax({
             url: "<?php echo base_url('customer/order_details_ajax'); ?>",
             type: "post",
-            data: {
-                goBill: 1
-            },
+            data: data,
             success: response => {
                 console.log(response);
                 if (response == 1) {

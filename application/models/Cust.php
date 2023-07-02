@@ -207,7 +207,7 @@ class Cust extends CI_Model{
 
 		// ask for bcoz $cno assign at login time
 		if(!empty($CustId) && $CustId > 0){
-			$res = $this->db2->query("SELECT * from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND timediff(time(Now()),time(LstModDt))  < time('03:00:00') order by CNo desc limit 1")->result_array();
+			$res = $this->db2->query("SELECT * from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND timediff(Now(),LstModDt) < ('03:00:00') order by CNo desc limit 1")->result_array();
 			if(!empty($res)){
 				$this->session->set_userdata('CNo', $res[0]['CNo']);
 				$CNo = $res[0]['CNo'];
@@ -472,7 +472,7 @@ class Cust extends CI_Model{
 						// $orderType = 7;
 						if($TableAcceptReqd > 0){
 							$stat = 10;
-							$this->session->set_userdata('TableAcceptReqd', '0');
+							// $this->session->set_userdata('TableAcceptReqd', '0');
 						}else{
 							$stat = 0;
 						}
@@ -593,7 +593,7 @@ class Cust extends CI_Model{
 		if (isset($postData['orderToCart']) && !empty($postData['orderToCart'])) {
 			// echo "<pre>";print_r($postData);exit();
 			if (isset($_SESSION['CustId'])) {
-				$CellNo = $this->session->userdata('CellNo');
+				$CellNo = $_SESSION['signup']['MobileNo'];
 				$CustNo = $this->session->userdata('CustNo');
 				$CustId = $this->session->userdata('CustId');
 				$itmrate = str_replace(" ", "", $postData['itmrate']);
@@ -664,6 +664,9 @@ class Cust extends CI_Model{
 						$kitchenMainObj['OldTableNo'] = $TableNo;
 						$kitchenMainObj['MergeNo'] = $TableNo;
 						$kitchenMainObj['Stat'] = 0;
+						if($TableAcceptReqd > 0){
+							$kitchenMainObj['Stat'] = 10;
+						}
 						// $kitchenMainObj['Stat'] = $this->session->userdata('TableAcceptReqd');
 						$kitchenMainObj['CnfSettle'] = ($this->session->userdata('AutoSettle') == 1)?0:1;
 						$kitchenMainObj['LoginCd'] = 1;
@@ -687,8 +690,9 @@ class Cust extends CI_Model{
 				if ($EType == 5) {
 					// $orderType = 7;
 					if($TableAcceptReqd > 0){
-						$stat = 10;
-						$this->session->set_userdata('TableAcceptReqd', '0');
+						$checkStat = $this->db2->select('Stat')->get_where('KitchenMain', array('CNo' => $CNo, 'EID' => $EID, 'BillStat' => 0))->row_array();
+						$stat = $checkStat['Stat'];
+						// $this->session->set_userdata('TableAcceptReqd', '0');
 					}else{
 						$stat = 0;
 					}
@@ -951,7 +955,7 @@ class Cust extends CI_Model{
 
 					if($TableAcceptReqd > 0){
 						$stat = 10;
-						$this->session->set_userdata('TableAcceptReqd', '0');
+						// $this->session->set_userdata('TableAcceptReqd', '0');
 					}else{
 						$stat = 0;
 					}

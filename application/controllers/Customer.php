@@ -23,6 +23,24 @@ class Customer extends CI_Controller {
     public function index1(){
         echo "<pre>";
         print_r($_SESSION);
+        $CustId = 10;
+         $hours_3 = date('Y-m-d H:i:s', strtotime("-3 hours"));
+                // if ($EType == 5) {
+                //     updateRecord('Kitchen', array('Stat' => 99), array('EID' => $EID,
+                //             'CustId' => $CustId,
+                //             'TableNo' => $TableNo, 
+                //             'Stat' => 10 ,
+                //             'Stat' => 0 , 
+                //             'BillStat' => 0, 
+                //             'LstModDt <' => $hours_3
+                //             )
+                //         );
+
+        $res = $this->db2->get_where('KitchenMain', array('CustId' => $CustId,'BillStat' => 0,'TableNo' => 22,'LstModDt <' => $hours_3))->row_array();
+        // $this->db2->query("SELECT * from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = '22' AND timediff(time(Now()),time(LstModDt))  < time('03:00:00') order by CNo desc limit 1")->row_array();
+        print_r($this->db2->last_query());die;
+        print_r($res);
+
         die;
         
         $data['cuisinList'] = $this->cust->getCuisineList();
@@ -400,7 +418,7 @@ class Customer extends CI_Controller {
                             // $orderType = 7;
                             if($TableAcceptReqd > 0){
                                 $stat = 10;
-                                $this->session->set_userdata('TableAcceptReqd', '0');
+                                // $this->session->set_userdata('TableAcceptReqd', '0');
                             }else{
                                 $stat = 0;
                             }
@@ -508,11 +526,23 @@ class Customer extends CI_Controller {
         $status = 'error';
         $response = 'Something went wrong plz try again!';
         if($this->input->method(true)=='POST'){
+            $emailMobile = $_POST['emailMobile'];
+            $check = $this->db2->select('token')
+                            ->group_start() 
+                                    ->where('MobileNo', $emailMobile)
+                                    ->or_where('email',$emailMobile)
+                            ->group_end()
+                            ->get('Users')
+                            ->row_array();
+            if(!empty($check)){
+                $otp = $this->genOTPLogin($emailMobile);
+                $status = 'success';
+                $response = "Your otp is $otp";
+                $this->session->set_userdata('emailMobile', $emailMobile);
+            }else{
+                $response = "Username is not found!";
+            }
             
-            $otp = $this->genOTPLogin($_POST['emailMobile']);
-            $status = 'success';
-            $response = "Your otp is $otp";
-            $this->session->set_userdata('emailMobile', $_POST['emailMobile']);
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -581,7 +611,7 @@ class Customer extends CI_Controller {
                 }
 
                 if(!empty($CustId) && $CustId > 0){
-                    $res = $this->db2->query("SELECT * from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = '$TableNo' AND timediff(time(Now()),time(LstModDt))  < time('03:00:00') order by CNo desc limit 1")->row_array();
+                    $res = $this->db2->query("SELECT * from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = '$TableNo' AND timediff(Now(),LstModDt) < ('03:00:00') order by CNo desc limit 1")->row_array();
                     if(!empty($res)){
                         $this->session->set_userdata('CNo', $res['CNo']);
                     }
@@ -604,11 +634,11 @@ class Customer extends CI_Controller {
                             'CustId' => $CustId,
                             'TableNo' => $TableNo, 
                             'Stat' => 0 , 
+                            'Stat' => 10 , 
                             'BillStat' => 0, 
                             'LstModDt <' => $hours_3
                             )
                         );
-
                 } else {
                     updateRecord('Kitchen', array('Stat' => 99), array('EID' => $EID,
                         'CustId' => $CustId , 'BillStat' => 0 , 'Stat' => 0 )
@@ -764,7 +794,7 @@ class Customer extends CI_Controller {
                 }
 
                 if(!empty($CustId) && $CustId > 0){
-                    $res = $this->db2->query("SELECT * from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = '$TableNo' AND timediff(time(Now()),time(LstModDt))  < time('03:00:00') order by CNo desc limit 1")->row_array();
+                    $res = $this->db2->query("SELECT * from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = '$TableNo' AND timediff(Now(),LstModDt) < ('03:00:00') order by CNo desc limit 1")->row_array();
                     if(!empty($res)){
                         $this->session->set_userdata('CNo', $res['CNo']);
                     }
@@ -832,9 +862,22 @@ class Customer extends CI_Controller {
         $CNo = $this->session->userdata('CNo');
 
         if ($CustId != '') {
-
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            
             if (isset($_POST['goBill']) && $_POST['goBill']) {
-                //if($CustId == $TempCustId){
+                // $temp = array();
+                // $data = array();
+                $i=0;
+                foreach ($_POST['OrdNo'] as $OrdNo ) {
+                    $temp['OrdNo'] = $OrdNo;
+                    $temp['qty'] = $_POST['qty'][$i];
+                    // $data[] = $temp;
+                    updateRecord('Kitchen', array('Qty' => $temp['qty']), array('OrdNo' => $OrdNo));
+                    $i++;
+                }
+                
                 $res = $this->db2->query("SELECT mi.ItemId as MItemId, mi.MCatgId as MMCatgId, mi.CID as MCID, k.OrdNo, k.ItemId as KItemId, k.ItemTyp as KItemTyp, k.Itm_Portion, k.ItmRate, k.Qty as KQty, cod.* from Kitchen as k join CustOffersDet as cod on k.SchCd = cod.SchCd and k.SDetCd = cod.SDetCd join MenuItem as mi on mi.ItemId = k.ItemId where k.CNo = '$CNo'")->result_array();
                 $price = $this->db2->query("SELECT sum(ItmRate) as total_amount from Kitchen where CNo = '$CNo' group by CNo")->result_array();
 
@@ -1024,6 +1067,9 @@ class Customer extends CI_Controller {
                 // get repository  : billing/getBillAmount.repo.php
                 // include('../repository/billing/getBillAmount.repo.php');
                 $kitcheData = $this->cust->getBillAmount($EID, $CNo);
+                echo "<pre>";
+                print_r($kitcheData);
+                die;
                 $taxDataArray = array();
                 if(!empty($kitcheData)){
                     $intial_value = $kitcheData[0]['TaxType'];
