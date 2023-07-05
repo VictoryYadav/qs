@@ -46,6 +46,7 @@
                         <label class="bill-ord-amt" style="margin-bottom: 7px;">Payable</label>
                     </div>
                     <div class="col-4">
+                        <input type="hidden" name="payable" id="payableAmt">
                         <p class="bill-ord-amt text-right" id="payable" style="    margin-bottom: 7px;"></p>
                     </div>
                 </div>
@@ -344,6 +345,7 @@
                 $('.bill_box').html(html_body);
 
                 $("#payable").text(grand_total.toFixed(2));
+                $("#payableAmt").val(grand_total.toFixed(2));
 
             },
             error: (xhr, status, error) => {
@@ -431,7 +433,7 @@
         }
         // alert(t);
         // alert(btoa(t));
-        window.location = p+'&payable='+btoa(a)+'&tips='+btoa(t);
+        window.location = '<?= base_url();?>'+p+'&payable='+btoa(a)+'&tips='+btoa(t);
     }
     function checkCasherConfirm(billId) {
         $.ajax({
@@ -565,13 +567,15 @@ $("#tips").focusout(function() {
     });
     function cash_payment() {
             var tips = $("#tips").val();
+            var payableAmt = $("#payableAmt").val();
             // alert("Cash");
             $.ajax({
                 url: "<?= base_url('customer/bill_ajax'); ?>",
                 type: "post",
                 data: {
                     cash: 1,
-                    tips: tips
+                    tips: tips,
+                    payableAmt:payableAmt
                 },
                 dataType: "json",
                 success: response => {
