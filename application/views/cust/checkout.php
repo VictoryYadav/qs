@@ -1,6 +1,84 @@
 <?php $this->load->view('layouts/customer/head'); ?>
 <style>
+    #myOverlay {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+    }
 
+    #myOverlay {
+        background: #0a88ff;
+        z-index: 2;
+        display: none;
+    }
+
+    #loadingGIF {
+        position: absolute;
+        top: 40%;
+        left: 34%;
+        z-index: 3;
+        display: none;
+    }
+
+    .bill-body {
+        padding-bottom: 70px;
+        /*background-color: #0a88ff;*/
+        /*background-color: <?php echo isset($body_bg)?$body_bg:"#000"?> !important;
+        color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
+        padding-top: 65px;
+        height: -webkit-fill-available;
+    }
+
+    .hideDiv {
+        display: none;
+    }
+
+    .pay-bill {
+        border: 1px solid #fff;
+        width: 125px;
+        border-radius: 20px;
+        margin-top: 10px;
+    }
+
+    .order-list {
+        padding-left: 15px;
+        padding-right: 15px;
+        /*color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
+    }
+
+    .order-list::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .order-list::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+    }
+
+    .order-list::-webkit-scrollbar-thumb {
+        background-color: white;
+        /*outline: 1px solid slategrey;*/
+    }
+
+    .main-ammount {
+        /*color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
+        padding: 0 15px;
+    }
+
+    .bill-ord-amt {
+        /*color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .remove-row-margin {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .bill_box{
+        height: 314px;
+        overflow-y: scroll;
+    }
 </style>
 </head>
 
@@ -13,9 +91,9 @@
     <!-- Shoping Cart Section Begin -->
     <section class="common-section p-2 dashboard-container">
         <div class="container">
-            <div class="bill-body" style="border: 1px solid red;">
+            <div class="bill-body">
 
-                <div class="bill_box" style="border: 1px solid green;">
+                <div class="bill_box">
 
                 </div>
 
@@ -136,12 +214,12 @@
                 var html_body = ``;
                 var grand_total = 0;
                 var initil_value = response.kitcheData[0]['TaxType'];
-                var disc = 0;
                 var del_charge = response.kitcheData[0]['DelCharge'];
                 var pck_charge = response.kitcheData[0]['TotPckCharge'];
-                if(response.kitchen_main_data != 0){
-                    var disc = response.kitchen_main_data['BillDiscAmt'];
-                }
+                var ServChrg = response.kitcheData[0]['ServChrg'];
+                
+                var disc = parseInt(response.kitchen_main_data['BillDiscAmt']) + parseInt(response.kitcheData[0]['TotItemDisc']) + parseFloat(response.kitcheData[0]['RtngDiscAmt']);
+                
                 var hr_line = `<div style="border-bottom: 1px solid;margin-top: 5px; margin-bottom: 5px;color: #fff;"></div>`;
 
                 response.kitcheData.forEach(item => {
@@ -160,7 +238,7 @@
                         }
                         
                         html += `<td class="text-center">${item.Qty}</td>`;
-                        html += `<td class="text-center">${item.ItmRate}</td>`;
+                        html += `<td class="text-center">${item.OrigRate}</td>`;
                         html += `<td class="text-right">${item.OrdAmt}</td>`;
                         html += `</tr>`;
 
@@ -279,10 +357,8 @@
                 html_body +=`</tbody>`;
                 html_body +=`</table>`;
                 html_body +=`</div>`;
-                var sc= 0;
-                sc = <?= isset($ServChrg)?$ServChrg:0?>;
-                var serv = sc/100*grand_total;
-                // alert(sc);
+                
+                var serv = ServChrg/100*grand_total;
                 
                 if(serv > 0){
                     html_body +=`<div class="main-ammount">`;
@@ -295,12 +371,13 @@
                     html_body +=`</div>`;
                     grand_total = grand_total + serv;
                 }
+                
                 if(disc > 0){
                     html_body +=`<div class="main-ammount">`;
                     html_body +=`<table style="width:100%;">`;
                     html_body +=`<tr>`;
-                    html_body +=`   <th style="font-style: italic">Discount / Savings</th>`;
-                    html_body +=`   <th class="text-right" style="font-style: italic">`+disc.toFixed(2)+`</th>`;
+                    html_body +=`   <th style="font-style: italic">Total Discount / Savings</th>`;
+                    html_body +=`   <th class="text-right" style="font-style: italic">`+disc+`</th>`;
                     html_body +=`</tr>`;
                     html_body +=`</table>`;
                     html_body +=`</div>`;
@@ -311,24 +388,24 @@
                     html_body +=`<div class="main-ammount">`;
                     html_body +=`<table style="width:100%;">`;
                     html_body +=`<tr>`;
-                    html_body +=`   <th style="font-style: italic">Discount / Savings</th>`;
-                    html_body +=`   <th class="text-right" style="font-style: italic">`+del_charge.toFixed(2)+`</th>`;
+                    html_body +=`   <th style="font-style: italic">Delivery Charge</th>`;
+                    html_body +=`   <th class="text-right" style="font-style: italic">`+del_charge+`</th>`;
                     html_body +=`</tr>`;
                     html_body +=`</table>`;
                     html_body +=`</div>`;
-                    grand_total = grand_total + del_charge;
+                    grand_total = grand_total + parseInt(del_charge);
                 }
 
                 if(pck_charge > 0){
                     html_body +=`<div class="main-ammount">`;
                     html_body +=`<table style="width:100%;">`;
                     html_body +=`<tr>`;
-                    html_body +=`   <th style="font-style: italic">Discount / Savings</th>`;
-                    html_body +=`   <th class="text-right" style="font-style: italic">`+pck_charge.toFixed(2)+`</th>`;
+                    html_body +=`   <th style="font-style: italic">Packing Charge</th>`;
+                    html_body +=`   <th class="text-right" style="font-style: italic">`+pck_charge+`</th>`;
                     html_body +=`</tr>`;
                     html_body +=`</table>`;
                     html_body +=`</div>`;
-                    grand_total = grand_total + pck_charge;
+                    grand_total = grand_total + parseInt(pck_charge);
                 }
                 var tt = '<?php echo $Tips?>';
                 if(tt == 1){
@@ -344,8 +421,8 @@
 
                 $('.bill_box').html(html_body);
 
-                $("#payable").text(grand_total.toFixed(2));
-                $("#payableAmt").val(grand_total.toFixed(2));
+                $("#payable").text(grand_total);
+                $("#payableAmt").val(grand_total);
 
             },
             error: (xhr, status, error) => {
@@ -476,26 +553,17 @@ $("#tips").focusout(function() {
             $("#total-amount_loader").text('Cash : ' + totalTemp);
             // totalAmount = newTotal;
         });
+
         function change_tip(){
             var tips = $("#tips").val();
-            $.ajax({
-                url: "<?= base_url('customer/bill_ajax'); ?>",
-                type: "post",
-                data: {
-                    save_tip: 1,
-                    tips: tips
-                },
-                dataType: "json",
-                success: response => {
-                    
-                },
-                error: (xhr, status, error) => {
-                    console.log(xhr);
-                    console.log(status);
-                    console.log(error);
-                }
-            });
+            var payableAmt  = $('#payableAmt').val();
+
+            var total =parseFloat( payableAmt ) + parseInt(tips);
+
+            $("#payable").text(total);
+            // $("#payableAmt").val(total);
         }
+
     $(document).ready(function() {
         getBillAmount();
 

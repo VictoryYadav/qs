@@ -118,6 +118,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $CI->User->gettingBiliingData($dbname, $EID, $billId);
 	}
 
+	function getBillingDataByEID_CNo($EID, $CNo){
+		$CI = & get_instance();
+		$CI->load->model('Cust');
+		return $CI->Cust->fetchBiliingData($EID, $CNo);
+	}
+
 	function firebaseNotification($fcmRegIds, $msg){
 
 		$fields = array(

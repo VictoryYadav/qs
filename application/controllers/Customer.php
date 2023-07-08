@@ -1489,35 +1489,20 @@ class Customer extends CI_Controller {
             die();
         }
 
-        if(isset($_POST['save_tip'])){
-            $tips = $_POST['tips'];
-            $this->session->set_userdata('cuisine', $tips);
-            echo 1;
-        }
-
     }
 
     private function calculatTotalTax($total_tax, $new_tax){
         return $total_tax + $new_tax;
     }
 
-    public function bill(){
+    public function bill($billId){
 
         $data['title'] = 'Billing';
         $data['language'] = languageArray();
-        $EID = authuser()->EID;
-        $ChainId = authuser()->ChainId;
-        // include_once('config.php');
-        $CustId = $this->session->userdata('CustId');
-        $ONo = $this->session->userdata('ONo');
-        $EType = $this->session->userdata('EType');
-        $Stall = $this->session->userdata('Stall');
-        $ServChrg = $this->session->userdata('ServChrg');
-        $Tips = $this->session->userdata('Tips');
-        $COrgId = $this->session->userdata('COrgId');
-        $PymtOpt = $this->session->userdata('PymtOpt');
-        $Cash = $this->session->userdata('Cash');
-        $KOTNo = $this->session->userdata('KOTNo');
+        $data['billId'] = $billId;
+
+        // include('repository/billing/bill_print.repo.php');
+
         $this->load->view('cust/billing', $data);
         
     }
