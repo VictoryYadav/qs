@@ -376,7 +376,7 @@
                     $sameTaxType .= ' <tr> ';
                     if($data['Itm_Portion'] > 4 ){
                         
-                        $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].' ( '.$data['Portion'].' ) </td> ';
+                        $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].' ( '.$data['Portions'].' ) </td> ';
 
                     }else{
 
@@ -529,9 +529,8 @@ function newTaxType($data,$sameTaxType,$TaxType,$taxDataArray,$itemTotal){
                     <p><?= $thankuline ?></p>
                     <br>
                     <?php if(isset($_GET['ShowRatings']) && $_GET['ShowRatings'] == 1){
-                        $q = "SELECT AVG(ServRtng) as serv, AVG(AmbRtng) as amb,avg(VFMRtng) as vfm, AVG(rd.ItemRtng) as itm FROM Ratings r, RatingDet rd WHERE r.BillId= $billId and r.EID=".$_GET['EID'];
-                        // print_r($q);exit();
-                        $ra = $billingObj->exec($q);
+                        $ra = $this->db2->query("SELECT AVG(ServRtng) as serv, AVG(AmbRtng) as amb,avg(VFMRtng) as vfm, AVG(rd.ItemRtng) as itm FROM Ratings r, RatingDet rd WHERE r.BillId= $billId and r.EID=".$_GET['EID'])->result_array();
+                        
                         // print_r($ra);exit();
                         if(!empty($ra)){?>
                             <p><b>Group Rating : </b></p>
@@ -563,8 +562,14 @@ function newTaxType($data,$sameTaxType,$TaxType,$taxDataArray,$itemTotal){
                 </div>
 
                 <div id="editor"></div>
-
-        </div>
+                
+                <div class="navbar1 menu-footer1" style="margin-top: -74px;">
+                    
+                            <div class="col-12 row text-center" style="padding:0px;">
+                                <div class="col-6 text-center"><a class="btn" href="<?= base_url('customer'); ?>" style="width: 100%;">Menu</a></div>
+                                <div class="col-6 text-center"><a href="<?= base_url('customer/rating/'.$billId);?>" class="btn btn-primary" style="width: 100%;">Rating</a></div>
+                            </div>
+                </div>
     </section>
 
     <!-- footer section -->
@@ -579,10 +584,7 @@ function newTaxType($data,$sameTaxType,$TaxType,$taxDataArray,$itemTotal){
 </body>
 
 <script>
-                    function goBack() {
-                       
-                        // window.location = '<?php echo $link; ?>'
-                    }
+                    
 
                     $(document).ready(function() {
                         var doc = new jsPDF();
@@ -607,7 +609,7 @@ function newTaxType($data,$sameTaxType,$TaxType,$taxDataArray,$itemTotal){
                     });
 
                     function bill_page(billid){
-                        window.location.href = 'rating.php?billid='+billid;
+                        window.location.href = "<?= base_url('customer/rating');?>"+billid;
                     }
                 </script>
 

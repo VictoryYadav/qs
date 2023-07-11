@@ -1507,6 +1507,111 @@ class Customer extends CI_Controller {
         
     }
 
+    public function rating($billId){
+
+        $EID = authuser()->EID;
+        $ChainId = authuser()->ChainId;
+        $cId = $this->session->userdata('cId');
+        $cType = $this->session->userdata('cType');
+        $mCatgId = $this->session->userdata('mCatgId');
+        $EType = $this->session->userdata('EType');
+        $CustId = $this->session->userdata('CustId');
+        $CellNo = $this->session->userdata('CellNo');
+
+        if($this->input->method(true)=='POST'){
+            extract($_POST);
+
+            $checkid = $this->db2->query("SELECT RCd  FROM `Ratings` WHERE EID = $EID AND BillId = $billid AND CustId = $CustId AND CellNo = $CellNo")->result_array();
+
+            if (!empty($checkid)) {
+                $RCd = $checkid[0]['RCd'];
+                $this->db2->query("DELETE FROM `Ratings` WHERE EID = $EID AND BillId = $billid AND CustId = $CustId AND CellNo = $CellNo");
+                $this->db2->query("DELETE FROM `RatingDet` WHERE RCd = $RCd");
+            }
+
+            $RatingInsert['EID']        = $EID;
+            $RatingInsert['ChainId']    = $ChainId;
+            $RatingInsert['BillId']     = $billid;
+            $RatingInsert['CustId']     = $CustId;
+            $RatingInsert['CellNo']     = $CellNo;
+            $RatingInsert['Remarks']    = 0;
+            $RatingInsert['ServRtng']   = $Service;
+            $RatingInsert['AmbRtng']    = $Ambience;
+            $RatingInsert['VFMRtng']    = $vfm;
+            $RatingInsert['LstModDt']   = date('Y-m-d H:i:s');
+            $RCd = insertRecord('Ratings', $RatingInsert);
+
+            $queryString = '';
+            for ($i = 0; $i < count($rating); $i++) {
+                if ($i >= 1) {
+                    $queryString .= ',';
+                }
+                $queryString .= '(' . $RCd . ',' . $ratingData[$i] . ',' . $rating[$i] . ')';
+            }
+
+            $RatingDetQuery = $this->db2->query("INSERT INTO `RatingDet`(RCd,ItemId,ItemRtng) VALUES $queryString ");
+
+            $genTblDb = $this->load->database('GenTableData', TRUE);
+            // gen db
+            $genCheckid = $genTblDb->query("SELECT RCd  FROM `Ratings` WHERE EID = $EID AND BillId = $billid AND CustId = $CustId AND CellNo = $CellNo")->result_array();
+
+            // gen db
+            if (!empty($genCheckid)) {
+                $RCd = $genCheckid[0]['RCd'];
+                $deleteRating = $genTblDb->query("DELETE FROM `Ratings` WHERE EID = $EID AND BillId = $billid AND CustId = $CustId AND CellNo = $CellNo");
+                $deleteRatingDet = $genTblDb->query("DELETE FROM `RatingDet` WHERE RCd = $RCd");
+            }
+
+            // gen db
+
+            $genRatingObj['EID']        = $EID;
+            $genRatingObj['ChainId']    = $ChainId;
+            $genRatingObj['BillId']     = $billid;
+            $genRatingObj['CustId']     = $CustId;
+            $genRatingObj['CellNo']     = $CellNo;
+            $genRatingObj['Remarks']    = 0;
+            $genRatingObj['ServRtng']   = $Service;
+            $genRatingObj['AmbRtng']    = $Ambience;
+            $genRatingObj['VFMRtng']    = $vfm;
+            $genRatingObj['LstModDt']   = date('Y-m-d H:i:s');
+            $genTblDb->insert('Ratings', $genRatingObj);
+            $genRCd = $genTblDb->insert_id();
+
+            // gen table
+            $queryStringGen = '';
+            for ($i = 0; $i < count($rating); $i++) {
+                if ($i >= 1) {
+                    $queryStringGen .= ',';
+                }
+                $queryStringGen .= '(' . $genRCd . ',' . $ratingData[$i] . ',' . $rating[$i] . ')';
+            }
+
+            // gen table
+            $RatingDetQuery = $genTblDb->query("INSERT INTO `RatingDet`(RCd,ItemId,ItemRtng) VALUES $queryStringGen ");
+
+            if ($RatingDetQuery >= 1 && $RatingInsert >= 1) {
+                echo 1;
+            } else {
+                echo 0;
+            }
+
+            die;
+
+        }
+
+        $data['title'] = 'Rating';
+        $data['language'] = languageArray();
+        $data['billId'] = $billId;
+
+        $data['link'] = "https://qs.vtrend.org/share_rating.php?qs=" . $CustId . "_" . $EID . "_" . $ChainId . "_" . $billId . "_" . $CellNo . "";
+
+
+        $data['kitchenGetData'] = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm, k.ItemId , m.UItmCd from Kitchen k, KitchenMain km, Billing b, MenuItem m where  k.ItemId=m.ItemId and (k.Stat<>4 and k.Stat<>6 and k.Stat<>7 and k.Stat<>99)  AND km.BillStat=b.billId and k.EID=km.EID  and km.CNo=k.CNo  and k.EID=b.EID and b.billId=$billId Group By m.ItemNm,k.CustItemDesc, k.ItemTyp, k.ItemId")->result_array();
+
+        $this->load->view('cust/rating', $data);
+        
+    }
+
     public function logout(){
         // $this->session->unset_userdata('logged_in');
         // $url = 'login?o='.$this->session->userdata('EID').'&c='.$this->session->userdata('ChainId');
