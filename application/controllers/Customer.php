@@ -417,8 +417,8 @@ class Customer extends CI_Controller {
                         if ($EType == 5) {
                             // $orderType = 7;
                             if($TableAcceptReqd > 0){
-                                $stat = 10;
-                                // $this->session->set_userdata('TableAcceptReqd', '0');
+                                $checkStat = $this->db2->select('Stat')->get_where('KitchenMain', array('CNo' => $CNo, 'EID' => $EID, 'BillStat' => 0))->row_array();
+                                $stat = $checkStat['Stat'];
                             }else{
                                 $stat = 0;
                             }
@@ -1613,12 +1613,14 @@ class Customer extends CI_Controller {
     }
 
     public function logout(){
-        // $this->session->unset_userdata('logged_in');
-        // $url = 'login?o='.$this->session->userdata('EID').'&c='.$this->session->userdata('ChainId');
 
-        $url = 'customer';
-        $this->session->sess_destroy();
-        redirect(base_url() . $url, 'refresh');
+        $this->session->set_userdata('signup', '');
+        $this->session->set_userdata('CustId', '');
+        $this->session->set_userdata('CNo', '');
+        $this->session->set_userdata('emailMobile', '');
+        $this->session->set_userdata('cust_otp', '');
+
+        redirect(base_url('customer'), 'refresh');
     }
 
 

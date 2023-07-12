@@ -886,6 +886,9 @@ class Cust extends CI_Model{
 						$kitchenMainObj['OldTableNo'] = $TableNo;
 						$kitchenMainObj['MergeNo'] = $TableNo;
 						$kitchenMainObj['Stat'] = 0;
+						if($TableAcceptReqd > 0){
+							$kitchenMainObj['Stat'] = 10;
+						}
 						$kitchenMainObj['CnfSettle'] = ($this->session->userdata('AutoSettle') == 1)?0:1;
 						$kitchenMainObj['LoginCd'] = 1;
 						$kitchenMainObj['payRest'] = 0;
@@ -954,8 +957,8 @@ class Cust extends CI_Model{
 					$orderType = 7;
 
 					if($TableAcceptReqd > 0){
-						$stat = 10;
-						// $this->session->set_userdata('TableAcceptReqd', '0');
+						$checkStat = $this->db2->select('Stat')->get_where('KitchenMain', array('CNo' => $CNo, 'EID' => $EID, 'BillStat' => 0))->row_array();
+						$stat = $checkStat['Stat'];
 					}else{
 						$stat = 0;
 					}
