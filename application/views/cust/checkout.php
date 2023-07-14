@@ -25,7 +25,7 @@
         /*background-color: #0a88ff;*/
         /*background-color: <?php echo isset($body_bg)?$body_bg:"#000"?> !important;
         color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
-        padding-top: 65px;
+        /*padding-top: 65px;*/
         height: -webkit-fill-available;
     }
 
@@ -66,7 +66,7 @@
 
     .bill-ord-amt {
         /*color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
-        font-size: 18px;
+        font-size: 14px;
         font-weight: bold;
     }
 
@@ -78,6 +78,16 @@
     .bill_box{
         height: 314px;
         overflow-y: scroll;
+    }
+
+    #tips{
+        width: 60px; 
+        float: right;
+        border-radius:15px;
+        font-size:13px;
+        text-align:center;
+        border: 1px solid #ced4da;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 </style>
 </head>
@@ -91,13 +101,9 @@
     <!-- Shoping Cart Section Begin -->
     <section class="common-section p-2 dashboard-container">
         <div class="container">
-            <div class="bill-body">
-
+            <div class="bill-body" style="font-size: 12px;">
                 <div class="bill_box">
-
                 </div>
-
-
                 <div class="main-ammount discount_and_other_charges_section" style="display:none">
                     <div style="border-bottom: 1px solid;margin-top: 5px;margin-bottom: 5px;color: #fff;"></div>
                     <table style="width:100%;" style="display:none">
@@ -144,23 +150,21 @@
                         <?php if ($Cash == 1) : ?>
                             <?php if ($EType == 5) { ?>
                                 <div class="col-12 text-center" style="width: 50%;">
-                                    <a href="meargebill.php"><button  class="btn btn-primary " style="background: #fd6b03;color: #FFF; font-weight: 600;border: 1px solid #fff;border-radius: 20px;margin-top: 20px;margin-bottom: 15px; ">Merge Orders</button></a>
+                                    <a href="meargebill.php"><button  class="btn btn-primary btn-sm " style="background: #fd6b03;color: #FFF; font-weight: 600;border: 1px solid #fff;border-radius: 20px;margin-top: 20px;"> Merge Orders </button></a>
                                 </div>
                             <?php } ?>
                             <div class="row remove-row-margin" style="width: 100%;">
-                                
-                                
                                 
                             </div>
                             
                         <?php else : ?>
                             <div class="row remove-row-margin" style="width: 100%;">
                                 <div class="col-12 text-center">
-                                    <button id="pay" class="btn btn-primary pay-bill">Pay Online</button>
+                                    <button id="pay" class="btn btn-primary pay-bill btn-sm">Pay Online</button>
                                 </div>
                                 <?php if ($EType == 5) { ?>
                                     <div class="col-12 text-center" style="width: 50%;">
-                                        <a href="meargebill.php"><button class="btn btn-primary pay-bill" style="background: #fd6b03;color: #FFF; font-weight: 600; ">Merge Bills</button></a>
+                                        <a href="meargebill.php"><button class="btn btn-primary pay-bill btn-sm" style="background: #fd6b03;color: #FFF; font-weight: 600; "> Merge Bills </button></a>
                                     </div>
                                 <?php } ?>
                             </div>
@@ -413,7 +417,7 @@
                     html_body +=`<table style="width:100%;">`;
                     html_body +=`<tr class="<?= ($Tips == 0 ? 'hideDiv' : ''); ?>">`;
                     html_body +=`   <th>Tips</th>`;
-                    html_body +=`   <td><input style="width: 50px; float: right;" id="tips" type="number" class="" value="0" onchange="change_tip()"></td>`;
+                    html_body +=`   <td><input id="tips" type="number" class="" value="0" onchange="change_tip()"></td>`;
                     html_body +=`</tr>`;
                     html_body +=`</table>`;
                     html_body +=`</div>`;
@@ -486,10 +490,10 @@
                         }
                     }
                     if(item.Name == 'Cash'){
-                        t+='<div class="col-'+co+' text-center"><button id="cash" class="btn btn-primary pay-bill" onclick="cash_payment()">Pay Cash</button></div>';
+                        t+='<div class="col-'+co+' text-center"><button id="cash" class="btn btn-primary pay-bill btn-sm" onclick="cash_payment()">Pay Cash</button></div>';
                     }else{
 
-                        t+='<div class="col-'+co+' pay_online_section text-center"><button id="pay'+item.Name+'" class="btn btn-primary pay-bill" onclick="start_payment(\''+item.CodePage+'\')">'+item.Name+'</button></div>';
+                        t+='<div class="col-'+co+' pay_online_section text-center"><button id="pay'+item.Name+'" class="btn btn-primary pay-bill btn-sm" onclick="start_payment(\''+item.CodePage+'\')">'+item.Name+'</button></div>';
                     }
                     n++;
                         
