@@ -1,5 +1,9 @@
 <?php $this->load->view('layouts/customer/head'); ?>
 <style>
+
+    #RecommendationModal,.common-section{
+        font-size: 12px;
+    }
 .payment-btns 
 {
     padding-left: 10px;
@@ -13,21 +17,45 @@
     color: #fff;
     /*background: #000 !important;*/
     /*color: <?php echo isset($body_btn2text)?$body_btn2text:"#000"?> !important;*/
-    height: 54px;
+    height: 30px;
     margin-left: 0px !important;
-    border-radius: 0 0.5rem 0.5rem 0;
+    border-radius: 0 1.5rem 1.5rem 0;
+}
+
+.paybtn:hover
+{
+    background: #03bb2c;
+    color: #fff;
+    height: 30px;
+    margin-left: 0px !important;
+    border-radius: 0 1.5rem 1.5rem 0;
 }
 
 .backbtn 
 {
     width: 50%;
     margin-right: 0px !important;
-    border-radius: 0.5rem 0 0 0.5rem;
-    background-color: #d3c8c8;
+    border-radius: 1.5rem 0 0 1.5rem;
+    background-color: #bfbcbc;
     color:#fff;
-    height: 54px;
+    height: 30px;
     /*background-color:#000 !important;*/
     /*color: <?php echo isset($body_btn1text)?$body_btn1text:"#000"?> !important;*/
+}
+
+.backbtn:hover
+{
+    background-color: #9d9696;
+    color:#fff;   
+}
+
+.form-control {
+    border-radius: 2px;
+    height: 25px !important;
+    background-color: transparent;
+    color: #666;
+    box-shadow: none;
+    font-size: 11px !important;
 }
 
 
@@ -48,7 +76,7 @@
                     <form method="post" id="cartForm">
                         <input type="hidden" name="goBill" value="1" />
                         <div class="table-responsive" style="height: 380px;">
-                            <table class="table">
+                            <table class="table table-hover">
                             <thead>
                               <tr>
                                 <th>Order</th>
@@ -80,8 +108,8 @@
     <div class="modal" id="RecommendationModal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div style="margin-left: 14px;">
-                    <h5>Recommendation</h5>
+                <div style="margin-left: 14px;margin-bottom: -15px;">
+                    <h6>Recommendation</h6>
                     <p id="item_name"></p>
                 </div>
                 <div class="modal-body">
@@ -168,21 +196,21 @@
                         }
 
                         template += ` <input type="hidden" name="OrdNo[]" value="${item.OrdNo}" /><td class="text-center">
-                            <div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;">
+                            <div class="input-group" style="width: 94px;height: 23px;margin-left: 5px;">
                                 <span class="input-group-btn">
-                                    <button type="button" id="minus-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;"  onclick="decQty(${item.OrdNo})">-
+                                    <button type="button" id="minus-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 25px;"  onclick="decQty(${item.OrdNo})">-
                                     </button>
                                 </span>
-                                <input type="text" readonly="" id="qty-val${item.OrdNo}" class="form-control input-number" value="${item.Qty}" min="1" max="10" style="text-align: center;" name="qty[]">
+                                <input type="text" readonly="" id="qty-val${item.OrdNo}" class="form-control input-number" value="${item.Qty}" min="1" max="10" style="text-align: center; height:20px;" name="qty[]">
                                 <span class="input-group-btn">
-                                    <button type="button" id="add-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 30px;" onclick="incQty(${item.OrdNo})">+
+                                    <button type="button" id="add-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 25px;" onclick="incQty(${item.OrdNo})">+
                                     </button>
                                 </span>
                             </div></td> `;
                         template += ` <td class="text-center">${rate}</td> `;
                         template += ` <td class="text-center">
                                         <button onclick="cancelOrder(${item.OrdNo});" style="border-radius:50px;background:red;color:#fff;border:1px solid red;">
-                                        <i class="fa fa-trash"></i>
+                                        <i class="fa fa-trash" style="font-size:12px;"></i>
                                         </button>
                                      </td> `;
                         template += ` </tr> `;
@@ -296,12 +324,12 @@
                 temp += '<tr><input type="hidden" name="TblTyp['+data[i].ItemId+'][]" value="'+data[i].TblTyp+'"><input type="hidden" name="itemKitCd['+data[i].ItemId+'][]" value="'+data[i].KitCd+'"><input type="hidden" name="tax_type['+data[i].ItemId+'][]" value="'+data[i].TaxType+'"><input type="hidden" name="prepration_time['+data[i].ItemId+'][]" value="'+data[i].PrepTime+'"><input type="hidden" name="Itm_Portions['+data[i].ItemId+'][]" value="'+data[i].Itm_Portions+'">\
                             <td><input type="hidden" name="itemArray[]" value="'+data[i].ItemId+'">'+data[i].ItemNm+'</td>\
                             <td><div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;"><span class="input-group-btn">\
-                                    <button type="button" id="minus-qty'+data[i].ItemId+'" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;" disabled="" onclick="decQty('+data[i].ItemId+')">-\
+                                    <button type="button" id="minus-qty'+data[i].ItemId+'" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 25px;" disabled="" onclick="decQty('+data[i].ItemId+')">-\
                                     </button>\
                                 </span>\
                                 <input type="text" readonly="" id="qty-val'+data[i].ItemId+'" class="form-control input-number" value="0" min="1" max="10" style="text-align: center;" name="qty['+data[i].ItemId+'][]">\
                                 <span class="input-group-btn">\
-                                    <button type="button" id="add-qty'+data[i].ItemId+'" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 30px;" onclick="incQty('+data[i].ItemId+')">+\
+                                    <button type="button" id="add-qty'+data[i].ItemId+'" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 25px;" onclick="incQty('+data[i].ItemId+')">+\
                                     </button>\
                                 </span></div></td>\
                             <td><input type="hidden" name="rate['+data[i].ItemId+'][]" value="'+data[i].ItmRate+'">'+data[i].ItmRate+'</td>\
