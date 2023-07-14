@@ -90,8 +90,8 @@
                             <table class="table table-hover">
                             <thead>
                               <tr>
-                                <th>Order</th>
-                                <th>Quantity</th>
+                                <th class="text-center">Order</th>
+                                <th class="text-center">Quantity</th>
                                 <th class="text-center">Rate</th>
                                 <th class="text-center"></th>
                               </tr>

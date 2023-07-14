@@ -228,6 +228,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		);
 	}
 
+	function allOffers(){
+		$CI = & get_instance();
+		$CI->load->model('Cust');
+		return $CI->Cust->getOffers();
+	}
+
 
 
 

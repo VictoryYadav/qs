@@ -49,3 +49,54 @@
         </div>
     </div>
 </div>
+
+<!-- offers modal -->
+    <div class="modal" id="offers-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title offers-txt">Offers</p>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <div class="modal-body" style="border: none;padding: 0px;overflow-y: scroll;height: 425px;">
+                    <?php 
+                    $offers = allOffers();
+                    if(!empty($offers)){?>
+                        <?php foreach($offers as $key){
+                            $name = '';
+                            if(!empty($key['ItemNm'])){
+                                $name  .=  $key['ItemNm'];
+                            }
+                            if(!empty($key['portionName'])){
+                                $name  .=  ' ('.$key['portionName'].')';
+                            }
+                            if(!empty($key['MCatgNm'])){
+                                $name  .=  ' - '.$key['MCatgNm'];
+                            }
+                            if(!empty($key['Name'])){
+                                $name  .=  ' - '.$key['Name'];
+                            }
+                            ?>
+
+                            <div class="ad-listing-list mt-20">
+                                <div class="row p-1">
+                                    <div class="col-lg-4 col-md-4 col-sm-4 col-4 align-self-center">
+                                        <img src="<?= base_url($key['SchImg']); ?>" alt="" style="height: 80px;width: 100px;background-size: cover;">
+                                    </div>
+                                    <div class="col-lg-8 col-md-8 col-sm-8 col-8">
+                                        <h6><?= $key['SchNm'].' - '.$key['SchDesc'];?></h6>
+                                        <p class="pr-5"><?= $name; ?></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        <?php }?>
+                            
+                    <?php }?>
+                </div>
+            </div>
+        </div>
+    </div>

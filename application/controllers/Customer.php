@@ -111,7 +111,6 @@ class Customer extends CI_Controller {
         $data['EType'] = $this->session->userdata('EType');
         $data['Charity'] = $this->session->userdata('Charity');
         $data['Itm_Portion'] = 1;
-        $data['offers'] = $this->cust->getOffers();
 
         $this->load->view('cust/main', $data);
     }
