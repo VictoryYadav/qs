@@ -26,7 +26,6 @@
 {
     background: #03bb2c;
     color: #fff;
-    height: 30px;
     margin-left: 0px !important;
     border-radius: 0 1.5rem 1.5rem 0;
 }
@@ -58,6 +57,18 @@
     font-size: 11px !important;
 }
 
+#cartView{
+       height: 400px;
+       overflow: auto; 
+    }
+/*mobile screen only*/
+@media only screen and (max-width: 480px) {
+    #cartView{
+       height: 480px;
+       overflow: auto; 
+    }
+}
+
 
 </style>
 </head>
@@ -71,11 +82,11 @@
     <!-- Shoping Cart Section Begin -->
     <section class="common-section p-2 dashboard-container">
         <div class="container">
-            <div class="row">
+            <div class="row" id="cartView">
                 <div class="col-lg-12">
                     <form method="post" id="cartForm">
                         <input type="hidden" name="goBill" value="1" />
-                        <div class="table-responsive" style="height: 400px;">
+                        <div class="table-responsive">
                             <table class="table table-hover">
                             <thead>
                               <tr>
@@ -209,7 +220,7 @@
                             </div></td> `;
                         template += ` <td class="text-center">${rate}</td> `;
                         template += ` <td class="text-center">
-                                        <button onclick="cancelOrder(${item.OrdNo});" style="border-radius:50px;background:red;color:#fff;border:1px solid red;">
+                                        <button type="button" onclick="cancelOrder(${item.OrdNo});" style="border-radius:50px;background:red;color:#fff;border:1px solid red;">
                                         <i class="fa fa-trash" style="font-size:12px;"></i>
                                         </button>
                                      </td> `;

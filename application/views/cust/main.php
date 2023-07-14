@@ -133,16 +133,25 @@
         }
         .modal-confirm {
             width: 50%;
-            background: #ffc245;
+            background: #dfaf4d;
             color: #fff;
             margin-left: 0px !important;
-            border-radius: 0 0.5rem 0.5rem 0;
+            border-radius: 0 1.5rem 1.5rem 0;
+        }
+
+        .modal-confirm:hover {
+            background: #ffc245;
+            color: #fff;
         }
 
         .modal-back {
             width: 50%;
             margin-right: 0px !important;
-            border-radius: 0.5rem 0 0 0.5rem;
+            border-radius: 1.5rem 0 0 1.5rem;
+            background-color: #bfbcbc;
+        }
+
+        .modal-back:hover {
             background-color: #dedee2;
         }
 
@@ -394,11 +403,11 @@
         </div>
         
         <div class="modal-footer" style="border-top: none;">
-            <button type="button" class="btn modal-back" data-dismiss="modal" width="50%">
+            <button type="button" class="btn modal-back btn-sm" data-dismiss="modal" width="50%">
                 <?= $language['back']?>
             </button>
             
-            <button type="button" class="btn modal-confirm" data-dismiss="modal" width="50%" id="confirm-order" tax_type="" tbltyp=""><?= $language['add_item']?></button>
+            <button type="button" class="btn modal-confirm btn-sm" data-dismiss="modal" width="50%" id="confirm-order" tax_type="" tbltyp=""><?= $language['add_item']?></button>
         </div>
     </div>
 
