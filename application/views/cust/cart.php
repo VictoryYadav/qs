@@ -17,7 +17,7 @@
     color: #fff;
     /*background: #000 !important;*/
     /*color: <?php echo isset($body_btn2text)?$body_btn2text:"#000"?> !important;*/
-    height: 30px;
+    height: 35px;
     margin-left: 0px !important;
     border-radius: 0 1.5rem 1.5rem 0;
 }
@@ -38,7 +38,7 @@
     border-radius: 1.5rem 0 0 1.5rem;
     background-color: #bfbcbc;
     color:#fff;
-    height: 30px;
+    height: 35px;
     /*background-color:#000 !important;*/
     /*color: <?php echo isset($body_btn1text)?$body_btn1text:"#000"?> !important;*/
 }
@@ -75,7 +75,7 @@
                 <div class="col-lg-12">
                     <form method="post" id="cartForm">
                         <input type="hidden" name="goBill" value="1" />
-                        <div class="table-responsive" style="height: 380px;">
+                        <div class="table-responsive" style="height: 400px;">
                             <table class="table table-hover">
                             <thead>
                               <tr>
