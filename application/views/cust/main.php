@@ -137,6 +137,7 @@
             color: #fff;
             margin-left: 0px !important;
             border-radius: 0 1.5rem 1.5rem 0;
+            
         }
 
         .modal-confirm:hover {
@@ -403,11 +404,11 @@
         </div>
         
         <div class="modal-footer" style="border-top: none;">
-            <button type="button" class="btn modal-back btn-sm" data-dismiss="modal" width="50%">
+            <button type="button" class="btn modal-back" data-dismiss="modal" width="50%">
                 <?= $language['back']?>
             </button>
             
-            <button type="button" class="btn modal-confirm btn-sm" data-dismiss="modal" width="50%" id="confirm-order" tax_type="" tbltyp=""><?= $language['add_item']?></button>
+            <button type="button" class="btn modal-confirm" data-dismiss="modal" width="50%" id="confirm-order" tax_type="" tbltyp=""><?= $language['add_item']?></button>
         </div>
     </div>
 
