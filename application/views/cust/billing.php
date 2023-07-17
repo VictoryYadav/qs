@@ -41,6 +41,8 @@
         $city = $billData[0]['City'];
         $servicecharge = isset($billData[0]['ServChrg'])?$billData[0]['ServChrg']:"";
         $bservecharge = $billData[0]['bservecharge'];
+        $SerChargeAmt = $billData[0]['SerChargeAmt'];
+
         $tipamt = $billData[0]['Tip'];
         $Stat = $billData[0]['Stat'];
         $total = 0;
@@ -469,7 +471,7 @@ function newTaxType($data,$sameTaxType,$TaxType,$taxDataArray,$itemTotal){
                             <?php if ($bservecharge > 0) : ?>
                                 <tr>
                                     <td style="font-weight: bold;">Service Charges @ <?= $bservecharge ?></td>
-                                    <td style="text-align: right;"><?= $bservecharge*$itemTotal/100; ?></td>
+                                    <td style="text-align: right;"><?= $SerChargeAmt; ?></td>
                                 </tr>
                             <?php endif; ?>
                             <?php if ($tipamt > 0) : ?>
