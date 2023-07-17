@@ -605,6 +605,7 @@ class Customer extends CI_Controller {
 
                 if(!empty($check)){
                     $this->session->set_userdata('CustId', $check['CustId']);
+                    $this->session->set_userdata('CellNo', $check['MobileNo']);
                     $CustId = $check['CustId'];
                     $this->session->set_userdata('signup', $check);
                 }
@@ -743,6 +744,8 @@ class Customer extends CI_Controller {
                 $res = "OTP Matched!";
                 $status = 'success';
                 $ses_data = $_SESSION['signup'];
+
+                $this->session->set_userdata('CellNo', $ses_data['MobileNo']);
 
                 $check = $this->db2->select('*')
                                     ->group_start() 
@@ -1019,6 +1022,9 @@ class Customer extends CI_Controller {
     }
 
     public function checkout(){
+        // echo "<pre>";
+        // print_r($_SESSION);
+        // die;
 
         $data['EID'] = authuser()->EID;
         $data['ChainId'] = authuser()->ChainId;
@@ -1618,6 +1624,8 @@ class Customer extends CI_Controller {
         $this->session->set_userdata('CNo', '');
         $this->session->set_userdata('emailMobile', '');
         $this->session->set_userdata('cust_otp', '');
+        $this->session->set_userdata('KOTNo', 0);
+        $this->session->set_userdata('CellNo', 0);
 
         redirect(base_url('customer'), 'refresh');
     }

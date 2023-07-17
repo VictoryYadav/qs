@@ -306,42 +306,6 @@
     <section class="common-section p-2">
         <div class="container">
 
-            <div style="background: white;">
-                <div class="text-center">
-                    <h4 class="text-center pt-2">Tax Invoice</h4>
-                </div>
-                <div class="row p-2" >
-                    <div class="col-md-4">
-                        <p style="font-weight: bold;margin-bottom: unset;"><?= $hotelName ?></p>
-                        <p style="margin-bottom: unset;"><?= $address ?>, <?= $city ?>-<?= $pincode ?></p>
-                        <p style="margin-bottom: unset;">Phone: <?= $phone ?></p>
-                        <?php if ($gstno != '-') { ?>
-                            <p style="margin-bottom: unset;">GST NO: <?= $gstno ?></p>
-                        <?php } ?>
-                        <?php if ($fssaino != '-') { ?>
-                            <p style="margin-bottom: unset;">FSSAI NO: <?= $fssaino ?></p>
-                        <?php } ?>
-                        <?php if ($cinno != '-') { ?>
-                            <p style="margin-bottom: unset;">CIN NO: <?= $cinno ?></p>
-                        <?php } ?>
-                    </div>
-                    <div class="col-md-4">
-                        <p style="font-weight: bold;margin-bottom: unset;">Mr. / Mrs. / M/s. Vijay Yadav</p>
-                        <p style="margin-bottom: unset;"><?= $address ?>, <?= $city ?>-<?= $pincode ?></p>
-                        <p style="margin-bottom: unset;">Phone: <?= $phone ?></p>
-                        <p style="margin-bottom: unset;">Email: demo@gmail.com</p>
-                        
-                    </div>
-                    <div class="col-md-4">
-                        <p style="margin-bottom: unset;font-weight: bold">Bill No: <?= $billno ?></p>
-                        <?php if ($CustNo != "0") : ?>
-                            <p style="margin-bottom: unset;">Ord: <?= $CustNo ?></p>
-                        <?php endif; ?>
-                        <p style="margin-bottom: unset;">DATE: <?= $dateOfBill ?></p>
-                        
-                    </div>
-                </div>
-            </div>
             <div id="download-to-pdf" class="container" style="margin-top: 25px;overflow-y: scroll;height: 78vh;">
                     <div class="text-center">
                         <p style="font-weight: bold;"><?= $hotelName ?></p>

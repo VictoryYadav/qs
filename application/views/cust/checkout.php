@@ -368,7 +368,7 @@
                     html_body +=`<div class="main-ammount">`;
                     html_body +=`<table style="width:100%;">`;
                     html_body +=`<tr>`;
-                    html_body +=`   <th>Service Charge</th>`;
+                    html_body +=`   <th>Service Charge @ `+ServChrg+` %</th>`;
                     html_body +=`   <td class="text-right">`+serv.toFixed(2)+`</td>`;
                     html_body +=`</tr>`;
                     html_body +=`</table>`;
@@ -493,7 +493,7 @@
                         t+='<div class="col-'+co+' text-center"><button id="cash" class="btn btn-primary pay-bill btn-sm" onclick="cash_payment()">Pay Cash</button></div>';
                     }else{
 
-                        t+='<div class="col-'+co+' pay_online_section text-center"><button id="pay'+item.Name+'" class="btn btn-primary pay-bill btn-sm" onclick="start_payment(\''+item.CodePage+'\')">'+item.Name+'</button></div>';
+                        t+='<div class="col-'+co+' pay_online_section text-center"><button id="pay'+item.Name+'" class="btn btn-primary pay-bill btn-sm" onclick="start_payment(\''+item.CodePage1+'\')">'+item.Name+'</button></div>';
                     }
                     n++;
                         

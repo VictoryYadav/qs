@@ -289,7 +289,7 @@ class Razorpay extends CI_Controller {
                     $genRCd = $genTblDb->insert_id();
 
                     $kitcheItemData = $this->db2->where_not_in('Stat', array(4,6,7,99,10))
-                                                ->get_where('kitchen', array(
+                                                ->get_where('Kitchen', array(
                                                 'BillStat' => $lastInsertBillId,
                                                 'EID' => $EID, 
                                                 'CNo' => $CNo)
