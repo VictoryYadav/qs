@@ -412,6 +412,9 @@
                     html_body +=`</div>`;
                     grand_total = grand_total + parseInt(pck_charge);
                 }
+
+                var itemGrossAmt = grand_total - serv;
+
                 var tt = '<?php echo $Tips?>';
                 if(tt == 1){
                     html_body +=`<div class="main-ammount">`;
@@ -428,7 +431,7 @@
 
                 $("#payable").text(grand_total);
                 $("#payableAmt").val(grand_total);
-                $("#totalAmt").val(grand_total);
+                $("#totalAmt").val(itemGrossAmt);
 
             },
             error: (xhr, status, error) => {

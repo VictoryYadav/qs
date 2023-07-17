@@ -312,6 +312,7 @@ class Razorpay extends CI_Controller {
 
                 $this->session->set_userdata('KOTNo', 0);
                 $this->session->set_userdata('CNo', 0);
+                $this->session->set_userdata('itemTotalGross', 0);
 
                 redirect(base_url('customer/bill/'.$lastInsertBillId));
             }
