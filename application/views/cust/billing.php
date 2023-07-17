@@ -526,7 +526,7 @@ function newTaxType($data,$sameTaxType,$TaxType,$taxDataArray,$itemTotal){
                         
                             <tr>
                                 <td style="font-weight: bold;">GRAND TOTAL</td>
-                                <td style="text-align: right;font-weight: bold;"><?= $billData[0]['TotAmt'] ?></td>
+                                <td style="text-align: right;font-weight: bold;"><?= $billData[0]['PaidAmt'] ?></td>
                             </tr>
                         </table>
                     </div>

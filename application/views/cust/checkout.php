@@ -413,7 +413,7 @@
                     grand_total = grand_total + parseInt(pck_charge);
                 }
 
-                var itemGrossAmt = grand_total - serv;
+                var itemGrossAmt = (grand_total - serv).toFixed(2);
 
                 var tt = '<?php echo $Tips?>';
                 if(tt == 1){
