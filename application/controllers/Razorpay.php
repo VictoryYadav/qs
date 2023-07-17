@@ -53,7 +53,6 @@ class Razorpay extends CI_Controller {
 
         $tips = !empty($tips)?$tips:0;
         $this->session->set_userdata('TipAmount', $tips);
-
         $this->session->set_userdata('itemTotalGross', $itemTotalGross);
 
         $totalAmount = round($payable, 2);
@@ -202,7 +201,7 @@ class Razorpay extends CI_Controller {
                 $BillDiscAmt    = $res['kitcheData'][0]['BillDiscAmt'];
                 
                 $TipAmount = $this->session->userdata('TipAmount');
-
+                $itemTotalGross = $this->session->userdata('itemTotalGross');
                 // FOR ONLINE PAYMENTS
                 $billingObj['EID'] = $EID;
                 $billingObj['TableNo'] = $TableNo;
@@ -213,10 +212,10 @@ class Razorpay extends CI_Controller {
                 $billingObj['CustId'] = $CustId;
                 $billingObj['COrgId'] = $COrgId;
                 $billingObj['CustNo'] = $CustNo;
-                $billingObj['TotAmt'] = $totalAmount;
+                $billingObj['TotAmt'] = $itemTotalGross;
                 $billingObj['PaidAmt'] = $totalAmount;
                 $billingObj['SerCharge'] = $res['kitcheData'][0]['ServChrg'];
-                $billingObj['SerChargeAmt'] = $res['kitcheData'][0]['ServChrg'];
+                $billingObj['SerChargeAmt'] = round(($itemTotalGross * $res['kitcheData'][0]['ServChrg']) /100 ,2);
                 $billingObj['Tip'] = $TipAmount;
                 $billingObj['PaymtMode'] = $paymentMode;
                 $billingObj['PymtRef'] = $orderId;
