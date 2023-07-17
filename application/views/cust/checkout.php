@@ -131,6 +131,7 @@
                     </div>
                     <div class="col-4">
                         <input type="hidden" name="payable" id="payableAmt">
+                        <input type="text" name="totalAmt" id="totalAmt">
                         <p class="bill-ord-amt text-right" id="payable" style="    margin-bottom: 7px;"></p>
                     </div>
                 </div>
@@ -427,6 +428,7 @@
 
                 $("#payable").text(grand_total);
                 $("#payableAmt").val(grand_total);
+                $("#totalAmt").val(grand_total);
 
             },
             error: (xhr, status, error) => {
@@ -507,6 +509,7 @@
     function start_payment(p){
         var a = parseFloat($('#payable').html());
         var t = $('#tips').val();
+        var amt = $('#totalAmt').val();
         // alert(t);
         // alert(a);
         if(t === undefined){
@@ -514,7 +517,7 @@
         }
         // alert(t);
         // alert(btoa(t));
-        window.location = '<?= base_url();?>'+p+'&payable='+btoa(a)+'&tips='+btoa(t);
+        window.location = '<?= base_url();?>'+p+'&payable='+btoa(a)+'&totAmt='+btoa(amt)+'&tips='+btoa(t);
     }
     function checkCasherConfirm(billId) {
         $.ajax({

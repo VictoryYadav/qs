@@ -32,7 +32,6 @@ class Razorpay extends CI_Controller {
         $CustId = $this->session->userdata('CustId');
         $EType = $this->session->userdata('EType');
         $CNo = $this->session->userdata('CNo');
-        $Tips = $this->session->userdata('Tips');
         $PymtOpt = $this->session->userdata('PymtOpt');
         $KOTNo = $this->session->userdata('KOTNo');
         $TableNo = $this->session->userdata('TableNo');
@@ -49,6 +48,13 @@ class Razorpay extends CI_Controller {
         }
 
         $payable = base64_decode(rtrim($_GET['payable'], "="));
+        $tips = base64_decode(rtrim($_GET['tips'], "="));
+        $itemTotalGross = base64_decode(rtrim($_GET['totAmt'], "="));
+
+        $tips = !empty($tips)?$tips:0;
+        $this->session->set_userdata('TipAmount', $tips);
+
+        $this->session->set_userdata('itemTotalGross', $itemTotalGross);
 
         $totalAmount = round($payable, 2);
         $orderId = "$EID-$TableNo-$CustId-$CNo-$totalAmount";
@@ -194,12 +200,8 @@ class Razorpay extends CI_Controller {
                 $TotPckCharge   = $res['kitcheData'][0]['TotPckCharge'];
                 $DelCharge      = $res['kitcheData'][0]['DelCharge'];
                 $BillDiscAmt    = $res['kitcheData'][0]['BillDiscAmt'];
-
-                if ($Tips == 0) {
-                    $TipAmount = 0;
-                } else {
-                    $TipAmount = $this->session->userdata('TipAmount');
-                }
+                
+                $TipAmount = $this->session->userdata('TipAmount');
 
                 // FOR ONLINE PAYMENTS
                 $billingObj['EID'] = $EID;
@@ -214,6 +216,7 @@ class Razorpay extends CI_Controller {
                 $billingObj['TotAmt'] = $totalAmount;
                 $billingObj['PaidAmt'] = $totalAmount;
                 $billingObj['SerCharge'] = $res['kitcheData'][0]['ServChrg'];
+                $billingObj['SerChargeAmt'] = $res['kitcheData'][0]['ServChrg'];
                 $billingObj['Tip'] = $TipAmount;
                 $billingObj['PaymtMode'] = $paymentMode;
                 $billingObj['PymtRef'] = $orderId;
