@@ -12,59 +12,63 @@
 
     <section class="common-section p-2">
         <div class="container">
-            <form method="post" id="signupForm">
-                <input type="hidden" name="token" id="token">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <input type="text" name="MobileNo" class="form-control" placeholder="Enter Mobile" required="" autocomplete="off" minlength="10" maxlength="10" pattern="[6-9]{1}[0-9]{9}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <input type="email" name="email" class="form-control" placeholder="Enter Email (Bills will be sent on this Email)" required="" autocomplete="off">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <input type="text" name="FName" class="form-control" placeholder="Enter Firstname">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <input type="text" name="LName" class="form-control" placeholder="Enter Lastname">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <select name="Gender" class="form-control">
-                                <option value="">Select Gender</option>
-                                <option value="0">Male</option>
-                                <option value="1">Female</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <input type="date" name="DOB" class="form-control" placeholder="Enter DOB">
-                        </div>
-                    </div>
-                </div>
-                <input type="submit" class="btn btn-sm btn-success" value="Submit">
-                <a href="<?= base_url('customer/login');?>"><span style="font-size: 12px;">Login</span></a>
-            </form>
+          <div class="row">
+            <div class="col-md-6 mx-auto">
+              <form method="post" id="signupForm">
+                  <input type="hidden" name="token" id="token">
+                  <div class="row">
+                      <div class="col-md-6">
+                          <div class="form-group">
+                              <input type="text" name="MobileNo" class="form-control" placeholder="Enter Mobile" required="" autocomplete="off" minlength="10" maxlength="10" pattern="[6-9]{1}[0-9]{9}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                          </div>
+                      </div>
+                      <div class="col-md-6">
+                          <div class="form-group">
+                              <input type="email" name="email" class="form-control" placeholder="Enter Email (Bills will be sent on this Email)" required="" autocomplete="off">
+                          </div>
+                      </div>
+                      <div class="col-md-6">
+                          <div class="form-group">
+                              <input type="text" name="FName" class="form-control" placeholder="Enter Firstname">
+                          </div>
+                      </div>
+                      <div class="col-md-6">
+                          <div class="form-group">
+                              <input type="text" name="LName" class="form-control" placeholder="Enter Lastname">
+                          </div>
+                      </div>
+                      <div class="col-md-6">
+                          <div class="form-group">
+                              <select name="Gender" class="form-control">
+                                  <option value="">Select Gender</option>
+                                  <option value="0">Male</option>
+                                  <option value="1">Female</option>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="col-md-6">
+                          <div class="form-group">
+                              <input type="date" name="DOB" class="form-control" placeholder="Enter DOB">
+                          </div>
+                      </div>
+                  </div>
+                  <input type="submit" class="btn btn-sm btn-success" value="Submit">
+                  <a href="<?= base_url('customer/login');?>"><span style="font-size: 12px;">Login</span></a>
+              </form>
 
-            <form method="post" id="otpForm" style="display: none;">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <input type="number" name="otp" class="form-control" placeholder="Enter OTP" autocomplete="off" required="">
-                            <span class="text-danger" id="errorMsg" style="font-size: 9px;"></span>
-                        </div>
-                    </div>
-                </div>
-                <input type="submit" class="btn btn-sm btn-success" value="Verify OTP">
-            </form>
+              <form method="post" id="otpForm" style="display: none;">
+                  <div class="row">
+                      <div class="col-md-12">
+                          <div class="form-group">
+                              <input type="number" name="otp" class="form-control" placeholder="Enter OTP" autocomplete="off" required="">
+                              <span class="text-danger" id="errorMsg" style="font-size: 9px;"></span>
+                          </div>
+                      </div>
+                  </div>
+                  <input type="submit" class="btn btn-sm btn-success" value="Verify OTP">
+              </form>
+            </div>
+          </div>
         </div>
     </section>
 

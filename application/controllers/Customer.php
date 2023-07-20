@@ -1308,159 +1308,22 @@ class Customer extends CI_Controller {
 
             if (isset($_POST['cash'])) {
 
-                if ($Tips == 1) {
-                    $tips = $_POST['tips'];
-                    $orderAmount = $_POST['payableAmt'];
-                    $this->session->set_userdata('TipAmount', $tips);
-                } else {
-                    $this->session->set_userdata('TipAmount', 0);
-                }
-
-                //Common for both ETYPES   AND  will work for merged and standalone billing... same as used for confirm
-                $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7 AND k1.Stat<>9  AND k1.Stat<>99) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7  AND k1.Stat<>9 AND k1.Stat<>99) GROUP BY k1.EID) as TotPckCharge,  ip.Name as Portions, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,c.OnPymt,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7  AND k.Stat<>9 AND k.Stat<>10 AND k.Stat<>99) and km.EID = k.EID and km.EID = $EID And k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) AND km.BillStat=0 AND TIMEDIFF(Now(), km.LstModDt) < '05:00:00' group by km.CNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips, c.OnPymt  order by TaxType, m.ItemNm Asc")->result_array();
-
                 // echo "<pre>";
-                // print_r($kitcheData);
+                // print_r($_POST);
                 // die;
+                $tips = $_POST['tips'];
+                $orderAmount = $_POST['payableAmt'];
+                $this->session->set_userdata('TipAmount', $tips);
+                $this->session->set_userdata('TipAmount', $tips);
+                $itemTotalGross = $_POST['totalAmt'];
+                $this->session->set_userdata('itemTotalGross', $itemTotalGross);
 
-                // include('../repository/payment/payment.repo.php');
-            
-                if (empty($kitcheData)) {
-                    $response = [
-                        "status" => 0,
-                        "msg" => "No Bill Pending..."
-                    ];
-                    echo json_encode($response);
-                    die();
-                } else {
+                $postData["orderAmount"] = $orderAmount;
+                $postData["paymentMode"] = 'cash';
 
-                    $lastBillNo = $this->db2->query("SELECT max(BillNo) as BillNo from Billing where EID = $EID")->result_array();
-
-                    if ($lastBillNo[0]['BillNo'] == '') {
-                        $newBillNo = 1;
-                    } else {
-                        $newBillNo = $lastBillNo[0]['BillNo'] + 1;
-                    }
-
-                    // $cgst = $kitcheData[0]['CGSTRate'];
-                    // $sgst = $kitcheData[0]['SGSTRate'];
-                    // $gst = $kitcheData[0]['GSTInclusiveRates'];
-                    $ServChrg = $kitcheData[0]['ServChrg'];
-                    $Tips = $kitcheData[0]['Tips'];
-                    
-                    $TotItemDisc = $kitcheData[0]['TotItemDisc'];
-                    $TotPckCharge = $kitcheData[0]['TotPckCharge'];
-                    $DelCharge = $kitcheData[0]['DelCharge'];
-                    $BillDiscAmt = $kitcheData[0]['BillDiscAmt'];
-
-                    // tax , pending for generic
-                    $intial_value = $kitcheData[0]['TaxType'];
-                    
-                    $tax_type_array = array();
-                    $tax_type_array[$intial_value] = $intial_value;
-                    foreach ($kitcheData as $key => $value) {
-                        if($value['TaxType'] != $intial_value){
-                            $intial_value = $value['TaxType'];
-                            $tax_type_array[$intial_value] = $value['TaxType'];
-                        }
-                    }
-
-                    $taxDataArray = array();
-                    foreach ($tax_type_array as $key => $value) {
-                        $TaxData = $this->db2->query("SELECT t.ShortName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included, (sum(k.ItmRate*k.Qty)) as ItemAmt, (if (t.Included <5,((sum(k.ItmRate*k.Qty)) - ((sum(k.ItmRate*k.Qty)) / (1+t.TaxPcent/100))),((sum(k.ItmRate*k.Qty))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where k.EID=km.EID and k.CNo=km.CNo and (km.CNo=$CNo or km.MCNo =$CNo) and t.TaxType = k.TaxType and t.TaxType = $value  and t.EID= $EID AND km.BillStat = 0 group by t.ShortName,t.TNo,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.rank")->result_array();
-                        $taxDataArray[$value] = $TaxData;
-                    }
-                    // end tax
-
-                    if ($Tips == 0) {
-                        $TipAmount = 0;
-                    } else {
-                        $TipAmount = $this->session->userdata('TipAmount');
-                    }
-
-                    if ($ServChrg == 0) {
-                        $serviceCharge = 0;
-                    } else {
-                        $serviceCharge = $kitcheData[0]['ServChrg'] * ($orderAmount / 100);
-                    }
-
-                    // switch ($BillCalc) {
-                    //     case 0:
-                    //         $totalAmount =(($orderAmount + $CGST + $SGST) - ($TotItemDisc + $BillDiscAmt) ) + $TotPckCharge + $DelCharge + $TipAmount + $serviceCharge;
-                    //         break;
-                    //     case 1:
-                    //         $totalAmount =($orderAmount - ($TotItemDisc + $BillDiscAmt)) + $TotPckCharge + $DelCharge +  $CGST + $SGST + $TipAmount + $serviceCharge;
-                    //         break;
-                    // }
-                    $totalAmount = $orderAmount + $TipAmount + $serviceCharge + $TotPckCharge + $DelCharge;
-
-                    $billingObj['EID']      = $EID;
-                    $billingObj['TableNo']  = $TableNo;
-                    $billingObj['ChainId']  = $ChainId;
-                    $billingObj['ONo']      = $ONo;
-                    $billingObj['CNo']      = $CNo;
-                    $billingObj['BillNo']   = $newBillNo;
-                    $billingObj['CustId']   = $CustId;
-                    $billingObj['COrgId']   = $COrgId;
-                    $billingObj['CustNo']   = $CustNo;
-                    $billingObj['TotAmt']   = $totalAmount;
-                    $billingObj['PaidAmt']  = 0;
-                    $billingObj['SerCharge']= $ServChrg;
-                    $billingObj['Tip']      = $TipAmount;
-                    $billingObj['PaymtMode']= "Cash";
-                    $billingObj['PymtRef']  = "NA";
-                    $billingObj['TotItemDisc'] = $TotItemDisc;
-                    $billingObj['BillDiscAmt'] = $BillDiscAmt;
-                    $billingObj['TotPckCharge']= $TotPckCharge;
-                    $billingObj['DelCharge']   = $DelCharge;
-
-                    $lastInsertBillId = insertRecord('Billing', $billingObj);
-                    if ($lastInsertBillId) {
-
-                        foreach ($taxDataArray as $key => $value1) {
-                            foreach ($value1 as $key => $value) {
-                                $BillingTax['BillId'] = $lastInsertBillId;
-                                $BillingTax['TNo'] = $value['TNo'];
-                                $BillingTax['TaxPcent'] = $value['TaxPcent'];
-                                $BillingTax['TaxAmt'] = $value['SubAmtTax'];
-                                $BillingTax['EID'] = $EID;
-                                $BillingTax['TaxIncluded'] = $value['Included'];
-                                $BillingTax['TaxType'] = $value['TaxType'];
-                                $BillingTax->create();
-                                insertRecord('BillingTax', $BillingTax);
-                            }
-                        }
-
-                        if ($EType == 1) {
-
-                            $kitchenUpdate = $this->db2->query("UPDATE Kitchen k, KitchenMain km SET k.BillStat = $lastInsertBillId WHERE (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND (km.CNo=$CNo OR km.MCNo = $CNo) AND k.CNo=km.CNo and km.EID=k.EID and km.EID = $EID ");
-
-                            //COMMON query to update KitchenMain
-                            $kitchenMainUpdate = $this->db2->query("UPDATE KitchenMain km SET BillStat = $lastInsertBillId WHERE (km.CNo = $CNo OR km.MCNo = $CNo) AND  EID = $EID ");
-                        } else {
-                            $stat = 9;
-                            $as = ($this->session->userdata('AutoSettle') == 1)?0:1;
-                            $kitchenUpdate = $this->db2->query("UPDATE Kitchen k, KitchenMain km SET k.BillStat = $lastInsertBillId, k.Stat = 9, k.payRest = ".$as."  WHERE (k.Stat<>4 AND k.Stat<>6 AND k.Stat<>7  AND k.Stat<>99)  AND km.EID = k.EID  AND km.BillStat = 0  AND k.CNo = km.CNo AND ((km.CNo = $CNo OR km.MCNo = $CNo)) AND km.EID = $EID ");
-
-                            $kitchenMainUpdate = $this->db2->query("UPDATE KitchenMain SET BillStat = $lastInsertBillId, payRest = ".$as." WHERE (CNo = $CNo OR MCNo = $CNo)  AND BillStat = 0 AND EID = $EID ");
-
-                        }
-
-                        $this->session->set_userdata('KOTNo', 0);
-                        $response = [
-                            "status" => 1,
-                            "msg" => "success",
-                            "billId" => $lastInsertBillId
-                        ];
-                    } else {
-                        $response = [
-                            "status" => 1,
-                            "msg" => "Fail to insert to Billing / Billing TAX"
-                        ];
-                    }
-                    echo json_encode($response);
-                    die();
-                }
+                $res = billCreate($EID, $CNo, $postData);
+                echo json_encode($res);
+                die();                
             }
         } else {
             // Session Expire

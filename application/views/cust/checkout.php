@@ -534,7 +534,8 @@
             success: response => {
                 console.log(response);
                 if (response.status == 1) {
-                    window.location = `bill_rcpt.php?billId=${billId}`;
+                    // window.location = `bill_rcpt.php?billId=${billId}`;
+                    window.location = "<?php echo base_url('customer/bill/'); ?>"+billId;
                 } else {
                     return true;
                 }
@@ -645,7 +646,9 @@ $("#tips").focusout(function() {
     });
     function cash_payment() {
             var tips = $("#tips").val();
-            var payableAmt = $("#payableAmt").val();
+            var payableAmt = $("#payable").text();
+            var totalAmt = $("#totalAmt").val();
+            
             // alert("Cash");
             $.ajax({
                 url: "<?= base_url('customer/bill_ajax'); ?>",
@@ -653,7 +656,8 @@ $("#tips").focusout(function() {
                 data: {
                     cash: 1,
                     tips: tips,
-                    payableAmt:payableAmt
+                    payableAmt:payableAmt,
+                    totalAmt:totalAmt
                 },
                 dataType: "json",
                 success: response => {
