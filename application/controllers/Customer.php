@@ -1480,6 +1480,20 @@ class Customer extends CI_Controller {
         
     }
 
+    public function transactions(){
+        $CustId = $this->session->userdata('CustId');
+        $data['title'] = 'Transactions';
+        $genTblDb = $this->load->database('GenTableData', TRUE);
+        $data['custPymt'] = $genTblDb->query("SELECT date(cp.BillDt) as billdt , cp.BillId, cp.BillNo, cp.EID , cp.PaidAmt , cp.CustId , ed.Name , ed.DBName, ed.DBPasswd FROM `CustPymts` cp , `EIDDet` ed where cp.CustId = $CustId and ed.EID = cp.EID ORDER BY `BNo`  DESC")->result_array();
+        $data['language'] = languageArray();
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+
+        $this->load->view('cust/transactions', $data);
+
+    }
+
     public function logout(){
 
         $this->session->set_userdata('signup', '');
