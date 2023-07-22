@@ -296,6 +296,65 @@
         .dropdown-menu a {
             font-size: 15px !important;
         }
+
+        .billView{
+            /*margin-top: 25px;*/
+            /*overflow-y: scroll;
+            height: 78vh;*/
+            height: 400px;
+            overflow: auto; 
+        }
+        /*mobile screen only*/
+        @media only screen and (max-width: 480px) {
+            #billView{
+               height: 480px;
+               overflow: auto; 
+            }
+        }
+
+.payment-btns 
+{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.paybtn 
+{
+    width: 50%;
+    background: #30b94f;
+    color: #fff;
+    /*background: #000 !important;*/
+    /*color: <?php echo isset($body_btn2text)?$body_btn2text:"#000"?> !important;*/
+    height: 30px;
+    margin-left: 0px !important;
+    border-radius: 0 1.5rem 1.5rem 0;
+}
+
+.paybtn:hover
+{
+    background: #03bb2c;
+    color: #fff;
+    margin-left: 0px !important;
+    border-radius: 0 1.5rem 1.5rem 0;
+}
+
+.backbtn 
+{
+    width: 50%;
+    margin-right: 0px !important;
+    border-radius: 1.5rem 0 0 1.5rem;
+    background-color: #bfbcbc;
+    color:#fff;
+    height: 30px;
+    /*background-color:#000 !important;*/
+    /*color: <?php echo isset($body_btn1text)?$body_btn1text:"#000"?> !important;*/
+}
+
+.backbtn:hover
+{
+    background-color: #9d9696;
+    color:#fff;   
+}
     </style>
 </head>
 
@@ -308,7 +367,7 @@
     <section class="common-section p-2">
         <div class="container">
 
-            <div id="download-to-pdf" class="container" style="margin-top: 25px;overflow-y: scroll;height: 78vh;">
+            <div id="download-to-pdf" class="container billView">
                     <div class="text-center">
                         <p style="font-weight: bold;"><?= $hotelName ?></p>
                         <p style="margin-bottom: unset;"><?= $address ?>, <?= $city ?>-<?= $pincode ?></p>
@@ -367,101 +426,100 @@
                         // include('repository/billing/bill_print_body.repo.php');
 
                     foreach ( $billData as $key => $value ) {
-    $TaxType = $value['TaxType'];
-    if( $key != 0 ){
-        $TaxType = $billData[$key-1]['TaxType'];
-    }
+                        $TaxType = $value['TaxType'];
+                        if( $key != 0 ){
+                            $TaxType = $billData[$key-1]['TaxType'];
+                        }
 
-    if( $value['TaxType'] != $TaxType || $key == 0){
-        // build table with title
-        $sameTaxType  = '';
-        $itemTotal = 0;
-        foreach ($billData as $keyData => $data) {
-            if($data['TaxType'] == $value['TaxType']){
-                    $sameTaxType .= ' <tr> ';
-                    if($data['Itm_Portion'] > 4 ){
-                        
-                        $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].' ( '.$data['Portions'].' ) </td> ';
+                        if( $value['TaxType'] != $TaxType || $key == 0){
+                            // build table with title
+                            $sameTaxType  = '';
+                            $itemTotal = 0;
+                            foreach ($billData as $keyData => $data) {
+                                if($data['TaxType'] == $value['TaxType']){
+                                        $sameTaxType .= ' <tr> ';
+                                        if($data['Itm_Portion'] > 4 ){
+                                            
+                                            $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].' ( '.$data['Portions'].' ) </td> ';
 
-                    }else{
+                                        }else{
 
-                        $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].'</td> ';
+                                            $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].'</td> ';
 
+                                        }
+                                        
+                                        $sameTaxType .= ' <td style="text-align: right;"> '.$data['Qty'].' </td>';
+                                        $sameTaxType .= ' <td style="text-align: right;">'.$data['ItmRate'].'</td> ';
+                                        $sameTaxType .= ' <td style="text-align: right;">'.$data['ItemAmt'].'</td> ';
+                                        $sameTaxType .= ' </tr> ';
+                                        $itemTotal +=$data['ItemAmt'];
+                                }
+                            }
+
+                            newTaxType( $value ,$sameTaxType,$value['TaxType'],$taxDataArray,$itemTotal);
+                        }
                     }
-                    
-                    $sameTaxType .= ' <td style="text-align: right;"> '.$data['Qty'].' </td>';
-                    $sameTaxType .= ' <td style="text-align: right;">'.$data['ItmRate'].'</td> ';
-                    $sameTaxType .= ' <td style="text-align: right;">'.$data['ItemAmt'].'</td> ';
-                    $sameTaxType .= ' </tr> ';
-                    $itemTotal +=$data['ItemAmt'];
-            }
-        }
 
-        newTaxType( $value ,$sameTaxType,$value['TaxType'],$taxDataArray,$itemTotal);
-    }
-    
-}
+                    function newTaxType($data,$sameTaxType,$TaxType,$taxDataArray,$itemTotal){
+                        $newTaxType  = ' <div style="margin-bottom: 15px;"> ';
+                        $newTaxType .= ' <table style="width:100%;"> ';
+                        $newTaxType .= ' <tbody> ';
+                        $newTaxType .= ' <tr style="text-align: right;"> ';
+                        $newTaxType .= ' <th style="float: left;">Menu Item </th> ';
+                        $newTaxType .= ' <th>Qty</th> ';
+                        $newTaxType .= ' <th>Rate</th> ';
+                        $newTaxType .= ' <th>Amt</th> ';
+                        $newTaxType .= ' </tr> ';
 
-function newTaxType($data,$sameTaxType,$TaxType,$taxDataArray,$itemTotal){
-    $newTaxType  = ' <div style="margin-bottom: 15px;"> ';
-    $newTaxType .= ' <table style="width:100%;"> ';
-    $newTaxType .= ' <tbody> ';
-    $newTaxType .= ' <tr style="text-align: right;"> ';
-    $newTaxType .= ' <th style="float: left;">Menu Item </th> ';
-    $newTaxType .= ' <th>Qty</th> ';
-    $newTaxType .= ' <th>Rate</th> ';
-    $newTaxType .= ' <th>Amt</th> ';
-    $newTaxType .= ' </tr> ';
+                        $newTaxType .=  $sameTaxType;
 
-    $newTaxType .=  $sameTaxType;
+                        $newTaxType .= ' <tr style="border-top: 1px solid;"> ';
+                        $newTaxType .= ' <td></td> <td></td> <td></td> <td></td>';
+                        $newTaxType .= ' </tr> ';
+                        $newTaxType .= ' <tr> ';
+                        $newTaxType .= ' <td style="text-align: left;"><i>Item Total</i></td> ';
+                        $newTaxType .= ' <td></td> <td></td>';
+                        $newTaxType .= ' <td style="float: right;">'.$itemTotal.'</td> ';
+                        $newTaxType .= ' </tr> ';
+                        $sub_total = 0;
+                        foreach ($taxDataArray as $key => $value) {
+                            $total_tax = 0;
+                            foreach ($value as $key1=> $dataTax) {
 
-    $newTaxType .= ' <tr style="border-top: 1px solid;"> ';
-    $newTaxType .= ' <td></td> <td></td> <td></td> <td></td>';
-    $newTaxType .= ' </tr> ';
-    $newTaxType .= ' <tr> ';
-    $newTaxType .= ' <td style="text-align: left;"><i>Item Total</i></td> ';
-    $newTaxType .= ' <td></td> <td></td>';
-    $newTaxType .= ' <td style="float: right;">'.$itemTotal.'</td> ';
-    $newTaxType .= ' </tr> ';
-    $sub_total = 0;
-    foreach ($taxDataArray as $key => $value) {
-        $total_tax = 0;
-        foreach ($value as $key1=> $dataTax) {
+                                if($dataTax['TaxType'] == $TaxType && $dataTax['Included'] > 0){
 
-            if($dataTax['TaxType'] == $TaxType && $dataTax['Included'] > 0){
+                                    // $total_tax = calculatTotalTax($total_tax,number_format($dataTax['SubAmtTax'],2));
 
-                // $total_tax = calculatTotalTax($total_tax,number_format($dataTax['SubAmtTax'],2));
+                                        $newTaxType .= ' <tr> ';
+                                        $newTaxType .= ' <td style="text-align: left;"> <i> '.$dataTax['ShortName'].''.$dataTax['TaxPcent'].'% </i></td> ';
+                                        $newTaxType .= ' <td></td> ';
+                                        $newTaxType .= ' <td></td> ';
+                                        $newTaxType .= ' <td style="text-align: right;">'.$dataTax['SubAmtTax'].'</td> ';
+                                        $newTaxType .= ' </tr> ';
+                                    
+                                }
 
-                    $newTaxType .= ' <tr> ';
-                    $newTaxType .= ' <td style="text-align: left;"> <i> '.$dataTax['ShortName'].''.$dataTax['TaxPcent'].'% </i></td> ';
-                    $newTaxType .= ' <td></td> ';
-                    $newTaxType .= ' <td></td> ';
-                    $newTaxType .= ' <td style="text-align: right;">'.$dataTax['SubAmtTax'].'</td> ';
-                    $newTaxType .= ' </tr> ';
-                
-            }
+                                if( $dataTax['TaxType'] == $TaxType && $dataTax['Included'] >= 5 ){
 
-            if( $dataTax['TaxType'] == $TaxType && $dataTax['Included'] >= 5 ){
+                                    $sub_total = $sub_total + $dataTax['SubAmtTax'];
 
-                $sub_total = $sub_total + $dataTax['SubAmtTax'];
+                                }
+                            }
 
-            }
-        }
+                        }
+                        $sub_total = $sub_total  + $itemTotal;
 
-    }
-    $sub_total = $sub_total  + $itemTotal;
+                        $newTaxType .= ' <tr style="background: #80808052;"> ';
+                        $newTaxType .= ' <td style="text-align: left; font-weight: bold;">Sub Total</td> ';
+                        $newTaxType .= ' <td></td> <td></td>';
+                        $newTaxType .= ' <td style="float: right;">'.$sub_total.'</td> ';
+                        $newTaxType .= ' </tr> ';
+                        $newTaxType .= ' </tbody> ';
+                        $newTaxType .= ' </table> ';
+                        $newTaxType .= ' </div> ';
 
-    $newTaxType .= ' <tr style="background: #80808052;"> ';
-    $newTaxType .= ' <td style="text-align: left; font-weight: bold;">Sub Total</td> ';
-    $newTaxType .= ' <td></td> <td></td>';
-    $newTaxType .= ' <td style="float: right;">'.$sub_total.'</td> ';
-    $newTaxType .= ' </tr> ';
-    $newTaxType .= ' </tbody> ';
-    $newTaxType .= ' </table> ';
-    $newTaxType .= ' </div> ';
-
-    echo $newTaxType;
-}
+                        echo $newTaxType;
+                    }
 
                     ?>
 
@@ -564,17 +622,29 @@ function newTaxType($data,$sameTaxType,$TaxType,$taxDataArray,$itemTotal){
 
                         
                     <?php }?>
-                </div>
+            </div>
 
                 <div id="editor"></div>
                 
-                <div class="navbar1 menu-footer1" style="margin-top: -74px;">
-                    
-                            <div class="col-12 row text-center" style="padding:0px;">
-                                <div class="col-6 text-center"><a class="btn" href="<?= base_url('customer'); ?>" style="width: 100%;">Menu</a></div>
-                                <div class="col-6 text-center"><a href="<?= base_url('customer/rating/'.$billId);?>" class="btn btn-primary" style="width: 100%;">Rating</a></div>
-                            </div>
+                <!-- <div class="navbar1 menu-footer1">
+                    <div class="col-12 row text-center" style="padding:0px;">
+                        <div class="col-6 text-center">
+                            <a class="btn btn-success" href="<?= base_url('customer'); ?>" style="width: 100%;">Menu</a>
+                        </div>
+                        <div class="col-6 text-center">
+                            <a href="<?= base_url('customer/rating/'.$billId);?>" class="btn btn-primary" style="width: 100%;">Rating</a>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="row remove-margin payment-btns fixed-bottom" style=" width: 100%; margin-left: 1px;bottom: 60px !important;">
+
+                    <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="width: 50%;">Menu</a>
+
+                    <a href="<?= base_url('customer/rating/'.$billId);?>" class="btn btn-sm paybtn" style="width: 50%;">Rating</a>
+
                 </div>
+        </div>
     </section>
 
     <!-- footer section -->

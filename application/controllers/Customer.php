@@ -1494,6 +1494,34 @@ class Customer extends CI_Controller {
 
     }
 
+    public function reserve_table(){
+        
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            echo "<pre>";
+            print_r($_POST);
+            die;
+            $status = 'success';
+            $res = 'Record has been inserted.';
+           
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $res
+              ));
+             die;
+        }
+
+        $data['title'] = 'Reserve Table';
+        $data['language'] = languageArray();
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $this->load->view('cust/reserve_table', $data);
+
+    }
+
     public function logout(){
 
         $this->session->set_userdata('signup', '');
