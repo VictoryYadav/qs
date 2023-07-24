@@ -1083,6 +1083,10 @@
 
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+
 <script>
 
     $(document).ready(function () {
@@ -1267,7 +1271,7 @@
                                 b+='<td>'+data.MobileNo+'</td>';
                             }
                             b+='<td>'+ data.TotAmt +'</td>';
-                            if(data.PaymtMode == 'Cash'){
+                            if(data.PaymtMode == 'cash'){
                                 b+='<td>'+0+'</td>';
                                 b+='<td><input type="number" name="PaidAmt" id="PaidAmt"  v-model="data.BillValue"  value="data.BillValue" style="width: 125px;"></td>';
                                 var s = '<select id="cash_payment_mode"><option value="">Select Mode</option>';
@@ -2076,12 +2080,12 @@
                 // alert("Recieved Amount is less than Bill Amount");
             // }else{
                 // alert(bill_data.PaymtMode);
-                if(bill_data.PaymtMode == 'Cash' && $('#cash_payment_mode').val() == ''){
+                if(bill_data.PaymtMode == 'cash' && $('#cash_payment_mode').val() == ''){
                     alert('Please Select Payment Mode !');
                 }else{
                     var mo = '';
                     var am = $('#PaidAmt').val();
-                    if(bill_data.PaymtMode == 'Cash'){
+                    if(bill_data.PaymtMode == 'cash'){
                         mo = $('#cash_payment_mode').val();
                     }else{
                         mo = pymtMode;
@@ -2360,9 +2364,11 @@
                 }
             });
         }
+        
         setInterval(function(){ check_call_bell(); }, 3000);
+        // setInterval(function(){ check_call_bell(); }, 3000);
         // setInterval(function(){ check_new_orders(); }, 5000);
-        setInterval(function(){ check_settled_table(); }, 7000);
+        // setInterval(function(){ check_settled_table(); }, 7000);
         check_new_orders();
         // $(function () {
           $('[data-toggle="tooltip"]').tooltip()

@@ -1339,7 +1339,9 @@ class Customer extends CI_Controller {
         if (isset($_POST['checkCasherConfirm'])){
             $billId = $_POST['billId'];
 
-            $checkCasherConfirm = $this->db2->query("SELECT PaidAmt FROM Billing WHERE BillId = $billId AND EID = $EID AND PaidAmt >= TotAmt")->result_array();
+            $checkCasherConfirm = $this->db2->select('CnfSettle')
+                                            ->get_where('KitchenMain', array('BillStat' => $billId, 'EID' => $EID, 'CnfSettle >' => 0))
+                                            ->row_array();
 
             if (empty($checkCasherConfirm)) {
                 $response = [
@@ -1502,6 +1504,25 @@ class Customer extends CI_Controller {
             echo "<pre>";
             print_r($_POST);
             die;
+
+            $TblRsv['GuestNos'] = $_POST['GuestNos'];
+            $TblRsv['GuestName'] = $_POST['GuestName'];
+            $TblRsv['MobileNo'] = $_POST['MobileNo'];
+            $TblRsv['FrmTime'] = $_POST['FrmTime'];
+            $TblRsv['ToTime'] = $_POST['ToTime'];
+            $TblRsv['RDate'] = date('Y-m-d H:i:s',strtotime($_POST['RDate']));
+            $TblRsv['LstModDt'] = date('Y-m-d H:i:s');
+
+            $RsvNo = insertRecord('TableReserve', $TblRsv);
+
+            for($i = 0;$i<sizeof($_POST['CustName']);$i++){
+                $TblRsvDet['RsvNo'] = $RsvNo;
+                $TblRsvDet['CustName'] = $_POST['CustName'][$i];
+                $TblRsvDet['MobileNo'] = $_POST['CustMobileNo'][$i];
+                $TblRsvDet['Stat'] = 0;
+                insertRecord('TableReserveDet', $TblRsvDet);
+            }
+
             $status = 'success';
             $res = 'Record has been inserted.';
            

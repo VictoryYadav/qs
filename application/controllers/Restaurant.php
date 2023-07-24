@@ -2055,8 +2055,9 @@ class Restaurant extends CI_Controller {
             die();
         }
         if(!empty($_POST['getBill'])){
+
             $STVcd = $_POST['STVCd'];
-            $q = "SELECT b.TableNo, BillId, BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND et.CCd = $STVcd AND b.EID = $EID AND b.Stat = 0 AND  b.TableNo = et.TableNo";
+            $q = "SELECT b.TableNo, BillId, BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND et.CCd = $STVcd AND b.EID = $EID AND b.Stat = 1 AND  b.TableNo = et.TableNo";
             if(isset($_POST['BillId']) && $_POST['BillId'] > 0){
                 $bid = $_POST['BillId'];
                 $q.=" and b.BillId = '$bid'";
@@ -2064,6 +2065,11 @@ class Restaurant extends CI_Controller {
             $q.=" Order By BillId Asc";
             $billData = $this->db2->query($q)->result_array();
             // echo json_encode($billData[0]);
+            // echo "<pre>";
+            // print_r($_POST);
+            // print_r($billData);
+            // print_r($this->db2->last_query());
+            // die;
             $pymtModes = $this->db2->query("SELECT PMNo, Name FROM `PymtModes`WHERE Stat = 0 AND Country = 'India' AND PMNo NOT IN (SELECT PMNo FROM PymtMode_Eat_Disable WHERE EID = $EID)")->result_array();
             $a = array('bill' => $billData[0], 'payment_modes' => $pymtModes);
             // print_r($a);exit();
@@ -2534,47 +2540,40 @@ class Restaurant extends CI_Controller {
         }
 
         if ($_POST['setPaidAmount']) {
+
             extract($_POST);
             $paidAmount = $_POST['paidAmount'];
             $id = $_POST['id'];
             $mode = $_POST['mode'];
             $cNo = $_POST['CNo'];
-            $q1 = "UPDATE Billing SET PaidAmt = $paidAmount, PaymtMode = '".$mode."', Stat = 1  WHERE BillId = $id AND EID = $EID";
+            $billData = $this->db2->query("UPDATE Billing SET PaidAmt = $paidAmount  WHERE BillId = $id AND EID = $EID");
             // print_r($q1);
-            $billData = $this->db2->query($q1)->result_array();
-
             if($EType == 1){
                 
                 $stat = 1;
-
                 //Session::set('KOTNo',0);
-                $q2 = "UPDATE Kitchen k, KitchenMain km SET  k.Stat = $stat, k.payRest=1, km.payRest=1 WHERE km.BillStat = $id AND (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
+                $this->db2->query("UPDATE Kitchen k, KitchenMain km SET  k.Stat = $stat, k.payRest=1, km.payRest=1, km.CnfSettle=1 WHERE km.BillStat = $id AND (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)");
                 // print_r($q2);
-                $kitchenUpdate = $this->db2->query($q2)->result_array();
             }
 
             if ($EType == 5) {
                 $stat = 9;
+                $this->db2->query("DELETE from Eat_tables_Occ where EID=$EID and CNo = $cNo AND ((TableNo = '$TableNo' AND CustId = $CustId) OR (MergeNo = '$TableNo'))");
 
-                $q3 = "DELETE from Eat_tables_Occ where EID=$EID and CNo = $cNo AND ((TableNo = '$TableNo' AND CustId = $CustId) OR (MergeNo = '$TableNo'))";
-                $deleteETO = $this->db2->query($q3);
-
-                $q4 = "UPDATE Eat_tables SET Stat = 0 WHERE EID = $EID AND ((TableNo = '$TableNo') OR (MergeNo = '$TableNo'))";
-                $updateEatTable = $this->db2->query($q4);
-                
+                $this->db2->query("UPDATE Eat_tables SET Stat = 0 WHERE EID = $EID AND ((TableNo = '$TableNo') OR (MergeNo = '$TableNo'))");
             }
 
-            $q2 = "UPDATE Kitchen k, KitchenMain km SET  k.Stat = $stat, k.payRest=1, km.payRest=1 WHERE km.BillStat = $id AND (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
+            $this->db2->query("UPDATE Kitchen k, KitchenMain km SET  k.Stat = $stat, k.payRest=1, km.payRest=1,km.CnfSettle=1 WHERE km.BillStat = $id AND (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)");
                 // print_r($q2);
-            $kitchenUpdate = $this->db2->query($q2);
 
             // store to gen db
+            $genTblDb = $this->load->database('GenTableData', TRUE);
             $custPymtObj['BillId'] = $id;
             $custPymtObj['BillNo'] = $billNo;
             $custPymtObj['EID'] = $EID;
             $custPymtObj['PaidAmt'] = $billAmt;
             $custPymtObj['PaymtMode'] = $pymtMode;
-            insertRecord('CustPymts', $custPymtObj);
+            $genTblDb->insert('CustPymts', $custPymtObj);
 
             $response = [
                 "status" => 1,
