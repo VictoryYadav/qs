@@ -278,7 +278,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-6 col-6 text-right">
-                                                <button class="btn btn-primary btn-sm" title="Bill">
+                                                <button class="btn btn-primary btn-sm" title="Bill Create" id="billCreate" style="display: none;">
                                                     <i class="far fa-eye"></i>
                                                 </button>
 
@@ -1302,8 +1302,9 @@
                         console.log(error);
                     }
                 });
-
+                $('#billCreate').hide();
             }else{
+                $('#billCreate').show();
                 $('#bill_data_table').hide();
             }
         }

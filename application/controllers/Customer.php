@@ -1557,4 +1557,12 @@ class Customer extends CI_Controller {
     }
 
 
+    public function contact(){
+        $data['title'] = 'Contact Us';
+        $data['language'] = languageArray();
+
+        $this->load->view('contact', $data);
+    }
+
+
 }

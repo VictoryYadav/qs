@@ -113,7 +113,7 @@
 
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <table class="table table-bordered">
+                                                <table class="table table-bordered" id="tableData">
                                                     <thead>
                                                         <tr>
                                                             <th>Item</th>
@@ -209,9 +209,13 @@
                 <input type="hidden" value="${TaxType}" class="taxtype">
                 </td>
             </tr>`;
+                // check if table is empty 
+            if (document.querySelectorAll('#tableData tbody tr').length == 0) {
+                $("#order-table-body").append(template);
+            }else{
+                $("#order-table-body").find('tr:first').before(template);
+            }
 
-            // $("#order-table-body").append(template);
-            $("#order-table-body").find('tr:first').before(template);
             calculateTotal();
         }
 
