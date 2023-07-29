@@ -1271,21 +1271,28 @@ class Cust extends CI_Model{
 	}
 
 	public function billGenerated($EID, $CNo, $postData){
-
+// echo "<pre>";
+// print_r($postData);
+// die;
 		$CustId = $this->session->userdata('CustId');
         $ChainId = authuser()->ChainId;
         $ONo = $this->session->userdata('ONo');
         $CustNo = $this->session->userdata('CustNo');
         $COrgId = $this->session->userdata('COrgId');
 
-        $TableNo = authuser()->TableNo;
-        $CellNo = $this->session->userdata('CellNo');
-        $EType = $this->session->userdata('EType');
-        
         $totalAmount = $postData["orderAmount"];
         $paymentMode = $postData["paymentMode"];
 
-        if($paymentMode == 'cash'){
+        if($paymentMode == 'RCash'){
+        	$TableNo = $this->session->userdata('TableNo');
+        }else{
+        	$TableNo = authuser()->TableNo;
+        }
+        $CellNo = $this->session->userdata('CellNo');
+        $EType = $this->session->userdata('EType');
+        
+
+        if($paymentMode == 'cash' || $paymentMode == 'RCash'){
         	$orderId = 'NA';
         }else{
         	$orderId = $postData["orderId"];
@@ -1391,7 +1398,7 @@ class Cust extends CI_Model{
 
                          $this->db2->query("UPDATE Eat_tables SET Stat = 0 WHERE EID = $EID AND ((TableNo = '$TableNo') OR (MergeNo = '$TableNo'))");
                     }
-
+                if($paymentMode != 'RCash'){
                     // gen db
                     $genCheckid = $genTblDb->query("SELECT RCd  FROM `Ratings` WHERE EID = $EID AND BillId = $lastInsertBillId AND CustId = $CustId AND CellNo = $CellNo")->result_array();
 
@@ -1415,7 +1422,7 @@ class Cust extends CI_Model{
                     $gndbRat['LstModDt']=   date('Y-m-d H:i:s');
                     $genTblDb->insert('Ratings', $gndbRat);
                     $genRCd = $genTblDb->insert_id();
-
+                
                     $kitcheItemData = $this->db2->where_not_in('Stat', array(4,6,7,99,10))
                                                 ->get_where('Kitchen', array(
                                                 'BillStat' => $lastInsertBillId,
@@ -1430,9 +1437,10 @@ class Cust extends CI_Model{
                         }
                         $queryStringGen .= '(' . $genRCd . ',' . $kitcheItemData[$i]['ItemId'] . ',' . 0 . ')';
                     }
+                    
                     // gen table
-                    $RatingDetQuery = $genTblDb->query("INSERT INTO `RatingDet`(RCd,ItemId,ItemRtng) VALUES $queryStringGen ");
-
+                    	$RatingDetQuery = $genTblDb->query("INSERT INTO `RatingDet`(RCd,ItemId,ItemRtng) VALUES $queryStringGen ");
+                }
                     // header("Location: bill_rcpt.php?billId=$lastInsertBillId");
                 $this->db2->trans_complete();
 
@@ -1449,6 +1457,28 @@ class Cust extends CI_Model{
                 // redirect(base_url('customer/bill/'.$lastInsertBillId));
             }
             return $response;
+	}
+
+	public function getOrderDetailsByTableNo($TableNo){
+
+		// $this->EID 
+
+		// k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>10 AND k.Stat<>99) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0
+
+		return $this->db2->select('m.ItemId,m.ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt,km.CNo,km.CellNo, km.BillStat, k.Stat')
+						->order_by('km.CNo', 'asc')
+						->group_by('km.CNo')
+						->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
+						->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
+						->where_not_in('k.Stat', array(4,6,7,10,99))
+						->get_where('KitchenMain km', array('km.MergeNo' => $TableNo, 
+							'km.EID' => $this->EID,
+							'k.BillStat' => 0,
+							'km.BillStat' => 0,
+							'k.EID' => $this->EID
+							 )
+							)
+						->result_array();
 	}
 
 

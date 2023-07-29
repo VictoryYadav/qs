@@ -185,6 +185,7 @@ class Customer extends CI_Controller {
         $sts = 'error';
         $response = 'Something went wrong';
         $EID = authuser()->EID;
+        $EType = $this->session->userdata('EType');
         if($this->input->method(true)=='POST'){
             // echo "<pre>";
             // print_r($_POST);
@@ -194,7 +195,6 @@ class Customer extends CI_Controller {
             $TempCustId = $this->session->userdata('TempCustId');
             $ChainId = authuser()->ChainId;
             $CNo = $this->session->userdata('CNo');
-            $EType = $this->session->userdata('EType');
             //$Stall = Session::get('Stall');
             //$Ops = Session::get('Ops');
             $TableNo = authuser()->TableNo;
@@ -298,6 +298,7 @@ class Customer extends CI_Controller {
         $data['mCatgId'] = $this->session->userdata('mCatgId');
         $data['cType'] = $this->session->userdata('cType');
         $data['EID'] = $EID;
+        $data['EType'] = $EType;
 
         $data['title'] = 'Order Details';
         $data['language'] = languageArray();
@@ -1375,6 +1376,16 @@ class Customer extends CI_Controller {
 
         $this->load->view('cust/billing', $data);
         
+    }
+
+    public function merge_order($TableNo){
+        $data['title'] = 'Merge/Split Order';
+        $data['language'] = languageArray();
+        $data['orders'] = $this->cust->getOrderDetailsByTableNo($TableNo);
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $this->load->view('cust/mergeOrder', $data);
     }
 
     public function rating($billId){

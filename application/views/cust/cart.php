@@ -12,7 +12,6 @@
 
 .paybtn 
 {
-    width: 50%;
     background: #30b94f;
     color: #fff;
     /*background: #000 !important;*/
@@ -30,9 +29,27 @@
     border-radius: 0 1.5rem 1.5rem 0;
 }
 
+.orderbtn 
+{
+    background: #f76004;
+    color: #fff;
+    /*background: #000 !important;*/
+    /*color: <?php echo isset($body_btn2text)?$body_btn2text:"#000"?> !important;*/
+    height: 35px;
+    margin-left: 0px !important;
+    /*border-radius: 0 1.5rem 1.5rem 0;*/
+}
+
+.orderbtn:hover
+{
+    background: #e97832;
+    color: #fff;
+    height: 35px;
+    margin-left: 0px !important;
+}
+
 .backbtn 
 {
-    width: 50%;
     margin-right: 0px !important;
     border-radius: 1.5rem 0 0 1.5rem;
     background-color: #bfbcbc;
@@ -106,10 +123,19 @@
 
             <!-- btn -->
             <div class="row remove-margin payment-btns fixed-bottom" style=" width: 100%; margin-left: 1px;bottom: 54px !important;">
-
-                <button type="button" class="btn btn-sm backbtn" data-dismiss="modal" width="50%" onclick="goBack()">Menu</button>
-
-                <button type="button" class="btn btn-sm paybtn" data-dismiss="modal" style="width:50%;" onclick="goBill()">Checkout</button>
+                <?php 
+                $width = '50%';
+                if($EType == 5){
+                    $width = '33.33%';
+                }
+                ?>
+                <button type="button" class="btn btn-sm backbtn" data-dismiss="modal" onclick="goBack()" style="width: <?= $width; ?>">Menu</button>
+                <?php 
+                if($EType == 5){
+                ?>
+                <button type="button" class="btn btn-sm orderbtn" data-dismiss="modal" onclick="kotGenerate()" style="width: <?= $width; ?>">Order</button>
+                <?php } ?>
+                <button type="button" class="btn btn-sm paybtn" data-dismiss="modal" onclick="goBill()" style="width: <?= $width; ?>">Checkout</button>
 
             </div>
             <!-- end of btn -->

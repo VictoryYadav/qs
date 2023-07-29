@@ -278,7 +278,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-6 col-6 text-right">
-                                                <button class="btn btn-primary btn-sm" title="Bill Create" id="billCreate" style="display: none;">
+                                                <button class="btn btn-primary btn-sm" title="Bill Create" id="billCreatebtn" style="display: none;">
                                                     <i class="far fa-eye"></i>
                                                 </button>
 
@@ -1158,10 +1158,11 @@
             }
         }
         function tableData(item, index){
-            // console.log(item);
+
+            console.log(item);
             var template = '';
             if (item.BillStat > 0) {
-                        template += `<tr onclick="getRowBill(${item.BillId})" id="${item.TableNo}" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"  style="background-color: #FB8E7E;" class="${item.BillStat > 0 ? ' bill-paid' : ''} ${item.NEW_KOT > 0 ? ' new_order' : ''} ">
+                        template += `<tr onclick="getRowBill(${item.BillId},${item.MergeNo})" id="${item.TableNo}" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"  style="background-color: #FB8E7E;" class="${item.BillStat > 0 ? ' bill-paid' : ''} ${item.NEW_KOT > 0 ? ' new_order' : ''} ">
                 <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})">&nbsp;${item.MergeNo}</td>
                 <td>${item.Amt}</td>
                 <td>${item.StTime}</td>
@@ -1169,7 +1170,7 @@
                 <td>${item.visitNo}</td>
                 `;
             } else if (item.NEW_KOT == 1) {
-                template += `<tr onclick="getRowBill(0)" id="${item.TableNo}" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"   style="background-color: #FDCF76;" class="${item.BillStat > 0 ? ' bill-paid' : ''} ${item.NEW_KOT > 0 ? ' new_order' : ''} " >
+                template += `<tr onclick="getRowBill(0,${item.MergeNo})" id="${item.TableNo}" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"   style="background-color: #FDCF76;" class="${item.BillStat > 0 ? ' bill-paid' : ''} ${item.NEW_KOT > 0 ? ' new_order' : ''} " >
             <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})"> &nbsp;${item.MergeNo}</td>
             <td>${item.Amt}</td>
             <td>${item.StTime}</td>
@@ -1177,7 +1178,7 @@
             <td>${item.visitNo}</td>
             `;
             } else {
-                template += `<tr id="${item.TableNo}" onclick="getRowBill(0)" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"  class="${item.BillStat > 0 ? ' bill-paid' : ''}  ${item.NEW_KOT > 0 ? 'new_order' : ''} " >
+                template += `<tr id="${item.TableNo}" onclick="getRowBill(0,${item.MergeNo})" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"  class="${item.BillStat > 0 ? ' bill-paid' : ''}  ${item.NEW_KOT > 0 ? 'new_order' : ''} " >
             <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})"> &nbsp;${item.MergeNo}</td>
             <td>${item.Amt}</td>
             <td>${item.StTime}</td>
@@ -1244,7 +1245,7 @@
                 }
             }
         }
-        function getRowBill(id){
+        function getRowBill(id, mergeNo){
             if(id > 0){
                 var STVCd = $('#kitchen-code').val();
                 $.ajax({
@@ -1302,9 +1303,10 @@
                         console.log(error);
                     }
                 });
-                $('#billCreate').hide();
+                $('#billCreatebtn').hide();
             }else{
-                $('#billCreate').show();
+                $('#billCreatebtn').attr('onclick', "billCreate("+mergeNo+")");
+                $('#billCreatebtn').show();
                 $('#bill_data_table').hide();
             }
         }
@@ -2657,4 +2659,17 @@ function get_phone_num(){
         }
     });
 }
-    </script>
+
+function billCreate(mergeNo){
+        // console.log(mergeNo);
+    $.post('<?= base_url('restaurant/billCreateRest') ?>',{mergeNo:mergeNo},function(res){
+        if(res.status == 'success'){
+            var billId = res.response;
+          window.location = "<?php echo base_url('restaurant/bill/'); ?>"+billId;
+        }else{
+          alert(res.response);
+          
+        }
+    });
+}
+</script>

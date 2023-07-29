@@ -1,24 +1,5 @@
 <?php $this->load->view('layouts/customer/head'); 
         $EID = authuser()->EID;
-        $ChainId = authuser()->ChainId;
-
-        $CustId = $this->session->userdata('CustId');
-        $OutletId = $this->session->userdata('OutletId');
-        $EType = $this->session->userdata('EType');
-        $Tips = $this->session->userdata('Tips');
-        $PymtOpt = $this->session->userdata('PymtOpt');
-        $ServChrg = $this->session->userdata('ServChrg');
-        $KOTNo = $this->session->userdata('KOTNo');
-        $COrgId = $this->session->userdata('COrgId');
-        $CustNo = $this->session->userdata('CustNo');
-        $CellNo = $this->session->userdata('CellNo');
-
-        $CNo = $this->session->userdata('CNo');
-
-        //menu link
-        $cId = $this->session->userdata('cId');
-        $mCatgId = $this->session->userdata('mCatgId');
-        $cType = $this->session->userdata('cType');
 
         $dbname = $this->session->userdata('my_db');
         $res = getBillData($dbname, $EID, $billId);
@@ -297,71 +278,24 @@
         }
 
         .billView{
-            /*margin-top: 25px;*/
-            /*overflow-y: scroll;
-            height: 78vh;*/
-            height: 400px;
-            overflow: auto; 
+            /*height: 400px;
+            overflow: auto; */
         }
         /*mobile screen only*/
         @media only screen and (max-width: 480px) {
             #billView{
-               height: 480px;
-               overflow: auto; 
+               /*height: 480px;
+               overflow: auto;*/ 
             }
         }
 
-.payment-btns 
-{
-    padding-left: 10px;
-    padding-right: 10px;
-}
 
-.paybtn 
-{
-    width: 50%;
-    background: #30b94f;
-    color: #fff;
-    /*background: #000 !important;*/
-    /*color: <?php echo isset($body_btn2text)?$body_btn2text:"#000"?> !important;*/
-    height: 30px;
-    margin-left: 0px !important;
-    border-radius: 0 1.5rem 1.5rem 0;
-}
-
-.paybtn:hover
-{
-    background: #03bb2c;
-    color: #fff;
-    margin-left: 0px !important;
-    border-radius: 0 1.5rem 1.5rem 0;
-}
-
-.backbtn 
-{
-    width: 50%;
-    margin-right: 0px !important;
-    border-radius: 1.5rem 0 0 1.5rem;
-    background-color: #bfbcbc;
-    color:#fff;
-    height: 30px;
-    /*background-color:#000 !important;*/
-    /*color: <?php echo isset($body_btn1text)?$body_btn1text:"#000"?> !important;*/
-}
-
-.backbtn:hover
-{
-    background-color: #9d9696;
-    color:#fff;   
-}
     </style>
 </head>
 
 <body>
 
-    <!-- Header Section Begin -->
-    <?php $this->load->view('layouts/customer/top'); ?>
-    <!-- Header Section End -->
+
 
     <section class="common-section p-2">
         <div class="container">
@@ -384,21 +318,7 @@
 
                     <div style="border-bottom: 1px solid;"></div>
                     
-                    <?php if($CustNo == 0){?>
-
-                        <div class="row">
-
-                            <div class="col-6"> 
-                            <!-- Name : Ashitosh salvi -->
-                            </div>
-
-                            <div class="col-6" style=" text-align: right;"> 
-                                Cell No: <?= $CellNo; ?>
-                            </div>
-
-                        </div>
-
-                    <?php } ?>
+                    
 
                     <div style="border-bottom: 1px solid;"></div>
 
@@ -406,11 +326,7 @@
                         <div class="col-6">
                             <p style="margin-bottom: unset;font-weight: bold;">Bill No: <?= $billno ?></p>
                         </div>
-                        <?php if ($CustNo != "0") : ?>
-                            <div class="col-6">
-                                <p style="margin-bottom: unset;">Ord: <b><?= $CustNo ?></b></p>
-                            </div>
-                        <?php endif; ?>
+                        
                         <div class="col-12">
                             <p style="margin-bottom: unset;">DATE: <?= $dateOfBill ?></p>
                             <!-- <p><?= $dateOfBill ?></p> -->
@@ -625,30 +541,10 @@
 
                 <div id="editor"></div>
                 
-                <!-- <div class="navbar1 menu-footer1">
-                    <div class="col-12 row text-center" style="padding:0px;">
-                        <div class="col-6 text-center">
-                            <a class="btn btn-success" href="<?= base_url('customer'); ?>" style="width: 100%;">Menu</a>
-                        </div>
-                        <div class="col-6 text-center">
-                            <a href="<?= base_url('customer/rating/'.$billId);?>" class="btn btn-primary" style="width: 100%;">Rating</a>
-                        </div>
-                    </div>
-                </div> -->
-
-                <div class="row remove-margin payment-btns fixed-bottom" style=" width: 100%; margin-left: 1px;bottom: 60px !important;">
-
-                    <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="width: 50%;">Menu</a>
-
-                    <a href="<?= base_url('customer/rating/'.$billId);?>" class="btn btn-sm paybtn" style="width: 50%;">Rating</a>
-
-                </div>
         </div>
     </section>
 
-    <!-- footer section -->
-    <?php $this->load->view('layouts/customer/footer'); ?>
-    <!-- end footer section -->
+  
 
 
     <!-- Js Plugins -->
@@ -675,11 +571,6 @@
                             });
                             doc.save('bill.pdf');
                         });
-                    });
-
-
-                    $('#download-to-pdf').on('click', function() {
-                        alert('Thank you for using Quick Service.');
                     });
 
                     function bill_page(billid){
