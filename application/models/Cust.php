@@ -1460,11 +1460,7 @@ class Cust extends CI_Model{
 	}
 
 	public function getOrderDetailsByTableNo($TableNo){
-
-		// $this->EID 
-
-		// k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>10 AND k.Stat<>99) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0
-
+		
 		return $this->db2->select('m.ItemId,m.ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt,km.CNo,km.CellNo, km.BillStat, k.Stat')
 						->order_by('km.CNo', 'asc')
 						->group_by('km.CNo')

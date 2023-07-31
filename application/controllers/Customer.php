@@ -1029,6 +1029,7 @@ class Customer extends CI_Controller {
 
         $data['EID'] = authuser()->EID;
         $data['ChainId'] = authuser()->ChainId;
+        $data['TableNo'] = authuser()->TableNo;
         // include_once('config.php');
         $data['CustId'] = $this->session->userdata('CustId');
         $data['ONo'] = $this->session->userdata('ONo');
@@ -1379,6 +1380,17 @@ class Customer extends CI_Controller {
     }
 
     public function merge_order($TableNo){
+        if($this->input->method(true)=='POST'){
+            echo "<pre>";
+            print_r($_POST);
+            die;
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $res
+              ));
+             die;
+        }
         $data['title'] = 'Merge/Split Order';
         $data['language'] = languageArray();
         $data['orders'] = $this->cust->getOrderDetailsByTableNo($TableNo);
@@ -1386,6 +1398,30 @@ class Customer extends CI_Controller {
         // print_r($data);
         // die;
         $this->load->view('cust/mergeOrder', $data);
+    }
+
+    public function get_merge_order(){
+        $status = 'error';
+        $res = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+            $TableNo = authuser()->TableNo;
+            $CNo = $_POST['CNo'];
+            $res = $this->db2->select('m.ItemId,m.ItemNm, k.Qty, k.ItmRate, SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt')
+                        ->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
+                        ->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
+                        ->get_where('KitchenMain km', array('km.MergeNo' => $TableNo,'km.CNo' => $CNo))
+                        ->result_array();
+            // echo "<pre>";
+            // print_r($res);
+            // die;
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $res
+              ));
+             die;
+        }
     }
 
     public function rating($billId){
