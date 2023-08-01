@@ -1459,13 +1459,14 @@ class Cust extends CI_Model{
             return $response;
 	}
 
-	public function getOrderDetailsByTableNo($TableNo){
-		
-		return $this->db2->select('m.ItemId,m.ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt,km.CNo,km.CellNo, km.BillStat, k.Stat')
+	public function getOrderDetailsByTableNo($TableNo){		
+
+		return $this->db2->select('u.CustId, u.FName, u.LName, m.ItemId,m.ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt,km.CNo,km.CellNo, km.BillStat, k.Stat')
 						->order_by('km.CNo', 'asc')
 						->group_by('km.CNo')
 						->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
 						->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
+						->join('Users u', 'u.CustId = km.CustId', 'inner')
 						->where_not_in('k.Stat', array(4,6,7,10,99))
 						->get_where('KitchenMain km', array('km.MergeNo' => $TableNo, 
 							'km.EID' => $this->EID,

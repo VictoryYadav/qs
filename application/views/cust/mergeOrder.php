@@ -35,10 +35,10 @@
                                 ?>
                                 <tr onclick="getOrderDetails(<?= $ord['CNo']; ?>)">
                                     <td>
-                                        <input type="checkbox" name="" checked="" onchange="calcValue(<?= $ord['ItemId']; ?>,<?= $ord['OrdAmt']; ?>)" id="item_<?= $ord['ItemId']; ?>">
+                                        <input type="checkbox" name="" checked="" onchange="calcValue(<?= $ord['CNo']; ?>,<?= $ord['OrdAmt']; ?>)" id="item_<?= $ord['CNo']; ?>">
                                     </td>
                                     <td>
-                                        <?= $ord['CellNo']; ?>
+                                        <?= $ord['CellNo']; ?> <small>(<?= $ord['FName'].' '.$ord['LName']; ?>)</small>
                                     </td>
                                     <td>
                                         <?= $ord['OrdAmt']; ?>
@@ -56,6 +56,30 @@
                             <input type="submit" class="btn btn-sm btn-success" value="Merge">
                         </div>
                     </form>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <td>Total merge bill value</td>
+                                <td>11111</td>
+                            </tr>
+                            <tr>
+                                <td>Split for</td>
+                                <td><input type="text"></td>
+                                <td>Split Bill</td>
+                                <td>
+                                    <select name="" id="" class="form-control">
+                                        <option value="0">Choose</option>
+                                        <option value="1">Food / Bar</option>
+                                        <option value="2">Equally Food & Bar</option>
+                                        <option value="3">Equally Food</option>
+                                        <option value="4">% Age Wise</option>
+                                        <option value="5">Amount Wise</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -116,33 +140,28 @@
               var data = res.response;
               console.log(data);
               var temp = '';
+              var total = 0;
               for (var i = 0; i < data.length; i++) {
-                  temp += '<tr><td>'+data[i].ItemNm+'</td><td>'+data[i].Qty+'</td><td>'+data[i].OrdAmt+'</td></tr>';
+                total = parseInt(total) + parseInt(data[i].Qty * data[i].ItmRate);
+                  temp += '<tr><td>'+data[i].ItemNm+'</td><td>'+data[i].Qty+'</td><td>'+(data[i].Qty * data[i].ItmRate)+'</td></tr>';
               }
+              temp +='<tr><td></td><td>Total</td><td><b>'+total+'</b></td></tr>';
               $('#orderBody').html(temp);
-              // $('#orderDetails').modal('show');
+              $('#orderDetails').modal('show');
             }else{
             }
         });
    }
 
    function calcValue(itemId, val){
-    var grandTotal = 0;
-    var total = $('#grandTotal').text();
-    console.log('kk '+val+' tt '+total);
-
-    if ($('item_'+itemId).is(':checked')) {
-        grandTotal = parseInt(total) + parseInt(val);
-    }else{
-        grandTotal = parseInt(total) - parseInt(val);
-    }
-
-    // if(total > 0){
-    //     grandTotal = parseInt(total) - parseInt(val);
-    // }else{
-    //     grandTotal = parseInt(total) + parseInt(val);
-    // }
-    $('#grandTotal').html(grandTotal);
+        var grossTotal = $('#grandTotal').text();
+        var total = 0;
+        if ($('#item_'+itemId).is(':checked')) {
+            total = parseInt(grossTotal) + parseInt(val);
+        }else{
+            total = parseInt(grossTotal) - parseInt(val);
+        }
+       $('#grandTotal').html(total);    
    }
 
 </script>

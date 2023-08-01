@@ -1407,7 +1407,7 @@ class Customer extends CI_Controller {
             $status = 'success';
             $TableNo = authuser()->TableNo;
             $CNo = $_POST['CNo'];
-            $res = $this->db2->select('m.ItemId,m.ItemNm, k.Qty, k.ItmRate, SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt')
+            $res = $this->db2->select('m.ItemId,m.ItemNm, k.Qty, k.ItmRate')
                         ->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
                         ->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
                         ->get_where('KitchenMain km', array('km.MergeNo' => $TableNo,'km.CNo' => $CNo))
