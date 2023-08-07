@@ -57,7 +57,9 @@
                     </thead>
                     <tbody id="addBody">
                         <?php 
+                            $count = 0;
                             foreach ($mobile as $key) {
+                                $count++;
                             ?>
                         <tr>
                             <td><input type="text" value="<?= $key; ?>" placeholder="Mobile" class="form-control" required></td>
@@ -70,13 +72,13 @@
                             </td>
                             <!-- gross amt + tips  percentage -->
                             <td>
-                                <input type="text" class="form-control grossAmtRow" disabled="" name="totItemAmt">
+                                <input type="text" class="form-control grossAmtRow" disabled="" name="totItemAmt" id="grossAmtRow_<?php echo $count; ?>">
                             </td>
                             <td>
-                                <input type="number" value="" placeholder="Percent" class="form-control percentRow">
+                                <input type="number" value="" placeholder="Percent" class="form-control percentRow" id="percentRow_<?php echo $count; ?>" onchange="calcPerAmt(<?php echo $count; ?>)">
                             </td>
                             <td>
-                                <input type="number" value="" placeholder="Amount" class="form-control amountRow">
+                                <input type="number" value="" placeholder="Amount" class="form-control amountRow" id="amountRow_<?php echo $count; ?>" onchange="calcAmt(<?php echo $count; ?>)">
                             </td>
                             <td>
                                 <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>
@@ -110,8 +112,10 @@
         
     });
 
+   var rowCount = $('#splitTable tr').length - 1;
    // add row
    function addRow(){
+    rowCount++;
     var row = '<tr>\
                             <td><input type="text" value="" placeholder="Mobile" class="form-control" required></td>\
                             <td>\
@@ -123,13 +127,13 @@
                                 </select>\
                             </td>\
                             <td>\
-                                <input type="text" class="form-control grossAmtRow" disabled="" name="totItemAmt">\
+                                <input type="text" class="form-control grossAmtRow" disabled="" name="totItemAmt" id="grossAmtRow_'+rowCount+'">\
                             </td>\
                             <td>\
-                                <input type="number" value="" placeholder="Percent" class="form-control percentRow">\
+                                <input type="number" value="" placeholder="Percent" class="form-control percentRow" id="percentRow_'+rowCount+'" onchange="calcPerAmt('+rowCount+')">\
                             </td>\
                             <td>\
-                                <input type="number" value="" placeholder="Amount" class="form-control amountRow">\
+                                <input type="number" value="" placeholder="Amount" class="form-control amountRow" id="amountRow_'+rowCount+'" onchange="calcAmt('+rowCount+')">\
                             </td>\
                             <td>\
                                 <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>\
@@ -143,10 +147,13 @@
     $('.percentRow').val('');
     $('.amountRow').val('');
     $('.grossAmtRow').val(0);
+    
    }
 
    // remove row
    $("#addBody").on('click','.removeRow',function(){
+    rowCount--;
+
         $(this).parent().parent().remove();
         $('#splitType').val(0);
 
@@ -159,9 +166,9 @@
 
    function splitChange(){
         var totalAmt = $('#payable').text();
-
         var grossAmt = $('#grossAmt').text();
         var tipAmt = $('#tipAmt').text();
+
         var rowCount = $('#splitTable tr').length - 1;
         var val = $('#splitType').val();
         console.log(val+' ,row '+rowCount+', amt= '+totalAmt);
@@ -210,6 +217,38 @@
             alert('Choose Split Type');
         }
 
+   }
+
+   function calcPerAmt(rowCount){
+    var totalAmt = $('#payable').text();
+    var grossAmt = $('#grossAmt').text();
+    var tipAmt = $('#tipAmt').text();
+
+    var val = $('#percentRow_'+rowCount).val();
+    console.log(rowCount+' v '+val);
+
+    itemVal = parseInt(grossAmt) + parseInt(tipAmt);
+    var grossVal = (parseInt(itemVal) * parseInt(val)) / 100;
+    $('#grossAmtRow_'+rowCount).val(grossVal.toFixed(2));
+    // amountRow_1
+    var amt = (parseInt(totalAmt) * parseInt(val)) / 100;
+    $('#amountRow_'+rowCount).val(amt.toFixed(2));
+   }
+
+   function calcAmt(rowCount){
+    var totalAmt = $('#payable').text();
+    var grossAmt = $('#grossAmt').text();
+    var tipAmt = $('#tipAmt').text();
+
+    var val = $('#amountRow_'+rowCount).val();
+    console.log(rowCount+' v '+val);
+
+    var per =  parseFloat(val) / parseInt(totalAmt) * 100;
+    $('#percentRow_'+rowCount).val(per.toFixed(2));
+
+    itemVal = parseInt(grossAmt) + parseInt(tipAmt);
+    var grossVal = (parseInt(itemVal) * parseInt(per.toFixed(2))) / 100;
+    $('#grossAmtRow_'+rowCount).val(grossVal.toFixed(2))
    }
 
 
