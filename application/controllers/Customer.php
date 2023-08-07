@@ -1385,7 +1385,7 @@ class Customer extends CI_Controller {
         $data['language'] = languageArray();
         $data['orders'] = $this->cust->getOrderDetailsByTableNo($TableNo);
         $data['MergeNo'] = $TableNo;
-        $data['Tips'] = 0;
+        $data['Tips'] = 1;
         $data['EType'] = $this->session->userdata('EType');
         $data['Cash'] = $this->session->userdata('Cash');
         // echo "<pre>";
@@ -1472,6 +1472,21 @@ class Customer extends CI_Controller {
             echo json_encode($response);
             die();
         }
+    }
+
+    public function splitBill(){
+        
+        $data['mobile'] = $this->session->userdata('split_mobile');
+        $data['payable'] = $_POST['payable'];
+        $data['grossItemAmt'] = $_POST['grossItemAmt'];
+        $data['tip'] = $_POST['tip'];
+        
+        $data['title'] = 'Split Bill';
+        $data['language'] = languageArray();
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $this->load->view('cust/split_bill', $data);
     }
 
     public function rating($billId){

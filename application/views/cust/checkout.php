@@ -131,8 +131,8 @@
                     </div>
                     <div class="col-4">
                         <input type="hidden" name="payable" id="payableAmt">
-                        <input type="text" name="totalAmt" id="totalAmt">
-                        <p class="bill-ord-amt text-right" id="payable" style="    margin-bottom: 7px;"></p>
+                        <input type="hidden" name="totalAmt" id="totalAmt">
+                        <p class="bill-ord-amt text-right" id="payable" style="    margin-bottom: 7px;margin-right: 15px;"></p>
                     </div>
                 </div>
 

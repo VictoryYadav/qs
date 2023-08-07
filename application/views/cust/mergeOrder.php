@@ -1,6 +1,75 @@
 <?php $this->load->view('layouts/customer/head'); ?>
 <style>
 
+    .bill-body {
+        padding-bottom: 70px;
+        /*background-color: #0a88ff;*/
+        /*background-color: <?php echo isset($body_bg)?$body_bg:"#000"?> !important;
+        color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
+        /*padding-top: 65px;*/
+        height: -webkit-fill-available;
+    }
+
+    .hideDiv {
+        display: none;
+    }
+
+    .pay-bill {
+        border: 1px solid #fff;
+        width: 125px;
+        border-radius: 20px;
+        margin-top: 10px;
+    }
+
+    .order-list {
+        padding-left: 15px;
+        padding-right: 15px;
+        /*color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
+    }
+
+    .order-list::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .order-list::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+    }
+
+    .order-list::-webkit-scrollbar-thumb {
+        background-color: white;
+        /*outline: 1px solid slategrey;*/   
+    }
+
+    .main-ammount {
+        /*color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
+        padding: 0 15px;
+    }
+
+    .bill-ord-amt {
+        /*color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .remove-row-margin {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .bill_box{
+        height: 314px;
+        overflow-y: scroll;
+    }
+
+    #tips{
+        width: 60px; 
+        float: right;
+        border-radius:15px;
+        font-size:13px;
+        text-align:center;
+        border: 1px solid #ced4da;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
 </style>
 </head>
 
@@ -12,48 +81,55 @@
 
     <section class="common-section p-2 dashboard-container">
         <div class="container">
+            <form id="splitForm" action="<?= base_url('customer/splitBill'); ?>" method="post">
             <div class="row">
                 <div class="col-md-12">
-                    <form action="">
-                        <div class="table-responsive">
-                          <table class="table table-striped">
+                    <div class="table-responsive">
+                      <table class="table table-striped">
 
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>CellNo</th>
-                                    <th>Order Amt</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <?php 
-                                if(!empty($orders)){
-                                    $total = 0;
-                                    foreach ($orders as $ord) {
-                                        $total = $total + $ord['OrdAmt'];
-                                ?>
-                                <tr onclick="getOrderDetails(<?= $ord['CNo']; ?>)">
-                                    <td>
-                                        <input type="checkbox" name="" checked="" onchange="calcValue(<?= $ord['CNo']; ?>,<?= $ord['OrdAmt']; ?>)" id="item_<?= $ord['CNo']; ?>">
-                                    </td>
-                                    <td>
-                                        <?= $ord['CellNo']; ?> <small>(<?= $ord['FName'].' '.$ord['LName']; ?>)</small>
-                                    </td>
-                                    <td>
-                                        <?= $ord['OrdAmt']; ?>
-                                    </td>
-                                </tr>
-                            <?php } } ?>
+                        <thead>
                             <tr>
-                               <td></td> <td>Grand Total</td><td id="grandTotal" style="font-weight: bold;"><?= $total; ?></td>
+                                <th>#</th>
+                                <th>CellNo</th>
+                                <th>Order Amt</th>
                             </tr>
-                            </tbody>
+                        </thead>
 
-                          </table>
-                        </div>
-                    </form>
+                        <tbody>
+                            <?php 
+                            if(!empty($orders)){
+                                $total = 0;
+                                $split_mobile = array();
+                                foreach ($orders as $ord) {
+                                    $total = $total + $ord['OrdAmt'];
+                                    $split_mobile[] = $ord['CellNo'];
+                            ?>
+                            <tr onclick="getOrderDetails(<?= $ord['CNo']; ?>)">
+                                <input type="hidden" name="mobile[]" value="<?= $ord['CellNo']; ?>">
+                                <td>
+                                    <input type="checkbox" name="" checked="" onchange="calcValue(<?= $ord['CNo']; ?>,<?= $ord['OrdAmt']; ?>)" id="item_<?= $ord['CNo']; ?>">
+                                </td>
+                                <td>
+                                    <?= $ord['CellNo']; ?> <small>(<?= $ord['FName'].' '.$ord['LName']; ?>)</small>
+                                </td>
+                                <td>
+                                    <?= $ord['OrdAmt']; ?>
+                                </td>
+                            </tr>
+                        <?php } }
+                            $this->session->set_userdata('split_mobile', $split_mobile);
+                         ?>
+                        <tr>
+                           <td></td> <td>Grand Total</td>
+                           <td id="grandTotal" style="font-weight: bold;">
+                            <input type="hidden" name="grossItemAmt" value="<?= $total; ?>">
+                            <?= $total; ?>
+                           </td>
+                        </tr>
+                        </tbody>
 
+                      </table>
+                    </div>
                 </div>
             </div>
             <!-- checkout -->
@@ -87,8 +163,8 @@
                     </div>
                     <div class="col-4">
                         <input type="hidden" name="payable" id="payableAmt">
-                        <input type="text" name="totalAmt" id="totalAmt">
-                        <p class="bill-ord-amt text-right" id="payable" style="    margin-bottom: 7px;"></p>
+                        <input type="hidden" name="totalAmt" id="totalAmt">
+                        <p class="bill-ord-amt text-right" id="payable" style="    margin-bottom: 7px;margin-right: 15px;"></p>
                     </div>
                 </div>
 
@@ -96,39 +172,17 @@
 
                 <div class="row" style="margin: 0px;">
                     <div class="col-6 text-right">
-                        
+                        <button class="btn btn-sm btn-warning" type="submit">
+                            Split Bill
+                        </button>
+                        <button class="btn btn-sm btn-primary">
+                            Pay Bill
+                        </button>
                     </div>
-                    
-                   
-                        <?php if ($Cash == 1) : ?>
-                            
-                            <div class="row remove-row-margin" style="width: 100%;">
-                                
-                            </div>
-                            
-                        <?php else : ?>
-                            <div class="row remove-row-margin" style="width: 100%;">
-                                <div class="col-12 text-center">
-                                    <button id="pay" class="btn btn-primary pay-bill btn-sm">Pay Online</button>
-                                </div>
-                                <?php if ($EType == 5) { ?>
-                                    <div class="col-12 text-center" style="width: 50%;">
-                                        <a href="meargebill.php"><button class="btn btn-primary pay-bill btn-sm" style="background: #fd6b03;color: #FFF; font-weight: 600; "> Merge Bills </button></a>
-                                    </div>
-                                <?php } ?>
-                            </div>
-                        <?php endif; ?>
-                    
                 </div>
             </div>
-
-            <div id="myOverlay"></div>
-
-            <div id="loadingGIF">
-                <p id="total-amount_loader" style="text-align: center;position: absolute;color: white;margin-top: -33px;/* width: 159%; */font-size: 15px;font-weight: 900;"> </p>
-                <img src="<?= base_url();?>assets/img/loading.gif" style="height: 100px; width: 100px;">
-                <p style="text-align: center; position: absolute; color: white">Please Pay To Cashier</p>
-            </div> 
+            </form>
+            
             <!-- end checkout -->
         </div>
     </section>
@@ -348,8 +402,8 @@
                     html_body +=`<div class="main-ammount">`;
                     html_body +=`<table style="width:100%;">`;
                     html_body +=`<tr>`;
-                    html_body +=`   <th>Service Charge @ `+ServChrg+` %</th>`;
-                    html_body +=`   <td class="text-right">`+serv.toFixed(2)+`</td>`;
+                    html_body +=`<th>Service Charge @ `+ServChrg+` %</th>`;
+                    html_body +=`<td class="text-right">`+serv.toFixed(2)+`</td>`;
                     html_body +=`</tr>`;
                     html_body +=`</table>`;
                     html_body +=`</div>`;
@@ -400,14 +454,13 @@
                     html_body +=`<table style="width:100%;">`;
                     html_body +=`<tr class="<?= ($Tips == 0 ? 'hideDiv' : ''); ?>">`;
                     html_body +=`   <th>Tips</th>`;
-                    html_body +=`   <td><input id="tips" type="number" class="" value="0" onchange="change_tip()"></td>`;
+                    html_body +=`   <td><input id="tips" type="number" class="" value="0" onchange="change_tip()" name="tip"></td>`;
                     html_body +=`</tr>`;
                     html_body +=`</table>`;
                     html_body +=`</div>`;
                 }
 
                 $('.bill_box').html(html_body);
-
                 $("#payable").text(grand_total);
                 $("#payableAmt").val(grand_total);
                 $("#totalAmt").val(itemGrossAmt);
@@ -451,6 +504,15 @@
             total = parseInt(grossTotal) - parseInt(val);
         }
        $('#grandTotal').html(total);    
+   }
+
+   function splitBill(){
+        var mobile = $('#splitForm').serializeArray();
+        var payable = $('#payableAmt').val();
+        // console.log(mobile+' '+payable);
+        $.post('<?= base_url('customer/splitBill') ?>',{mobile:mobile, payable:payable},function(res){
+        }
+        );
    }
 
 </script>
