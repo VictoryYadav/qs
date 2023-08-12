@@ -81,7 +81,7 @@
 
     <section class="common-section p-2 dashboard-container">
         <div class="container">
-            <form id="splitForm" action="<?= base_url('customer/splitBill'); ?>" method="post">
+            <form id="splitForm" action="<?= base_url('customer/splitOrder/'.$MergeNo); ?>" method="post">
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
@@ -107,6 +107,7 @@
                             <tr onclick="getOrderDetails(<?= $ord['CNo']; ?>)">
                                 <input type="hidden" name="mobile[]" value="<?= $ord['CellNo']; ?>">
                                 <td>
+                                    <input type="hidden" name="CNo[]" value="<?= $ord['CNo']; ?>">
                                     <input type="checkbox" name="" checked="" onchange="calcValue(<?= $ord['CNo']; ?>,<?= $ord['OrdAmt']; ?>)" id="item_<?= $ord['CNo']; ?>">
                                 </td>
                                 <td>
@@ -162,7 +163,9 @@
                         <label class="bill-ord-amt" style="margin-bottom: 7px;">Payable</label>
                     </div>
                     <div class="col-4">
-                        <input type="hidden" name="payable" id="payableAmt">
+                        <input type="hidden" id="payableAmt">
+                        <input type="hidden" name="payable" id="payableAmount">
+                        
                         <input type="hidden" name="totalAmt" id="totalAmt">
                         <p class="bill-ord-amt text-right" id="payable" style="    margin-bottom: 7px;margin-right: 15px;"></p>
                     </div>
@@ -255,6 +258,7 @@
                 var del_charge = response.kitcheData[0]['DelCharge'];
                 var pck_charge = response.kitcheData[0]['TotPckCharge'];
                 var ServChrg = response.kitcheData[0]['ServChrg'];
+                var MCNo = response.kitcheData[0]['MCNo'];
                 
                 var disc = parseInt(response.kitcheData[0]['totBillDiscAmt']) + parseInt(response.kitcheData[0]['TotItemDisc']) + parseFloat(response.kitcheData[0]['RtngDiscAmt']);
                 
@@ -454,7 +458,7 @@
                     html_body +=`<table style="width:100%;">`;
                     html_body +=`<tr class="<?= ($Tips == 0 ? 'hideDiv' : ''); ?>">`;
                     html_body +=`   <th>Tips</th>`;
-                    html_body +=`   <td><input id="tips" type="number" class="" value="0" onchange="change_tip()" name="tip"></td>`;
+                    html_body +=`   <td><input type="hidden" name="MCNo" value="`+MCNo+`"><input id="tips" type="number" class="" value="0" onchange="change_tip()" name="tip"></td>`;
                     html_body +=`</tr>`;
                     html_body +=`</table>`;
                     html_body +=`</div>`;
@@ -464,6 +468,7 @@
                 $("#payable").text(grand_total);
                 $("#payableAmt").val(grand_total);
                 $("#totalAmt").val(itemGrossAmt);
+                $("#payableAmount").val(grand_total);
 
             },
             error: (xhr, status, error) => {
@@ -472,6 +477,16 @@
                 console.log(error);
             }
         });
+    }
+
+    function change_tip(){
+        var tips = $("#tips").val();
+        var payableAmt  = $('#payableAmt').val();
+
+        var total =parseFloat( payableAmt ) + parseInt(tips);
+
+        $("#payable").text(total);
+        $("#payableAmount").val(total);
     }
 
    function getOrderDetails(CNo){

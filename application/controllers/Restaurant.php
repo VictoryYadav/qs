@@ -2191,6 +2191,7 @@ class Restaurant extends CI_Controller {
         // test
 
         if (isset($_POST['mergeTables']) && $_POST['mergeTables']) {
+
             $selectedTables = json_decode($_POST['selectedTables']);
             if (count($selectedTables) > 1) {
 
@@ -2199,7 +2200,8 @@ class Restaurant extends CI_Controller {
                     $selectedTablesString = implode(',', $selectedTables); 
                     $q = "UPDATE Eat_tables set MergeNo = '$mergeNo', Stat = 1 where TableNo in ($selectedTablesString)";
                     $result = $this->db2->query($q);
-                    $result1 = $this->db2->query("UPDATE KitchenMain set MergeNo = '$mergeNo' where TableNo in ($selectedTablesString) and BillStat = 0");
+                    $result1 = $this->db2->query("UPDATE KitchenMain km set km.MergeNo = '$mergeNo', km.MCNo=(select km1.CNo from KitchenMain km1 where km1.TableNo = $selectedTables[0] and km1.BillStat = 0) where km.TableNo in ($selectedTablesString) and km.BillStat = 0");
+                    $this->db2->query("UPDATE Kitchen k set k.MergeNo = '$mergeNo', k.MCNo=(select km1.CNo from KitchenMain km1 where km1.TableNo = $selectedTables[0] and km1.BillStat = 0 ) where k.TableNo in ($selectedTablesString) and k.BillStat = 0");
 
                     if($result){
                         $response = [

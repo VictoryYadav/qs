@@ -220,16 +220,23 @@
 
                         var recmnd = '';
                         if(item.recom > 0){
-                            recmnd = `<a onclick="recommendation(${item.ItemId}, '${item.ItemNm}')" style="cursor:pointer;background:yellow;">`;
+                            recmnd = `<a onclick="recommendation(${item.ItemId}, '${item.ItemNm}')" style="cursor:pointer;color:green;">`;
+                        }
+
+                        // for italic
+                        var italicItem = `${itemName}`;
+                        if(item.Stat == 0){
+                            
+                            italicItem = `<i>${itemName}</i>`;
                         }
 
                         template += ` <tr> `;
                         if(item.Itm_Portion > 4){
                             template += ` <td>${recmnd}
-                                ${itemName}  ( ${item.Portions} )
+                                ${italicItem}  ( ${item.Portions} )
                             </a></td> `;
                         }else{
-                            template += ` <td>${itemName}</td> `;
+                            template += ` <td>${italicItem}</td> `;
                         }
 
                         template += ` <input type="hidden" name="OrdNo[]" value="${item.OrdNo}" /><td class="text-center">

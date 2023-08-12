@@ -118,10 +118,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $CI->User->gettingBiliingData($dbname, $EID, $billId);
 	}
 
-	function getBillingDataByEID_CNo($EID, $CNo){
+	function getBillingDataByEID_CNo($EID, $CNo, $per_cent){
 		$CI = & get_instance();
 		$CI->load->model('Cust');
-		return $CI->Cust->fetchBiliingData($EID, $CNo);
+		return $CI->Cust->fetchBiliingData($EID, $CNo, $per_cent);
 	}
 
 	function billCreate($EID, $CNo, $postData){

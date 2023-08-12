@@ -12,86 +12,95 @@
 
     <section class="common-section p-2 dashboard-container">
         <div class="container">
-            <div class="row">
-                <div class="col-md-2">
-                    <label for="">Payble Amount : </label>
-                    <b id="payable"><?= round($payable); ?></b>
-                </div>
-                <div class="col-md-2">
-                    <label for="">Gross Amount : </label>
-                    <b id="grossAmt"><?= round($grossItemAmt); ?></b>
-                </div>
+            <form action="<?= base_url('customer/splitBill/'.$MergeNo); ?>" method="post">
+                <input type="hidden" name="payableAmount" value="<?= round($payable); ?>">
+                <input type="hidden" name="grossAmount" value="<?= round($grossItemAmt); ?>">
+                <input type="hidden" name="tipAmount" value="<?= round($tip); ?>">
+                <input type="hidden" name="MergeNo" value="<?= round($MergeNo); ?>">
+                <input type="hidden" name="MCNo" value="<?= round($MCNo); ?>">
 
-                <div class="col-md-2">
-                    <label for="">Tip Amount : </label>
-                    <b id="tipAmt"><?= round($tip); ?></b>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="">Payble Amount : </label>
+                        <b id="payable"><?= round($payable); ?></b>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="">Gross Amount : </label>
+                        <b id="grossAmt"><?= round($grossItemAmt); ?></b>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="">Tip Amount : </label>
+                        <b id="tipAmt"><?= round($tip); ?></b>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <button class="btn btn btn-sm btn-success" onclick="addRow()"><i class="fa fa-plus"></i> Add Cell Number</button>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="">Split Type : </label>
+                        <select name="splitType" id="splitType" onchange="splitChange()" required="">
+                            <option value="">Choose Split Type</option>
+                            <option value="1">Food & Bar Separate</option>
+                            <option value="2">Equal Split</option>
+                            <option value="3">Manual Percent</option>
+                            <option value="4">Manual Amount</option>
+                        </select>
+                    </div>
                 </div>
+                    
+                <div class="table-responsive">
+                    <table class="table" id="splitTable">
+                        <thead>
+                            <tr>
+                                <th>Mobile</th>
+                                <th>Messaging Channel</th>
+                                <th></th>
+                                <th>%</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="addBody">
+                            <?php 
+                                $count = 0;
+                                foreach ($mobile as $key) {
+                                    $count++;
+                                ?>
+                            <tr>
+                                <td>
+                                    <input type="number" value="<?= $key; ?>" placeholder="Mobile" class="form-control" required name="mobile[]">
+                                </td>
+                                <td>
+                                    <select name="msgFormat[]" id="" class="form-control" required>
+                                        <option value="">Messaging Channel</option>
+                                        <option value="W">WhatsApp</option>
+                                        <option value="E">Email</option>
+                                    </select>
+                                </td>
+                                <!-- gross amt + tips  percentage -->
+                                <td>
+                                    <input type="text" class="form-control grossAmtRow" name="totItemAmt[]" id="grossAmtRow_<?php echo $count; ?>" readonly>
+                                </td>
+                                <td>
+                                    <input type="number" placeholder="Percent" class="form-control percentRow" id="percentRow_<?php echo $count; ?>" onchange="calcPerAmt(<?php echo $count; ?>)" name="percent[]">
+                                </td>
+                                <td>
+                                    <input type="number" placeholder="Amount" class="form-control amountRow" id="amountRow_<?php echo $count; ?>" onchange="calcAmt(<?php echo $count; ?>)" required name="amount[]">
+                                </td>
+                                <td>
+                                    <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+                <input type="submit" class="btn btn-sm btn-success" value="Split">
+            </form>
                 
-                <div class="col-md-2">
-                    <button class="btn btn btn-sm btn-success" onclick="addRow()"><i class="fa fa-plus"></i> Add Cell Number</button>
-                </div>
-
-                <div class="col-md-2">
-                    <label for="">Split Type : </label>
-                    <select name="splitType" id="splitType" onchange="splitChange()">
-                        <option value="0">Choose Split Type</option>
-                        <option value="1">Food & Bar Separate</option>
-                        <option value="2">Equal Split</option>
-                        <option value="3">Manual Percent</option>
-                        <option value="4">Manual Amount</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="table-responsive">
-                <table class="table" id="splitTable">
-                    <thead>
-                        <tr>
-                            <th>Mobile</th>
-                            <th>Messaging Channel</th>
-                            <th></th>
-                            <th>%</th>
-                            <th>Amount</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="addBody">
-                        <?php 
-                            $count = 0;
-                            foreach ($mobile as $key) {
-                                $count++;
-                            ?>
-                        <tr>
-                            <td><input type="text" value="<?= $key; ?>" placeholder="Mobile" class="form-control" required></td>
-                            <td>
-                                <select name="" id="" class="form-control">
-                                    <option value="">Messaging Channel</option>
-                                    <option value="">WhatsApp</option>
-                                    <option value="">Email</option>
-                                </select>
-                            </td>
-                            <!-- gross amt + tips  percentage -->
-                            <td>
-                                <input type="text" class="form-control grossAmtRow" disabled="" name="totItemAmt" id="grossAmtRow_<?php echo $count; ?>">
-                            </td>
-                            <td>
-                                <input type="number" value="" placeholder="Percent" class="form-control percentRow" id="percentRow_<?php echo $count; ?>" onchange="calcPerAmt(<?php echo $count; ?>)">
-                            </td>
-                            <td>
-                                <input type="number" value="" placeholder="Amount" class="form-control amountRow" id="amountRow_<?php echo $count; ?>" onchange="calcAmt(<?php echo $count; ?>)">
-                            </td>
-                            <td>
-                                <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>
-                            </td>
-                        </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-            </div>
-
                 
-                <br><br><br>
-                <button class="btn btn-sm btn-success">Split</button>
             
         </div>
     </section>
@@ -117,23 +126,22 @@
    function addRow(){
     rowCount++;
     var row = '<tr>\
-                            <td><input type="text" value="" placeholder="Mobile" class="form-control" required></td>\
+                            <td><input type="text" placeholder="Mobile" class="form-control" required name="mobile[]"></td>\
                             <td>\
-                                <select name="" id="" class="form-control">\
+                                <select name="msgFormat[]" class="form-control" required>\
                                     <option value="">Choose MSG Type</option>\
-                                    <option value="">WhatsApp</option>\
-                                    <option value="">Email</option>\
-                                    <option value="">Message</option>\
+                                    <option value="W">WhatsApp</option>\
+                                    <option value="E">Email</option>\
                                 </select>\
                             </td>\
                             <td>\
-                                <input type="text" class="form-control grossAmtRow" disabled="" name="totItemAmt" id="grossAmtRow_'+rowCount+'">\
+                                <input type="text" class="form-control grossAmtRow" readonly="" name="totItemAmt[]" id="grossAmtRow_'+rowCount+'">\
                             </td>\
                             <td>\
-                                <input type="number" value="" placeholder="Percent" class="form-control percentRow" id="percentRow_'+rowCount+'" onchange="calcPerAmt('+rowCount+')">\
+                                <input type="number" name="percent[]" placeholder="Percent" class="form-control percentRow" id="percentRow_'+rowCount+'" onchange="calcPerAmt('+rowCount+')">\
                             </td>\
                             <td>\
-                                <input type="number" value="" placeholder="Amount" class="form-control amountRow" id="amountRow_'+rowCount+'" onchange="calcAmt('+rowCount+')">\
+                                <input type="number" name="amount[]" placeholder="Amount" class="form-control amountRow" id="amountRow_'+rowCount+'" onchange="calcAmt('+rowCount+')" required>\
                             </td>\
                             <td>\
                                 <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>\
@@ -142,8 +150,8 @@
     $('#addBody').append(row) 
     $('#splitType').val(0);
 
-    $('.percentRow').removeAttr("disabled");
-    $('.amountRow').removeAttr("disabled");
+    $('.percentRow').removeAttr("readonly");
+    $('.amountRow').removeAttr("readonly");
     $('.percentRow').val('');
     $('.amountRow').val('');
     $('.grossAmtRow').val(0);
@@ -157,8 +165,8 @@
         $(this).parent().parent().remove();
         $('#splitType').val(0);
 
-        $('.percentRow').removeAttr("disabled");
-        $('.amountRow').removeAttr("disabled");
+        $('.percentRow').removeAttr("readonly");
+        $('.amountRow').removeAttr("readonly");
         $('.percentRow').val('');
         $('.amountRow').val('');
         $('.grossAmtRow').val(0);
@@ -189,29 +197,29 @@
 
                 grsAmt = (parseInt(grossAmt) + parseInt(tipAmt)) / rowCount;
 
-                $('.percentRow').attr("disabled", "disabled");
-                $('.amountRow').attr("disabled", "disabled");
+                $('.percentRow').attr("readonly", "");
+                $('.amountRow').attr("readonly", "");
 
                 $('.percentRow').val(per.toFixed(2));
                 $('.amountRow').val(amt.toFixed(2));
                 $('.grossAmtRow').val(grsAmt.toFixed(2));
             }else if(val == 3){
-                $('.percentRow').removeAttr("disabled");
-                $('.amountRow').attr("disabled", "disabled"); 
+                $('.percentRow').removeAttr("readonly");
+                $('.amountRow').attr("readonly", ""); 
 
                 $('.grossAmtRow').val(0);
                 $('.percentRow').val(0);
                 $('.amountRow').val(0);
             }else if(val == 4){
-                $('.amountRow').removeAttr("disabled");
-                $('.percentRow').attr("disabled", "disabled");
+                $('.amountRow').removeAttr("readonly");
+                $('.percentRow').attr("readonly", "");
 
                 $('.grossAmtRow').val(0);
                 $('.percentRow').val(0);
                 $('.amountRow').val(0);
             }else{
-                $('.percentRow').removeAttr("disabled");
-                $('.amountRow').removeAttr("disabled");
+                $('.percentRow').removeAttr("readonly");
+                $('.amountRow').removeAttr("readonly");
             }
         }else{
             alert('Choose Split Type');
