@@ -353,11 +353,12 @@
                 html += `</tr>`;
 
                 var sub_total_temp = sub_total;
+                var totSGST = 0;
                 for (let index = 0; index < response.TaxData[initil_value].length; index++) {
                     const element = response.TaxData[initil_value][index];
                     
                         if(element['Included'] != 0 ){
-
+                            totSGST = totSGST + parseFloat(element['TaxPcent']);
                             html += `<tr>`;
                             html += `<td>${element['ShortName']} ${element['TaxPcent']} % </td>`;
                             html += `<td class="text-center"></td>`;
@@ -375,7 +376,7 @@
 
                 }
                 grand_total = grand_total + sub_total;
-                html += `<tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
+                html += `<input type="hidden" name="tot_sgst" value="`+totSGST+`" ><tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
                         html += `<td><b>Sub Total :</b> </td>`;
                         html += `<td class="text-center"></td>`;
                         html += `<td class="text-center"></td>`;

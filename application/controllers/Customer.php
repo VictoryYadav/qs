@@ -1495,7 +1495,9 @@ class Customer extends CI_Controller {
     }
 
     public function splitOrder($MergeNo){
-        
+        // echo "<pre>";
+        // print_r($_POST);
+        // die;
         $CNo = $this->session->userdata('CNo');
         for ($i=0; $i < sizeof($_POST['mobile']) ; $i++) { 
             $ccno = $_POST['CNo'][$i];
@@ -1507,6 +1509,7 @@ class Customer extends CI_Controller {
         $data['grossItemAmt'] = $_POST['grossItemAmt'];
         $data['tip'] = $_POST['tip'];
         $data['MCNo'] = $CNo;
+        $data['tot_sgst'] = $_POST['tot_sgst'];
         
         $data['title'] = 'Split Bill';
         $data['language'] = languageArray();
@@ -1525,12 +1528,18 @@ class Customer extends CI_Controller {
             $pData['paymentMode'] = 'Due';
             $pData['CellNo'] = $_POST['mobile'][$i];
             $pData['CNo'] = $_POST['MCNo'];
-            $pData['itemTotalGross'] = $_POST['totItemAmt'][$i];
+            $pData['TotalGross'] = $_POST['totItemAmt'][$i];
             $pData['orderAmount'] = $_POST['amount'][$i];
             $pData['per_cent'] = $_POST['percent'][$i] / 100;
             $pData['TipAmount'] = 0;
             $pData['splitType'] = $_POST['splitType'];
             $pData['MergeNo'] = $_POST['MergeNo'];
+            $pData['tot_sgst'] = $_POST['tot_sgst'][$i];
+
+            $pData['itemTotalGross'] = round($pData['TotalGross'] + ($pData['TotalGross'] * $pData['tot_sgst']) / 100);
+            echo "<pre>";
+            print_r($pData);
+            die;
             
             $res = billCreate($EID, $CNo, $pData);
         }

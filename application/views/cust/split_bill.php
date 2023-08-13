@@ -18,6 +18,7 @@
                 <input type="hidden" name="tipAmount" value="<?= round($tip); ?>">
                 <input type="hidden" name="MergeNo" value="<?= round($MergeNo); ?>">
                 <input type="hidden" name="MCNo" value="<?= round($MCNo); ?>">
+                <input type="hidden" name="tot_sgst" value="<?= round($tot_sgst); ?>">
 
                 <div class="row">
                     <div class="col-md-2">
