@@ -1537,9 +1537,9 @@ class Customer extends CI_Controller {
             $pData['tot_sgst'] = $_POST['tot_sgst'][$i];
 
             $pData['itemTotalGross'] = round($pData['TotalGross'] + ($pData['TotalGross'] * $pData['tot_sgst']) / 100);
-            echo "<pre>";
-            print_r($pData);
-            die;
+            // echo "<pre>";
+            // print_r($pData);
+            // die;
             
             $res = billCreate($EID, $CNo, $pData);
         }
