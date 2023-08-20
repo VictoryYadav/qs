@@ -100,15 +100,18 @@
                             if(!empty($orders)){
                                 $total = 0;
                                 $split_mobile = array();
+                                $cn_no = array();
                                 foreach ($orders as $ord) {
+                                    $cn_no[] = $ord['CNo'];
                                     $total = $total + $ord['OrdAmt'];
                                     $split_mobile[] = $ord['CellNo'];
                             ?>
+
                             <tr onclick="getOrderDetails(<?= $ord['CNo']; ?>)">
                                 <input type="hidden" name="mobile[]" value="<?= $ord['CellNo']; ?>">
                                 <td>
                                     <input type="hidden" name="CNo[]" value="<?= $ord['CNo']; ?>">
-                                    <input type="checkbox" name="" checked="" onchange="calcValue(<?= $ord['CNo']; ?>,<?= $ord['OrdAmt']; ?>)" id="item_<?= $ord['CNo']; ?>">
+                                    <input type="checkbox" name="chck_cno[]" checked="" onchange="calcValue(<?= $ord['CNo']; ?>,<?= $ord['OrdAmt']; ?>)" id="item_<?= $ord['CNo']; ?>" class="cnoClass">
                                 </td>
                                 <td>
                                     <?= $ord['CellNo']; ?> <small>(<?= $ord['FName'].' '.$ord['LName']; ?>)</small>
@@ -117,7 +120,10 @@
                                     <?= $ord['OrdAmt']; ?>
                                 </td>
                             </tr>
-                        <?php } }
+                        <?php }
+                        ?>
+                        <input type="hidden" value="<?= implode(',', $cn_no); ?>" id="allCNo">
+                        <?php }
                             $this->session->set_userdata('split_mobile', $split_mobile);
                          ?>
                         <tr>
@@ -175,11 +181,11 @@
 
                 <div class="row" style="margin: 0px;">
                     <div class="col-6 text-right">
-                        <button class="btn btn-sm btn-warning" type="submit">
+                        <button class="btn btn-sm btn-warning" type="submit" name="btnName" value="splitBill">
                             Split Bill
                         </button>
-                        <button class="btn btn-sm btn-primary">
-                            Pay Bill
+                        <button class="btn btn-sm btn-primary" type="submit" name="btnName" value="payNow">
+                            Pay Now
                         </button>
                     </div>
                 </div>
@@ -233,18 +239,23 @@
 </body>
 
 <script type="text/javascript">
+    var MergeNo = '<?= $MergeNo; ?>';
+    var AllCNo = $('#allCNo').val();
+    var CNo = 0; 
    $(document).ready(function() {
-        merge_checkout();
+        merge_checkout(MergeNo, AllCNo, CNo);
     });
 
-   function merge_checkout() {
-    var MergeNo = '<?= $MergeNo; ?>';
+   function merge_checkout(MergeNo, AllCNo, CNo) {
+    
         $.ajax({
             url: "<?= base_url('customer/merge_checkout'); ?>",
             type: 'POST',
             dataType: 'json',
             data: {
                 MergeNo: MergeNo,
+                AllCNo:AllCNo,
+                CNo:CNo
             },
             success: response => {
 
@@ -520,7 +531,10 @@
             total = parseInt(grossTotal) - parseInt(val);
         }
        $('#grandTotal').html(total);    
+       CNo = itemId;
+       merge_checkout(MergeNo, AllCNo, CNo);
    }
+
 
    function splitBill(){
         var mobile = $('#splitForm').serializeArray();
@@ -530,6 +544,10 @@
         }
         );
    }
+
+   
+
+
 
 </script>
 

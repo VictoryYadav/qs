@@ -1442,9 +1442,26 @@ class Customer extends CI_Controller {
         $EID = authuser()->EID;
 
         if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            
+            $AllCNo = explode(",",$_POST['AllCNo']);
+
+            $in_CNo = array();
+            if($_POST['CNo'] > 0){
+                foreach ($AllCNo as $val) {
+                    if($_POST['CNo'] != $val){
+                        $in_CNo[] = $val;
+                    }
+                }
+            $in_CNo = '('.implode(',',$in_CNo).')';
+            }else{
+                $in_CNo = '('.$_POST['AllCNo'].')';
+            }
+
             $MergeNo = $_POST['MergeNo'];
 
-            $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7 AND k1.Stat<>9  AND k1.Stat<>99) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7  AND k1.Stat<>9 AND k1.Stat<>99) GROUP BY k1.EID) as TotPckCharge,   ip.Name as Portions,km.CNo,km.MergeNo, km.MCNo,sum(km.BillDiscAmt) as totBillDiscAmt, sum(km.DelCharge) as totDelCharge, sum(km.RtngDiscAmt) as totRtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,c.OnPymt,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>10 AND k.Stat<>99) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND km.CNo IN (Select km1.CNo from KitchenMain km1 where km1.MergeNo=$MergeNo) group by km.CNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips, c.OnPymt  order by TaxType, m.ItemNm Asc")->result_array();
+            $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7 AND k1.Stat<>9  AND k1.Stat<>99) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7  AND k1.Stat<>9 AND k1.Stat<>99) GROUP BY k1.EID) as TotPckCharge,   ip.Name as Portions,km.CNo,km.MergeNo, km.MCNo,sum(km.BillDiscAmt) as totBillDiscAmt, sum(km.DelCharge) as totDelCharge, sum(km.RtngDiscAmt) as totRtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,c.OnPymt,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>10 AND k.Stat<>99) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND km.CNo IN (Select km1.CNo from KitchenMain km1 where km1.CNo in $in_CNo) group by km.CNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips, c.OnPymt  order by TaxType, m.ItemNm Asc")->result_array();
                     // echo "<pre>";
                     // print_r($kitcheData);
                     // die;
@@ -1498,6 +1515,7 @@ class Customer extends CI_Controller {
         // echo "<pre>";
         // print_r($_POST);
         // die;
+        $EID = authuser()->EID;
         $CNo = $this->session->userdata('CNo');
         for ($i=0; $i < sizeof($_POST['mobile']) ; $i++) { 
             $ccno = $_POST['CNo'][$i];
@@ -1514,7 +1532,25 @@ class Customer extends CI_Controller {
         $data['title'] = 'Split Bill';
         $data['language'] = languageArray();
         $data['MergeNo'] = $MergeNo;
-        $this->load->view('cust/split_bill', $data);
+        if($_POST['btnName'] == 'splitBill'){
+            $data['title'] = 'Split Bill';
+            $this->load->view('cust/split_bill', $data);
+        }else if($_POST['btnName'] == 'payNow'){
+            $data['title'] = 'Pay Now';
+            $data["modes"] = $this->cust->getPaymentModes();
+            // bill generate
+            $pData["orderAmount"] = $data['payable'];
+            $pData["paymentMode"] = 'multiPayment';
+            $this->session->set_userdata('TipAmount', $data['tip']);
+            $this->session->set_userdata('itemTotalGross', $data['grossItemAmt']);
+            // $res = billCreate($EID, $CNo, $pData);
+            $data['BillId'] = 1233;
+            $data["splitBills"] = $this->cust->getSplitPayments($data['BillId']);
+            // echo "<pre>";
+            // print_r($data);
+            // die;
+            $this->load->view('cust/pay_now', $data);
+        }
     }
 
     public function splitBill(){
@@ -1740,6 +1776,67 @@ class Customer extends CI_Controller {
         $data['language'] = languageArray();
 
         $this->load->view('contact', $data);
+    }
+
+    public function multi_payment(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            
+            $pay['BillId'] = $_POST['BillId'];
+            $pay['MCNo'] = $_POST['MCNo'];
+            $pay['MergeNo'] = authuser()->TableNo;
+            $pay['TotBillAmt'] = $_POST['payable'];
+            $pay['CellNo'] = $this->session->userdata('CellNo');
+            $pay['SplitTyp'] = 0;
+            $pay['SplitAmt'] = 0;
+            $pay['PymtId'] = 0;
+            $pay['PaidAmt'] = $_POST['amount'];
+            $pay['OrderRef'] = 0;
+            $pay['PaymtMode'] = $_POST['mode'];
+            $pay['PymtType'] = 0;
+            $pay['PymtRef'] = 0;
+            $pay['Stat'] = 0;
+
+            // echo "<pre>";
+            // print_r($pay);
+            // die;
+            $payNo = insertRecord('BillPayments', $pay);
+            if(!empty($payNo)){
+                $status = 'success';
+                $response = $payNo;
+            }
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function check_payment_status(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            $response = 'Pending';
+            $res = $this->db2->get_where('BillPayments', array('BillId' => $_POST['billId'] ,'PymtNo' => $_POST['payNo'], 'Stat' => 1))->row_array();
+            if(!empty($res)){
+                $status = 'success';
+                $response = $res;
+            }
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
     }
 
 

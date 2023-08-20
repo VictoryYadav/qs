@@ -1303,8 +1303,8 @@ class Cust extends CI_Model{
         }else{
         	$TableNo = authuser()->TableNo;
         }
-        
-        if($paymentMode == 'cash' || $paymentMode == 'RCash' || $paymentMode == 'Due'){
+        // Due => split type, RCash => Restorent side(offline), multiPayment
+        if($paymentMode == 'cash' || $paymentMode == 'RCash' || $paymentMode == 'Due' || $paymentMode == 'multiPayment'){
         	$orderId = 'NA';
         }else{
         	$orderId = $postData["orderId"];
@@ -1503,6 +1503,14 @@ class Cust extends CI_Model{
 							 )
 							)
 						->result_array();
+	}
+
+	public function getPaymentModes(){
+		return $this->db2->select('PymtMode,Name,Company, CodePage1')->get_where('ConfigPymt', array('Stat' => 1))->result_array();
+	}
+
+	public function getSplitPayments($billId){
+		return $this->db2->get_where('BillPayments', array('BillId' => $billId,'Stat' => 1))->result_array();
 	}
 
 
