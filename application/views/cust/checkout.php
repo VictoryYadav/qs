@@ -151,7 +151,8 @@
                         <?php if ($Cash == 1) : ?>
                             <?php if ($EType == 5) { ?>
                                 <div class="col-12 text-center" style="width: 50%;">
-                                    <a href="<?= base_url('customer/merge_order/'.$TableNo); ?>"><button  class="btn btn-primary btn-sm " style="background: #fd6b03;color: #FFF; font-weight: 600;border: 1px solid #fff;border-radius: 20px;margin-top: 20px;"> Merge Orders </button></a>
+                                    <a href="<?= base_url('customer/merge_order/'.$TableNo); ?>"><button  class="btn btn-success btn-sm "> Merge Orders </button></a>
+                                    <button class="btn btn-sm btn-primary" onclick="payNow()"> Pay Now</button>
                                 </div>
                             <?php } ?>
                             <div class="row remove-row-margin" style="width: 100%;">
@@ -685,6 +686,23 @@ $("#tips").focusout(function() {
                 }
             });
         }
+
+        function payNow(){
+            var payable = parseFloat($('#payable').html());
+            var tip = $('#tips').val();
+            var itemGrossAmt = $('#totalAmt').val();
+
+            $.post('<?= base_url('customer/checkout_pay') ?>',{payable:payable,itemGrossAmt:itemGrossAmt,tip:tip},function(res){
+                if(res.status == 'success'){
+                  var BillId = res.response.BillId;  
+                  var MCNo = res.response.MCNo;  
+                  window.location = '<?= base_url();?>customer/pay/'+BillId+'/'+MCNo;     
+                }else{
+                  alert(res.response); 
+                }
+            });
+        }
+
 </script>
 
 </html>

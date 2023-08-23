@@ -84,8 +84,8 @@
             <form id="splitForm" action="<?= base_url('customer/splitOrder/'.$MergeNo); ?>" method="post">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="table-responsive">
-                      <table class="table table-striped">
+                    <div class="table-responsive" style="margin-left: 16px;">
+                      <table class="fixed_headers" style="font-size: 12px;width: 100%;">
 
                         <thead>
                             <tr>
@@ -111,7 +111,8 @@
                                 <input type="hidden" name="mobile[]" value="<?= $ord['CellNo']; ?>">
                                 <td>
                                     <input type="hidden" name="CNo[]" value="<?= $ord['CNo']; ?>">
-                                    <input type="checkbox" name="chck_cno[]" checked="" onchange="calcValue(<?= $ord['CNo']; ?>,<?= $ord['OrdAmt']; ?>)" id="item_<?= $ord['CNo']; ?>" class="cnoClass">
+                                     <input type="checkbox" name="chck_cno[]" checked="" onchange="calcValue(<?= $ord['CNo']; ?>,<?= $ord['OrdAmt']; ?>)" id="item_<?= $ord['CNo']; ?>" class="cnoClass" value="<?= $ord['CNo']; ?>">
+
                                 </td>
                                 <td>
                                     <?= $ord['CellNo']; ?> <small>(<?= $ord['FName'].' '.$ord['LName']; ?>)</small>
@@ -127,7 +128,7 @@
                             $this->session->set_userdata('split_mobile', $split_mobile);
                          ?>
                         <tr>
-                           <td></td> <td>Grand Total</td>
+                           <td></td> <td><b>Grand Total</b></td>
                            <td id="grandTotal" style="font-weight: bold;">
                             <input type="hidden" name="grossItemAmt" value="<?= $total; ?>">
                             <?= $total; ?>
@@ -140,7 +141,7 @@
                 </div>
             </div>
             <!-- checkout -->
-            <div class="bill-body" style="font-size: 12px;">
+            <div class="bill-body mt-2" style="font-size: 12px;">
                 <div class="bill_box">
                 </div>
                 <div class="main-ammount discount_and_other_charges_section" style="display:none">
@@ -179,14 +180,16 @@
 
                 <div style="border-bottom: 1px solid;margin-bottom:5px;color: #fff;"></div>
 
-                <div class="row" style="margin: 0px;">
-                    <div class="col-6 text-right">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        
                         <button class="btn btn-sm btn-warning" type="submit" name="btnName" value="splitBill">
-                            Split Bill
+                        Split Bill
                         </button>
-                        <button class="btn btn-sm btn-primary" type="submit" name="btnName" value="payNow">
+                         <button class="btn btn-sm btn-primary" type="submit" name="btnName" value="payNow">
                             Pay Now
                         </button>
+                            
                     </div>
                 </div>
             </div>
@@ -243,10 +246,29 @@
     var AllCNo = $('#allCNo').val();
     var CNo = 0; 
    $(document).ready(function() {
-        merge_checkout(MergeNo, AllCNo, CNo);
+        merge_checkout(MergeNo, AllCNo);
     });
 
-   function merge_checkout(MergeNo, AllCNo, CNo) {
+   function merge_checkout(MergeNo, AllCNo) {
+        // selected checkbox
+        var selectedFruits = [];
+        var checkboxes = document.querySelectorAll('input[name="chck_cno[]"]');
+
+        checkboxes.forEach(function(checkbox) {
+          // checkbox.addEventListener('change', function() {
+            if (checkbox.checked) {
+              selectedFruits.push(checkbox.value);
+            } else {
+              var index = selectedFruits.indexOf(checkbox.value);
+              if (index !== -1) {
+                selectedFruits.splice(index, 1);
+              }
+            }
+
+            console.log('chkbox '+selectedFruits);
+          // });
+        });
+        // end of selected checkbox
     
         $.ajax({
             url: "<?= base_url('customer/merge_checkout'); ?>",
@@ -255,7 +277,7 @@
             data: {
                 MergeNo: MergeNo,
                 AllCNo:AllCNo,
-                CNo:CNo
+                CNo:selectedFruits
             },
             success: response => {
 
@@ -535,7 +557,6 @@
        merge_checkout(MergeNo, AllCNo, CNo);
    }
 
-
    function splitBill(){
         var mobile = $('#splitForm').serializeArray();
         var payable = $('#payableAmt').val();
@@ -544,10 +565,6 @@
         }
         );
    }
-
-   
-
-
 
 </script>
 

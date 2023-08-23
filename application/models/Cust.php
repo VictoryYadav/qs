@@ -1317,8 +1317,7 @@ class Cust extends CI_Model{
                     "status" => 0,
                     "msg" => "No BILL CREATION REQUIRED "
                 ];
-                // echo json_encode($response);
-                // die();
+                
             } else {
 
                 $lastBillNo = $this->db2->query("SELECT max(BillNo) as BillNo from Billing where EID = $EID")->row_array();

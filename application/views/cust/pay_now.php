@@ -20,12 +20,12 @@
                 </div>
                 <div class="col-md-2">
                     <label for="">Gross Amount : </label>
-                    <b id="grossAmt"><?= round($grossItemAmt); ?></b>
+                    <b id="grossAmt">0</b>
                 </div>
 
                 <div class="col-md-2">
                     <label for="">Tip Amount : </label>
-                    <b id="tipAmt"><?= round($tip); ?></b>
+                    <b id="tipAmt">0</b>
                 </div>
                 
                 <div class="col-md-2">
@@ -50,20 +50,24 @@
                                 <?php
                                 if(!empty($splitBills)){
                                     $count = 0;
+                                    $sum = 0;
                                     foreach ($splitBills as $bill) {
                                         $count++;
+                                        if($bill['Stat'] == 1){
+                                                $sum = $sum + $bill['PaidAmt'];
+                                        }
                                  ?>
                                 <tr>
                                     <td>
                                         <input type="number" class="form-control" name="amount" id="amount" readonly="" value="<?= $bill['PaidAmt']; ?>">
                                     </td>
                                     <td>
-                                        <select name="mode" id="mode" class="form-control" readonly>
+                                        <select name="mode" id="mode" class="form-control" disabled="">
                                             <option value="">Choose Mode</option>
                                             <?php
                                             foreach ($modes as $key) {
                                             ?>
-                                            <option value="<?= $key['PymtMode'];?>"><?= $key['Name'];?></option>
+                                            <option value="<?= $key['PymtMode'];?>" <?php if($key['PymtMode'] == $bill['PaymtMode']){ echo 'selected'; } ?>><?= $key['Name'];?></option>
                                             <?php } ?>
                                         </select>
                                     </td>
@@ -78,8 +82,9 @@
                                         <!-- <button class="btn btn btn-sm btn-danger deleteRow"><i class="fa fa-trash" id="delBtn1"></i></button> -->
                                     </td>
                                 </tr>
-                            <?php  }
-                                } else{ ?>
+                            <?php  } ?>
+                                    <input type="hidden" id="sum" value="<?= $sum; ?>">
+                                <?php } else{ ?>
                                 <tr>
                                     <td>
                                         <input type="number" placeholder="Amount" class="form-control" required name="amount" id="amount1">
@@ -90,7 +95,7 @@
                                             <?php
                                             foreach ($modes as $key) {
                                             ?>
-                                            <option value="<?= $key['PymtMode'];?>"><?= $key['Name'];?></option>
+                                            <option value="<?= $key['PymtMode'];?>" data-mode="<?= $key['CodePage1'];?>"><?= $key['Name'];?></option>
                                             <?php } ?>
                                         </select>
                                     </td>
@@ -140,6 +145,8 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
+        goToBill();
+
     var counter = 1;
 
     $("#addrow").on("click", function () {
@@ -155,7 +162,7 @@
                                 <?php
                                     foreach ($modes as $key) {
                                     ?>
-                                    <option value="<?= $key['PymtMode'];?>"><?= $key['Name'];?></option>\
+                                    <option value="<?= $key['PymtMode'];?>" data-mode="<?= $key['CodePage1'];?>"><?= $key['Name'];?></option>\
                                 <?php } ?>
                             </select>\
                         </td>\
@@ -204,10 +211,15 @@ function calculateGrandTotal() {
 function goPay(val){
     var amount = $('#amount'+val).val();
     var mode = $('#mode'+val).val();
+
+    var element = $('#mode'+val).find('option:selected'); 
+    var payUrl  = element.attr("data-mode"); 
+
     var BillId = '<?= $BillId; ?>';
     var MCNo = '<?= $MCNo; ?>';
     var payable = $('#payable').text();
     console.log('val ='+val+' ,am = '+amount+' ,mode '+mode+' ,pble '+payable);
+
 
     if(amount < 0 || amount == ''){
         alert('Please enter amount');
@@ -222,19 +234,28 @@ function goPay(val){
     var payNo = 0;
 
     console.log('call to ajax');
-    $.post('<?= base_url('customer/multi_payment') ?>',{amount:amount,mode:mode, BillId:BillId,MCNo:MCNo,payable:payable},function(res){
-        if(res.status == 'success'){
-          // alert(res.response);
-          payNo = res.response;
+    // for cash
+    if(mode == 1){
+        $.post('<?= base_url('customer/multi_payment') ?>',{amount:amount,mode:mode, BillId:BillId,MCNo:MCNo,payable:payable},function(res){
+            if(res.status == 'success'){
+              // alert(res.response);
+              payNo = res.response;
 
-          setInterval(function() {
-                checkStatus(BillId,payNo, val);
-            }, 20000);
+              setInterval(function() {
+                    checkStatus(BillId,payNo, val);
+                }, 20000);
 
-        }else{
-          alert(res.response);
-        }
-    });
+            }else{
+              alert(res.response);
+            }
+        });
+    }
+
+    if(mode == 5){
+        var totAmt = 0;
+        var tips = 0;
+        window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&totAmt='+btoa(totAmt)+'&tips='+btoa(tips);
+    }
 }
 
 function checkStatus(billId,payNo, serialNo){
@@ -243,27 +264,26 @@ function checkStatus(billId,payNo, serialNo){
           // alert(res.response);
           $('#payStatus'+serialNo).html('success');    
           $('#go'+serialNo).attr("disabled",true);  
-          $('#delBtn'+serialNo).attr("disabled",true);      
+          $('#delBtn'+serialNo).attr("disabled",true); 
+          location.reload();     
         }else{
           $('#payStatus'+serialNo).html(res.response);  
         }
     });
 }
 
-// p= 'razorpay/pay?checkout=automatic'
-function start_payment(p){
-    var a = $('#amount'+val).val();
-    var mode = $('#mode'+val).val();
-    var t = 0;
-    var amt = $('#grossAmt').val();
-    // alert(t);
-    // alert(a);
-    if(t === undefined){
-        t = 0;
+// goto bill page
+function goToBill(){
+    console.log('hi');
+    var BillId = '<?= $BillId; ?>';
+    var payable = $('#payable').text();
+    var total = $('#sum').val();
+
+    if(payable == total){
+     window.location = '<?= base_url();?>customer/bill/'+BillId;   
     }
-    // alert(t);
-    // alert(btoa(t));
-    window.location = '<?= base_url();?>'+p+'&payable='+btoa(a)+'&totAmt='+btoa(amt)+'&tips='+btoa(t);
+
+    // setInterval(function(){ goToBill(); }, 3000);
 }
 
 </script>

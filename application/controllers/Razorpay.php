@@ -131,12 +131,6 @@ class Razorpay extends CI_Controller {
 
     public function handle_payment(){
 
-        //         require_once 'crud/Food.class.php';
-        // require_once 'class/Session.Class.php';
-        // // GenTableData db objec
-        // require_once 'db/tables/CustPymt.class.php';
-        // require_once 'db/tables/GenRating.class.php';
-        // require_once 'db/tables/GenRatingDet.class.php';
         $string_array = array();
         if($_GET){
             $string = str_replace('{','',$_GET['get']);
@@ -166,16 +160,33 @@ class Razorpay extends CI_Controller {
 
         if ($txStatus == "SUCCESS") {
 
-            // get repository  : payment/payment.repo.php
-            // include('repository/payment/payment.repo.php');
+            $pay['BillId'] = $this->session->userdata('BillId');
+            $pay['MCNo'] = $CNo;
+            $pay['MergeNo'] = authuser()->TableNo;
+            $pay['TotBillAmt'] = $this->session->userdata('payable');
+            $pay['CellNo'] = $this->session->userdata('CellNo');
+            $pay['SplitTyp'] = 0;
+            $pay['SplitAmt'] = $this->session->userdata('payable');
+            $pay['PymtId'] = 0;
+            $pay['PaidAmt'] = $totalAmount;
+            $pay['OrderRef'] = $orderId;
+            $pay['PaymtMode'] = 5;
+            $pay['PymtType'] = 0;
+            $pay['PymtRef'] = $referenceId;
+            $pay['Stat'] = 1;
 
-            $res = billCreate($EID, $CNo, $_POST);
-            if($res['status'] == 1){
-                redirect(base_url('customer/bill/'.$res['billId']));
-            }else{
-                echo json_encode($res);
-                die();
-            }
+            // echo "<pre>";
+            // print_r($pay);
+            // die;
+            $payNo = insertRecord('BillPayments', $pay);
+            redirect(base_url('customer/pay/'.$pay['BillId'].'/'.$pay['MCNo']));
+            // $res = billCreate($EID, $CNo, $_POST);
+            // if($res['status'] == 1){
+            //     redirect(base_url('customer/bill/'.$res['billId']));
+            // }else{
+            //     echo json_encode($res);
+            //     die();
+            // }
 
         } else {
             echo "Payment Fail";

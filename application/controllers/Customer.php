@@ -1442,22 +1442,10 @@ class Customer extends CI_Controller {
         $EID = authuser()->EID;
 
         if($this->input->method(true)=='POST'){
-            // echo "<pre>";
-            // print_r($_POST);
             
             $AllCNo = explode(",",$_POST['AllCNo']);
-
-            $in_CNo = array();
-            if($_POST['CNo'] > 0){
-                foreach ($AllCNo as $val) {
-                    if($_POST['CNo'] != $val){
-                        $in_CNo[] = $val;
-                    }
-                }
-            $in_CNo = '('.implode(',',$in_CNo).')';
-            }else{
-                $in_CNo = '('.$_POST['AllCNo'].')';
-            }
+            $cl = implode(",", $_POST['CNo']);
+            $in_CNo = '('.$cl.')';
 
             $MergeNo = $_POST['MergeNo'];
 
@@ -1536,20 +1524,17 @@ class Customer extends CI_Controller {
             $data['title'] = 'Split Bill';
             $this->load->view('cust/split_bill', $data);
         }else if($_POST['btnName'] == 'payNow'){
-            $data['title'] = 'Pay Now';
-            $data["modes"] = $this->cust->getPaymentModes();
+            
             // bill generate
             $pData["orderAmount"] = $data['payable'];
             $pData["paymentMode"] = 'multiPayment';
+            $this->session->set_userdata('payable', $data['payable']);
             $this->session->set_userdata('TipAmount', $data['tip']);
             $this->session->set_userdata('itemTotalGross', $data['grossItemAmt']);
             // $res = billCreate($EID, $CNo, $pData);
-            $data['BillId'] = 1233;
-            $data["splitBills"] = $this->cust->getSplitPayments($data['BillId']);
-            // echo "<pre>";
-            // print_r($data);
-            // die;
-            $this->load->view('cust/pay_now', $data);
+            $BillId = 1233;
+            $this->session->set_userdata('BillId', $BillId);
+            redirect(base_url('customer/pay/'.$BillId.'/'.$data['MCNo']));
         }
     }
 
@@ -1776,6 +1761,58 @@ class Customer extends CI_Controller {
         $data['language'] = languageArray();
 
         $this->load->view('contact', $data);
+    }
+
+    public function checkout_pay(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+
+        if($this->input->method(true)=='POST'){
+
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;    
+
+            $pData["orderAmount"] = $_POST['payable'];
+            $pData["paymentMode"] = 'multiPayment';
+            $this->session->set_userdata('payable', $_POST['payable']);
+            $this->session->set_userdata('TipAmount', $_POST['tip']);
+            $this->session->set_userdata('itemTotalGross', $_POST['itemGrossAmt']);
+            $EID = authuser()->EID;
+            $CNo = $this->session->userdata('CNo');
+            $res = billCreate($EID, $CNo, $pData);
+            
+            if(!empty($res)){
+                if($res['status'] > 0){
+                    $status = 'success';
+                    $this->session->set_userdata('BillId', $res['billId']);
+                    $dt['BillId'] = $res['billId'];
+                    $dt['MCNo'] = $CNo;
+                    $response = $dt;
+                }
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function pay($BillId, $MCNo){
+        $data['title'] = 'Pay Now';
+        $data['language'] = languageArray();
+        $data["modes"] = $this->cust->getPaymentModes();
+        $data['payable'] = $this->session->userdata('payable');
+        $data['BillId'] = $BillId;
+        $data['MCNo'] = $MCNo;
+        $data["splitBills"] = $this->cust->getSplitPayments($BillId);
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $this->load->view('cust/pay_now', $data);
     }
 
     public function multi_payment(){
