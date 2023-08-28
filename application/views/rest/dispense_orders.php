@@ -105,7 +105,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="row" style="margin-bottom: -16px;">
-                                            <div class="col-6">
+                                            <div class="col-3">
                                                 <div class="form-group">
                                                     <select class="form-control" id="kitchen-code" onchange="getTableView();">  
                                                         <?php
@@ -119,6 +119,14 @@
                                                         <?php endforeach;} ?>
                                                     </select>
                                                 </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <select class="form-control" id="dispMode" onchange="getTableView();">  
+                                                    <option value="0">Choose</option> 
+                                                    <?php foreach($dispenseMode as $key):?>
+                                                    <option value="<?= $key['3PId']?>"><?= $key['Name']?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
                                             </div>
                                             <div class="col-6">
                                                 <div class="text-right" id="showActionBtn">
@@ -362,13 +370,15 @@
 
             function getTableView() {
                 var DispCd = $('#kitchen-code').val();
+                var dispMode = $('#dispMode').val();
                 if(DispCd > 0){
                     $.ajax({
                         url: "<?php echo base_url('restaurant/order_delivery'); ?>",
                         type: "post",
                         data: {
                             getOrderDetails: 1,
-                            DispCd : DispCd
+                            DispCd : DispCd,
+                            dispMode:dispMode
                         },
                         dataType: 'json',
                         success: response => {

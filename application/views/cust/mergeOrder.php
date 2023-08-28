@@ -253,11 +253,12 @@
         // selected checkbox
         var selectedFruits = [];
         var checkboxes = document.querySelectorAll('input[name="chck_cno[]"]');
-
+        var countBox = 0;
         checkboxes.forEach(function(checkbox) {
           // checkbox.addEventListener('change', function() {
             if (checkbox.checked) {
               selectedFruits.push(checkbox.value);
+              countBox++;
             } else {
               var index = selectedFruits.indexOf(checkbox.value);
               if (index !== -1) {
@@ -265,252 +266,259 @@
               }
             }
 
-            console.log('chkbox '+selectedFruits);
+            console.log('chkbox '+selectedFruits+', box '+countBox);
           // });
         });
         // end of selected checkbox
-    
-        $.ajax({
-            url: "<?= base_url('customer/merge_checkout'); ?>",
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                MergeNo: MergeNo,
-                AllCNo:AllCNo,
-                CNo:selectedFruits
-            },
-            success: response => {
+        if(countBox >= 2){
+            $(".cnoClass").removeAttr("disabled");
+            $.ajax({
+                url: "<?= base_url('customer/merge_checkout'); ?>",
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    MergeNo: MergeNo,
+                    AllCNo:AllCNo,
+                    CNo:selectedFruits
+                },
+                success: response => {
 
-                console.log(response.kitcheData);
-                var template = ``;
-                var sub_total = 0;
-                var html = ``;
-                var html_body = ``;
-                var grand_total = 0;
-                var initil_value = response.kitcheData[0]['TaxType'];
-                var del_charge = response.kitcheData[0]['DelCharge'];
-                var pck_charge = response.kitcheData[0]['TotPckCharge'];
-                var ServChrg = response.kitcheData[0]['ServChrg'];
-                var MCNo = response.kitcheData[0]['MCNo'];
-                
-                var disc = parseInt(response.kitcheData[0]['totBillDiscAmt']) + parseInt(response.kitcheData[0]['TotItemDisc']) + parseFloat(response.kitcheData[0]['RtngDiscAmt']);
-                
-                var hr_line = `<div style="border-bottom: 1px solid;margin-top: 5px; margin-bottom: 5px;color: #fff;"></div>`;
-
-                response.kitcheData.forEach(item => {
+                    console.log(response.kitcheData);
+                    var template = ``;
+                    var sub_total = 0;
+                    var html = ``;
+                    var html_body = ``;
+                    var grand_total = 0;
+                    var initil_value = response.kitcheData[0]['TaxType'];
+                    var del_charge = response.kitcheData[0]['DelCharge'];
+                    var pck_charge = response.kitcheData[0]['TotPckCharge'];
+                    var ServChrg = response.kitcheData[0]['ServChrg'];
+                    var MCNo = response.kitcheData[0]['MCNo'];
                     
-                    if(initil_value == item.TaxType){
-                        html += `<tr>`;
-                        
-                        if(item.Itm_Portions > 4){
+                    var disc = parseInt(response.kitcheData[0]['totBillDiscAmt']) + parseInt(response.kitcheData[0]['TotItemDisc']) + parseFloat(response.kitcheData[0]['RtngDiscAmt']);
+                    
+                    var hr_line = `<div style="border-bottom: 1px solid;margin-top: 5px; margin-bottom: 5px;color: #fff;"></div>`;
 
-                            html += `<td>${item.ItemNm} ( ${item.Portion} ) </td>`;
+                    response.kitcheData.forEach(item => {
+                        
+                        if(initil_value == item.TaxType){
+                            html += `<tr>`;
+                            
+                            if(item.Itm_Portions > 4){
+
+                                html += `<td>${item.ItemNm} ( ${item.Portion} ) </td>`;
+
+                            }else{
+
+                                html += `<td>${item.ItemNm} </td>`;
+
+                            }
+                            
+                            html += `<td class="text-center">${item.Qty}</td>`;
+                            html += `<td class="text-center">${item.OrigRate}</td>`;
+                            html += `<td class="text-right">${item.OrdAmt}</td>`;
+                            html += `</tr>`;
+
+                            sub_total = sub_total +  parseInt(item.OrdAmt);
+                            initil_value = item.TaxType;
 
                         }else{
 
-                            html += `<td>${item.ItemNm} </td>`;
-
-                        }
-                        
-                        html += `<td class="text-center">${item.Qty}</td>`;
-                        html += `<td class="text-center">${item.OrigRate}</td>`;
-                        html += `<td class="text-right">${item.OrdAmt}</td>`;
-                        html += `</tr>`;
-
-                        sub_total = sub_total +  parseInt(item.OrdAmt);
-                        initil_value = item.TaxType;
-
-                    }else{
-
-                        html += `<tr style="border-top: 1px solid white;">`;
-                        html += `<td><b>Item Total :</b> </td>`;
-                        html += `<td class="text-center"></td>`;
-                        html += `<td class="text-center"></td>`;
-                        html += `<td class="text-right"><b>${sub_total}</b></td>`;
-                        html += `</tr>`;
-
-                        var sub_total_temp = sub_total;
-                        
-                        for (let index = 0; index < response.TaxData[initil_value].length; index++) {
-                            const element = response.TaxData[initil_value][index];
-                            var total_percent = parseFloat(sub_total_temp) * (parseFloat(element['TaxPcent'])/100);
-                                if(element['Included'] != 0 ){
-
-                                    html += `<tr>`;
-                                    html += `<td>${element['ShortName']} ${element['TaxPcent']} % </td>`;
-                                    html += `<td class="text-center"></td>`;
-                                    html += `<td class="text-center"></td>`;
-                                    html += `<td class="text-right">${parseFloat(element['SubAmtTax']).toFixed(2)}</td>`;
-
-                                    html += `</tr>`;
-                                    
-                                }
-
-                                if(element['Included'] >= 5){
-
-                                    sub_total = parseFloat(sub_total_temp) + parseFloat(element['SubAmtTax']);
-
-                                }
-                            
-                        }
-
-                        grand_total = grand_total + sub_total;
-
-                        html += `<tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
-                        html += `<td><b>Sub Total :</b> </td>`;
-                        html += `<td class="text-center"></td>`;
-                        html += `<td class="text-center"></td>`;
-                        html += `<td class="text-right"><b style="color: orange;">${sub_total.toFixed(2)}</b></td>`;
-                        html += `</tr> <tr style="height: 25px;"></tr>`;
-
-                        initil_value = item.TaxType;
-
-                        sub_total = 0;
-
-                        html += `<tr>`;
-                        html += `<td>${item.ItemNm}</td>`;
-                        html += `<td class="text-center">${item.Qty}</td>`;
-                        html += `<td class="text-center">${item.ItmRate}</td>`;
-                        html += `<td class="text-right">${item.OrdAmt}</td>`;
-                        html += `</tr>`;
-
-                        sub_total = sub_total +  parseInt(item.OrdAmt);
-                    }
-                });
-
-                html += `<tr style="border-top: 1px solid white;">`;
-                html += `<td><b>Item Total :</b> </td>`;
-                html += `<td class="text-center"></td>`;
-                html += `<td class="text-center"></td>`;
-                html += `<td class="text-right"><b>${sub_total}</b></td>`;
-                html += `</tr>`;
-
-                var sub_total_temp = sub_total;
-                var totSGST = 0;
-                for (let index = 0; index < response.TaxData[initil_value].length; index++) {
-                    const element = response.TaxData[initil_value][index];
-                    
-                        if(element['Included'] != 0 ){
-                            totSGST = totSGST + parseFloat(element['TaxPcent']);
-                            html += `<tr>`;
-                            html += `<td>${element['ShortName']} ${element['TaxPcent']} % </td>`;
+                            html += `<tr style="border-top: 1px solid white;">`;
+                            html += `<td><b>Item Total :</b> </td>`;
                             html += `<td class="text-center"></td>`;
                             html += `<td class="text-center"></td>`;
-                            html += `<td class="text-right">${parseFloat(element['SubAmtTax']).toFixed(2)}</td>`;
+                            html += `<td class="text-right"><b>${sub_total}</b></td>`;
                             html += `</tr>`;
 
+                            var sub_total_temp = sub_total;
+                            
+                            for (let index = 0; index < response.TaxData[initil_value].length; index++) {
+                                const element = response.TaxData[initil_value][index];
+                                var total_percent = parseFloat(sub_total_temp) * (parseFloat(element['TaxPcent'])/100);
+                                    if(element['Included'] != 0 ){
+
+                                        html += `<tr>`;
+                                        html += `<td>${element['ShortName']} ${element['TaxPcent']} % </td>`;
+                                        html += `<td class="text-center"></td>`;
+                                        html += `<td class="text-center"></td>`;
+                                        html += `<td class="text-right">${parseFloat(element['SubAmtTax']).toFixed(2)}</td>`;
+
+                                        html += `</tr>`;
+                                        
+                                    }
+
+                                    if(element['Included'] >= 5){
+
+                                        sub_total = parseFloat(sub_total_temp) + parseFloat(element['SubAmtTax']);
+
+                                    }
+                                
+                            }
+
+                            grand_total = grand_total + sub_total;
+
+                            html += `<tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
+                            html += `<td><b>Sub Total :</b> </td>`;
+                            html += `<td class="text-center"></td>`;
+                            html += `<td class="text-center"></td>`;
+                            html += `<td class="text-right"><b style="color: orange;">${sub_total.toFixed(2)}</b></td>`;
+                            html += `</tr> <tr style="height: 25px;"></tr>`;
+
+                            initil_value = item.TaxType;
+
+                            sub_total = 0;
+
+                            html += `<tr>`;
+                            html += `<td>${item.ItemNm}</td>`;
+                            html += `<td class="text-center">${item.Qty}</td>`;
+                            html += `<td class="text-center">${item.ItmRate}</td>`;
+                            html += `<td class="text-right">${item.OrdAmt}</td>`;
+                            html += `</tr>`;
+
+                            sub_total = sub_total +  parseInt(item.OrdAmt);
                         }
+                    });
 
-                        if(element['Included'] >= 5){
-                            sub_total = parseFloat(sub_total_temp) + parseFloat(element['SubAmtTax']);
-                        }
+                    html += `<tr style="border-top: 1px solid white;">`;
+                    html += `<td><b>Item Total :</b> </td>`;
+                    html += `<td class="text-center"></td>`;
+                    html += `<td class="text-center"></td>`;
+                    html += `<td class="text-right"><b>${sub_total}</b></td>`;
+                    html += `</tr>`;
 
-                        sub_total_temp = sub_total;
+                    var sub_total_temp = sub_total;
+                    var totSGST = 0;
+                    for (let index = 0; index < response.TaxData[initil_value].length; index++) {
+                        const element = response.TaxData[initil_value][index];
+                        
+                            if(element['Included'] != 0 ){
+                                totSGST = totSGST + parseFloat(element['TaxPcent']);
+                                html += `<tr>`;
+                                html += `<td>${element['ShortName']} ${element['TaxPcent']} % </td>`;
+                                html += `<td class="text-center"></td>`;
+                                html += `<td class="text-center"></td>`;
+                                html += `<td class="text-right">${parseFloat(element['SubAmtTax']).toFixed(2)}</td>`;
+                                html += `</tr>`;
 
-                }
-                grand_total = grand_total + sub_total;
-                html += `<input type="hidden" name="tot_sgst" value="`+totSGST+`" ><tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
-                        html += `<td><b>Sub Total :</b> </td>`;
-                        html += `<td class="text-center"></td>`;
-                        html += `<td class="text-center"></td>`;
-                        html += `<td class="text-right"><b style="color: orange;">${sub_total.toFixed(2)}</b></td>`;
-                        html += `</tr>`;
-                
-                sub_total = 0;
+                            }
 
-                html_body +=`<div class="order-list col-12">`;
-                html_body +=`<table class="fixed_headers" style="width:100%">`;
-                html_body +=`<thead>`;
-                html_body +=`<tr>`;
-                html_body +=`<th> Menu Item </th>`;
-                html_body +=`<th class="text-center">Qty</th>`;
-                html_body +=`<th class="text-center">Rate</th>`;
-                html_body +=`<th class="text-right">Amt</th>`;
-                html_body +=`</tr>`;
-                html_body +=`</thead>`;
-                html_body +=`<tbody id="order-amount-table-body">`;
-                html_body += html;
-                html_body +=`</tbody>`;
-                html_body +=`</table>`;
-                html_body +=`</div>`;
-                
-                var serv = ServChrg/100*grand_total;
-                
-                if(serv > 0){
-                    html_body +=`<div class="main-ammount">`;
-                    html_body +=`<table style="width:100%;">`;
+                            if(element['Included'] >= 5){
+                                sub_total = parseFloat(sub_total_temp) + parseFloat(element['SubAmtTax']);
+                            }
+
+                            sub_total_temp = sub_total;
+
+                    }
+                    grand_total = grand_total + sub_total;
+                    html += `<input type="hidden" name="tot_sgst" value="`+totSGST+`" ><tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
+                            html += `<td><b>Sub Total :</b> </td>`;
+                            html += `<td class="text-center"></td>`;
+                            html += `<td class="text-center"></td>`;
+                            html += `<td class="text-right"><b style="color: orange;">${sub_total.toFixed(2)}</b></td>`;
+                            html += `</tr>`;
+                    
+                    sub_total = 0;
+
+                    html_body +=`<div class="order-list col-12">`;
+                    html_body +=`<table class="fixed_headers" style="width:100%">`;
+                    html_body +=`<thead>`;
                     html_body +=`<tr>`;
-                    html_body +=`<th>Service Charge @ `+ServChrg+` %</th>`;
-                    html_body +=`<td class="text-right">`+serv.toFixed(2)+`</td>`;
+                    html_body +=`<th> Menu Item </th>`;
+                    html_body +=`<th class="text-center">Qty</th>`;
+                    html_body +=`<th class="text-center">Rate</th>`;
+                    html_body +=`<th class="text-right">Amt</th>`;
                     html_body +=`</tr>`;
+                    html_body +=`</thead>`;
+                    html_body +=`<tbody id="order-amount-table-body">`;
+                    html_body += html;
+                    html_body +=`</tbody>`;
                     html_body +=`</table>`;
                     html_body +=`</div>`;
-                    grand_total = grand_total + serv;
+                    
+                    var serv = ServChrg/100*grand_total;
+                    
+                    if(serv > 0){
+                        html_body +=`<div class="main-ammount">`;
+                        html_body +=`<table style="width:100%;">`;
+                        html_body +=`<tr>`;
+                        html_body +=`<th>Service Charge @ `+ServChrg+` %</th>`;
+                        html_body +=`<td class="text-right">`+serv.toFixed(2)+`</td>`;
+                        html_body +=`</tr>`;
+                        html_body +=`</table>`;
+                        html_body +=`</div>`;
+                        grand_total = grand_total + serv;
+                    }
+                    
+                    if(disc > 0){
+                        html_body +=`<div class="main-ammount">`;
+                        html_body +=`<table style="width:100%;">`;
+                        html_body +=`<tr>`;
+                        html_body +=`   <th style="font-style: italic">Total Discount / Savings</th>`;
+                        html_body +=`   <th class="text-right" style="font-style: italic">`+disc+`</th>`;
+                        html_body +=`</tr>`;
+                        html_body +=`</table>`;
+                        html_body +=`</div>`;
+                        grand_total = grand_total - disc;
+                    }
+
+                    if(del_charge > 0){
+                        html_body +=`<div class="main-ammount">`;
+                        html_body +=`<table style="width:100%;">`;
+                        html_body +=`<tr>`;
+                        html_body +=`   <th style="font-style: italic">Delivery Charge</th>`;
+                        html_body +=`   <th class="text-right" style="font-style: italic">`+del_charge+`</th>`;
+                        html_body +=`</tr>`;
+                        html_body +=`</table>`;
+                        html_body +=`</div>`;
+                        grand_total = grand_total + parseInt(del_charge);
+                    }
+
+                    if(pck_charge > 0){
+                        html_body +=`<div class="main-ammount">`;
+                        html_body +=`<table style="width:100%;">`;
+                        html_body +=`<tr>`;
+                        html_body +=`   <th style="font-style: italic">Packing Charge</th>`;
+                        html_body +=`   <th class="text-right" style="font-style: italic">`+pck_charge+`</th>`;
+                        html_body +=`</tr>`;
+                        html_body +=`</table>`;
+                        html_body +=`</div>`;
+                        grand_total = grand_total + parseInt(pck_charge);
+                    }
+
+                    var itemGrossAmt = (grand_total - serv).toFixed(2);
+
+                    var tt = '<?php echo $Tips?>';
+                    if(tt == 1){
+                        html_body +=`<div class="main-ammount">`;
+                        html_body +=`<table style="width:100%;">`;
+                        html_body +=`<tr class="<?= ($Tips == 0 ? 'hideDiv' : ''); ?>">`;
+                        html_body +=`   <th>Tips</th>`;
+                        html_body +=`   <td><input type="hidden" name="MCNo" value="`+MCNo+`"><input id="tips" type="number" class="" value="0" onchange="change_tip()" name="tip"></td>`;
+                        html_body +=`</tr>`;
+                        html_body +=`</table>`;
+                        html_body +=`</div>`;
+                    }
+
+                    $('.bill_box').html(html_body);
+                    $("#payable").text(grand_total);
+                    $("#payableAmt").val(grand_total);
+                    $("#totalAmt").val(itemGrossAmt);
+                    $("#payableAmount").val(grand_total);
+
+                },
+                error: (xhr, status, error) => {
+                    console.log(xhr);
+                    console.log(status);
+                    console.log(error);
                 }
-                
-                if(disc > 0){
-                    html_body +=`<div class="main-ammount">`;
-                    html_body +=`<table style="width:100%;">`;
-                    html_body +=`<tr>`;
-                    html_body +=`   <th style="font-style: italic">Total Discount / Savings</th>`;
-                    html_body +=`   <th class="text-right" style="font-style: italic">`+disc+`</th>`;
-                    html_body +=`</tr>`;
-                    html_body +=`</table>`;
-                    html_body +=`</div>`;
-                    grand_total = grand_total - disc;
-                }
-
-                if(del_charge > 0){
-                    html_body +=`<div class="main-ammount">`;
-                    html_body +=`<table style="width:100%;">`;
-                    html_body +=`<tr>`;
-                    html_body +=`   <th style="font-style: italic">Delivery Charge</th>`;
-                    html_body +=`   <th class="text-right" style="font-style: italic">`+del_charge+`</th>`;
-                    html_body +=`</tr>`;
-                    html_body +=`</table>`;
-                    html_body +=`</div>`;
-                    grand_total = grand_total + parseInt(del_charge);
-                }
-
-                if(pck_charge > 0){
-                    html_body +=`<div class="main-ammount">`;
-                    html_body +=`<table style="width:100%;">`;
-                    html_body +=`<tr>`;
-                    html_body +=`   <th style="font-style: italic">Packing Charge</th>`;
-                    html_body +=`   <th class="text-right" style="font-style: italic">`+pck_charge+`</th>`;
-                    html_body +=`</tr>`;
-                    html_body +=`</table>`;
-                    html_body +=`</div>`;
-                    grand_total = grand_total + parseInt(pck_charge);
-                }
-
-                var itemGrossAmt = (grand_total - serv).toFixed(2);
-
-                var tt = '<?php echo $Tips?>';
-                if(tt == 1){
-                    html_body +=`<div class="main-ammount">`;
-                    html_body +=`<table style="width:100%;">`;
-                    html_body +=`<tr class="<?= ($Tips == 0 ? 'hideDiv' : ''); ?>">`;
-                    html_body +=`   <th>Tips</th>`;
-                    html_body +=`   <td><input type="hidden" name="MCNo" value="`+MCNo+`"><input id="tips" type="number" class="" value="0" onchange="change_tip()" name="tip"></td>`;
-                    html_body +=`</tr>`;
-                    html_body +=`</table>`;
-                    html_body +=`</div>`;
-                }
-
-                $('.bill_box').html(html_body);
-                $("#payable").text(grand_total);
-                $("#payableAmt").val(grand_total);
-                $("#totalAmt").val(itemGrossAmt);
-                $("#payableAmount").val(grand_total);
-
-            },
-            error: (xhr, status, error) => {
-                console.log(xhr);
-                console.log(status);
-                console.log(error);
-            }
-        });
+            });
+        }else{
+            // $('.cnoClass').attr('checked');
+            $(".cnoClass").attr("disabled", true);
+            alert('Minimum Two orders are required for Merging Orders.');
+            return false;
+        }
     }
 
     function change_tip(){

@@ -683,6 +683,10 @@ class Rest extends CI_Model{
                               ->result_array();
 	}
 
+	public function getDispenseModes(){
+		return $this->db2->get_where('3POrders', array('Stat' => 0))->result_array();
+	}
+
 	
 
 	

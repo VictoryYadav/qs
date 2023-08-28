@@ -783,6 +783,7 @@ class Restaurant extends CI_Controller {
         $data['EID'] = authuser()->EID;
     	$data['title'] = 'Order Dispense';
         $data['DispenseAccess'] = $this->rest->getDispenseAccess();
+        $data['dispenseMode'] = $this->rest->getDispenseModes();
 
 		$this->load->view('rest/dispense_orders',$data);	
     }
@@ -932,7 +933,7 @@ class Restaurant extends CI_Controller {
 
 
             if (isset($_POST['getOrderDetails']) && !empty($_POST['getOrderDetails'])) {
-                // print_r($_POST);exit();
+                // echo "<pre>"; print_r($_POST);exit();
                 if (isset($_POST['DispCd'])) {
                     $DCd = $_POST['DispCd'];
                 } else {
@@ -941,24 +942,30 @@ class Restaurant extends CI_Controller {
 
                 //This is for the main data table details... need to know why we are using ukotno and kitcd as this is for dispensing
                 $DCdType = $this->db2->query("SELECT * from Eat_DispOutlets where DCd = ".$DCd)->row_array();
+                $dispMode = (isset($_POST['dispMode']) && $_POST['dispMode'] > 0 )?$_POST['dispMode']:0;
+                $qry = '';
+                if($dispMode > 0){
+                    $qry = ' and k.TPId = '.$dispMode;
+                }
+
                 if ($EType == 5) {
                     
 
                     if($DCdType['DCdType'] == 1){
-                        $q = "SELECT b.BillNo, sum(k.Qty) as Qty, sum(k.AQty) as AQty, sum(k.Qty * k.ItmRate) as KOTAmt, k.kitcd,  km.TPRefNo, km.TPId, km.CustId, km.CustNo, km.CellNo, km.EID,km.CNo  FROM KitchenMain km, Kitchen k,  Billing b , Eat_DispOutlets ed, Eat_DispOutletsDet edd where km.EID=b.EID  AND b.CNo = km.CNo and km.BillStat=b.BillId AND km.CNo = k.CNo AND ed.EID = km.EID and ed.DCd=edd.DCd and k.KitCd = edd.KitCd and km.EID = ".$EID."  AND ed.DCd = ".$DCd." Group by b.BillNo, k.KitCd, km.TPRefNo, km.TPId, km.CustId, km.EID, km.CustNo, km.CellNo,km.CNo Order by b.BillNo Asc";
+                        $q = "SELECT b.BillNo, sum(k.Qty) as Qty, sum(k.AQty) as AQty, sum(k.Qty * k.ItmRate) as KOTAmt, k.kitcd,  km.TPRefNo, km.TPId, km.CustId, km.CustNo, km.CellNo, km.EID,km.CNo  FROM KitchenMain km, Kitchen k,  Billing b , Eat_DispOutlets ed, Eat_DispOutletsDet edd where km.EID=b.EID  AND b.CNo = km.CNo and km.CNO=b.CNo AND km.CNo = k.CNo AND ed.EID = km.EID and ed.DCd=edd.DCd and k.KitCd = edd.KitCd ".$qry." and km.EID = ".$EID."  AND ed.DCd = ".$DCd." Group by b.BillNo, k.KitCd, km.TPRefNo, km.TPId, km.CustId, km.EID, km.CustNo, km.CellNo,km.CNo Order by b.BillNo Asc";
                     }elseif($DCdType['DCdType'] == 2){
-                        $q = "SELECT b.BillNo, sum(k.Qty) as Qty, sum(k.AQty) as AQty, sum(k.Qty * k.ItmRate) as KOTAmt, k.OType,  km.TPRefNo, km.TPId, km.CustId, km.CustNo, km.CellNo, km.EID,km.CNo  FROM KitchenMain km, Kitchen k,  Billing b , Eat_DispOutlets ed, Eat_DispOutletsDet edd where km.EID=b.EID  AND b.CNo = km.CNo and km.BillStat=b.BillId AND km.CNo = k.CNo AND ed.EID = km.EID and ed.DCd=edd.DCd and k.OType = edd.OType and km.EID = ".$EID."  AND ed.DCd = ".$DCd." Group by b.BillNo, k.OType, km.TPRefNo, km.TPId, km.CustId, km.EID, km.CustNo, km.CellNo,km.CNo Order by b.BillNo Asc";
+                        $q = "SELECT b.BillNo, sum(k.Qty) as Qty, sum(k.AQty) as AQty, sum(k.Qty * k.ItmRate) as KOTAmt, k.OType,  km.TPRefNo, km.TPId, km.CustId, km.CustNo, km.CellNo, km.EID,km.CNo  FROM KitchenMain km, Kitchen k,  Billing b , Eat_DispOutlets ed, Eat_DispOutletsDet edd where km.EID=b.EID  AND b.CNo = km.CNo and km.CNO=b.CNo AND km.CNo = k.CNo AND ed.EID = km.EID and ed.DCd=edd.DCd and k.OType = edd.OType ".$qry." and km.EID = ".$EID."  AND ed.DCd = ".$DCd." Group by b.BillNo, k.OType, km.TPRefNo, km.TPId, km.CustId, km.EID, km.CustNo, km.CellNo,km.CNo Order by b.BillNo Asc";
                     }
-                    // print_r($q);exit();
                     $kitchenData = $this->db2->query($q)->result_array();
+                    // print_r($this->db2->last_query());exit();
                 } else {
                     // $Fest=1;
                     if ($Fest == 0) {
-                        $kitchenData = $this->db2->query("SELECT b.BillNo, sum(k.Qty) as Qty, sum(k.AQty) as AQty, sum(k.Qty * i.Value) as KOTAmt, k.UKOTNo, k.OType, k.TPRefNo, k.TPId, k.CustId, k.CustNo, k.CellNo, k.EID, km.DCd, ed.Name FROM `Kitchen` k, MenuItem i, Billing b, Eat_DispOutlets ed where i.ItemId = k.ItemId AND k.OType <> 7 AND k.Stat <= 3 AND k.Stat > 0  AND k.EID=b.EID and ed.DCd = km.DCd and k.BillStat= b.BillId AND k.EID =$EID AND ed.EID = k.EID AND ed.DCd = $DCd and (DateDiff(Now(),k.LstModDt) < 2) Group by b.BillNo, k.UKOTNo, k.OType, k.TPRefNo, k.TPId, k.CustId, k.EID, k.CustNo, k.CellNo  Order by b.BillNo")->result_array();  //And k.payRest=1
+                        $kitchenData = $this->db2->query("SELECT b.BillNo, sum(k.Qty) as Qty, sum(k.AQty) as AQty, sum(k.Qty * i.Value) as KOTAmt, k.UKOTNo, k.OType, k.TPRefNo, k.TPId, k.CustId, k.CustNo, k.CellNo, k.EID, km.DCd, ed.Name FROM `Kitchen` k, MenuItem i, Billing b, Eat_DispOutlets ed where i.ItemId = k.ItemId AND k.OType <> 7 AND k.Stat <= 3 AND k.Stat > 0  AND k.EID=b.EID and ed.DCd = km.DCd and k.CNO= b.CNO ".$qry." AND k.EID =$EID AND ed.EID = k.EID AND ed.DCd = $DCd and (DateDiff(Now(),k.LstModDt) < 2) Group by b.BillNo, k.UKOTNo, k.OType, k.TPRefNo, k.TPId, k.CustId, k.EID, k.CustNo, k.CellNo  Order by b.BillNo")->result_array();  //And k.payRest=1
                         //if this is not fest and has multiple counters for dispense, it is grouped by DCd, else we do not need ukotno. undelss item details are shown thru ukotno
 
                     } else {
-                        $kitchenData = $this->db2->query("SELECT b.BillNo, sum(k.Qty) as Qty, sum(k.AQty) as AQty, sum(k.Qty * i.Value) as KOTAmt, k.UKOTNo, k.OType, k.TPRefNo, k.TPId, k.CustId, k.CustNo, k.CellNo, k.EID, km.DCd, ed.Name FROM `Kitchen` k, MenuItem i, Billing b , Eat_DispOutlets ed where i.ItemId = k.ItemId AND k.OType <> 7  AND k.Stat > 0 AND k.Stat <= 3 AND k.EID=b.EID and ed.DCd = km.DCd and k.BillStat=b.BillId AND ed.EID = k.EID and k.EID = $EID AND ed.KitCd=k.KitCd AND ed.DCd = $DCd and date(k.LstModDt) = date(Now()) Group by b.BillNo, k.UKOTNo, k.OType, k.TPRefNo, k.TPId, k.CustId, k.EID, k.CustNo, k.CellNo Order by b.BillNo Asc")->result_array();       //And k.payRest=1 
+                        $kitchenData = $this->db2->query("SELECT b.BillNo, sum(k.Qty) as Qty, sum(k.AQty) as AQty, sum(k.Qty * i.Value) as KOTAmt, k.UKOTNo, k.OType, k.TPRefNo, k.TPId, k.CustId, k.CustNo, k.CellNo, k.EID, km.DCd, ed.Name FROM `Kitchen` k, MenuItem i, Billing b , Eat_DispOutlets ed where i.ItemId = k.ItemId AND k.OType <> 7  AND k.Stat > 0 AND k.Stat <= 3 AND k.EID=b.EID and ed.DCd = km.DCd and k.CNO=b.CNO AND ed.EID = k.EID ".$qry." and k.EID = $EID AND ed.KitCd=k.KitCd AND ed.DCd = $DCd and date(k.LstModDt) = date(Now()) Group by b.BillNo, k.UKOTNo, k.OType, k.TPRefNo, k.TPId, k.CustId, k.EID, k.CustNo, k.CellNo Order by b.BillNo Asc")->result_array();       //And k.payRest=1 
                     }
                 }
                 // echo "<pre>";print_r($kitcheData);exit();

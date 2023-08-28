@@ -57,6 +57,7 @@ class Rcheck extends CI_Controller {
         );
         $this->session->set_userdata('logged_in', $session_data);
 
+        $this->session->set_userdata('MergeNo', $_REQUEST['t']);
         $this->session->set_userdata('ONo', 0);
         $this->session->set_userdata('KOTNo', 0);
         $this->session->set_userdata('EType', 0);

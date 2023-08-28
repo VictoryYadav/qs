@@ -652,6 +652,14 @@ class Cust extends CI_Model{
 						} else {
 							$orderType = 0;
 						}
+
+						$MergeNo = $this->session->userdata('MergeNo');
+						if($TableNo == $MergeNo){
+							$mergeTable = $this->db2->select('MergeNo')->get_where('Eat_tables', array('EID' => $EID , 'TableNo' => $TableNo))->row_array();
+							if(!empty($mergeTable)){
+								$MergeNo = $mergeTable['MergeNo'];
+							}
+						}
 						// $kitchenMainObj
 						$kitchenMainObj['CustId'] = $CustId;
 						$kitchenMainObj['COrgId'] = $COrgId;
@@ -663,7 +671,7 @@ class Cust extends CI_Model{
 						$kitchenMainObj['OType'] = $orderType;
 						$kitchenMainObj['TableNo'] = $TableNo;
 						$kitchenMainObj['OldTableNo'] = $TableNo;
-						$kitchenMainObj['MergeNo'] = $TableNo;
+						$kitchenMainObj['MergeNo'] = $MergeNo;
 						$kitchenMainObj['Stat'] = 0;
 						if($TableAcceptReqd == 0){
 							$kitchenMainObj['Stat'] = 1;
@@ -1510,6 +1518,13 @@ class Cust extends CI_Model{
 
 	public function getSplitPayments($billId){
 		return $this->db2->get_where('BillPayments', array('BillId' => $billId,'Stat' => 1))->result_array();
+	}
+
+	public function getShareDetails($billId, $MCNo){
+		return $this->db2->select('km.CellNo, km.CustId, b.BillId, km.MCNo, km.CNo')
+						->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
+						->get_where('Billing b', array('b.BillId' => $billId, 'b.CNo' => $MCNo))
+						->result_array();
 	}
 
 

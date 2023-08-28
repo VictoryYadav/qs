@@ -69,8 +69,6 @@
 
         padding-right: 15px;
 
-        color: #fff;
-
         overflow: scroll;
 
         height: 350px;
@@ -373,9 +371,29 @@
         <div class="container">
             
             <div class="order-details-page">
+                <?php if(isset($_GET['rat'])){ ?>
+                <div class="row" id="mobileBlock">
+                    <div class="col-md-3">
+                        <input type="number" placeholder="Mobile" id="mobile">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-sm btn-success" onclick="getOTP()">GET OTP</button>
+                    </div>
+                </div>
+                <div class="row" id="verifyBlock" style="display: none;">
+                    <div class="col-md-3">
+                        <input type="number" placeholder="OTP" id="otp">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-sm btn-success" onclick="verifyOTP()">Verify</button>
+                    </div>
 
+                </div>
+                <div id="welcome">
+                    <p>Welcome back <b><span id="name"></span></b></p>
+                </div>
+            <?php } ?>
                 <div class="order-list" id="OrderList">
-
                     <table class="fixed_headers" style="width:100%; color: <?php echo isset($body_text)?$body_text:"#000"?>;">
 
                         <thead>
@@ -492,6 +510,8 @@
 
                     <!-- ************************************************ -->
 
+                    <!-- scroll all page -->
+
                     <table class="fixed_headers" style="width:100%; color: <?php echo isset($body_text)?$body_text:"#000"?>; margin-top: 26px;">
 
                         <thead>
@@ -562,13 +582,18 @@
 
                 <div class="row remove-margin payment-btns" style=" bottom: 12%;position: absolute;width: 100%;     margin-left: auto;">
 
+                        <!-- hidden field -->
+                        <input type="hidden" id="mobileR" value="0">
+                        <input type="hidden" id="custidR" value="0">
+                        <!-- hidden field -->
+                        <?php if(isset($_GET['rat'])){ ?>
+                        <button id="SubmitRating" type="button" class="btn paybtn btn-success" style="width:50%;" onclick="SubmitRating()" disabled>Submit</button>
+                        <?php }else{ ?>
+                        <a id="MenuBackButton"  class="btn backbtn" width="50%" href="<?= base_url('customer'); ?>">Menu</a>
+                        <button id="SubmitRating" type="button" class="btn paybtn" style="width:50%;" onclick="SubmitRating()">Submit</button>
 
+                        <?php } ?>
 
-                    <a id="MenuBackButton"  class="btn backbtn" width="50%" href="<?= base_url('customer'); ?>">Menu</a>
-
-
-
-                    <button id="SubmitRating" type="button" class="btn paybtn" style="width:50%;" onclick="SubmitRating()">Submit</button>
 
 
 
@@ -596,7 +621,7 @@
 
             <div class="modal-header">
 
-                <h5 class="modal-title" id="exampleModalLabel" style="font-family: auto; font-size: 21px;">Share with people.</h5>
+                <h5 class="modal-title" id="exampleModalLabel" style="font-family: auto; font-size: 21px;">Share link with people.</h5>
 
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 
@@ -607,14 +632,12 @@
             </div>
 
             <div class="modal-body">
-
+                <p class="text-right">
+                    <span style="background: #000;color:#fff;padding: 3px;font-size: 11px;border-radius: 50px;cursor: pointer;" id="copyButton">Copy</span>
+                </p>
+                <p id="textToCopy"><?= $link; ?></p>
                 <!-- AddToAny BEGIN -->
-
-
-
                 <div id="iconsSub" class="a2a_kit a2a_kit_size_32 a2a_default_style">
-
-
 
                     <!-- <a class="a2a_button_facebook" style="width: 40px;"></a>
 
@@ -715,6 +738,8 @@
                 Service: $('#ServiceRange').val(),
                 Ambience: $('#AmbienceRange').val(),
                 vfm: $('#vfmRange').val(),
+                mobileR: $('#mobileR').val(),
+                custidR: $('#custidR').val(),
                 billid: <?= $billId; ?>
             },
 
@@ -772,6 +797,92 @@
         $('#iconsSub').html(html);
 
     }
+
+    function getOTP(){
+        var mobile = $('#mobile').val();
+        if(mobile.length >= 10){
+            $.post('<?= base_url('customer/genOTPRating') ?>',{mobile:mobile},function(res){
+                if(res.status == 'success'){
+                  // alert(res.response);
+                  $('#verifyBlock').show();
+                  $('#mobileBlock').hide();
+                  
+                }else{
+                  alert(res.response);
+                  $('#verifyBlock').hide();
+                  $('#mobileBlock').show();
+                }
+            });
+        }else{
+            alert('Enter Mobile No');
+        }
+    }
+
+    function getOTP(){
+        var mobile = $('#mobile').val();
+        if(mobile.length >= 10){
+            $.post('<?= base_url('customer/genOTPRating') ?>',{mobile:mobile},function(res){
+                if(res.status == 'success'){
+                  // alert(res.response);
+                  $('#verifyBlock').show();
+                  
+                }else{
+                  alert(res.response);
+                  $('#verifyBlock').hide();
+                  $('#mobileBlock').show();
+                }
+            });
+        }else{
+            alert('Enter Mobile No');
+        }
+    }
+
+    function verifyOTP(){
+        var otp = $('#otp').val();
+        var mobile = $('#mobile').val();
+        if(mobile.length >= 10 && otp >= 4){
+            $.post('<?= base_url('customer/verifyOTPRating') ?>',{otp:otp, mobile:mobile},function(res){
+                if(res.status == 'success'){
+                  // alert(res.response);
+                  
+                  $('#name').html(res.response.data.FName+' '+res.response.data.LName);
+                  $('#mobileR').val(mobile);
+                  $('#custidR').val(res.response.data.CustId);
+                  $('.paybtn').prop("disabled", false); 
+                }else{
+                  alert(res.response);
+                }
+            });
+        }else{
+            alert('Enter Mobile No');
+        }
+    }
+
+// copy text 
+    const copyButton = document.getElementById('copyButton');
+
+    copyButton.addEventListener('click', () => {
+        const textToCopy = $('#textToCopy').text();
+    copyTextToClipboard(textToCopy);
+    });
+
+    function copyTextToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            $('#copyButton').html('Copied');
+        }).catch(error => {
+            console.error('Unable to copy text:', error);
+        });
+    }
+
+    // end copy text 
+
+    function copied(){
+        $('#copyButton').html('Copy');
+    }
+    setInterval(copied, 3000);
+
+        
+
 
 </script>
 

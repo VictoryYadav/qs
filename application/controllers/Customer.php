@@ -21,6 +21,7 @@ class Customer extends CI_Controller {
 	}
 
     public function index1(){
+
         echo "<pre>";
         print_r($_SESSION);
         $CustId = 10;
@@ -588,7 +589,7 @@ class Customer extends CI_Controller {
         if($this->input->method(true)=='POST'){
             $otp = $this->session->userdata('cust_otp');
             if($_POST['otp'] == $otp){
-                $res = "OTP Matched!";
+                $resp['msg'] = "OTP Matched!";
                 $status = 'success';
                 $ses_data = $this->session->userdata('emailMobile');
 
@@ -603,7 +604,6 @@ class Customer extends CI_Controller {
                 $EType = $this->session->userdata('EType');
                 $EID = authuser()->EID;
                 $TableNo = authuser()->TableNo;
-
                 if(!empty($check)){
                     $this->session->set_userdata('CustId', $check['CustId']);
                     $this->session->set_userdata('CellNo', $check['MobileNo']);
@@ -611,12 +611,27 @@ class Customer extends CI_Controller {
                     $this->session->set_userdata('signup', $check);
                 }
 
+                $visit = 0;
+                $rating = 0;
                 if(!empty($CustId) && $CustId > 0){
-                    $res = $this->db2->query("SELECT * from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = '$TableNo' AND timediff(Now(),LstModDt) < ('03:00:00') order by CNo desc limit 1")->row_array();
+
+                    $res = $this->db2->query("SELECT CNo from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = '$TableNo' AND timediff(Now(),LstModDt) < ('03:00:00') order by CNo desc limit 1")->row_array();
                     if(!empty($res)){
                         $this->session->set_userdata('CNo', $res['CNo']);
+                    }else{
+
+                        $visited = $this->db2->select('count(CNo) as counts')->get_where('KitchenMain', array('EID' => $EID, 'CustId' => $CustId))->row_array();
+                        $visit = $visited['counts'];
+
+                        $rating1 = $this->db2->select('avg(avgBillRtng) as rtng')->get_where('Ratings', array('EID' => $EID, 'CustId' => $CustId))->row_array();
+
+                        $rating = $rating1['rtng'];
                     }
                 }
+
+                $resp['visit'] = $visit;
+                $resp['rating'] = $rating;
+                $resp['name'] = $check['FName'].' '.$check['LName'];
 
                 //Deleting older orders
                 $hours_3 = date('Y-m-d H:i:s', strtotime("-3 hours"));
@@ -671,15 +686,15 @@ class Customer extends CI_Controller {
                             )
                         );
                 }
-
+                $response = $resp;
             }else{
-                $res = "OTP Doesn't Matched";
+                $response = "OTP Doesn't Matched";
             }
 
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
-                'response' => $res
+                'response' => $response
               ));
              die;
         }
@@ -1587,8 +1602,26 @@ class Customer extends CI_Controller {
         $CustId = $this->session->userdata('CustId');
         $CellNo = $this->session->userdata('CellNo');
 
+        $rat = 0;
+        if(isset($_GET['rat'])){
+            $rat = base64_decode(rtrim($_GET['rat'], "="));
+            $dd = explode("_", $rat);
+            $EID = $dd[0];
+            $ChainId = $dd[1];
+            $billId = $dd[2];
+            $CustId = 0;
+        }
+
         if($this->input->method(true)=='POST'){
+
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+
             extract($_POST);
+
+            $CellNo = ($mobileR > 0) ? $mobileR : $CellNo;
+            $CustId = ($custidR > 0) ? $custidR : $CustId;
 
             $checkid = $this->db2->query("SELECT RCd  FROM `Ratings` WHERE EID = $EID AND BillId = $billid AND CustId = $CustId AND CellNo = $CellNo")->result_array();
 
@@ -1672,13 +1705,88 @@ class Customer extends CI_Controller {
         $data['language'] = languageArray();
         $data['billId'] = $billId;
 
-        $data['link'] = "https://qs.vtrend.org/share_rating.php?qs=" . $CustId . "_" . $EID . "_" . $ChainId . "_" . $billId . "_" . $CellNo . "";
+        $url = $EID . "_" . $ChainId . "_" . $billId;
 
+        $url = base64_encode($url);
+        $url = rtrim($url, "=");
+        $data['link'] = base_url('rating/'.$billId).'?rat='.$url;
+        // print_r($data['link']);die;
 
-        $data['kitchenGetData'] = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm, k.ItemId , m.UItmCd from Kitchen k, KitchenMain km, Billing b, MenuItem m where  k.ItemId=m.ItemId and (k.Stat<>4 and k.Stat<>6 and k.Stat<>7 and k.Stat<>99)  AND km.BillStat=b.billId and k.EID=km.EID  and km.CNo=k.CNo  and k.EID=b.EID and b.billId=$billId Group By m.ItemNm,k.CustItemDesc, k.ItemTyp, k.ItemId")->result_array();
+        // $data['link'] = "https://qs.vtrend.org/share_rating.php?qs=" . $CustId . "_" . $EID . "_" . $ChainId . "_" . $billId . "_" . $CellNo . "";
+
+        $data['kitchenGetData'] = $this->db2->select('b.BillId,k.ItemId , m.UItmCd, CONCAT(m.ItemNm, k.CustItemDesc) as ItemNm, k.CustItemDesc')
+                                    ->order_by('m.ItemNm','ASC')
+                                    ->group_by('k.ItemId,k.MCNo')
+                                    ->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
+                                    ->join('Kitchen k', 'k.MCNo = km.MCNo', 'inner')
+                                    ->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
+                                    ->get_where('Billing b', array('b.BillId' => $billId))
+                                    ->result_array();
+        // echo "<pre>";
+        // print_r($data);
+        // die;
 
         $this->load->view('cust/rating', $data);
         
+    }
+
+    public function genOTPRating(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+            
+            $otp = 1212;
+
+            $this->session->set_userdata('ratOTP', $otp);
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $otp
+              ));
+             die;
+        }
+    }
+    function verifyOTPRating(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $otp = $this->session->userdata('ratOTP');
+            if($_POST['otp'] == $otp){
+                $status = 'success';
+                
+                $genTblDb = $this->load->database('GenTableData', TRUE);
+
+                $check = $genTblDb->select('CustId, FName, LName')
+                                    ->get_where('AllUsers', array('MobileNo' => $_POST['mobile']))
+                                    ->row_array();
+                $resp['msg'] = "not";
+                if(!empty($check)){
+                    $resp['msg'] = "data";
+                    $resp['data'] = $check;
+                }
+                $response = $resp;
+
+            }else{
+                $response = "OTP Doesn't Matched";
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function share_rating($billId, $MCNo){
+        $data['title'] = 'Share Rating';
+        $data['language'] = languageArray();
+        $data['billId'] = $billId;
+        $data['shareDetails'] = $this->cust->getShareDetails($billId, $MCNo);
+        $this->load->view('cust/share_rating', $data);
     }
 
     public function transactions(){

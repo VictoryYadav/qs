@@ -50,6 +50,27 @@
     <?php $this->load->view('layouts/customer/script'); ?>
     <!-- end Js Plugins -->
 
+    <!-- Modal -->
+<div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="labelName">Name</h6>
+        <button type="button" class="close" onclick="goHome()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Your earlier visits to this outlet : <b><span id="lableVisit">0</span></b></p>
+        <p>Your average rating for this outlet  : <b><span id="lableRating">0</span></b></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-sm" onclick="goHome()">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 
 <script type="text/javascript">
@@ -75,12 +96,23 @@
         var data = $(this).serializeArray();
         $.post('<?= base_url('customer/loginVerify') ?>',data,function(res){
             if(res.status == 'success'){
-                window.location = '<?= base_url('customer'); ?>';
+                if(res.response.visit > 0){
+                    $('#labelName').html(res.response.name);
+                    $('#lableVisit').html(res.response.visit);
+                    $('#lableRating').val(res.response.rating);
+                    $('#welcomeModal').modal('show');
+                }else{
+                    window.location = '<?= base_url('customer'); ?>';
+                }
             }else{
               $('#errorMsg').html(res.response);
             }
         });
     });
+
+   function goHome(){
+        window.location = '<?= base_url('customer'); ?>';
+   }
 </script>
 
 </html>
