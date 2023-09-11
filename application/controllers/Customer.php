@@ -24,6 +24,7 @@ class Customer extends CI_Controller {
 
         echo "<pre>";
         print_r($_SESSION);
+        die;
         $CustId = 10;
          $hours_3 = date('Y-m-d H:i:s', strtotime("-3 hours"));
                 // if ($EType == 5) {
@@ -148,9 +149,9 @@ class Customer extends CI_Controller {
 
     public function offer_cust_ajax(){
         if($this->input->method(true)=='POST'){
-            echo "<pre>";
-            print_r($_POST);
-            die;
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
             $res = $this->cust->getOfferCustAjax($_POST);
             echo $res;
         }
@@ -1982,6 +1983,141 @@ class Customer extends CI_Controller {
               ));
              die;
         }
+    }
+
+    public function check_bill_offer(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            $status = "success";
+            $amount = round($_POST['payable']);
+
+            $data = $this->db2->select('cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent ')
+                            ->order_by('cod.MinBillAmt', 'DESC')
+                            ->join('CustOffers c', 'c.SchCd = cod.SchCd')
+                            ->get_where('CustOffersDet cod', array('cod.MinBillAmt < ' => $amount))
+                            ->row_array();
+            if(!empty($data)){
+
+                $grand_total = 0;
+                $bill_based_saving = 0;
+                if($data['Bill_Disc_pcent'] > 0){
+                    $dis_amt = $amount * $data['Bill_Disc_pcent'] / 100;
+                    $grand_total = $amount - $dis_amt;
+                    $bill_based_saving = $dis_amt;
+                }
+
+                if($data['Disc_Amt'] > 0){
+                    $grand_total = $amount - $data['Disc_Amt'];
+                    $bill_based_saving = $data['Disc_Amt'];
+                }
+
+                if($data['Disc_ItemId'] > 0){
+                    $Disc_ItemId = $data['Disc_ItemId'];
+                    $Disc_IPCd = $data['Disc_IPCd'];
+                    $TableNo = authuser()->TableNo;
+                    $EID = authuser()->EID;
+                    $ChainId = authuser()->ChainId;
+
+                    $disRates = $this->db2->query("select mi.ItmRate from MenuItemRates as mi where mi.EID = $EID and mi.ChainId = $ChainId and mi.ItemId = $Disc_ItemId and mi.Itm_Portion = $Disc_IPCd and mi.SecId = (select et.SecId from Eat_tables et where et.TableNo = $TableNo and et.EID = $EID)")->row_array(); 
+                    
+                    if(!empty($disRates)){
+                        $bill_based_saving = $data['Disc_Qty'] * $disRates['ItmRate'];
+                    }
+
+                }
+
+                $res['msg'] = 'found';
+                $res['grand_total'] = $grand_total;
+                $res['bill_based_saving'] = $bill_based_saving;
+
+                // $res['grand_total'] = 2960;
+                // $res['bill_based_saving'] = 5;
+
+            }else{
+                $res['msg'] = 'not';
+            }
+
+            $response = $res;
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function get_custom_item(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            $status = "success";
+            
+            $itemId = $_POST['itemId'];
+            $itemTyp = $_POST['itemTyp'];
+            $itemPortionCode = $_POST['itemPortionCode'];
+            $FID = $_POST['FID'];
+            
+            $customDetails = $this->cust->getCustomDetails($itemTyp, $itemId, $itemPortionCode, $FID);
+
+            $grpType = $customDetails[0]['GrpType'];
+            $itemGroupCd = $customDetails[0]['ItemGrpCd'];
+            $itemGroup = $customDetails[0]['ItemGrpName'];
+            $itemReq = $customDetails[0]['Reqd'];
+
+            $returnData = [];
+
+            $temp['GrpType'] = $grpType;
+            $temp['ItemGrpCd'] = $itemGroupCd;
+            $temp['ItemGrpName'] = $itemGroup;
+            $temp['Reqd'] = $itemReq;
+            $temp['Details'] = [];
+
+            foreach ($customDetails as $key => $value) {
+                if ($value['ItemGrpName'] == $itemGroup) {
+                    $temp['Details'][] = [
+                        "Name" => $value['Name'],
+                        "Rate" => $value['Rate'],
+                        "ItemOptCd" => $value['ItemOptCd'],
+                    ];
+                } else {
+                    $returnData[] = $temp;
+                    $grpType = $value['GrpType'];
+                    $itemGroupCd = $value['ItemGrpCd'];
+                    $itemGroup = $value['ItemGrpName'];
+                    $itemReq = $value['Reqd'];
+                    $temp['GrpType'] = $grpType;
+                    $temp['ItemGrpCd'] = $itemGroupCd;
+                    $temp['ItemGrpName'] = $itemGroup;
+                    $temp['Reqd'] = $itemReq;
+                    $temp['Details'] = [];
+                    $temp['Details'][] = [
+                        "Name" => $value['Name'],
+                        "Rate" => $value['Rate'],
+                        "ItemOptCd" => $value['ItemOptCd'],
+                    ];
+                }
+            }
+
+            $returnData[] = $temp;
+            $response =  $returnData;
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }   
     }
 
 

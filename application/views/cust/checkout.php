@@ -383,7 +383,7 @@
                     html_body +=`<table style="width:100%;">`;
                     html_body +=`<tr>`;
                     html_body +=`   <th style="font-style: italic">Total Discount / Savings</th>`;
-                    html_body +=`   <th class="text-right" style="font-style: italic">`+disc+`</th>`;
+                    html_body +=`   <th class="text-right" style="font-style: italic" id="totalDiscount">`+disc+`</th>`;
                     html_body +=`</tr>`;
                     html_body +=`</table>`;
                     html_body +=`</div>`;
@@ -428,6 +428,10 @@
                     html_body +=`</div>`;
                 }
 
+                // if(grand_total)
+
+                check_bill_amount_offer(grand_total, disc);
+
                 $('.bill_box').html(html_body);
 
                 $("#payable").text(grand_total);
@@ -442,6 +446,28 @@
             }
         });
     }
+
+
+    function check_bill_amount_offer(payable, discount){
+
+    $.post('<?= base_url('customer/check_bill_offer') ?>',{payable:payable},function(res){
+            if(res.status == 'success'){
+                if(res.response.msg == 'found'){
+                    
+                    var disc = parseInt(discount) + parseInt(res.response.bill_based_saving);
+                    $('#totalDiscount').html(disc);
+
+                    $("#payable").text(res.response.grand_total);
+                    // $("#payableAmt").val(grand_total);
+                }
+                else{
+                    // alert(res.response.msg);
+                }   
+            }else{
+              alert(res.response); 
+            }
+        });        
+    }    
     
 
     function getTaxValue(initil_value,total){
@@ -505,11 +531,14 @@
                         
 
                 });
+
                 $('.remove-row-margin').append(t);
             }
         });
     }
-    getPaymentModes();
+
+    // for payment modes
+    // getPaymentModes();
     function start_payment(p){
         var a = parseFloat($('#payable').html());
         var t = $('#tips').val();
