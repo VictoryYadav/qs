@@ -40,8 +40,13 @@ class Cust extends CI_Model{
 		}
 		
 		if ($foodTyp == 1) {				
-			$data['filter'] = $this->db2->select('FID, Opt, FIdA, AltOpt')
-							->get_where('Food', array('CTyp' => $data['mcat'][0]['CTyp']))
+			// $data['filter'] = $this->db2->select('FID, Opt, FIdA, AltOpt')
+			// 				->get_where('Food', array('CTyp' => $data['mcat'][0]['CTyp']))
+			// 				->result_array();
+
+			$data['filter'] = $this->db2->select('FID, Opt, Rank')
+							->order_by('Rank', 'ASC')
+							->get_where('FoodType', array('CTyp' => $data['mcat'][0]['CTyp']))
 							->result_array();
 		}
 		return $data;
@@ -855,10 +860,10 @@ class Cust extends CI_Model{
 						// for offer 
 						$Disc_ItemId = $Offers['Disc_ItemId'];
 						$Disc_IPCd = $Offers['Disc_IPCd'];
-						$offerRate = $itmrate * $Offers['Disc_pcent'] / 100;;
+						$offerRate = $itmrate - ($itmrate * $Offers['Disc_pcent'] / 100);
 						if($Disc_ItemId != $postData['itemId']){
 							$offerRates = $this->db2->query("select mi.ItmRate from MenuItemRates as mi where mi.EID = $this->EID, mi.ChainId = $this->ChainId and mi.ItemId = $Disc_ItemId and mi.Itm_Portion = $Disc_IPCd and mi.SecId = (select SecId from Eat_tables where TableNo = $TableNo and EID = $this->EID")->row_array();
-							$offerRate = $offerRates['ItmRate'] * $Offers['Disc_pcent'] / 100;
+							$offerRate = $offerRates['ItmRate'] -  ($offerRates['ItmRate'] * $Offers['Disc_pcent'] / 100);
 						}
 
 						$kitchenObj['ItemId'] = $Disc_ItemId;

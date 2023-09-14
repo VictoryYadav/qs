@@ -890,6 +890,7 @@ class Customer extends CI_Controller {
     }
 
     public function order_details_ajax(){
+
         $CustId = $this->session->userdata('CustId');
         $TempCustId = $this->session->userdata('TempCustId');
         $CellNo = $this->session->userdata('CellNo');
@@ -2118,6 +2119,30 @@ class Customer extends CI_Controller {
               ));
              die;
         }   
+    }
+
+    // copy from sendtoKitchen
+    public function kotGenerate(){
+        $CustId = $this->session->userdata('CustId');
+        $EID = authuser()->EID;
+        $CNo = $this->session->userdata('CNo');
+        $TableNo = authuser()->TableNo;
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            updateRecord('Kitchen', array('Stat' => 2), array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 1, 'CNo' => $CNo));
+            // set Kot to 0
+            $this->session->set_userdata('KOTNo', 0);
+            $status = 'success';
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => 'Order Sent To Kitchen Successfully'
+              ));
+             die;
+        }    
     }
 
 

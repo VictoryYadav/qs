@@ -426,6 +426,19 @@
         });
 
     }
+
+    function kotGenerate(){
+        var data = '';
+        $.post('<?= base_url('customer/kotGenerate') ?>', data ,function(res){
+            if(res.status == 'success'){
+                alert(res.response);
+               window.location = "<?php echo base_url('customer'); ?>";
+            }else{
+              alert(res.response);
+            }
+        });
+
+    }
     
 </script>
 

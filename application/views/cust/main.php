@@ -411,7 +411,7 @@
 
                     <div class="row" style="margin: 0px;">
                         <div class="form-group" style="width: 100%;">
-                            <select name="schcd" id="schcd" class="form-control">
+                            <select name="schcd" id="schcd" class="form-control" >
                                 <option value="">Select Offer</option>
                             </select>
                         </div>
@@ -679,12 +679,19 @@ Essential Scripts
 
                 if(filter.length > 0){
                     $('#filterBlock').show();
-                    fltr += '<label class="btn btn-b veg-btn active">\
-                        <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" checked="" onchange="filterChange(0)">ALL</label>\
-                    <label class="btn btn-b nonveg-btn">\
-                        <input type="radio" value="'+filter[0].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[0].FID+')">'+filter[0].Opt+'</label>\
-                    <label class="btn btn-b both-btn">\
-                        <input type="radio" value="'+filter[0].FIdA+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[0].FIdA+')">'+filter[0].AltOpt+'</label>';
+                    fltr = '<label class="btn btn-b veg-btn active">\
+                        <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" checked="" onchange="filterChange(0)">ALL</label>';
+                    for(i=0; i < filter.length; i++){
+                        fltr += '<label class="btn btn-b nonveg-btn">\
+                        <input type="radio" value="'+filter[i].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[i].FID+')">'+filter[i].Opt+'</label>';
+                    }
+
+                    // fltr += '<label class="btn btn-b veg-btn active">\
+                    //     <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" checked="" onchange="filterChange(0)">ALL</label>\
+                    // <label class="btn btn-b nonveg-btn">\
+                    //     <input type="radio" value="'+filter[0].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[0].FID+')">'+filter[0].Opt+'</label>\
+                    // <label class="btn btn-b both-btn">\
+                    //     <input type="radio" value="'+filter[0].FIdA+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[0].FIdA+')">'+filter[0].AltOpt+'</label>';
                     $('#filters').html(fltr);
                 }else{
                     $('#filterBlock').hide();
@@ -804,7 +811,7 @@ Essential Scripts
 					</div>';
                   }
                 }else{
-                    grid += '<div class="text-center text-danger">Data Not Found! </div>';
+                    grid += '<div class="text-center text-danger">No Options Available! </div>';
                 }
               $('#gridView').html(grid);
               $('.view').html(listView);
@@ -827,6 +834,8 @@ Essential Scripts
 </script>
 
 <script>
+    
+    var groupNameList = [];
         $("#search-item").keyup(function(event) {
             var itemName = $(this).val();
             if (itemName != '') {
@@ -925,7 +934,7 @@ Essential Scripts
             // end for common
 
             if (itemTyp == 0) {
-
+                groupNameList = [];
                 // $("#item-name-modal").text($(item).attr('item-nm'));
                 // $("#item-prepare-time").text(PrepTime + ' min to prepare');
                 // $("#item-prepare-time").attr('time', PrepTime);
@@ -1021,7 +1030,7 @@ Essential Scripts
                         var data = res.response;
                         var temp = '<option value="0">Select Offer111</option>';
                         for(i=0; i<data.length; i++){
-                            temp += '<option value="'+data[i].SchCd+'" sdcode="'+data[i].SDetCd+'" Qty="'+data[i].Qty+'" Disc_Qty="'+data[i].Disc_Qty+'" Disc_pcent="'+data[i].Disc_pcent+'" Disc_Amt="'+data[i].Disc_Amt+'">'+data[i].SchNm+'-'+data[i].SchDesc+'</option>';
+                            temp += '<option value="'+data[i].SchCd+'" sdcode="'+data[i].SDetCd+'" Qty="'+data[i].Qty+'" Disc_Qty="'+data[i].Disc_Qty+'" Disc_pcent="'+data[i].Disc_pcent+'" Disc_Amt="'+data[i].Disc_Amt+'" ipcd="'+data[i].IPCd+'" itemid="'+data[i].ItemId+'">'+data[i].SchNm+'-'+data[i].SchDesc+'</option>';
                         }
                         $('#schcd').html(temp);
                     }else{
@@ -1047,10 +1056,12 @@ Essential Scripts
                     if(res.status == 'success'){
 
                         var customItem = res.response;
+                        radioList = customItem;
                         console.log('cc '+customItem);
                         for(i=0; i< customItem.length; i++){
                             // alert(customItem[i].ItemGrpName);
                             if(customItem[i].GrpType == 1){
+                                groupNameList.push(customItem[i].ItemGrpName);
                                 
                                 var tempRadio = '<h5 class="widget-header" id="radioHeader">'+customItem[i].ItemGrpName+'</h5>\
                                         <ul class="category-list">';
@@ -1090,17 +1101,47 @@ Essential Scripts
         $('#schcd').change(function(){
             var schcd = $(this).val();
             // console.log($('option:selected', this).attr('sdcode'));
+            var itemId = $('option:selected', this).attr('itemid');
+            var ipcd = $('option:selected', this).attr('ipcd');
+
+            $('#item_portions').val(ipcd);
+
             if(schcd > 0){
                 $('#sdetcd').val($('option:selected', this).attr('sdcode'));
             }else{
                 $('#sdetcd').val(0);
             }
 
+            item_portions_call();
+
             console.log('schcd '+schcd);
         })
 
+        function item_portions_call(){
+            
+            var portionCode = $('#item_portions').val();
+            var rate = $('#item_portions option:selected').attr('rate');
+
+            var itemId = $('#item_portions option:selected').attr('itemid');
+            var itemTyp = $('#item_portions option:selected').attr('itemtyp');
+            var FID = $('#item_portions option:selected').attr('fid');
+            // change custom item price according to itemPortionCode
+            if (itemTyp != 0) {
+                getCustomItemDetails(itemId, itemTyp, portionCode, FID);
+            }
+            $("#product-price").text(' ' + rate);
+            $('#totalAmount').text(rate);
+            var remarks = $('#item_portions option:selected').attr('offer_remark');
+            
+            if(remarks !== 'null'){
+            }else{
+                $("#item_offer_remark").text('');
+            }   
+        }
+
         $('#item_portions').change(function(){
             // alert("aaaa");
+            $('#schcd').val(0);
             var element = $(this);
             var rate = $('option:selected', this).attr('rate');
             var itemId = $('option:selected', this).attr('itemid');
@@ -1129,10 +1170,8 @@ Essential Scripts
             }
         });
 
-        var radioVal = [];
         var radioRate= [];
         var raidoGrpCd= [];
-        var reqIndex= [];
         var radioName= [];
         var checkboxVal= [];
         var checkboxRate= [];
@@ -1181,8 +1220,6 @@ Essential Scripts
             console.log('getTotal = '+ this.total);
             $('#totalAmount').text(this.total);
         }
-
-
 
         var customizeModalVue = new Vue({
             el: "#customizeModal",
@@ -1446,6 +1483,28 @@ Essential Scripts
         });
 
         function itemOrderConfirm() {
+            // mandatory radio options
+            
+            console.log('gg '+groupNameList);
+            if(groupNameList.length > 0){
+                var mandatory = false;
+                //groupNameList
+                for(var g=0; g<groupNameList.length;g++){ 
+                    //comment on and check this code mandatory = false;
+                    var groupName = document.getElementsByName(groupNameList[g]); 
+                      for(var i=0; i<groupName.length;i++){ 
+                          if(groupName[i].checked == true){ 
+                              mandatory = true;     
+                          } 
+                      } 
+                  }
+                   
+                  if(!mandatory){ 
+                      alert("Please Choose the Required Field!!"); 
+                      return false; 
+                  } 
+            }
+
             var custRemarks = $("#cust-remarks").val();
             var qty = $("#qty-val").val();
             var takeAway = 0;
