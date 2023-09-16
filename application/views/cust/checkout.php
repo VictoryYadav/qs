@@ -457,7 +457,9 @@
                     var disc = parseInt(discount) + parseInt(res.response.bill_based_saving);
                     $('#totalDiscount').html(disc);
 
-                    $("#payable").text(res.response.grand_total);
+                    if(res.response.grand_total > 0){
+                        $("#payable").text(res.response.grand_total);
+                    }
                     // $("#payableAmt").val(grand_total);
                 }
                 else{

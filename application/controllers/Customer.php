@@ -899,6 +899,7 @@ class Customer extends CI_Controller {
         $EType = $this->session->userdata('EType');
         $KOTNo = $this->session->userdata('KOTNo');
         $CNo = $this->session->userdata('CNo');
+        $TableNo = authuser()->TableNo;
 
         if ($CustId != '') {
             // echo "<pre>";
@@ -1032,9 +1033,23 @@ class Customer extends CI_Controller {
                 }
 
                 updateRecord('KitchenMain', array('BillDiscAmt' => $dis), array('CNo' => $CNo));
-                
-                echo 1;
-                die();
+
+                $statuss = 1;
+                if($EType == 5){
+                    $check = $this->db2->select('CNo')
+                                        ->get_where('Kitchen', array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 1, 'CNo' => $CNo))
+                                        ->row_array();
+                    if(!empty($check)){
+                        $statuss = 2;
+                        updateRecord('Kitchen', array('Stat' => 2), array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 1, 'CNo' => $CNo));
+                    }
+                }
+
+                header('Content-Type: application/json');
+                echo json_encode(array(
+                    'status' => $statuss
+                  ));
+                 die;
             }
 
             if ($_POST['getPaymentList']) {
@@ -2143,6 +2158,14 @@ class Customer extends CI_Controller {
               ));
              die;
         }    
+    }
+
+    public function test(){
+        $data['title'] = 'Item Details';
+        $data['language'] = languageArray();
+        $data['Itm_Portion'] = 1;
+
+        $this->load->view('cust/testing', $data);
     }
 
 

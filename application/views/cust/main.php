@@ -746,7 +746,10 @@ Essential Scripts
 							<div class="product-item bg-light">\
 								<div class="card">\
 									<div class="thumb-content">\
-										<div class="price">$200</div>\
+                                    <div class="priceBottom">$400</div>\
+                                    <div class="priceBottomRight">$300</div>\
+                                        <div class="priceRight">$200</div>\
+										<div class="price">$100</div>\
 										<?php if(!empty($this->session->userdata('CustId'))){ ?>
 										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-NV="'+data[i].NV+'">\
 											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
@@ -758,6 +761,14 @@ Essential Scripts
 									<?php } ?>
 									</div>\
 									<div class="card-body">\
+                                    <div class="featured__item">\
+                                        <div class="featured__item__pic set-bg">\
+                                            <ul class="featured__item__pic__hover">\
+                                                <li><a href="#"><i class="fa fa-heart"></i></a></li>\
+                                                <li><a href="#"><i class="fa fa-retweet"></i></a></li>\
+                                                <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>\
+                                            </ul>\
+                                        </div>\
 									    <p data-toggle="tooltip" data-placement="top" title="'+data[i].ItemNm+'" class="strTruncate">'+data[i].ItemNm+'</p>\
 									    <ul class="list-inline product-meta">\
 									    	<li class="list-inline-item">\
@@ -770,6 +781,7 @@ Essential Scripts
 									    		<i class="fa fa-inr " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
 									    	</li>\
 									    </ul>\
+                                        </div>\
 									</div>\
 								</div>\
 							</div>\

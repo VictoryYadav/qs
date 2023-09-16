@@ -1355,6 +1355,44 @@ ul.pagination .active a {
   padding: 4px 8px;
   font-size: 12px;
 }
+
+/*new add */
+
+.product-item .thumb-content .priceRight {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #5672f9;
+  color: #fff;
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.product-item .thumb-content .priceBottom {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: #5672f9;
+  color: #fff;
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.product-item .thumb-content .priceBottomRight {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: #5672f9;
+  color: #fff;
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+/* end new add */
+
 .product-item .product-meta {
   margin-bottom: 15px;
 }
@@ -2282,6 +2320,85 @@ form textarea {
 .scroll-top-to:hover {
   background: #333;
 }
+
+/* for hover items */
+
+.featured__item {
+  margin-bottom: 0px;
+}
+
+.featured__item:hover .featured__item__pic .featured__item__pic__hover {
+  bottom: 20px;
+}
+
+.featured__item__pic {
+  /*height: 60px;*/
+  /*position: relative;*/
+  overflow: hidden;
+  background-position: center center;
+}
+
+.featured__item__pic__hover {
+  position: absolute;
+  left: 0;
+  bottom: -50px;
+  width: 100%;
+  text-align: center;
+  -webkit-transition: all, 0.5s;
+  -moz-transition: all, 0.5s;
+  -ms-transition: all, 0.5s;
+  -o-transition: all, 0.5s;
+  transition: all, 0.5s;
+}
+
+.featured__item__pic__hover li {
+  list-style: none;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.featured__item__pic__hover li:last-child {
+  margin-right: 0;
+}
+
+.featured__item__pic__hover li:hover a {
+  background: #7fad39;
+  border-color: #7fad39;
+}
+
+.featured__item__pic__hover li:hover a i {
+  color: #ffffff;
+  transform: rotate(360deg);
+}
+
+.featured__item__pic__hover li a {
+  font-size: 16px;
+  color: #1c1c1c;
+  height: 40px;
+  width: 40px;
+  line-height: 40px;
+  text-align: center;
+  border: 1px solid #ebebeb;
+  background: #ffffff;
+  display: block;
+  border-radius: 50%;
+  -webkit-transition: all, 0.5s;
+  -moz-transition: all, 0.5s;
+  -ms-transition: all, 0.5s;
+  -o-transition: all, 0.5s;
+  transition: all, 0.5s;
+}
+
+.featured__item__pic__hover li a i {
+  position: relative;
+  transform: rotate(0);
+  -webkit-transition: all, 0.3s;
+  -moz-transition: all, 0.3s;
+  -ms-transition: all, 0.3s;
+  -o-transition: all, 0.3s;
+  transition: all, 0.3s;
+}
+/*end of hover items */
 @media (max-width: 768px) {
   .scroll-top-to {
     bottom: 15px;

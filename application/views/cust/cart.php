@@ -413,10 +413,12 @@
             type: "post",
             data: data,
             success: response => {
+                
                 console.log(response);
-                if (response == 1) {
-                    window.location = "<?= base_url('customer/checkout'); ?>";
+                if (response.status == 2) {
+                    alert('Order Sent To Kitchen Successfully');
                 }
+                window.location = "<?= base_url('customer/checkout'); ?>";
             },
             error: (xhr, status, error) => {
                 console.log(xhr);
