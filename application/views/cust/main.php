@@ -599,6 +599,42 @@
         </div>
     </div>
 
+    <!-- ingrediants Modal -->
+    <div class="modal product-modal" id="ingrediants">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body" style="padding-top: 0px;">
+                    <h4 id="ingTitle"></h4>
+                    <p id="ingText">
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- img Modal -->
+    <div class="modal product-modal" id="imgModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center" style="padding-top: 0px;">
+                    <h4 id="imgTitle" ></h4>
+                    <img src="" id="imgpop" style="height: 300px;width: 100%;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- img Modal -->
+    <div class="modal product-modal" id="youtubeModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center" style="padding-top: 0px;">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/-y9FOb8CQoM?si=i_Qst60Hf9gMQ6jn" allow="autoplay" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
     
 
 
@@ -736,20 +772,43 @@ Essential Scripts
               if(total > 0){
                   for (var i = 0; i< data.length; i++) {
                     var openModal = '#itemModal';
+                    var itemName = "'"+data[i].ItemNm+"'";
+                    var ingrediant = "'"+data[i].Ingeredients+"'";
+                    var imgUrl = "'<?= base_url(); ?>"+data[i].imgSrc+"'";
                     if(data[i].ItemTyp > 0 )
                     {
                         // openModal = '#customizeModal';
                         openModal = '#itemModal';
                     }
 
+                    var sale = '';
+                    if(data[i].ItemSale == 1){
+                        sale = '<div class="priceRight" style="background:#f5b6b6;color:#343a40">New</div>';
+                    }else if(data[i].ItemSale == 2){
+                        sale = '<div class="priceRight" style="background:#92d6ebcc;color:#343a40">Must Try</div>';
+                    }else if(data[i].ItemSale == 3){
+                        sale = '<div class="priceRight" style="background:#ecf10a;color:#343a40">Bestseller</div>';
+                    }
+
+                    var attrib = '';
+                    if(data[i].ItemAttrib == 1){
+                        attrib = '<div class="price" style="background:#fd4800;color:#fff;">Spicy</div>';
+                    }else if(data[i].ItemAttrib == 2){
+                        attrib = '<div class="price" style="background:#c51919;color:#fff;">Very Spicy</div>';
+                    }else if(data[i].ItemAttrib == 3){
+                        attrib = '<div class="price" style="background:#80b927;color:#fff;">Sweet</div>';
+                    }else if(data[i].ItemAttrib == 4){
+                        attrib = '<div class="price" style="background:#567d1a;color:#fff;">Very Sweet</div>';
+                    }
+
+                                    // <div class="priceBottom">$400</div>\
+                                    // <div class="priceBottomRight">$300</div>\
                       grid += '<div class="col-lg-3 col-md-4 col-sm-6 col-6 col-mbl">\
 							<div class="product-item bg-light">\
 								<div class="card">\
 									<div class="thumb-content">\
-                                    <div class="priceBottom">$400</div>\
-                                    <div class="priceBottomRight">$300</div>\
-                                        <div class="priceRight">$200</div>\
-										<div class="price">$100</div>\
+                                        '+sale+'\
+										'+attrib+'\
 										<?php if(!empty($this->session->userdata('CustId'))){ ?>
 										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-NV="'+data[i].NV+'">\
 											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
@@ -764,9 +823,9 @@ Essential Scripts
                                     <div class="featured__item">\
                                         <div class="featured__item__pic set-bg">\
                                             <ul class="featured__item__pic__hover">\
-                                                <li><a href="#"><i class="fa fa-heart"></i></a></li>\
-                                                <li><a href="#"><i class="fa fa-retweet"></i></a></li>\
-                                                <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>\
+                                                <li><a href="#" onclick="imgPOPUP('+itemName+','+imgUrl+')"><i class="fa fa-heart"></i></a></li>\
+                                                <li><a href="#" onclick="ingerediants('+itemName+','+ingrediant+')"><i class="fa fa-retweet"></i></a></li>\
+                                                <li><a href="#" onclick="youtubeOpen()"><i class="fa fa-shopping-cart"></i></a></li>\
                                             </ul>\
                                         </div>\
 									    <p data-toggle="tooltip" data-placement="top" title="'+data[i].ItemNm+'" class="strTruncate">'+data[i].ItemNm+'</p>\
@@ -778,7 +837,7 @@ Essential Scripts
 									    		<i class="fa fa-heartbeat" style="color:green;"></i> '+data[i].NV+'\
 									    	</li>\
 									    	<li class="list-inline-item">\
-									    		<i class="fa fa-inr " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
+									    		<i class="fa fa-handshake-o " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
 									    	</li>\
 									    </ul>\
                                         </div>\
@@ -1592,6 +1651,23 @@ Essential Scripts
                     console.log(error);
                 }
             });
+        }
+
+        function ingerediants(itemName, ingerediants){
+            $('#ingTitle').html(itemName);
+            $('#ingText').html(ingerediants);
+            $('#ingrediants').modal('show');
+        }
+
+        function imgPOPUP(itemName, imgSrc){
+            $('#imgTitle').html(itemName);
+            document.getElementById('imgpop').src = imgSrc;
+            $('#imgModal').modal('show');
+        }
+
+        function youtubeOpen(){
+            
+            $('#youtubeModal').modal('show');
         }
 
         

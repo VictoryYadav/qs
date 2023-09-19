@@ -123,7 +123,8 @@ class Customer extends CI_Controller {
         if($this->input->method(true)=='POST'){
             $status = 'success';
             extract($_POST);
-            $res = $this->cust->getItemDetailLists($cid, $mcatId, $filter);           
+            $res = $this->cust->getItemDetailLists($cid, $mcatId, $filter);  
+                    
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,

@@ -5,7 +5,7 @@
                 <ul class="list-inline product-meta">
                     <li class="list-inline-item">
                         <a href="<?= base_url('customer'); ?>">
-                            <img src="<?= base_url() ?>assets_admin/images/QSLogo.png" alt="" style="width: 30px;height: 28px;">
+                            <img src="<?= base_url() ?>theme/images/Eat-Out-Icon.png" alt="" style="width: 30px;height: 28px;">
                         </a>
                     </li>
                     <li class="list-inline-item">
