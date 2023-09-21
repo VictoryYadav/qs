@@ -97,7 +97,7 @@ class Rcheck extends CI_Controller {
         // load db
         $db2 = $this->load->database($my_db, TRUE);
 
-        $orgCheck = $db2->query("SELECT e.CatgID, e.ONo, c.StTime, c.CloseTime, c.EType, c.ECash, c.PostPaid, c.PrePaid,  c.CustOrgs, c.MultiKitchen, c.MultiScan, c.Kitchen, c.AutoAllot, c.AutoDeliver, c.SchPop, c.SchType, c.ServChrg, c.Tips, c.EDT, c.TableReservation, c.Fest, c.Hostel,c.Deliver, c.Itm_Portion, c.CustAssist, c.TableAcceptReqd,c.OrderWithoutTable,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge, c.menuCatg, c.foodTyp, c.Charity FROM Config c, Eatary e where e.EID = $EID AND e.ChainId = $ChainId and e.EID = c.EID And c.ChainId = e.ChainId")->row_array();
+        $orgCheck = $db2->query("SELECT e.CatgID, e.ONo, c.StTime, c.CloseTime, c.EType, c.ECash, c.PostPaid, c.PrePaid,  c.CustOrgs, c.MultiKitchen, c.MultiScan, c.Kitchen, c.AutoAllot, c.AutoDeliver, c.SchPop, c.SchType, c.ServChrg, c.Tips, c.EDT, c.TableReservation, c.Fest, c.Hostel,c.Deliver, c.Itm_Portion, c.CustAssist, c.TableAcceptReqd,c.OrderWithoutTable,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge, c.menuCatg, c.foodTyp, c.Charity, c.Ing_cals FROM Config c, Eatary e where e.EID = $EID AND e.ChainId = $ChainId and e.EID = c.EID And c.ChainId = e.ChainId")->row_array();
 
         $this->session->set_userdata('CatgID', $orgCheck['CatgID']);
         $this->session->set_userdata('ONo', $orgCheck['ONo']);
@@ -129,6 +129,8 @@ class Rcheck extends CI_Controller {
         $this->session->set_userdata('menuCatg', $orgCheck['menuCatg']);
         $this->session->set_userdata('foodTyp', $orgCheck['foodTyp']);
         $this->session->set_userdata('Charity', $orgCheck['Charity']);
+        $this->session->set_userdata('Ing_cals', $orgCheck['Ing_cals']);
+        
 
         redirect(base_url('customer'));
 	}

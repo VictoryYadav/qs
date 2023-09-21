@@ -201,8 +201,18 @@
 	  	text-overflow: ellipsis;
 	}
 	.product-item .product-meta li {
-	    margin-right: 10px;
+	    margin-right: 9px;
 	}
+
+    .forRightIcon {
+      position: absolute;
+      top: 40px;
+      right: -5px;
+      display: inline-block;
+      /*padding: 4px 8px;*/
+      font-size: 9px;
+      padding: 1px 5px;
+    }
 }
 
 .loader {
@@ -601,10 +611,10 @@
 
     <!-- ingrediants Modal -->
     <div class="modal product-modal" id="ingrediants">
-        <div class="modal-dialog">
+        <div class="modal-dialog" style="vertical-align: middle;">
             <div class="modal-content">
                 <div class="modal-body" style="padding-top: 0px;">
-                    <h4 id="ingTitle"></h4>
+                    <h4 id="ingTitle" style="font-size:14px;"></h4>
                     <p id="ingText">
                     </p>
                 </div>
@@ -617,7 +627,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body text-center" style="padding-top: 0px;">
-                    <h4 id="imgTitle" ></h4>
+                    <h4 id="imgTitle" style="font-size:14px;"></h4>
                     <img src="" id="imgpop" style="height: 300px;width: 100%;">
                 </div>
             </div>
@@ -629,7 +639,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body text-center" style="padding-top: 0px;">
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/-y9FOb8CQoM?si=i_Qst60Hf9gMQ6jn" allow="autoplay" frameborder="0" allowfullscreen></iframe>
+                    <iframe width="100%" src="https://www.youtube.com/embed/-y9FOb8CQoM?si=i_Qst60Hf9gMQ6jn" allow="autoplay" frameborder="0" allowfullscreen></iframe>
                 </div>
             </div>
         </div>
@@ -646,6 +656,7 @@ Essential Scripts
 
 </body>
 <script type="text/javascript">
+    var ing_cals = "<?php echo $this->session->userdata('Ing_cals'); ?>";
 	var prList = 'grid';
 	function showProdct(val=''){
 		if(val != ''){
@@ -775,6 +786,23 @@ Essential Scripts
                     var itemName = "'"+data[i].ItemNm+"'";
                     var ingrediant = "'"+data[i].Ingeredients+"'";
                     var imgUrl = "'<?= base_url(); ?>"+data[i].imgSrc+"'";
+
+                    var ing_g = '';
+                    var ing_l = '';
+                    var ytube_g = '';
+                    var ytube_l = '';
+                    if(data[i].Ingeredients != "" && data[i].Ingeredients != "-"){
+                        ing_g = '<li class="list-inline-item text-center" style="display:block;margin-bottom:1px;"><a class="fa fa-database" href="#" onclick="ingerediants('+itemName+','+ingrediant+')"></a></li>';
+
+                        ing_l = '<li class="list-inline-item text-center"><a class="fa fa-database" href="#" onclick="ingerediants('+itemName+','+ingrediant+')"></a></li>';
+                    }
+                    
+                    if(data[i].videoLink != '-'){
+                        ytube_g = '<li class="list-inline-item text-center" style="display:block;margin-bottom:1px;"><a class="fa fa-play" href="#" onclick="youtubeOpen()"></a></li>';
+
+                        ytube_l = '<li class="list-inline-item text-center"><a class="fa fa-play" href="#" onclick="youtubeOpen()"></a></li>';
+                    }
+
                     if(data[i].ItemTyp > 0 )
                     {
                         // openModal = '#customizeModal';
@@ -782,23 +810,32 @@ Essential Scripts
                     }
 
                     var sale = '';
+                    var saleView = '';
                     if(data[i].ItemSale == 1){
                         sale = '<div class="priceRight" style="background:#f5b6b6;color:#343a40">New</div>';
+                        saleView = '<span style="background:#f5b6b6;color:#000;border-radius:50px;padding:3px;font-size:10px;">New</span>';
                     }else if(data[i].ItemSale == 2){
                         sale = '<div class="priceRight" style="background:#92d6ebcc;color:#343a40">Must Try</div>';
+                        saleView = '<span style="background:#92d6ebcc;color:#000;border-radius:50px;padding:3px;font-size:10px;">Must Try</span>';
                     }else if(data[i].ItemSale == 3){
                         sale = '<div class="priceRight" style="background:#ecf10a;color:#343a40">Bestseller</div>';
+                        saleView = '<span style="background:#ecf10a;color:#000;border-radius:50px;padding:3px;font-size:10px;">Bestseller</span>';
                     }
 
                     var attrib = '';
+                    var attribView = '';
                     if(data[i].ItemAttrib == 1){
                         attrib = '<div class="price" style="background:#fd4800;color:#fff;">Spicy</div>';
+                        attribView = '<span style="background:#fd4800;color:#fff;border-radius:50px;padding:3px;margin-right:2px;font-size:10px;">Spicy</span>';
                     }else if(data[i].ItemAttrib == 2){
                         attrib = '<div class="price" style="background:#c51919;color:#fff;">Very Spicy</div>';
+                        attribView = '<span style="background:#c51919;color:#fff;border-radius:50px;padding:3px;margin-right:2px;font-size:10px;">Very Spicy</span>';
                     }else if(data[i].ItemAttrib == 3){
                         attrib = '<div class="price" style="background:#80b927;color:#fff;">Sweet</div>';
+                        attribView = '<span style="background:#80b927;color:#fff;border-radius:50px;padding:3px;margin-right:2px;font-size:10px;">Sweet</span>';
                     }else if(data[i].ItemAttrib == 4){
                         attrib = '<div class="price" style="background:#567d1a;color:#fff;">Very Sweet</div>';
+                        attribView = '<span style="background:#567d1a;color:#fff;border-radius:50px;padding:3px;margin-right:2px;font-size:10px;">Very Sweet</span>';
                     }
 
                                     // <div class="priceBottom">$400</div>\
@@ -809,6 +846,15 @@ Essential Scripts
 									<div class="thumb-content">\
                                         '+sale+'\
 										'+attrib+'\
+                                        <?php if($this->session->userdata('Ing_cals') == 1){ ?>
+                                        <div class="forRightIcon">\
+                                            <ul class="social-circle-icons list-inline">\
+                                              <li class="list-inline-item text-center" style="display:block;margin-bottom:1px;"><a class="fa fa-joomla" href="#" onclick="imgPOPUP('+itemName+','+imgUrl+')"></a></li>\
+                                              '+ing_g+'\
+                                              '+ytube_g+'\
+                                            </ul>\
+                                        </div>\
+                                    <?php } ?>
 										<?php if(!empty($this->session->userdata('CustId'))){ ?>
 										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].Value+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-NV="'+data[i].NV+'">\
 											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
@@ -820,27 +866,20 @@ Essential Scripts
 									<?php } ?>
 									</div>\
 									<div class="card-body">\
-                                    <div class="featured__item">\
-                                        <div class="featured__item__pic set-bg">\
-                                            <ul class="featured__item__pic__hover">\
-                                                <li><a href="#" onclick="imgPOPUP('+itemName+','+imgUrl+')"><i class="fa fa-heart"></i></a></li>\
-                                                <li><a href="#" onclick="ingerediants('+itemName+','+ingrediant+')"><i class="fa fa-retweet"></i></a></li>\
-                                                <li><a href="#" onclick="youtubeOpen()"><i class="fa fa-shopping-cart"></i></a></li>\
-                                            </ul>\
-                                        </div>\
-									    <p data-toggle="tooltip" data-placement="top" title="'+data[i].ItemNm+'" class="strTruncate">'+data[i].ItemNm+'</p>\
-									    <ul class="list-inline product-meta">\
-									    	<li class="list-inline-item">\
-									    		<i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+data[i].AvgRtng+'\
-									    	</li>\
-									    	<li class="list-inline-item">\
-									    		<i class="fa fa-heartbeat" style="color:green;"></i> '+data[i].NV+'\
-									    	</li>\
-									    	<li class="list-inline-item">\
-									    		<i class="fa fa-handshake-o " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
-									    	</li>\
-									    </ul>\
-                                        </div>\
+                                        <p data-toggle="tooltip" data-placement="top" title="'+data[i].ItemNm+'" class="strTruncate">'+data[i].ItemNm+'</p>\
+                                        <ul class="list-inline product-meta">\
+                                            <li class="list-inline-item">\
+                                                <i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+data[i].AvgRtng+'\
+                                            </li>\
+                                            <?php if($this->session->userdata('Ing_cals') == 1){ ?>
+                                            <li class="list-inline-item">\
+                                                <i class="fa fa-heartbeat" style="color:green;"></i> '+data[i].NV+'\
+                                            </li>\
+                                            <?php } ?>
+                                            <li class="list-inline-item">\
+                                                <i class="fa fa-handshake-o " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
+                                            </li>\
+                                        </ul>\
 									</div>\
 								</div>\
 							</div>\
@@ -864,18 +903,28 @@ Essential Scripts
 			                        <div>\
 			                            <a data-toggle="tooltip" data-placement="top" title="'+data[i].ItemNm+'" class="font-weight-bold">'+data[i].ItemNm+'</a>\
 			                        </div>\
-			                        <ul class="list-inline mt-2 mb-3">\
+			                        <ul class="list-inline mt-2">\
 			                            <li class="list-inline-item">\
 								    		<i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+data[i].AvgRtng+'\
 								    	</li>\
+                                        <?php if($this->session->userdata('Ing_cals') == 1){ ?>
 								    	<li class="list-inline-item">\
 								    		<i class="fa fa-heartbeat" style="color:green;"></i> '+data[i].NV+'\
 								    	</li>\
+                                    <?php } ?>
 								    	<li class="list-inline-item">\
-								    		<i class="fa fa-inr " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
+								    		<i class="fa fa-handshake-o " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
 								    	</li>\
 			                        </ul>\
-			                        <p class="pr-5">'+data[i].ItmDesc+'</p>\
+                                    <p>'+data[i].short_Desc+'</p>\
+                                    <?php if($this->session->userdata('Ing_cals') == 1){ ?>
+                                    <ul class="social-circle-icons list-inline">\
+                                      <li class="list-inline-item text-center"><a class="fa fa-joomla" href="#" onclick="imgPOPUP('+itemName+','+imgUrl+')"></a></li>\
+                                      '+ing_l+'\
+                                      '+ytube_l+'\
+                                    </ul>\
+                                    <?php } ?>
+                                    <div class="textStyle">'+attribView+''+saleView+'</div>\
 			                    </div>\
 					        </div>\
 					    </div>\
