@@ -17,7 +17,7 @@
     /*background: #000 !important;*/
     /*color: <?php echo isset($body_btn2text)?$body_btn2text:"#000"?> !important;*/
     height: 35px;
-    margin-left: 0px !important;
+    margin-left: -3px !important;
     border-radius: 0 1.5rem 1.5rem 0;
 }
 
@@ -25,7 +25,6 @@
 {
     background: #03bb2c;
     color: #fff;
-    margin-left: 0px !important;
     border-radius: 0 1.5rem 1.5rem 0;
 }
 
@@ -50,7 +49,7 @@
 
 .backbtn 
 {
-    margin-right: 0px !important;
+    margin-right: -2px !important;
     border-radius: 1.5rem 0 0 1.5rem;
     background-color: #bfbcbc;
     color:#fff;
@@ -260,6 +259,7 @@
                         template += ` </tr> `;
                     });
                 } else {
+                    window.location = "<?php echo base_url('customer'); ?>";
                     $(".paybtn").prop('disabled', true);
                 }
                 $("#order-details-table-body").html(template);
@@ -430,7 +430,7 @@
     }
 
     function kotGenerate(){
-        var data = '';
+        var data = $('#cartForm').serializeArray();
         $.post('<?= base_url('customer/kotGenerate') ?>', data ,function(res){
             if(res.status == 'success'){
                 alert(res.response);

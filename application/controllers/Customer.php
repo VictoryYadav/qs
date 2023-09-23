@@ -22,6 +22,10 @@ class Customer extends CI_Controller {
 
     public function index1(){
 
+        $dd = $this->db2->select('OrdNo')->get_where('Kitchen', array('CustId' => 8, 'CNo' => 20, 'Stat >= ' => 1, 'Stat < ' => 3))->row_array();
+print_r($this->db2->last_query());
+        print_r($dd);
+
         echo "<pre>";
         print_r($_SESSION);
         die;
@@ -638,8 +642,9 @@ class Customer extends CI_Controller {
                 //Deleting older orders
                 $hours_3 = date('Y-m-d H:i:s', strtotime("-3 hours"));
                 if ($EType == 5) {
-                    $this->db2->where('Stat', 0);
-                    $this->db2->or_where('Stat', 1);
+                    // $this->db2->where('Stat', 0);
+                    // $this->db2->or_where('Stat', 1);
+                    $this->db2->where_in('Stat', array(0,1,2));
                     $this->db2->update('Kitchen', array('Stat' => 99), array('EID' => $EID,
                             'CustId' => $CustId,
                             'TableNo' => $TableNo,
@@ -647,18 +652,9 @@ class Customer extends CI_Controller {
                             'LstModDt <' => $hours_3
                             )
                         );
-                    // updateRecord('Kitchen', array('Stat' => 99), array('EID' => $EID,
-                    //         'CustId' => $CustId,
-                    //         'TableNo' => $TableNo, 
-                    //         'Stat' => 1 , 
-                    //         'Stat' => 0 , 
-                    //         'BillStat' => 0, 
-                    //         'LstModDt <' => $hours_3
-                    //         )
-                    //     );
 
-                    $this->db2->where('Stat', 0);
-                    $this->db2->or_where('Stat', 1);
+                    $this->db2->where_in('Stat', array(0,1,2));
+                    // $this->db2->or_where('Stat', 1);
                     $this->db2->update('KitchenMain', array('Stat' => 99), array('EID' => $EID,
                             'CustId' => $CustId,
                             'TableNo' => $TableNo,
@@ -1093,6 +1089,13 @@ class Customer extends CI_Controller {
         $data['PymtOpt'] = $this->session->userdata('PymtOpt');
         $data['Cash'] = $this->session->userdata('Cash');
         $data['KOTNo'] = $this->session->userdata('KOTNo');
+        $CNo = $this->session->userdata('CNo');
+
+        $valCheck = checkCheckout($data['CustId'], $CNo);
+        if(empty($valCheck)){
+            // after alert
+            redirect(base_url('customer/cart'));
+        }
 
         $data['title'] = 'Checkout';
         $data['language'] = languageArray();
@@ -1444,6 +1447,11 @@ class Customer extends CI_Controller {
         $data['Cash'] = $this->session->userdata('Cash');
         $data['CustId'] = $this->session->userdata('CustId');
 
+        if(sizeof($data['orders']) <= 1){
+            $this->session->set_flashdata('error','No Orders to Merge from this table.'); 
+            redirect(base_url('customer/checkout'));
+        }
+
         $this->load->view('cust/mergeOrder', $data);
     }
 
@@ -1596,10 +1604,13 @@ class Customer extends CI_Controller {
             // die;
             
             $res = billCreate($EID, $CNo, $pData);
+
+            // link send with bill no, sms or email => pending status
         }
 
         if(!empty($res)){
             if($res['status'] > 0){
+                // after bill generate = 1 => status
                 redirect(base_url('customer'), 'refresh');
             }else{
                 redirect(base_url('customer/splitOrder/'.$_POST['MergeNo']), 'refresh');
@@ -2147,6 +2158,15 @@ class Customer extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
+
+            $i=0;
+            foreach ($_POST['OrdNo'] as $OrdNo ) {
+                $temp['OrdNo'] = $OrdNo;
+                $temp['qty'] = $_POST['qty'][$i];
+                updateRecord('Kitchen', array('Qty' => $temp['qty']), array('OrdNo' => $OrdNo));
+                $i++;
+            }
+
             updateRecord('Kitchen', array('Stat' => 2), array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 1, 'CNo' => $CNo));
             // set Kot to 0
             $this->session->set_userdata('KOTNo', 0);

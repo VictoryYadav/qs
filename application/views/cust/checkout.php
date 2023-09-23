@@ -89,6 +89,52 @@
         border: 1px solid #ced4da;
         transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
+
+    .backbtn 
+    {
+        margin-right: -5px !important;
+        border-radius: 1.5rem 0 0 1.5rem;
+        background-color: #bfbcbc;
+        color:#fff;
+        width: 30%;
+    }
+
+    .backbtn:hover
+    {
+        background-color: #9d9696;
+        color:#fff;   
+    }
+
+    .orderbtn 
+    {
+        background: #f76004;
+        color: #fff;
+        margin-left: 0px !important;
+        width: 33%;
+    }
+
+    .orderbtn:hover
+    {
+        background: #e97832;
+        color: #fff;
+        margin-left: 0px !important;
+    }
+
+    .paybtn 
+    {
+        background: #30b94f;
+        color: #fff;
+        margin-left: -5px !important;
+        border-radius: 0 1.5rem 1.5rem 0;
+        width: 32%;
+    }
+
+    .paybtn:hover
+    {
+        background: #03bb2c;
+        color: #fff;
+        border-radius: 0 1.5rem 1.5rem 0;
+    }
 </style>
 </head>
 
@@ -139,39 +185,19 @@
                 <div style="border-bottom: 1px solid;margin-bottom:5px;color: #fff;"></div>
 
                 <div class="row" style="margin: 0px;">
-                    <div class="col-6 text-right">
+                    <div class="col-12 text-center" width="100%;">
+                        <a href="<?= base_url('customer'); ?>" class="btn btn-sm backbtn">Menu</a>
+                        <a href="<?= base_url('customer/merge_order/'.$TableNo); ?>" class="btn orderbtn btn-sm">Merge Orders</a>
+                        <button class="btn btn-sm paybtn" onclick="payNow()"> Pay Now</button>
                         
-                    </div>
-                    
-                    <?php if ($COrgId > 0 && $PymtOpt == 1) : ?>
-                        <div class="col-12 text-center">
-                            <button id="confirm" class="btn btn-primary pay-bill">Confirm</button>
-                        </div>
-                    <?php else : ?>
-                        <?php if ($Cash == 1) : ?>
-                            <?php if ($EType == 5) { ?>
-                                <div class="col-12 text-center" style="width: 50%;">
-                                    <a href="<?= base_url('customer/merge_order/'.$TableNo); ?>"><button  class="btn btn-success btn-sm "> Merge Orders </button></a>
-                                    <button class="btn btn-sm btn-primary" onclick="payNow()"> Pay Now</button>
-                                </div>
-                            <?php } ?>
-                            <div class="row remove-row-margin" style="width: 100%;">
-                                
-                            </div>
-                            
-                        <?php else : ?>
-                            <div class="row remove-row-margin" style="width: 100%;">
-                                <div class="col-12 text-center">
-                                    <button id="pay" class="btn btn-primary pay-bill btn-sm">Pay Online</button>
-                                </div>
-                                <?php if ($EType == 5) { ?>
-                                    <div class="col-12 text-center" style="width: 50%;">
-                                        <a href="meargebill.php"><button class="btn btn-primary pay-bill btn-sm" style="background: #fd6b03;color: #FFF; font-weight: 600; "> Merge Bills </button></a>
-                                    </div>
-                                <?php } ?>
+                        <?php if($this->session->flashdata('error')): ?>
+                            <div class="">
+                                <span class="text-danger">
+                                    <?= $this->session->flashdata('error') ?>
+                                </span>
                             </div>
                         <?php endif; ?>
-                    <?php endif; ?>
+                    </div>
                 </div>
             </div>
 

@@ -1,6 +1,8 @@
 <?php $this->load->view('layouts/customer/head'); ?>
 <style>
-
+body{
+    font-size: 12px;
+}
 </style>
 </head>
 
@@ -21,25 +23,25 @@
                 <input type="hidden" name="tot_sgst" value="<?= round($tot_sgst); ?>">
 
                 <div class="row">
-                    <div class="col-md-2">
-                        <label for="">Payble Amount : </label>
+                    <div class="col-md-2 col-4">
+                        <label for="">Payble: </label>
                         <b id="payable"><?= round($payable); ?></b>
                     </div>
-                    <div class="col-md-2">
-                        <label for="">Gross Amount : </label>
+                    <div class="col-md-2 col-5">
+                        <label for="">Ord Amt: </label>
                         <b id="grossAmt"><?= round($grossItemAmt); ?></b>
                     </div>
 
-                    <div class="col-md-2">
-                        <label for="">Tip Amount : </label>
+                    <div class="col-md-2 col-3">
+                        <label for="">Tip: </label>
                         <b id="tipAmt"><?= round($tip); ?></b>
                     </div>
                     
-                    <div class="col-md-2">
-                        <button class="btn btn btn-sm btn-success" onclick="addRow()"><i class="fa fa-plus"></i> Add Cell Number</button>
+                    <div class="col-md-2 col-3">
+                        <button class="btn btn btn-sm btn-success" onclick="addRow()"><i class="fa fa-plus"></i></button>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-4 col-9">
                         <label for="">Split Type : </label>
                         <select name="splitType" id="splitType" onchange="splitChange()" required="">
                             <option value="">Choose Split Type</option>
@@ -55,12 +57,12 @@
                     <table class="table" id="splitTable">
                         <thead>
                             <tr>
-                                <th>Mobile</th>
-                                <th>Messaging Channel</th>
+                                <th width="155px;">Mobile</th>
+                                <!-- <th>Messaging Channel</th> -->
+                                <th width="100px;"></th>
+                                <th width="100px;">%</th>
+                                <th width="100px;">Amount</th>
                                 <th></th>
-                                <th>%</th>
-                                <th>Amount</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="addBody">
@@ -73,13 +75,13 @@
                                 <td>
                                     <input type="number" value="<?= $key; ?>" placeholder="Mobile" class="form-control" required name="mobile[]">
                                 </td>
-                                <td>
+                                <!-- <td>
                                     <select name="msgFormat[]" id="" class="form-control" required>
                                         <option value="">Messaging Channel</option>
                                         <option value="W">WhatsApp</option>
                                         <option value="E">Email</option>
                                     </select>
-                                </td>
+                                </td> -->
                                 <!-- gross amt + tips  percentage -->
                                 <td>
                                     <input type="text" class="form-control grossAmtRow" name="totItemAmt[]" id="grossAmtRow_<?php echo $count; ?>" readonly>
@@ -128,13 +130,6 @@
     rowCount++;
     var row = '<tr>\
                             <td><input type="text" placeholder="Mobile" class="form-control" required name="mobile[]"></td>\
-                            <td>\
-                                <select name="msgFormat[]" class="form-control" required>\
-                                    <option value="">Choose MSG Type</option>\
-                                    <option value="W">WhatsApp</option>\
-                                    <option value="E">Email</option>\
-                                </select>\
-                            </td>\
                             <td>\
                                 <input type="text" class="form-control grossAmtRow" readonly="" name="totItemAmt[]" id="grossAmtRow_'+rowCount+'">\
                             </td>\

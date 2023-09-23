@@ -39,13 +39,19 @@
     <div class="btn-group dropup">
         <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
             <img src="<?php echo base_url(); ?>assets/img/inbox.svg" width="33" height="20">
-        <h6 style="font-size: 12px;">Order List</h6>
+        <h6 style="font-size: 12px;">Order</h6>
         </a>
         <div class="dropdown-menu" style="right: 0; left: auto;">
             <?php if(!empty($this->session->userdata('CustId'))){ ?>
-            <a class="dropdown-item" href="<?= base_url('customer/cart'); ?>">Order List</a>
-        <?php } ?>
-            <a class="dropdown-item" href="send_to_kitchen.php">Current Order</a>
+                <a class="dropdown-item" href="<?= base_url('customer/cart'); ?>">Cart</a>
+            <?php }
+                $CustId = $this->session->userdata('CustId');
+                $CNo = $this->session->userdata('CNo');
+                $val = checkCheckout($CustId, $CNo);
+             if(!empty($val)){
+             ?>
+            <a class="dropdown-item" href="<?= base_url('customer/checkout'); ?>">Checkout</a>
+            <?php } ?>
         </div>
     </div>
 </div>

@@ -1278,12 +1278,14 @@ class Cust extends CI_Model{
     	$sql = '';
     	if($FID == 1){
     		$sql = " and itd.FID = $FID";
+    	}else if($FID == 2){
+    		$sql = " and (itd.FID = 1 or itd.FID = 2)";
     	}
 
         if($itemTyp == 125){
             return $this->db2->query("SELECT itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, itg.ItemGrpName, itd.Name, itd.Rate, itg.Reqd From ItemTypesGroup itg join ItemTypesDet itd on itg.ItemGrpCd = itd.ItemGrpCd AND itg.ItemTyp = $itemTyp and itg.ItemId = $itemId and itd.Itm_Portion= $itemPortionCode $sql order by itg.Rank, itd.Rank")->result_array();
         }else{
-            return $this->db2->query("SELECT itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, itg.ItemGrpName, itd.Name, itd.Rate, itg.Reqd From ItemTypesGroup itg join ItemTypesDet itd on itg.ItemGrpCd = itd.ItemGrpCd AND itg.ItemTyp = $itemTyp and itd.Itm_Portion= $itemPortionCode order by itg.Rank, itd.Rank")->result_array();
+            return $this->db2->query("SELECT itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, itg.ItemGrpName, itd.Name, itd.Rate, itg.Reqd From ItemTypesGroup itg join ItemTypesDet itd on itg.ItemGrpCd = itd.ItemGrpCd AND itg.ItemTyp = $itemTyp and itd.Itm_Portion= $itemPortionCode $sql order by itg.Rank, itd.Rank")->result_array();
 
             // $this->db2->query("SELECT itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, itg.ItemGrpName, itd.Name, itd.Rate, itg.Reqd From ItemTypesGroup itg join ItemTypesDet itd on itg.ItemGrpCd = itd.ItemGrpCd AND itg.ItemTyp = $itemTyp and itd.Itm_Portion= $itemPortionCode $sql order by itg.Rank, itd.Rank")->result_array();
         }
@@ -1634,8 +1636,7 @@ class Cust extends CI_Model{
 						->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
 						->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
 						->join('Users u', 'u.CustId = km.CustId', 'inner')
-						->where('k.Stat', 0)
-						->or_where('k.Stat', 1)
+						->where_in('k.Stat', array(1,2))
 						->get_where('KitchenMain km', array('km.MergeNo' => $TableNo, 
 							'km.EID' => $this->EID,
 							'k.BillStat' => 0,
@@ -1659,6 +1660,10 @@ class Cust extends CI_Model{
 						->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
 						->get_where('Billing b', array('b.BillId' => $billId, 'b.CNo' => $MCNo))
 						->result_array();
+	}
+
+	public function checkCheckoutItem($custId, $CNo){
+		return $this->db2->select('OrdNo')->get_where('Kitchen', array('CustId' => $custId, 'CNo' => $CNo, 'Stat >= ' => 1, 'Stat < ' => 3, 'BillStat' => 0, 'EID' => $this->EID))->row_array();
 	}
 
 

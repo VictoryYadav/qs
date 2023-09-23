@@ -226,6 +226,15 @@
     opacity: .8;
 }
 
+/* read more */
+.morecontent span {
+    display: none;
+}
+.morelink {
+    display: inline-block;
+}
+/* read less */
+
 </style>
 </head>
 
@@ -338,7 +347,7 @@
                         <input type="hidden" id="itemTyp">
                         <!-- <p id="item-prepare-time" time="" style="font-size: 12px;color: blue;margin-bottom: 2px;">45 min to prepare</p> -->
                 <div class="modal-body" style="padding-top: 0px;">
-                    <p id="item-name-modal" style="margin-bottom: 1px;">Item name </p>
+                    <p id="item-name-modal" style="margin-bottom: 1px;">Item name</p>
                     <span id="item_offer_remark"></span>
                     <ul class="list-inline product-meta">
 				    	<li class="list-inline-item">
@@ -356,7 +365,7 @@
 				    	</li>
 				    </ul>
 
-                    <p id="item-desc-modal" style="font-size: 12px;"></p>
+                    <p id="item-desc-modal" style="font-size: 12px;" class="more"></p>
 
                     <div class="row" style="margin-left: 0px;margin-right: 0px;position: relative;">
                         <div class="form-group" style="width: 156px; margin-bottom: 4px;">
@@ -656,7 +665,7 @@ Essential Scripts
 
 </body>
 <script type="text/javascript">
-    var ing_cals = "<?php echo $this->session->userdata('Ing_cals'); ?>";
+    
 	var prList = 'grid';
 	function showProdct(val=''){
 		if(val != ''){
@@ -688,6 +697,7 @@ Essential Scripts
                 $('#minus-qty').prop('disabled', true);
             }
         });
+
     });
 
     var cidg = '<?= $cid; ?>';
@@ -1052,6 +1062,38 @@ Essential Scripts
             $("#nvRating").text(' ' + $(item).attr('item-NV'));
             $('#totalAmount').text($(item).attr('item-value'));
             // end for common
+
+
+            // read more
+            var showChar = 100;  // How many characters are shown by default
+            var ellipsestext = "";
+            var moretext = "Read More";
+            var lesstext = "Read Less";
+        
+            $('.more').each(function() {
+                var content = $(this).html();
+                if(content.length > showChar) {
+                    var c = content.substr(0, showChar);
+                    var h = content.substr(showChar, content.length - showChar);
+                    var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+                    $(this).html(html);
+                }
+            });
+     
+            $(".morelink").click(function(){
+                if($(this).hasClass("less")) {
+                    $(this).removeClass("less");
+                    $(this).html(moretext);
+                } else {
+                    $(this).addClass("less");
+                    $(this).html(lesstext);
+                }
+                $(this).parent().prev().toggle();
+                $(this).prev().toggle();
+                return false;
+            });
+            
+            // end of read more
 
             if (itemTyp == 0) {
                 groupNameList = [];

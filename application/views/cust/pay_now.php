@@ -1,6 +1,8 @@
 <?php $this->load->view('layouts/customer/head'); ?>
 <style>
-
+body{
+    font-size: 13px;
+}
 </style>
 </head>
 
@@ -14,11 +16,11 @@
         <div class="container">
 
             <div class="row">
-                <div class="col-md-2">
-                    <label for="">Payble Amount : </label>
+                <div class="col-md-2 col-6">
+                    <label for="">Payble: </label>
                     <b id="payable"><?= round($payable); ?></b>
                 </div>
-                <div class="col-md-2">
+                <!-- <div class="col-md-2">
                     <label for="">Gross Amount : </label>
                     <b id="grossAmt">0</b>
                 </div>
@@ -26,10 +28,10 @@
                 <div class="col-md-2">
                     <label for="">Tip Amount : </label>
                     <b id="tipAmt">0</b>
-                </div>
+                </div> -->
                 
-                <div class="col-md-2">
-                    <button class="btn btn btn-sm btn-success" id="addrow"><i class="fa fa-plus"></i> Add</button>
+                <div class="col-md-2 col-6">
+                    <button class="btn btn btn-sm btn-success" id="addrow"><i class="fa fa-plus"></i></button>
                 </div>
             </div>
             
@@ -39,10 +41,10 @@
                         <table class="table order-list" id="splitTable">
                             <thead>
                                 <tr>
-                                    <th>Amount</th>
-                                    <th>Mode</th>
-                                    <th>Action</th>
-                                    <th>Result</th>
+                                    <th style="width: 150px;">Amount</th>
+                                    <th>Pymt.Mode</th>
+                                    <th></th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -73,10 +75,10 @@
                                     </td>
                                     
                                     <td>
-                                        <button class="btn btn-sm btn-success" id="go" onclick="goPay(0)" disabled="true">Go</button>
+                                        <button class="btn btn-sm btn-success" id="go" onclick="goPay(0)" disabled="true">Pay</button>
                                     </td>
                                     <td>
-                                        <span id="payStatus">success</span>
+                                        <span id="payStatus"><i class="fa fa-check" style="color:green;"></i></span>
                                     </td>
                                     <td>
                                         <!-- <button class="btn btn btn-sm btn-danger deleteRow"><i class="fa fa-trash" id="delBtn1"></i></button> -->
@@ -104,7 +106,7 @@
                                         <button class="btn btn-sm btn-success" id="go1" onclick="goPay(1)">Go</button>
                                     </td>
                                     <td>
-                                        <span id="payStatus1">pending</span>
+                                        <span id="payStatus1"><i class="fa fa-spinner" style="color:orange;"></i></span>
                                     </td>
                                     <td>
                                         <button class="btn btn btn-sm btn-danger deleteRow"><i class="fa fa-trash" id="delBtn1"></i></button>
@@ -117,7 +119,7 @@
 
                             <tr>
                                 <td colspan="1">
-                                    Grand Total: <span id="grandtotal"></span>
+                                    Total: <span id="grandtotal"></span>
                                 </td>
                                 <td colspan="2">
                                     Balance: <b><span id="balance"></span></b>
@@ -143,6 +145,8 @@
 </body>
 
 <script type="text/javascript">
+
+    var BillId = '<?= $BillId; ?>';
 
     $(document).ready(function () {
         goToBill();
@@ -170,7 +174,7 @@
                             <button class="btn btn-sm btn-success" id="go'+counter+'" onclick="goPay('+counter+')">Go</button>\
                         </td>\
                         <td>\
-                            <span id="payStatus'+counter+'">pending</span>\
+                            <span id="payStatus'+counter+'"><i class="fa fa-spinner" style="color:orange;"></i></span>\
                         </td>\
                         <td>\
                             <button class="btn btn btn-sm btn-danger deleteRow" id="delBtn'+counter+'"><i class="fa fa-trash"></i></button>\
@@ -220,7 +224,6 @@ function goPay(val){
     var payable = $('#payable').text();
     console.log('val ='+val+' ,am = '+amount+' ,mode '+mode+' ,pble '+payable);
 
-
     if(amount < 0 || amount == ''){
         alert('Please enter amount');
         return false;
@@ -254,7 +257,9 @@ function goPay(val){
     if(mode == 5){
         var totAmt = 0;
         var tips = 0;
-        window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&totAmt='+btoa(totAmt)+'&tips='+btoa(tips);
+        // var dd = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&totAmt='+btoa(totAmt)+'&tips='+btoa(tips);
+        // alert(dd);
+        window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&totAmt='+btoa(totAmt)+'&tips='+btoa(tips)+'&billId='+btoa(BillId);
     }
 }
 
@@ -262,12 +267,13 @@ function checkStatus(billId,payNo, serialNo){
     $.post('<?= base_url('customer/check_payment_status') ?>',{billId:billId,payNo:payNo},function(res){
         if(res.status == 'success'){
           // alert(res.response);
-          $('#payStatus'+serialNo).html('success');    
+          $('#payStatus'+serialNo).html('<i class="fa fa-check" style="color:green;"></i>');    
           $('#go'+serialNo).attr("disabled",true);  
           $('#delBtn'+serialNo).attr("disabled",true); 
           location.reload();     
         }else{
-          $('#payStatus'+serialNo).html(res.response);  
+          $('#payStatus'+serialNo).html('<i class="fa fa-spinner" style="color:orange;">'); 
+          // $('#payStatus'+serialNo).html(res.response);  
         }
     });
 }

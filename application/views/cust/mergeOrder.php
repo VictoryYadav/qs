@@ -70,6 +70,36 @@
         border: 1px solid #ced4da;
         transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
+
+    .backbtn 
+    {
+        margin-right: -5px !important;
+        border-radius: 1.5rem 0 0 1.5rem;
+        background-color: #f76004;
+        color:#fff;
+        width: 30%;
+    }
+
+    .backbtn:hover
+    {
+        background-color: #e97832;
+        color:#fff;   
+    }
+    .paybtn 
+    {
+        background: #30b94f;
+        color: #fff;
+        margin-left: -5px !important;
+        border-radius: 0 1.5rem 1.5rem 0;
+        width: 32%;
+    }
+
+    .paybtn:hover
+    {
+        background: #03bb2c;
+        color: #fff;
+        border-radius: 0 1.5rem 1.5rem 0;
+    }
 </style>
 </head>
 
@@ -128,7 +158,7 @@
                             $this->session->set_userdata('split_mobile', $split_mobile);
                          ?>
                         <tr>
-                           <td></td> <td><b>Grand Total</b></td>
+                           <td></td> <td><b>Item Total</b></td>
                            <td id="grandTotal" style="font-weight: bold;">
                             <input type="hidden" name="grossItemAmt" value="<?= $total; ?>">
                             <?= $total; ?>
@@ -183,10 +213,10 @@
                 <div class="row">
                     <div class="col-12 text-center">
                         
-                        <button class="btn btn-sm btn-warning" type="submit" name="btnName" value="splitBill">
+                        <button class="btn btn-sm backbtn" type="submit" name="btnName" value="splitBill">
                         Split Bill
                         </button>
-                         <button class="btn btn-sm btn-primary" type="submit" name="btnName" value="payNow">
+                         <button class="btn btn-sm paybtn" type="submit" name="btnName" value="payNow">
                             Pay Now
                         </button>
                             

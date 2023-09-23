@@ -39,26 +39,31 @@ class Razorpay extends CI_Controller {
     
         $Fest = $this->session->userdata('Fest');
         $ServChrg = $this->session->userdata('ServChrg');
+        
+        // if ($CNo == 0 && $KOTNo == 0) {
+        //     redirect(base_url('customer'));
+        // }
 
-        // print_r($TipAmount);
-        // exit;
-
-        if ($CNo == 0 && $KOTNo == 0) {
-            redirect(base_url('customer'));
-        }
 
         // mode decide to this code 19-aug-2023
 
         $payable = base64_decode(rtrim($_GET['payable'], "="));
         $tips = base64_decode(rtrim($_GET['tips'], "="));
         $itemTotalGross = base64_decode(rtrim($_GET['totAmt'], "="));
+        $billId = base64_decode(rtrim($_GET['billId'], "="));
+
+        if (empty($billId)) {
+            redirect(base_url('customer'));
+        }
 
         $tips = !empty($tips)?$tips:0;
         $this->session->set_userdata('TipAmount', $tips);
         $this->session->set_userdata('itemTotalGross', $itemTotalGross);
 
         $totalAmount = round($payable, 2);
-        $orderId = "$EID-$TableNo-$CustId-$CNo-$totalAmount";
+        // $orderId = "$EID-$TableNo-$CustId-$CNo-$totalAmount";
+
+        $orderId = "$EID-$TableNo-$CustId-$billId-$totalAmount";
 
         $this->session->set_userdata('rez_totalAmount', $totalAmount);
 

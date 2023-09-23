@@ -129,8 +129,7 @@ class Rcheck extends CI_Controller {
         $this->session->set_userdata('menuCatg', $orgCheck['menuCatg']);
         $this->session->set_userdata('foodTyp', $orgCheck['foodTyp']);
         $this->session->set_userdata('Charity', $orgCheck['Charity']);
-        $this->session->set_userdata('Ing_cals', $orgCheck['Ing_cals']);
-        
+        $this->session->set_userdata('Ing_cals', $orgCheck['Ing_Cals']);
 
         redirect(base_url('customer'));
 	}
