@@ -984,7 +984,8 @@ Essential Scripts
                             response.items.forEach((item) => {
                                 var targetModal = "#itemModal";
                                 if (item.ItemTyp > 0) {
-                                    targetModal = "#customizeModal";
+                                    // targetModal = "#customizeModal";
+                                    targetModal = "#itemModal";
                                 }
 
                                 // add cid and mcatgid to me

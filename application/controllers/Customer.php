@@ -1596,15 +1596,13 @@ print_r($this->db2->last_query());
             $pData['TipAmount'] = 0;
             $pData['splitType'] = $_POST['splitType'];
             $pData['MergeNo'] = $_POST['MergeNo'];
-            $pData['tot_sgst'] = $_POST['tot_sgst'][$i];
+            $pData['tot_sgst'] = $_POST['tot_sgst'];
 
             $pData['itemTotalGross'] = round($pData['TotalGross'] + ($pData['TotalGross'] * $pData['tot_sgst']) / 100);
             // echo "<pre>";
             // print_r($pData);
             // die;
-            
             $res = billCreate($EID, $CNo, $pData);
-
             // link send with bill no, sms or email => pending status
         }
 

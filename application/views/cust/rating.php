@@ -1,80 +1,26 @@
 <?php $this->load->view('layouts/customer/head'); ?>
 <style type="text/css">
 
-    .paybtn {
-
-        width: 50%;
-
-        /*background: #30b94f;
-
-        color: #fff;*/
-        /*background: <?php echo isset($body_btn2color)?$body_btn2color:"#000"?> !important;*/
-        /*color: <?php echo isset($body_btn2text)?$body_btn2text:"#000"?> !important;*/
-
-        height: 54px;
-
-        margin-left: 0px !important;
-
-        border-radius: 0 0.5rem 0.5rem 0;
-
-    }
-
-
-
-    .backbtn {
-
-        width: 50%;
-
-        margin-right: 0px !important;
-
-        border-radius: 0.5rem 0 0 0.5rem;
-
-        /*background-color: #fff;*/
-        /*background-color: <?php echo isset($body_btn1color)?$body_btn1color:"#000"?> !important;*/
-        /*color: <?php echo isset($body_btn1text)?$body_btn1text:"#000"?> !important;*/
-
-    }
-
-
-
     .order-details-page {
-
         padding-bottom: 70px;
-
         /*background-color: #0a88ff;*/
         /*background-color: <?php echo isset($body_bg)?$body_bg:"#000"?> !important;*/
         /*color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
-
-        padding-top: 65px;
-
+        /*padding-top: 65px;*/
         height: -webkit-fill-available;
-
     }
-
-
 
     .payment-btns {
-
         padding-left: 10px;
-
         padding-right: 10px;
-
     }
 
-
-
     .order-list {
-
         padding-left: 15px;
-
         padding-right: 15px;
-
         overflow: scroll;
-
         height: 350px;
-
         /*cursor: all-scroll;*/
-
     }
 
 
@@ -114,23 +60,14 @@
 
 
     .order-list td {
-
         font-size: 12px;
-
         border-bottom: 1px solid;
-
         padding: 10px 0;
-
     }
 
-
-
     .order-list th {
-
-        font-size: 17px;
-
+        font-size: 14px;
         font-weight: 500;
-
     }
 
 
@@ -358,6 +295,44 @@
 
     }
 
+    .paybtn 
+    {
+        width: 50%;
+        background: #30b94f;
+        color: #fff;
+        /*background: #000 !important;*/
+        /*color: <?php echo isset($body_btn2text)?$body_btn2text:"#000"?> !important;*/
+        height: 30px;
+        margin-left: 0px !important;
+        border-radius: 0 1.5rem 1.5rem 0;
+    }
+
+    .paybtn:hover
+    {
+        background: #03bb2c;
+        color: #fff;
+        margin-left: 0px !important;
+        border-radius: 0 1.5rem 1.5rem 0;
+    }
+
+    .backbtn 
+    {
+        width: 50%;
+        margin-right: 0px !important;
+        border-radius: 1.5rem 0 0 1.5rem;
+        background-color: #bfbcbc;
+        color:#fff;
+        height: 30px;
+        /*background-color:#000 !important;*/
+        /*color: <?php echo isset($body_btn1text)?$body_btn1text:"#000"?> !important;*/
+    }
+
+    .backbtn:hover
+    {
+        background-color: #9d9696;
+        color:#fff;   
+    }
+
 </style>
 </head>
 
@@ -371,238 +346,131 @@
         <div class="container">
             
             <div class="order-details-page">
-                <?php if(isset($_GET['rat'])){ ?>
-                <div class="row" id="mobileBlock">
-                    <div class="col-md-3">
-                        <input type="number" placeholder="Mobile" id="mobile">
+             <?php if(isset($_GET['rat'])){ ?>
+                <div style="margin-left: 15px;">
+                    <div class="row" id="mobileBlock">
+                        <div class="col-md-3">
+                            <input type="number" placeholder="Mobile" id="mobile">
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-sm btn-success" onclick="getOTP()">GET OTP</button>
+                        </div>
                     </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-sm btn-success" onclick="getOTP()">GET OTP</button>
+                    <div class="row" id="verifyBlock" style="display: none;">
+                        <div class="col-md-3">
+                            <input type="number" placeholder="OTP" id="otp">
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-sm btn-success" onclick="verifyOTP()">Verify</button>
+                        </div>
                     </div>
-                </div>
-                <div class="row" id="verifyBlock" style="display: none;">
-                    <div class="col-md-3">
-                        <input type="number" placeholder="OTP" id="otp">
+                    <div id="welcome">
+                        <p>Welcome back <b><span id="name"></span></b></p>
                     </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-sm btn-success" onclick="verifyOTP()">Verify</button>
-                    </div>
-
-                </div>
-                <div id="welcome">
-                    <p>Welcome back <b><span id="name"></span></b></p>
                 </div>
             <?php } ?>
                 <div class="order-list" id="OrderList">
                     <table class="fixed_headers" style="width:100%; color: <?php echo isset($body_text)?$body_text:"#000"?>;">
-
                         <thead>
-
                             <tr>
-
                                 <th>General</th>
-
                                 <th class="text-center">Rating</th>
-
                             </tr>
-
                         </thead>
-
                         <tbody id="order-details-table-body">
-
                             <tr>
-
                                 <td>Service</td>
-
-                                <!-- <td class="text-center">
-
-                                    <input type="checkbox" id="c1" name="1" /><label for="c1"><span></span></label>
-
-                                    <input type="checkbox" id="c2" name="2" /><label for="c2"><span></span></label>
-
-                                    <input type="checkbox" id="c3" name="3" /><label for="c3"><span></span></label>
-
-                                    <input type="checkbox" id="c4" name="4" /><label for="c4"><span></span></label>
-
-                                    <input type="checkbox" id="c5" name="5" /><label for="c5"><span></span></label>
-
-                                </td> -->
-
                                 <td>
-
                                     <div class="row">
-
                                         <div class="col-6">
-
                                             <p id="ServiceValue" class="TextRating">3</p>
-
                                         </div>
-
                                         <div class="col-6">
-
                                             <input type="range" min="1" max="5" value="3" class="slider" id="ServiceRange" style="width: 100%;padding: 0px;">
-
                                         </div>
-
                                     </div>
-
                                 </td>
-
                             </tr>
-
                             <tr>
-
                                 <td>Ambience</td>
-
                                 <td>
-
                                     <div class="row">
-
                                         <div class="col-6">
-
                                             <p id="AmbienceValue" class="TextRating">3</p>
-
                                         </div>
-
                                         <div class="col-6">
-
                                             <input type="range" min="1" max="5" value="3" class="slider" id="AmbienceRange" style="width: 100%;padding: 0px;">
-
                                         </div>
-
                                     </div>
-
                                 </td>
-
                             </tr>
-
                             <tr>
-
                                 <td>Value For Money</td>
-
                                 <td>
-
                                     <div class="row">
-
                                         <div class="col-6">
-
                                             <p id="vfmValue" class="TextRating">3</p>
-
                                         </div>
-
                                         <div class="col-6">
-
                                             <input type="range" min="1" max="5" value="3" class="slider" id="vfmRange" style="width: 100%;padding: 0px;">
-
                                         </div>
-
                                     </div>
-
                                 </td>
-
                             </tr>
-
                         </tbody>
-
                     </table>
-
-
-
-                    <!-- ************************************************ -->
-
                     <!-- scroll all page -->
-
                     <table class="fixed_headers" style="width:100%; color: <?php echo isset($body_text)?$body_text:"#000"?>; margin-top: 26px;">
-
                         <thead>
-
                             <tr>
-
                                 <th>Item Name</th>
-
                                 <th class="text-center">Rating</th>
-
                             </tr>
-
                         </thead>
-
                         <tbody id="order-details-table-body">
-
                             <?php
-
                             $count = 0;
-
                             foreach ($kitchenGetData as $key => $value) {
-
                                 $count++;
-
                                 ?>
-
                                 <tr style="border-bottom: none;">
-
                                     <td style='width: 35%;'><?= $value['ItemNm']; ?></td>
-
                                     <!-- Rating Slider -->
-
                                     <td>
-
                                         <div class="row">
-
                                             <div class="col-6">
-
                                                 <p id="<?= 'value_' . $value['ItemId']; ?>" class="TextRating">3</p>
-
                                             </div>
-
                                             <div class="col-6">
-
                                                 <input type="range" min="1" max="5" name="<?= $count; ?>" value="3" class="slider" id="<?= $value['ItemId']; ?>" style="width: 100%;padding: 0px;">
-
                                             </div>
-
                                         </div>
-
                                     </td>
-
                                     <!-- /Rating Slider -->
-
                                 </tr>
-
-                            <?php   }
-
-                            ?>
-
+                            <?php   } ?>
                         </tbody>
-
                     </table>
-
-
-
                 </div>
 
-                <div class="row remove-margin payment-btns" style=" bottom: 12%;position: absolute;width: 100%;     margin-left: auto;">
+                <div class="row remove-margin payment-btns">
 
                         <!-- hidden field -->
                         <input type="hidden" id="mobileR" value="0">
                         <input type="hidden" id="custidR" value="0">
                         <!-- hidden field -->
                         <?php if(isset($_GET['rat'])){ ?>
-                        <button id="SubmitRating" type="button" class="btn paybtn btn-success" style="width:50%;" onclick="SubmitRating()" disabled>Submit</button>
+                        <button id="SubmitRating" type="button" class="btn btn-sm paybtn" style="width:50%;" onclick="SubmitRating()" disabled>Submit</button>
                         <?php }else{ ?>
-                        <a id="MenuBackButton"  class="btn backbtn" width="50%" href="<?= base_url('customer'); ?>">Menu</a>
-                        <button id="SubmitRating" type="button" class="btn paybtn" style="width:50%;" onclick="SubmitRating()">Submit</button>
+                        <a id="MenuBackButton"  class="btn btn-sm backbtn" width="50%" href="<?= base_url('customer'); ?>">Menu</a>
+                        <button id="SubmitRating" type="button" class="btn btn-sm paybtn" style="width:50%;" onclick="SubmitRating()">Submit</button>
 
                         <?php } ?>
 
-
-
-
-                    <button id="shareRating" type="button" class="btn paybtn" data-toggle="modal" data-target="#exampleModal" style="width:50%;display: none;" onclick="">Share</button>
+                    <button id="shareRating" type="button" class="btn btn-sm paybtn" data-toggle="modal" data-target="#exampleModal" style="width:50%;display: none;" onclick="">Share</button>
 
                 </div>
-
                 <!-- <div class="sharethis-inline-share-buttons"></div> -->
-
             </div>
 
         </div>
@@ -612,64 +480,28 @@
 
 
     <!-- Modal  fade-->
-
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index: 99999999;">
-
-    <div class="modal-dialog" role="document">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5 class="modal-title" id="exampleModalLabel" style="font-family: auto; font-size: 21px;">Share link with people.</h5>
-
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-
-                    <span aria-hidden="true">&times;</span>
-
-                </button>
-
-            </div>
-
-            <div class="modal-body">
-                <p class="text-right">
-                    <span style="background: #000;color:#fff;padding: 3px;font-size: 11px;border-radius: 50px;cursor: pointer;" id="copyButton">Copy</span>
-                </p>
-                <p id="textToCopy"><?= $link; ?></p>
-                <!-- AddToAny BEGIN -->
-                <div id="iconsSub" class="a2a_kit a2a_kit_size_32 a2a_default_style">
-
-                    <!-- <a class="a2a_button_facebook" style="width: 40px;"></a>
-
-                <a class="a2a_button_email"></a>
-
-                <a class="a2a_button_whatsapp"></a>
-
-                <a class="a2a_button_telegram"></a>
-
-                <a class="a2a_button_facebook_messenger"></a> -->
-
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel" style="font-family: auto; font-size: 14px;">Share link with people.</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
 
-                <script async src="https://static.addtoany.com/menu/page.js"></script>
-
-                <!-- AddToAny END -->
-
+                <div class="modal-body" style="padding: 0.5rem;">
+                    <p class="text-right" style="margin-bottom: -1px;">
+                        <span style="background: #000;color:#fff;padding: 3px;font-size: 11px;border-radius: 50px;cursor: pointer;" id="copyButton">Copy</span>
+                    </p>
+                    <p id="textToCopy"><?= $link; ?></p>
+                    <div id="iconsSub" class="a2a_kit a2a_kit_size_32 a2a_default_style">
+                    </div>
+                    <script async src="https://static.addtoany.com/menu/page.js"></script>
+                </div>
             </div>
-
-            <!-- <div class="modal-footer">
-
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
-                <button type="button" class="btn btn-primary">Save changes</button>
-
-              </div> -->
-
         </div>
-
     </div>
-
-</div>
 
     <!-- footer section -->
     <?php $this->load->view('layouts/customer/footer'); ?>
@@ -770,29 +602,25 @@
 
 
 
-        var html = `<a class="icona" href="tg://msg?text=<?php echo $link; ?>"><img src="<?= base_url('assets'); ?>/images/icons/telegram.png" width="50px;">Telegram</a>`;
+        var html = `<a class="icona" href="tg://msg?text=<?php echo $link; ?>"><img src="<?= base_url('assets'); ?>/images/icons/telegram.png" width="30px;" height="30px;">Telegram</a>`;
 
-        html += `<a class="icona" href="whatsapp://send?text=<?php echo $link; ?>"><img src="<?= base_url('assets'); ?>/images/icons/whatsapp.png" width="50px;">Whats app</a>`;
+        html += `<a class="icona" href="whatsapp://send?text=<?php echo $link; ?>"><img src="<?= base_url('assets'); ?>/images/icons/whatsapp.png" width="30px;" height="30px;">Whats app</a>`;
 
+        html += `<a class="icona" href="mailto:?body=<?php echo $link; ?>"><img src="<?= base_url('assets'); ?>/images/icons/email.png" width="30px;" height="30px;">Email</a>`;
 
-
-        html += `<a class="icona" href="mailto:?body=<?php echo $link; ?>"><img src="<?= base_url('assets'); ?>/images/icons/email.png" width="50px;">Email</a>`;
-
-
-
-        html += `<a  href="sms:?body=<?php echo $link; ?>" class="icona"><img src="<?= base_url('assets'); ?>/images/icons/msg.png" width="50px;">SMS</a>`;
+        html += `<a  href="sms:?body=<?php echo $link; ?>" class="icona"><img src="<?= base_url('assets'); ?>/images/icons/msg.png"width="30px;" height="30px;">SMS</a>`;
 
         $('#iconsSub').html(html);
 
     } else {
 
-        var html = `<a class="icona" href="https://telegram.me/share/url?url=<?php echo $link; ?>" target="_blank"><img src="<?= base_url('assets'); ?>/images/icons/telegram.png" width="50px;">Telegram</a>`;
+        var html = `<a class="icona" href="https://telegram.me/share/url?url=<?php echo $link; ?>" target="_blank"><img src="<?= base_url('assets'); ?>/images/icons/telegram.png" width="30px;" height="30px;">Telegram</a>`;
 
-        html += `<a class="icona" href="https://api.whatsapp.com/send?phone=whatsappphonenumber&text=<?php echo $link; ?>" target="_blank"><img src="<?= base_url('assets'); ?>/images/icons/whatsapp.png" width="50px;">Whats app</a>`;
+        html += `<a class="icona" href="https://api.whatsapp.com/send?phone=whatsappphonenumber&text=<?php echo $link; ?>" target="_blank"><img src="<?= base_url('assets'); ?>/images/icons/whatsapp.png" width="30px;" height="30px;">Whats app</a>`;
 
-        html += `<a class="icona" href="mailto:?Subject=Loma&amp;Body=<?php echo $link; ?>" target="_blank"><img src="<?= base_url('assets'); ?>/images/icons/email.png" width="50px;">Email</a>`;
+        html += `<a class="icona" href="mailto:?Subject=Loma&amp;Body=<?php echo $link; ?>" target="_blank"><img src="<?= base_url('assets'); ?>/images/icons/email.png" width="30px;" height="30px;">Email</a>`;
 
-        html += `<a  href="sms:?body=<?php echo $link; ?>" class="icona"><img src="<?= base_url('assets'); ?>/images/icons/msg.png" width="50px;">SMS</a>`;
+        html += `<a  href="sms:?body=<?php echo $link; ?>" class="icona"><img src="<?= base_url('assets'); ?>/images/icons/msg.png" width="30px;" height="30px;"><br>SMS</a>`;
 
         $('#iconsSub').html(html);
 
