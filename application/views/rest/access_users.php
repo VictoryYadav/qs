@@ -2,6 +2,11 @@
 <style>
     body{
         overflow: hidden;
+        font-size: 12px;
+    }
+    label{
+        font-size: 12px !important;
+        font-weight: normal !important;
     }
 </style>
         <?php $this->load->view('layouts/admin/top'); ?>
@@ -40,7 +45,7 @@
                         <div class="row">
                             <div class="col-md-10 mx-auto">
                                 <div class="card">
-                                    <div class="card-body">
+                                    <div class="card-body" style="padding: 0.25rem;">
                                         <div id="app1">
                                             <div class="row form-group">
                                                 <div class="col-md-5 col-12">
@@ -70,11 +75,10 @@
                                                        <div class="row">
                                                            <div class="col-md-6">
                                                             <input type="checkbox" v-on:click="selectAll" v-model="allSelected"> &nbsp;Select All
-                                                            </div>
-                                                           <div class="col-md-6">Available Roles</div>
+                                                             Available Roles</div>
                                                        </div>
                                                     </div>
-                                                    <div class="card-body">
+                                                    <div class="card-body" style="padding: 0.25rem;">
                                                         <ul v-if="availableRoles.length > 0" style="height: 375px;overflow: auto;">
                                                             <div class="ck-button" v-for="role in availableRoles" style="margin-left:-40px;">
                                                                <label>
@@ -96,12 +100,10 @@
                                                     <div class="card-header">  
                                                        <div class="row">
                                                            <div class="col-md-6">
-                                                            <input type="checkbox" v-on:click="selectAll_1" v-model="allSelected_1"> &nbsp;Select All
-                                                            </div>
-                                                           <div class="col-md-6">Assigned Roles</div>
+                                                            <input type="checkbox" v-on:click="selectAll_1" v-model="allSelected_1"> &nbsp;Select All Assigned Roles</div>
                                                        </div>
                                                     </div>
-                                                    <div class="card-body">   
+                                                    <div class="card-body" style="padding: 0.25rem;">   
                                                         <ul v-if="assignRoles.length > 0" style="height: 375px;overflow: auto;">
                                                             <div class="ck-button" v-for="role in assignRoles"style="margin-left:-40px;">
                                                                <label>
