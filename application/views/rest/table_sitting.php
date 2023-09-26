@@ -257,6 +257,7 @@ width: 100%;*/
             <!-- ============================================================== -->
             <div class="Po_to_land" style="width:100%;height:100%;">
                 <img src="<?= base_url();?>assets/img/ptl.gif" alt="" width:33px; style="padding-left:29px;">
+                <span style="padding: 2px;">Screen Available only Landscape mode on Mobile Devices.</span>
             </div>
             <div class="main-content Po_to_land1">
 
