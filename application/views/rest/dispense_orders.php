@@ -1,72 +1,72 @@
 <?php $this->load->view('layouts/admin/head'); ?>
 <style>            
-            #table-view {
-                height: 500px;
-                overflow-y: auto;
-                overflow-x: hidden;
-            }
-            .items-table .table thead th {
-                font-size: 12px;
-                border: none;
-            }
-            .items-table .table td {
-                font-size: 12px;
-            }
-            .items-table {
-                color: #fff;
-            }
-            .items-data {
-                max-height: 500px;
-                overflow-y: auto;
-                overflow-x: hidden;
-            }
-            .items-data::-webkit-scrollbar-track {
-                -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-                background-color: #F5F5F5;
-            }
+    #table-view {
+        height: 500px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    .items-table .table thead th {
+        font-size: 12px;
+        border: none;
+    }
+    .items-table .table td {
+        font-size: 12px;
+    }
+    .items-table {
+        color: #fff;
+    }
+    .items-data {
+        max-height: 500px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    .items-data::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        background-color: #F5F5F5;
+    }
 
-            .items-data::-webkit-scrollbar {
-                width: 6px;
-                background-color: #F5F5F5;
-            }
+    .items-data::-webkit-scrollbar {
+        width: 6px;
+        background-color: #F5F5F5;
+    }
 
-            .items-data::-webkit-scrollbar-thumb {
-                background-color: #aaa;
-                border-radius: 10px;
-            }
-            #table-view::-webkit-scrollbar-track {
-                -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-                background-color: #F5F5F5;
-            }
+    .items-data::-webkit-scrollbar-thumb {
+        background-color: #aaa;
+        border-radius: 10px;
+    }
+    #table-view::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        background-color: #F5F5F5;
+    }
 
-            #table-view::-webkit-scrollbar {
-                width: 6px;
-                background-color: #F5F5F5;
-            }
+    #table-view::-webkit-scrollbar {
+        width: 6px;
+        background-color: #F5F5F5;
+    }
 
-            #table-view::-webkit-scrollbar-thumb {
-                background-color: #aaa;
-                border-radius: 10px;
-            }
-            #mydiv {
-                position: absolute;
-                z-index: 9;
-                background-color: #f1f1f1;
-                border: 1px solid #d3d3d3;
-                text-align: center;
-            }
-            @media (orientation:portrait) {
-                .Po_to_land1 {
-                    display: none;
-                }
-            }
+    #table-view::-webkit-scrollbar-thumb {
+        background-color: #aaa;
+        border-radius: 10px;
+    }
+    #mydiv {
+        position: absolute;
+        z-index: 9;
+        background-color: #f1f1f1;
+        border: 1px solid #d3d3d3;
+        text-align: center;
+    }
+    @media (orientation:portrait) {
+        .Po_to_land1 {
+            display: none;
+        }
+    }
 
-            @media (orientation:landscape) {
-                .Po_to_land {
-                    display: none;
-                }
-            }
-        </style>
+    @media (orientation:landscape) {
+        .Po_to_land {
+            display: none;
+        }
+    }
+</style>
  
         <?php $this->load->view('layouts/admin/top'); ?>
             <!-- ========== Left Sidebar Start ========== -->
@@ -84,7 +84,10 @@
             <!-- ============================================================== -->
             <!-- Start right Content here -->
             <!-- ============================================================== -->
-            <div class="main-content">
+            <div class="Po_to_land" style="width:100%;height:100%;">
+                <img src="<?= base_url();?>assets/img/ptl.gif" alt="" width:33px; style="padding-left:29px;">
+            </div>
+            <div class="main-content Po_to_land1">
 
                 <div class="page-content">
                     <div class="container-fluid">
