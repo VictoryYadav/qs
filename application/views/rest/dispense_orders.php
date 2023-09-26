@@ -87,6 +87,7 @@
             <div class="Po_to_land" style="width:100%;height:100%;">
                 <img src="<?= base_url();?>assets/img/ptl.gif" alt="" width:33px; style="padding-left:29px;">
             </div>
+            
             <div class="main-content Po_to_land1">
 
                 <div class="page-content">
@@ -142,7 +143,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-7">
+                            <div class="col-md-7 col-7">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
@@ -167,7 +168,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-5">
+                            <div class="col-md-5 col-5">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">

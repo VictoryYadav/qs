@@ -1,231 +1,244 @@
 <?php $this->load->view('layouts/admin/head'); ?>
 <style>
 
-        .h-deliver {
-            background-color: lightgreen;
-        }
+    .h-deliver {
+        background-color: lightgreen;
+    }
 
-        .login-page {
-            background-color: #1091e8;
-        }
+    .login-page {
+        background-color: #1091e8;
+    }
 
-        .left-components {
-            padding: 20px 15px 20px 20px;
-            margin-bottom: 0px;
-        }
+    .left-components {
+        padding: 20px 15px 20px 20px;
+        margin-bottom: 0px;
+    }
 
-        img {
-            cursor: zoom-in;
-        }
+    img {
+        cursor: zoom-in;
+    }
 
-        .left-menu-logo {
-            padding: 20px;
-            text-align: center;
-        }
+    .left-menu-logo {
+        padding: 20px;
+        text-align: center;
+    }
 
-        .left-menu ul li a {
-            padding: 5px 10px;
-            font-size: 1rem;
-            border-radius: 50px;
-            border: 1px solid #fff;
-            display: block;
-            color: #fff;
-            text-decoration: none;
-        }
+    .left-menu ul li a {
+        padding: 5px 10px;
+        font-size: 1rem;
+        border-radius: 50px;
+        border: 1px solid #fff;
+        display: block;
+        color: #fff;
+        text-decoration: none;
+    }
 
-        .left-menu .active {
-            background-color: #0073ad;
-        }
+    .left-menu .active {
+        background-color: #0073ad;
+    }
 
-        .left-menu ul li {
-            margin-bottom: 20px;
-            text-align: center;
-        }
+    .left-menu ul li {
+        margin-bottom: 20px;
+        text-align: center;
+    }
 
-        .arrow-down {
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            margin-left: 20px;
-            border-top: 15px solid #fff;
-            margin-bottom: 20px;
-        }
+    .arrow-down {
+        width: 0;
+        height: 0;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        margin-left: 20px;
+        border-top: 15px solid #fff;
+        margin-bottom: 20px;
+    }
 
-        #table-view .tableView-table {
-            background-color: #fff;
-        }
+    #table-view .tableView-table {
+        background-color: #fff;
+    }
 
-        .table-numbers .table thead th {
-            font-size: 12px;
-            border: none;
-        }
+    .table-numbers .table thead th {
+        font-size: 12px;
+        border: none;
+    }
 
-        .table-numbers .table td {
-            font-size: 12px;
-        }
+    .table-numbers .table td {
+        font-size: 12px;
+    }
 
-        .tableno {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #003779;
-            margin-bottom: 0px;
-            color: #fff;
+    .tableno {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #003779;
+        margin-bottom: 0px;
+        color: #fff;
 
-        }
+    }
 
-        .success-table-status {
-            background-color: lightgreen !important;
-        }
+    .success-table-status {
+        background-color: lightgreen !important;
+    }
 
-        /*thead, tbody { display: block; }
+    /*thead, tbody { display: block; }
 
 .table-numbers tbody {
-    max-height: 85px;
-    overflow-y: auto;
-    overflow-x: hidden;
+max-height: 85px;
+overflow-y: auto;
+overflow-x: hidden;
 }*/
-        #table-view {
-            max-height: 500px;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
+    #table-view {
+        max-height: 500px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 
-        .items-table .table thead th {
-            font-size: 12px;
-            border: none;
-        }
+    .items-table .table thead th {
+        font-size: 12px;
+        border: none;
+    }
 
-        .items-table .table td {
-            font-size: 12px;
-        }
+    .items-table .table td {
+        font-size: 12px;
+    }
 
-        .items-table {
-            color: #fff;
-        }
+    .items-table {
+        color: #fff;
+    }
 
-        .items-data {
-            max-height: 370px;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
+    .items-data {
+        max-height: 370px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 
-        .items-data::-webkit-scrollbar-track {
-            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-            background-color: #F5F5F5;
-        }
+    .items-data::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+    }
 
-        .items-data::-webkit-scrollbar {
-            width: 6px;
-            background-color: #F5F5F5;
-        }
+    .items-data::-webkit-scrollbar {
+        width: 6px;
+        background-color: #F5F5F5;
+    }
 
-        .items-data::-webkit-scrollbar-thumb {
-            background-color: #aaa;
-            border-radius: 10px;
-        }
+    .items-data::-webkit-scrollbar-thumb {
+        background-color: #aaa;
+        border-radius: 10px;
+    }
 
-        #table-view::-webkit-scrollbar-track {
-            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-            background-color: #F5F5F5;
-        }
+    #table-view::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+    }
 
-        #table-view::-webkit-scrollbar {
-            width: 6px;
-            background-color: #F5F5F5;
-        }
+    #table-view::-webkit-scrollbar {
+        width: 6px;
+        background-color: #F5F5F5;
+    }
 
-        #table-view::-webkit-scrollbar-thumb {
-            background-color: #aaa;
-            border-radius: 10px;
-        }
+    #table-view::-webkit-scrollbar-thumb {
+        background-color: #aaa;
+        border-radius: 10px;
+    }
 
-        .dashboard-menu {
-            background-color: #0086ea;
-        }
+    .dashboard-menu {
+        background-color: #0086ea;
+    }
 
-        .dropdown-menu.show {
-            right: 0px !important;
-            left: unset;
-            text-align: center;
-        }
+    .dropdown-menu.show {
+        right: 0px !important;
+        left: unset;
+        text-align: center;
+    }
 
-        .tableno-btns {
-            background-color: #f8b500;
-            color: #fff;
-            /*margin-right: 10px;*/
-            padding: 2px 10px;
-            font-size: 14px;
-        }
+    .tableno-btns {
+        background-color: #f8b500;
+        color: #fff;
+        /*margin-right: 10px;*/
+        padding: 2px 10px;
+        font-size: 14px;
+    }
 
-        .tableno-row-btns {
-            display: inline-block;
-            position: relative;
-            padding: 7px;
-            background: #f2f2f2;
-            margin-left: 85px;
-            /*margin-left: 0px;
-    text-align: center;
-    width: 100%;*/
-        }
+    .tableno-row-btns {
+        display: inline-block;
+        position: relative;
+        padding: 7px;
+        background: #f2f2f2;
+        margin-left: 85px;
+        /*margin-left: 0px;
+text-align: center;
+width: 100%;*/
+    }
 
-        .btn-go {
-            background-color: #f8b500;
-            color: #fff;
-            margin-left: -5px;
-            padding: 4px 10px;
-            border-radius: 0px;
-            margin-bottom: 4px;
-        }
+    .btn-go {
+        background-color: #f8b500;
+        color: #fff;
+        margin-left: -5px;
+        padding: 4px 10px;
+        border-radius: 0px;
+        margin-bottom: 4px;
+    }
 
-        .search-input {
-            border: none;
-            width: 50px;
-            padding: 5px;
-        }
+    .search-input {
+        border: none;
+        width: 50px;
+        padding: 5px;
+    }
 
-        .table {
-            margin-bottom: 0px;
-        }
+    .table {
+        margin-bottom: 0px;
+    }
 
-        .tableView-table {
-            /*padding-bottom: 25px;*/
-            margin-bottom: 35px;
-        }
+    .tableView-table {
+        /*padding-bottom: 25px;*/
+        margin-bottom: 35px;
+    }
 
-        .tableno-data {
-            max-height: 500px;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
+    .tableno-data {
+        max-height: 500px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 
-        .cust-img {
-            width: 50px;
-            height: 40px;
-            border-radius: 50%;
-            float: right;
-        }
+    .cust-img {
+        width: 50px;
+        height: 40px;
+        border-radius: 50%;
+        float: right;
+    }
 
-        /*td.focus {
-            border: solid 1px black;
-        }*/
+    /*td.focus {
+        border: solid 1px black;
+    }*/
 
-        #mydiv {
-            position: absolute;
-            z-index: 9;
-            background-color: #f1f1f1;
-            border: 1px solid #d3d3d3;
-            text-align: center;
-        }
+    #mydiv {
+        position: absolute;
+        z-index: 9;
+        background-color: #f1f1f1;
+        border: 1px solid #d3d3d3;
+        text-align: center;
+    }
 
-        .card-header:hover {
-            cursor: -webkit-grabbing;
-            cursor: grabbing;
+    .card-header:hover {
+        cursor: -webkit-grabbing;
+        cursor: grabbing;
+    }
+    .active-row{
+        outline: 2px solid;
+    }
+
+    /*for landscape view */
+    @media (orientation:portrait) {
+        .Po_to_land1 {
+            display: none;
         }
-        .active-row{
-            outline: 2px solid;
+    }
+
+    @media (orientation:landscape) {
+        .Po_to_land {
+            display: none;
         }
-    </style>
+    }
+</style>
         <?php $this->load->view('layouts/admin/top'); ?>
             <!-- ========== Left Sidebar Start ========== -->
             <div class="vertical-menu">
@@ -242,7 +255,10 @@
             <!-- ============================================================== -->
             <!-- Start right Content here -->
             <!-- ============================================================== -->
-            <div class="main-content">
+            <div class="Po_to_land" style="width:100%;height:100%;">
+                <img src="<?= base_url();?>assets/img/ptl.gif" alt="" width:33px; style="padding-left:29px;">
+            </div>
+            <div class="main-content Po_to_land1">
 
                 <div class="page-content">
                     <div class="container-fluid">
@@ -308,7 +324,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-7">
+                            <div class="col-md-7 col-7">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
@@ -351,7 +367,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-5">
+                            <div class="col-md-5 col-5">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
