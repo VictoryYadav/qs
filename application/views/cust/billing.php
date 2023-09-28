@@ -1,61 +1,4 @@
-<?php $this->load->view('layouts/customer/head'); 
-        $EID = authuser()->EID;
-        $ChainId = authuser()->ChainId;
-
-        $CustId = $this->session->userdata('CustId');
-        $OutletId = $this->session->userdata('OutletId');
-        $EType = $this->session->userdata('EType');
-        $Tips = $this->session->userdata('Tips');
-        $PymtOpt = $this->session->userdata('PymtOpt');
-        $ServChrg = $this->session->userdata('ServChrg');
-        $KOTNo = $this->session->userdata('KOTNo');
-        $COrgId = $this->session->userdata('COrgId');
-        $CustNo = $this->session->userdata('CustNo');
-        $CellNo = $this->session->userdata('CellNo');
-
-        $CNo = $this->session->userdata('CNo');
-
-        //menu link
-        $cId = $this->session->userdata('cId');
-        $mCatgId = $this->session->userdata('mCatgId');
-        $cType = $this->session->userdata('cType');
-
-        $dbname = $this->session->userdata('my_db');
-        $res = getBillData($dbname, $EID, $billId);
-
-        $billData = $res['billData'];
-        $taxDataArray = $res['taxDataArray'];
-
-        $hotelName = $billData[0]['Name'];
-        $phone = $billData[0]['PhoneNos'];
-        $gstno = $billData[0]['GSTno'];
-        $fssaino = $billData[0]['FSSAINo'];
-        $cinno = $billData[0]['CINNo'];
-        $billno = $billData[0]['BillNo'];
-        $orderdate = $billData[0]['BillDt'];
-        $date = new DateTime($orderdate);
-        $dateOfBill = $date->format('d-m-Y @ H:i');
-        $address = $billData[0]['Addr'];
-        $pincode = $billData[0]['Pincode'];
-        $city = $billData[0]['City'];
-        $servicecharge = isset($billData[0]['ServChrg'])?$billData[0]['ServChrg']:"";
-        $bservecharge = $billData[0]['bservecharge'];
-        $SerChargeAmt = $billData[0]['SerChargeAmt'];
-
-        $tipamt = $billData[0]['Tip'];
-        $Stat = $billData[0]['Stat'];
-        $total = 0;
-        $sgstamt=0;
-        $cgstamt=0;
-        $grandTotal = $sgstamt + $cgstamt + $bservecharge + $tipamt;
-        $thankuline = isset($billData[0]['Tagline'])?$billData[0]['Tagline']:"";
-
-        $total_discount_amount = $billData[0]['TotItemDisc'] + $billData[0]['BillDiscAmt'];
-        $total_packing_charge_amount = $billData[0]['TotPckCharge'];
-        $total_delivery_charge_amount = $billData[0]['DelCharge'];
-
-
-?>
+<?php $this->load->view('layouts/customer/head'); ?>
 <style>
     p{
         font-size: 12px !important;
@@ -591,7 +534,6 @@
                     <p><?= $thankuline ?></p>
                     <br>
                     <?php if(isset($_GET['ShowRatings']) && $_GET['ShowRatings'] == 1){
-                        $ra = $this->db2->query("SELECT AVG(ServRtng) as serv, AVG(AmbRtng) as amb,avg(VFMRtng) as vfm, AVG(rd.ItemRtng) as itm FROM Ratings r, RatingDet rd WHERE r.BillId= $billId and r.EID=".$_GET['EID'])->result_array();
                         
                         // print_r($ra);exit();
                         if(!empty($ra)){?>
@@ -623,26 +565,18 @@
                     <?php }?>
             </div>
 
-                <div id="editor"></div>
+            <div id="editor"></div>
                 
-                <!-- <div class="navbar1 menu-footer1">
-                    <div class="col-12 row text-center" style="padding:0px;">
-                        <div class="col-6 text-center">
-                            <a class="btn btn-success" href="<?= base_url('customer'); ?>" style="width: 100%;">Menu</a>
-                        </div>
-                        <div class="col-6 text-center">
-                            <a href="<?= base_url('customer/rating/'.$billId);?>" class="btn btn-primary" style="width: 100%;">Rating</a>
-                        </div>
-                    </div>
-                </div> -->
+            <div class="row remove-margin payment-btns fixed-bottom" style=" width: 100%; margin-left: 1px;bottom: 60px !important;">
+                <?php if(isset($_GET['EID'])) { ?>
+                <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="border-radius: 50px;width: 100%;">Menu</a>
+            <?php }else{ ?>
+                <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="width: 50%;">Menu</a>
 
-                <div class="row remove-margin payment-btns fixed-bottom" style=" width: 100%; margin-left: 1px;bottom: 60px !important;">
+                <a href="<?= base_url('customer/rating/'.$billId);?>" class="btn btn-sm paybtn" style="width: 50%;">Rating</a>
+            <?php } ?>
 
-                    <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="width: 50%;">Menu</a>
-
-                    <a href="<?= base_url('customer/rating/'.$billId);?>" class="btn btn-sm paybtn" style="width: 50%;">Rating</a>
-
-                </div>
+            </div>
         </div>
     </section>
 

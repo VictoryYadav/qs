@@ -1428,9 +1428,61 @@ print_r($this->db2->last_query());
         $data['language'] = languageArray();
         $data['billId'] = $billId;
 
-        // include('repository/billing/bill_print.repo.php');
+        $EID = authuser()->EID;
+        $CustId = $this->session->userdata('CustId');
 
-        $this->load->view('cust/billing', $data);
+        $data['CustNo'] = $this->session->userdata('CustNo');
+        $data['CellNo'] = $this->session->userdata('CellNo');
+
+        $dbname = $this->session->userdata('my_db');
+
+        if(isset($_GET['dbn'])){
+            $dbname = $_GET['dbn'];
+            $EID = $_GET['EID'];
+        }
+
+        $res = getBillData($dbname, $EID, $billId, $CustId);
+        // echo "<pre>";
+        // print_r($res);
+        // die;
+        if(!empty($res['billData'])){
+
+            $billData = $res['billData'];
+            $data['ra'] = $res['ra'];
+            $data['taxDataArray'] = $res['taxDataArray'];
+
+            $data['hotelName'] = $billData[0]['Name'];
+            $data['phone'] = $billData[0]['PhoneNos'];
+            $data['gstno'] = $billData[0]['GSTno'];
+            $data['fssaino'] = $billData[0]['FSSAINo'];
+            $data['cinno'] = $billData[0]['CINNo'];
+            $data['billno'] = $billData[0]['BillNo'];
+            $data['dateOfBill'] = date('d-m-Y @ H:i', strtotime($billData[0]['BillDt']));
+            $data['address'] = $billData[0]['Addr'];
+            $data['pincode'] = $billData[0]['Pincode'];
+            $data['city'] = $billData[0]['City'];
+            $data['servicecharge'] = isset($billData[0]['ServChrg'])?$billData[0]['ServChrg']:"";
+            $data['bservecharge'] = $billData[0]['bservecharge'];
+            $data['SerChargeAmt'] = $billData[0]['SerChargeAmt'];
+
+            $data['tipamt'] = $billData[0]['Tip'];
+            $Stat = $billData[0]['Stat'];
+            $total = 0;
+            $sgstamt=0;
+            $cgstamt=0;
+            $grandTotal = $sgstamt + $cgstamt + $data['bservecharge'] + $data['tipamt'];
+            $data['thankuline'] = isset($billData[0]['Tagline'])?$billData[0]['Tagline']:"";
+
+            $data['total_discount_amount'] = $billData[0]['TotItemDisc'] + $billData[0]['BillDiscAmt'];
+            $data['total_packing_charge_amount'] = $billData[0]['TotPckCharge'];
+            $data['total_delivery_charge_amount'] = $billData[0]['DelCharge'];
+
+            $data['billData'] = $res['billData'];
+            $this->load->view('cust/billing', $data);
+        }else{
+            $this->load->view('cust/billing_not', $data);
+        }
+
         
     }
 
@@ -1817,17 +1869,53 @@ print_r($this->db2->last_query());
     }
 
     public function transactions(){
+
+        $data['country'] = 0;
+        $data['city'] = 0;
+        if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            $data['country'] = $_POST['country'];
+            $data['city'] = $_POST['city'];
+        }
+
         $CustId = $this->session->userdata('CustId');
         $data['title'] = 'Transactions';
         $genTblDb = $this->load->database('GenTableData', TRUE);
-        $data['custPymt'] = $genTblDb->query("SELECT date(cp.BillDt) as billdt , cp.BillId, cp.BillNo, cp.EID , cp.PaidAmt , cp.CustId , ed.Name , ed.DBName, ed.DBPasswd FROM `CustPymts` cp , `EIDDet` ed where cp.CustId = $CustId and ed.EID = cp.EID ORDER BY `BNo`  DESC")->result_array();
+        // $data['custPymt'] = $genTblDb->query("SELECT date(cp.BillDt) as billdt , cp.BillId, cp.BillNo, cp.EID , cp.PaidAmt , cp.CustId , ed.Name , ed.DBName, ed.DBPasswd FROM `CustPymts` cp , `EIDDet` ed where cp.CustId = $CustId and ed.EID = cp.EID ORDER BY `BNo`  DESC")->result_array();
+        if(!empty($data['country'])){
+         $genTblDb->where('ed.CountryCd',$data['country']);
+        }
+        if(!empty($data['city'])){
+         $genTblDb->where('ed.city_id',$data['city']);
+        }
+        $data['custPymt'] = $genTblDb->select('date(cp.BillDt) as billdt , cp.BillId, cp.BillNo, cp.EID , cp.PaidAmt , cp.CustId , ed.Name , ed.DBName, ed.DBPasswd')
+                            ->order_by('BNo', 'DESC')
+                            ->join('EIDDet ed', 'ed.EID = cp.EID', 'inner')
+                            ->get_where('CustPymts cp', array('cp.CustId' => $CustId))
+                            ->result_array();
         $data['language'] = languageArray();
+        $data['countryList'] = $this->cust->getCountryList();
         // echo "<pre>";
         // print_r($data);
         // die;
-
         $this->load->view('cust/transactions', $data);
+    }
 
+    public function getCityList(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+            $response = $this->cust->getCityListByCountry($_POST['phone_code']);
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
     }
 
     public function reserve_table(){

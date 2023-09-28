@@ -852,7 +852,7 @@
 
             function handleDelivery(CNo, custId, billNo, start) {
                
-                var v = <?= $CheckOTP?>;
+                var v = <?= $CheckOTP; ?>;
                 if (CNo !== 0 && v == 1) {
                     $.ajax({
                         url:"<?php echo base_url('restaurant/order_delivery'); ?>",

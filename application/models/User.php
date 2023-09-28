@@ -53,7 +53,7 @@ class User extends CI_Model{
 	}
 
 	// common function for both sides
-	public function gettingBiliingData($dbname, $EID, $billId){
+	public function gettingBiliingData($dbname, $EID, $billId, $CustId){
 
 		// $billData = $this->db2->query("SELECT SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as ItemAmt, (if (k.ItemTyp > 0, (CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm, k.ItmRate, SUM(k.Qty) as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, b.BillPrefix, b.BillSuffix, b.TaxInclusive, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo, b.TotItemDisc, b.BillDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt, b.SerCharge as bservecharge, b.Tip, b.PymtTime as BillDt,ip.Name as Portions, k.Itm_Portion  from ".$dbname."Kitchen k, ".$dbname."KitchenMain km, ".$dbname."Billing b, ".$dbname."MenuItem m, ".$dbname."Eatary e , ".$dbname."ItemPortions ip where k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and (k.Stat<>4 and k.Stat<>6 and k.Stat<>7 and k.Stat<>99) and km.CNo = k.CNo AND km.BillStat = b.BillId and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID  and b.ChainId = km.ChainId and km.EID = $EID and b.BillId = $billId Group By m.ItemNm, k.ItmRate, k.ItemTyp, k.CustItemDesc, k.TaxType, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno,  e.PhoneNos, e.Remarks, k.Stat, e.Tagline, b.BillNo, b.TotAmt, b.TaxInclusive, b.SerCharge, b.Tip, b.PymtTime ,k.Itm_Portion,ip.Name Order By k.TaxType, m.ItemNm")->result_array();
 		// Repository : billing/bill_print.repo.php
@@ -64,28 +64,36 @@ class User extends CI_Model{
 			$comDb = $this->load->database($dbname, TRUE);
 		}
 
-		$billData = $comDb->query("SELECT (if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty * b.splitPercent),(k.ItmRate*k.Qty * b.splitPercent))) as ItemAmt, (if (k.ItemTyp > 0, (CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm, k.ItmRate, k.Qty * b.splitPercent as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, b.BillPrefix, b.BillSuffix, b.TaxInclusive, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo, b.TotItemDisc, b.BillDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt,b.PaidAmt, b.SerCharge as bservecharge,b.SerChargeAmt, b.Tip, b.PymtTime as BillDt,ip.Name as Portions, k.Itm_Portion  from Kitchen k, KitchenMain km, Billing b, MenuItem m, Eatary e , ItemPortions ip where k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and (k.Stat<>4 and k.Stat<>6 and k.Stat<>7 and k.Stat<>99) and (km.CNo = k.CNo or km.MCNo = k.MCNo) and (km.CNo = b.CNo or km.MCNo = b.CNo) and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID  and b.ChainId = km.ChainId and km.EID = $EID and b.BillId = $billId Group By m.ItemNm, k.ItmRate, k.ItemTyp, k.CustItemDesc, k.TaxType, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno,  e.PhoneNos, e.Remarks, k.Stat, e.Tagline, b.BillNo, b.TotAmt, b.TaxInclusive, b.SerCharge, b.Tip, b.PymtTime ,k.Itm_Portion,ip.Name Order By k.TaxType, m.ItemNm")->result_array();
+		$billData = $comDb->query("SELECT (if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty * b.splitPercent),(k.ItmRate*k.Qty * b.splitPercent))) as ItemAmt, (if (k.ItemTyp > 0, (CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm, k.ItmRate, k.Qty * b.splitPercent as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, b.BillPrefix, b.BillSuffix, b.TaxInclusive, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo, b.TotItemDisc, b.BillDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt,b.PaidAmt, b.SerCharge as bservecharge,b.SerChargeAmt, b.Tip, b.PymtTime as BillDt,ip.Name as Portions, k.Itm_Portion  from Kitchen k, KitchenMain km, Billing b, MenuItem m, Eatary e , ItemPortions ip where k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and (k.Stat<>4 and k.Stat<>6 and k.Stat<>7 and k.Stat<>99) and (km.CNo = k.CNo or km.MCNo = k.MCNo) and (km.CNo = b.CNo or km.MCNo = b.CNo) and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID  and b.ChainId = km.ChainId and km.EID = $EID and b.BillId = $billId and km.CustId = $CustId Group By m.ItemNm, k.ItmRate, k.ItemTyp, k.CustItemDesc, k.TaxType, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno,  e.PhoneNos, e.Remarks, k.Stat, e.Tagline, b.BillNo, b.TotAmt, b.TaxInclusive, b.SerCharge, b.Tip, b.PymtTime ,k.Itm_Portion,ip.Name Order By k.TaxType, m.ItemNm")->result_array();
 
-		$intial_value = $billData[0]['TaxType'];
-		$tax_type_array = array();
-		$tax_type_array[$intial_value] = $intial_value;
-		
-		foreach ($billData as $key) {
-		    if($key['TaxType'] != $intial_value){
-		        $intial_value = $key['TaxType'];
-		        $tax_type_array[$intial_value] = $key['TaxType'];
-		    }
-		}
-
-		$taxDataArray = array();
-		foreach ($tax_type_array as $key => $value) {
-			$TaxData = $this->db2->query("SELECT t.ShortName, t.TaxPcent, t.TaxType, t.Included, Sum(bt.TaxAmt) as SubAmtTax, t.rank from Tax t, BillingTax bt where bt.EID=t.EID and bt.TNo=t.TNo and bt.EID=$EID and bt.BillId = $billId and bt.TNo=t.TNo and t.TaxType = $value group by t.ShortName,t.TaxPcent, t.TaxType, t.Included ,t.rank order by t.rank")->result_array();
+		if(!empty($billData)){
+			$intial_value = $billData[0]['TaxType'];
+			$tax_type_array = array();
+			$tax_type_array[$intial_value] = $intial_value;
 			
-		    $taxDataArray[$value] = $TaxData;
+			foreach ($billData as $key) {
+			    if($key['TaxType'] != $intial_value){
+			        $intial_value = $key['TaxType'];
+			        $tax_type_array[$intial_value] = $key['TaxType'];
+			    }
+			}
+
+			$taxDataArray = array();
+			foreach ($tax_type_array as $key => $value) {
+				$TaxData = $comDb->query("SELECT t.ShortName, t.TaxPcent, t.TaxType, t.Included, Sum(bt.TaxAmt) as SubAmtTax, t.rank from Tax t, BillingTax bt where bt.EID=t.EID and bt.TNo=t.TNo and bt.EID=$EID and bt.BillId = $billId and bt.TNo=t.TNo and t.TaxType = $value group by t.ShortName,t.TaxPcent, t.TaxType, t.Included ,t.rank order by t.rank")->result_array();
+				
+			    $taxDataArray[$value] = $TaxData;
+			}
+			$data['billData'] = $billData;
+			$data['taxDataArray'] = $taxDataArray;
+			$data['ra'] = $comDb->query("SELECT AVG(ServRtng) as serv, AVG(AmbRtng) as amb,avg(VFMRtng) as vfm, AVG(rd.ItemRtng) as itm FROM Ratings r, RatingDet rd WHERE r.BillId= $billId and r.EID=".$EID)->result_array();
+			return $data;
+		}else{
+			$data['billData'] = '';
+			$data['taxDataArray'] = 0;
+			return $data;
 		}
-		$data['billData'] = $billData;
-		$data['taxDataArray'] = $taxDataArray;
-		return $data;
+
 	}
 
 	private function calculatTotalTax($total_tax, $new_tax){

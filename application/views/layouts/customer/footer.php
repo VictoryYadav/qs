@@ -7,7 +7,7 @@
         <div class="dropdown-menu">
             <?php if(!empty($this->session->userdata('CustId'))){ ?>
             <a class="dropdown-item" href="/cust_registration.php">Edit Profile</a>
-            <a class="dropdown-item" href="<?= base_url('customer/transactions'); ?>">Transaction</a>
+            <a class="dropdown-item" href="<?= base_url('customer/transactions'); ?>">History</a>
             <a class="dropdown-item" href="<?= base_url('customer/reserve_table'); ?>">Book Table</a>
             <a class="dropdown-item" href="/cust_registration.php">Refer Outlet</a>
             <a class="dropdown-item" href="#">Username(<?= $_SESSION['signup']['MobileNo']; ?>)</a>

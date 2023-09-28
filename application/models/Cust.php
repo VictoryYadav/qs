@@ -1667,6 +1667,16 @@ class Cust extends CI_Model{
 		return $this->db2->select('OrdNo')->get_where('Kitchen', array('CustId' => $custId, 'CNo' => $CNo, 'Stat >= ' => 1, 'Stat < ' => 3, 'BillStat' => 0, 'EID' => $this->EID))->row_array();
 	}
 
+	public function getCountryList(){
+		return $this->db2->select('c.*')
+					->join('Eatary e', 'e.CountryCd = c.phone_code', 'inner')
+		->get_where('countries c', array('e.Stat' => 0))->result_array();
+	}
+
+	public function getCityListByCountry($phone_code){
+		return $this->db2->get_where('city', array('status' => 0))->result_array();
+	}
+
 
 	
 }
