@@ -687,6 +687,31 @@ class Rest extends CI_Model{
 		return $this->db2->get_where('3POrders', array('Stat' => 0))->result_array();
 	}
 
+	public function getPaymentList($data){
+		// echo "<pre>";
+		// print_r($data);
+		// die;
+		if(!empty($data['fdate'])){
+			$this->db2->where('PymtDate >= ', date('Y-m-d', strtotime($data['fdate'])));
+		}
+		if(!empty($data['tdate'])){
+			$tdate = date('Y-m-d', strtotime("+1 day", strtotime($data['tdate'])));
+			$this->db2->where('PymtDate <= ', $tdate);
+		}
+		if(!empty($data['pmode'])){
+			$this->db2->where('PaymtMode',$data['pmode']);
+		}	
+		return $this->db2->order_by('PymtNo', 'DESC')
+						->get_where('BillPayments', array('Stat' => 1))
+						->result_array();
+						// print_r($this->db2->last_query());
+						// die;
+	}
+
+	public function getPaymentModes(){
+		return $this->db2->select('PymtMode,Name,Company, CodePage1')->get_where('ConfigPymt', array('Stat' => 1))->result_array();
+	}
+
 	
 
 	

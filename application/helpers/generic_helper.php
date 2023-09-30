@@ -98,6 +98,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $sch_cat[$id];
 	}
 
+	function payMode($id){
+		$pay = array('1'=>'Cash', '2'=>'Cashfree','3'=>'RazorPay', '4'=>'Stripe', '5'=> 'RazorPay TQ', '6'=>'Sodexo');
+		return $pay[$id];
+	}
+
 	function do_upload($control,$filename,$upload_path,$allowed_type){
 		$CI =& get_instance();
 		$config['upload_path'] = $upload_path;

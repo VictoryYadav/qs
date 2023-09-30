@@ -3441,6 +3441,31 @@ class Restaurant extends CI_Controller {
 
     }
 
+    public function payments(){
+        $data['title'] = 'Payments';
+        $data['fdate'] = date('Y-m-d');
+        $data['tdate'] = date('Y-m-d');
+        $data['pmode'] = '';
+        $pdata = array
+                    (
+                        'fdate' => $data['fdate'],
+                        'tdate' => $data['tdate'],
+                        'pmode' => $data['pmode']
+                    );
+        if($this->input->method(true)=='POST'){
+            $pdata = $_POST;
+            $data['fdate'] = date('Y-m-d', strtotime($pdata['fdate']));
+            $data['tdate'] = date('Y-m-d', strtotime($pdata['tdate']));
+            $data['pmode'] = $pdata['pmode'];
+        }
+        $data['details'] = $this->rest->getPaymentList($pdata);
+        $data['modes'] = $this->rest->getPaymentModes();
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $this->load->view('rest/payments', $data);
+    }
+
 
 
 
