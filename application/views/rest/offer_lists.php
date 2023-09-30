@@ -1,4 +1,10 @@
 <?php $this->load->view('layouts/admin/head'); ?>
+<style>
+    .topics tr {
+     line-height: 12px !important; 
+     font-size: 12px;
+ }
+</style>
         <?php $this->load->view('layouts/admin/top'); ?>
             <!-- ========== Left Sidebar Start ========== -->
             <div class="vertical-menu">
@@ -40,12 +46,12 @@
                         </div>
                         <!-- end page title -->
 
-                        <div class="row">
+                        <div class="row mt-1">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table id="offer_list_table" class="table table-bordered">
+                                            <table id="offer_list_table" class="table table-bordered topics">
                                                 <thead>
                                                 <tr>
                                                     <th>#</th>

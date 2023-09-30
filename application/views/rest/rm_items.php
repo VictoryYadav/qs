@@ -38,9 +38,9 @@
                                         <form method="post" id="catForm">
                                             <input type="hidden" id="RMCd" name="RMCd">
                                             <div class="row">
-                                                <div class="col-md-3">
+                                                <div class="col-md-3 col-4">
                                                     <div class="form-group">
-                                                        <select name="RMCatg" id="RMCatg" class="form-control" required="">
+                                                        <select name="RMCatg" id="RMCatg" class="form-control form-control-sm" required="">
                                                             <option value="">Select</option>
                                                             <?php
                                                     if(!empty($catList)){
@@ -50,13 +50,13 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-3 col-5">
                                                     <div class="form-group">
-                                                        <input type="text" class="form-control" name="RMName" placeholder="Category Name" required="" id="RMName">
+                                                        <input type="text" class="form-control form-control-sm" name="RMName" placeholder="Category Name" required="" id="RMName" autocomplete="off">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <input type="submit" class="btn btn-success" value="Submit">
+                                                <div class="col-md-3 col-3">
+                                                    <input type="submit" class="btn btn-success btn-sm" value="Submit">
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="text-success" id="msgText"></div>

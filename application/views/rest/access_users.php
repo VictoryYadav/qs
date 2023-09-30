@@ -49,7 +49,7 @@
                                         <div id="app1">
                                             <div class="row form-group">
                                                 <div class="col-md-5 col-12">
-                                                    <select class="form-control" v-model="mobileNumber" v-on:change="getUser();">
+                                                    <select class="form-control form-control-sm" v-model="mobileNumber" v-on:change="getUser();">
                                                         <option value="">Select</option>
                                                         <?php
                                                         foreach ($usersRestData as $key) {

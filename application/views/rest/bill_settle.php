@@ -39,7 +39,7 @@
                                             <div class="col-md-1"></div>
                                             <div class="col-md-12 row">
                                                 <div class="col-6 form-group">
-                                                <select class="form-control col-md-4"  id="kitchen-code" v-on:change="getBill();">
+                                                <select class="form-control form-control-sm col-md-4"  id="kitchen-code" v-on:change="getBill();">
                                                     <?php
                                                     if(count($SettingTableViewAccess) == 1){?>
                                                         <option value="<?= $SettingTableViewAccess[0]['CCd']?>"><?= $SettingTableViewAccess[0]['Name']?></option>
@@ -64,80 +64,82 @@
 
                                                     <button class="btn btn-primary btn-sm btn-rounded" v-on:click="getBill();">Refresh</button>
                                                 </div>
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Bill No</th>
-                                                            <th>Bill Date</th>
-                                                            <?php if($EType == 5){?>
-                                                                <th>Table No</th>
-                                                            <?php } else {?>
-                                                                <th>Cell No</th>
-                                                            <?php } ?>
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Bill No</th>
+                                                                <th>Bill Date</th>
+                                                                <?php if($EType == 5){?>
+                                                                    <th>Table No</th>
+                                                                <?php } else {?>
+                                                                    <th>Cell No</th>
+                                                                <?php } ?>
 
-                                                            <!-- <th>Item Amt</th> -->
-                                                            <th>Bill Amt</th>
-                                                            <th>O.Pymt</th>
-                                                            <th>M.Pymt</th>
-                                                            <th>Mode</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-if="billData.length > 0" v-for="(data, index) in billData">
-                                                            <td>
-                                                                <a v-bind:href="'<?php echo base_url('restaurant/'); ?>bill_rcpt?restaurant=1&billId=' + data.BillNo" target="_blank" >
-                                                                    {{ data.BillNo }}
-                                                                </a>
-                                                            </td>
-                                                            <td>{{ data.BillDate }}</td>
+                                                                <!-- <th>Item Amt</th> -->
+                                                                <th>Bill Amt</th>
+                                                                <th>O.Pymt</th>
+                                                                <th>M.Pymt</th>
+                                                                <th>Mode</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-if="billData.length > 0" v-for="(data, index) in billData">
+                                                                <td>
+                                                                    <a v-bind:href="'<?php echo base_url('restaurant/'); ?>bill_rcpt?restaurant=1&billId=' + data.BillNo" target="_blank" >
+                                                                        {{ data.BillNo }}
+                                                                    </a>
+                                                                </td>
+                                                                <td>{{ data.BillDate }}</td>
 
-                                                            <?php if($EType == 5){?>
-                                                                <td>{{ data.TableNo }}</td>
-                                                            <?php } else {?>
-                                                                <td>{{ data.MobileNo }}</td>
-                                                            <?php } ?>
+                                                                <?php if($EType == 5){?>
+                                                                    <td>{{ data.TableNo }}</td>
+                                                                <?php } else {?>
+                                                                    <td>{{ data.MobileNo }}</td>
+                                                                <?php } ?>
 
-                                                            <td>{{ data.TotAmt }}</td>   <!-- for Bill Amt -->
+                                                                <td>{{ data.TotAmt }}</td>   <!-- for Bill Amt -->
 
-                                                            <td v-if="data.PaymtMode == 'Cash'">0</td>  <!-- for Online Amt for cash payment -->
-                                                            <td v-else>{{ data.PaidAmt }}</td>          <!-- Actual Amt paid online -->
+                                                                <td v-if="data.PaymtMode == 'Cash'">0</td>  <!-- for Online Amt for cash payment -->
+                                                                <td v-else>{{ data.PaidAmt }}</td>          <!-- Actual Amt paid online -->
 
-                                                            <td v-if="data.PaymtMode == 'Cash'">    <!-- Amt displayed for cash payment -->
-                                                                <input type="number" name="PaidAmt" id="PaidAmt"  v-model="data.BillValue"  value="data.BillValue" style="width: 125px;">
-                                                            </td>
-                                                            <td v-else>0</td>       <!-- Amt '0' displayed in cash payment for online payment -->
-                                                            <!-- <td >
-                                                                <div class="selectPayDis"></div>
-                                                            </td> -->
-                                                            <td v-if="data.PaymtMode == 'Cash'">    <!-- Options for payment modes if cash payment -->
-                                                                <select v-bind:id="index" v-model="data.PymtType">
-                                                                    <option value="0" style="display: none;">Select Payment</option>
-                                                                    <option v-for="pymtMode in pymtModes" :value="pymtMode.PMNo">
-                                                                        {{ pymtMode.Name }}
-                                                                    </option>
-                                                                </select>
-                                                            </td >
-                                                            <td v-else>Online</td>
-                                                            <td>
-                                                                <button class="btn btn-sm btn-success" v-on:click="setPaidAmount(index, data.BillId,data.CNo,data.TableNo,data.CustId, data.BillNo, data.TotAmt, data.PaymtMode);" >
-                                                                    <i class="fas fa-check-double"></i> 
-                                                                </button>
-                                                                </button>
-                                                                
-                                                                <!-- v-on:click="PrintBill(data.BillId, index,<?= $EID;?>);" Bill Printing -->
-                                                                <a :href="'vtrend:billid='+data.BillId+'&eid=<?= $EID;?>&kotno=0&s=<?= $_SESSION['DynamicDB'];?>'">
-                                                                <button class='btn btn-warning btn-sm'>
-                                                                    <i class="fas fa-print"></i> 
-                                                                </button></a>
-                                                                <!-- Bill Cancellation -->
-                                                                <button class="btn btn-danger btn-sm" v-on:click="rejectBill(data.BillId, index, data.CNo, data.TableNo, data.CustId);">
-                                                                    <i class="fas fa-window-close"></i> 
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                                                                <td v-if="data.PaymtMode == 'Cash'">    <!-- Amt displayed for cash payment -->
+                                                                    <input type="number" name="PaidAmt" id="PaidAmt"  v-model="data.BillValue"  value="data.BillValue" style="width: 125px;">
+                                                                </td>
+                                                                <td v-else>0</td>       <!-- Amt '0' displayed in cash payment for online payment -->
+                                                                <!-- <td >
+                                                                    <div class="selectPayDis"></div>
+                                                                </td> -->
+                                                                <td v-if="data.PaymtMode == 'Cash'">    <!-- Options for payment modes if cash payment -->
+                                                                    <select v-bind:id="index" v-model="data.PymtType">
+                                                                        <option value="0" style="display: none;">Select Payment</option>
+                                                                        <option v-for="pymtMode in pymtModes" :value="pymtMode.PMNo">
+                                                                            {{ pymtMode.Name }}
+                                                                        </option>
+                                                                    </select>
+                                                                </td >
+                                                                <td v-else>Online</td>
+                                                                <td>
+                                                                    <button class="btn btn-sm btn-success" v-on:click="setPaidAmount(index, data.BillId,data.CNo,data.TableNo,data.CustId, data.BillNo, data.TotAmt, data.PaymtMode);" >
+                                                                        <i class="fas fa-check-double"></i> 
+                                                                    </button>
+                                                                    </button>
+                                                                    
+                                                                    <!-- v-on:click="PrintBill(data.BillId, index,<?= $EID;?>);" Bill Printing -->
+                                                                    <a :href="'vtrend:billid='+data.BillId+'&eid=<?= $EID;?>&kotno=0&s=<?= $_SESSION['DynamicDB'];?>'">
+                                                                    <button class='btn btn-warning btn-sm'>
+                                                                        <i class="fas fa-print"></i> 
+                                                                    </button></a>
+                                                                    <!-- Bill Cancellation -->
+                                                                    <button class="btn btn-danger btn-sm" v-on:click="rejectBill(data.BillId, index, data.CNo, data.TableNo, data.CustId);">
+                                                                        <i class="fas fa-window-close"></i> 
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                             <div class="col-md-1"></div>
                                         </div>

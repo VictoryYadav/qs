@@ -90,19 +90,19 @@ hr{
                                                 <h5>Item Details - Sec 2</h5>
                                             </div>
                                             <div class="row">
-                                                <div class="form-group col-3">
+                                                <div class="form-group col-6">
                                                     <label for="schnm">Background</label>
                                                     <input type="color" id="Sec2Background" name="Sec2Background" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Sec2Background']:'';?>" />
                                                 </div>
-                                                <div class="form-group col-3">
+                                                <div class="form-group col-6">
                                                     <label for="schnm">Text Color</label>
                                                     <input type="color" id="Sec2TextColor" name="Sec2TextColor" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Sec2TextColor']:'';?>" />
                                                 </div>
-                                                <div class="form-group col-3">
+                                                <div class="form-group col-6">
                                                     <label for="schnm">Button Color</label>
                                                     <input type="color" id="Sec2BtnColor" name="Sec2BtnColor" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Sec2BtnColor']:'';?>" />
                                                 </div>
-                                                <div class="form-group col-3">
+                                                <div class="form-group col-6">
                                                     <label for="schnm">Button Text Color</label>
                                                     <input type="color" id="Sec2BtnText" name="Sec2BtnText" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Sec2BtnText']:'';?>" />
                                                 </div>
@@ -124,27 +124,27 @@ hr{
                                                 <h5>Other Page</h5>
                                             </div>
                                             <div class="row">
-                                                <div class="form-group col-2">
+                                                <div class="form-group col-3">
                                                     <label for="schnm">Body Background</label>
                                                     <input type="color" id="BodyBackground" name="BodyBackground" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['BodyBackground']:'';?>" />
                                                 </div>
-                                                <div class="form-group col-2">
+                                                <div class="form-group col-3">
                                                     <label for="schnm">Text Color</label>
                                                     <input type="color" id="BodyTextColor" name="BodyTextColor" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['BodyTextColor']:'';?>" />
                                                 </div>
-                                                <div class="form-group col-2">
+                                                <div class="form-group col-3">
                                                     <label for="schnm">Button 1 Background</label>
                                                     <input type="color" id="Button1Color" name="Button1Color" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Button1Color']:'';?>" />
                                                 </div>
-                                                <div class="form-group col-2">
+                                                <div class="form-group col-3">
                                                     <label for="schnm">Button 1 Text</label>
                                                     <input type="color" id="Button1TextColor" name="Button1TextColor" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Button1TextColor']:'';?>" />
                                                 </div>
-                                                <div class="form-group col-2">
+                                                <div class="form-group col-3">
                                                     <label for="schnm">Button 2 Background</label>
                                                     <input type="color" id="Button2Color" name="Button2Color" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Button2Color']:'';?>" />
                                                 </div>
-                                                <div class="form-group col-2">
+                                                <div class="form-group col-3">
                                                     <label for="schnm">Button 2 Text</label>
                                                     <input type="color" id="Button2TextColor" name="Button2TextColor" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Button2TextColor']:'';?>" />
                                                 </div>

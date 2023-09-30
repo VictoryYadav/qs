@@ -331,7 +331,7 @@ width: 100%;*/
                                         <div class="table-responsive">
                                             <div id="mydiv" style="display: none;">
                                                 <h6>KOT Details</h6>
-                                                <div class="">
+                                                <div class="table-responsive">
                                                     <table class="table table-bordered">
                                                         <thead class="table-header">
                                                             <tr>
@@ -770,19 +770,20 @@ width: 100%;*/
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
-
-                    <table class="table table-bordered text-center">
-                        <thead>
-                            <tr style="background: #b5bbea;">
-                                <th>Table No</th>
-                                <th>Order Value</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="new_order_list">
-                            
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center">
+                            <thead>
+                                <tr style="background: #b5bbea;">
+                                    <th>Table No</th>
+                                    <th>Order Value</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="new_order_list">
+                                
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1007,7 +1008,7 @@ width: 100%;*/
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <div>
+                    <div class="table-responsive">
                         <table class="table text-center">
                             <thead>
                                 <tr style="background-color: #51519a;color: #FFF;">
@@ -1038,7 +1039,7 @@ width: 100%;*/
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
-                    
+                    <div class="table-responsive">
                     <table class="table table-bordered text-center">
                         <thead>
                             <tr style="background: #b5bbea;">
@@ -1052,6 +1053,7 @@ width: 100%;*/
                             
                         </tbody>
                     </table>
+                    </div>
                 </div>
                 <!-- Modal footer -->
             </div>

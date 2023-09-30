@@ -38,7 +38,7 @@
                                         <div class="row">
                                             <div class="col-md-3 form-group col-6">
                                                 <label>Order Type</label>
-                                                <select class="form-control" id="order-type">
+                                                <select class="form-control form-control-sm" id="order-type">
                                                     <option value="0">Select</option>
                                                     <option value="1">3rd Party</option>
                                                     <option value="2">Take Away</option>
@@ -49,7 +49,7 @@
 
                                             <div class="col-md-3 form-group col-6">
                                                 <label>Table No</label>
-                                                <select class="form-control" id="table-id" disabled="" onchange="get_table_order_items(this)">
+                                                <select class="form-control form-control-sm" id="table-id" disabled="" onchange="get_table_order_items(this)">
                                                     <option value="0">Select</option>
                                                     <?php foreach ($tablesAlloted as $data) : ?>
                                                         <option value="<?= $data['TableNo'] ?>"><?= $data['MergeNo'] ?></option>
@@ -59,7 +59,7 @@
 
                                             <div class="col-md-3 form-group col-6">
                                                 <label>3rd Party</label>
-                                                <select class="form-control" id="3rd-party" disabled="">
+                                                <select class="form-control form-control-sm" id="3rd-party" disabled="">
                                                     <option value="0">Select</option>
                                                     <?php foreach ($thirdOrdersData as $data) : ?>
                                                         <option value="<?= $data['3PId'] ?>"><?= $data['Name'] ?></option>
@@ -69,19 +69,19 @@
 
                                             <div class="col-md-3 form-group col-6">
                                                 <label>3rd Party Ref No</label>
-                                                <input type="text" id="3rd-party-refNo" class="form-control" disabled="">
+                                                <input type="text" id="3rd-party-refNo" class="form-control form-control-sm" disabled="">
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-9 form-group col-6">
                                                 <label>Customer Address</label>
-                                                <input type="text" class="form-control" id="cust-address" disabled="">
+                                                <input type="text" class="form-control form-control-sm" id="cust-address" disabled="">
                                             </div>
 
                                             <div class="col-md-3 form-group col-6">
                                                 <label>Phone No</label>
-                                                <input type="text" id="phone" class="form-control" disabled="">
+                                                <input type="text" id="phone" class="form-control form-control-sm" disabled="">
                                             </div>
                                         </div>
 
@@ -106,13 +106,14 @@
                                             </div>
                                             <div class="col-md-3 form-group col-6">
                                                 <div>
-                                                    <input type="text" id="total-value" readonly="" value="0" class="form-control">
+                                                    <input type="text" id="total-value" readonly="" value="0" class="form-control form-control-sm">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-12">
+                                                <div class="table-responsive">
                                                 <table class="table table-bordered" id="tableData">
                                                     <thead>
                                                         <tr>
@@ -127,6 +128,7 @@
                                                     </thead>
                                                     <tbody id="order-table-body"></tbody>
                                                 </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -197,11 +199,11 @@
             var template = `
             <tr class="item-id" data-id="${itemId}" kitcd-id="${itemKitCd}" pckcharge ="${PckCharge}" Itm_Portion ="${Itm_Portion}">
                 <td>${itemName}</td>
-                <td style="width:100px;"><input type="number" class=" item-qty" min="1" value="1" onblur="calculateValue(this)"style="width:100px;" ></td>
+                <td style="width:100px;"><input type="number" class="form-control form-control-sm item-qty" min="1" value="1" onblur="calculateValue(this)"style="width:100px;" ></td>
                 <td class="item-rate">${itemValue}</td>
                 <td class="item-value">${itemValue}</td>
                 <td><input type="checkbox" value="1" class="is_take_away" `+ch+`></td>
-                <td><input type="text" class=" item-remarks" style="width:100%;"></td>
+                <td><input type="text" class="form-control form-control-sm item-remarks" style="width:100%;"></td>
                 <td style=" text-align: center; ">
                 <button type="button" onclick="deleteItem(this)" class="btn btn-sm btn-danger btn-rounded">
                     <i class="fa fa-trash" aria-hidden="true"></i>

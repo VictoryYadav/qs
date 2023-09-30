@@ -42,14 +42,14 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label>Scheme Name</label>
-                                                        <input type="text" id="schnm" name="SchNm" class="form-control" placeholder="Enter scheme name" required="" />
+                                                        <input type="text" id="schnm" name="SchNm" class="form-control form-control-sm" placeholder="Enter scheme name" required="" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
                                                         <label>Scheme Type</label>
-                                                        <select class="form-control" id="sch_typ" name="SchTyp" required="">
+                                                        <select class="form-control form-control-sm" id="sch_typ" name="SchTyp" required="">
                                                             <option value="">Select Scheme Type</option>
                                                             <?php 
                                                                 foreach ($sch_typ as $key => $value) {?>
@@ -64,7 +64,7 @@
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
                                                         <label>Scheme Category</label>
-                                                        <select class="form-control" id="schcatg" name="SchCatg" required="">
+                                                        <select class="form-control form-control-sm" id="schcatg" name="SchCatg" required="">
                                                             <option value="">Select Scheme Category</option>
                                                             <?php 
                                                                 foreach ($sch_cat as $key => $value) {?>
@@ -79,21 +79,21 @@
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label>From Date</label>
-                                                        <input type="date" name="FrmDt" class="form-control" id="from_date" value="<?php echo date('Y-m-d'); ?>" />
+                                                        <input type="date" name="FrmDt" class="form-control form-control-sm" id="from_date" value="<?php echo date('Y-m-d'); ?>" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label>To Date</label>
-                                                        <input type="date" name="ToDt" class="form-control" id="to_date" value="<?php echo date('Y-m-d'); ?>" />
+                                                        <input type="date" name="ToDt" class="form-control form-control-sm" id="to_date" value="<?php echo date('Y-m-d'); ?>" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label>From Day</label>
-                                                        <select class="form-control" id="from_day" name="FromDayNo" required="">
+                                                        <select class="form-control form-control-sm" id="from_day" name="FromDayNo" required="">
                                                             <option value="">Select From Day</option>
                                                             <?php 
                                                                 foreach ($days as $key => $value) {?>
@@ -108,7 +108,7 @@
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label>To Day</label>
-                                                        <select class="form-control" id="to_day" name="ToDayNo" required="">
+                                                        <select class="form-control form-control-sm" id="to_day" name="ToDayNo" required="">
                                                             <option value="">Select To Day</option>
                                                             <?php 
                                                                 foreach ($days as $key => $value) {?>
@@ -123,28 +123,28 @@
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label>From Time</label>
-                                                        <input type="time" name="FrmTime" class="form-control" id="from_time" />
+                                                        <input type="time" name="FrmTime" class="form-control form-control-sm" id="from_time" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label>To Time</label>
-                                                        <input type="time" name="ToTime" class="form-control" id="to_time" />
+                                                        <input type="time" name="ToTime" class="form-control form-control-sm" id="to_time" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label>Alternate From Time</label>
-                                                        <input type="time" name="AltFrmTime" class="form-control" id="alt_from_time" />
+                                                        <input type="time" name="AltFrmTime" class="form-control form-control-sm" id="alt_from_time" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label> Alternate To Time</label>
-                                                        <input type="time" name="AltToTime" class="form-control" id="alt_to_time" />
+                                                        <input type="time" name="AltToTime" class="form-control form-control-sm" id="alt_to_time" />
                                                     </div>
                                                 </div>
 
@@ -158,15 +158,15 @@
                                                     <div class="row">
                                                         <div class="form-group col-md-4 col-6">
                                                             <label for="description1_description">Description</label>
-                                                            <input type="text" name="description[]" class="form-control" id="description1_description" maxlength="100" placeholder="Enter Scheme Description" />
+                                                            <input type="text" name="description[]" class="form-control form-control-sm" id="description1_description" maxlength="100" placeholder="Enter Scheme Description" />
                                                         </div>
                                                         <div class="form-group col-md-4 col-6">
                                                             <label for="description1_image">Image</label>
-                                                            <input type="file" name="description_image" class="form-control" id="description1_image" />
+                                                            <input type="file" name="description_image" class="form-control form-control-sm" id="description1_image" />
                                                         </div>
                                                         <div class="form-group col-md-4 col-6">
                                                             <label for="description1_cid">CID</label>
-                                                            <select class="form-control" id="description1_cid" name="description_cid[]" onchange="getCategory(this, 1)">
+                                                            <select class="form-control form-control-sm" id="description1_cid" name="description_cid[]" onchange="getCategory(this, 1)">
                                                                 <option value="">Select Cuisine</option>
                                                                 <?php 
                                                                     foreach($cuisines as $key){?>
@@ -177,14 +177,14 @@
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_mcatgid_div" style="display: none;">
                                                             <label for="description1_mcatgid">Menu Category</label>
-                                                            <select class="form-control" id="description1_mcatgid" name="description_mcatgid[]">
+                                                            <select class="form-control form-control-sm" id="description1_mcatgid" name="description_mcatgid[]">
                                                                 <option value="">Select Menu Category</option>
                                                                 
                                                             </select>
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_itemtyp_div" style="display: none;">
                                                             <label for="description1_itemtyp">Item Type</label>
-                                                            <select class="form-control" id="description1_itemtyp" name="description_itemtyp[]" onchange="getItems(this, 1)">
+                                                            <select class="form-control form-control-sm" id="description1_itemtyp" name="description_itemtyp[]" onchange="getItems(this, 1)">
                                                                 <option value="">Select Item Type</option>
                                                                 <?php foreach($item_types as $key){?>
                                                                     <option value="<?= $key['ItmTyp']?>"><?= $key['Name']?></option>
@@ -193,25 +193,25 @@
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_item_div" style="display: none;">
                                                             <label for="description1_item">Item</label>
-                                                            <select class="form-control" id="description1_item" name="description_item[]" onchange="getItemPortion(this, 1)">
+                                                            <select class="form-control form-control-sm" id="description1_item" name="description_item[]" onchange="getItemPortion(this, 1)">
                                                                 <option value="">Select Item</option>
                                                                 
                                                             </select>
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_itemportion_div" style="display: none;">
                                                             <label for="description1_itemportion">Item Portion</label>
-                                                            <select class="form-control" id="description1_itemportion" name="description_itemportion[]">
+                                                            <select class="form-control form-control-sm" id="description1_itemportion" name="description_itemportion[]">
                                                                 <option value="">Select Item Portion</option>
                                                                 
                                                             </select>
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_quantity_div" style="display: none;">
                                                             <label for="description1_quantity">Quantity</label>
-                                                            <input type="number" class="form-control" id="description1_quantity" name="description_quantity[]" value="0">
+                                                            <input type="number" class="form-control form-control-sm" id="description1_quantity" name="description_quantity[]" value="0">
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_discountitem_div" style="display: none;">
                                                             <label for="description1_discountitem">Discount Item</label>
-                                                            <select class="form-control" id="description1_discountitem" name="description_discountitem[]" onchange="getDiscItemPortion(this, 1)">
+                                                            <select class="form-control form-control-sm" id="description1_discountitem" name="description_discountitem[]" onchange="getDiscItemPortion(this, 1)">
                                                                 <option value="">Select Item</option>
                                                                 
                                                             </select>
@@ -219,26 +219,25 @@
                                                         
                                                         <div class="form-group col-md-4 col-6" id="description1_discountitemportion_div" style="display: none;">
                                                             <label for="description1_discountitemportion">Discount Item Portion</label>
-                                                            <select class="form-control" id="description1_discountitemportion" name="description_discountitemportion[]">
+                                                            <select class="form-control form-control-sm" id="description1_discountitemportion" name="description_discountitemportion[]">
                                                                 <option value="">Select Discount Item Portion</option>
-                                                                
                                                             </select>
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_discountquantity_div" style="display: none;">
                                                             <label for="description1_discountquantity">Discount Item Quantity</label>
-                                                            <input type="number" class="form-control" id="description1_discountquantity" name="description_discountquantity[]" value="0">
+                                                            <input type="number" class="form-control form-control-sm" id="description1_discountquantity" name="description_discountquantity[]" value="0">
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_minbillamount_div" style="display: none;">
                                                             <label for="description1_minbillamount">Minimum Bill Amount</label>
-                                                            <input type="number" class="form-control" id="description1_minbillamount" name="description_minbillamount[]" value="0">
+                                                            <input type="number" class="form-control form-control-sm" id="description1_minbillamount" name="description_minbillamount[]" value="0">
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_discountpercent_div" style="display: none;">
                                                             <label for="description1_discountpercent">Discount Percentage</label>
-                                                            <input type="number" class="form-control" id="description1_discountpercent" name="description_discountpercent[]" value="0">
+                                                            <input type="number" class="form-control form-control-sm" id="description1_discountpercent" name="description_discountpercent[]" value="0">
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_discountamount_div" style="display: none;">
                                                             <label for="description1_discountamount">Discount Amount</label>
-                                                            <input type="number" class="form-control" id="description1_discountamount" name="description_discountamount[]" value="0">
+                                                            <input type="number" class="form-control form-control-sm" id="description1_discountamount" name="description_discountamount[]" value="0">
                                                         </div>
                                                     </div>
                                                 </div>

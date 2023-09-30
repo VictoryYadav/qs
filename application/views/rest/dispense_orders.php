@@ -112,7 +112,7 @@
                                         <div class="row" style="margin-bottom: -16px;">
                                             <div class="col-3">
                                                 <div class="form-group">
-                                                    <select class="form-control" id="kitchen-code" onchange="getTableView();">  
+                                                    <select class="form-control form-control-sm" id="kitchen-code" onchange="getTableView();">  
                                                         <?php
                                                         if(count($DispenseAccess) == 1){?>
                                                             <option value="<?= $DispenseAccess[0]['DCd']?>"><?= $DispenseAccess[0]['Name']?></option>
@@ -126,7 +126,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-3">
-                                                <select class="form-control" id="dispMode" onchange="getTableView();">  
+                                                <select class="form-control form-control-sm" id="dispMode" onchange="getTableView();">  
                                                     <option value="0">Choose</option> 
                                                     <?php foreach($dispenseMode as $key):?>
                                                     <option value="<?= $key['3PId']?>"><?= $key['Name']?></option>

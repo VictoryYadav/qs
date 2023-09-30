@@ -38,13 +38,13 @@
                                         <form method="post" id="catForm">
                                             <input type="hidden" id="RMCatgCd" name="RMCatgCd">
                                             <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <input type="text" class="form-control" name="RMCatgName" placeholder="Category Name" required="" id="RMCatgName">
+                                                        <input type="text" class="form-control form-control-sm" name="RMCatgName" placeholder="Category Name" required="" id="RMCatgName">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <input type="submit" class="btn btn-success" value="Submit">
+                                                <div class="col-md-4 col-6">
+                                                    <input type="submit" class="btn btn-success btn-sm" value="Submit">
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="text-success" id="msgText"></div>

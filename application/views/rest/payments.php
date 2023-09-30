@@ -1,4 +1,10 @@
 <?php $this->load->view('layouts/admin/head'); ?>
+<style>
+    .topics tr {
+     line-height: 8px !important; 
+     font-size: 11px;
+ }
+</style>
         <?php $this->load->view('layouts/admin/top'); ?>
             <!-- ========== Left Sidebar Start ========== -->
             <div class="vertical-menu">
@@ -37,19 +43,19 @@
                                     <div class="card-body">
                                         <form method="post">
                                             <div class="row">
-                                                <div class="col-md-3">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label for="">From Date</label>
                                                         <input type="date" class="form-control form-control-sm" name="fdate" value="<?= $fdate; ?>">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label for="">To Date</label>
                                                         <input type="date" class="form-control form-control-sm" name="tdate" value="<?= $tdate; ?>">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label for="">PMode</label>
                                                         <select name="pmode" id="" class="form-control form-control-sm">
@@ -61,7 +67,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-3 col-6">
                                                     <label for="">&nbsp;</label><br>
                                                     <input type="submit" class="btn btn-sm btn-success" value="Search">
                                                 </div>
@@ -72,7 +78,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table id="paymentTBL" class="table table-bordered">
+                                            <table id="paymentTBL" class="table table-bordered topics">
                                                 <thead>
                                                 <tr>
                                                     <th>#</th>

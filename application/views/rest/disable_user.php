@@ -1,4 +1,17 @@
 <?php $this->load->view('layouts/admin/head'); ?>
+<style>
+    .topics tr {
+     line-height: 8px !important; 
+     font-size: 11px;
+ }
+
+ .custom-control {
+    position: relative;
+    display: block;
+     min-height: 0rem; 
+    padding-left: 1.5rem;
+}
+</style>
         <?php $this->load->view('layouts/admin/top'); ?>
             <!-- ========== Left Sidebar Start ========== -->
             <div class="vertical-menu">
@@ -36,7 +49,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table id="disable_users" class="table table-bordered">
+                                            <table id="disable_users" class="table table-bordered topics">
                                                 <thead>
                                                 <tr>
                                                     <th>#</th>
@@ -60,7 +73,7 @@
                                                     <td>
                                                         <div class="custom-control custom-checkbox">
                                                             <input type="checkbox" class="custom-control-input" id="customCheck1" onchange="enableDisable(<?= $key['RUserId'];?>, this);" <?= ($key['Stat'] == 3 ? 'checked' : '');?>>
-                                                            <label class="custom-control-label" for="customCheck1"><?= ($key['Stat'] == 3) ? 'Disabled' : 'Enabled';?></label>
+                                                            <label class="custom-control-label" for="customCheck1" style="font-size: 11px;font-weight: normal;"><?= ($key['Stat'] == 3) ? 'Disabled' : 'Enabled';?></label>
                                                         </div>     
                                                     </td>
                                                 </tr>

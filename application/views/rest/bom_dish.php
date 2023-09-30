@@ -39,7 +39,7 @@
                                             <div class="row">
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <select name="cuisine" id="cuisine" class="form-control" required="" onchange="getCategory()">
+                                                        <select name="cuisine" id="cuisine" class="form-control form-control-sm" required="" onchange="getCategory()">
                                                             <option value="">Select Cuisine</option>
                                                             <?php foreach($cuisine as $key){?>
                                                         <option value="<?= $key['CID']?>"><?= $key['Name']?></option>
@@ -49,14 +49,14 @@
                                                 </div>
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <select name="menucat" id="menucat" class="form-control" required="" onchange="getItem()">
+                                                        <select name="menucat" id="menucat" class="form-control form-control-sm" required="" onchange="getItem()">
                                                             <option value="">Select Category</option>
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <select name="ItemId" id="ItemId" class="form-control" required="" onchange="showBlock()">
+                                                        <select name="ItemId" id="ItemId" class="form-control form-control-sm" required="" onchange="showBlock()">
                                                             <option value="">Select Dish</option>   
                                                         </select>
                                                     </div>
@@ -83,7 +83,7 @@
 
                                             </div>
                                             <div class="">
-                                                <input type="submit" class="btn btn-success" value="Submit">
+                                                <input type="submit" class="btn btn-success btn-sm" value="Submit">
                                             
                                                 <div class="text-success" id="msgText"></div>
                                             </div>
@@ -210,7 +210,7 @@
         console.log(count);
         var template = '<tr>\
                             <td>\
-                            <select name="RMCd[]" id="RMCd_'+count+'" class="form-control" required="" onchange="getRMItemsUOM('+count+')">\
+                            <select name="RMCd[]" id="RMCd_'+count+'" class="form-control form-control-sm" required="" onchange="getRMItemsUOM('+count+')">\
                                 <option value="">Select Item</option>\
                                 <?php
                         if(!empty($rm_items)){
@@ -220,10 +220,10 @@
                             </select>\
                             </td>\
                             <td>\
-                            <input type="number" class="form-control" name="RMQty[]" placeholder="Quantity" required="" id="RMQty">\
+                            <input type="number" class="form-control form-control-sm" name="RMQty[]" placeholder="Quantity" required="" id="RMQty">\
                             </td>\
                             <td>\
-                            <select name="RMUOM[]" id="RMUOM_'+count+'" class="form-control" required="">\
+                            <select name="RMUOM[]" id="RMUOM_'+count+'" class="form-control form-control-sm" required="">\
                                 <option value="">Select UOM</option>\
                             </select>\
                             </td>\

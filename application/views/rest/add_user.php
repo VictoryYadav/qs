@@ -42,42 +42,42 @@
                                             
                                         <form method="post" action="<?php echo base_url('restaurant/add_user'); ?>">
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-6 col-6">
                                                     <div class="form-group">
                                                         <label>First Name</label>
-                                                        <input type="text" name="FName" class="form-control" placeholder="First Name" required="">
+                                                        <input type="text" name="FName" class="form-control form-control-sm" placeholder="First Name" required="">
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6">
+                                                <div class="col-md-6 col-6">
                                                     <div class="form-group">
                                                         <label>Last Name</label>
-                                                        <input type="text" name="LName" class="form-control" placeholder="Last Name" required="">
+                                                        <input type="text" name="LName" class="form-control form-control-sm" placeholder="Last Name" required="">
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6">
+                                                <div class="col-md-6 col-6">
                                                     <div class="form-group">
                                                         <label>Mobile</label>
-                                                        <input type="tel" name="MobileNo" class="form-control" placeholder="Phone" required="" pattern="[6789][0-9]{9}" maxlength="10" minlength="10">
+                                                        <input type="tel" name="MobileNo" class="form-control form-control-sm" placeholder="Phone" required="" pattern="[6789][0-9]{9}" maxlength="10" minlength="10">
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6">
+                                                <div class="col-md-6 col-6">
                                                     <div class="form-group">
                                                         <label>Email</label>
-                                                        <input type="email" name="PEmail" class="form-control" required="">
+                                                        <input type="email" name="PEmail" class="form-control form-control-sm" required="">
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6">
+                                                <div class="col-md-6 col-6">
                                                     <div class="form-group">
                                                         <label>DOB</label>
-                                                        <input type="date" name="DOB" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
+                                                        <input type="date" name="DOB" class="form-control form-control-sm" value="<?php echo date('Y-m-d'); ?>" required>
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6">
+                                                <div class="col-md-6 ">
                                                     <div class="form-group">
                                                         <label>Gender</label><br>
                                                         <div class="form-check-inline my-1">
@@ -97,10 +97,10 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6">
+                                                <div class="col-md-6 col-6">
                                                     <div class="form-group">
                                                         <label>User Type</label>
-                                                        <select class="form-control" required="" name="UTyp">
+                                                        <select class="form-control form-control-sm" required="" name="UTyp">
                                                             <option value="">Choose</option>
                                                             <option value="1">Normal</option>
                                                             <option value="5">Manager</option>
@@ -109,11 +109,11 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6">
+                                                <div class="col-md-6 col-6">
                                                     <div class="form-group">
 
                                                         <label>Outlet Name</label>
-                                                        <select class="form-control" required="" name="EID">
+                                                        <select class="form-control form-control-sm" required="" name="EID">
                                                             <option value="">Choose</option>
                                                             <?php
                                                             foreach ($restaurant as $res) {
