@@ -1,6 +1,14 @@
+<?php 
+$folderName = 'e'.$this->session->userdata('EID');
+?>
+
 <style type="text/css">
-    /*body[data-topbar=dark] #page-topbar {
+    body[data-topbar=dark] #page-topbar {
     background-color: #000500 !important;
+}
+
+/*body[data-topbar=dark] #page-topbar {
+    background-color: #413b34;
 }*/
 
 .vertical-menu {
@@ -27,19 +35,19 @@
                         <div class="navbar-brand-box">
                             <a href="<?php echo base_url('dashboard'); ?>" class="logo logo-dark">
                                 <span class="logo-sm">
-                                    <img src="<?= base_url() ?>assets_admin/images/QSLogo.png" alt="" height="22">
+                                    <img src="<?= base_url(); ?>theme/images/Eat-out-Final-1.png" alt="" height="22">
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="<?= base_url() ?>assets_admin/images/QSLogo.png" alt="" height="17">
+                                    <img src="<?= base_url(); ?>theme/images/Eat-out-Final-1.png" alt="" height="17">
                                 </span>
                             </a>
 
                             <a href="<?php echo base_url('dashboard'); ?>" class="logo logo-light">
                                 <span class="logo-sm">
-                                    <img src="<?= base_url() ?>assets_admin/images/QSLogo.png" alt="" height="22">
+                                    <img src="<?= base_url(); ?>theme/images/Eat-out-Final-1.png" alt="" height="22">
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="<?= base_url() ?>assets_admin/images/QSLogo.png" alt="" style="height: 70px;">
+                                    <img src="<?= base_url(); ?>theme/images/Eat-out-Final-1.png" alt="" style="height: 70px;">
                                 </span>
                             </a>
                         </div>
@@ -72,7 +80,7 @@
                         <div class="dropdown d-inline-block">
                             <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="rounded-circle header-profile-user" src="<?= base_url() ?>assets_admin/images/users/user-1.jpg"
+                                <img class="rounded-circle header-profile-user" src="<?= base_url('uploads/'.$folderName.'/logo.jpg') ?>"
                                     alt="Header Avatar">
                                 <span class="d-none d-xl-inline-block ml-1"><?php echo authuser()->RestName; ?></span>
                                 <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>

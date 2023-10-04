@@ -15,7 +15,8 @@
         <meta content="Quick Service" name="description" />
         <meta content="Quick Service" name="author" />
         <!-- App favicon -->
-        <link rel="shortcut icon" href="<?= base_url() ?>assets_admin/images/QSLogo.png">
+        <!-- <link rel="shortcut icon" href="<?= base_url() ?>assets_admin/images/QSLogo.png"> -->
+        <link href="<?= base_url(); ?>theme/images/Eat-Out-Icon.png" rel="shortcut icon">
 
         <link href="<?= base_url() ?>assets_admin/libs/metrojs/release/MetroJs.Full/MetroJs.min.css" rel="stylesheet" type="text/css" />
 

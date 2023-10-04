@@ -623,25 +623,41 @@ class Cust extends CI_Model{
 
 				$OType = 0;
 				$TblTyp = $postData['TblTyp'];
-				if($TblTyp > 50){
-					if($TblTyp == 51){
-						$OType = 1;
-					}elseif($TblTyp == 55){
-						$OType = 2;
-					}elseif($TblTyp == 60){
-						$OType=3;
-					}elseif($TblTyp == 65){
-						$OType=30;
-					}elseif($TblTyp == 70){
-						$OType=35;
-					}
-				}else{
-					if ($EType == 5) {
-						$OType = 7;
-					} else {
-						$OType = 0;
-					}
-				}
+
+				if($TblTyp == 0){
+                    // QSR
+                    $OType = 0;
+                }else if($TblTyp == 5){
+                    // Seat no basis - common table like in bars
+                    $OType = 5;
+                }else if($TblTyp == 7){
+                    // Sit-In customer
+                    $OType = 7;
+                }else if($TblTyp == 8){
+                    // Sit-In offline
+                    $OType = 8;
+                }else if($TblTyp == 15){
+                    // personal TakeAway
+                    $OType = 15;
+                }else if($TblTyp == 17){
+                    // Rest Delivery
+                    $OType = 17;
+                }else if($TblTyp == 20){
+                    // 3P Delivery - swiggy/zomato
+                    $OType = 20;
+                }else if($TblTyp == 25){
+                    // Drive-In
+                    $OType = 25;
+                }else if($TblTyp == 30){
+                    // Charity
+                    $OType = 30;
+                }else if($TblTyp == 35){
+                    // RoomService
+                    $OType = 35;
+                }else if($TblTyp == 40){
+                    // Suite Service
+                    $OType = 40;
+                }				
 
 				if ($KOTNo == 0) {
 					// To generate new KOTNo
@@ -666,11 +682,11 @@ class Cust extends CI_Model{
 				if ($CNo == 0) {
 					// insert kitchen main
 					if ($CNo == 0) {
-						if ($EType == 5) {
-							$orderType = 7;
-						} else {
-							$orderType = 0;
-						}
+						// if ($EType == 5) {
+						// 	$orderType = 7;
+						// } else {
+						// 	$orderType = 0;
+						// }
 
 						$MergeNo = $this->session->userdata('MergeNo');
 						if($TableNo == $MergeNo){
@@ -687,7 +703,8 @@ class Cust extends CI_Model{
 						$kitchenMainObj['EID'] = $EID;
 						$kitchenMainObj['ChainId'] = $ChainId;
 						$kitchenMainObj['ONo'] = $ONo;
-						$kitchenMainObj['OType'] = $orderType;
+						// $kitchenMainObj['OType'] = $orderType;
+						$kitchenMainObj['OType'] = $OType;
 						$kitchenMainObj['TableNo'] = $TableNo;
 						$kitchenMainObj['OldTableNo'] = $TableNo;
 						$kitchenMainObj['MergeNo'] = $MergeNo;
@@ -756,7 +773,7 @@ class Cust extends CI_Model{
 
 				}else{
 					//For ETpye 1 Order Type Will Be 0 and Stat = 1
-					$OType = 0;
+					// $OType = 0;
 					$stat = 0;
 				}
 

@@ -380,24 +380,40 @@ print_r($this->db2->last_query());
                         $flag++;
                         $OType = 0;
                         $TblTyp = $_POST['TblTyp'][$itemId][0];
-                        if($TblTyp > 50){
-                            if($TblTyp == 51){
-                                $OType = 1;
-                            }elseif($TblTyp == 55){
-                                $OType = 2;
-                            }elseif($TblTyp == 60){
-                                $OType=3;
-                            }elseif($TblTyp == 65){
-                                $OType=30;
-                            }elseif($TblTyp == 70){
-                                $OType=35;
-                            }
-                        }else{
-                            if ($EType == 5) {
-                                $OType = 7;
-                            } else {
-                                $OType = 0;
-                            }
+                        
+                        if($TblTyp == 0){
+                            // QSR
+                            $OType = 0;
+                        }else if($TblTyp == 5){
+                            // Seat no basis - common table like in bars
+                            $OType = 5;
+                        }else if($TblTyp == 7){
+                            // Sit-In customer
+                            $OType = 7;
+                        }else if($TblTyp == 8){
+                            // Sit-In offline
+                            $OType = 8;
+                        }else if($TblTyp == 15){
+                            // personal TakeAway
+                            $OType = 15;
+                        }else if($TblTyp == 17){
+                            // Rest Delivery
+                            $OType = 17;
+                        }else if($TblTyp == 20){
+                            // 3P Delivery - swiggy/zomato
+                            $OType = 20;
+                        }else if($TblTyp == 25){
+                            // Drive-In
+                            $OType = 25;
+                        }else if($TblTyp == 30){
+                            // Charity
+                            $OType = 30;
+                        }else if($TblTyp == 35){
+                            // RoomService
+                            $OType = 35;
+                        }else if($TblTyp == 40){
+                            // Suite Service
+                            $OType = 40;
                         }
 
                         if ($KOTNo == 0) {

@@ -3442,7 +3442,10 @@ class Restaurant extends CI_Controller {
     }
 
     public function payments(){
-        $data['title'] = 'Payments';
+        // echo "<pre>";
+        // print_r($_SESSION);
+        // die;
+        $data['title'] = 'Customer Payments';
         $data['fdate'] = date('Y-m-d');
         $data['tdate'] = date('Y-m-d');
         $data['pmode'] = '';
@@ -3464,6 +3467,55 @@ class Restaurant extends CI_Controller {
         // print_r($data);
         // die;
         $this->load->view('rest/payments', $data);
+    }
+
+    public function email_send(){
+$apiKey = '_7G0RCzWQXm9IilM0q3cgw';
+
+$url = 'https://api.sendgrid.com/v3/mail/send';
+
+$to = 'vijayyadav132200@gmail.com';
+$from = 'sanjayn@gmail.com';
+$subject = 'Subject of the email';
+$body = '<strong>Body of the email</strong>';
+
+$data = [
+    'personalizations' => [
+        [
+            'to' => [
+                ['email' => $to]
+            ],
+            'subject' => $subject,
+        ]
+    ],
+    'from' => [
+        'email' => $from
+    ],
+    'content' => [
+        [
+            'type' => 'text/html',
+            'value' => $body
+        ]
+    ]
+];
+
+
+$headers = [
+    'Authorization: Bearer ' . $apiKey,
+    'Content-Type: application/json'
+];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;
     }
 
 

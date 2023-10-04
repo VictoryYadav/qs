@@ -82,7 +82,8 @@
                                                 <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>Bill ID</th>
+                                                    <th>BillId</th>
+                                                    <th>Bill No</th>
                                                     <th>Paid Amt</th>
                                                     <th>Ord Ref</th>
                                                     <th>PMod</th>
@@ -100,6 +101,7 @@
                                                 <tr>
                                                     <td><?= $i++; ?></td>
                                                     <td><?= $key['BillId']; ?></td>
+                                                    <td><?= $key['BillPrefix'].' '.$key['BillNo'].''.$key['BillSuffix']; ?></td>
                                                     <td><?= $key['PaidAmt']; ?></td>
                                                     <td><?= $key['OrderRef']; ?></td>
                                                     <td><?= payMode($key['PaymtMode']); ?></td>

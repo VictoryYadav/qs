@@ -40,9 +40,9 @@
                                                 <label>Order Type</label>
                                                 <select class="form-control form-control-sm" id="order-type">
                                                     <option value="0">Select</option>
-                                                    <option value="1">3rd Party</option>
-                                                    <option value="2">Take Away</option>
-                                                    <option value="3">Deliver</option>
+                                                    <option value="20">3rd Party</option>
+                                                    <option value="15">Take Away</option>
+                                                    <option value="17">Deliver</option>
                                                     <option value="8">Sit-In</option>
                                                 </select>
                                             </div>
@@ -239,9 +239,10 @@
         }
 
         $(document).ready(function() {
+
             $("#order-type").change(function(event) {
                 var orderType = $(this).val();
-                if (orderType == 1) {
+                if (orderType == 20) {
                     $("#table-id").prop('disabled', true);
                     $("#table-id").val(0);
                     $("#3rd-party").prop('disabled', false);
@@ -251,7 +252,7 @@
                     $("#phone").prop('disabled', true);
                     $("#phone").val("");
                 } else
-                 if (orderType == 2) {
+                 if (orderType == 15) {
                     $("#table-id").prop('disabled', true);
                     $("#table-id").val(0);
                     $("#3rd-party").prop('disabled', true);
@@ -261,7 +262,7 @@
                     $("#cust-address").prop('disabled', true);
                     $("#cust-address").val("");
                     $("#phone").prop('disabled', false);
-                } else if (orderType == 3) {
+                } else if (orderType == 17) {
                     $("#table-id").prop('disabled', true);
                     $("#table-id").val(0);
                     $("#3rd-party").prop('disabled', true);

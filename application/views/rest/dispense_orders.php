@@ -128,10 +128,17 @@
                                             <div class="col-3">
                                                 <select class="form-control form-control-sm" id="dispMode" onchange="getTableView();">  
                                                     <option value="0">Choose</option> 
+                                                    <option value="20">3rd Party</option>
+                                                    <option value="15">Take Away</option>
+                                                    <option value="17">Deliver</option>
+                                                </select>
+
+                                                <!-- <select class="form-control form-control-sm" id="dispMode" onchange="getTableView();">  
+                                                    <option value="0">Choose</option> 
                                                     <?php foreach($dispenseMode as $key):?>
                                                     <option value="<?= $key['3PId']?>"><?= $key['Name']?></option>
                                                     <?php endforeach; ?>
-                                                </select>
+                                                </select> -->
                                             </div>
                                             <div class="col-6">
                                                 <div class="text-right" id="showActionBtn">

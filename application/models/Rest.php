@@ -701,8 +701,9 @@ class Rest extends CI_Model{
 		if(!empty($data['pmode'])){
 			$this->db2->where('PaymtMode',$data['pmode']);
 		}	
-		return $this->db2->order_by('PymtNo', 'DESC')
-						->get_where('BillPayments', array('Stat' => 1))
+		return $this->db2->select('bp.*, b.BillNo, b.BillPrefix, b.BillSuffix')->order_by('bp.PymtNo', 'DESC')
+						->join('Billing b', 'b.BillId = bp.BillId', 'inner')
+						->get_where('BillPayments bp', array('bp.Stat' => 1))
 						->result_array();
 						// print_r($this->db2->last_query());
 						// die;
