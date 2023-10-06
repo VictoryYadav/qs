@@ -3470,52 +3470,54 @@ class Restaurant extends CI_Controller {
     }
 
     public function email_send(){
-$apiKey = '_7G0RCzWQXm9IilM0q3cgw';
+        $apiKey = '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';
 
-$url = 'https://api.sendgrid.com/v3/mail/send';
+        $url = 'https://api.sendgrid.com/v3/mail/send';
 
-$to = 'vijayyadav132200@gmail.com';
-$from = 'sanjayn@gmail.com';
-$subject = 'Subject of the email';
-$body = '<strong>Body of the email</strong>';
+        $to = 'vijayyadav132200@gmail.com';
+        $from = 'sanjayn@gmail.com';
+        $subject = 'Sendgrid testing email email';
 
-$data = [
-    'personalizations' => [
-        [
-            'to' => [
-                ['email' => $to]
+        $body = 'You will be prompted to choose the level of access or permissions for this API key. Select the appropriate permissions based on what you need. Typically';
+
+        $data = [
+            'personalizations' => [
+                [
+                    'to' => [
+                        ['email' => $to]
+                    ],
+                    'subject' => $subject,
+                ]
             ],
-            'subject' => $subject,
-        ]
-    ],
-    'from' => [
-        'email' => $from
-    ],
-    'content' => [
-        [
-            'type' => 'text/html',
-            'value' => $body
-        ]
-    ]
-];
+            'from' => [
+                'email' => $from
+            ],
+            'content' => [
+                [
+                    'type' => 'text/html',
+                    'value' => $body
+                ]
+            ]
+        ];
 
 
-$headers = [
-    'Authorization: Bearer ' . $apiKey,
-    'Content-Type: application/json'
-];
+        $headers = [
+            'Authorization: Bearer ' . $apiKey,
+            'Content-Type: application/json'
+        ];
 
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-$response = curl_exec($ch);
-curl_close($ch);
+        $response = curl_exec($ch);
 
-echo $response;
+        curl_close($ch);
+
+        echo $response;
     }
 
 

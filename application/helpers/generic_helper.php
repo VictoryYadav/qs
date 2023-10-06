@@ -49,7 +49,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $CI->Cust->checkCheckoutItem($custId, $CNo);	
 	}
 
-	function send_mail($to, $from, $subject, $body, $cc = null, $bcc = null){
+	function send_mail_gmail($to, $from, $subject, $body, $cc = null, $bcc = null){
 		$CI =& get_instance();
 		$CI->load->library('email');
 		$config = array(
@@ -249,6 +249,56 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$CI = & get_instance();
 		$CI->load->model('Cust');
 		return $CI->Cust->getOffers();
+	}
+
+	// sendgrid email
+	function send_email($to, $subject, $msg){
+
+		$apiKey = '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';
+        $url = 'https://api.sendgrid.com/v3/mail/send';
+
+        $to = 'vijayyadav132200@gmail.com';
+        $from = 'sanjayn@gmail.com';
+        $subject = 'Sendgrid testing email email';
+
+        $body = 'You will be prompted to choose the level of access or permissions for this API key. Select the appropriate permissions based on what you need. Typically';
+
+        $data = [
+            'personalizations' => [
+                [
+                    'to' => [
+                        ['email' => $to]
+                    ],
+                    'subject' => $subject,
+                ]
+            ],
+            'from' => [
+                'email' => $from
+            ],
+            'content' => [
+                [
+                    'type' => 'text/html',
+                    'value' => $body
+                ]
+            ]
+        ];
+
+        $headers = [
+            'Authorization: Bearer ' . $apiKey,
+            'Content-Type: application/json'
+        ];
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        echo $response;
+
 	}
 
 

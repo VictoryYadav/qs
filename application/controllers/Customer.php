@@ -21,7 +21,8 @@ class Customer extends CI_Controller {
 	}
 
     public function index1(){
-
+        print_r(base64_decode('ZT01MSZjPTAmdD0yMiZvPTA'));
+        die;
         $dd = $this->db2->select('OrdNo')->get_where('Kitchen', array('CustId' => 8, 'CNo' => 20, 'Stat >= ' => 1, 'Stat < ' => 3))->row_array();
 print_r($this->db2->last_query());
         print_r($dd);
