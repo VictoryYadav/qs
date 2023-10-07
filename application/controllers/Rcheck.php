@@ -45,7 +45,7 @@ class Rcheck extends CI_Controller {
             }
 
         }else{
-            echo "<h1>Incorrect Details !</br></br> Please Scan QR Code again.</h1>";
+            echo "<h1>Please Scan QR Code again.</h1>";
             die;
         }
 

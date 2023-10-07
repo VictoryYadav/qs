@@ -89,7 +89,8 @@ class Cust extends CI_Model{
 				if (!file_exists($imgSrc)) {
 					$imgSrc = "uploads/general/" . trim($key['imgSrc']) . ".jpg";
 					if (!file_exists("../$imgSrc")) {
-						$imgSrc = "uploads/uItem/" . $key['UItmCd'] . ".jpg";
+						$imgSrc = "uploads/uItem/Eat-Out-Icon.png";
+						// $imgSrc = "uploads/uItem/" . $key['UItmCd'] . ".jpg";
 					}
 				}
 
