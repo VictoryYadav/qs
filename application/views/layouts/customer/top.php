@@ -1,3 +1,9 @@
+<?php
+
+$folder = 'e'.authuser()->EID; 
+
+?>
+
 <section class="header-section">
     <div class="container p-2">
         <div class="row">
@@ -36,7 +42,7 @@
                         <span id="red_bell" style="display: none;">
                             <img src="<?= base_url() ?>assets/img/red_bell1.png" style="height: 30px;">
                         </span>
-                        <img src="<?= base_url() ?>uploads/e51/logo.jpg" width="auto" height="28px;">
+                        <img src="<?= base_url('uploads/'.$folder.'/logo.jpg') ?>" width="auto" height="28px;">
                     </li>
                 </ul>
             </div>
