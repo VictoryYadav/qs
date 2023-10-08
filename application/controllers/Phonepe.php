@@ -12,16 +12,16 @@ class Phonepe extends CI_Controller {
     {
         parent::__construct();
 
-        if ($this->session->userdata('logged_in')) {
-            $this->authuser = $this->session->userdata('logged_in');
-        } else {
-            redirect(base_url());
-        }
+        // if ($this->session->userdata('logged_in')) {
+        //     $this->authuser = $this->session->userdata('logged_in');
+        // } else {
+        //     redirect(base_url());
+        // }
 
-        $my_db = $this->session->userdata('my_db');
-        $this->db2 = $this->load->database($my_db, TRUE);
+        // $my_db = $this->session->userdata('my_db');
+        // $this->db2 = $this->load->database($my_db, TRUE);
 
-        $this->load->model('Cust', 'cust');
+        // $this->load->model('Cust', 'cust');
 
         $this->merchantId = 'PGTESTPAYUAT140';
         $this->saltKey = '775765ff-824f-4cc4-9053-c3926e493514';
@@ -30,64 +30,121 @@ class Phonepe extends CI_Controller {
 
     public function pay(){
 
-        $rUrl = base_url('phonepe');
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
 
-        $data = array(
-          "merchantId" => $this->merchantId,
-          "merchantTransactionId" => "MT7850590068188104",
-          "merchantUserId" => "MUID123",
-          "amount" => 10000,
-          "redirectUrl" => $rUrl.'/pay_success',
-          "redirectMode" => "POST",
-          "callbackUrl" => $rUrl.'/pay_failed',
-          "mobileNumber" => "7869068343",
-          "paymentInstrument" => array(
-            "type" => "PAY_PAGE"
-            )
-        );
+            $billId = $_POST['billId'];
+            $MCNo = $_POST['MCNo'];
+            $totalAmount = $_POST['amount'];
+            $mode = $_POST['mode'];
 
-        $encode = json_encode($data);
-        $encoded = base64_encode($encode);
+            $EID = authuser()->EID;
+            $TableNo = authuser()->TableNo;
+            $CustId = $this->session->userdata('CustId');
 
-        $string = $encoded."/pg/v1/pay".$this->saltKey;
-        $sha256 = hash('sha256', $string);
-        $finalHeader = $sha256."###".$this->saltIndex;
+            $rUrl = base_url('phonepe');
 
-        // curl
-        $curl = curl_init();
+            $orderRef = "$mode-$EID-$TableNo-$MCNo-$CustId-$billId-$totalAmount";
 
-        curl_setopt($curl, CURLOPT_URL, "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay");
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-            "Content-Type: application/json",
-            "accept: application/json",
-            'X-VERIFY: '.$finalHeader 
-          )
-        );
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode(array('request' => $encoded)));
+            $data = array(
+              "merchantId" => $this->merchantId,
+              "merchantTransactionId" => $orderRef,
+              "merchantUserId" => "MUID123",
+              "amount" => $totalAmount * 100,
+              "redirectUrl" => $rUrl.'/pay_success',
+              "redirectMode" => "POST",
+              "callbackUrl" => $rUrl.'/pay_failed',
+              "mobileNumber" => "7869068343",
+              "paymentInstrument" => array(
+                "type" => "PAY_PAGE"
+                )
+            );
 
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            $encode = json_encode($data);
+            $encoded = base64_encode($encode);
 
-        $response = curl_exec($curl);
-        $result = json_decode($response);
+            $string = $encoded."/pg/v1/pay".$this->saltKey;
+            $sha256 = hash('sha256', $string);
+            $finalHeader = $sha256."###".$this->saltIndex;
 
-        $payUrl = $result->data->instrumentResponse->redirectInfo->url;
-        // print_r($payUrl);
-        // die;
-        redirect($payUrl);
+            // curl
+            $curl = curl_init();
 
-        // $err = curl_error($curl);
-        // curl_close($curl);
+            curl_setopt($curl, CURLOPT_URL, "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay");
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                "Content-Type: application/json",
+                "accept: application/json",
+                'X-VERIFY: '.$finalHeader 
+              )
+            );
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode(array('request' => $encoded)));
 
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+            $response = curl_exec($curl);
+            $result = json_decode($response);
+
+            $payUrl = $result->data->instrumentResponse->redirectInfo->url;
+            // print_r($payUrl);
+            // die;
+            // redirect($payUrl);
+
+            // $err = curl_error($curl);
+            // curl_close($curl);
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $payUrl
+              ));
+             die;
+        }        
     }
 
     public function pay_success(){
+        
         $resp = $_POST;
-        echo "<pre>";
-        print_r($resp);
-        die;
+        // echo "<pre>";
+        // print_r($resp);
 
-        $this->payment_status($resp['merchantId'], $resp['transactionId']);
+        // print_r($resp['transactionId']);
+        // print_r($SESSION);
+        // print_r($this->session->userdata('CellNo'));
+        // die;
+        // $_POST['amount']
+        $d = explode('-', $resp['transactionId']);
+
+        $TableNo = $d[2];
+        $MCNo = $d[3];
+        $billId = $d[5];
+        $TotBillAmt = $d[6];
+
+        $pay['BillId'] = $billId;
+        $pay['MCNo'] = $MCNo;
+        $pay['MergeNo'] = $TableNo;
+        $pay['TotBillAmt'] = $TotBillAmt / 100;
+        $pay['CellNo'] = $this->session->userdata('CellNo');
+        $pay['SplitTyp'] = 0;
+        $pay['SplitAmt'] = 0;
+        $pay['PymtId'] = 0;
+        $pay['PaidAmt'] = $TotBillAmt;
+        $pay['OrderRef'] = $resp['transactionId'];
+        $pay['PaymtMode'] = 'phonepe';
+        $pay['PymtType'] = 0;
+        $pay['PymtRef'] = $resp['providerReferenceId'];
+        $pay['Stat'] = 1;
+
+        // echo "<pre>";
+        // print_r($pay);
+        // die;
+        $payNo = insertRecord('BillPayments', $pay);
+
+        redirect(base_url('customer/pay/'.$billId.'/'.$MCNo));
+
+        // $this->payment_status($resp['merchantId'], $resp['transactionId']);
     }
 
     public function pay_failed(){

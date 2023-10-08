@@ -11,7 +11,6 @@ class Customer extends CI_Controller {
         if ($this->session->userdata('logged_in')) {
             $this->authuser = $this->session->userdata('logged_in');
         } else {
-            $this->session->sess_destroy();
             redirect(base_url());
         }
 

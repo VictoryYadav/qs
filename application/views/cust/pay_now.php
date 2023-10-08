@@ -261,6 +261,18 @@ function goPay(val){
         // alert(dd);
         window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&totAmt='+btoa(totAmt)+'&tips='+btoa(tips)+'&billId='+btoa(BillId);
     }
+
+    // phoenpe = 46
+    if(mode == 46){
+
+        $.post('<?= base_url('phonepe/pay') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
+            if(res.status == 'success'){
+                window.location = res.response;  
+            }else{ 
+              alert(res.response);  
+            }
+        });
+    }
 }
 
 function checkStatus(billId,payNo, serialNo){

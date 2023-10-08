@@ -3520,6 +3520,38 @@ class Restaurant extends CI_Controller {
         echo $response;
     }
 
+    public function link_generate(){
+        $data['title'] = 'Link Generate';
+        $data['eid'] = '';
+        $data['chain'] = '';
+        $data['table'] = '';
+        $data['stock'] = '';
+        
+        $listData = array();
+
+        if($this->input->method(true)=='POST'){
+            $data['eid'] = $_POST['eid'];
+            $data['chain'] = $_POST['chain'];
+            $data['table'] = $_POST['table'];
+            $data['stock'] = $_POST['stock'];
+
+            for ($i=1; $i <= $data['table'] ; $i++) { 
+                $link = 'e='.$data['eid'].'&c='.$data['chain'].'&t='.$i.'&o='.$data['stock'];
+                $link64 = base64_encode($link);
+                $temp['link'] = base_url('qr?qr_data=').rtrim($link64, "=");
+                $temp['img'] = '';
+
+                $listData[] = $temp;
+            }
+        }
+        
+        // echo "<pre>";
+        // print_r($listData);
+        // die;
+        $data['lists'] = $listData;
+        $this->load->view('rest/link_create', $data);   
+    }
+
 
 
 
