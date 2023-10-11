@@ -3521,6 +3521,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function link_generate(){
+        include APPPATH.'third_party/phpqrcode/qrlib.php'; 
         $data['title'] = 'Link Generate';
         $data['eid'] = '';
         $data['chain'] = '';
@@ -3535,11 +3536,19 @@ class Restaurant extends CI_Controller {
             $data['table'] = $_POST['table'];
             $data['stock'] = $_POST['stock'];
 
+            $codesDir = "uploads/qrcode/";   
+
             for ($i=1; $i <= $data['table'] ; $i++) { 
+
                 $link = 'e='.$data['eid'].'&c='.$data['chain'].'&t='.$i.'&o='.$data['stock'];
                 $link64 = base64_encode($link);
                 $temp['link'] = base_url('qr?qr_data=').rtrim($link64, "=");
-                $temp['img'] = '';
+
+                $codeFile = date('d-m-Y-h-i-s').'.png';
+                $formData = $temp['link'];
+                // generating QR code
+                QRcode::png($formData, $codesDir.$codeFile, $level = 'H', $size = 5);
+                $temp['img'] = $codeFile;
 
                 $listData[] = $temp;
             }

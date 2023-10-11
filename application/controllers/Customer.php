@@ -22,6 +22,8 @@ class Customer extends CI_Controller {
 
     public function index1(){
 
+        
+
         // print_r(base64_decode('ZT01MSZjPTAmdD0yMiZvPTA'));
         // die;
         
@@ -1047,6 +1049,7 @@ class Customer extends CI_Controller {
 
                 updateRecord('KitchenMain', array('BillDiscAmt' => $dis), array('CNo' => $CNo));
 
+                $resp1 = '';
                 $statuss = 1;
                 if($EType == 5){
                     $check = $this->db2->select('CNo')
@@ -1058,9 +1061,44 @@ class Customer extends CI_Controller {
                     }
                 }
 
+                // bill based offers
+
+                $SchType = $this->session->userdata('SchType');
+
+                if(in_array($SchType, array(2,3))){
+
+                    $chkOfferKitMain = $this->db2->select('SchCd')->get_where('KitchenMain', array('SchCd' => 0, 'CNo' => $CNo, 'EID' => $EID, 'BillStat' => 0))
+                                        ->row_array();
+                                        
+                    if(!empty($chkOfferKitMain)){
+                        $orderValue = $this->db2->select('sum(Qty *  ItmRate) as itmValue')
+                                                ->get_where('Kitchen', 
+                                                            array('CNo' => $CNo, 
+                                                                'Stat <= ' => 5,
+                                                                'BillStat' => 0)
+                                                            )->row_array();
+
+                        $billOfferAmt = $this->db2->select("c.SchNm, cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId,if(cod.Disc_ItemId > 0,(select ItemNm from MenuItem where ItemId = cod.Disc_ItemId),'-') as itemName, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent ")
+                                    ->order_by('cod.MinBillAmt', 'DESC')
+                                    ->join('CustOffers c', 'c.SchCd = cod.SchCd')
+                                    ->get_where('CustOffersDet cod', 
+                                     array('cod.MinBillAmt > ' => $orderValue['itmValue'],
+                                        'c.SchCatg <' => 20))
+                                    ->result_array();
+
+                        if(!empty($billOfferAmt)){
+                            $statuss = 3;
+                            $resp1 = $billOfferAmt;
+                        }
+                    }
+                }
+
+                // end bill based offer
+
                 header('Content-Type: application/json');
                 echo json_encode(array(
-                    'status' => $statuss
+                    'status' => $statuss,
+                    'resp' => $resp1
                   ));
                  die;
             }
@@ -1083,6 +1121,105 @@ class Customer extends CI_Controller {
                 echo json_encode($response);
                 die();
             }
+        }
+    }
+
+    public function billBasedOfferUpdate(){
+        $res = '';
+        $status = 'error';
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+            $CNo = $this->session->userdata('CNo');
+            $orderValue = $this->db2->select('sum(Qty *  ItmRate) as itmValue')
+                                        ->get_where('Kitchen', 
+                                                    array('CNo' => $CNo, 
+                                                        'Stat <= ' => 5,
+                                                        'BillStat' => 0)
+                                                    )->row_array();
+                $billOfferAmt = $this->db2->select('c.SchNm, cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent ')
+                            ->order_by('cod.MinBillAmt', 'DESC')
+                            ->join('CustOffers c', 'c.SchCd = cod.SchCd')
+                            ->get_where('CustOffersDet cod', 
+                             array('cod.MinBillAmt < ' => $orderValue['itmValue'],
+                                'c.SchCatg <' => 20))
+                            ->row_array();
+
+                if(!empty($billOfferAmt)){
+                    updateRecord('KitchenMain', array(
+                                         'SchCd' => $billOfferAmt['SchCd'],
+                                         'SDetCd' => $billOfferAmt['SDetCd'],
+                                         'BillDiscAmt' => $billOfferAmt['Disc_Amt'],
+                                         'BillDiscPcent' => $billOfferAmt['Disc_pcent']
+                                         ), array('CNo' => $CNo));   
+                                    
+                     if($billOfferAmt['Disc_ItemId'] > 0){
+
+                        $kitcheData = $this->db2->order_by('OrdNo', 'ASC')
+                                                ->get_where('Kitchen', array('CNo' => $CNo))
+                                                ->row_array();
+
+                        $Disc_ItemId = $billOfferAmt['Disc_ItemId'];
+                        $Disc_IPCd = $billOfferAmt['Disc_IPCd'];
+                        $EID = $kitcheData['EID'];
+                        $ChainId = $kitcheData['ChainId'];
+                        $TableNo = $kitcheData['TableNo'];
+
+                        $mi = $this->db2->query("SELECT `m`.`ItemNm`,`m`.`ItemTyp`, `m`.`KitCd`, `mr`.`ItmRate` as `origRate`
+                            FROM `MenuItem` `m`
+                            INNER JOIN `MenuItemRates` `mr` ON `mr`.`ItemId` = `m`.`ItemId`
+                            WHERE `m`.`ItemId` = $Disc_ItemId
+                            AND `mr`.`EID` = $EID
+                            AND `mr`.`ChainId` = $ChainId
+                            AND `mr`.`Itm_Portion` = $Disc_IPCd
+                            AND `mr`.`SecId` = (select SecId from Eat_tables where TableNo = $TableNo and EID = $EID)")
+                                ->row_array(); 
+
+                        $newUKOTNO = date('dmy_') . $mi['KitCd'] . "_" . $kitcheData['KOTNo'] . "_" . $kitcheData['FKOTNo'];
+
+                        $kitchenObj['CNo'] = $kitcheData['CNo'];
+                        $kitchenObj['MCNo'] = $kitcheData['MCNo'];
+                        $kitchenObj['CustId'] = $kitcheData['CustId'];
+                        $kitchenObj['COrgId'] = $kitcheData['COrgId'];
+                        $kitchenObj['CustNo'] = $kitcheData['CustNo'];
+                        $kitchenObj['CellNo'] = $kitcheData['CellNo'];
+                        $kitchenObj['EID'] = $kitcheData['EID'];
+                        $kitchenObj['ChainId'] = $kitcheData['ChainId'];
+                        $kitchenObj['ONo'] = $kitcheData['ONo'];
+                        $kitchenObj['KitCd'] = $mi['KitCd'];
+                        $kitchenObj['OType'] = $kitcheData['OType'];
+                        $kitchenObj['FKOTNo'] = $kitcheData['FKOTNo'];
+                        $kitchenObj['KOTNo'] = $kitcheData['KOTNo'];
+                        $kitchenObj['UKOTNo'] = $newUKOTNO;         //date('dmy_').$KOTNo;
+                        $kitchenObj['TableNo'] = $kitcheData['TableNo'];
+                        $kitchenObj['MergeNo'] = $kitcheData['MergeNo'];
+                        $kitchenObj['TaxType'] = 0;
+                        $kitchenObj['CustRmks'] = 'bill based offer';
+                        $kitchenObj['DelTime'] = date('Y-m-d H:i:s');
+                        $kitchenObj['TA'] = 0;
+                        $kitchenObj['Stat'] = $kitcheData['Stat'];
+                        $kitchenObj['LoginCd'] = $kitcheData['CustId'];
+                        $kitchenObj['ItemTyp'] = $mi['ItemTyp'];
+
+                        $kitchenObj['ItemId'] = $billOfferAmt['Disc_ItemId'];
+                        $kitchenObj['TaxType'] = 0;
+                        $kitchenObj['Qty'] = $billOfferAmt['Disc_Qty'];
+                        $kitchenObj['ItmRate'] = 0;
+                        $kitchenObj['OrigRate'] = $mi['origRate'];    //(m.Value)
+                        $kitchenObj['Itm_Portion'] = $billOfferAmt['Disc_IPCd'];
+                            
+                        $kitchenObj['SchCd'] = $billOfferAmt['SchCd'];
+                        $kitchenObj['SDetCd'] = $billOfferAmt['SDetCd'];
+                        
+                        insertRecord('Kitchen', $kitchenObj);   
+                     }
+                }
+           
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $res
+              ));
+             die;
         }
     }
 
@@ -2126,7 +2263,7 @@ class Customer extends CI_Controller {
             $status = "success";
             $amount = round($_POST['payable']);
 
-            $data = $this->db2->select('cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent ')
+            $data = $this->db2->select('cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent ')
                             ->order_by('cod.MinBillAmt', 'DESC')
                             ->join('CustOffers c', 'c.SchCd = cod.SchCd')
                             ->get_where('CustOffersDet cod', array('cod.MinBillAmt < ' => $amount))

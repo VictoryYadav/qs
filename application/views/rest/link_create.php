@@ -92,9 +92,11 @@
                                     <div class="card-body">
                                         <div class="text-center">
                                             <!-- <?= $key['img']; ?> -->
-                                            <img src="assets/images/users/user-3.jpg" alt="" class="rounded-circle img-thumbnail avatar-xl">
-                                            <div class="online-circle">
-                                                <i class="fas fa-circle text-success"></i>
+                                            <img src="<?= base_url('uploads/qrcode/'.$key['img']); ?>" alt="qrcode" class="img-thumbnail">
+                                            <div class="">
+                                                <a href="<?= base_url('uploads/qrcode/'.$key['img']); ?>" download>
+                                                <i class="fas fa-download"></i>
+                                                </a>
                                             </div>          
                                             <p class="font-size-13 text-muted"><?= $key['link']; ?></p>
                                         </div>                                    

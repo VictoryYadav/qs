@@ -35,6 +35,7 @@ class Cust extends CI_Model{
 
 		if ($menuCatg == 1) {
 			$data['mcat'] = $this->db2->select('MCatgId, MCatgNm, L1MCatgNm, L2MCatgNm, L3MCatgNm, CTyp, CID')
+								->order_by('Rank', 'ASC')
 								->get_where('MenuCatg', array('CID' => $cid))
 								->result_array();
 		}
@@ -46,7 +47,7 @@ class Cust extends CI_Model{
 
 			$data['filter'] = $this->db2->select('FID, Opt, Rank')
 							->order_by('Rank', 'ASC')
-							->get_where('FoodType', array('CTyp' => $data['mcat'][0]['CTyp']))
+							->get_where('FoodType', array('CTyp' => $data['mcat'][0]['CTyp'], 'Stat' => 0))
 							->result_array();
 		}
 		return $data;
@@ -921,8 +922,7 @@ class Cust extends CI_Model{
 					insertRecord('Kitchen', $kitchenObj);
 				}
 
-				// end offer
-
+				// end offer				
 				
 				$response = [
 					"status" => 1,

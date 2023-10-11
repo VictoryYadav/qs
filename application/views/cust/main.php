@@ -222,7 +222,7 @@
     width: 100%;
     height: 100%;
     z-index: 9999;
-    background: url("<?= base_url('assets/img/QSLogoName.png') ?>") 50% 50% no-repeat rgb(249,249,249);
+    background: url("<?= base_url('theme/images/Eat-Out-loader.png') ?>") 50% 50% no-repeat rgb(249,249,249);
     opacity: .8;
 }
 

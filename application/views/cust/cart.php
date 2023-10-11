@@ -175,6 +175,39 @@
             </div>
         </div>
     </div>
+
+    <div class="modal" id="billBasedOffer">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div style="margin-left: 14px;margin-bottom: -15px;">
+                    <h6>Offers</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive" >
+                              <table class="table">
+                                <thead>
+                                    <tr>
+                                        <td>MinBilAmt</td>
+                                        <td>Disc</td>
+                                        <td>ItemName</td>
+                                    </tr>
+                                </thead>
+                                <tbody id="billOffer-body">
+                                </tbody>
+                              </table>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-success" onclick="billBaseOffer()">Yes</button>
+                                <button class="btn btn-sm btn-danger" onclick="gotoCheckout()">No</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
    
     <!-- Shoping Cart Section End -->
 
@@ -192,6 +225,19 @@
 
 <script>
 
+function gotoCheckout(){
+    window.location = "<?= base_url('customer/checkout'); ?>";
+}
+
+function billBaseOffer(){
+    $.post('<?= base_url('customer/billBasedOfferUpdate') ?>',function(res){
+        if(res.status == 'success'){
+          window.location = "<?= base_url('customer/checkout'); ?>";
+        }else{
+          alert(res.response);
+        }
+    });
+}
 // send_to_kitchen_ajax
     function getSendToKitchenList() {
         $.ajax({
@@ -417,8 +463,20 @@
                 console.log(response);
                 if (response.status == 2) {
                     alert('Order Sent To Kitchen Successfully');
+                    window.location = "<?= base_url('customer/checkout'); ?>";
                 }
-                window.location = "<?= base_url('customer/checkout'); ?>";
+
+                if (response.status == 3) {
+                    var list = response.resp;
+                    var temp = '';
+                    for (var i = 0; i < list.length; i++) {
+                        temp +='<tr><td>'+list[i].MinBillAmt+'</td><td>'+list[i].Bill_Disc_pcent+'</td><td>'+list[i].itemName+'</td></tr>';
+                    }
+                    $('#billOffer-body').html(temp);
+                    $('#billBasedOffer').modal();
+                }
+
+
             },
             error: (xhr, status, error) => {
                 console.log(xhr);

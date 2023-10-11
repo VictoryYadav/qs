@@ -89,7 +89,7 @@ body{
                                 <?php } else{ ?>
                                 <tr>
                                     <td>
-                                        <input type="number" placeholder="Amount" class="form-control" required name="amount" id="amount1">
+                                        <input type="number" placeholder="Amount" class="form-control" required name="amount" id="amount1" value="<?= round($payable); ?>">
                                     </td>
                                     <td>
                                         <select name="mode" id="mode1" class="form-control" required>
@@ -147,8 +147,10 @@ body{
 <script type="text/javascript">
 
     var BillId = '<?= $BillId; ?>';
+    var totalPayable ='<?= round($payable); ?>';
 
     $(document).ready(function () {
+        
         goToBill();
 
     var counter = 1;

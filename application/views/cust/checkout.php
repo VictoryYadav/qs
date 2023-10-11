@@ -456,7 +456,7 @@
 
                 // if(grand_total)
 
-                check_bill_amount_offer(grand_total, disc);
+                // check_bill_amount_offer(grand_total, disc);
 
                 $('.bill_box').html(html_body);
 
