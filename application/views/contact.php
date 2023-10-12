@@ -14,42 +14,31 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="widget rate">
-                                <!-- Heading -->
-                                <h5 class="widget-header text-center">What would you rate
-                                    <br>
-                                    this product</h5>
-                                <!-- Rate -->
-                                    <i class="fa fa-mobile"></i>
-                                
-                            </div>
-                        </div>
-                    </div>
+                    <h3>VTREND Services Pvt Ltd.</h3>
+                      <ul>
+                        <li class="my-4"><strong>Address</strong> : 301, Guru Ashish Limited, North Avenue, Santacruz(W), Mumbai 400054</li>
+                        <li class="my-4"><strong>Email </strong>: sanjay@vtrend.org</li>
+                      </ul>
+                    <p><i>Eat-Out - Tech by <b>VTREND</b> Services Pvt Ltd.</i></p>
+                      
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <h3>Contact Us</h3>
                     <form action="">
                         <div class="form-group">
-                            <label for="">Fullname</label>
-                            <input type="text" class="form-control" name="fullname">
+                            <input type="text" class="form-control" name="fullname" placeholder="FullName">
                         </div>
                         <div class="form-group">
-                            <label for="">Phone</label>
-                            <input type="text" class="form-control" name="phone">
+                            <input type="tel" class="form-control" name="phone" placeholder="Phone No">
                         </div>
                         <div class="form-group">
-                            <label for="">Email</label>
-                            <input type="email" class="form-control" name="email">
+                            <input type="email" class="form-control" name="email" placeholder="Email">
                         </div>
                         <div class="form-group">
-                            <label for="">Subject</label>
-                            <input type="text" class="form-control" name="email">
+                            <input type="text" class="form-control" name="subject" placeholder="Subject">
                         </div>
                         <div class="form-group">
-                            <label for="">Description</label>
-                            <textarea name="" id="" cols="30" rows="10" class="form-control"></textarea>
+                            <textarea name="description" id="" cols="30" rows="10" class="form-control" placeholder="Descriptions....."></textarea>
                         </div>
 
                         <div class="form-group">

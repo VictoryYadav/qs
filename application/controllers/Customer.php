@@ -2139,6 +2139,27 @@ class Customer extends CI_Controller {
         $this->load->view('contact', $data);
     }
 
+    public function privacy_policy(){
+       $data['title'] = 'Privacy Policy';
+        $data['language'] = languageArray();
+
+        $this->load->view('privacyPolicy', $data); 
+    }
+
+    public function terms_conditions(){
+       $data['title'] = 'Terms & Conditions';
+        $data['language'] = languageArray();
+
+        $this->load->view('terms_conditions', $data); 
+    }
+
+    public function cookie_policy(){
+       $data['title'] = 'Cookie Policy';
+       $data['language'] = languageArray();
+
+        $this->load->view('CookiePolicy', $data); 
+    }
+
     public function checkout_pay(){
         $status = "error";
         $response = "Something went wrong! Try again later.";

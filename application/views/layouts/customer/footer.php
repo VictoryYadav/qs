@@ -24,9 +24,10 @@
             <h6 style="font-size: 12px;"><?= $language['about_us']?></h6>          
             </a>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">T &amp; C</a>
-            <a class="dropdown-item" href="#">Testimonials</a>
-            <a class="dropdown-item" href="#">Contact Us</a>
+            <a class="dropdown-item" href="<?= base_url('customer/terms_conditions'); ?>" target="_blank">T &amp; C</a>
+            <a class="dropdown-item" href="<?= base_url('customer/cookie_policy'); ?>" target="_blank">Cookie Policy</a>
+            <a class="dropdown-item" href="<?= base_url('customer/privacy_policy'); ?>" target="_blank">Privacy Policy</a>
+            <a class="dropdown-item" href="<?= base_url('customer/contact'); ?>">Contact Us</a>
         </div>
     </div>
     <div class="btn-group dropup">
