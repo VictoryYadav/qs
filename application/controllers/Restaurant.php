@@ -3543,6 +3543,7 @@ class Restaurant extends CI_Controller {
                 $link = 'e='.$data['eid'].'&c='.$data['chain'].'&t='.$i.'&o='.$data['stock'];
                 $link64 = base64_encode($link);
                 $temp['link'] = base_url('qr?qr_data=').rtrim($link64, "=");
+                $temp['tblNo'] = $i;
 
                 $codeFile = date('d-m-Y-h-i-s').'.png';
                 $formData = $temp['link'];

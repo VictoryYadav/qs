@@ -16,10 +16,10 @@
 </head>
 <body style="background-image:url(<?php echo base_url(); ?>assets_admin/images/bg.jpg); background-repeat:no-repeat; background-size: cover;">
     <div style="background: rgba(0, 0, 0, 0); padding-top:10%; min-height: 100%;">
-		<div class="middle-box text-center loginscreen animated fadeInDown" style="background: rgba(14, 89, 136, 0.55); margin-top:0;">
+		<div class="middle-box text-center loginscreen animated fadeInDown" style="background: rgba(6, 6, 6, 0.55); margin-top:0;">
 			<div style="padding:20px;">
 				<div style="margin-bottom: 30px;">
-					<img src="assets_admin/images/QSLogo.png" style="width: 120px; height: auto; border-radius: 7px;" alt="Title" />
+					<img src="theme/images/Eat-out-Final-1.png" style="width: 120px; height: auto; border-radius: 7px;" alt="Title" />
 				</div>
 				<form class="m-t" role="form" action="<?=base_url('login?o='.$_GET['o'].'&c='.$_GET['c']) ?>" method="POST">
 					<div class="form-group">

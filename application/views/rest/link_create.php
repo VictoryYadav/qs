@@ -65,8 +65,8 @@
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label>Stock</label>
-                                                        <input type="number" name="stock" class="form-control form-control-sm" required="" placeholder="Stock">
+                                                        <label>Stall</label>
+                                                        <input type="number" name="stock" class="form-control form-control-sm" required="" placeholder="Stall">
                                                     </div>
                                                 </div>
 
@@ -94,6 +94,7 @@
                                             <!-- <?= $key['img']; ?> -->
                                             <img src="<?= base_url('uploads/qrcode/'.$key['img']); ?>" alt="qrcode" class="img-thumbnail">
                                             <div class="">
+                                                <?= $key['tblNo'] ?> - 
                                                 <a href="<?= base_url('uploads/qrcode/'.$key['img']); ?>" download>
                                                 <i class="fas fa-download"></i>
                                                 </a>
