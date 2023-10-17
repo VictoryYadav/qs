@@ -3469,6 +3469,13 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/payments', $data);
     }
 
+    public function feedback(){
+        $data['title'] = 'Customer Feedback';
+        $data['list'] = $this->db2->order_by('created_at','DESC')->get('Feedback')->result_array();
+        
+        $this->load->view('rest/feedback_list', $data);
+    }
+
     public function email_send(){
         $apiKey = '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';
 
@@ -3561,8 +3568,6 @@ class Restaurant extends CI_Controller {
         $data['lists'] = $listData;
         $this->load->view('rest/link_create', $data);   
     }
-
-
 
 
 
