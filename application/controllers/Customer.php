@@ -2135,6 +2135,13 @@ class Customer extends CI_Controller {
     public function contact(){
         $data['title'] = 'Contact Us';
         $data['language'] = languageArray();
+        if($this->input->method(true)=='POST'){
+            $feedback = $_POST;
+            $id = insertRecord('Feedback', $feedback);
+            if(!empty($id)){
+                $this->session->set_flashdata('success','Record Inserted.');
+            }
+        }
 
         $this->load->view('contact', $data);
     }

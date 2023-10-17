@@ -14,20 +14,23 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-7 mx-auto">
+                    <?php if($this->session->flashdata('success')): ?>
+                        <div class="alert alert-success" role="alert"><?= $this->session->flashdata('success') ?></div>
+                    <?php endif; ?>
                     <p><i>Eat-Out - Tech by <b>VTREND</b> Services Pvt Ltd.</i></p>
                     <h3>Contact Us</h3>
-                    <form action="">
+                    <form method="post">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="fullname" placeholder="FullName">
+                            <input type="text" class="form-control" name="fullname" placeholder="FullName" required="">
                         </div>
                         <div class="form-group">
-                            <input type="tel" class="form-control" name="phone" placeholder="Phone No">
+                            <input type="tel" class="form-control" name="phone" placeholder="Phone No" required="">
                         </div>
                         <div class="form-group">
-                            <input type="email" class="form-control" name="email" placeholder="Email">
+                            <input type="email" class="form-control" name="email" placeholder="Email" required="">
                         </div>
                         <div class="form-group">
-                            <select name="" id="" class="form-control">
+                            <select name="type" class="form-control" required="">
                                 <option value="">Choose</option>
                                 <option value="feedback">Feedback</option>
                                 <option value="compliment">Compliment</option>
@@ -35,10 +38,10 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control" name="subject" placeholder="Subject">
+                            <input type="text" class="form-control" name="subject" placeholder="Subject" required="">
                         </div>
                         <div class="form-group">
-                            <textarea name="description" class="form-control" placeholder="Descriptions....."></textarea>
+                            <textarea name="description" class="form-control" placeholder="Descriptions....." required=""></textarea>
                         </div>
 
                         <div class="form-group">
