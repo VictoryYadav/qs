@@ -289,7 +289,7 @@
 <section class="common-section">
 	<div class="container">
 		<div class="featured__controls">
-            <ul id="mCategory" style="padding-bottom: 5px;" class="list-inline">
+            <ul id="mCategory" style="padding-bottom: 5px;cursor: pointer;" class="list-inline">
             </ul>
         </div>
 	</div>
