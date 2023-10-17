@@ -10,10 +10,10 @@
 <head>
         
         <meta charset="utf-8" />
-        <title><?= $title ?> | Quick Service</title>
+        <title><?= $title ?> | Eat-Out</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta content="Quick Service" name="description" />
-        <meta content="Quick Service" name="author" />
+        <meta content="Eat-Out" name="description" />
+        <meta content="Eat-Out" name="author" />
         <!-- App favicon -->
         <!-- <link rel="shortcut icon" href="<?= base_url() ?>assets_admin/images/QSLogo.png"> -->
         <link href="<?= base_url(); ?>theme/images/Eat-Out-Icon.png" rel="shortcut icon">

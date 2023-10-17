@@ -10,19 +10,11 @@
     <?php $this->load->view('layouts/customer/top'); ?>
     <!-- Header Section End -->
 
-    <section class="common-section p-2 dashboard-container">
+    <section class="common-section p-2 dashboard-container" style="margin-bottom: 30px;">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
-                    <h3>VTREND Services Pvt Ltd.</h3>
-                      <ul>
-                        <li class="my-4"><strong>Address</strong> : 301, Guru Ashish Limited, North Avenue, Santacruz(W), Mumbai 400054</li>
-                        <li class="my-4"><strong>Email </strong>: sanjay@vtrend.org</li>
-                      </ul>
+                <div class="col-md-7 mx-auto">
                     <p><i>Eat-Out - Tech by <b>VTREND</b> Services Pvt Ltd.</i></p>
-                      
-                </div>
-                <div class="col-md-4">
                     <h3>Contact Us</h3>
                     <form action="">
                         <div class="form-group">
@@ -35,16 +27,31 @@
                             <input type="email" class="form-control" name="email" placeholder="Email">
                         </div>
                         <div class="form-group">
+                            <select name="" id="" class="form-control">
+                                <option value="">Choose</option>
+                                <option value="feedback">Feedback</option>
+                                <option value="compliment">Compliment</option>
+                                <option value="complaint">Complaint</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <input type="text" class="form-control" name="subject" placeholder="Subject">
                         </div>
                         <div class="form-group">
-                            <textarea name="description" id="" cols="30" rows="10" class="form-control" placeholder="Descriptions....."></textarea>
+                            <textarea name="description" class="form-control" placeholder="Descriptions....."></textarea>
                         </div>
 
                         <div class="form-group">
-                            <input type="submit" class="btn btn-sm btn-success" value="Submit">
+                            <input type="submit" class="btn btn-sm btn-success form-control" value="Submit">
                         </div>
                     </form>
+                    <div class="text-center mt-4">
+                        <h3>VTREND Services Pvt Ltd.</h3>
+                        <ul>
+                            <li class="my-4"><strong>Address</strong> : 301, Guru Ashish Limited, North Avenue, Santacruz(W), Mumbai 400054</li>
+                            <li class="my-4"><strong>Email </strong>: sales@vtrend.org, support@vtrend.org</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

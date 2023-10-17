@@ -7,7 +7,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-6">
-                copyright - <script>document.write(new Date().getFullYear())</script> © <a href="#">Quick Service</a>
+                copyright - <script>document.write(new Date().getFullYear())</script> © <a href="#">Eat-Out</a>
             </div>
             <div class="col-sm-6">
                 <!-- <div class="text-sm-right d-none d-sm-block">

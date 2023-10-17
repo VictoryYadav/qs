@@ -43,6 +43,7 @@
         <h6 style="font-size: 12px;">Order</h6>
         </a>
         <div class="dropdown-menu" style="right: 0; left: auto;">
+            <a class="dropdown-item" href="<?= base_url('customer'); ?>">Menu</a>
             <?php if(!empty($this->session->userdata('CustId'))){ ?>
                 <a class="dropdown-item" href="<?= base_url('customer/cart'); ?>">Cart</a>
             <?php }

@@ -17,10 +17,10 @@ class Cust extends CI_Model{
 	}
 
 	public function getCuisineList(){
-		return $this->db2->select('c.CID, c.Name, c.Name2, c.Name3, c.Name4, c.CTyp')
+		return $this->db2->select('c.CID, c.Name, c.Name2, c.Name3, c.Name4')
 						->order_by('ec.Rank', 'ASC')
 						->join('Cuisines c', 'c.CID = ec.CID', 'inner')
-						->get_where('EatCuisine ec', array('ec.EID' => $this->EID))
+						->get_where('EatCuisine ec', array('ec.EID' => $this->EID,'Stat' => 0))
 						->result_array();
 
 		
