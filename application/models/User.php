@@ -161,9 +161,22 @@ class User extends CI_Model{
 	}
 
 	public function getMenuList(){
-		return $this->db2->select('Name,RoleTyp,pageUrl,Rank')
-                                ->order_by('Rank','ASC')
-                                ->get_where('UserRoles', array('Stat' => 0))->result_array();
+
+		$EID = authuser()->EID;
+        $RUserId = authuser()->RUserId;
+
+		return $this->db2->select('ur.Name,ur.RoleTyp,ur.pageUrl,ur.Rank, ur.PhpPage')
+                        ->order_by('ur.Rank', 'ASC')
+                        ->join('UserRolesAccess ura', 'ura.RoleId = ur.RoleId','inner')
+                        ->get_where('UserRoles ur', 
+                            array('ura.RUserId' => $RUserId,
+                                'EID' => $EID)
+                                )
+                        ->result_array();
+
+		// return $this->db2->select('Name,RoleTyp,pageUrl,Rank')
+  //                               ->order_by('Rank','ASC')
+  //                               ->get_where('UserRoles', array('Stat' => 0))->result_array();
 	}
 
 

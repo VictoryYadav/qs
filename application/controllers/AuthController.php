@@ -88,7 +88,21 @@ class AuthController extends CI_Controller {
                     if($checkNumber['Passwd'] == 'QS1234'){
                         redirect(base_url('restaurant/change_password'));    
                     }
-                    redirect(base_url('dashboard'));
+
+                    $userRolesAccessData = $db2->select('ur.PhpPage, ur.pageUrl')
+                                                ->order_by('ur.Rank', 'ASC')
+                                                ->join('UserRolesAccess ura', 'ura.RoleId = ur.RoleId','inner')
+                                                ->get_where('UserRoles ur', 
+                                                    array('ura.RUserId' => $checkNumber['RUserId'],
+                                                        'EID' => $checkNumber['EID'])
+                                                        )
+                                                ->row_array();
+                    $url = base_url('restaurant').'/'.$userRolesAccessData['pageUrl'];
+                    if($userRolesAccessData['pageUrl'] == 'dashboard'){
+                        redirect(base_url('dashboard'));
+                    }
+
+                    redirect(base_url($url));
                     
                 }else {
                         $this->session->set_flashdata('error','Fail to Validate User'); 
