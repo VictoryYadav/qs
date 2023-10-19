@@ -4,6 +4,7 @@ body{
     font-size: 13px;
 }
 </style>
+
 </head>
 
 <body>
@@ -119,10 +120,10 @@ body{
 
                             <tr>
                                 <td colspan="1">
-                                    Total: <span id="grandtotal"></span>
+                                    Total: <span id="grandtotal"><?= round($payable); ?></span>
                                 </td>
                                 <td colspan="2">
-                                    Balance: <b><span id="balance"></span></b>
+                                    Balance: <b><span id="balance">0</span></b>
                                 </td>
                             </tr>
                         </tfoot>
@@ -206,9 +207,18 @@ function calculateGrandTotal() {
     var payable = $('#payable').text();
     var balance = 0;
     var grandTotal = 0;
+    var countRow = 0;
     $("table.order-list").find('input[name^="amount"]').each(function () {
         grandTotal += +$(this).val();
     });
+    
+    if(grandTotal > payable){
+        Swal.fire({
+          text: 'Total amount has exceeded the payable amount.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: "red",
+        });
+    }
     $("#grandtotal").text(grandTotal);
     balance = parseFloat(payable) - parseFloat(grandTotal);
     $("#balance").text(balance);

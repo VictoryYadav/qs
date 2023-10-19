@@ -29,3 +29,7 @@
   <!-- <link href="<?= base_url(); ?>theme/plugins/jquery-nice-select/css/nice-select.css" rel="stylesheet"> -->
   <link href="<?= base_url(); ?>theme/css/style.css" rel="stylesheet">
   <link href="<?= base_url(); ?>theme/css/common.css" rel="stylesheet">
+
+  <link href="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
+" rel="stylesheet">

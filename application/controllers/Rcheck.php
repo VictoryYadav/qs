@@ -66,10 +66,10 @@ class Rcheck extends CI_Controller {
         $this->session->set_userdata('MultiScan', 0);
         $this->session->set_userdata('OrgType', 0);
         $this->session->set_userdata('CNo', 0);
-        $this->session->set_userdata('Cash', 0);
-        $this->session->set_userdata('PostPaid', 0);
-        $this->session->set_userdata('PrePaid', 0);
-        $this->session->set_userdata('PymtOpt', 0);
+        // $this->session->set_userdata('Cash', 0);
+        // $this->session->set_userdata('PostPaid', 0);
+        // $this->session->set_userdata('PrePaid', 0);
+        // $this->session->set_userdata('PymtOpt', 0);
         $this->session->set_userdata('Ops', 0);
         $this->session->set_userdata('TipAmount', 0);
         $this->session->set_userdata('SchPop', 0);
@@ -97,15 +97,13 @@ class Rcheck extends CI_Controller {
         // load db
         $db2 = $this->load->database($my_db, TRUE);
 
-        $orgCheck = $db2->query("SELECT e.CatgID, e.ONo, c.StTime, c.CloseTime, c.EType, c.ECash, c.PostPaid, c.PrePaid,  c.CustOrgs, c.MultiKitchen, c.MultiScan, c.Kitchen, c.AutoAllot, c.AutoDeliver, c.SchPop, c.SchType, c.ServChrg, c.Tips, c.EDT, c.TableReservation, c.Fest, c.Hostel,c.Deliver, c.Itm_Portion, c.CustAssist, c.TableAcceptReqd,c.OrderWithoutTable,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge, c.menuCatg, c.foodTyp, c.Charity, c.Ing_Cals, c.NV FROM Config c, Eatary e where e.EID = $EID AND e.ChainId = $ChainId and e.EID = c.EID And c.ChainId = e.ChainId")->row_array();
+        $orgCheck = $db2->query("SELECT e.CatgID, e.ONo, c.StTime, c.CloseTime, c.EType, c.CustOrgs, c.MultiKitchen, c.MultiScan, c.Kitchen, c.AutoAllot, c.AutoDeliver, c.SchPop, c.SchType, c.ServChrg, c.Tips, c.EDT, c.TableReservation, c.Fest, c.Hostel,c.Deliver, c.CustAssist, c.TableAcceptReqd,c.OrderWithoutTable,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge, c.Charity, c.Ing_Cals, c.NV,c.WelcomeMsg,c.Ent FROM Config c, Eatary e where e.EID = $EID AND e.ChainId = $ChainId and e.EID = c.EID And c.ChainId = e.ChainId")->row_array();
 
         $this->session->set_userdata('CatgID', $orgCheck['CatgID']);
         $this->session->set_userdata('ONo', $orgCheck['ONo']);
         $this->session->set_userdata('EType', $orgCheck['EType']);
         $this->session->set_userdata('CustOrgs', $orgCheck['CustOrgs']);
-        $this->session->set_userdata('Cash', $orgCheck['ECash']);
-        $this->session->set_userdata('PostPaid', $orgCheck['PostPaid']);
-        $this->session->set_userdata('PrePaid', $orgCheck['PrePaid']);
+        
         $this->session->set_userdata('MultiKitchen', $orgCheck['MultiKitchen']);
         $this->session->set_userdata('MultiScan', $orgCheck['MultiScan']);
         $this->session->set_userdata('Kitchen', $orgCheck['Kitchen']);
@@ -116,7 +114,7 @@ class Rcheck extends CI_Controller {
         $this->session->set_userdata('EDT', $orgCheck['EDT']);
         $this->session->set_userdata('Fest', $orgCheck['Fest']);
         $this->session->set_userdata('Deliver', $orgCheck['Deliver']);
-        $this->session->set_userdata('Itm_Portion', $orgCheck['Itm_Portion']);
+        
         $this->session->set_userdata('Tips', $orgCheck['Tips']);
         $this->session->set_userdata('CustAssist', $orgCheck['CustAssist']);
         $this->session->set_userdata('TableAcceptReqd', $orgCheck['TableAcceptReqd']);
@@ -126,11 +124,12 @@ class Rcheck extends CI_Controller {
         $this->session->set_userdata('DelCharge', $orgCheck['DelCharge']);
         $this->session->set_userdata('OrderWithoutTable', $orgCheck['OrderWithoutTable']);
 
-        $this->session->set_userdata('menuCatg', $orgCheck['menuCatg']);
-        $this->session->set_userdata('foodTyp', $orgCheck['foodTyp']);
         $this->session->set_userdata('Charity', $orgCheck['Charity']);
         $this->session->set_userdata('Ing_cals', $orgCheck['Ing_Cals']);
         $this->session->set_userdata('NV', $orgCheck['NV']);
+
+        $this->session->set_userdata('WelcomeMsg', $orgCheck['WelcomeMsg']);
+        $this->session->set_userdata('Ent', $orgCheck['Ent']);
 
         redirect(base_url('customer'));
 	}

@@ -87,6 +87,14 @@
 
 
 </style>
+
+<link href="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
+" rel="stylesheet">
+
+<script src="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
+"></script>
 </head>
 
 <body>
@@ -462,7 +470,11 @@ function billBaseOffer(){
                 
                 console.log(response);
                 if (response.status == 2) {
-                    alert('Order Sent To Kitchen Successfully');
+                    Swal.fire({
+                      text: 'Order Sent To Kitchen Successfully',
+                      confirmButtonText: 'OK',
+                      confirmButtonColor: "green",
+                    });
                     window.location = "<?= base_url('customer/checkout'); ?>";
                 }
 
@@ -491,7 +503,12 @@ function billBaseOffer(){
         var data = $('#cartForm').serializeArray();
         $.post('<?= base_url('customer/kotGenerate') ?>', data ,function(res){
             if(res.status == 'success'){
-                alert(res.response);
+                // alert(res.response);
+                Swal.fire({
+                      text: res.response,
+                      confirmButtonText: 'OK',
+                      confirmButtonColor: "green",
+                    });
                window.location = "<?php echo base_url('customer'); ?>";
             }else{
               alert(res.response);
