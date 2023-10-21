@@ -2480,6 +2480,33 @@ class Customer extends CI_Controller {
         }    
     }
 
+    public function profile(){
+        $data['title'] = 'Profile';
+        $data['language'] = languageArray();
+        $CustId = $this->session->userdata('CustId');
+
+        $data['detail'] = $this->cust->getUserDetails($CustId);
+
+        if($this->input->method(true)=='POST'){
+
+            $updata['FName'] = $_POST['FName'];
+            $updata['LName'] = $_POST['LName'];
+            $updata['Gender'] = $_POST['Gender'];
+            $updata['DOB'] = date('Y-m-d', strtotime($_POST['DOB']));
+            updateRecord('Users', $updata, array('CustId' => $CustId));
+
+            $genTblDb = $this->load->database('GenTableData', TRUE);
+            $genTblDb->update('AllUsers', $updata, array('CustId' => $CustId));
+
+            $this->session->set_flashdata('success','Profile has been updated.');
+        }
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+
+        $this->load->view('cust/profile', $data);
+    }
+
     public function test(){
         $data['title'] = 'Item Details';
         $data['language'] = languageArray();

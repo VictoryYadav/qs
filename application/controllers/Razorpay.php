@@ -22,6 +22,10 @@ class Razorpay extends CI_Controller {
         
         $keyId = 'rzp_test_Z50p6ZM95VvlSy';
         $keySecret = 'gtQvvO7aRLLoMefAWCV7Pcwp';
+        // live
+        // $keyId = 'rzp_live_partner_E1U7EpJKIdp2tN';
+        // $keySecret = 'oYlDCKJmPTxMqTOwcUOwWqIM';
+
         $displayCurrency = 'INR';
 
         $api = new Api($keyId, $keySecret);

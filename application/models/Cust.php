@@ -1682,6 +1682,12 @@ class Cust extends CI_Model{
 		return $this->db2->get_where('city', array('status' => 0))->result_array();
 	}
 
+	public function getUserDetails($custId){
+		return $this->db2->select('*')
+                                    ->get_where('Users', array('CustId' => $custId))
+                                    ->row_array();
+	}
+
 
 	
 }

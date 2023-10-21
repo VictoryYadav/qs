@@ -23,8 +23,12 @@ class Phonepe extends CI_Controller {
 
         // $this->load->model('Cust', 'cust');
 
-        $this->merchantId = 'PGTESTPAYUAT140';
-        $this->saltKey = '775765ff-824f-4cc4-9053-c3926e493514';
+        // $this->merchantId = 'PGTESTPAYUAT140';
+        // $this->saltKey = '775765ff-824f-4cc4-9053-c3926e493514';
+
+        // live
+        $this->merchantId = 'VTRENDONLINE';
+        $this->saltKey = '95d084d8-38f0-4d64-91ff-24449f8e911e';
         $this->saltIndex = 1;
     }
 
@@ -71,8 +75,11 @@ class Phonepe extends CI_Controller {
 
             // curl
             $curl = curl_init();
+            // test
+            // curl_setopt($curl, CURLOPT_URL, "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay");
 
-            curl_setopt($curl, CURLOPT_URL, "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay");
+            // live
+            curl_setopt($curl, CURLOPT_URL, "https://api.phonepe.com/apis/hermes/pg/v1/pay");
             curl_setopt($curl, CURLOPT_HTTPHEADER, array(
                 "Content-Type: application/json",
                 "accept: application/json",
@@ -86,6 +93,10 @@ class Phonepe extends CI_Controller {
 
             $response = curl_exec($curl);
             $result = json_decode($response);
+
+            echo "<pre>";
+            print_r($result);
+            die;
 
             $payUrl = $result->data->instrumentResponse->redirectInfo->url;
             // print_r($payUrl);
