@@ -37,8 +37,7 @@ class Phonepe extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
-            $status = 'success';
-
+            
             $billId = $_POST['billId'];
             $MCNo = $_POST['MCNo'];
             $totalAmount = $_POST['amount'];
@@ -94,11 +93,15 @@ class Phonepe extends CI_Controller {
             $response = curl_exec($curl);
             $result = json_decode($response);
 
-            echo "<pre>";
-            print_r($result);
-            die;
-
-            $payUrl = $result->data->instrumentResponse->redirectInfo->url;
+            // echo "<pre>";
+            // print_r($result);
+            // die;
+            if($result->success == 1){
+                $status = 'success';
+                $payUrl = $result->data->instrumentResponse->redirectInfo->url;
+            }else{
+                $payUrl = 'Transaction Failed';
+            }
             // print_r($payUrl);
             // die;
             // redirect($payUrl);
