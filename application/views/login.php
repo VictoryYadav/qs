@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="icon" href="assets_admin/img/favicon.png" type="image/x-icon" />
 	<meta name="robots" content="noindex, nofollow">
-    <title>Login | Quick Service</title>
+    <title>Login | Eat-Out</title>
     <link href="<?php echo base_url(); ?>assets_admin/css/bootstrap.min.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets_admin/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets_admin/css/animate.css" rel="stylesheet">

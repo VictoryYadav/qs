@@ -1908,14 +1908,21 @@ class Customer extends CI_Controller {
             $RCd = insertRecord('Ratings', $RatingInsert);
 
             $queryString = '';
+            $totRtng = 0;
+            $itemCount = 0;
             for ($i = 0; $i < count($rating); $i++) {
+                $itemCount++;
                 if ($i >= 1) {
                     $queryString .= ',';
                 }
+                $totRtng = $totRtng + $rating[$i];
                 $queryString .= '(' . $RCd . ',' . $ratingData[$i] . ',' . $rating[$i] . ')';
             }
 
             $RatingDetQuery = $this->db2->query("INSERT INTO `RatingDet`(RCd,ItemId,ItemRtng) VALUES $queryString ");
+
+            $ravg = $totRtng / $itemCount;
+            updateRecord('Ratings',array('avgBillRtng' => $ravg),array('RCd' => $RCd));
 
             $genTblDb = $this->load->database('GenTableData', TRUE);
             // gen db
@@ -1938,6 +1945,7 @@ class Customer extends CI_Controller {
             $genRatingObj['Remarks']    = 0;
             $genRatingObj['ServRtng']   = $Service;
             $genRatingObj['AmbRtng']    = $Ambience;
+            $genRatingObj['avgBillRtng']= $ravg;
             $genRatingObj['VFMRtng']    = $vfm;
             $genRatingObj['LstModDt']   = date('Y-m-d H:i:s');
             $genTblDb->insert('Ratings', $genRatingObj);
