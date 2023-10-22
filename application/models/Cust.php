@@ -624,7 +624,7 @@ class Cust extends CI_Model{
                     $OType = 7;
                 }else if($TblTyp == 8){
                     // Sit-In offline
-                    $OType = 8;
+                    // $OType = 8;
                 }else if($TblTyp == 15){
                     // personal TakeAway
                     $OType = 15;

@@ -14,8 +14,10 @@ class Cronjob extends CI_Controller {
         $this->load->model('Cust', 'cust');
     }
 
+    private $count = 0;
     public function everyMorning6am(){
-        echo "Hi";die;
+        $this->count = $this->count + 1;
+        echo "Hi ". $this->count;
 
     }
 
@@ -23,5 +25,10 @@ class Cronjob extends CI_Controller {
         
     }
 
+    // minute hour day_of_month month day_of_week command_to_run
+    // 30 17 * * 2 curl http://www.google.com
+
+
+    // 2 * * * *  https://eo.vtrend.org/cronjob/everyMorning6am
 
 }
