@@ -608,6 +608,7 @@ class Cust extends CI_Model{
 				$itmrate = str_replace(" ", "", $postData['itmrate']);
 				$serveTime = 0;
 				$newServeTime = 0;
+				$postData['prepration_time'] = (!empty($postData['prepration_time'])?$postData['prepration_time']:'00');
 				$prepration_time = "00:" . $postData['prepration_time'] . ":00";
 
 				$OType = 0;

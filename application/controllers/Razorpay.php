@@ -20,11 +20,11 @@ class Razorpay extends CI_Controller {
 
     public function pay(){
         
-        // $keyId = 'rzp_test_Z50p6ZM95VvlSy';
-        // $keySecret = 'gtQvvO7aRLLoMefAWCV7Pcwp';
+        $keyId = 'rzp_test_Z50p6ZM95VvlSy';
+        $keySecret = 'gtQvvO7aRLLoMefAWCV7Pcwp';
         // live
-        $keyId = 'rzp_live_partner_E1U7EpJKIdp2tN';
-        $keySecret = 'oYlDCKJmPTxMqTOwcUOwWqIM';
+        // $keyId = 'rzp_live_partner_E1U7EpJKIdp2tN';
+        // $keySecret = 'oYlDCKJmPTxMqTOwcUOwWqIM';
 
         $displayCurrency = 'INR';
 
