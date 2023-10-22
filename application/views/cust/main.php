@@ -406,7 +406,7 @@
                                     <?php } ?>
                                 </select>
                             </div>
-
+                            <?php if($this->session->userdata('EDT') > 0 ){ ?>
                             <div style="position: absolute;right: 1pc;">
                                 <label for="sel1" style="margin: 0px;font-size: 14px;"><?= $language['delivery_time']?></label>
                                 <div id="waiting-btn" class="your-class1 btn-group btn-group-toggle" data-toggle="buttons" style="width: 96px;display: block;">
@@ -423,18 +423,19 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <?php } ?>
                             
                         </div>
                     <?php } ?>
 
                     <div class="row" style="margin: 0px;">
+                        <?php if($this->session->userdata('SchPop') > 0 ){ ?>
                         <div class="form-group" style="width: 100%;">
                             <select name="schcd" id="schcd" class="form-control" >
                                 <option value="">Select Offer</option>
                             </select>
                         </div>
-
+                        <?php } ?>
                         <div class="remark" style="width: 100%">
                             <input id="cust-remarks" type="text" class="form-control Remarks-input" placeholder="Enter Remarks" name="remark-box">
                         </div>

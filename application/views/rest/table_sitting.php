@@ -1753,9 +1753,12 @@ width: 100%;*/
         }
 
         function refreshPage() {
-            $("#item-detail-body").html('');
-            destroyDataTableForOrder();
+            // $("#item-detail-body").html('');
+            // destroyDataTableForOrder();
+            $('#order-view-table').DataTable().destroy;
             getTableView();
+
+            // var oTable = $('#order-view-table').DataTable( );
         }
 
         function handleDelivery() {

@@ -29,6 +29,7 @@ class Cronjob extends CI_Controller {
     // 30 17 * * 2 curl http://www.google.com
 
 
-    // 2 * * * *  https://eo.vtrend.org/cronjob/everyMorning6am
+    // 30 17 * * 2 curl https://eo.vtrend.org/cronjob
 
+    // 30 17 * * 2 curl /var/www/eo.vtrend.org/public_html/application/controllers/cronjob/everyMorning6am
 }

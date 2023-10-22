@@ -199,7 +199,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		'rate_us' => 'Rate Us',	
 		'back' => 'Back',
 		'add_item' => 'Add Item',
-		'take_away' => 'Take Away',
+		'take_away' => 'Order Type',
 		'portion' => 'Portion',
 		'delivery_time' => 'Deliver In (mts)',
 		'quantity' => 'Qty',
