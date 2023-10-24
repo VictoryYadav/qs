@@ -286,7 +286,7 @@
 	</div>
 </section>
 
-<section class="common-section">
+<section class="common-section" style="background: #CEFFC9;">
 	<div class="container">
 		<div class="featured__controls">
             <ul id="mCategory" style="padding-bottom: 5px;cursor: pointer;" class="list-inline">

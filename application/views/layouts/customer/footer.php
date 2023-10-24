@@ -1,4 +1,4 @@
-<div class="navbar menu-footer fixed-bottom" >
+<div class="navbar menu-footer fixed-bottom" style="background: #dee2e6;">
     <div class="btn-group dropup">
         <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
             <img src="<?php echo base_url(); ?>assets/img/menu.svg" width="33" height="20">
