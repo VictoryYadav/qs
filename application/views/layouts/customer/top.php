@@ -23,11 +23,14 @@ $folder = 'e'.authuser()->EID;
             </div>
             <div class="col-md-8 col-sm-8 col-8 text-right">
                 <ul class="list-inline product-meta">
+                    <?php if($this->session->userdata('CustAssist') == 1){ ?>
                     <li class="list-inline-item">
                         <a onclick="call_help()" id="yellow_bell">
                             <img src="<?= base_url() ?>assets/img/yellow_bell.jpg" style="height: 28px;">
                         </a>
                     </li>
+                    <?php } ?>
+                    <?php if($this->session->userdata('MultiLingual') > 0){ ?>
                     <li class="list-inline-item">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#!">
                             <img src="<?= base_url() ?>assets/img/language1.png" style="height: 22px;">
@@ -38,6 +41,7 @@ $folder = 'e'.authuser()->EID;
                                 <li><a class="dropdown-item @@dashboardMyAds" href="dashboard-my-ads.html">Dashboard My Ads</a></li>
                             </ul>
                     </li>
+                    <?php } ?>
                     <li class="list-inline-item">
                         <span id="red_bell" style="display: none;">
                             <img src="<?= base_url() ?>assets/img/red_bell1.png" style="height: 30px;">
