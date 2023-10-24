@@ -51,7 +51,7 @@ class Cust extends CI_Model{
         	$this->session->set_userdata('f_mcat', $mcat);
             $this->db2->where('mc.MCatgId', $mcat);
         }
-        if(!empty($fl)){
+        if(!empty($fl) && $fl > 0){
         	$this->db2->where('mi.FID', $fl);
         	$this->session->set_userdata('f_fid', $fl);
         }

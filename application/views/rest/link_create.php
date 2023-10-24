@@ -41,32 +41,44 @@
                                             <?php endif; ?>
                                             
                                         <form method="post" >
+                                            
                                             <div class="row">
-                                                <div class="col-md-3 col-6">
-                                                    <div class="form-group">
-                                                        <label>EID</label>
-                                                        <input type="number" name="eid" class="form-control form-control-sm" placeholder="EID" required="">
-                                                    </div>
-                                                </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label>Chain No</label>
-                                                        <input type="number" name="chain" class="form-control form-control-sm" placeholder="Chain No" required="">
+                                                        <label for="">QR Code Print</label>
+                                                            <select name="qrcode" id="qrcode" class="form-control form-control-sm" onchange="showTable()">
+                                                                <option value="table">Table</option>
+                                                                <option value="stall">Stall / Seat</option>
+                                                            </select>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-3 col-6 stall_show" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label>From Stall / Seat</label>
+                                                        <input type="number" name="from_stall" class="form-control form-control-sm stall_req" required="" placeholder="From Stall" value="1">
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-3 col-6">
+                                                <div class="col-md-3 col-6  stall_show" style="display: none;">
                                                     <div class="form-group">
-                                                        <label>Table</label>
-                                                        <input type="number" name="table" class="form-control form-control-sm" placeholder="Table" required="">
+                                                        <label>To Stall / Seat</label>
+                                                        <input type="number" name="to_stall" class="form-control form-control-sm stall_req" required="" placeholder="To Stall" value="1">
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-3 col-6">
+                                                <div class="col-md-3 col-6 table_show">
                                                     <div class="form-group">
-                                                        <label>Stall</label>
-                                                        <input type="number" name="stock" class="form-control form-control-sm" required="" placeholder="Stall">
+                                                        <label>From Table</label>
+                                                        <input type="number" name="from_table" class="form-control form-control-sm table_req" placeholder="Table" required="" value="1">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6 table_show">
+                                                    <div class="form-group">
+                                                        <label>To Table</label>
+                                                        <input type="number" name="to_table" class="form-control form-control-sm table_req" placeholder="Table" required="" value="1">
                                                     </div>
                                                 </div>
 
@@ -131,6 +143,26 @@
 
 
 <script type="text/javascript">
+    showTable();
+    function showTable(){
+        var qrcode = $('#qrcode').val();
 
+        $('.stall_show').hide();
+        $('.table_show').show();
+        $('.stall_req').prop('required',false);
+        $('.table_req').prop('required',true);
+
+        if(qrcode == 'stall'){
+            $('.stall_show').show();
+            $('.table_show').hide();
+            $('.table_req').prop('required',false);
+            $('.stall_req').prop('required',true);
+        }else{
+            $('.stall_show').hide();
+            $('.table_show').show();
+            $('.stall_req').prop('required',false);
+            $('.table_req').prop('required',true);
+        }
+    }
 
 </script>
