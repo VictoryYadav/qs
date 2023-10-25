@@ -1671,6 +1671,15 @@ class Customer extends CI_Controller {
         
     }
 
+    public function updateCustPayment(){
+        $CNo = $this->session->userdata('CNo');
+        $EID  = authuser()->EID;
+
+        $this->db2->query("UPDATE KitchenMain SET custPymt = 1 where EID = $EID and (MCNo = $CNo or CNo = $CNo)");
+
+        $this->session->set_userdata('CNo', 0);
+    }
+
     public function merge_order($TableNo){
         // echo "<pre>";
         // print_r($_SESSION);
@@ -2278,6 +2287,7 @@ class Customer extends CI_Controller {
             $pay['PymtType'] = 0;
             $pay['PymtRef'] = 0;
             $pay['Stat'] = 0;
+            $pay['EID'] = authuser()->EID;
 
             // echo "<pre>";
             // print_r($pay);

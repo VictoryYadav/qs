@@ -1460,12 +1460,20 @@ class Cust extends CI_Model{
         	$orderId = $postData["orderId"];
         }        
 
+        // delete billing, billingtax with existing cno
+        updateRecord('Billing', array('Stat' => 25), array('CNo' => $CNo,'EID' => $EID,'TableNo' => $TableNo));
+
+        updateRecord('Kitchen', array('BillStat' => 0), array('EID' => $EID,
+        				'MCNo' => $CNo,'TableNo' => $TableNo));
+        updateRecord('KitchenMain', array('BillStat' => 0), array('EID' => $EID,
+        				'MCNo' => $CNo,'TableNo' => $TableNo));
+        // end of code 
 		$res = getBillingDataByEID_CNo($EID, $CNo, $per_cent);
       
             if (empty($res['kitcheData'])) {
                 $response = [
                     "status" => 0,
-                    "msg" => "No BILL CREATION REQUIRED "
+                    "msg" => "NO BILL CREATION REQUIRED "
                 ];
                 
             } else {
@@ -1541,6 +1549,7 @@ class Cust extends CI_Model{
                     foreach ($res['taxDataArray'] as $key => $value1) {
                         foreach ($value1 as $key => $value) {
                             $BillingTax['BillId'] = $lastInsertBillId;
+                            $BillingTax['MCNo'] = $CNo;
                             $BillingTax['TNo'] = $value['TNo'];
                             $BillingTax['TaxPcent'] = $value['TaxPcent'];
                             $BillingTax['TaxAmt'] = $value['SubAmtTax'];
@@ -1621,7 +1630,7 @@ class Cust extends CI_Model{
                 $this->db2->trans_complete();
 
                 $this->session->set_userdata('KOTNo', 0);
-                $this->session->set_userdata('CNo', 0);
+                // $this->session->set_userdata('CNo', 0);
                 $this->session->set_userdata('itemTotalGross', 0);
 
                 $response = [

@@ -150,6 +150,7 @@ class Phonepe extends CI_Controller {
         $pay['PymtType'] = 0;
         $pay['PymtRef'] = $resp['providerReferenceId'];
         $pay['Stat'] = 1;
+        $pay['EID'] = authuser()->EID;
 
         // echo "<pre>";
         // print_r($pay);

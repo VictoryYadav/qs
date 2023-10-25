@@ -1495,7 +1495,7 @@ class Restaurant extends CI_Controller {
             $STVcd = $_POST['STVcd'];
 
             if ($EType == 5) {
-                $q = "SELECT b.TableNo, BillId, BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND et.CCd = $STVcd AND b.EID = $EID AND b.Stat = 0 AND  b.TableNo = et.TableNo";
+                $q = "SELECT b.TableNo, BillId, BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND et.CCd = $STVcd AND b.EID = $EID AND  b.TableNo = et.TableNo";
                 if(isset($_POST['BillId']) && $_POST['BillId'] > 0){
                     $bid = $_POST['BillId'];
                     $q.=" and b.BillId = '$bid'";
@@ -1542,14 +1542,15 @@ class Restaurant extends CI_Controller {
             $id = $_POST['id'];
             $mode = $_POST['mode'];
             $cNo = $_POST['CNo'];
-            $q1 = "UPDATE Billing SET PaidAmt = $paidAmount, PaymtMode = '".$mode."', Stat = 1  WHERE BillId = $id AND EID = $EID";
+            $q1 = "UPDATE Billing  SET PaidAmt = $paidAmount, PaymtMode = '".$mode."', Stat = 1,payRest=1  WHERE BillId = $id AND EID = $EID";
             // print_r($q1);
+            updateRecord('BillPayments', array('Stat' => 1), array('BillId' => $id,'EID' => $EID));
             $billData = $this->db2->query($q1);
 
             if($EType == 1){
                 $stat = 1;
                 //Session::set('KOTNo',0);
-                $q2 = "UPDATE Kitchen k, KitchenMain km SET  k.Stat = $stat, k.payRest=1, km.payRest=1 WHERE km.BillStat = $id AND (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
+                $q2 = "UPDATE Kitchen k, KitchenMain km SET  k.Stat = $stat, k.payRest=1, km.payRest=1 WHERE (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
                 // print_r($q2);
                 $kitchenUpdate = $this->db2->query($q2);
             }
@@ -1566,7 +1567,7 @@ class Restaurant extends CI_Controller {
                 
             }
 
-            $q2 = "UPDATE Kitchen k, KitchenMain km SET  k.Stat = $stat, k.payRest=1, km.payRest=1 WHERE km.BillStat = $id AND (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
+            $q2 = "UPDATE Kitchen k, KitchenMain km SET  k.Stat = $stat, k.payRest=1, km.payRest=1 WHERE (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
                 // print_r($q2);
             $kitchenUpdate = $this->db2->query($q2);
 
@@ -1577,7 +1578,7 @@ class Restaurant extends CI_Controller {
             $custPymtOb['PaidAmt'] = $billAmt;
             $custPymtOb['PaymtMode'] = $pymtMode;
             // $custPymtObj->create();
-            $this->db->insert('CustPymts', $custPymtOb);
+            // $this->db2->insert('CustPymts', $custPymtOb);
 
             $response = [
                 "status" => 1,

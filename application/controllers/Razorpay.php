@@ -103,9 +103,9 @@ class Razorpay extends CI_Controller {
         $data = [
             "key"               => $keyId,
             "amount"            => $amount,
-            "name"              => "Quick Service",
-            "description"       => "Food App",
-            "image"             => base_url('assets_admin/')."images/QSLogo.png",
+            "name"              => "Eat-Out",
+            "description"       => "Eat-Out",
+            "image"             => base_url('theme/')."images/Eat-Out-Icon.png",
             "prefill"           => [
                 "name"              => "Test User",
                 "email"             => "test@gmail.com",
@@ -183,6 +183,7 @@ class Razorpay extends CI_Controller {
             $pay['PymtType'] = 0;
             $pay['PymtRef'] = $referenceId;
             $pay['Stat'] = 1;
+            $pay['EID'] = $EID;
 
             // echo "<pre>";
             // print_r($pay);

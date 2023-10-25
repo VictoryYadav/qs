@@ -39,8 +39,8 @@
                 // could be database or something else)
                 // print_r($_POST);
                 $attributes = array(
-                    'razorpay_order_id' => $_SESSION['razorpay_order_id'],
-                    // 'razorpay_order_id' => $_POST['razorpay_order_id'],
+                    // 'razorpay_order_id' => $_SESSION['razorpay_order_id'],
+                    'razorpay_order_id' => $_POST['razorpay_order_id'],
                     'razorpay_payment_id' => $_POST['razorpay_payment_id'],
                     'razorpay_signature' => $_POST['razorpay_signature']
                 );

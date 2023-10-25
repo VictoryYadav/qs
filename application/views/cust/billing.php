@@ -612,9 +612,9 @@
                     });
 
 
-                    $('#download-to-pdf').on('click', function() {
-                        alert('Thank you for using Quick Service.');
-                    });
+                    // $('#download-to-pdf').on('click', function() {
+                    //     alert('Thank you for using Quick Service.');
+                    // });
 
                     function bill_page(billid){
                         window.location.href = "<?= base_url('customer/rating');?>"+billid;

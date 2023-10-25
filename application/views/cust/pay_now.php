@@ -312,11 +312,17 @@ function goToBill(){
     var total = $('#sum').val();
 
     if(payable == total){
+        $.post('<?= base_url('customer/updateCustPayment') ?>',function(res){
+        
+        });
+        
      window.location = '<?= base_url();?>customer/bill/'+BillId;   
     }
 
     // setInterval(function(){ goToBill(); }, 3000);
 }
+
+
 
 </script>
 

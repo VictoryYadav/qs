@@ -124,7 +124,6 @@
                                                                     <button class="btn btn-sm btn-success" v-on:click="setPaidAmount(index, data.BillId,data.CNo,data.TableNo,data.CustId, data.BillNo, data.TotAmt, data.PaymtMode);" >
                                                                         <i class="fas fa-check-double"></i> 
                                                                     </button>
-                                                                    </button>
                                                                     
                                                                     <!-- v-on:click="PrintBill(data.BillId, index,<?= $EID;?>);" Bill Printing -->
                                                                     <a :href="'vtrend:billid='+data.BillId+'&eid=<?= $EID;?>&kotno=0&s=<?= $_SESSION['DynamicDB'];?>'">
