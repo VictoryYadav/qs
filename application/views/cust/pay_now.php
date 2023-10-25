@@ -31,9 +31,11 @@ body{
                     <b id="tipAmt">0</b>
                 </div> -->
                 
+                <?php if($this->session->userdata('MultiPayment') > 0){ ?>
                 <div class="col-md-2 col-6">
                     <button class="btn btn btn-sm btn-success" id="addrow"><i class="fa fa-plus"></i></button>
                 </div>
+            <?php } ?>
             </div>
             
             <div class="row mt-1">
@@ -90,7 +92,7 @@ body{
                                 <?php } else{ ?>
                                 <tr>
                                     <td>
-                                        <input type="number" placeholder="Amount" class="form-control" required name="amount" id="amount1" value="<?= round($payable); ?>">
+                                        <input type="number" placeholder="Amount" class="form-control" required name="amount" id="amount1" value="<?= round($payable); ?>" <?php if($this->session->userdata('MultiPayment') == 0){ echo 'readonly'; } ?>>
                                     </td>
                                     <td>
                                         <select name="mode" id="mode1" class="form-control" required>
