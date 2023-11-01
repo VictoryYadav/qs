@@ -121,20 +121,19 @@
 
 </head>
 
-<body translate="no" onload="window.print()">
-
+<body translate="no">
+  <!-- <body translate="no" onload="window.print()"> -->
 
   <div id="invoice-POS">
     <center id="top">
-        <h1><?= $hotelName ?></h1>
+        <h1 style="margin-bottom: 5px;"><?= $hotelName ?></h1>
     </center>
 
     <div id="mid">
-      <div class="info">
-        <h2>Contact Info</h2>
-        <p>
-            <?= $address ?>, <?= $city ?>-<?= $pincode ?><br>
-            Phone: <?= $phone ?><br>
+      <div class="info" style="text-align: center;">
+        <!-- <h2>Contact Info</h2> -->
+            <?= $address ?>, <?= $city ?>-<?= $pincode ?>,
+            Tel: <?= $phone ?><br>
             <?php if ($gstno != '-') { ?>
                 GST NO: <?= $gstno ?><br>
             <?php } ?>
@@ -144,20 +143,23 @@
             <?php if ($cinno != '-') { ?>
                 CIN NO: <?= $cinno ?>
             <?php } ?>
-        </p>
       </div>
     </div><!--End Invoice Mid-->
 
     <div>
       <table>
         <?php if($CustNo == 0){?>
-        <tr>
+        <tr style="border-bottom: 1px solid black;">
+          <?php 
+          if(!empty($Fullname)){
+          ?>
           <td>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cell No: <?= $CellNo; ?>
+            <?= $Fullname.',   '; ?> Cell : <?= $CellNo; ?>
           </td>
+          <?php } ?>
         </tr>
         <?php } ?>
-        <tr>
+        <tr style="border-bottom: 1px solid black;">
           <td>Bill No: <?= $billno ?><br>
             DATE: <?= $dateOfBill ?>
           </td>
@@ -172,9 +174,6 @@
 
         <div id="table">
             <?php
-                        // get repository  : billing/bill_print_body.repo.php
-                        // include('repository/billing/bill_print_body.repo.php');
-
                     foreach ( $billData as $key => $value ) {
                         $TaxType = $value['TaxType'];
                         if( $key != 0 ){
@@ -190,15 +189,15 @@
                                         $sameTaxType .= ' <tr class="service"> ';
                                         if($data['Itm_Portion'] > 4 ){
                                             
-                                            $sameTaxType .= ' <td class="tableitem"><p class="itemtext">'.$data['ItemNm'].' ( '.$data['Portions'].' ) </p></td> ';
+                                            $sameTaxType .= ' <td class="tableitem">'.$data['ItemNm'].' ( '.$data['Portions'].' )</td> ';
 
                                         }else{
 
-                                            $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].'</td> ';
+                                            $sameTaxType .= ' <td>'.$data['ItemNm'].'</td> ';
 
                                         }
                                         
-                                        $sameTaxType .= ' <td> '.$data['Qty'].' </td>';
+                                        $sameTaxType .= ' <td>'.$data['Qty'].' </td>';
                                         $sameTaxType .= ' <td>'.$data['ItmRate'].'</td> ';
                                         $sameTaxType .= ' <td>'.$data['ItemAmt'].'</td> ';
                                         $sameTaxType .= ' </tr> ';
@@ -211,14 +210,14 @@
                     }
 
                     function newTaxType($data,$sameTaxType,$TaxType,$taxDataArray,$itemTotal){
-                        $newTaxType  = ' <div style="margin-bottom: 15px;"> ';
+                        $newTaxType  = ' <div style="margin-bottom: 10px;"> ';
                         $newTaxType .= ' <table style="width:100%;"> ';
                         $newTaxType .= ' <tbody> ';
                         $newTaxType .= ' <tr class="tabletitle"> ';
-                        $newTaxType .= ' <th class="item">Menu Item </th> ';
-                        $newTaxType .= ' <th>Qty</th> ';
-                        $newTaxType .= ' <th>Rate</th> ';
-                        $newTaxType .= ' <th>Amt</th> ';
+                        $newTaxType .= ' <th class="item" style="text-align: left;">Menu Item </th> ';
+                        $newTaxType .= ' <th style="text-align: left;">Qty</th> ';
+                        $newTaxType .= ' <th style="text-align: left;">Rate</th> ';
+                        $newTaxType .= ' <th style="text-align: left;">Amt</th> ';
                         $newTaxType .= ' </tr> ';
 
                         $newTaxType .=  $sameTaxType;
@@ -227,9 +226,9 @@
                         $newTaxType .= ' <td></td> <td></td> <td></td> <td></td>';
                         $newTaxType .= ' </tr> ';
                         $newTaxType .= ' <tr> ';
-                        $newTaxType .= ' <td style="text-align: left;"><i>Group Total</i></td> ';
+                        $newTaxType .= ' <td style="text-align: left;" class="tableitem">Group Total</td> ';
                         $newTaxType .= ' <td></td> <td></td>';
-                        $newTaxType .= ' <td>'.$itemTotal.'</td> ';
+                        $newTaxType .= ' <td class="tableitem">'.$itemTotal.'</td> ';
                         $newTaxType .= ' </tr> ';
                         $sub_total = 0;
                         foreach ($taxDataArray as $key => $value) {
@@ -241,10 +240,10 @@
                                     // $total_tax = calculatTotalTax($total_tax,number_format($dataTax['SubAmtTax'],2));
 
                                         $newTaxType .= ' <tr class="service"> ';
-                                        $newTaxType .= ' <td class="tableitem"><p class="itemtext"> <i> '.$dataTax['ShortName'].''.$dataTax['TaxPcent'].'% </i></p></td> ';
+                                        $newTaxType .= ' <td class="tableitem">'.$dataTax['ShortName'].''.$dataTax['TaxPcent'].'% </td> ';
                                         $newTaxType .= ' <td></td> ';
                                         $newTaxType .= ' <td></td> ';
-                                        $newTaxType .= ' <td>'.$dataTax['SubAmtTax'].'</td> ';
+                                        $newTaxType .= ' <td class="tableitem">'.$dataTax['SubAmtTax'].'</td>';
                                         $newTaxType .= ' </tr> ';
                                     
                                 }
@@ -259,7 +258,7 @@
                         }
                         $sub_total = $sub_total  + $itemTotal;
 
-                        $newTaxType .= ' <tr style="background: #80808052;"> ';
+                        $newTaxType .= ' <tr style="background: #80808052;border-bottom:1px dashed black; "> ';
                         $newTaxType .= ' <td style="text-align: left; font-weight: bold;">Group Sub Total</td> ';
                         $newTaxType .= ' <td></td> <td></td>';
                         $newTaxType .= ' <td>'.$sub_total.'</td> ';
@@ -339,7 +338,7 @@
                         </table>
                     </div>
                     <div style="border-bottom: 1px solid;"></div>
-                    <p><?= $thankuline ?></p>
+                    <?= $thankuline ?>
                     <br>
                     <?php if(isset($_GET['ShowRatings']) && $_GET['ShowRatings'] == 1){
                         

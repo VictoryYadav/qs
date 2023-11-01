@@ -1672,7 +1672,7 @@ class Customer extends CI_Controller {
     }
 
     public function print($billId){
-        
+
         $data['billId'] = $billId;
 
         $EID = authuser()->EID;
@@ -1694,6 +1694,7 @@ class Customer extends CI_Controller {
             $data['taxDataArray'] = $res['taxDataArray'];
 
             $data['hotelName'] = $billData[0]['Name'];
+            $data['Fullname'] = $billData[0]['FName'].' '.$billData[0]['LName'];
             $data['phone'] = $billData[0]['PhoneNos'];
             $data['gstno'] = $billData[0]['GSTno'];
             $data['fssaino'] = $billData[0]['FSSAINo'];
