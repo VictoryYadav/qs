@@ -310,6 +310,7 @@
         <div class="container">
 
             <div id="download-to-pdf" class="container billView">
+                <a href="<?= base_url('customer/print/'.$billId); ?>" class="btn btn-sm btn-primary" target="_blank">Print</a>
                     <div class="text-center">
                         <p style="font-weight: bold;"><?= $hotelName ?></p>
                         <p style="margin-bottom: unset;"><?= $address ?>, <?= $city ?>-<?= $pincode ?></p>
@@ -419,7 +420,7 @@
                         $newTaxType .= ' <td></td> <td></td> <td></td> <td></td>';
                         $newTaxType .= ' </tr> ';
                         $newTaxType .= ' <tr> ';
-                        $newTaxType .= ' <td style="text-align: left;"><i>Item Total</i></td> ';
+                        $newTaxType .= ' <td style="text-align: left;"><i>Group Total</i></td> ';
                         $newTaxType .= ' <td></td> <td></td>';
                         $newTaxType .= ' <td style="float: right;">'.$itemTotal.'</td> ';
                         $newTaxType .= ' </tr> ';
@@ -452,7 +453,7 @@
                         $sub_total = $sub_total  + $itemTotal;
 
                         $newTaxType .= ' <tr style="background: #80808052;"> ';
-                        $newTaxType .= ' <td style="text-align: left; font-weight: bold;">Sub Total</td> ';
+                        $newTaxType .= ' <td style="text-align: left; font-weight: bold;">Group Sub Total</td> ';
                         $newTaxType .= ' <td></td> <td></td>';
                         $newTaxType .= ' <td style="float: right;">'.$sub_total.'</td> ';
                         $newTaxType .= ' </tr> ';
@@ -594,31 +595,32 @@
 <script>
                     
 
-                    $(document).ready(function() {
-                        var doc = new jsPDF();
-                        var specialElementHandlers = {
-                            '#editor': function(element, renderer) {
-                                return true;
-                            }
-                        };
+$(document).ready(function() {
+    var doc = new jsPDF();
+    var specialElementHandlers = {
+        '#editor': function(element, renderer) {
+            return true;
+        }
+    };
 
-                        $('#download-pdf').click(function() {
-                            doc.fromHTML($('#download-to-pdf').html(), 15, 15, {
-                                'width': 170,
-                                'elementHandlers': specialElementHandlers
-                            });
-                            doc.save('bill.pdf');
-                        });
-                    });
+    $('#download-pdf').click(function() {
+        doc.fromHTML($('#download-to-pdf').html(), 15, 15, {
+            'width': 170,
+            'elementHandlers': specialElementHandlers
+        });
+        doc.save('bill.pdf');
+    });
+});
 
 
-                    // $('#download-to-pdf').on('click', function() {
-                    //     alert('Thank you for using Quick Service.');
-                    // });
+// $('#download-to-pdf').on('click', function() {
+//     alert('Thank you for using Quick Service.');
+// });
 
-                    function bill_page(billid){
-                        window.location.href = "<?= base_url('customer/rating');?>"+billid;
-                    }
-                </script>
+function bill_page(billid){
+    window.location.href = "<?= base_url('customer/rating');?>"+billid;
+}
+
+</script>
 
 </html>

@@ -713,6 +713,42 @@ class Rest extends CI_Model{
 		return $this->db2->select('PymtMode,Name,Company, CodePage1')->get_where('ConfigPymt', array('Stat' => 1))->result_array();
 	}
 
+	public function get_MCatgId(){
+		return $this->db2->select('MCatgId, MCatgNm')->get_where('MenuCatg', array('EID' => authuser()->EID, 'Stat' => 0 ))->result_array();
+	}
+	
+	public function getCuisineList(){
+		return $this->db2->select('c.CID, c.Name, c.Name2, c.Name3, c.Name4')
+						->order_by('ec.Rank', 'ASC')
+						->join('Cuisines c', 'c.CID = ec.CID', 'inner')
+						->get_where('EatCuisine ec', array('ec.EID' => authuser()->EID,'ec.Stat' => 0))
+						->result_array();
+	}
+
+	public function get_foodType(){
+		return $this->db2->select('FID, Opt')->order_by('CTyp, Rank','ASC')->get_where('FoodType', array('Stat' => 0, 'EID' => authuser()->EID))->result_array();	
+	}
+
+	public function get_kitchen(){
+		return $this->db2->select('KitCd ,KitName')->get_where('Eat_Kit', array('Stat' => 0))->result_array();	
+	}
+
+	public function get_eat_section(){
+		return $this->db2->select('SecId,Name')->get('Eat_Sections')->result_array();	
+	}
+
+	public function get_item_portion(){
+		return $this->db2->select('IPCd,Name')->get('ItemPortions')->result_array();	
+	}
+
+	public function get_item_name_list($name){
+
+		$item_name = $name.'%';
+
+		return $this->db2->query("SELECT ItemId,ItemNm FROM `MenuItem` WHERE LOWER(ItemNm) LIKE '$item_name'")->result_array();
+
+	}
+
 	
 
 	

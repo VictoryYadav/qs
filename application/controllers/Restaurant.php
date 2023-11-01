@@ -3601,6 +3601,146 @@ class Restaurant extends CI_Controller {
 
     public function add_item(){
 
+        if($this->input->method(true)=='POST'){
+
+            $getItem = $this->db2->select('UItmCd, Rank')->order_by('ItemId', 'DESC')->get('MenuItem')->row_array();
+
+            $data = $_POST;
+
+            $data['UItmCd'] = $getItem['UItmCd']+1;
+            $data['Rank'] = $getItem['Rank']+1;
+            $data['EID'] = authuser()->EID;
+            $data['ChainId'] = authuser()->ChainId;
+            $data['Stall'] = 0;
+            $data['MTyp'] = 0;
+            $data['Value'] = 0;
+            $data['Itm_Portion'] = 0;
+            $data['AvgRtng'] = '3.5';
+            $data['Stat'] = 0;
+            $data['LoginCd'] = authuser()->RUserId;
+
+            $flag = 0;
+            // echo "<pre>";
+            // print_r($_POST);
+            // print_r($_FILES);
+            // die;
+            if(isset($_FILES['item_file']['name']) && !empty($_FILES['item_file']['name'])){ 
+
+                $files = $_FILES['item_file'];
+
+                $allowed = array('jpeg', 'jpg');
+                $filename_c = $_FILES['item_file']['name'];
+                $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                if (!in_array($ext, $allowed)) {
+                    $flag = 1;
+                    $this->session->set_flashdata('error','Support only jpg,jpeg format!');
+                }
+                if($files['size'] > 1048576){
+                    $flag = 1;
+                    $this->session->set_flashdata('error','File upload less than 1MB!');   
+                }
+
+                $_FILES['item_file']['name']= $files['name'];
+                $_FILES['item_file']['type']= $files['type'];
+                $_FILES['item_file']['tmp_name']= $files['tmp_name'];
+                $_FILES['item_file']['error']= $files['error'];
+                $_FILES['item_file']['size']= $files['size'];
+                // $file = str_replace(' ', '_', rand('10000','999').'_'.$files['name']);
+                $file = $data['ItemNm'];
+
+                $folderPath = 'uploads/e'.authuser()->EID;
+
+                if($flag == 0)
+                    $res = do_upload('item_file',$file,$folderPath,'*');
+                }
+                
+              }
+
+            if($flag == 0){
+              $ItemId = insertRecord('MenuItem', $data);
+              if(!empty($ItemId)){
+                $this->session->set_flashdata('success','Record Inserted.');
+              }
+            }
+        }
+        
+        $data['title'] = 'Add Item';
+        $data['MCatgIds'] = $this->rest->get_MCatgId();
+        $data['CuisineList'] = $this->rest->getCuisineList();
+        $data['FoodType'] = $this->rest->get_foodType();
+        $data['Eat_Kit'] = $this->rest->get_kitchen();
+        // $data['EatSections'] = $this->rest->get_eat_section();
+        // $data['ItemPortions'] = $this->rest->get_item_portion();
+        
+        $this->load->view('rest/add_item', $data);
+    }
+
+    public function get_item_name(){
+        extract($_POST);
+        $data = $this->rest->get_item_name_list($name);
+        echo json_encode($data);
+        die;
+    }
+
+    public function edit_item($ItemId){
+
+        if($this->input->method(true)=='POST'){
+ 
+            $updateData = $_POST;
+
+            $flag = 0;
+
+            if(isset($_FILES['item_file']['name']) && !empty($_FILES['item_file']['name'])){ 
+
+                // remove existing file
+                $folderPath = 'uploads/e'.authuser()->EID;
+                $filename = $folderPath.'/'.$updateData['ItemNm'].'.jpg'; 
+                if (file_exists($filename)) {
+                    unlink($filename);
+                }
+
+                $files = $_FILES['item_file'];
+
+                $allowed = array('jpeg', 'jpg');
+                $filename_c = $_FILES['item_file']['name'];
+                $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                if (!in_array($ext, $allowed)) {
+                    $flag = 1;
+                    $this->session->set_flashdata('error','Support only jpg,jpeg format!');
+                }
+                if($files['size'] > 1048576){
+                    $flag = 1;
+                    $this->session->set_flashdata('error','File upload less than 1MB!');   
+                }
+
+                $_FILES['item_file']['name']= $files['name'];
+                $_FILES['item_file']['type']= $files['type'];
+                $_FILES['item_file']['tmp_name']= $files['tmp_name'];
+                $_FILES['item_file']['error']= $files['error'];
+                $_FILES['item_file']['size']= $files['size'];
+                // $file = str_replace(' ', '_', rand('10000','999').'_'.$files['name']);
+                $file = $updateData['ItemNm'];
+                if($flag == 0){
+                    $res = do_upload('item_file',$file,$folderPath,'*');
+                }
+              }
+
+            if($flag == 0){
+                unset($updateData['ItemId']);
+                updateRecord('MenuItem', $updateData, array('ItemId' => $ItemId));
+                $this->session->set_flashdata('success','Record Updated.');
+            }
+        }
+        $data['title'] = 'Edit Item';
+        $data['ItemId'] = $ItemId;
+        $data['MCatgIds'] = $this->rest->get_MCatgId();
+        $data['CuisineList'] = $this->rest->getCuisineList();
+        $data['FoodType'] = $this->rest->get_foodType();
+        $data['Eat_Kit'] = $this->rest->get_kitchen();
+        // $data['EatSections'] = $this->rest->get_eat_section();
+        // $data['ItemPortions'] = $this->rest->get_item_portion();
+        $data['detail'] = $this->db2->get_where('MenuItem', array('ItemId' => $ItemId))->row_array();
+        $this->load->view('rest/edit_item', $data);
     }
 
 
