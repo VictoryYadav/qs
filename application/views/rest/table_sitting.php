@@ -1583,7 +1583,7 @@ width: 100%;*/
                                 // $("#table-view").css("background-color", "#0100ff3b"); 
                                 if(new_head == 1){
                                     template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>KOT No: ${item.FKOTNo}</b></td>
-                                    <td colspan="2" class="text-center" style=""><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.CNo}, ${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
+                                    <td colspan="2" class="text-center" style=""><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.CNo}, ${item.MergeNo},${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
                                     </tr>`;
                                     new_head = 0;
                                 }
@@ -1594,7 +1594,7 @@ width: 100%;*/
                                 // $("#table-view").css("background-color", "#0100ff3b"); 
                                 if(new_head == 1){
                                     template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>KOT No: ${item.FKOTNo}</b></td>
-                                    <td colspan="2" class="text-right" ><b><span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.CNo}, ${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
+                                    <td colspan="2" class="text-right" ><b><span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.CNo},${item.MergeNo}, ${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
                                     </tr>`;
                                     new_head = 0;
                                 }
@@ -1616,48 +1616,50 @@ width: 100%;*/
                 }
             });
         }
-        function getKitchenData(CNo, FKOTNo){
-            $.ajax({
-                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
-                type: "POST",
-                data: {
-                    getKitchenData: 1,
-                    FKOTNo: FKOTNo,
-                    CNo: CNo
-                },
-                dataType: "json",
-                success: (response) => {
-                    console.log(response);
-                    var template = '';
-                    if (response.status == 1) {
-                        if(response.data.length > 1){
-                            response.data.forEach((item) => {
-                                template += '<tr><td><input name="ukots[]" checked type="checkbox" value="'+item.UKOTNo+'" ></td><td>'+item.KitName+'</td></tr>';
-                            });
-                            $("#print_kot_data").html(template);
-                            $('#kot_no').html(FKOTNo);
-                            $('#print_kot').modal('show');
-                        }else{
-                            if(response.data.length){
-                                a = 'vtrend:billid=0&eid=<?= $EID;?>&kotno='+response.data[0].UKOTNo+'&s=<?= $_SESSION['DynamicDB'];?>';
-                                window.location.href=a;
-                            }
-                        }
-                    } else {
-                        console.log(response.msg);
-                    }
-                    // destroyDataTableForItem();
-                    // alert(template);
-                    
-                    // dataTableForItem();
-                },
-                error: (xhr, status, error) => {
-                    console.log(xhr);
-                    console.log(status);
-                    console.log(error);
-                }
-            });
+        function getKitchenData(CNo, MergeNo, FKOTNo){
+            window.location.href="<?= base_url('restaurant/kot_print/'); ?>"+CNo+'/'+MergeNo+'/'+FKOTNo;
         }
+
+        // old code getkitchendata not pass mergeno
+        // function getKitchenData(CNo, FKOTNo){
+        //     $.ajax({
+        //         url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
+        //         type: "POST",
+        //         data: {
+        //             getKitchenData: 1,
+        //             FKOTNo: FKOTNo,
+        //             CNo: CNo
+        //         },
+        //         dataType: "json",
+        //         success: (response) => {
+        //             console.log(response);
+        //             var template = '';
+        //             if (response.status == 1) {
+        //                 if(response.data.length > 1){
+        //                     response.data.forEach((item) => {
+        //                         template += '<tr><td><input name="ukots[]" checked type="checkbox" value="'+item.UKOTNo+'" ></td><td>'+item.KitName+'</td></tr>';
+        //                     });
+        //                     $("#print_kot_data").html(template);
+        //                     $('#kot_no').html(FKOTNo);
+        //                     $('#print_kot').modal('show');
+        //                 }else{
+        //                     if(response.data.length){
+        //                         a = 'vtrend:billid=0&eid=<?= $EID;?>&kotno='+response.data[0].UKOTNo+'&s=<?= $_SESSION['DynamicDB'];?>';
+        //                         window.location.href=a;
+        //                     }
+        //                 }
+        //             } else {
+        //                 console.log(response.msg);
+        //             }
+                    
+        //         },
+        //         error: (xhr, status, error) => {
+        //             console.log(xhr);
+        //             console.log(status);
+        //             console.log(error);
+        //         }
+        //     });
+        // }
         function getAllItems(tableNo, custId, cNo) {
             // console.log("TABLE_"+tableNo+"CUSTID_"+custId);
             $.ajax({

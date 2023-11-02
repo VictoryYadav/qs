@@ -121,8 +121,8 @@
 
 </head>
 
-<body translate="no">
-  <!-- <body translate="no" onload="window.print()"> -->
+<!-- <body translate="no"> -->
+  <body translate="no" onload="window.print()">
 
   <div id="invoice-POS">
     <center id="top">

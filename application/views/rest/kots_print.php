@@ -121,12 +121,12 @@
 
 </head>
 
-<body translate="no">
-<!-- <body translate="no" onload="window.print()"> -->
+<!-- <body translate="no"> -->
+<body translate="no" onload="window.print()">
 
   <div id="invoice-POS">
     <center id="top">
-        <h2 style="margin-bottom: 5px;"><?= authuser()->RestName;  ?></h2>
+        <h2 style="margin-bottom: 5px;font-size: 16px;"><?= authuser()->RestName.' ('.$kotList[0]['KitName'].')';  ?></h2>
     </center>
 
     <div>

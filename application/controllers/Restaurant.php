@@ -1831,7 +1831,7 @@ class Restaurant extends CI_Controller {
             $CNo = $_POST['cNo'];
 
             // get kot from kitchen for particular row  - 14/1/20 
-            $q = "SELECT km.TableNo, k.FKOTNo, k.KOTNo, k.KitCd, SUM(k.Qty) as Qty , k.KOTPrintNo, k.ItemId, i.ItemNm, SUM(k.Qty) as Qty, SUM(k.AQty) as AQty, SUM(k.DQty) as DQty,TIME_FORMAT(k.EDT, '%H:%i') as EDT, km.CellNo, km.CNo, km.MergeNo FROM Kitchen k, KitchenMain km, MenuItem i WHERE k.ItemId = i.ItemId AND ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>99 ) AND k.EID=km.EID AND k.CNo = km.CNo AND km.EID = $EID and (km.CNo = $CNo OR km.MCNo = $CNo) and k.MergeNo = km.MergeNo GROUP BY k.FKOTNo, k.KOTNo, k.KitCd, k.KOTPrintNo, k.ItemId, k.EDT, km.TableNo, km.CellNo, km.CNo order by k.KOTNo, k.FKOTNo, i.ItemNm DESC";
+            $q = "SELECT k.MergeNo,km.TableNo, k.FKOTNo, k.KOTNo, k.KitCd, SUM(k.Qty) as Qty , k.KOTPrintNo, k.ItemId, i.ItemNm, SUM(k.Qty) as Qty, SUM(k.AQty) as AQty, SUM(k.DQty) as DQty,TIME_FORMAT(k.EDT, '%H:%i') as EDT, km.CellNo, km.CNo, km.MergeNo FROM Kitchen k, KitchenMain km, MenuItem i WHERE k.ItemId = i.ItemId AND ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>99 ) AND k.EID=km.EID AND k.CNo = km.CNo AND km.EID = $EID and (km.CNo = $CNo OR km.MCNo = $CNo) and k.MergeNo = km.MergeNo GROUP BY k.FKOTNo, k.KOTNo, k.KitCd, k.KOTPrintNo, k.ItemId, k.EDT, km.TableNo, km.CellNo, km.CNo order by k.KOTNo, k.FKOTNo, i.ItemNm DESC";
             // print_r($q);exit();
             $kots = $this->db2->query($q)->result_array();
             
