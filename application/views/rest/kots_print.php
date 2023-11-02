@@ -131,18 +131,18 @@
 
     <div>
       <table>
-        <tr style="border-bottom: 1px solid black;">
+        <tr style="border-bottom: 1px solid black;font-size: 17px;">
           <td>KOT No: <?= $kotList[0]['UKOTNo']; ?><br>
             Date: <?= date('d-M-Y H:i', strtotime($kotList[0]['LstModDt'])); ?>
           </td>
-          <td>Table: <b><?= $kotList[0]['TableNo']; ?></b></td>
+          <td>Table: <?= $kotList[0]['TableNo']; ?></td>
         </tr>
       </table>
     </div>
 
     <div id="bot">
 
-        <div id="table" style="border-bottom: 1px solid black;">
+        <div id="table" style="border-bottom: 1px solid black;font-size: 17px;">
             <table>
                 <tr class="tabletitle">
                     <th class="item" style="text-align: left;">Menu Item</th>
