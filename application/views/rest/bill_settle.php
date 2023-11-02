@@ -87,7 +87,7 @@
                                                         <tbody>
                                                             <tr v-if="billData.length > 0" v-for="(data, index) in billData">
                                                                 <td>
-                                                                    <a v-bind:href="'<?php echo base_url('restaurant/'); ?>bill_rcpt?restaurant=1&billId=' + data.BillNo" target="_blank" >
+                                                                    <a v-bind:href="'<?php echo base_url('restaurant/'); ?>bill/' + data.BillNo" target="_blank" >
                                                                         {{ data.BillNo }}
                                                                     </a>
                                                                 </td>
@@ -126,10 +126,10 @@
                                                                     </button>
                                                                     
                                                                     <!-- v-on:click="PrintBill(data.BillId, index,<?= $EID;?>);" Bill Printing -->
-                                                                    <a :href="'vtrend:billid='+data.BillId+'&eid=<?= $EID;?>&kotno=0&s=<?= $_SESSION['DynamicDB'];?>'">
-                                                                    <button class='btn btn-warning btn-sm'>
-                                                                        <i class="fas fa-print"></i> 
-                                                                    </button></a>
+
+                                                                    <a :href="'<?php echo base_url('restaurant/'); ?>print/' + data.BillNo" class='btn btn-warning btn-sm'>
+                                                                        <i class="fas fa-print"></i>
+                                                                    </a>
                                                                     <!-- Bill Cancellation -->
                                                                     <button class="btn btn-danger btn-sm" v-on:click="rejectBill(data.BillId, index, data.CNo, data.TableNo, data.CustId);">
                                                                         <i class="fas fa-window-close"></i> 

@@ -1466,10 +1466,7 @@ class Restaurant extends CI_Controller {
         // print_r($SqlQueryVar);exit;
         $data['SettingTableViewAccess'] = $this->db2->query($SqlQueryVar)->result_array();
 
-
         $data['title'] = 'Bill Settlement';
-        // echo "<pre>";
-        // print_r($data);exit();
         $this->load->view('rest/bill_settle',$data);
     }
 
@@ -3814,6 +3811,64 @@ class Restaurant extends CI_Controller {
         // print_r($data);
         // die;
         $this->load->view('rest/kots_print', $data);
+    }
+
+    public function print_pdf(){
+        // https://stackoverflow.com/questions/37831516/dompdf-with-codeigniter
+        $this->load->library('pdf');
+         $billId =17;
+        $data['billId'] = $billId;
+
+        $EID = authuser()->EID;
+
+        $detail = $this->db2->select('CustId,CustNo,CellNo')->get_where('Billing', array('BillId' => $billId, 'EID' => $EID))->row_array();
+        $CustId = $detail['CustId'];
+
+        $data['CustNo'] = $detail['CustNo'];
+        $data['CellNo'] = $detail['CellNo'];
+
+        $dbname = $this->session->userdata('my_db');
+
+        $res = getBillData($dbname, $EID, $billId, $CustId);
+        // echo "<pre>";
+        // print_r($res);
+        // die;
+        if(!empty($res['billData'])){
+
+            $billData = $res['billData'];
+            $data['ra'] = $res['ra'];
+            $data['taxDataArray'] = $res['taxDataArray'];
+
+            $data['hotelName'] = $billData[0]['Name'];
+            $data['Fullname'] = $billData[0]['FName'].' '.$billData[0]['LName'];
+            $data['phone'] = $billData[0]['PhoneNos'];
+            $data['gstno'] = $billData[0]['GSTno'];
+            $data['fssaino'] = $billData[0]['FSSAINo'];
+            $data['cinno'] = $billData[0]['CINNo'];
+            $data['billno'] = $billData[0]['BillNo'];
+            $data['dateOfBill'] = date('d-m-Y @ H:i', strtotime($billData[0]['BillDt']));
+            $data['address'] = $billData[0]['Addr'];
+            $data['pincode'] = $billData[0]['Pincode'];
+            $data['city'] = $billData[0]['City'];
+            $data['servicecharge'] = isset($billData[0]['ServChrg'])?$billData[0]['ServChrg']:"";
+            $data['bservecharge'] = $billData[0]['bservecharge'];
+            $data['SerChargeAmt'] = $billData[0]['SerChargeAmt'];
+
+            $data['tipamt'] = $billData[0]['Tip'];
+            $Stat = $billData[0]['Stat'];
+            $total = 0;
+            $sgstamt=0;
+            $cgstamt=0;
+            $grandTotal = $sgstamt + $cgstamt + $data['bservecharge'] + $data['tipamt'];
+            $data['thankuline'] = isset($billData[0]['Tagline'])?$billData[0]['Tagline']:"";
+
+            $data['total_discount_amount'] = $billData[0]['TotItemDisc'] + $billData[0]['BillDiscAmt'];
+            $data['total_packing_charge_amount'] = $billData[0]['TotPckCharge'];
+            $data['total_delivery_charge_amount'] = $billData[0]['DelCharge'];
+
+            $data['billData'] = $res['billData'];
+        }
+        $this->pdf->load_view('print', $data);
     }
 
 
