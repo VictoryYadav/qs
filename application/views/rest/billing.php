@@ -1,8 +1,13 @@
 <?php $this->load->view('layouts/customer/head'); 
         $EID = authuser()->EID;
 
+        $custId = $this->session->userdata('CustId');
+
         $dbname = $this->session->userdata('my_db');
-        $res = getBillData($dbname, $EID, $billId);
+        $res = getBillData($dbname, $EID, $billId, $custId);
+        // echo "<pre>";
+        // print_r($res);
+        // die;
 
         $billData = $res['billData'];
         $taxDataArray = $res['taxDataArray'];
@@ -299,7 +304,7 @@
 
     <section class="common-section p-2">
         <div class="container">
-
+            <a href="<?= base_url('restaurant/print/'.$billId); ?>" class="'btn btn-sm btn-primary">Print</a>
             <div id="download-to-pdf" class="container billView">
                     <div class="text-center">
                         <p style="font-weight: bold;"><?= $hotelName ?></p>
@@ -392,7 +397,7 @@
                         $newTaxType .= ' <td></td> <td></td> <td></td> <td></td>';
                         $newTaxType .= ' </tr> ';
                         $newTaxType .= ' <tr> ';
-                        $newTaxType .= ' <td style="text-align: left;"><i>Item Total</i></td> ';
+                        $newTaxType .= ' <td style="text-align: left;"><i>Group Total</i></td> ';
                         $newTaxType .= ' <td></td> <td></td>';
                         $newTaxType .= ' <td style="float: right;">'.$itemTotal.'</td> ';
                         $newTaxType .= ' </tr> ';
@@ -425,7 +430,7 @@
                         $sub_total = $sub_total  + $itemTotal;
 
                         $newTaxType .= ' <tr style="background: #80808052;"> ';
-                        $newTaxType .= ' <td style="text-align: left; font-weight: bold;">Sub Total</td> ';
+                        $newTaxType .= ' <td style="text-align: left; font-weight: bold;">Group Sub Total</td> ';
                         $newTaxType .= ' <td></td> <td></td>';
                         $newTaxType .= ' <td style="float: right;">'.$sub_total.'</td> ';
                         $newTaxType .= ' </tr> ';

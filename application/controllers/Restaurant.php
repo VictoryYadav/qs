@@ -1627,7 +1627,10 @@ class Restaurant extends CI_Controller {
         if(isset($_GET['billId'])){
             $data['billId'] = $_GET['billId'];
         }
-        $data['CustId'] = $this->session->userdata('CustId');
+        // $data['CustId'] = $this->session->userdata('CustId');
+        if(isset($_GET['CustId'])){
+            $data['CustId'] = $_GET['CustId'];
+        }
         //cumment by me
         // if ($CustId == '') {
         //     header('Location: index.php');
@@ -1659,7 +1662,7 @@ class Restaurant extends CI_Controller {
 
         $data['link'] = "https://qs.vtrend.org/item_details.php?cId=" . $data['cId'] . "&mCatgId=" . $data['mCatgId'] . "&cType=" . $data['cType'];
 
-        $billData = getBillData($data['dbname'], $data['EID'], $data['billId']); 
+        $billData = getBillData($data['dbname'], $data['EID'], $data['billId'], $data['CustId']); 
 
         $data['hotelName'] = $billData[0]['Name'];
         $data['phone'] = $billData[0]['PhoneNos'];
@@ -1748,6 +1751,9 @@ class Restaurant extends CI_Controller {
             die();
         }
         if(isset($_POST['getKitchenData']) && $_POST['getKitchenData']){
+            echo "<pre>";
+            print_r($_POST);
+            die;
             $f = $_POST['FKOTNo'];
             $c = $_POST['CNo'];
             $data = $this->db2->query("SELECT k.FKOTNo, ek.KitName, k.UKOTNo FROM Eat_Kit ek, Kitchen k, KitchenMain km WHERE ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>99 ) AND k.EID=km.EID AND k.CNo = km.CNo AND km.EID = $EID and (km.CNo = $c OR km.MCNo = $c) and k.FKOTNo = $f and k.MergeNo = km.MergeNo and ek.KitCd=k.KitCd and ek.EID=km.EID GROUP BY k.FKOTNo, ek.KitName, k.UKOTNo order by k.FKOTNo, ek.KitName, k.UKOTNo ASC")->result_array();
@@ -2064,7 +2070,7 @@ class Restaurant extends CI_Controller {
         if(!empty($_POST['getBill'])){
 
             $STVcd = $_POST['STVCd'];
-            $q = "SELECT b.TableNo, BillId, BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND et.CCd = $STVcd AND b.EID = $EID AND b.Stat = 1 AND  b.TableNo = et.TableNo";
+            $q = "SELECT b.TableNo,b.CustId, BillId, BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND et.CCd = $STVcd AND b.EID = $EID AND b.Stat = 1 AND  b.TableNo = et.TableNo";
             if(isset($_POST['BillId']) && $_POST['BillId'] > 0){
                 $bid = $_POST['BillId'];
                 $q.=" and b.BillId = '$bid'";
@@ -2894,7 +2900,7 @@ class Restaurant extends CI_Controller {
                 # code...
                 // $kitcheData = $this->db2->query("SELECT SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (date(km.LstModDt)) as OrdDt, c.CGSTRate, c.SGSTRate, c.GSTInclusiveRates, c.ServChrg, c.Tips from Kitchen k, KitchenMain km, MenuItem m, Config c where k.CNo=km.CNo AND c.EID=km.EID AND k.ItemId=m.ItemId AND (k.Stat<>4 AND k.Stat<>6 AND k.Stat<>7 AND k.Stat<>9 AND k.Stat<>99) AND km.EID=$EID And km.CNo=$CNo AND (km.CNo=$CNo OR km.MCNo=$CNo) AND k.BillStat=0 group by  date(km.LstModDt), c.CGSTRate, c.SGSTRate, c.GSTInclusiveRates, c.ServChrg, c.Tips order by date(km.LstModDt) Asc")->result_array();
 
-                $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7 AND k1.Stat<>9  AND k1.Stat<>99) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7  AND k1.Stat<>9 AND k1.Stat<>99) GROUP BY k1.EID) as TotPckCharge,  ip.Name as Portions, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,c.OnPymt,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7  AND k.Stat<>9 AND k.Stat<>10 AND k.Stat<>99) and km.EID = k.EID and km.EID = $EID And k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) AND km.BillStat=0 AND TIMEDIFF(Now(), km.LstModDt) < '10:00:00' group by km.CNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips, c.OnPymt  order by TaxType, m.ItemNm Asc")->result_array();
+                $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7 AND k1.Stat<>9  AND k1.Stat<>99) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7  AND k1.Stat<>9 AND k1.Stat<>99) GROUP BY k1.EID) as TotPckCharge,  ip.Name as Portions, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7  AND k.Stat<>9 AND k.Stat<>10 AND k.Stat<>99) and km.EID = k.EID and km.EID = $EID And k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) AND km.BillStat=0 AND TIMEDIFF(Now(), km.LstModDt) < '10:00:00' group by km.CNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by TaxType, m.ItemNm Asc")->result_array();
 
                 // include('../repository/payment/payment.repo.php');
 
@@ -3346,10 +3352,12 @@ class Restaurant extends CI_Controller {
             // die;
             $MergeNo = $_POST['mergeNo'];
             $EID = authuser()->EID;
+             // SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt,
 
-            $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7 AND k1.Stat<>9  AND k1.Stat<>99) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7  AND k1.Stat<>9 AND k1.Stat<>99) GROUP BY k1.EID) as TotPckCharge,   ip.Name as Portions,km.CNo,km.MergeNo, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,c.OnPymt,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>10 AND k.Stat<>99) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND km.CNo IN (Select km1.CNo from KitchenMain km1 where km1.MergeNo=$MergeNo) group by km.CNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips, c.OnPymt  order by TaxType, m.ItemNm Asc")->result_array();
+            $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7 AND k1.Stat<>9  AND k1.Stat<>99) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7  AND k1.Stat<>9 AND k1.Stat<>99) GROUP BY k1.EID) as TotPckCharge,   ip.Name as Portions,km.CNo,km.MergeNo, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.CustId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>10 AND k.Stat<>99) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND km.CNo IN (Select km1.CNo from KitchenMain km1 where km1.MergeNo=$MergeNo) group by km.CNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by TaxType, m.ItemNm Asc")->result_array();
             // echo "<pre>";
             // print_r($kitcheData);
+            // print_r($this->db2->last_query());die;
             
                 $taxDataArray = array();
                 if(!empty($kitcheData)){
@@ -3410,7 +3418,8 @@ class Restaurant extends CI_Controller {
                     // die;
                     $postData["orderAmount"] = $total;
                     $postData["paymentMode"] = 'RCash';
-
+                    $custId = $kitcheData[0]['CustId'];
+                    $this->session->set_userdata('CustId', $custId);
                     $res = billCreate($EID, $CNo, $postData);
                     if($res['status'] > 0){
                         $status = 'success';
@@ -3645,12 +3654,11 @@ class Restaurant extends CI_Controller {
                 $_FILES['item_file']['tmp_name']= $files['tmp_name'];
                 $_FILES['item_file']['error']= $files['error'];
                 $_FILES['item_file']['size']= $files['size'];
-                // $file = str_replace(' ', '_', rand('10000','999').'_'.$files['name']);
                 $file = $data['ItemNm'];
 
                 $folderPath = 'uploads/e'.authuser()->EID;
 
-                if($flag == 0)
+                if($flag == 0){
                     $res = do_upload('item_file',$file,$folderPath,'*');
                 }
                 
@@ -3741,6 +3749,71 @@ class Restaurant extends CI_Controller {
         // $data['ItemPortions'] = $this->rest->get_item_portion();
         $data['detail'] = $this->db2->get_where('MenuItem', array('ItemId' => $ItemId))->row_array();
         $this->load->view('rest/edit_item', $data);
+    }
+
+    public function print($billId){
+
+        $data['billId'] = $billId;
+
+        $EID = authuser()->EID;
+
+        $detail = $this->db2->select('CustId,CustNo,CellNo')->get_where('Billing', array('BillId' => $billId, 'EID' => $EID))->row_array();
+        $CustId = $detail['CustId'];
+
+        $data['CustNo'] = $detail['CustNo'];
+        $data['CellNo'] = $detail['CellNo'];
+
+        $dbname = $this->session->userdata('my_db');
+
+        $res = getBillData($dbname, $EID, $billId, $CustId);
+        // echo "<pre>";
+        // print_r($res);
+        // die;
+        if(!empty($res['billData'])){
+
+            $billData = $res['billData'];
+            $data['ra'] = $res['ra'];
+            $data['taxDataArray'] = $res['taxDataArray'];
+
+            $data['hotelName'] = $billData[0]['Name'];
+            $data['Fullname'] = $billData[0]['FName'].' '.$billData[0]['LName'];
+            $data['phone'] = $billData[0]['PhoneNos'];
+            $data['gstno'] = $billData[0]['GSTno'];
+            $data['fssaino'] = $billData[0]['FSSAINo'];
+            $data['cinno'] = $billData[0]['CINNo'];
+            $data['billno'] = $billData[0]['BillNo'];
+            $data['dateOfBill'] = date('d-m-Y @ H:i', strtotime($billData[0]['BillDt']));
+            $data['address'] = $billData[0]['Addr'];
+            $data['pincode'] = $billData[0]['Pincode'];
+            $data['city'] = $billData[0]['City'];
+            $data['servicecharge'] = isset($billData[0]['ServChrg'])?$billData[0]['ServChrg']:"";
+            $data['bservecharge'] = $billData[0]['bservecharge'];
+            $data['SerChargeAmt'] = $billData[0]['SerChargeAmt'];
+
+            $data['tipamt'] = $billData[0]['Tip'];
+            $Stat = $billData[0]['Stat'];
+            $total = 0;
+            $sgstamt=0;
+            $cgstamt=0;
+            $grandTotal = $sgstamt + $cgstamt + $data['bservecharge'] + $data['tipamt'];
+            $data['thankuline'] = isset($billData[0]['Tagline'])?$billData[0]['Tagline']:"";
+
+            $data['total_discount_amount'] = $billData[0]['TotItemDisc'] + $billData[0]['BillDiscAmt'];
+            $data['total_packing_charge_amount'] = $billData[0]['TotPckCharge'];
+            $data['total_delivery_charge_amount'] = $billData[0]['DelCharge'];
+
+            $data['billData'] = $res['billData'];
+        }
+        $this->load->view('print', $data);
+    }
+
+    public function kot_print($CNo, $mergeNo, $FKOTNo){
+
+        $data['kotList'] = $this->rest->getKotList($CNo, $mergeNo, $FKOTNo);
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $this->load->view('rest/kots_print', $data);
     }
 
 

@@ -161,7 +161,7 @@
         <?php } ?>
         <tr style="border-bottom: 1px solid black;">
           <td>Bill No: <?= $billno ?><br>
-            DATE: <?= $dateOfBill ?>
+            Date: <?= $dateOfBill ?>
           </td>
           <?php if ($CustNo != "0") : ?>
           <td>Ord: <b><?= $CustNo ?></b></td>
@@ -184,16 +184,25 @@
                             // build table with title
                             $sameTaxType  = '';
                             $itemTotal = 0;
+                            $portions = '';
+                            $std = '';
                             foreach ($billData as $keyData => $data) {
+                              if($data['Portions'] != 'Std'){
+                                  $portions = ' ('.$data['Portions'].')';
+                                }
+                                if($data['CustItemDesc'] != 'Std'){
+                                  $std = ' - '.$data['CustItemDesc'];
+                                }
+
                                 if($data['TaxType'] == $value['TaxType']){
                                         $sameTaxType .= ' <tr class="service"> ';
                                         if($data['Itm_Portion'] > 4 ){
                                             
-                                            $sameTaxType .= ' <td class="tableitem">'.$data['ItemNm'].' ( '.$data['Portions'].' )</td> ';
+                                            $sameTaxType .= ' <td class="tableitem">'.$data['ItemNm'].$std.$portions.'</td> ';
 
                                         }else{
 
-                                            $sameTaxType .= ' <td>'.$data['ItemNm'].'</td> ';
+                                            $sameTaxType .= ' <td>'.$data['ItemNm'].$std.$portions.'</td> ';
 
                                         }
                                         

@@ -742,11 +742,29 @@ class Rest extends CI_Model{
 	}
 
 	public function get_item_name_list($name){
-
 		$item_name = $name.'%';
-
 		return $this->db2->query("SELECT ItemId,ItemNm FROM `MenuItem` WHERE LOWER(ItemNm) LIKE '$item_name'")->result_array();
+	}
 
+	public function getKotList($CNo, $mergeNo, $FKOTNo){
+		$EID = authuser()->EID;
+		// SELECT k.ItemId, m.ItemNm, k.TableNo, k.FKOTNo, ek.KitName, k.UKOTNo FROM Eat_Kit ek, Kitchen k, MenuItem m WHERE ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>99 ) and m.ItemId = k.ItemId and k.CNo = 21 AND k.EID = 51 and k.FKOTNo = 1 and k.MergeNo = 22 and ek.KitCd=k.KitCd and ek.EID=k.EID GROUP BY k.ItemId, ek.KitName order by k.FKOTNo, ek.KitName, k.UKOTNo ASC;
+		$or_where = '( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>99 )';
+         return $this->db2->select("k.ItemId, k.MCNo, m.ItemNm,k.CustItemDesc, ip.Name as Portions, sum(k.Qty) Qty,k.TableNo, k.FKOTNo, ek.KitName, k.UKOTNo,k.LstModDt")
+        					->order_by('k.FKOTNo, ek.KitName, k.UKOTNo', 'ASC')
+        					->group_by('k.ItemId, ek.KitName')
+         					->join('MenuItem m','m.ItemId = k.ItemId','inner')
+         					->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
+         					->join('Eat_Kit ek', 'ek.KitCd=k.KitCd', 'inner')
+        					->where($or_where)
+        					->get_where('Kitchen k', array(
+        											'k.EID' => $EID,
+        											'k.MCNo' => $CNo,
+        											'k.MergeNo' => $mergeNo,
+        											'k.FKOTNo' => $FKOTNo)
+        								)
+        					->result_array();
+        					print_r($this->db2->last_query());die;
 	}
 
 	

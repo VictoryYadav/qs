@@ -295,6 +295,7 @@ width: 100%;*/
                                                 </select>
                                             </div>
                                             <div class="col-md-6 col-6 text-right">
+                                                <a title="Print" class="btn btn-sm btn-warning" style="display: none;" id="btnPrint"><i class="fas fa-print"></i></a>
                                                 <button class="btn btn-primary btn-sm" title="Bill Create" id="billCreatebtn" style="display: none;">
                                                     <i class="far fa-eye"></i>
                                                 </button>
@@ -1282,7 +1283,7 @@ width: 100%;*/
                             data = temp.bill;
                             // alert(temp.payment_modes.length);
                              var et = '<?= $EType?>';
-                            var b = '<tr><td><a href="bill_rcpt?restaurant=1&billId='+ data.BillNo+'" target="_blank" >'+
+                            var b = '<tr><td><a href="bill_rcpt?restaurant=1&billId='+ data.BillNo+'&CustId='+ data.CustId+'" target="_blank" >'+
                                     data.BillNo+'</a></td>';
                             b+='<td>'+data.BillDate+'</td>';
                             if(et == 5){
@@ -1323,9 +1324,13 @@ width: 100%;*/
                     }
                 });
                 $('#billCreatebtn').hide();
+                $('#btnPrint').hide();
             }else{
                 $('#billCreatebtn').attr('onclick', "billCreate("+mergeNo+")");
                 $('#billCreatebtn').show();
+                $('#btnPrint').show();
+                var urlPrint = "<?= base_url('restaurant/print/'); ?>"+id;
+                $('#btnPrint').attr('href', urlPrint);
                 $('#bill_data_table').hide();
             }
         }
