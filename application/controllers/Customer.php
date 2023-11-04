@@ -1676,7 +1676,8 @@ class Customer extends CI_Controller {
 
         $dbname = $this->session->userdata('my_db');
 
-        $res = getBillData($dbname, $EID, $billId, $CustId);
+        $flag = 'cust';
+        $res = getBillData($dbname, $EID, $billId, $CustId, $flag);
         // echo "<pre>";
         // print_r($res);
         // die;

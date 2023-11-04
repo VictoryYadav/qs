@@ -66,7 +66,7 @@ class User extends CI_Model{
 
 		$custAnd = ' ';
 		if($flag == 'cust'){
-			$custAnd = ' and km.CustId = $CustId';
+			$custAnd = " and km.CustId = $CustId";
 		}else{
 			$bd = $this->db2->select('CustId')->get_where('Billing', array('BillId' => $billId, 'EID' => $EID))->row_array();
 			if(!empty($bd['CustId'])){
