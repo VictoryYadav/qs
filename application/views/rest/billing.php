@@ -1,10 +1,10 @@
 <?php $this->load->view('layouts/customer/head'); 
         $EID = authuser()->EID;
-
+        $flag = 'rest';
         $custId = $this->session->userdata('CustId');
 
         $dbname = $this->session->userdata('my_db');
-        $res = getBillData($dbname, $EID, $billId, $custId);
+        $res = getBillData($dbname, $EID, $billId, $custId, $flag);
         // echo "<pre>";
         // print_r($res);
         // die;

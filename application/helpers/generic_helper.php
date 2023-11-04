@@ -123,10 +123,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		}
 	}
 
-	function getBillData($dbname, $EID, $billId, $CustId){
+	function getBillData($dbname, $EID, $billId, $CustId, $flag){
 		$CI = & get_instance();
 		$CI->load->model('User');
-		return $CI->User->gettingBiliingData($dbname, $EID, $billId, $CustId);
+		return $CI->User->gettingBiliingData($dbname, $EID, $billId, $CustId, $flag);
 	}
 
 	function getBillingDataByEID_CNo($EID, $CNo, $per_cent){

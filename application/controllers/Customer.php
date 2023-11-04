@@ -1618,8 +1618,8 @@ class Customer extends CI_Controller {
             $dbname = $_GET['dbn'];
             $EID = $_GET['EID'];
         }
-
-        $res = getBillData($dbname, $EID, $billId, $CustId);
+        $flag = 'cust';
+        $res = getBillData($dbname, $EID, $billId, $CustId, $flag);
         // echo "<pre>";
         // print_r($res);
         // die;
