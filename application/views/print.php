@@ -92,6 +92,7 @@
   background: #EEE;
 }
 #invoice-POS .service {
+  font-size: 18px;
   border-bottom: 1px solid #EEE;
 }
 #invoice-POS .item {
@@ -121,8 +122,8 @@
 
 </head>
 
-<!-- <body translate="no"> -->
-  <body translate="no" onload="window.print()">
+<body translate="no">
+  <!-- <body translate="no" onload="window.print()"> -->
 
   <div id="invoice-POS">
     <center id="top">
@@ -147,7 +148,7 @@
     </div><!--End Invoice Mid-->
 
     <div>
-      <table>
+      <table style="font-size: 18px;">
         <?php if($CustNo == 0){?>
         <tr style="border-bottom: 1px solid black;">
           <?php 
@@ -267,7 +268,7 @@
                         }
                         $sub_total = $sub_total  + $itemTotal;
 
-                        $newTaxType .= ' <tr style="background: #80808052;border-bottom:1px dashed black; "> ';
+                        $newTaxType .= ' <tr style="background: #80808052;border-bottom:2px dashed black; "> ';
                         $newTaxType .= ' <td style="text-align: left; font-weight: bold;">Group Sub Total</td> ';
                         $newTaxType .= ' <td></td> <td></td>';
                         $newTaxType .= ' <td>'.$sub_total.'</td> ';
@@ -299,7 +300,7 @@
                             
                             <?php
                                 if($tipamt || $total_discount_amount != 0 || $total_packing_charge_amount || $total_delivery_charge_amount){?>
-                                <tr style="border-bottom: 1px solid;">
+                                <tr style="border-bottom: 2px solid;">
                                     <th></th>
                                     <td></td>
                                 </tr>
@@ -334,7 +335,7 @@
 
                             <?php
                                 if($total_discount_amount != 0 || $total_packing_charge_amount || $total_delivery_charge_amount){?>
-                                <tr style=" border-bottom: 1px solid;">
+                                <tr style=" border-bottom: 2px solid;">
                                     <th></th>
                                     <td></td>
                                 </tr>
@@ -346,7 +347,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div style="border-bottom: 1px solid;"></div>
+                    <div style="border-bottom: 2px solid;"></div>
                     <?= $thankuline ?>
                     <br>
                     <?php if(isset($_GET['ShowRatings']) && $_GET['ShowRatings'] == 1){

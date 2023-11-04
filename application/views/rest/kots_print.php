@@ -92,6 +92,7 @@
   background: #EEE;
 }
 #invoice-POS .service {
+  font-size: 18px;
   border-bottom: 1px solid #EEE;
 }
 #invoice-POS .item {
@@ -131,7 +132,7 @@
 
     <div>
       <table>
-        <tr style="border-bottom: 1px solid black;font-size: 17px;">
+        <tr style="border-bottom: 2px solid black;border-top: 2px solid black;font-size: 18px;">
           <td>KOT No: <?= $kotList[0]['UKOTNo']; ?><br>
             Date: <?= date('d-M-Y H:i', strtotime($kotList[0]['LstModDt'])); ?>
           </td>
@@ -142,7 +143,7 @@
 
     <div id="bot">
 
-        <div id="table" style="border-bottom: 1px solid black;font-size: 17px;">
+        <div id="table" style="border-bottom: 2px solid black;font-size: 18px;">
             <table>
                 <tr class="tabletitle">
                     <th class="item" style="text-align: left;">Menu Item</th>
@@ -160,7 +161,7 @@
                   }
                  ?>
                 <tr class="service">
-                    <td class="tableitem"><?= $key['ItemNm'].$std.$portions; ?></td>
+                    <td class="tableitem"><?= $key['ItemNm'].$std.$portions; ?><br><?= $key['CustRmks']; ?></td>
                     <td class="tableitem"><?= $key['Qty']; ?></td>
                 </tr>
                 <?php } ?>
