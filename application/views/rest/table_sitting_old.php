@@ -295,10 +295,9 @@ width: 100%;*/
                                                 </select>
                                             </div>
                                             <div class="col-md-6 col-6 text-right">
-                                                <button title="Bill Options" class="btn btn-sm btn-warning" style="display: none;" id="btnBillOption"><i class="far fa-eye"></i>
-                                                </button>
+                                                <a title="Print" class="btn btn-sm btn-warning" style="display: none;" id="btnPrint"><i class="fas fa-print"></i></a>
                                                 <button class="btn btn-primary btn-sm" title="Bill Create" id="billCreatebtn" style="display: none;">
-                                                    <i class="fas fa-file-invoice"></i>
+                                                    <i class="far fa-eye"></i>
                                                 </button>
 
                                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#move_table_modal" >
@@ -382,9 +381,7 @@ width: 100%;*/
                                                             <th>OQty</th>
                                                             <th>AQty</th>
                                                             <th>DQty</th>
-                                        <?php if($this->session->userdata('EDT') == 1){ ?>
                                                             <th>EDT</th>
-                                                            <?php } ?>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="item-detail-body1"></tbody>
@@ -431,6 +428,143 @@ width: 100%;*/
                             </div>
                         </div>
 
+                        <!-- old -->
+
+                        <!-- <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="pending-kitchen-body">
+                                            <div class="row" style="margin-left: 0px;margin-right: 0px;">
+                                                <div class="col-md-7 table-numbers" style="padding-top: 20px;">
+                                                    <div id="mydiv" style="display: none;">
+                                                        <div class="card" style="border:3px solid rgba(0,0,0,.125)">
+                                                            <div class="card-header" style="     background-color: #7d7d7d;color: white; padding: 0px;">
+                                                                <h6 class="modal-title">KOT Details</h6>
+                                                            </div>
+                                                            <div class="">
+                                                                <table class="table table-bordered">
+                                                                    <thead class="table-header">
+                                                                        <tr>
+                                                                            <th style="border:1px solid #dee2e6;">KOT</th>
+                                                                            <th style="border:1px solid #dee2e6;">Qty</th>
+                                                                            <th style="border:1px solid #dee2e6;">PN0</th>
+                                                                            <th style="border:1px solid #dee2e6;">Print</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="kot-list"></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div >
+                                                        <div class="tableView-table">
+                                                            <div class="form-group">
+                                                                Table View
+                                                                <select class="form-control form-control-sm col-md-4" id="kitchen-code" onchange="getTableView();">
+                                                                    <?php
+                                                                    if (count($SettingTableViewAccess) == 1) { ?>
+                                                                        <option value="<?= $SettingTableViewAccess[0]['CCd'] ?>" settle="<?= $SettingTableViewAccess[0]['Settle'] ?>"><?= $SettingTableViewAccess[0]['Name'] ?></option>
+                                                                    <?php } else {
+                                                                        ?>
+                                                                        <option value="0" style='display:none;' settle="1">Select Cashier</option>
+                                                                        <?php foreach ($SettingTableViewAccess as $key => $data) : ?>
+                                                                            <option value="<?= $data['CCd'] ?>" settle="<?= $data['Settle'] ?>"><?= $data['Name'] ?></option>
+                                                                    <?php endforeach;
+                                                                    } ?>
+                                                                </select>
+                                                                <span id="hlep_table_list">
+                                                                </span>
+                                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#move_table_modal" style="margin-left: 10px;right: 90px;position: absolute;height: 24px;cursor: pointer;">
+                                                                    <i class="far fa-user"></i>
+                                                                </button>
+                                                                <?php
+                                                                if ($EType == 5) {
+                                                                    ?>
+                                                                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#merge_table_modal" style="margin-left: 15px;right: 52px;position: absolute;height: 24px;cursor: pointer;">
+                                                                        <i class="dripicons-network-3"></i>.
+                                                                    </button>
+                                                                <?php } ?>
+
+                                                                <button class="btn btn-sm btn-danger" onclick="refreshPage()" style="margin-left: 15px;right:18px;position: absolute;cursor: pointer;height: 24px;">
+                                                                    <i class="mdi mdi-speedometer-slow"></i>
+                                                                </button>
+
+                                                            </div>
+                                                            <div class="items-data" id="order-view-parent">
+                                                                <table class="table text-center" id="order-view-table" class="display" style="width:100%">
+                                                                    <thead class="table-header">
+                                                                        <tr style="background-color: #51519a;color: #FFF;">
+                                                                            <th>Table No</th>
+                                                                            <th>Ord AMT</th>
+                                                                            <th>From Time</th>
+                                                                            <th>Cell NO</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="table-view">
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+                                                
+                                               <div class="col-md-5" style="padding-top: 20px;">
+                                                    <div class="form-group" style="color: #000;">
+                                                        Item View
+                                                      
+                                                    </div>
+                                                    <div class="items-table" style="max-height: 370px;overflow: auto;">
+                                                        <table id="item-detail-table1" class="table table-bordered">
+                                                            <thead class="table-header">
+                                                                <tr style="background-color: #51519a;color: #FFF;">
+                                                                    <th>Item</th>
+                                                                    <th>OQty</th>
+                                                                    <th>AQty</th>
+                                                                    <th>DQty</th>
+                                                                    <th>EDT</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="item-detail-body1"></tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                 <div class="col-md-12">
+                                                    <div style="">
+                                                            <table class="table table-bordered text-center" id="bill_data_table" style="display: none;">
+                                                                <thead>
+                                                                    <tr style="background-color: #51519a;color: #FFF;">
+                                                                        <th>Bill No</th>
+                                                                        <th>Bill Date</th>
+                                                                        <?php if($EType == 5){?>
+                                                                            <th>Table No</th>
+                                                                        <?php } else {?>
+                                                                            <th>Cell No</th>
+                                                                        <?php } ?>
+
+                                                                        <th>Bill Amt</th>
+                                                                        <th>Online Amt</th>
+                                                                        <th>Amount</th>
+                                                                        <th>Mode</th>
+                                                                        <th>Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="bill_table">
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                </div> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                        </div> -->
+                        <!-- end old -->
                         
                     </div> <!-- container-fluid -->
                 </div>
@@ -691,7 +825,30 @@ width: 100%;*/
                             </form>
                         </p>
                     </div>
-                  
+                  <!-- <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <form method="post">
+                        <div class="merge-table-main">
+                            <div class="row" >
+                                <div class="col-md-12 ">
+                                    <div class="row" id="unmerge-table">
+                                        <div class="col-md-12 merge-table-data">
+                                            <div id="unmerge_tables" class="row">
+                                            </div>
+                                            <div class="text-center">
+                                                <button id="merge-table" type="button" class="btn btn-primary" style="box-shadow: inset 0 0 0 2000px rgb(31 35 60 / 80%);">Join Tables</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                                    <div class="col-md-12 text-center" id="no-tables" style="display: none;">
+                                        <h1 style="margin-top: 30px;">No Tables are Free</h1>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                  </div> -->
                   <div class="tab-pane fade p-3 " id="profile" role="tabpanel">
                     <form method="post">
                         <div class="row">
@@ -716,7 +873,65 @@ width: 100%;*/
 
                     </form>
                   </div>
-                  
+                  <!-- <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <form method="post">
+                        <div class="merge-table-main text-center">
+                            <div class="row text-center" style="margin-left: 0px;margin-right: 0px;">
+
+
+                                <div class="col-md-10 text-center" style="padding-top: 20px;padding-left: 30px;padding-right: 45px;">
+                                    <select class="form-control" id="merged_tables" onchange="get_each_table()">
+                                        <option value="">Select Tables</option>
+                                    </select>
+                                    
+
+                                <div class="row row-margin text-center" id="mergeed-table">
+
+                                    
+
+                                    <div class="col-md-8 merge-table-data">
+
+                                        <table class="table text-center">
+
+                                            <thead>
+
+                                                <tr>
+
+                                                    <th>Action</th>
+
+                                                </tr>
+
+                                            </thead>
+
+                                            <tbody id="merged-table-body"></tbody>
+
+                                        </table>
+
+                                        <div class="text-center">
+                                            <input type="hidden" id="selected_merge_no">
+                                            <button type="button" id="unmerge-table-btn" class="btn btn-primary" style="box-shadow: inset 0 0 0 2000px rgb(31 35 60 / 80%);">Unjoin Tables</button>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-2"></div>
+
+                                </div>
+
+                                <div class="col-md-12 text-center" id="no-tables" style="display: none;">
+
+                                    <h1 style="margin-top: 30px;">No Tables are Free</h1>
+
+                                </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </form>
+                  </div> -->
                 </div>
             </div>
         </div>
@@ -880,38 +1095,6 @@ width: 100%;*/
       </div>
     </div>
 
-    <!-- bill option model -->
-    <div class="modal" id="billModel">
-        <div class="modal-dialog">
-            <div class="modal-content" >
-                <div class="modal-header">
-                    <h6>Bill Options</h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" style="max-height: 500px;overflow: auto;">
-                    <div class="table-responsive">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>BillNo</th>
-                                        <th>Item Amt</th>
-                                        <th>Payable</th>
-                                        <th>Mode</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="billOptionBody">
-                                </tbody>
-                            </table>
-                        </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- end bill option model -->
-
 <script type="text/javascript">
     // $(document).ready(function () {
     //     $('#table_view').DataTable();
@@ -998,57 +1181,74 @@ width: 100%;*/
 
             console.log(item);
             var template = '';
-            var bgcolor = '';
-            if(item.BillStat == 0 && item.OType == 8){
-                bgcolor = '#d5d2d2'; // grey
-            }else if(item.BillStat == 1 && item.custPymt == 0 && item.payRest == 0){
-                // bill generated  by customer
-                bgcolor = '#fff192'; // yellow
-            }else if(item.BillStat == 5 && item.custPymt == 0 && item.payRest == 0){
-                // bill generated  by restaurant
-                bgcolor = '#B1F9A4';//green
-            }else if(item.BillStat == 1 && item.custPymt == 1){
-                // bill generated and paid by customer
-                bgcolor = '#FBBF77'; // ORRANGE
-            }else if(item.BillStat == 5 && (item.custPymt == 1 || item.payRest == 0 )){
-                // bill generated rest and paid by customer
-                bgcolor = '#B3E5FC'; // blue
-            }
-
-
-            template += `<tr onclick="getRowBill(0,${item.MergeNo})" id="${item.TableNo}" mergeNo="${item.MergeNo}" custId="${item.CustId}" mCNo="${item.MCNo}" billStat="${item.BillStat}"   style="background-color: ${bgcolor};" class="" >
-            <td><input type="radio" name="selectOption" onchange="handleKot(${item.MergeNo},${item.CustId},${item.MCNo},${item.BillStat})"> &nbsp;${item.MergeNo}</td>
+            if (item.BillStat > 0) {
+                        template += `<tr onclick="getRowBill(${item.BillId},${item.MergeNo})" id="${item.TableNo}" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"  style="background-color: #FB8E7E;" class="${item.BillStat > 0 ? ' bill-paid' : ''} ${item.NEW_KOT > 0 ? ' new_order' : ''} ">
+                <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})">&nbsp;${item.MergeNo}</td>
+                <td>${item.Amt}</td>
+                <td>${item.StTime}</td>
+                <td>${item.CellNo}</td>
+                <td>${item.visitNo}</td>
+                `;
+            } else if (item.NEW_KOT == 1) {
+                template += `<tr onclick="getRowBill(0,${item.MergeNo})" id="${item.TableNo}" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"   style="background-color: #FDCF76;" class="${item.BillStat > 0 ? ' bill-paid' : ''} ${item.NEW_KOT > 0 ? ' new_order' : ''} " >
+            <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})"> &nbsp;${item.MergeNo}</td>
             <td>${item.Amt}</td>
             <td>${item.StTime}</td>
             <td>${item.CellNo}</td>
-            <td>${item.visitNo}</td>`;
+            <td>${item.visitNo}</td>
+            `;
+            } else {
+                template += `<tr id="${item.TableNo}" onclick="getRowBill(0,${item.MergeNo})" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"  class="${item.BillStat > 0 ? ' bill-paid' : ''}  ${item.NEW_KOT > 0 ? 'new_order' : ''} " >
+            <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})"> &nbsp;${item.MergeNo}</td>
+            <td>${item.Amt}</td>
+            <td>${item.StTime}</td>
+            <td>${item.CellNo}</td>
+            <td>${item.visitNo}</td>
+            `;
 
-            // if (item.BillStat > 0) {
-            //             template += `<tr onclick="getRowBill(${item.BillId},${item.MergeNo})" id="${item.TableNo}" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"  style="background-color: #FB8E7E;" class="${item.BillStat > 0 ? ' bill-paid' : ''} ${item.NEW_KOT > 0 ? ' new_order' : ''} ">
-            //     <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})">&nbsp;${item.MergeNo}</td>
-            //     <td>${item.Amt}</td>
-            //     <td>${item.StTime}</td>
-            //     <td>${item.CellNo}</td>
-            //     <td>${item.visitNo}</td>
-            //     `;
-            // } else if (item.NEW_KOT == 1) {
-            //     template += `<tr onclick="getRowBill(0,${item.MergeNo})" id="${item.TableNo}" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"   style="background-color: #FDCF76;" class="${item.BillStat > 0 ? ' bill-paid' : ''} ${item.NEW_KOT > 0 ? ' new_order' : ''} " >
-            // <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})"> &nbsp;${item.MergeNo}</td>
-            // <td>${item.Amt}</td>
-            // <td>${item.StTime}</td>
-            // <td>${item.CellNo}</td>
-            // <td>${item.visitNo}</td>
-            // `;
-            // } else {
-            //     template += `<tr id="${item.TableNo}" onclick="getRowBill(0,${item.MergeNo})" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"  class="${item.BillStat > 0 ? ' bill-paid' : ''}  ${item.NEW_KOT > 0 ? 'new_order' : ''} " >
-            // <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})"> &nbsp;${item.MergeNo}</td>
-            // <td>${item.Amt}</td>
-            // <td>${item.StTime}</td>
-            // <td>${item.CellNo}</td>
-            // <td>${item.visitNo}</td>
-            // `;
+            }
+        //  if (item.Stat == 0) {
+        //      template += `
+        //  <td>
+        //      <i onclick="acceptTable('${item.TableNo}', ${item.CustId},${item.CNo})" class="fa fa-check-square" aria-hidden="true"></i>
+        //      <i onclick="rejectTable('${item.TableNo}', ${item.CustId},${item.CNo})" class="fa fa-window-close" aria-hidden="true" style="margin-left: 10px;"></i>
+        //  </td>
+        // `;
+        //  } else if (item.Stat == 1) {
+        //      template += `
+        //  <td>
+        //      <p style="margin-bottom:0px !important;">Accept
+        //              <a onclick="payCash('${item.TableNo}',${item.CustId}, ${item.CNo},${item.MergeNo})"><i class="fa fa-arrows" aria-hidden="true" style="padding-left: 15px;"></i></a>
 
-            // }
+        //      </p>
+        //  </td>
+        // `;
+        //  } else {
+        //      template += `
+        //  <td>
+        //      <p>Reject</p>
+        //  </td>
+        // `;
+        //  }
+            if(item.BillStat < 0){
+                template+= `<td><p>`;
+                var data = item;
+                template+=`<button class="btn" v-on:click="setPaidAmount(index, data.BillId,data.CNo,data.TableNo,data.CustId, data.BillNo, data.TotAmt, data.PaymtMode);" style="background: #FFFFFF; height:25px; padding:0px; margin-right:15px;">
+                                <img src="images/tick2.png" width="25" height="15"></img>
+                            </button>
+                            
+                            <!-- v-on:click="PrintBill(data.BillId, index,<?= $EID;?>);" Bill Printing -->
+                            <a :href="'vtrend:billid='+data.BillId+'&eid=<?= $EID;?>&kotno=0&s=<?= $_SESSION['DynamicDB'];?>'">
+                            <button class='btn btn-warning' style="background: #FFFFFF; height:25px; padding:0px">
+                                <img src="images/printer.png" width="25" height="25"></img>
+                            </button></a>
+                            <!-- Bill Cancellation -->
+                            <button class="btn btn-danger" style="background: #FFFFFF; height:25px; padding:0px; margin-left: 10px;" v-on:click="rejectBill(data.BillId, index, data.CNo, data.TableNo, data.CustId);">
+                                <img src="https://pngimage.net/wp-content/uploads/2018/05/cross-png-icon-8.png" width="25" height="25"></img>
+                            </button>`;
+
+                template+=`</p></td>`;
+            }
 
             template += `</tr>`;
             $("#table-view").append(template);
@@ -1124,10 +1324,13 @@ width: 100%;*/
                     }
                 });
                 $('#billCreatebtn').hide();
-                
+                $('#btnPrint').hide();
             }else{
                 $('#billCreatebtn').attr('onclick', "billCreate("+mergeNo+")");
                 $('#billCreatebtn').show();
+                $('#btnPrint').show();
+                var urlPrint = "<?= base_url('restaurant/print/'); ?>"+id;
+                $('#btnPrint').attr('href', urlPrint);
                 $('#bill_data_table').hide();
             }
         }
@@ -1163,13 +1366,11 @@ width: 100%;*/
                     // $('td.focus').parent().css('background-color', '#85ffb6');
                     // $('td.focus').parent().css('background-color', '#85ffb6');
                     $('td.focus').parent().addClass('active-row');
-                    var mergeNo = $('td.focus').parent().attr('mergeNo');
+                    var tableNo = $('td.focus').parent().attr('tableNo');
                     var custId = $('td.focus').parent().attr('custId');
-                    var MCNo = $('td.focus').parent().attr('mCNo');
-                    var billStat = $('td.focus').parent().attr('billStat');
-                    
-                    handleKot(mergeNo, custId, MCNo, billStat);
-                    getAllItems(mergeNo, custId, MCNo);
+                    var cNo = $('td.focus').parent().attr('cno');
+                    handleKot(tableNo, custId, cNo);
+                    getAllItems(tableNo, custId, cNo);
                     resetGlobal();
                 });
         }
@@ -1245,7 +1446,15 @@ width: 100%;*/
                 }
             });
 
-          
+            // <?php if ($Kitchen == 0) : ?>
+            //  setInterval(function(){
+            //      $(".modal").modal('hide');
+            //      destroyDataTableForOrder();
+            //      refreshPage();
+            //  }, 15000);
+            // <?php endif; ?>
+
+
         });
     </script>
 
@@ -1337,24 +1546,20 @@ width: 100%;*/
             }
         }
 
-        function handleKot(mergeNo, custId, MCNo, BillStat) {
-            // console.log(tableNo, custId, cNo);
+        function handleKot(tableNo, custId, cNo) {
+            console.log(tableNo, custId, cNo);
             var eid = '<?= $_SESSION['EID']; ?>';
             // console.log('SES_EID'+eid);
             // $('#mydiv').show();
-            $('#btnBillOption').hide();
-            if(BillStat > 0){
-                $('#btnBillOption').attr('onclick', "billOptions("+custId+","+MCNo+","+mergeNo+")");
-                $('#btnBillOption').show();
-            }
+
             $.ajax({
                 url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                 type: "POST",
                 data: {
                     getKot_data: 1,
-                    tableNo: mergeNo,
+                    tableNo: tableNo,
                     custId: custId,
-                    cNo: MCNo
+                    cNo: cNo
                 },
                 dataType: "json",
                 success: (response) => {
@@ -1372,35 +1577,29 @@ width: 100%;*/
                             // console.log(tr);
                             // var tr = ${item.TableNo};
                             if (item.KOTPrintNo == 1) {
- 
+
+                                // $("#"+item.TableNo).css("background-color","grey");
+                                // <a href="print/print.php?kotNo=${item.UKOTNo}&kitcd=${item.KitCd}"></a>
+                                // $("#table-view").css("background-color", "#0100ff3b"); 
                                 if(new_head == 1){
                                     template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>KOT No: ${item.FKOTNo}</b></td>
-                                    <td colspan="2" class="text-center" style=""><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo}, ${item.MergeNo},${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
+                                    <td colspan="2" class="text-center" style=""><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.CNo}, ${item.MergeNo},${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
                                     </tr>`;
                                     new_head = 0;
                                 }
                                 var b = '';
-                                b += '<tr style="background: #FFF;"><td>'+item.ItemNm+'</td>\
-                                <td>'+item.Qty+'</td><td>'+item.AQty+'</td><td>'+item.DQty+'</td>\
-                                <?php if($this->session->userdata('EDT') == 1){ ?>
-                                <td>'+item.EDT+'</td>\
-                                <?php } ?>
-                                </tr>';
+                                b += '<tr style="background: #FFF;"><td>'+item.ItemNm+'</td><td>'+item.Qty+'</td><td>'+item.AQty+'</td><td>'+item.DQty+'</td><td>'+item.EDT+'</td></tr>';
                                 template+=b;
                             } else {
                                 // $("#table-view").css("background-color", "#0100ff3b"); 
                                 if(new_head == 1){
                                     template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>KOT No: ${item.FKOTNo}</b></td>
-                                    <td colspan="2" class="text-right" ><b><span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo},${item.MergeNo}, ${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
+                                    <td colspan="2" class="text-right" ><b><span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.CNo},${item.MergeNo}, ${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
                                     </tr>`;
                                     new_head = 0;
                                 }
                                 var b = '';
-                                b += '<tr style="background: #FFF;"><td>'+item.ItemNm+'</td><td>'+item.Qty+'</td><td>'+item.AQty+'</td><td>'+item.DQty+'</td>\
-                                <?php if($this->session->userdata('EDT') == 1){ ?>
-                                <td>'+item.EDT+'</td>\
-                                <?php } ?>
-                                </tr>';
+                                b += '<tr style="background: #FFF;"><td>'+item.ItemNm+'</td><td>'+item.Qty+'</td><td>'+item.AQty+'</td><td>'+item.DQty+'</td><td>'+item.EDT+'</td></tr>';
                                 template+=b;
                             }
 
@@ -1417,45 +1616,50 @@ width: 100%;*/
                 }
             });
         }
-
-        function billOptions(custId, MCNo, mergeNo){
-            $.post('<?= base_url('restaurant/get_billing_details') ?>',{custId:custId,MCNo:MCNo,mergeNo:mergeNo},function(res){
-                if(res.status == 'success'){
-                  var data = res.response;
-                  var temp = '';
-                  for (var i =0;  i< data.length; i++) {
-
-                      temp +='<tr>\
-                                <td>'+data[i].BillNo+'</td>\
-                                <td>'+data[i].TotBillAmt+'</td>\
-                                <td>'+data[i].PaidAmt+'</td>\
-                                <td>'+data[i].pymtName+'</td>\
-                                <td>\
-                                    <button class="btn btn-sm btn-success" onclick="setPaidAmount('+data[i].BillId+','+data[i].CNo+','+data[i].MergeNo+','+data[i].CustId+','+data[i].BillNo+','+data[i].TotBillAmt+',\''+data[i].pymtName+'\')">\
-                                        <i class="fas fa-check-double"></i> \
-                                    </button>\
-                                    <a class="btn btn-sm btn-info" href="<?= base_url('restaurant/print/'); ?>'+data[i].BillId+'">\
-                                        <i class="fas fa-print"></i> \
-                                    </a>\
-                                    <button class="btn btn-sm btn-danger" onclick="rejectBill('+data[i].BillId+','+i+','+ data[i].CNo+','+ data[i].MergeNo+','+ data[i].CustId+')">\
-                                        <i class="fas fa-window-close"></i> \
-                                    </button>\
-                                    </td>\
-                            </tr>';
-                  }
-                  $('#billOptionBody').html(temp);
-                  $('#billModel').modal('show');
-                }else{
-                  alert(res.response);
-                }
-            });
+        function getKitchenData(CNo, MergeNo, FKOTNo){
+            window.location.href="<?= base_url('restaurant/kot_print/'); ?>"+CNo+'/'+MergeNo+'/'+FKOTNo;
         }
 
-        function getKitchenData(MCNo, MergeNo, FKOTNo){
-            window.location.href="<?= base_url('restaurant/kot_print/'); ?>"+MCNo+'/'+MergeNo+'/'+FKOTNo;
-        }
-
-        
+        // old code getkitchendata not pass mergeno
+        // function getKitchenData(CNo, FKOTNo){
+        //     $.ajax({
+        //         url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
+        //         type: "POST",
+        //         data: {
+        //             getKitchenData: 1,
+        //             FKOTNo: FKOTNo,
+        //             CNo: CNo
+        //         },
+        //         dataType: "json",
+        //         success: (response) => {
+        //             console.log(response);
+        //             var template = '';
+        //             if (response.status == 1) {
+        //                 if(response.data.length > 1){
+        //                     response.data.forEach((item) => {
+        //                         template += '<tr><td><input name="ukots[]" checked type="checkbox" value="'+item.UKOTNo+'" ></td><td>'+item.KitName+'</td></tr>';
+        //                     });
+        //                     $("#print_kot_data").html(template);
+        //                     $('#kot_no').html(FKOTNo);
+        //                     $('#print_kot').modal('show');
+        //                 }else{
+        //                     if(response.data.length){
+        //                         a = 'vtrend:billid=0&eid=<?= $EID;?>&kotno='+response.data[0].UKOTNo+'&s=<?= $_SESSION['DynamicDB'];?>';
+        //                         window.location.href=a;
+        //                     }
+        //                 }
+        //             } else {
+        //                 console.log(response.msg);
+        //             }
+                    
+        //         },
+        //         error: (xhr, status, error) => {
+        //             console.log(xhr);
+        //             console.log(status);
+        //             console.log(error);
+        //         }
+        //     });
+        // }
         function getAllItems(tableNo, custId, cNo) {
             // console.log("TABLE_"+tableNo+"CUSTID_"+custId);
             $.ajax({
@@ -1853,7 +2057,13 @@ width: 100%;*/
             });
         }
 
-        
+        // function handleDeliveryBill(kotNo){
+        //  if (kotNo !== 0) {
+        //      console.log(kotNo);
+        //  }else {
+        //      alert("Please Select Order");
+        //  }
+        // }
     </script>
     <script type="text/javascript">
         function selectParentTable() {
@@ -1896,32 +2106,52 @@ width: 100%;*/
                 }
             });
         }
-        function setPaidAmount(id , CNo , MergeNo , CustId, billNo, billAmt, pymtMode) {
-
-            formData = new FormData();
-            formData.append('setPaidAmount', 1);
-            formData.append('id', id);
-            formData.append('CNo', CNo);
-            formData.append('MergeNo', MergeNo);
-            formData.append('CustId', CustId);
-            formData.append('billNo', billNo);
-            formData.append('billAmt', billAmt);
-            formData.append('pymtMode', pymtMode);
-            // console.log($('#selRt').val());
-            axios.post("<?php echo base_url('restaurant/bill_settle'); ?>", formData)
-            .then(response => {
-                // console.log(response.data);
-                if(response.data.status == 1) {
-                    alert("Successfully Updated");
-                    // getTableView();
-                    location.reload();
-                }else {
-                    console.log("error in updating billing");
+        function setPaidAmount(id , CNo , TableNo , CustId, billNo, billAmt, pymtMode) {
+            // console.log(this.billData[index].PaidAmt);
+            // if (parseFloat(this.billData[index].TotAmt) > parseFloat(this.billData[index].PaidAmt)) {
+                // alert("Recieved Amount is less than Bill Amount");
+            // }else{
+                // alert(bill_data.PaymtMode);
+                if(bill_data.PaymtMode == 'cash' && $('#cash_payment_mode').val() == ''){
+                    alert('Please Select Payment Mode !');
+                }else{
+                    var mo = '';
+                    var am = $('#PaidAmt').val();
+                    if(bill_data.PaymtMode == 'cash'){
+                        mo = $('#cash_payment_mode').val();
+                    }else{
+                        mo = pymtMode;
+                        am = billAmt;
+                    }
+                    formData = new FormData();
+                    formData.append('setPaidAmount', 1);
+                    formData.append('paidAmount', am);
+                    formData.append('mode', mo);
+                    formData.append('id', id);
+                    formData.append('CNo', CNo);
+                    formData.append('TableNo', TableNo);
+                    formData.append('CustId', CustId);
+                    formData.append('billNo', billNo);
+                    formData.append('billAmt', billAmt);
+                    formData.append('pymtMode', pymtMode);
+                    // console.log($('#selRt').val());
+                    axios.post("<?php echo base_url('restaurant/rest_cash_bill_ajax'); ?>", formData)
+                    .then(response => {
+                        // console.log(response.data);
+                        if(response.data.status == 1) {
+                            alert("Successfully Updated");
+                            // getTableView();
+                            location.reload();
+                        }else {
+                            console.log("error in updating billing");
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
                 }
-            })
-            .catch(error => {
-                console.log(error);
-            });
+
+            // }
         }
 
         function PrintBill(id,index,eid){
@@ -1970,6 +2200,13 @@ width: 100%;*/
                     data = JSON.parse(data);
                     console.log(data);
                     if(data != ''){
+                        // $('#help_table').html(data.table_no);
+                        // help_table_id = data.id;
+                        // if(list_id == ''){
+                        //     list_id += data.id;
+                        // }else{
+                        //     list_id += ','+data.id;
+                        // }
 
                         var a = '';
                         for(var i=0; i<data.length; i++){
@@ -2014,6 +2251,26 @@ width: 100%;*/
             $('#assistModal').modal('show');
             $('#help_table_text_id').val(id);
             $('#tbl_no').html(tblNo);
+            // if(confirm("Assistance Provided?")){
+            //     $.ajax({
+            //         url: "<?php echo base_url('restaurant/customer_landing_page_ajax'); ?>",
+            //         type: "post",
+            //         data: {
+            //             respond_call_help: 1,
+            //             help_table_id :id
+            //         },
+            //         success: function(data) {
+            //             // alert(data);
+            //             if(data == 1){
+            //                 $('#help_table_'+id).hide();
+            //                 alert("Successfully Updated");
+            //             }else{
+            //                 // $('#help').modal('hide');
+            //                 alert("Something went wrong");
+            //             }
+            //         }
+            //     });
+            // }
         }
 
         $('#assistForm').on('submit', function(e){
@@ -2311,7 +2568,21 @@ $("#unmerge-table-btn").click(function(event) {
 
                 dataType: 'json',
                 success: function(response) {
-                    
+                    // console.log(response);
+
+                    // if (response.status == 1) {
+
+                    //  getUnmergeTables();
+
+                    // }else if (response.status == 0) {
+
+                    //  alert(response.msg);
+
+                    // }else {
+
+                    //  console.log(response.msg);
+
+                    // }
                     get_each_table();
                     location.reload();
 
@@ -2345,7 +2616,21 @@ function get_each_table(){
                     $("#merged-table").show();
                     availableTables = ``;
                     response.tables.forEach(function(table) {
-                       
+                        // availableTables += `
+
+                        //     <tr>
+
+                        //         <td>
+
+                        //             <input type="checkbox" class="form-check-inputt" id="`+table.TableNo+`" merge_no="`+v+`" value"`+table.TableNo+`" checked onchange="">
+
+                        //             <label class="form-check-label" for="`+table.TableNo+`">TableNo `+table.TableNo+`</label>
+
+                        //         </td>
+
+                        //     </tr>
+
+                        // `;
 
                         availableTables += `<div class="col-md-4">`+`<input type="checkbox" class="form-check-inputt" id="`+table.TableNo+`" merge_no="`+v+`" value"`+table.TableNo+`" checked onchange=""><label class="form-check-label" for="`+table.TableNo+`">&nbsp;TableNo `+table.TableNo+`</label></div>`;
 

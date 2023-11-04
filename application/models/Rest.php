@@ -746,7 +746,7 @@ class Rest extends CI_Model{
 		return $this->db2->query("SELECT ItemId,ItemNm FROM `MenuItem` WHERE LOWER(ItemNm) LIKE '$item_name'")->result_array();
 	}
 
-	public function getKotList($CNo, $mergeNo, $FKOTNo){
+	public function getKotList($MCNo, $mergeNo, $FKOTNo){
 		$EID = authuser()->EID;
 		// SELECT k.ItemId, m.ItemNm, k.TableNo, k.FKOTNo, ek.KitName, k.UKOTNo FROM Eat_Kit ek, Kitchen k, MenuItem m WHERE ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>99 ) and m.ItemId = k.ItemId and k.CNo = 21 AND k.EID = 51 and k.FKOTNo = 1 and k.MergeNo = 22 and ek.KitCd=k.KitCd and ek.EID=k.EID GROUP BY k.ItemId, ek.KitName order by k.FKOTNo, ek.KitName, k.UKOTNo ASC;
 		$or_where = '( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>99 )';
@@ -759,12 +759,31 @@ class Rest extends CI_Model{
         					->where($or_where)
         					->get_where('Kitchen k', array(
         											'k.EID' => $EID,
-        											'k.MCNo' => $CNo,
+        											'k.MCNo' => $MCNo,
         											'k.MergeNo' => $mergeNo,
         											'k.FKOTNo' => $FKOTNo)
         								)
         					->result_array();
         					print_r($this->db2->last_query());die;
+	}
+
+	public function getBillDetailsForSettle($custId, $MCNo, $mergeNo){
+			$EID = authuser()->EID;
+			return $this->db2->select("b.TableNo,b.MergeNo, b.BillId, b.BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, bp.PaidAmt, bp.PaymtMode, bp.TotBillAmt, bp.PymtType, b.CNo, u.CustId, cp.Name as pymtName")
+						->order_by('BillId', 'ASC')
+						->group_by('BillId')
+						->join('Eat_tables et','b.EID = et.EID','inner')
+						->join('BillPayments bp','bp.BillId = b.BillId','inner')
+						->join('Users u','b.CustId=u.CustId','inner')
+						->join('ConfigPymt cp','cp.PymtMode=bp.PaymtMode','inner')
+						->get_where('Billing b', array('b.EID' => $EID,
+														'b.MergeNo' => $mergeNo,
+														'b.CNo' => $MCNo,
+														'b.CustId' => $custId
+												)
+								   )
+						->result_array();
+            
 	}
 
 	

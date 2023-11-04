@@ -4,7 +4,11 @@ $folderName = 'e'.$this->session->userdata('EID');
 
 <style type="text/css">
     body[data-topbar=dark] #page-topbar {
-    background-color: #000500 !important;
+    background-color: #fff !important;
+}
+
+body[data-topbar=dark] .header-item {
+    color: #343a40;
 }
 
 /*body[data-topbar=dark] #page-topbar {

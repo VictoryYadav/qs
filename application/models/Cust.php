@@ -1448,9 +1448,14 @@ class Cust extends CI_Model{
         	$CellNo = $this->session->userdata('CellNo');
         }
 
+        // by customer
+        $billingObjStat = 1;
         if($paymentMode == 'RCash'){
+        	$MergeNo = $postData['MergeNo'];
+        	$billingObjStat = 5;
         	$TableNo = $this->session->userdata('TableNo');
         }else{
+        	$MergeNo = $this->session->userdata('MergeNo');
         	$TableNo = authuser()->TableNo;
         }
         // Due => split type, RCash => Restorent side(offline), multiPayment
@@ -1460,14 +1465,17 @@ class Cust extends CI_Model{
         	$orderId = $postData["orderId"];
         }        
 
-        // delete billing, billingtax with existing cno
-        updateRecord('Billing', array('Stat' => 25), array('CNo' => $CNo,'EID' => $EID,'TableNo' => $TableNo));
+        if($this->session->userdata('billFlag') > 0){
+	        // delete billing, billingtax with existing cno
+	        updateRecord('Billing', array('Stat' => 25), array('CNo' => $CNo,'EID' => $EID,'MergeNo' => $MergeNo));
 
-        updateRecord('Kitchen', array('BillStat' => 0), array('EID' => $EID,
-        				'MCNo' => $CNo,'TableNo' => $TableNo));
-        updateRecord('KitchenMain', array('BillStat' => 0), array('EID' => $EID,
-        				'MCNo' => $CNo,'TableNo' => $TableNo));
-        // end of code 
+	        updateRecord('Kitchen', array('BillStat' => 0), array('EID' => $EID,
+	        				'MCNo' => $CNo,'MergeNo' => $MergeNo));
+	        updateRecord('KitchenMain', array('BillStat' => 0), array('EID' => $EID,
+	        				'MCNo' => $CNo,'MergeNo' => $MergeNo));
+	        $this->session->set_userdata('billFlag',0);
+	        // end of code 
+        }
 		$res = getBillingDataByEID_CNo($EID, $CNo, $per_cent);
       
             if (empty($res['kitcheData'])) {
@@ -1503,19 +1511,18 @@ class Cust extends CI_Model{
                 	$itemTotalGross = $this->session->userdata('itemTotalGross');
                 }
 
-                // full bill
-                $billingObjStat = 9;
-                if($splitTyp == 1){
-                	//food and bar
-                	$billingObjStat = 4;
-                }else if($splitTyp > 1){
-                	//split bill
-                	$billingObjStat = 5;
-                }
+                // if($splitTyp == 1){
+                // 	//food and bar
+                // 	$billingObjStat = 4;
+                // }else if($splitTyp > 1){
+                // 	//split bill
+                // 	$billingObjStat = 5;
+                // }
                 
                 // FOR ONLINE PAYMENTS
                 $billingObj['EID'] = $EID;
                 $billingObj['TableNo'] = $TableNo;
+                $billingObj['MergeNo'] = $MergeNo;
                 $billingObj['ChainId'] = $ChainId;
                 $billingObj['ONo'] = $ONo;
                 $billingObj['CNo'] = $CNo;
@@ -1557,7 +1564,6 @@ class Cust extends CI_Model{
                             $BillingTax['TaxIncluded'] = $value['Included'];
                             $BillingTax['TaxType'] = $value['TaxType'];
                             insertRecord('BillingTax', $BillingTax);
-                            // $BillingTax['create();
                         }
                     }
 
@@ -1626,13 +1632,15 @@ class Cust extends CI_Model{
                     // gen table
                     	$RatingDetQuery = $genTblDb->query("INSERT INTO `RatingDet`(RCd,ItemId,ItemRtng) VALUES $queryStringGen ");
                 }
-                    
                 $this->db2->trans_complete();
 
                 $this->session->set_userdata('KOTNo', 0);
                 // $this->session->set_userdata('CNo', 0);
                 $this->session->set_userdata('itemTotalGross', 0);
 
+                if(!empty($lastInsertBillId)){
+                	$this->session->set_userdata('billFlag',1);
+                }
                 $response = [
                     "status" => 1,
                     "msg" => "Bill Generated",
@@ -1696,6 +1704,16 @@ class Cust extends CI_Model{
 		return $this->db2->select('*')
                                     ->get_where('Users', array('CustId' => $custId))
                                     ->row_array();
+	}
+
+	public function getCurrenOrderBill($custId){
+		$EID = authuser()->EID;
+		return $this->db2->select('BillStat, CNo')
+						->order_by('CNo', 'DESC')
+						->get_where('KitchenMain', array('CustId' => $custId,
+														 'EID' => $EID
+														)
+									)->row_array();
 	}
 
 
