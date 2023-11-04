@@ -2842,10 +2842,10 @@ class Restaurant extends CI_Controller {
             $itemKitCd = 0;
             $newUKOTNO = 0;
             for ($i = 0; $i < sizeof($itemIds); $i++) {
-
+                $itemKitCd = $itemKitCds[$i];
                 if ($MultiKitchen > 1) {
                     if ($oldKitCd != $itemKitCds[$i]) {
-                        $itemKitCd = $itemKitCds[$i];
+                        // $itemKitCd = $itemKitCds[$i];
                         $getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID=$EID AND KitCd = $itemKitCd")->result_array();
                         $fKotNo = $getFKOT[0]['FKOTNO'];
                         $fKotNo = $fKotNo + 1;
