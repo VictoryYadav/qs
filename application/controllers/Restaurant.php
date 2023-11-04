@@ -2860,6 +2860,7 @@ class Restaurant extends CI_Controller {
                 }
 
                 $kitchenObj['CNo'] = $CNo;
+                $kitchenObj['MCNo'] = $CNo;
                 $kitchenObj['CustId'] = 0;
                 $kitchenObj['EID'] = $EID;
                 $kitchenObj['ChainId'] = $ChainId;
@@ -3045,6 +3046,7 @@ class Restaurant extends CI_Controller {
             // pass the parameter
             $TableNo = $TableNo;
             // $kitchenMainObj
+            
             $kitchenMainObj['CustId'] = $CustId;
             $kitchenMainObj['COrgId'] = $COrgId;
             $kitchenMainObj['CustNo'] = $CustNo;
@@ -3065,6 +3067,7 @@ class Restaurant extends CI_Controller {
             $kitchenMainObj['payRest'] = 0;
             $CNo = insertRecord('KitchenMain', $kitchenMainObj);
             if (!empty($CNo)) {
+                updateRecord('KitchenMain', array('MCNo' => $CNo), array('CNo' => $CNo, 'EID' => $EID));
                 $this->session->set_userdata('CNo', $CNo);
                 return $CNo;
             }
@@ -3364,8 +3367,8 @@ class Restaurant extends CI_Controller {
             $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7 AND k1.Stat<>9  AND k1.Stat<>99) GROUP BY k1.EID, k1.MCNo) as TotItemDisc,(SELECT sum(k1.PckCharge*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7  AND k1.Stat<>9 AND k1.Stat<>99) GROUP BY k1.EID, k1.MCNo) as TotPckCharge,   ip.Name as Portions,km.CNo,km.MergeNo, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.CustId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>10 AND k.Stat<>99) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.MCNo AND km.MCNo IN (Select km1.MCNo from KitchenMain km1 where km1.MergeNo=$MergeNo group by km1.MergeNo) group by km.MCNo, k.ItemId, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by k.TaxType, m.ItemNm Asc")->result_array();
             // echo "<pre>";
             // print_r($kitcheData);
+            // print_r($this->db2->last_query());
             // die;
-            // print_r($this->db2->last_query());die;
             
                 $taxDataArray = array();
                 if(!empty($kitcheData)){
