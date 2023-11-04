@@ -647,7 +647,7 @@ class Cust extends CI_Model{
                 }else if($TblTyp == 40){
                     // Suite Service
                     $OType = 40;
-                }				
+                }
 
 				if ($KOTNo == 0) {
 					// To generate new KOTNo

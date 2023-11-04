@@ -2806,7 +2806,7 @@ class Restaurant extends CI_Controller {
             // exit;
 
             if ($CNo == 0) {
-                $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo,$data_type);
+                $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo,$data_type, $orderType);
             }
 
             // For KOTNo == 0 Generate New KOT
@@ -2839,6 +2839,8 @@ class Restaurant extends CI_Controller {
             $oldKitCd = 0;
             
             $orderAmount = 0;
+            $itemKitCd = 0;
+            $newUKOTNO = 0;
             for ($i = 0; $i < sizeof($itemIds); $i++) {
 
                 if ($MultiKitchen > 1) {
@@ -2862,7 +2864,7 @@ class Restaurant extends CI_Controller {
                 $kitchenObj['EID'] = $EID;
                 $kitchenObj['ChainId'] = $ChainId;
                 $kitchenObj['OType'] = $orderType;
-                if ($orderType == 1) {
+                if ($orderType == 20) {
                     $kitchenObj['TPRefNo'] = $thirdPartyRef;
                     $kitchenObj['TPId'] = $thirdParty;
                 }
@@ -3030,7 +3032,7 @@ class Restaurant extends CI_Controller {
     }
 
     // functions
-    private function insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $CellNo, $EID, $ChainId, $ONo, $TableNo)
+    private function insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $CellNo, $EID, $ChainId, $ONo, $TableNo, $orderType)
     {
         // global $CNo, $EType, $CustId, $COrgId, $CustNo, $CellNo, $EID, $ChainId, $ONo;
         $CustId = 0;
@@ -3039,16 +3041,9 @@ class Restaurant extends CI_Controller {
 
         //  // Check CNo is 0 or not
         if ($CNo == 0) {
-            if ($EType == 5) {
-                $orderType = 7;
-            } else {
-                $orderType = 0;
-            }
-
             // here was there  tableNo not TableNo 
             // pass the parameter
             $TableNo = $TableNo;
-
             // $kitchenMainObj
             $kitchenMainObj['CustId'] = $CustId;
             $kitchenMainObj['COrgId'] = $COrgId;
