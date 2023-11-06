@@ -151,13 +151,9 @@
       <table style="font-size: 18px;">
         <?php if($CustNo == 0){?>
         <tr style="border-bottom: 1px solid black;">
-          <?php 
-          if(!empty($Fullname)){
-          ?>
           <td>
-            <?= $Fullname.',   '; ?> Cell : <?= $CellNo; ?>
+            <?php if(!empty($Fullname)){ echo $Fullname.',   '; } ?> Cell : <?php if(!empty($CellNo)) { echo $CellNo; } ?>
           </td>
-          <?php } ?>
         </tr>
         <?php } ?>
         <tr style="border-bottom: 1px solid black;">

@@ -2802,8 +2802,8 @@ class Restaurant extends CI_Controller {
             $CNo = $_POST['CNo'];
             $taxtype = !empty($_POST['taxtype'])?$_POST['taxtype']:0;
             $take_away = !empty($_POST['take_away'])?$_POST['take_away']:0;
-            print_r($_POST);
-            exit;
+            // print_r($_POST);
+            // exit;
 
             if ($CNo == 0) {
                 $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo,$data_type, $orderType);
