@@ -516,6 +516,8 @@
                     b+='</tr>';
                 }
 
+                $('#phone').val(a[0].CellNo);
+
                 $('#order-table-body').append(b);
                 calculateTotal();
               }

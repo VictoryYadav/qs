@@ -1,6 +1,8 @@
 <?php $this->load->view('layouts/admin/head'); ?>
 <style>
-
+/*#cashAmtR{
+    font-size: 20px;
+}*/
     .h-deliver {
         background-color: lightgreen;
     }
@@ -930,9 +932,9 @@ width: 100%;*/
                             <thead>
                                 <tr>
                                     <th>BillNo</th>
-                                    <th>Table No</th>
-                                    <th>P Amt</th>
-                                    <th>Mode</th>
+                                    <th>T.No</th>
+                                    <th>B.Amt</th>
+                                    <th>P.Type</th>
                                     <th>Amt</th>
                                     <th></th>
                                 </tr>
@@ -1050,9 +1052,8 @@ width: 100%;*/
                 bgcolor = '#B3E5FC'; // blue
             }
 
-
-            template += `<tr onclick="getRowBill(0,${item.MergeNo})" id="${item.TableNo}" mergeNo="${item.MergeNo}" custId="${item.CustId}" mCNo="${item.MCNo}" billStat="${item.BillStat}"   style="background-color: ${bgcolor};" class="" >
-            <td><input type="radio" name="selectOption" onchange="handleKot(${item.MergeNo},${item.CustId},${item.MCNo},${item.BillStat})"> &nbsp;${item.MergeNo}</td>
+            template += `<tr onclick="getRowBill(0,${item.MergeNo})" id="${item.TableNo}" mergeNo="${item.MergeNo}" custId="${item.CustId}" mCNo="${item.MCNo}" billStat="${item.BillStat}" oTyp="${item.OType}"   style="background-color: ${bgcolor};" class="" >
+            <td><input type="radio" name="selectOption" onchange="handleKot(${item.MergeNo},${item.CustId},${item.MCNo},${item.BillStat},${item.OType})"> &nbsp;${item.MergeNo}</td>
             <td>${item.Amt}</td>
             <td>${item.StTime}</td>
             <td>${item.CellNo}</td>
@@ -1202,8 +1203,9 @@ width: 100%;*/
                     var custId = $('td.focus').parent().attr('custId');
                     var MCNo = $('td.focus').parent().attr('mCNo');
                     var billStat = $('td.focus').parent().attr('billStat');
+                    var oTyp = $('td.focus').parent().attr('oTyp');
                     
-                    handleKot(mergeNo, custId, MCNo, billStat);
+                    handleKot(mergeNo, custId, MCNo, billStat, oTyp);
                     getAllItems(mergeNo, custId, MCNo);
                     resetGlobal();
                 });
@@ -1372,18 +1374,19 @@ width: 100%;*/
             }
         }
 
-        function handleKot(mergeNo, custId, MCNo, BillStat) {
+        function handleKot(mergeNo, custId, MCNo, BillStat, oTyp) {
             // console.log(tableNo, custId, cNo);
             var eid = '<?= $_SESSION['EID']; ?>';
             // console.log('SES_EID'+eid);
             // $('#mydiv').show();
+
             $('#btnBillOption').hide();
             $('#btnCash').hide();
             if(BillStat > 0){
                 $('#btnBillOption').attr('onclick', "billOptions("+custId+","+MCNo+","+mergeNo+")");
                 $('#btnBillOption').show();
 
-                $('#btnCash').attr('onclick', "cashCollect("+custId+","+MCNo+","+mergeNo+")");
+                $('#btnCash').attr('onclick', "cashCollect("+custId+","+MCNo+","+mergeNo+","+oTyp+")");
                 $('#btnCash').show();
             }
             $.ajax({
@@ -1488,48 +1491,6 @@ width: 100%;*/
                     }
                   $('#billOptionBody').html(temp);
                   $('#billModel').modal('show');
-                }else{
-                  alert(res.response);
-                }
-            });
-        }
-
-        function cashCollect(custId, MCNo, mergeNo){
-            $.post('<?= base_url('restaurant/get_cash_collect') ?>',{custId:custId,MCNo:MCNo,mergeNo:mergeNo},function(res){
-                if(res.status == 'success'){
-                  var data = res.response.bills;
-                  var payModes = res.response.payModes;
-                  var temp = '';
-                  var pm = "<select name='PaymtMode' required='' class='form-control form-control-sm'>";
-
-                  for (var i =0;  i< payModes.length; i++) {
-                      pm +='<option value="'+payModes[i].PMNo+'">'+payModes[i].Name+'</option>';
-                    }
-                    pm +='</option>';
-
-                    temp +='<tr>\
-                                <td>'+data.BillNo+'</td>\
-                                <td>'+data.TableNo+'</td>\
-                                <td>'+data.PaidAmt+'</td>\
-                                <td>'+pm+'</td>\
-                                <td>\
-                                    <input type="hidden" name="BillId" value="'+data.BillId+'"/>\
-                                    <input type="hidden" name="MCNo" value="'+data.CNo+'"/>\
-                                    <input type="hidden" name="EID" value="'+data.EID+'"/>\
-                                    <input type="hidden" name="MergeNo" value="'+data.MergeNo+'"/>\
-                                    <input type="hidden" name="CellNo" value="'+data.CellNo+'"/>\
-                                    <input type="hidden" name="TotBillAmt" value="'+data.TotAmt+'"/>\
-                                    <input type="number" name="PaidAmt" style="width:70px;" required />\
-                                    </td>\
-                                <td>\
-                                    <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success">\
-                                        <i class="fas fa-save"></i>\
-                                    </button>\
-                                    </td>\
-                            </tr>';
-                  
-                  $('#cashBody').html(temp);
-                  $('#cashCollectModel').modal('show');
                 }else{
                   alert(res.response);
                 }
@@ -2504,6 +2465,56 @@ function billCreate(mergeNo){
     });
 }
 
+function cashCollect(custId, MCNo, mergeNo, oType){
+    
+    $.post('<?= base_url('restaurant/get_cash_collect') ?>',{custId:custId,MCNo:MCNo,mergeNo:mergeNo},function(res){
+        if(res.status == 'success'){
+          var data = res.response.bills;
+          var payModes = res.response.payModes;
+          $("#cashAmtR").prop("disabled", true);
+          if(oType == 7){
+            // alert(oType)
+            $('#cashAmtR').prop('readonly', true);
+          }
+
+          var temp = '';
+          var pm = "<select name='PymtType' required='' class='form-control form-control-sm'>";
+
+          for (var i =0;  i< payModes.length; i++) {
+              pm +='<option value="'+payModes[i].PMNo+'">'+payModes[i].Name+'</option>';
+            }
+            pm +='</option>';
+
+            temp +='<tr>\
+                        <td>'+data.BillNo+'</td>\
+                        <td>'+data.TableNo+'</td>\
+                        <td>'+data.PaidAmt+'</td>\
+                        <td>'+pm+'</td>\
+                        <td>\
+                        <input type="hidden" name="oType" value="'+oType+'"/>\
+                            <input type="hidden" name="BillId" value="'+data.BillId+'"/>\
+                            <input type="hidden" name="MCNo" value="'+data.CNo+'"/>\
+                            <input type="hidden" name="EID" value="'+data.EID+'"/>\
+                            <input type="hidden" name="MergeNo" value="'+data.MergeNo+'"/>\
+                            <input type="hidden" name="CellNo" value="'+data.CellNo+'"/>\
+                            <input type="hidden" name="TotBillAmt" value="'+data.TotAmt+'"/>\
+                            <input type="text" name="PaidAmt" style="width:70px;" required value="0" id="cashAmtR" />\
+                            </td>\
+                        <td>\
+                            <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success">\
+                                <i class="fas fa-save"></i>\
+                            </button>\
+                            </td>\
+                    </tr>';
+          
+          $('#cashBody').html(temp);
+          $('#cashCollectModel').modal('show');
+        }else{
+          alert(res.response);
+        }
+    });
+}
+
 function cashCollectData(){
     var data = $('#cashForm').serializeArray();
   
@@ -2513,7 +2524,7 @@ function cashCollectData(){
         }else{
           alert(res.response);
         }
-        location.reload();
+        // location.reload();
     });
 }
 </script>

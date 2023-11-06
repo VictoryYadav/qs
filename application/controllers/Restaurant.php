@@ -2802,17 +2802,13 @@ class Restaurant extends CI_Controller {
             $CNo = $_POST['CNo'];
             $taxtype = !empty($_POST['taxtype'])?$_POST['taxtype']:0;
             $take_away = !empty($_POST['take_away'])?$_POST['take_away']:0;
+            // echo "<pre>";
             // print_r($_POST);
             // exit;
 
             if ($CNo == 0) {
                 $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo,$data_type, $orderType);
             }
-
-            // echo "<pre>";
-            // print_r($CNo);
-            // print_r($_POST);
-            // die;
 
             // For KOTNo == 0 Generate New KOT
             // echo $KOTNo;
@@ -3038,7 +3034,7 @@ class Restaurant extends CI_Controller {
     }
 
     // functions
-    private function insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $CellNo, $EID, $ChainId, $ONo, $TableNo, $orderType)
+    private function insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $CellNo, $EID, $ChainId, $ONo, $TableNo,$data_type, $orderType)
     {
         // global $CNo, $EType, $CustId, $COrgId, $CustNo, $CellNo, $EID, $ChainId, $ONo;
         $CustId = 0;
@@ -3372,7 +3368,12 @@ class Restaurant extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
 
+            echo "<pre>";
+            print_r($_POST);
+            die;
+
             $pay = $_POST;
+            $pay['PaymtMode'] = 1;
             $pay['SplitTyp'] = 0;
             $pay['SplitAmt'] = 0;
             $pay['PymtId'] = 0;
@@ -3380,9 +3381,14 @@ class Restaurant extends CI_Controller {
             $pay['PymtType'] = 0;
             $pay['PymtRef'] = 0;
             $pay['Stat'] = 0;
-
-            $payNo = insertRecord('BillPayments', $pay);
-            // updateRecord('KitchenMain', array('custPymt' => 1), array('MCNo' => $_POST['MCNo'],'EID' => authuser()->EID));
+            unset($pay['oType']);
+            if($pay['oType']==8){
+                $payNo = insertRecord('BillPayments', $pay);
+                updateRecord('KitchenMain', array('custPymt' => 1), array('MCNo' => $pay['MCNo'],'EID' => $pay['EID']));
+            }else if($pay['oType']==7){
+                updateRecord('BillPayments', array('PymtType' => $pay['PymtType']), array('EID' => $pay['EID'],'BillId' => $pay['BillId']));
+            }
+            
             if(!empty($payNo )){
                 $status = 'success';
                 $response = 'Payment Collected';
