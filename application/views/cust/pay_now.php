@@ -106,7 +106,7 @@ body{
                                     </td>
                                     
                                     <td>
-                                        <button class="btn btn-sm btn-success" id="go1" onclick="goPay(1)">Go</button>
+                                        <button class="btn btn-sm btn-success btngo" id="go1" onclick="goPay(1)">Go</button>
                                     </td>
                                     <td>
                                         <span id="payStatus1"><i class="fa fa-spinner" style="color:orange;"></i></span>
@@ -176,7 +176,7 @@ body{
                             </select>\
                         </td>\
                         <td>\
-                            <button class="btn btn-sm btn-success" id="go'+counter+'" onclick="goPay('+counter+')">Go</button>\
+                            <button class="btn btn-sm btn-success btngo" id="go'+counter+'" onclick="goPay('+counter+')">Go</button>\
                         </td>\
                         <td>\
                             <span id="payStatus'+counter+'"><i class="fa fa-spinner" style="color:orange;"></i></span>\
@@ -227,6 +227,7 @@ function calculateGrandTotal() {
 }
 
 function goPay(val){
+     $('.btngo').attr("disabled", "disabled");
     var amount = $('#amount'+val).val();
     var mode = $('#mode'+val).val();
 

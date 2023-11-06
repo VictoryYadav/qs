@@ -2802,12 +2802,17 @@ class Restaurant extends CI_Controller {
             $CNo = $_POST['CNo'];
             $taxtype = !empty($_POST['taxtype'])?$_POST['taxtype']:0;
             $take_away = !empty($_POST['take_away'])?$_POST['take_away']:0;
-            // print_r($_POST);
-            // exit;
+            print_r($_POST);
+            exit;
 
             if ($CNo == 0) {
                 $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo,$data_type, $orderType);
             }
+
+            // echo "<pre>";
+            // print_r($CNo);
+            // print_r($_POST);
+            // die;
 
             // For KOTNo == 0 Generate New KOT
             // echo $KOTNo;
@@ -3316,7 +3321,9 @@ class Restaurant extends CI_Controller {
         if($this->input->method(true)=='POST'){
             extract($_POST);
             $data = $this->rest->getBillDetailsForSettle($custId, $MCNo, $mergeNo);
-
+            // echo "<pre>";
+            // print_r($data);
+            // die;
             $status = 'success';
             
             header('Content-Type: application/json');
@@ -3326,6 +3333,68 @@ class Restaurant extends CI_Controller {
               ));
              die;
         }
+    }
+
+    function get_cash_collect(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            extract($_POST);
+            if($custId > 0){
+                $this->db2->where('b.CustId', $custId);
+            }
+            $data['bills'] = $this->db2->select("b.TableNo,b.MergeNo, b.BillId, b.BillNo, b.CNo, b.TotAmt, b.PaidAmt, b.CustId, b.EID, b.MergeNo,b.CellNo")
+                        ->order_by('b.BillId','DESC')
+                        ->get_where('Billing b', array('b.EID' => authuser()->EID,
+                                                        'b.MergeNo' => $mergeNo,
+                                                        'b.CNo' => $MCNo
+                                                )
+                                   )
+                        ->row_array();
+            $data['payModes'] = $this->db2->get_where('pymtmodes', array('Stat' => 0))->result_array();
+            // echo "<pre>";
+            // print_r($data);
+            // die;
+            $status = 'success';
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $data
+              ));
+             die;
+        }   
+    }
+
+    public function collect_payment()
+    {
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $pay = $_POST;
+            $pay['SplitTyp'] = 0;
+            $pay['SplitAmt'] = 0;
+            $pay['PymtId'] = 0;
+            $pay['OrderRef'] = 0;
+            $pay['PymtType'] = 0;
+            $pay['PymtRef'] = 0;
+            $pay['Stat'] = 0;
+
+            $payNo = insertRecord('BillPayments', $pay);
+            // updateRecord('KitchenMain', array('custPymt' => 1), array('MCNo' => $_POST['MCNo'],'EID' => authuser()->EID));
+            if(!empty($payNo )){
+                $status = 'success';
+                $response = 'Payment Collected';
+            }
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        } 
     }
 
 

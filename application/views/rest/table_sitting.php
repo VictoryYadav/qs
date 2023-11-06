@@ -297,6 +297,8 @@ width: 100%;*/
                                             <div class="col-md-6 col-6 text-right">
                                                 <button title="Bill Options" class="btn btn-sm btn-warning" style="display: none;" id="btnBillOption"><i class="far fa-eye"></i>
                                                 </button>
+                                                <button title="Cash Collect" class="btn btn-sm btn-info" style="display: none;" id="btnCash"><i class="fas fa-money-check"></i>
+                                                </button>
                                                 <button class="btn btn-primary btn-sm" title="Bill Create" id="billCreatebtn" style="display: none;">
                                                     <i class="fas fa-file-invoice"></i>
                                                 </button>
@@ -911,6 +913,39 @@ width: 100%;*/
         </div>
     </div>
     <!-- end bill option model -->
+    <!-- cach collect -->
+    <div class="modal" id="cashCollectModel">
+        <div class="modal-dialog">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <h6>Cash Collect</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 500px;overflow: auto;">
+                    <form method="post" id="cashForm">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>BillNo</th>
+                                    <th>Table No</th>
+                                    <th>P Amt</th>
+                                    <th>Mode</th>
+                                    <th>Amt</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="cashBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <script type="text/javascript">
     // $(document).ready(function () {
@@ -1343,9 +1378,13 @@ width: 100%;*/
             // console.log('SES_EID'+eid);
             // $('#mydiv').show();
             $('#btnBillOption').hide();
+            $('#btnCash').hide();
             if(BillStat > 0){
                 $('#btnBillOption').attr('onclick', "billOptions("+custId+","+MCNo+","+mergeNo+")");
                 $('#btnBillOption').show();
+
+                $('#btnCash').attr('onclick', "cashCollect("+custId+","+MCNo+","+mergeNo+")");
+                $('#btnCash').show();
             }
             $.ajax({
                 url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
@@ -1423,28 +1462,74 @@ width: 100%;*/
                 if(res.status == 'success'){
                   var data = res.response;
                   var temp = '';
-                  for (var i =0;  i< data.length; i++) {
+                  if(data.length > 0){
+                      for (var i =0;  i< data.length; i++) {
 
-                      temp +='<tr>\
-                                <td>'+data[i].BillNo+'</td>\
-                                <td>'+data[i].TotBillAmt+'</td>\
-                                <td>'+data[i].PaidAmt+'</td>\
-                                <td>'+data[i].pymtName+'</td>\
+                          temp +='<tr>\
+                                    <td>'+data[i].BillNo+'</td>\
+                                    <td>'+data[i].TotBillAmt+'</td>\
+                                    <td>'+data[i].PaidAmt+'</td>\
+                                    <td>'+data[i].pymtName+'</td>\
+                                    <td>\
+                                        <button class="btn btn-sm btn-success" onclick="setPaidAmount('+data[i].BillId+','+data[i].CNo+','+data[i].MergeNo+','+data[i].CustId+','+data[i].BillNo+','+data[i].TotBillAmt+',\''+data[i].pymtName+'\')">\
+                                            <i class="fas fa-check-double"></i> \
+                                        </button>\
+                                        <a class="btn btn-sm btn-info" href="<?= base_url('restaurant/print/'); ?>'+data[i].BillId+'">\
+                                            <i class="fas fa-print"></i> \
+                                        </a>\
+                                        <button class="btn btn-sm btn-danger" onclick="rejectBill('+data[i].BillId+','+i+','+ data[i].CNo+','+ data[i].MergeNo+','+ data[i].CustId+')">\
+                                            <i class="fas fa-window-close"></i> \
+                                        </button>\
+                                        </td>\
+                                </tr>';
+                      }
+                    }else{
+                        temp +='<tr style="color:red;text-align:center;"><td colspan="5">Payment Not Found!</td></tr>';
+                    }
+                  $('#billOptionBody').html(temp);
+                  $('#billModel').modal('show');
+                }else{
+                  alert(res.response);
+                }
+            });
+        }
+
+        function cashCollect(custId, MCNo, mergeNo){
+            $.post('<?= base_url('restaurant/get_cash_collect') ?>',{custId:custId,MCNo:MCNo,mergeNo:mergeNo},function(res){
+                if(res.status == 'success'){
+                  var data = res.response.bills;
+                  var payModes = res.response.payModes;
+                  var temp = '';
+                  var pm = "<select name='PaymtMode' required='' class='form-control form-control-sm'>";
+
+                  for (var i =0;  i< payModes.length; i++) {
+                      pm +='<option value="'+payModes[i].PMNo+'">'+payModes[i].Name+'</option>';
+                    }
+                    pm +='</option>';
+
+                    temp +='<tr>\
+                                <td>'+data.BillNo+'</td>\
+                                <td>'+data.TableNo+'</td>\
+                                <td>'+data.PaidAmt+'</td>\
+                                <td>'+pm+'</td>\
                                 <td>\
-                                    <button class="btn btn-sm btn-success" onclick="setPaidAmount('+data[i].BillId+','+data[i].CNo+','+data[i].MergeNo+','+data[i].CustId+','+data[i].BillNo+','+data[i].TotBillAmt+',\''+data[i].pymtName+'\')">\
-                                        <i class="fas fa-check-double"></i> \
-                                    </button>\
-                                    <a class="btn btn-sm btn-info" href="<?= base_url('restaurant/print/'); ?>'+data[i].BillId+'">\
-                                        <i class="fas fa-print"></i> \
-                                    </a>\
-                                    <button class="btn btn-sm btn-danger" onclick="rejectBill('+data[i].BillId+','+i+','+ data[i].CNo+','+ data[i].MergeNo+','+ data[i].CustId+')">\
-                                        <i class="fas fa-window-close"></i> \
+                                    <input type="hidden" name="BillId" value="'+data.BillId+'"/>\
+                                    <input type="hidden" name="MCNo" value="'+data.CNo+'"/>\
+                                    <input type="hidden" name="EID" value="'+data.EID+'"/>\
+                                    <input type="hidden" name="MergeNo" value="'+data.MergeNo+'"/>\
+                                    <input type="hidden" name="CellNo" value="'+data.CellNo+'"/>\
+                                    <input type="hidden" name="TotBillAmt" value="'+data.TotAmt+'"/>\
+                                    <input type="number" name="PaidAmt" style="width:70px;" required />\
+                                    </td>\
+                                <td>\
+                                    <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success">\
+                                        <i class="fas fa-save"></i>\
                                     </button>\
                                     </td>\
                             </tr>';
-                  }
-                  $('#billOptionBody').html(temp);
-                  $('#billModel').modal('show');
+                  
+                  $('#cashBody').html(temp);
+                  $('#cashCollectModel').modal('show');
                 }else{
                   alert(res.response);
                 }
@@ -2144,7 +2229,9 @@ width: 100%;*/
         // setInterval(function(){ check_call_bell(); }, 3000);
         // setInterval(function(){ check_new_orders(); }, 5000);
         // setInterval(function(){ check_settled_table(); }, 7000);
-        check_new_orders();
+        <?php if($this->session->userdata('new_order') > 0){ ?>
+            check_new_orders();
+        <?php } ?>
         // $(function () {
           $('[data-toggle="tooltip"]').tooltip()
         // })
@@ -2414,6 +2501,19 @@ function billCreate(mergeNo){
           alert(res.response);
           
         }
+    });
+}
+
+function cashCollectData(){
+    var data = $('#cashForm').serializeArray();
+  
+    $.post('<?= base_url('restaurant/collect_payment') ?>',data,function(res){
+        if(res.status == 'success'){
+          alert(res.response);
+        }else{
+          alert(res.response);
+        }
+        location.reload();
     });
 }
 </script>

@@ -92,7 +92,7 @@
                                                 </button>
 
                                                 <button class="btn btn-success btn-sm send-to-kitchen" data_type="save_to_kitchen">Send to Kitchen</button>
-                                                <button class="btn btn-warning btn-sm send-to-kitchen" data_type="bill">Bill</button>
+                                                <button class="btn btn-warning btn-sm send-to-kitchen" data_type="bill" id="btnBill">Bill</button>
 
                                             </div>
 
@@ -251,6 +251,7 @@
                     $("#cust-address").val("");
                     $("#phone").prop('disabled', true);
                     $("#phone").val("");
+                    $('#btnBill').show();
                 } else
                  if (orderType == 15) {
                     $("#table-id").prop('disabled', true);
@@ -262,6 +263,7 @@
                     $("#cust-address").prop('disabled', true);
                     $("#cust-address").val("");
                     $("#phone").prop('disabled', false);
+                    $('#btnBill').show();
                 } else if (orderType == 17) {
                     $("#table-id").prop('disabled', true);
                     $("#table-id").val(0);
@@ -272,6 +274,7 @@
                     $("#cust-address").prop('disabled', false);
                     $("#phone").prop('disabled', false);
                     $("#phone").val('');
+                    $('#btnBill').show();
                 } else if (orderType == 8) {
                     $("#table-id").prop('disabled', false);
                     $("#3rd-party").val(0);
@@ -280,8 +283,10 @@
                     $("#3rd-party-refNo").prop('disabled', true);
                     $("#cust-address").prop('disabled', true);
                     $("#cust-address").val("");
-                    $("#phone").prop('disabled', true);
+                    // $("#phone").prop('disabled', true);
+                    $("#phone").prop('disabled', false);
                     $("#phone").val("");
+                    $('#btnBill').hide();
                 }
 
             });
