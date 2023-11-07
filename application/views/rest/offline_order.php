@@ -503,23 +503,28 @@
                 $('#order-table-body').html('');
                 var a = JSON.parse(data);
                 // alert(a.length);
+                var billStat = a[0].kmBillStat;
                 var b = '';
-                for(i = 0;i<a.length;i++){
-                    cno = a[i].CNo;
-                    var ch = '';
-                    // alert(a[i].TA);
-                    if(a[i].TA == 1){
-                        ch = 'checked';
+                if(billStat > 0){
+                    alert('Cannot add more items, as bill has been generated for this table')
+                }else{
+                    for(i = 0;i<a.length;i++){
+                        cno = a[i].CNo;
+                        var ch = '';
+                        // alert(a[i].TA);
+                        if(a[i].TA == 1){
+                            ch = 'checked';
+                        }
+                        b+='<tr>';
+                        b+='<td>'+a[i].ItemNm+'</td><td>'+a[i].Qty+'</td><td>'+a[i].ItmRate+'</td><td class="item-value">'+a[i].Value+'</td><td><input type="checkbox" value="'+a[i].TA+'" '+ch+' disabled /></td><td>'+a[i].CustRmks+'</td>';
+                        b+='</tr>';
                     }
-                    b+='<tr>';
-                    b+='<td>'+a[i].ItemNm+'</td><td>'+a[i].Qty+'</td><td>'+a[i].ItmRate+'</td><td class="item-value">'+a[i].Value+'</td><td><input type="checkbox" value="'+a[i].TA+'" '+ch+' disabled /></td><td>'+a[i].CustRmks+'</td>';
-                    b+='</tr>';
+
+                    $('#phone').val(a[0].CellNo);
+
+                    $('#order-table-body').append(b);
+                    calculateTotal();
                 }
-
-                $('#phone').val(a[0].CellNo);
-
-                $('#order-table-body').append(b);
-                calculateTotal();
               }
           });
 

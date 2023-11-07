@@ -1474,9 +1474,11 @@ width: 100%;*/
                                     <td>'+data[i].PaidAmt+'</td>\
                                     <td>'+data[i].pymtName+'</td>\
                                     <td>\
+                                    <?php if($this->session->userdata('AutoSettle') == 0){ ?>
                                         <button class="btn btn-sm btn-success" onclick="setPaidAmount('+data[i].BillId+','+data[i].CNo+','+data[i].MergeNo+','+data[i].CustId+','+data[i].BillNo+','+data[i].TotBillAmt+',\''+data[i].pymtName+'\')">\
                                             <i class="fas fa-check-double"></i> \
                                         </button>\
+                                    <?php } ?>
                                         <a class="btn btn-sm btn-info" href="<?= base_url('restaurant/print/'); ?>'+data[i].BillId+'">\
                                             <i class="fas fa-print"></i> \
                                         </a>\
@@ -2492,6 +2494,7 @@ function cashCollect(custId, MCNo, mergeNo, oType){
                         <td>'+pm+'</td>\
                         <td>\
                         <input type="hidden" name="oType" value="'+oType+'"/>\
+                        <input type="hidden" name="TableNo" value="'+data.TableNo+'"/>\
                             <input type="hidden" name="BillId" value="'+data.BillId+'"/>\
                             <input type="hidden" name="MCNo" value="'+data.CNo+'"/>\
                             <input type="hidden" name="EID" value="'+data.EID+'"/>\

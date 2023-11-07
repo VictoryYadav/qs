@@ -3027,8 +3027,11 @@ class Restaurant extends CI_Controller {
         if(isset($_POST['get_table_order_items'])){
             // print_r("ljjgf");exit();
             $tableno = $_POST['table_no'];
-            $q = "SELECT k.*,i.ItemNm,i.Value from KitchenMain as km, Kitchen as k, MenuItem as i where km.CNo = k.CNo and km.MergeNo = '$tableno' and k.stat not in(0,10, 4, 6, 9, 99, 7) and i.Itemid = k.Itemid";
+            $q = "SELECT k.*,km.BillStat kmBillStat, i.ItemNm,i.Value from KitchenMain as km, Kitchen as k, MenuItem as i where km.CNo = k.CNo and km.MergeNo = '$tableno' and k.stat not in(0,10, 4, 6, 9, 99, 7) and i.Itemid = k.Itemid";
             $data = $this->db2->query($q)->result_array();
+            // echo "<pre>";
+            // print_r($data);
+            // die;
             echo json_encode($data);
         }
     }
@@ -3369,9 +3372,8 @@ class Restaurant extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
 
-            echo "<pre>";
-            print_r($_POST);
-            die;
+            // echo "<pre>";
+            // print_r($_POST);
 
             $pay = $_POST;
             $pay['PaymtMode'] = 1;
@@ -3382,16 +3384,25 @@ class Restaurant extends CI_Controller {
             $pay['PymtType'] = 0;
             $pay['PymtRef'] = 0;
             $pay['Stat'] = 0;
-            unset($pay['oType']);
+            $TableNo = $pay['TableNo'];
+            unset($pay['TableNo']);
+            // print_r($pay);
             if($pay['oType']==8){
+                unset($pay['oType']);
                 $payNo = insertRecord('BillPayments', $pay);
                 updateRecord('KitchenMain', array('custPymt' => 1), array('MCNo' => $pay['MCNo'],'EID' => $pay['EID']));
+                $status = 'success';
+                
             }else if($pay['oType']==7){
                 updateRecord('BillPayments', array('PymtType' => $pay['PymtType']), array('EID' => $pay['EID'],'BillId' => $pay['BillId']));
+                $status = 'success';
             }
             
-            if(!empty($payNo )){
-                $status = 'success';
+            if($status == 'success'){
+                if($this->session->userdata('AutoSettle') == 1){
+                    $this->autoSettlePayment($pay['BillId'], $pay['MCNo'], $pay['MergeNo'], $TableNo);
+                }
+
                 $response = 'Payment Collected';
             }
             
@@ -3403,7 +3414,6 @@ class Restaurant extends CI_Controller {
              die;
         } 
     }
-
 
     public function test(){
         echo "<pre>";
@@ -4005,6 +4015,24 @@ class Restaurant extends CI_Controller {
             echo json_encode($response);
             die();
         }
+    }
+
+    private function autoSettlePayment($billId, $cNo, $MergeNo, $TableNo){
+
+        $EID = authuser()->EID;
+        $EType = $this->session->userdata('EType');
+
+        $q1 = "UPDATE Billing  SET Stat = 1,payRest=1  WHERE BillId = $billId AND EID = $EID";
+        $billData = $this->db2->query($q1);
+        // print_r($q1);
+        updateRecord('BillPayments', array('Stat' => 1), array('BillId' => $billId,'EID' => $EID));
+
+        $q2 = "UPDATE Kitchen k, KitchenMain km SET k.payRest=1, km.payRest=1 WHERE (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
+        $kitchenUpdate = $this->db2->query($q2);
+
+        if ($EType == 5) {
+            updateRecord('Eat_tables', array('Stat' => 0, 'MergeNo' => $TableNo), array(' EID' => $EID,'MergeNo' => $MergeNo));
+        }        
     }
 
 

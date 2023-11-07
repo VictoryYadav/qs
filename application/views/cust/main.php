@@ -1730,6 +1730,12 @@ Essential Scripts
                     $('#minus-qty').prop('disabled', true);
                     $("#take-away").prop('checked', false);
                     $("#serve-val").val(5);
+                    // 7-nov-23 for payment
+                    if (response.status == 2) {
+                        alert('Bill has been generated, please pay now');
+                        window.location = `${response.redirectTo}`;
+                    }
+                    // 
                     if (response.status == 100) {
                         alert(response.msg);
                         window.location.reload();

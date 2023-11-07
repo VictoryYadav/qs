@@ -307,7 +307,7 @@
             <a href="<?= base_url('restaurant/print/'.$billId); ?>" class="'btn btn-sm btn-primary">Print</a>
             <div id="download-to-pdf" class="container billView">
                     <div class="text-center">
-                        <p style="font-weight: bold;"><?= $hotelName ?></p>
+                        <p style="font-weight: bold;font-size: 18px !important;margin-bottom: 1px;"><?= $hotelName ?></p>
                         <p style="margin-bottom: unset;"><?= $address ?>, <?= $city ?>-<?= $pincode ?></p>
                         <p style="margin-bottom: unset;">Phone: <?= $phone ?></p>
                         <?php if ($gstno != '-') { ?>
@@ -323,17 +323,15 @@
 
                     <div style="border-bottom: 1px solid;"></div>
                     
-                    
-
                     <div style="border-bottom: 1px solid;"></div>
 
                     <div class="row">
                         <div class="col-6">
-                            <p style="margin-bottom: unset;font-weight: bold;">Bill No: <?= $billno ?></p>
+                            <p style="margin-bottom: unset;font-weight: bold;font-size: 15px !important;">Bill No: <?= $billno ?></p>
                         </div>
                         
                         <div class="col-12">
-                            <p style="margin-bottom: unset;">DATE: <?= $dateOfBill ?></p>
+                            <p style="margin-bottom: unset;font-size: 15px !important;">Date: <?= $dateOfBill ?></p>
                             <!-- <p><?= $dateOfBill ?></p> -->
                         </div>
                     </div>

@@ -601,6 +601,18 @@ class Cust extends CI_Model{
 		if (isset($postData['orderToCart']) && !empty($postData['orderToCart'])) {
 			// echo "<pre>";print_r($postData);exit();
 			if (isset($_SESSION['CustId'])) {
+
+				$checkKM = $this->db2->select('custPymt, BillStat, payRest')->get_where('KitchenMain', array('BillStat >' => 0, 'EID' => $EID, 'CNo' => $CNo))->row_array();
+				if(!empty($checkKM)){
+					$response = [
+						"status" => 2,
+						"data" => $checkKM
+					];
+					$response["redirectTo"]  = base_url('customer/current_order');
+					echo json_encode($response);
+					die;
+				}
+
 				$CellNo = $_SESSION['signup']['MobileNo'];
 				$this->session->set_userdata('CellNo', $CellNo);
 				$CustNo = $this->session->userdata('CustNo');
