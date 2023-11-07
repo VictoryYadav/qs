@@ -23,41 +23,21 @@
         /*cursor: all-scroll;*/
     }
 
-
-
     .order-list::-webkit-scrollbar {
-
         width: 5px;
-
     }
-
-
 
     .order-list::-webkit-scrollbar-track {
-
         -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
-
     }
-
-
-
     .order-list::-webkit-scrollbar-thumb {
-
         background-color: white;
-
         /*outline: 1px solid slategrey;*/
-
     }
-
-
 
     .order-list tr {
-
         font-size: 12px;
-
     }
-
-
 
     .order-list td {
         font-size: 12px;
@@ -70,102 +50,53 @@
         font-weight: 500;
     }
 
-
-
     .main-ammount {
-
         padding: 5px 37px;
-
         color: #fff;
-
     }
-
-
 
     .main-ammount th {
-
         font-weight: 500;
-
         font-size: 15px;
-
     }
-
-
 
     .navbar {
-
         overflow: hidden;
-
         background-color: #fff;
-
         position: fixed;
-
         bottom: 0;
-
         width: 100%;
-
         padding: 0px;
-
         text-align: center;
-
     }
-
-
 
     .navbar a {
-
         float: left;
-
         display: block;
-
         color: #000;
-
         text-align: center;
-
         padding: 8px 13px;
-
         text-decoration: none;
-
         font-size: 7px;
-
         /* width: 20%; */
-
     }
-
-
 
     .navbar a:hover {
-
         background: #f1f1f1;
-
         color: black;
-
     }
-
-
 
     .navbar a.active {
-
         background-color: #0a88ff;
-
         color: #fff;
-
     }
-
-
 
     .navbar a img {
-
         display: inherit;
-
     }
 
-
-
     .dropdown-menu a {
-
         font-size: 15px !important;
-
     }
 
 </style>

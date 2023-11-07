@@ -20,17 +20,6 @@
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <!-- start page title -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="page-title-box align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18 text-center"><?php echo $title; ?>
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end page title -->
-
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -91,8 +80,8 @@
                                                     <i class="fa fa-plus"></i>
                                                 </button>
 
-                                                <button class="btn btn-success btn-sm send-to-kitchen" data_type="save_to_kitchen">Send to Kitchen</button>
-                                                <button class="btn btn-warning btn-sm send-to-kitchen" data_type="bill" id="btnBill">Bill</button>
+                                                <button class="btn btn-success btn-sm send-to-kitchen" data_type="save_to_kitchen">Order</button>
+                                                <button class="btn btn-warning btn-sm send-to-kitchen" data_type="bill" id="btnBill" style="display: none;">Bill</button>
 
                                             </div>
 
@@ -102,7 +91,7 @@
                                                 <button class="btn btn-warning send-to-kitchen" data_type="bill">Bill</button>
                                             </div> -->
                                             <div class="col-md-2 form-group text-right d-none d-sm-block">
-                                                <label>Bill Amount : </label>
+                                                <label>I.Amt : </label>
                                             </div>
                                             <div class="col-md-3 form-group col-6">
                                                 <div>
@@ -199,7 +188,7 @@
             var template = `
             <tr class="item-id" data-id="${itemId}" kitcd-id="${itemKitCd}" pckcharge ="${PckCharge}" Itm_Portion ="${Itm_Portion}">
                 <td>${itemName}</td>
-                <td style="width:100px;"><input type="number" class="form-control form-control-sm item-qty" min="1" value="1" onblur="calculateValue(this)"style="width:100px;" ></td>
+                <td style="width:50px;"><input type="number" class="form-control form-control-sm item-qty" min="1" value="1" onblur="calculateValue(this)"style="width:50px;" ></td>
                 <td class="item-rate">${itemValue}</td>
                 <td class="item-value">${itemValue}</td>
                 <td><input type="checkbox" value="1" class="is_take_away" `+ch+`></td>
@@ -308,7 +297,7 @@
                                 var template = `<ul>`;
                                 response.items.forEach((item) => {
                                     template += `
-                                <li onclick="itemSlected(${item.ItemId}, '${item.ItemNm}', ${item.Value}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType});" style="cursor: pointer;">${item.ItemNm}</li>
+                                <li onclick="itemSlected(${item.ItemId}, '${item.ItemNm}', ${item.Value}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType});" style="cursor: pointer;">${item.ItemId} - ${item.ItemNm}</li>
                             `;
                                 });
                                 template += `</ul>`;
@@ -477,7 +466,11 @@
                                     location.reload();
                                 }else{
                                     alert("Order Placed Successfully");
-                                location.reload();
+                                // location.reload();
+                                var MCNo = response.data.MCNo;
+                                var MergeNo = response.data.MergeNo;
+                                var FKOTNo = response.data.FKOTNo;
+                                window.location = "<?= base_url('restaurant/kot_print/'); ?>"+MCNo+'/'+MergeNo+'/'+FKOTNo;
                                 }
                             } else {
                                 alert("Failed To Place Order");

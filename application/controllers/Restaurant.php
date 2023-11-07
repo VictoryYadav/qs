@@ -2713,7 +2713,7 @@ class Restaurant extends CI_Controller {
         if (isset($_POST['searchItem']) && $_POST['searchItem']) {
             $itemName = $_POST['itemName'];
 
-            $items = $this->db2->query("SELECT i.ItemId, i.ItemNm, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType  FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and ItemNm like '$itemName%' AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId order by i.Rank")->result_array();
+            $items = $this->db2->query("SELECT i.ItemId, i.ItemNm, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType  FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and (ItemNm like '$itemName%' or i.ItemId like '$itemName%') AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId order by i.Rank")->result_array();
             
             if (!empty($items)) {
                 $response = [
@@ -2893,9 +2893,9 @@ class Restaurant extends CI_Controller {
                 $orderAmount = $orderAmount + $ItmRate[$i];
             }
 
+            $dArray = array('MCNo' => $CNo, 'MergeNo' => $tableNo,'FKOTNo' => $fKotNo);
+
             if ($data_type == 'bill') {
-                # code...
-                // $kitcheData = $this->db2->query("SELECT SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (date(km.LstModDt)) as OrdDt, c.CGSTRate, c.SGSTRate, c.GSTInclusiveRates, c.ServChrg, c.Tips from Kitchen k, KitchenMain km, MenuItem m, Config c where k.CNo=km.CNo AND c.EID=km.EID AND k.ItemId=m.ItemId AND (k.Stat<>4 AND k.Stat<>6 AND k.Stat<>7 AND k.Stat<>9 AND k.Stat<>99) AND km.EID=$EID And km.CNo=$CNo AND (km.CNo=$CNo OR km.MCNo=$CNo) AND k.BillStat=0 group by  date(km.LstModDt), c.CGSTRate, c.SGSTRate, c.GSTInclusiveRates, c.ServChrg, c.Tips order by date(km.LstModDt) Asc")->result_array();
 
                 $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7 AND k1.Stat<>9  AND k1.Stat<>99) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7  AND k1.Stat<>9 AND k1.Stat<>99) GROUP BY k1.EID) as TotPckCharge,  ip.Name as Portions, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7  AND k.Stat<>9 AND k.Stat<>10 AND k.Stat<>99) and km.EID = k.EID and km.EID = $EID And k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) AND km.BillStat=0 AND TIMEDIFF(Now(), km.LstModDt) < '10:00:00' group by km.CNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by TaxType, m.ItemNm Asc")->result_array();
 
@@ -3016,6 +3016,7 @@ class Restaurant extends CI_Controller {
                 $response = [
                         "status" => 1,
                         "msg" => "success",
+                        "data" => $dArray 
                     ];
             }
             // print_r($response);exit();

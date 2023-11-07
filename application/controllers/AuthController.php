@@ -106,7 +106,7 @@ class AuthController extends CI_Controller {
                         redirect(base_url('dashboard'));
                     }
 
-                    redirect(base_url($url));
+                    redirect($url);
                     
                 }else {
                         $this->session->set_flashdata('error','Fail to Validate User'); 
