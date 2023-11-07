@@ -2883,7 +2883,7 @@ class Restaurant extends CI_Controller {
                 $kitchenObj['ItmRate'] = $ItmRate[$i];
                 $kitchenObj['OrigRate'] = $ItmRate[$i];
                 $kitchenObj['PckCharge'] = $pckValue[$i];
-                $kitchenObj['Stat'] = 1;
+                $kitchenObj['Stat'] = 2;
                 $kitchenObj['CellNo'] = $phone;
                 $kitchenObj['Itm_Portion'] = $Itm_Portion[$i];
                 $kitchenObj['TaxType'] = $taxtype[$i];
@@ -3058,7 +3058,8 @@ class Restaurant extends CI_Controller {
             $kitchenMainObj['OType'] = $orderType;
             $kitchenMainObj['TableNo'] = $TableNo;
             $kitchenMainObj['MergeNo'] = $TableNo;
-            $kitchenMainObj['Stat'] = 0;
+            $kitchenMainObj['OldTableNo'] = $TableNo;
+            $kitchenMainObj['Stat'] = 2;
             $kitchenMainObj['LoginCd'] = 1;
             $kitchenMainObj['TPRefNo'] = '';
             $kitchenMainObj['TPId'] = 0;
@@ -3347,7 +3348,7 @@ class Restaurant extends CI_Controller {
                                                 )
                                    )
                         ->row_array();
-            $data['payModes'] = $this->db2->get_where('pymtmodes', array('Stat' => 0))->result_array();
+            $data['payModes'] = $this->db2->get_where('PymtModes', array('Stat' => 0))->result_array();
             // echo "<pre>";
             // print_r($data);
             // die;
