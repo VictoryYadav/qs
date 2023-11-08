@@ -19,12 +19,14 @@ class Razorpay extends CI_Controller {
 	}
 
     public function pay(){
-        
-        // $keyId = 'rzp_test_Z50p6ZM95VvlSy';
-        // $keySecret = 'gtQvvO7aRLLoMefAWCV7Pcwp';
-        // live
-        $keyId = 'rzp_live_orBqBQnXLQF7i9';
-        $keySecret = 'gFjtLHcPZIZ9S81lrjMHyeDi';
+        // test
+        $keyId = 'rzp_test_Z50p6ZM95VvlSy';
+        $keySecret = 'gtQvvO7aRLLoMefAWCV7Pcwp';
+        if($this->session->userdata('pymtENV') > 0){
+            // live
+            $keyId = 'rzp_live_orBqBQnXLQF7i9';
+            $keySecret = 'gFjtLHcPZIZ9S81lrjMHyeDi';
+        }
 
         $displayCurrency = 'INR';
 

@@ -2713,7 +2713,13 @@ class Restaurant extends CI_Controller {
         if (isset($_POST['searchItem']) && $_POST['searchItem']) {
             $itemName = $_POST['itemName'];
 
-            $items = $this->db2->query("SELECT i.ItemId, i.ItemNm, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd  FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and (ItemNm like '$itemName%' or i.ItemId like '$itemName%' or i.IMcCd like '$itemName%') AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId order by i.Rank")->result_array();
+            $likeQry = " (ItemNm like '$itemName%' or i.ItemId like '$itemName%' or i.IMcCd like '$itemName%') ";
+
+            if($this->session->userdata('IMcCdOpt') == 2){
+                $likeQry = " (ItemNm like '$itemName%' or i.IMcCd like '$itemName%' or i.ItemId like '$itemName%') ";
+            }
+
+            $items = $this->db2->query("SELECT i.ItemId, i.ItemNm, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd  FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId order by i.Rank")->result_array();
             
             if (!empty($items)) {
                 $response = [
@@ -3414,9 +3420,9 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
-            echo "<pre>";
-            print_r($_POST);
-            die;
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
             $MergeNo = $_POST['mergeNo'];
             $EID = authuser()->EID;
              // SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt,

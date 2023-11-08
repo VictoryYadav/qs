@@ -2599,6 +2599,19 @@ class Customer extends CI_Controller {
     }
 
     public function test(){
+
+        $mi = $this->db2->select('ItemId,IMcCd')->order_by('ItemId','ASC')->get('MenuItem')->result_array();
+        echo "<pre>";
+        print_r($mi);
+        die;
+        
+        $count = 1;
+        // foreach ($mi as &$key) {
+        //     $key['index'] = $count++;
+        //     updateRecord('MenuItem', array('IMcCd' => $key['index']), array('ItemId' => $key['ItemId'], 'EID' => authuser()->EID));
+        // }
+        print_r($mi);
+            die;
         $data['title'] = 'Item Details';
         $data['language'] = languageArray();
         $data['Itm_Portion'] = 1;

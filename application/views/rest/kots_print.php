@@ -133,7 +133,12 @@
     <div>
       <table>
         <tr style="border-bottom: 2px solid black;border-top: 2px solid black;font-size: 18px;">
-          <td>KOT No: <?= $kotList[0]['UKOTNo']; ?><br>
+          <td>KOT No: <?php 
+                      if($this->session->userdata('MultiKitchen') > 1 ){
+                        echo $kotList[0]['KOTNo'].'-'.$kotList[0]['FKOTNo'];;
+                      }else{
+                        echo $kotList[0]['FKOTNo'];
+                      } ?><br>
             Date: <?= date('d-M-Y H:i', strtotime($kotList[0]['LstModDt'])); ?>
           </td>
           <td>Table: <?= $kotList[0]['TableNo']; ?></td>

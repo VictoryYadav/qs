@@ -23,12 +23,15 @@ class Phonepe extends CI_Controller {
 
         // $this->load->model('Cust', 'cust');
 
-        // $this->merchantId = 'PGTESTPAYUAT140';
-        // $this->saltKey = '775765ff-824f-4cc4-9053-c3926e493514';
+        // test
+        $this->merchantId = 'PGTESTPAYUAT140';
+        $this->saltKey = '775765ff-824f-4cc4-9053-c3926e493514';
 
         // live
-        $this->merchantId = 'VTRENDONLINE';
-        $this->saltKey = '95d084d8-38f0-4d64-91ff-24449f8e911e';
+        if($this->session->userdata('pymtENV') > 0){
+            $this->merchantId = 'VTRENDONLINE';
+            $this->saltKey = '95d084d8-38f0-4d64-91ff-24449f8e911e';
+        }
         $this->saltIndex = 1;
     }
 
@@ -71,7 +74,12 @@ class Phonepe extends CI_Controller {
             $string = $encoded."/pg/v1/pay".$this->saltKey;
             $sha256 = hash('sha256', $string);
             $finalHeader = $sha256."###".$this->saltIndex;
-
+            // echo "<pre>";
+            // print_r($encode);
+        
+            // echo "<br>";
+            // print_r($finalHeader);
+            // die;
             // curl
             $curl = curl_init();
             // test

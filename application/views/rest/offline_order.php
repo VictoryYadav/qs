@@ -230,6 +230,7 @@
         $(document).ready(function() {
             $('#btnOrder').hide();
             $("#order-type").change(function(event) {
+                $('#order-table-body').html('');
                 var orderType = $(this).val();
                 if (orderType == 101) {
                     $("#table-id").prop('disabled', true);
@@ -336,6 +337,8 @@
             });
 
             $(".send-to-kitchen").click(function(event) {
+                $('.send-to-kitchen').attr("disabled", "disabled");
+
                 var data_type = $(this).attr('data_type');
                 // alert(data_type);
                 var orderType = $("#order-type").val();
@@ -502,6 +505,7 @@
         });
 
         function get_table_order_items(el){
+            $('#order-table-body').html('');
             var table_no = el.value;
             $.ajax({
               type:'post',
