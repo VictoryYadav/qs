@@ -1464,6 +1464,7 @@ class Cust extends CI_Model{
         $billingObjStat = 1;
         if($paymentMode == 'RCash'){
         	$MergeNo = $postData['MergeNo'];
+        	// by rest
         	$billingObjStat = 5;
         	$TableNo = $this->session->userdata('TableNo');
         }else{

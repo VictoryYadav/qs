@@ -29,9 +29,9 @@
                                                 <label>Order Type</label>
                                                 <select class="form-control form-control-sm" id="order-type">
                                                     <option value="0">Select</option>
-                                                    <option value="20">3rd Party</option>
-                                                    <option value="15">Take Away</option>
-                                                    <option value="17">Deliver</option>
+                                                    <option value="101">3rd Party</option>
+                                                    <option value="105">Take Away</option>
+                                                    <option value="110">Deliver</option>
                                                     <option value="8">Sit-In</option>
                                                 </select>
                                             </div>
@@ -80,7 +80,7 @@
                                                     <i class="fa fa-plus"></i>
                                                 </button>
 
-                                                <button class="btn btn-success btn-sm send-to-kitchen" data_type="save_to_kitchen">Order</button>
+                                                <button class="btn btn-success btn-sm send-to-kitchen" data_type="save_to_kitchen" id="btnOrder">Order</button style="display: none;">
                                                 <button class="btn btn-warning btn-sm send-to-kitchen" data_type="bill" id="btnBill" style="display: none;">Bill</button>
 
                                             </div>
@@ -228,10 +228,10 @@
         }
 
         $(document).ready(function() {
-
+            $('#btnOrder').hide();
             $("#order-type").change(function(event) {
                 var orderType = $(this).val();
-                if (orderType == 20) {
+                if (orderType == 101) {
                     $("#table-id").prop('disabled', true);
                     $("#table-id").val(0);
                     $("#3rd-party").prop('disabled', false);
@@ -241,8 +241,9 @@
                     $("#phone").prop('disabled', true);
                     $("#phone").val("");
                     $('#btnBill').show();
+                    $('#btnOrder').hide();
                 } else
-                 if (orderType == 15) {
+                 if (orderType == 105) {
                     $("#table-id").prop('disabled', true);
                     $("#table-id").val(0);
                     $("#3rd-party").prop('disabled', true);
@@ -253,7 +254,8 @@
                     $("#cust-address").val("");
                     $("#phone").prop('disabled', false);
                     $('#btnBill').show();
-                } else if (orderType == 17) {
+                    $('#btnOrder').hide();
+                } else if (orderType == 110) {
                     $("#table-id").prop('disabled', true);
                     $("#table-id").val(0);
                     $("#3rd-party").prop('disabled', true);
@@ -264,6 +266,7 @@
                     $("#phone").prop('disabled', false);
                     $("#phone").val('');
                     $('#btnBill').show();
+                    $('#btnOrder').hide();
                 } else if (orderType == 8) {
                     $("#table-id").prop('disabled', false);
                     $("#3rd-party").val(0);
@@ -276,6 +279,7 @@
                     $("#phone").prop('disabled', false);
                     $("#phone").val("");
                     $('#btnBill').hide();
+                    $('#btnOrder').show();
                 }
 
             });
@@ -327,7 +331,8 @@
                 var orderType = $("#order-type").val();
                 console.log('vv '+orderType);
                 if (orderType != 8 ) {
-                    var tableNo = 'TA';
+                    // var tableNo = 'TA';
+                    var tableNo = orderType;
                 } else {
                     var tableNo = $("#table-id").val();
                 }
@@ -463,7 +468,7 @@
                             if (response.status) {
                                 if (data_type == 'bill') {
                                     alert("Order Billed Successfully");
-                                    location.reload();
+                                    window.location = "<?= base_url('restaurant/bill/'); ?>"+response.data.billId;
                                 }else{
                                     alert("Order Placed Successfully");
                                 // location.reload();
