@@ -30,18 +30,6 @@
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <!-- start page title -->
-                        <div class="row text-center">
-                            <div class="col-12">
-                                <div class="page-title-box">
-                                    <h4 class="mb-0 font-size-18 text-center" ><?php echo $title; ?>
-                                    </h4>
-
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end page title -->
-
                         <div class="row">
                             <div class="col-md-10 mx-auto">
                                 <div class="card">

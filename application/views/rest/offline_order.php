@@ -300,8 +300,18 @@
                             if (response.status) {
                                 var template = `<ul>`;
                                 response.items.forEach((item) => {
+                                    var printItemName = '';
+                                    var IMcCd = "<?php echo $this->session->userdata('IMcCdOpt'); ?>";
+                                    if(IMcCd == 0){
+                                        printItemName = item.ItemNm;
+                                    }else if(IMcCd == 1){
+                                        printItemName = item.ItemId+' - '+item.ItemNm;
+                                    }else if(IMcCd == 2){
+                                        printItemName = item.IMcCd+' - '+item.ItemNm;
+                                    }
+                                    
                                     template += `
-                                <li onclick="itemSlected(${item.ItemId}, '${item.ItemNm}', ${item.Value}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType});" style="cursor: pointer;">${item.ItemId} - ${item.ItemNm}</li>
+                                <li onclick="itemSlected(${item.ItemId}, '${item.ItemNm}', ${item.Value}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType});" style="cursor: pointer;">${printItemName}</li>
                             `;
                                 });
                                 template += `</ul>`;

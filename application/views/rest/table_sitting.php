@@ -938,6 +938,33 @@ width: 100%;*/
         </div>
     </div>
 
+    <!-- bill Discount model -->
+    <div class="modal" id="billDiscountModel">
+        <div class="modal-dialog">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <h6>Bill Discount</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 500px;overflow: auto;">
+                    <form method="post" id="billDiscForm">
+                        <input type="hidden" name="billMergeNo" id="billMergeNo">
+                        <div class="row">
+                            <div class="col-md-6 col-6">
+                                <input type="number" name="billDiscPer" id="billDiscPer" class="form-control form-control-sm" required="" value="0">
+                            </div>
+                            <div class="col-md-6 col-6">
+                                <button class="btn btn-sm btn-success" onclick="billCreateA()">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script type="text/javascript">
     // $(document).ready(function () {
     //     $('#table_view').DataTable();
@@ -2445,7 +2472,28 @@ function get_phone_num(){
 
 function billCreate(mergeNo){
         // console.log(mergeNo);
-    $.post('<?= base_url('restaurant/billCreateRest') ?>',{mergeNo:mergeNo},function(res){
+    var disc = "<?php echo $this->session->userdata('Discount'); ?>";
+    if(disc > 0){
+        $('#billMergeNo').val(mergeNo);
+        $('#billDiscountModel').modal('show');
+    }else{
+        var billDiscPer = 0;
+        $.post('<?= base_url('restaurant/billCreateRest') ?>',{mergeNo:mergeNo,billDiscPer:billDiscPer},function(res){
+            if(res.status == 'success'){
+                var billId = res.response;
+              window.location = "<?php echo base_url('restaurant/bill/'); ?>"+billId;
+            }else{
+              alert(res.response);
+              
+            }
+        });
+    }
+}
+
+function billCreateA(){
+    var mergeNo = $('#billMergeNo').val();
+    var billDiscPer = $('#billDiscPer').val();
+    $.post('<?= base_url('restaurant/billCreateRest') ?>',{mergeNo:mergeNo, billDiscPer:billDiscPer},function(res){
         if(res.status == 'success'){
             var billId = res.response;
           window.location = "<?php echo base_url('restaurant/bill/'); ?>"+billId;
