@@ -2600,6 +2600,26 @@ class Customer extends CI_Controller {
 
     public function test(){
 
+        $pay['BillId'] = 1;
+            $pay['MCNo'] = 2;
+            $pay['MergeNo'] = 22;
+            $pay['TotBillAmt'] = 2;
+            $pay['CellNo'] = '9988766554';
+            $pay['SplitTyp'] = 0;
+            $pay['SplitAmt'] = 0;
+            $pay['PymtId'] = 0;
+            $pay['PaidAmt'] = 2;
+            $pay['OrderRef'] = '46-51-22-13-8-13-2';
+            $pay['PaymtMode'] = 1;
+            $pay['PymtType'] = 0;
+            $pay['PymtRef'] = 'T2311091329142129036638';
+            $pay['Stat'] = 1;
+            $pay['EID'] = 51;
+            echo "<pre>";
+            print_r($pay);
+            $this->db2->insert('BillPayments', $pay);
+            die;
+
         $mi = $this->db2->select('ItemId,IMcCd')->order_by('ItemId','ASC')->get('MenuItem')->result_array();
         echo "<pre>";
         print_r($mi);

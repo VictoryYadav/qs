@@ -112,19 +112,19 @@ class DashboardController extends CI_Controller
 
 	    if (isset($_POST['type']) && $_POST['type'] == 'orderValue') {
 
-	        $q1 = "SELECT COUNT(BillId), date(PymtTime), sum(TotAmt) FROM Billing where time(PymtTime) <'15:00:00'";
-	        $q2 = "SELECT COUNT(BillId), date(PymtTime), sum(TotAmt) FROM Billing where time(PymtTime) >='15:00:00'";
+	        $q1 = "SELECT COUNT(BillId), date(billTime), sum(TotAmt) FROM Billing where time(billTime) <'15:00:00'";
+	        $q2 = "SELECT COUNT(BillId), date(billTime), sum(TotAmt) FROM Billing where time(billTime) >='15:00:00'";
 
 	        if(isset($_POST['date'])){
 	            $range = explode("-", $_POST['date']);
 	            $from_date = date('Y-m-d', strtotime(trim($range[0])));
 	            $to_date = date('Y-m-d', strtotime(trim($range[1])));
 	            // echo $from_date.'    '.$to_date;exit();
-	            $q1.=" and PymtTime >='$from_date' and PymtTime <= '$to_date'";
-	            $q2.=" and PymtTime >='$from_date' and PymtTime <= '$to_date'";
+	            $q1.=" and billTime >='$from_date' and billTime <= '$to_date'";
+	            $q2.=" and billTime >='$from_date' and billTime <= '$to_date'";
 	        }
-	        $q1.=" group by EID,date(PymtTime) ORDER BY date(PymtTime) DESC";
-	        $q2.=" group by EID,date(PymtTime) ORDER BY date(PymtTime) DESC";
+	        $q1.=" group by EID,date(billTime) ORDER BY date(billTime) DESC";
+	        $q2.=" group by EID,date(billTime) ORDER BY date(billTime) DESC";
 	        $order_value_lunch = $this->db2->query($q1)->result_array();
 	        $order_value_dinner=$this->db2->query($q2)->result_array();
 	        // print_r($ln_query);echo '   ';print_r($dn_query);exit();
@@ -134,13 +134,13 @@ class DashboardController extends CI_Controller
 	        $payment_mode_lunch_array_labal = [];
 
 	        foreach ($order_value_lunch as $key => $value) {
-	            array_push($order_value_lunch_array_labal,$value['date(PymtTime)'] );
+	            array_push($order_value_lunch_array_labal,$value['date(billTime)'] );
 	            array_push($order_value_lunch_array_value,$value['sum(TotAmt)'] );
 	            // array_push($payment_mode_lunch_array_labal,$value['PaymtMode'] );
 	        }
 
 	        foreach ($order_value_dinner as $key => $value) {
-	            array_push($order_value_lunch_array_labal,$value['date(PymtTime)'] );
+	            array_push($order_value_lunch_array_labal,$value['date(billTime)'] );
 	            array_push($order_value_dinner_array_value,$value['sum(TotAmt)'] );
 	            // array_push($payment_mode_lunch_array_labal,$value['PaymtMode'] );
 	        }
@@ -200,18 +200,18 @@ class DashboardController extends CI_Controller
 
 	    if (isset($_POST['type']) && $_POST['type'] == 'paymentMode') {
 
-	        $q1 = "SELECT PaymtMode, COUNT(BillId), date(PymtTime) FROM Billing where PaymtMode != ''";
+	        $q1 = "SELECT PaymtMode, COUNT(BillId), date(billTime) FROM Billing where PaymtMode != ''";
 
 	        if(isset($_POST['date'])){
 	            $range = explode("-", $_POST['date']);
 	            $from_date = date('Y-m-d', strtotime(trim($range[0])));
 	            $to_date = date('Y-m-d', strtotime(trim($range[1])));
 	            // echo $from_date.'    '.$to_date;exit();
-	            $q1.=" and PymtTime >='$from_date' and PymtTime <= '$to_date'";
-	            // $q2.=" and PymtTime >='$from_date' and PymtTime <= '$to_date'";
+	            $q1.=" and billTime >='$from_date' and billTime <= '$to_date'";
+	            // $q2.=" and billTime >='$from_date' and billTime <= '$to_date'";
 	        }
-	        $q1.=" group by PaymtMode,date(PymtTime) ORDER BY date(PymtTime) DESC";
-	        // $q2.=" group by PaymtMode,date(PymtTime) ORDER BY date(PymtTime) DESC";
+	        $q1.=" group by PaymtMode,date(billTime) ORDER BY date(billTime) DESC";
+	        // $q2.=" group by PaymtMode,date(billTime) ORDER BY date(billTime) DESC";
 	        $order_value_lunch = $this->db2->query($q1)->result_array();
 	        // $order_value_dinner=$billingObj->exec($q2);
 	        // print_r($q1);exit();
@@ -222,7 +222,7 @@ class DashboardController extends CI_Controller
 	        $payment_mode_lunch_array_labal = [];
 
 	        foreach ($order_value_lunch as $key => $value) {
-	            array_push($order_value_lunch_array_labal,$value['date(PymtTime)'] );
+	            array_push($order_value_lunch_array_labal,$value['date(billTime)'] );
 	            array_push($order_value_lunch_array_value,$value['COUNT(BillId)'] );
 	            array_push($payment_mode_lunch_array_labal,$value['PaymtMode'] );
 	        }
@@ -404,13 +404,13 @@ class DashboardController extends CI_Controller
 
 	    }
 	    if (isset($_POST['type']) && $_POST['type'] == 'trend90Days') {
-	        $q = "SELECT day(b.PymtTime), date(b.PymtTime), COUNT(b.CNo) as tot, SUM(b.TotAmt), SUM(b.TotAmt)/200 totnos, sum(b.TotItemDisc) FROM Billing b where b.PymtTime != ''";
+	        $q = "SELECT day(b.billTime), date(b.billTime), COUNT(b.CNo) as tot, SUM(b.TotAmt), SUM(b.TotAmt)/200 totnos, sum(b.TotItemDisc) FROM Billing b where b.billTime != ''";
 	        $period = 90;
 	        if(isset($_POST['period'])){
 	            $period = $_POST['period'];
 	        }
-	        $q.=" and PERIOD_DIFF(curDate(), date(b.PymtTime))<=$period";
-	        $q.=" GROUP BY day(b.PymtTime), date(b.PymtTime)";
+	        $q.=" and PERIOD_DIFF(curDate(), date(b.billTime))<=$period";
+	        $q.=" GROUP BY day(b.billTime), date(b.billTime)";
 	        // print_r($q);exit();
 	        $trends = $this->db2->query($q)->result_array();
 
@@ -424,7 +424,7 @@ class DashboardController extends CI_Controller
 	        $data = [];
 	        foreach($trends as $key) {
 	            // print_r($key);exit();
-	            $d = date('d/m', strtotime($key['date(b.PymtTime)']));
+	            $d = date('d/m', strtotime($key['date(b.billTime)']));
 	            $a = [];
 	            array_push($a, $d);
 	            array_push($a, (double)$key['SUM(b.TotAmt)']);
@@ -443,14 +443,14 @@ class DashboardController extends CI_Controller
 
 	    }
 	    if(isset($_POST) && $_POST['type'] == "tableWiseOccupencyLunch"){
-	        $q = "SELECT b.TableNo, COUNT(b.CNo) as tot, SUM(b.TotAmt), SUM(b.TotAmt)/200 totnos, sum(b.TotItemDisc), TIME_FORMAT(sum(TIMEDIFF(b.PymtTime,km.LstModDt)),  '%H %i %s') as totTime FROM Billing b, KitchenMain km where (km.CNo=b.CNo OR km.MCNo=b.CNo) and time(km.LstModDt)<'15:00:00'";
+	        $q = "SELECT b.TableNo, COUNT(b.CNo) as tot, SUM(b.TotAmt), SUM(b.TotAmt)/200 totnos, sum(b.TotItemDisc), TIME_FORMAT(sum(TIMEDIFF(b.billTime,km.LstModDt)),  '%H %i %s') as totTime FROM Billing b, KitchenMain km where (km.CNo=b.CNo OR km.MCNo=b.CNo) and time(km.LstModDt)<'15:00:00'";
 
 	        $period = 90;
 	        if(isset($_POST['period'])){
 	            $period = $_POST['period'];
 	        }
-	        $q.=" and PERIOD_DIFF(curDate(), date(b.PymtTime))<=$period";
-	        $q.=" GROUP BY day(b.PymtTime), date(b.PymtTime), b.TableNo";
+	        $q.=" and PERIOD_DIFF(curDate(), date(b.billTime))<=$period";
+	        $q.=" GROUP BY day(b.billTime), date(b.billTime), b.TableNo";
 	        // print_r($q);exit();
 	        $lunch = $this->db2->query($q)->result_array();
 
@@ -473,14 +473,14 @@ class DashboardController extends CI_Controller
 	        exit;
 	    }
 	    if(isset($_POST) && $_POST['type'] == "tableWiseOccupencyDinner"){
-	        $q = "SELECT b.TableNo, COUNT(b.CNo) as tot, SUM(b.TotAmt), SUM(b.TotAmt)/200 totnos, sum(b.TotItemDisc), TIME_FORMAT(sum(TIMEDIFF(b.PymtTime,km.LstModDt)),  '%H %i %s') as totTime FROM Billing b, KitchenMain km where (km.CNo=b.CNo OR km.MCNo=b.CNo) and time(km.LstModDt)>='15:00:00'";
+	        $q = "SELECT b.TableNo, COUNT(b.CNo) as tot, SUM(b.TotAmt), SUM(b.TotAmt)/200 totnos, sum(b.TotItemDisc), TIME_FORMAT(sum(TIMEDIFF(b.billTime,km.LstModDt)),  '%H %i %s') as totTime FROM Billing b, KitchenMain km where (km.CNo=b.CNo OR km.MCNo=b.CNo) and time(km.LstModDt)>='15:00:00'";
 
 	        $period = 90;
 	        if(isset($_POST['period'])){
 	            $period = $_POST['period'];
 	        }
-	        $q.=" and PERIOD_DIFF(curDate(), date(b.PymtTime))<=$period";
-	        $q.=" GROUP BY day(b.PymtTime), date(b.PymtTime), b.TableNo";
+	        $q.=" and PERIOD_DIFF(curDate(), date(b.billTime))<=$period";
+	        $q.=" GROUP BY day(b.billTime), date(b.billTime), b.TableNo";
 	        // print_r($q);exit();
 	        $lunch = $this->db2->query($q)->result_array();
 
@@ -504,14 +504,14 @@ class DashboardController extends CI_Controller
 	    }
 
 	    if(isset($_POST) && $_POST['type'] == "TakeWays"){
-	        $q = "SELECT  date(b.PymtTime), COUNT(b.CNo) as tot, SUM(b.TotAmt), SUM(b.TotAmt)/200 totnos, sum(b.TotItemDisc), sum(k.TA*k.Qty) as takeAways FROM Billing b, Kitchen k, KitchenMain km where k.TA=1 AND  (km.CNo=b.CNo OR km.MCNo=b.CNo) and k.Stat<>4 and k.Stat<>6 and k.Stat<>7 and k.Stat<>99";
+	        $q = "SELECT  date(b.billTime), COUNT(b.CNo) as tot, SUM(b.TotAmt), SUM(b.TotAmt)/200 totnos, sum(b.TotItemDisc), sum(k.TA*k.Qty) as takeAways FROM Billing b, Kitchen k, KitchenMain km where k.TA=1 AND  (km.CNo=b.CNo OR km.MCNo=b.CNo) and k.Stat<>4 and k.Stat<>6 and k.Stat<>7 and k.Stat<>99";
 
 	        $period = 90;
 	        if(isset($_POST['period'])){
 	            $period = $_POST['period'];
 	        }
-	        $q.=" and PERIOD_DIFF(curDate(), date(b.PymtTime))<=$period";
-	        $q.=" GROUP BY day(b.PymtTime), date(b.PymtTime)";
+	        $q.=" and PERIOD_DIFF(curDate(), date(b.billTime))<=$period";
+	        $q.=" GROUP BY day(b.billTime), date(b.billTime)";
 	        // print_r($q);exit();
 	        $takeaways = $this->db2->query($q)->result_array();
 
@@ -519,7 +519,7 @@ class DashboardController extends CI_Controller
 	        $data = [];
 	        foreach($takeaways as $key) {
 	            // print_r($key);exit();
-	            $d = date('d/m', strtotime($key['date(b.PymtTime)']));
+	            $d = date('d/m', strtotime($key['date(b.billTime)']));
 	            $a = [];
 	            array_push($a, $d);
 	            array_push($a, (double)$key['SUM(b.TotAmt)']);
@@ -564,14 +564,14 @@ class DashboardController extends CI_Controller
 	        exit;
 	    }
 	    if(isset($_POST) && $_POST['type'] == "TrendByWeek"){
-	        $q = "SELECT WEEKOFYEAR(b.PymtTime), COUNT(b.CNo) as tot, SUM(b.TotAmt), SUM(b.TotAmt)/200 totnos, sum(b.TotItemDisc) FROM Billing b where WEEKOFYEAR(b.PymtTime) != ''";
+	        $q = "SELECT WEEKOFYEAR(b.billTime), COUNT(b.CNo) as tot, SUM(b.TotAmt), SUM(b.TotAmt)/200 totnos, sum(b.TotItemDisc) FROM Billing b where WEEKOFYEAR(b.billTime) != ''";
 
 	        $period = 14;
 	        if(isset($_POST['period'])){
 	            $period = $_POST['period'];
 	        }
-	        $q.=" and DATEDIFF(curDate(), date(b.PymtTime))<=$period";
-	        $q.=" GROUP BY WEEKOFYEAR(b.PymtTime)";
+	        $q.=" and DATEDIFF(curDate(), date(b.billTime))<=$period";
+	        $q.=" GROUP BY WEEKOFYEAR(b.billTime)";
 	        // print_r($q);exit();
 	        $takeaways = $this->db2->query($q)->result_array();
 
@@ -579,7 +579,7 @@ class DashboardController extends CI_Controller
 	        $data = [];
 	        foreach($takeaways as $key) {
 	            // print_r($key);exit();
-	            $d = $key['WEEKOFYEAR(b.PymtTime)'];
+	            $d = $key['WEEKOFYEAR(b.billTime)'];
 	            $a = [];
 	            array_push($a, $d);
 	            array_push($a, (double)$key['tot']);
@@ -890,17 +890,17 @@ class DashboardController extends CI_Controller
 
 	    if (isset($_POST['type']) && $_POST['type'] == 'BillsAndRatings') {
 
-	        $q = "SELECT date(b.PymtTime),( HOUR(b.PymtTime) ) AS t, COUNT(b.BillId) as totbills, SUM(r.RCd) FROM Billing b, Ratings r where  b.BillId=r.BillId";
+	        $q = "SELECT date(b.billTime),( HOUR(b.billTime) ) AS t, COUNT(b.BillId) as totbills, SUM(r.RCd) FROM Billing b, Ratings r where  b.BillId=r.BillId";
 
-	        // $revenue_and_discounts = $billingObj->exec("SELECT date(b.PymtTime),( HOUR(b.PymtTime) ) AS t, COUNT(b.BillId) as totbills, SUM(r.RCd) FROM Billing b, Ratings r where date(b.PymtTime)>='2020-12-29' and date(b.PymtTime)<='2020-12-29' and b.BillId=r.BillId GROUP BY date(b.PymtTime),( HOUR(b.PymtTime) )");
+	        // $revenue_and_discounts = $billingObj->exec("SELECT date(b.billTime),( HOUR(b.billTime) ) AS t, COUNT(b.BillId) as totbills, SUM(r.RCd) FROM Billing b, Ratings r where date(b.billTime)>='2020-12-29' and date(b.billTime)<='2020-12-29' and b.BillId=r.BillId GROUP BY date(b.billTime),( HOUR(b.billTime) )");
 	        if(isset($_POST['date'])){
 	            $range = explode("-", $_POST['date']);
 	            $from_date = date('Y-m-d', strtotime(trim($range[0])));
 	            $to_date = date('Y-m-d', strtotime(trim($range[1])));
 	            // echo $from_date.'    '.$to_date;exit();
-	            $q.=" and date(b.PymtTime)>='$from_date' and date(b.PymtTime) <='$to_date'";
+	            $q.=" and date(b.billTime)>='$from_date' and date(b.billTime) <='$to_date'";
 	        }
-	        $q.=" GROUP BY date(b.PymtTime),( HOUR(b.PymtTime) )";
+	        $q.=" GROUP BY date(b.billTime),( HOUR(b.billTime) )";
 	        $revenue_and_discounts = $this->db2->query($q)->result_array();
 
 	        $revenue_and_discounts_array_labal=[];

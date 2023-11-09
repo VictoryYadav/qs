@@ -769,7 +769,7 @@ class Rest extends CI_Model{
 
 	public function getBillDetailsForSettle($custId, $MCNo, $mergeNo){
 			$EID = authuser()->EID;
-			return $this->db2->select("b.TableNo,b.MergeNo, b.BillId, b.BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, bp.PaidAmt, bp.PaymtMode, bp.TotBillAmt, bp.PymtType, b.CNo, u.CustId, cp.Name as pymtName")
+			return $this->db2->select("b.TableNo,b.MergeNo, b.BillId, b.BillNo, DATE_FORMAT(DATE(billTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, bp.PaidAmt, bp.PaymtMode, bp.TotBillAmt, bp.PymtType, b.CNo, u.CustId, cp.Name as pymtName")
 						->order_by('BillId', 'ASC')
 						->group_by('BillId')
 						->join('Eat_tables et','b.EID = et.EID','inner')
@@ -784,6 +784,30 @@ class Rest extends CI_Model{
 								   )
 						->result_array();
             
+	}
+
+	public function getBillingData($from, $to){
+			$from  = date('Y-m-d', strtotime($from));
+			$to = date('Y-m-d', strtotime("+1 day", strtotime($to)));
+			$EID = authuser()->EID;
+
+			$billData = $this->db2->select('b.TableNo, b.BillId, b.BillNo, b.billTime as BillDate, b.CellNo,b.CustId,b.TotAmt, bp.MergeNo, bp.PaidAmt, bp.OrderRef, bp.PymtRef, bp.PaymtMode, bp.PymtType, bp.Stat, bp.PymtDate,cp.Name, cp.Company')
+					->order_by('b.BillId', 'ASC')
+					->join('BillPayments bp','bp.BillId = b.BillId','left')
+					->join('ConfigPymt cp','cp.PymtMode = bp.PaymtMode','left')
+					->get_where('Billing b', array('b.EID' => $EID,
+						'b.billTime >=' => $from,
+						'b.billTime <=' => $to
+								))
+					->result_array();
+
+            // $q = "SELECT b.TableNo, BillId, BillNo, PymtTime as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND b.EID = $EID AND  b.TableNo = et.TableNo and PymtTime >= '$from' and PymtTime <= '$to'";
+
+            // $q.=" Order By BillId Asc";
+            // $billData = $this->db2->query($q)->result_array();
+            // print_r($this->db2->last_query());die;
+ 
+            return $billData;
 	}
 
 	

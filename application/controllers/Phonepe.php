@@ -3,10 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Phonepe extends CI_Controller {
 
-    private $db2;
     private $merchantId;
     private $saltKey;
     private $saltIndex;
+    private $db2;
 
     public function __construct()
     {
@@ -18,20 +18,20 @@ class Phonepe extends CI_Controller {
         //     redirect(base_url());
         // }
 
-        // $my_db = $this->session->userdata('my_db');
-        // $this->db2 = $this->load->database($my_db, TRUE);
+        $my_db = $this->session->userdata('my_db');
+        $this->db2 = $this->load->database($my_db, TRUE);
 
         // $this->load->model('Cust', 'cust');
 
         // test
-        $this->merchantId = 'PGTESTPAYUAT140';
-        $this->saltKey = '775765ff-824f-4cc4-9053-c3926e493514';
+        // $this->merchantId = 'PGTESTPAYUAT140';
+        // $this->saltKey = '775765ff-824f-4cc4-9053-c3926e493514';
 
         // live
-        if($this->session->userdata('pymtENV') > 0){
+        // if($this->session->userdata('pymtENV') > 0){
             $this->merchantId = 'VTRENDONLINE';
             $this->saltKey = '95d084d8-38f0-4d64-91ff-24449f8e911e';
-        }
+        // }
         $this->saltIndex = 1;
     }
 
@@ -131,7 +131,9 @@ class Phonepe extends CI_Controller {
         $resp = $_POST;
         // echo "<pre>";
         // print_r($resp);
+        // die;
 
+        $this->payment_status($resp['merchantId'], $resp['transactionId']);
         // print_r($resp['transactionId']);
         // print_r($SESSION);
         // print_r($this->session->userdata('CellNo'));
@@ -167,7 +169,6 @@ class Phonepe extends CI_Controller {
 
         redirect(base_url('customer/pay/'.$billId.'/'.$MCNo));
 
-        // $this->payment_status($resp['merchantId'], $resp['transactionId']);
     }
 
     public function pay_failed(){
@@ -183,8 +184,12 @@ class Phonepe extends CI_Controller {
 
         // curl
         $curl = curl_init();
+        // test
+        // curl_setopt($curl, CURLOPT_URL, "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/".$merchantId."/".$transactionId);
 
-        curl_setopt($curl, CURLOPT_URL, "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/".$merchantId."/".$transactionId);
+        // live
+        curl_setopt($curl, CURLOPT_URL, "https://api.phonepe.com/apis/hermes/pg/v1/status/".$merchantId."/".$transactionId);
+
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
             "Content-Type: application/json",
             "accept: application/json",
@@ -197,9 +202,69 @@ class Phonepe extends CI_Controller {
 
         $response = curl_exec($curl);
         $result = json_decode($response);
-        echo "<pre>";
-        print_r($result);
-        die;
+        // echo "<pre>";
+        // print_r($result);
+        // print_r($result->success);
+        // die;
+
+        if($result->success == 1){
+
+            $d = explode('-', $transactionId);
+
+            $TableNo = $d[2];
+            $MCNo = $d[3];
+            $billId = $d[5];
+            $TotBillAmt = $d[6];
+
+            $pay['BillId'] = $billId;
+            $pay['MCNo'] = $MCNo;
+            $pay['MergeNo'] = $TableNo;
+            $pay['TotBillAmt'] = $TotBillAmt / 100;
+            $pay['CellNo'] = $this->session->userdata('CellNo');
+            $pay['SplitTyp'] = 0;
+            $pay['SplitAmt'] = 0;
+            $pay['PymtId'] = 0;
+            $pay['PaidAmt'] = $TotBillAmt;
+            $pay['OrderRef'] = $transactionId;
+            $pay['PaymtMode'] = 1;
+            $pay['PymtType'] = 0;
+            $pay['PymtRef'] = $result->data->transactionId;
+            $pay['Stat'] = 1;
+            $pay['EID'] = $this->session->userdata('EID');
+                // echo "<pre>";
+                // print_r($pay);
+                // die;
+            // print_r($this->session->userdata('my_db'));
+            
+            $payNo = insertRecord('BillPayments', $pay);
+        }else{
+            echo "Transaction failed!!";
+            die;
+        }
+
+        redirect(base_url('customer/pay/'.$billId.'/'.$MCNo));
+    }
+
+    public function test(){
+
+        $pay['BillId'] = 1;
+            $pay['MCNo'] = 2;
+            $pay['MergeNo'] = 22;
+            $pay['TotBillAmt'] = 2;
+            $pay['CellNo'] = '9988766554';
+            $pay['SplitTyp'] = 0;
+            $pay['SplitAmt'] = 0;
+            $pay['PymtId'] = 0;
+            $pay['PaidAmt'] = 2;
+            // $pay['OrderRef'] = '46-51-22-13-8-13-2';
+            $pay['PaymtMode'] = 1;
+            $pay['PymtType'] = 0;
+            // $pay['PymtRef'] = 'T2311091329142129036638';
+            $pay['Stat'] = 1;
+            $pay['EID'] = 51;
+            echo "<pre>";
+            print_r($pay);
+            insertRecord('BillPayments', $pay);
     }
 
 }

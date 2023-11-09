@@ -2520,7 +2520,7 @@ function cashCollect(custId, MCNo, mergeNo, oType){
           var pm = "<select name='PymtType' required='' class='form-control form-control-sm'>";
 
           for (var i =0;  i< payModes.length; i++) {
-              pm +='<option value="'+payModes[i].PMNo+'">'+payModes[i].Name+'</option>';
+              pm +='<option value="'+payModes[i].Name+'">'+payModes[i].Name+'</option>';
             }
             pm +='</option>';
 

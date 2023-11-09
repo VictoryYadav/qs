@@ -1445,7 +1445,7 @@ class Restaurant extends CI_Controller {
         $data['EID'] = $EID;
         $data['EType'] = $EType;
 
-        $billData = $this->db2->query("SELECT BillId,BillNo,PaymtMode, DATE(PymtTime) as BillDate, TotAmt FROM Billing WHERE PaidAmt = 0 AND EID = $EID AND PaymtMode = 'Cash'")->result_array();
+        $billData = $this->db2->query("SELECT BillId,BillNo,PaymtMode, DATE(billTime) as BillDate, TotAmt FROM Billing WHERE PaidAmt = 0 AND EID = $EID AND PaymtMode = 'Cash'")->result_array();
 
         $GetDCD = $this->db2->query("SELECT CCd FROM `UsersRoleDaily` WHERE RUserId = $RUserId")->result_array();
         $tempArray =explode(",",$GetDCD[0]['CCd']);
@@ -1470,6 +1470,27 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/bill_settle',$data);
     }
 
+    public function bill_view(){
+       
+        $data['RUserId'] = authuser()->RUserId;
+        $data['EID'] =  authuser()->EID;
+        $data['EType'] =  $this->session->userdata('EType');
+        $data['from_date'] = date('Y-m-d');
+        $data['to_date'] = date('Y-m-d');
+        if($this->input->method(true)=='POST'){
+            $data['from_date'] = date('Y-m-d', strtotime($_POST['from_date']));
+            $data['to_date'] = date('Y-m-d', strtotime($_POST['to_date']));
+        }
+        $data['bills'] = $this->rest->getBillingData($data['from_date'] , $data['to_date'] );
+
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+
+        $data['title'] = 'Bill View';
+        $this->load->view('rest/bill_view',$data);
+    }
+
     public function cash_bill_ajax(){
         $RUserId = authuser()->RUserId;
         $EID = authuser()->EID;
@@ -1492,7 +1513,7 @@ class Restaurant extends CI_Controller {
             $STVcd = $_POST['STVcd'];
 
             if ($EType == 5) {
-                $q = "SELECT b.TableNo, BillId, BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND et.CCd = $STVcd AND b.EID = $EID AND  b.TableNo = et.TableNo";
+                $q = "SELECT b.TableNo, BillId, BillNo, DATE_FORMAT(DATE(billTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND et.CCd = $STVcd AND b.EID = $EID AND  b.TableNo = et.TableNo";
                 if(isset($_POST['BillId']) && $_POST['BillId'] > 0){
                     $bid = $_POST['BillId'];
                     $q.=" and b.BillId = '$bid'";
@@ -1502,7 +1523,7 @@ class Restaurant extends CI_Controller {
                 // print_r($billData);
                 // exit;
             }else {
-                $q = "SELECT TableNo, BillId, BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue , PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u WHERE b.PaymtMode = 'Cash' AND b.CustId=u.CustId AND EID = $EID AND b.Stat = 0";
+                $q = "SELECT TableNo, BillId, BillNo, DATE_FORMAT(DATE(billTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue , PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u WHERE b.PaymtMode = 'Cash' AND b.CustId=u.CustId AND EID = $EID AND b.Stat = 0";
                 if(isset($_POST['BillId']) && $_POST['BillId'] > 0){
                     $bid = $_POST['BillId'];
                     $q.=" and b.BillId = '$bid'";
@@ -2068,7 +2089,7 @@ class Restaurant extends CI_Controller {
         if(!empty($_POST['getBill'])){
 
             $STVcd = $_POST['STVCd'];
-            $q = "SELECT b.TableNo,b.CustId, BillId, BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND et.CCd = $STVcd AND b.EID = $EID AND b.Stat = 1 AND  b.TableNo = et.TableNo";
+            $q = "SELECT b.TableNo,b.CustId, BillId, BillNo, DATE_FORMAT(DATE(billTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND et.CCd = $STVcd AND b.EID = $EID AND b.Stat = 1 AND  b.TableNo = et.TableNo";
             if(isset($_POST['BillId']) && $_POST['BillId'] > 0){
                 $bid = $_POST['BillId'];
                 $q.=" and b.BillId = '$bid'";
@@ -2513,7 +2534,7 @@ class Restaurant extends CI_Controller {
 
             if ($EType == 5) {
     
-                $q = "SELECT b.TableNo, BillId, BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND et.CCd = $STVcd AND b.EID = $EID AND b.Stat = 0 AND  b.TableNo = et.TableNo";
+                $q = "SELECT b.TableNo, BillId, BillNo, DATE_FORMAT(DATE(billTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND et.CCd = $STVcd AND b.EID = $EID AND b.Stat = 0 AND  b.TableNo = et.TableNo";
                 if(isset($_POST['BillId']) && $_POST['BillId'] > 0){
                     $bid = $_POST['BillId'];
                     $q.=" and b.BillId = '$bid'";
@@ -2523,7 +2544,7 @@ class Restaurant extends CI_Controller {
                 // print_r($billData);
                 // exit;
             }else {
-                $q = "SELECT TableNo, BillId, BillNo, DATE_FORMAT(DATE(PymtTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue , PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u WHERE b.PaymtMode = 'Cash' AND b.CustId=u.CustId AND EID = $EID AND b.Stat = 0";
+                $q = "SELECT TableNo, BillId, BillNo, DATE_FORMAT(DATE(billTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue , PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u WHERE b.PaymtMode = 'Cash' AND b.CustId=u.CustId AND EID = $EID AND b.Stat = 0";
                 if(isset($_POST['BillId']) && $_POST['BillId'] > 0){
                     $bid = $_POST['BillId'];
                     $q.=" and b.BillId = '$bid'";
