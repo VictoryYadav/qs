@@ -750,13 +750,14 @@ class Rest extends CI_Model{
 		$EID = authuser()->EID;
 		// SELECT k.ItemId, m.ItemNm, k.TableNo, k.FKOTNo, ek.KitName, k.UKOTNo FROM Eat_Kit ek, Kitchen k, MenuItem m WHERE ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>99 ) and m.ItemId = k.ItemId and k.CNo = 21 AND k.EID = 51 and k.FKOTNo = 1 and k.MergeNo = 22 and ek.KitCd=k.KitCd and ek.EID=k.EID GROUP BY k.ItemId, ek.KitName order by k.FKOTNo, ek.KitName, k.UKOTNo ASC;
 		// $or_where = '( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>99 )';
-         return $this->db2->select("k.ItemId, k.MCNo, m.ItemNm,k.CustItemDesc,k.CustRmks, ip.Name as Portions, sum(k.Qty) Qty,k.TableNo,k.KOTNo, k.FKOTNo, ek.KitName, k.UKOTNo,k.LstModDt")
+         return $this->db2->select("k.ItemId, k.MCNo, m.ItemNm,k.CustItemDesc,k.CustRmks, ip.Name as Portions, sum(k.Qty) Qty,k.TableNo,k.KOTNo, k.FKOTNo,k.KitCd, ek.KitName, k.UKOTNo,k.LstModDt,k.TA,k.EDT, k.OType")
         					->order_by('k.FKOTNo, ek.KitName, k.UKOTNo', 'ASC')
         					->group_by('k.ItemId, ek.KitName')
          					->join('MenuItem m','m.ItemId = k.ItemId','inner')
          					->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
          					->join('Eat_Kit ek', 'ek.KitCd=k.KitCd', 'inner')
         					// ->where($or_where)
+        					->where_not_in('k.Stat', array(4,6,7,99))
         					->get_where('Kitchen k', array(
         											'k.EID' => $EID,
         											'k.MCNo' => $MCNo,
@@ -800,14 +801,78 @@ class Rest extends CI_Model{
 						'b.billTime <=' => $to
 								))
 					->result_array();
-
-            // $q = "SELECT b.TableNo, BillId, BillNo, PymtTime as BillDate, TotAmt, TotAmt as BillValue, PaidAmt, PaymtMode, PymtType, MobileNo, CNo, u.CustId FROM Billing b, Users u ,Eat_tables et WHERE b.CustId=u.CustId AND b.EID = et.EID AND b.EID = $EID AND  b.TableNo = et.TableNo and PymtTime >= '$from' and PymtTime <= '$to'";
-
-            // $q.=" Order By BillId Asc";
-            // $billData = $this->db2->query($q)->result_array();
             // print_r($this->db2->last_query());die;
  
             return $billData;
+	}
+
+	public function getPendingKOTLIST($minutes, $kitcd){
+		$EID = authuser()->EID;
+
+		if(!empty($minutes)){
+			$whr = ' TIMEDIFF(CURRENT_TIME(), k.EDT) < '.$minutes;
+			$this->db2->where($whr);
+		}
+
+		if(!empty($kitcd)){
+			$this->db2->where('k.KitCd', $kitcd);
+		}
+
+		$data = $this->db2->select('k.OrdNo,k.EDT,k.KitCd,k.KStat,k.KOTNo, k.FKOTNo, k.ItemId, k.Qty, k.CustItemDesc, k.Itm_Portion, k.TableNo,k.MergeNo,k.CustRmks,k.TA,k.LstModDt,k.OType,m.ItemNm,ip.Name as Portions')
+						  ->order_by('k.FKOTNo', 'ASC')
+						  ->group_by('k.KitCd, k.FKOTNo, k.ItemId,k.CustItemDesc, k.Itm_Portion,k.CustRmks,k.TA')
+						  ->join('MenuItem m','m.ItemId = k.ItemId','inner')
+         				  ->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
+         				  ->where_not_in('k.Stat', array(4,6,7,9,99))
+         				  ->get_where('Kitchen k', array(
+						  						'k.EID' => $EID,
+						  						'k.KStat' => 0
+						  							)
+									)
+						  ->result_array();
+// print_r($this->db2->last_query());die;
+						  return $data;
+		// echo "<pre>";
+		// // print_r($data);
+		// // die;
+
+
+		$group_arr = [];
+		foreach ($data as $key ) {
+			$kot = $key['FKOTNo'];
+			if(!isset($group_arr[$kot])){
+				$group_arr[$kot] = [];
+			}
+			array_push($group_arr[$kot], $key);
+		}
+		echo "<pre>";
+		print_r($group_arr);
+		die;
+		return $data;
+	}
+
+	public function getPendingItemLIST($kitCd){
+		$EID = authuser()->EID;
+
+		if(!empty($kitCd)){
+			$this->db2->where('k.KitCd', $kitCd);
+		}
+
+		$data = $this->db2->select('k.ItemId, sum(k.Qty) as Qty, k.CustItemDesc, k.Itm_Portion, k.TableNo,k.MergeNo,k.CustRmks,k.TA,k.LstModDt,k.OType,m.ItemNm,ip.Name as Portions')
+						  ->order_by('m.ItemNm', 'ASC')
+						  ->group_by('k.KitCd,k.ItemId')
+						  ->join('MenuItem m','m.ItemId = k.ItemId','inner')
+         				  ->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
+         				  ->where_not_in('k.Stat', array(4,6,7,9,99))
+         				  ->get_where('Kitchen k', array(
+						  						'k.EID' => $EID,
+						  						'k.KStat' => 0
+						  							)
+									)
+						  ->result_array();
+// print_r($this->db2->last_query());die;
+						  return $data;
+
 	}
 
 	

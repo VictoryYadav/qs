@@ -99,7 +99,7 @@
                 if(res.response.visit > 0){
                     $('#labelName').html(res.response.name);
                     $('#lableVisit').html(res.response.visit);
-                    $('#lableRating').val(res.response.rating);
+                    $('#lableRating').html(res.response.rating);
                     $('#welcomeModal').modal('show');
                 }else{
                     window.location = '<?= base_url('customer'); ?>';

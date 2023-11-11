@@ -13,6 +13,7 @@
         $taxDataArray = $res['taxDataArray'];
 
         $hotelName = $billData[0]['Name'];
+        $TableNo = $billData[0]['TableNo'];
         $phone = $billData[0]['PhoneNos'];
         $gstno = $billData[0]['GSTno'];
         $fssaino = $billData[0]['FSSAINo'];
@@ -329,6 +330,11 @@
                         <div class="col-6">
                             <p style="margin-bottom: unset;font-weight: bold;font-size: 15px !important;">Bill No: <?= $billno ?></p>
                         </div>
+                        <?php if($this->session->userdata('billPrintTableNo') > 0) { ?>
+                        <div class="col-6" style="text-align: right;">
+                            <p style="margin-bottom: unset;font-weight: bold;font-size: 15px !important;">Table No: <?= $TableNo ?></p>
+                        </div>
+                        <?php } ?>
                         
                         <div class="col-12">
                             <p style="margin-bottom: unset;font-size: 15px !important;">Date: <?= $dateOfBill ?></p>

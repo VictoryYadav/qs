@@ -385,7 +385,6 @@
                 </div>
 
                 <div class="row remove-margin payment-btns">
-
                         <!-- hidden field -->
                         <input type="hidden" id="mobileR" value="0">
                         <input type="hidden" id="custidR" value="0">
@@ -395,11 +394,8 @@
                         <?php }else{ ?>
                         <a id="MenuBackButton"  class="btn btn-sm backbtn" width="50%" href="<?= base_url('customer'); ?>">Menu</a>
                         <button id="SubmitRating" type="button" class="btn btn-sm paybtn" style="width:50%;" onclick="SubmitRating()">Submit</button>
-
                         <?php } ?>
-
                     <button id="shareRating" type="button" class="btn btn-sm paybtn" data-toggle="modal" data-target="#exampleModal" style="width:50%;display: none;" onclick="">Share</button>
-
                 </div>
                 <!-- <div class="sharethis-inline-share-buttons"></div> -->
             </div>

@@ -131,17 +131,38 @@
     </center>
 
     <div>
-      <table>
-        <tr style="border-bottom: 2px solid black;border-top: 2px solid black;font-size: 18px;">
+      <table style="border-bottom: 2px solid black;border-top: 2px solid black;font-size: 18px;">
+        <tr>
           <td>KOT No: <?php 
-                      if($this->session->userdata('MultiKitchen') > 1 ){
-                        echo $kotList[0]['KOTNo'].'-'.$kotList[0]['FKOTNo'];;
-                      }else{
-                        echo $kotList[0]['FKOTNo'];
-                      } ?><br>
-            Date: <?= date('d-M-Y H:i', strtotime($kotList[0]['LstModDt'])); ?>
+                        echo $kotList[0]['KitCd'].'-'.$kotList[0]['FKOTNo'];
+                      ?><br>
+            
           </td>
           <td>Table: <?= $kotList[0]['TableNo']; ?></td>
+        </tr>
+        <tr>
+          <td>Date: <?= date('d-M-Y H:i', strtotime($kotList[0]['LstModDt'])); ?></td>
+          <td><?php 
+          if($kotList[0]['OType']== 101){
+            echo "3rd Party";
+          }else if($kotList[0]['OType']== 105){
+            echo "Take Away";
+          }else if($kotList[0]['OType']== 110){
+            echo "Deliver";
+          }else if($kotList[0]['OType']== 1){
+            echo "QSR";
+          }else if($kotList[0]['OType']== 25){
+            echo "Drive-In";
+          }else if($kotList[0]['OType']== 30){
+            echo "Charity";
+          }else if($kotList[0]['OType']== 35){
+            echo "RoomService";
+          }else if($kotList[0]['OType']== 40){
+            echo "Suite Service";
+          }else{
+            echo "Sit In";
+          } 
+          ?></td>
         </tr>
       </table>
     </div>
@@ -157,6 +178,7 @@
                 <?php
                 $portions = '';
                 $std = '';
+                $ta = '';
                 foreach($kotList as $key){
                   if($key['Portions'] != 'Std'){
                     $portions = ' ('.$key['Portions'].')';
@@ -164,9 +186,19 @@
                   if($key['CustItemDesc'] != 'Std'){
                     $std = ' - '.$key['CustItemDesc'];
                   }
+                  if($key['TA'] > 0){
+                    $ta = '<br>(TA)';
+                  }
+                  $edt = '';
+                  if($this->session->userdata('EDT') > 0 && $this->session->userdata('EType')== 5 && ($key['OType'] == 7 || $key['OType'] ==8)){
+                    $ta = $ta.'  '.$key['EDT'];
+                    if(empty($ta)){
+                      $ta = '<br>'.$key['EDT'];
+                    }
+                  }
                  ?>
                 <tr class="service">
-                    <td class="tableitem"><?= $key['ItemNm'].$std.$portions; ?><br><?= $key['CustRmks']; ?></td>
+                    <td class="tableitem"><?= $key['ItemNm'].$std.$portions; ?><br><?= $key['CustRmks']; ?><?= $ta ?></td>
                     <td class="tableitem"><?= $key['Qty']; ?></td>
                 </tr>
                 <?php } ?>

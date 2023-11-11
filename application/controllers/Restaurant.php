@@ -3872,6 +3872,7 @@ class Restaurant extends CI_Controller {
             $data['taxDataArray'] = $res['taxDataArray'];
 
             $data['hotelName'] = $billData[0]['Name'];
+            $data['TableNo'] = $billData[0]['TableNo'];
             $data['Fullname'] = $billData[0]['FName'].' '.$billData[0]['LName'];
             $data['phone'] = $billData[0]['PhoneNos'];
             $data['gstno'] = $billData[0]['GSTno'];
@@ -3904,7 +3905,6 @@ class Restaurant extends CI_Controller {
     }
 
     public function kot_print($MCNo, $mergeNo, $FKOTNo){
-
         $data['kotList'] = $this->rest->getKotList($MCNo, $mergeNo, $FKOTNo);
         // echo "<pre>";
         // print_r($data);
@@ -4032,6 +4032,64 @@ class Restaurant extends CI_Controller {
         if ($EType == 5) {
             updateRecord('Eat_tables', array('Stat' => 0, 'MergeNo' => $TableNo), array(' EID' => $EID,'MergeNo' => $MergeNo));
         }        
+    }
+
+    public function kds(){
+        $EID = authuser()->EID;
+        $data['title'] = 'Kitchen Display System';
+        $minutes = 0;
+        $kitcd = 0;
+        if($this->input->method(true)=='POST'){
+            $minutes = $_POST['minutes'];
+            $kitcd = $_POST['kitchen'];
+            
+        }
+        $data['minutes'] = $minutes;
+        $data['kitcd'] = $kitcd;
+        $data['kds'] = $this->rest->getPendingKOTLIST($minutes, $kitcd);
+        $data['kitchen'] = $this->db2->select('KitCd, KitName')->get_where('Eat_Kit', array('Stat' => 0, 'EID' => $EID))->result_array();
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $this->load->view('rest/kds', $data);
+    }
+
+    public function updateKotStat(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+           
+            extract($_POST);
+            $EID = authuser()->EID;
+            $today = date('Y-m-d H:i:s');
+            $this->db2->query("UPDATE Kitchen set KStat = 5, DelTime = '$today' where EID = $EID and OrdNo in ($ordNo) ");
+            $status = 'success';
+            $response = 'KOT is closed.';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function kitchen_planner(){
+        $EID = authuser()->EID;
+        $data['title'] = 'Kitchen Planner';
+        $data['kplanner'] = array();
+        $kitcd = 0;
+        if($this->input->method(true)=='POST'){
+            $kitcd = $_POST['kitchen'];
+            $data['kplanner'] = $this->rest->getPendingItemLIST($kitcd);
+        }
+        
+        $data['kitcd'] = $kitcd;
+        $data['kitchen'] = $this->db2->select('KitCd, KitName')->get_where('Eat_Kit', array('Stat' => 0, 'EID' => $EID))->result_array();
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $this->load->view('rest/kitchen_plan', $data);
     }
 
 

@@ -122,8 +122,8 @@
 
 </head>
 
-<body translate="no">
-  <!-- <body translate="no" onload="window.print()"> -->
+<!-- <body translate="no"> -->
+  <body translate="no" onload="window.print()">
 
   <div id="invoice-POS">
     <center id="top">
@@ -157,7 +157,7 @@
         </tr>
         <?php } ?>
         <tr style="border-bottom: 1px solid black;">
-          <td>Bill No: <?= $billno ?><br>
+          <td style="text-align: left;">Bill No: <?= $billno ?> <?php if($this->session->userdata('billPrintTableNo') > 0) { echo " , Table No: ".$TableNo; } ?><br>
             Date: <?= $dateOfBill ?>
           </td>
           <?php if ($CustNo != "0") : ?>

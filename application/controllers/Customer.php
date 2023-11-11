@@ -386,7 +386,7 @@ class Customer extends CI_Controller {
                         
                         if($TblTyp == 0){
                             // QSR
-                            $OType = 0;
+                            $OType = 1;
                         }else if($TblTyp == 5){
                             // Seat no basis - common table like in bars
                             $OType = 5;
@@ -655,7 +655,7 @@ class Customer extends CI_Controller {
                 }
 
                 $resp['visit'] = $visit;
-                $resp['rating'] = $rating;
+                $resp['rating'] = round($rating,2);
                 $resp['name'] = $check['FName'].' '.$check['LName'];
 
                 //Deleting older orders
@@ -663,7 +663,7 @@ class Customer extends CI_Controller {
                 if ($EType == 5) {
                     // $this->db2->where('Stat', 0);
                     // $this->db2->or_where('Stat', 1);
-                    $this->db2->where_in('Stat', array(0,1,2));
+                    $this->db2->where_in('Stat', array(0,1));
                     $this->db2->update('Kitchen', array('Stat' => 99), array('EID' => $EID,
                             'CustId' => $CustId,
                             'TableNo' => $TableNo,
@@ -672,7 +672,7 @@ class Customer extends CI_Controller {
                             )
                         );
 
-                    $this->db2->where_in('Stat', array(0,1,2));
+                    $this->db2->where_in('Stat', array(0,1));
                     // $this->db2->or_where('Stat', 1);
                     $this->db2->update('KitchenMain', array('Stat' => 99), array('EID' => $EID,
                             'CustId' => $CustId,
@@ -1934,7 +1934,6 @@ class Customer extends CI_Controller {
         }
 
         if($this->input->method(true)=='POST'){
-
             // echo "<pre>";
             // print_r($_POST);
             // die;
@@ -1979,7 +1978,7 @@ class Customer extends CI_Controller {
             $RatingDetQuery = $this->db2->query("INSERT INTO `RatingDet`(RCd,ItemId,ItemRtng) VALUES $queryString ");
 
             $ravg = $totRtng / $itemCount;
-            updateRecord('Ratings',array('avgBillRtng' => $ravg),array('RCd' => $RCd));
+            updateRecord('Ratings',array('avgBillRtng' => round($ravg),2),array('RCd' => $RCd,'EID' => $EID,'BillID' => $billid));
 
             $genTblDb = $this->load->database('GenTableData', TRUE);
             // gen db
@@ -1991,9 +1990,7 @@ class Customer extends CI_Controller {
                 $deleteRating = $genTblDb->query("DELETE FROM `Ratings` WHERE EID = $EID AND BillId = $billid AND CustId = $CustId AND CellNo = $CellNo");
                 $deleteRatingDet = $genTblDb->query("DELETE FROM `RatingDet` WHERE RCd = $RCd");
             }
-
             // gen db
-
             $genRatingObj['EID']        = $EID;
             $genRatingObj['ChainId']    = $ChainId;
             $genRatingObj['BillId']     = $billid;
@@ -2002,7 +1999,7 @@ class Customer extends CI_Controller {
             $genRatingObj['Remarks']    = 0;
             $genRatingObj['ServRtng']   = $Service;
             $genRatingObj['AmbRtng']    = $Ambience;
-            $genRatingObj['avgBillRtng']= $ravg;
+            $genRatingObj['avgBillRtng']= round($ravg,2);
             $genRatingObj['VFMRtng']    = $vfm;
             $genRatingObj['LstModDt']   = date('Y-m-d H:i:s');
             $genTblDb->insert('Ratings', $genRatingObj);
@@ -2016,7 +2013,6 @@ class Customer extends CI_Controller {
                 }
                 $queryStringGen .= '(' . $genRCd . ',' . $ratingData[$i] . ',' . $rating[$i] . ')';
             }
-
             // gen table
             $RatingDetQuery = $genTblDb->query("INSERT INTO `RatingDet`(RCd,ItemId,ItemRtng) VALUES $queryStringGen ");
 
@@ -2025,7 +2021,6 @@ class Customer extends CI_Controller {
             } else {
                 echo 0;
             }
-
             die;
 
         }

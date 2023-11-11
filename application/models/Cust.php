@@ -787,6 +787,11 @@ class Cust extends CI_Model{
 				$time = $prepration_time;
 				$date = strtotime("+" . $time . " minute", $date);
 
+				$edtTime = '00:00';
+				if($this->session->userdata('EDT') > 0){
+					$edtTime = date('H:i', $date);
+				}
+
 				if ($MultiKitchen > 1) {
 					$itemKitCd = $postData['itemKitCd'];
 					if ($oldKitCd != $postData['itemKitCd']) {
@@ -804,7 +809,6 @@ class Cust extends CI_Model{
 				}
 
 				// offer
-
 				$kitchenObj['CNo'] = $CNo;
 				$kitchenObj['MCNo'] = $CNo;
 				$kitchenObj['CustId'] = $CustId;
@@ -824,6 +828,7 @@ class Cust extends CI_Model{
 				$kitchenObj['TaxType'] =$postData['tax_type'];
 				$kitchenObj['CustRmks'] = $postData['custRemarks'];
 				$kitchenObj['DelTime'] = date('Y-m-d H:i:s', $date);
+				$kitchenObj['EDT'] = $edtTime;
 				$kitchenObj['TA'] = $postData['takeAway'];
 				$kitchenObj['Stat'] = $stat;
 				$kitchenObj['LoginCd'] = $CustId;

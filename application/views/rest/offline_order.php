@@ -488,7 +488,13 @@
                                 var MCNo = response.data.MCNo;
                                 var MergeNo = response.data.MergeNo;
                                 var FKOTNo = response.data.FKOTNo;
-                                window.location = "<?= base_url('restaurant/kot_print/'); ?>"+MCNo+'/'+MergeNo+'/'+FKOTNo;
+                                    if(orderType == 8){
+                                        <?php if($this->session->userdata('sitinKOTPrint') > 0){ ?>
+                                            window.location = "<?= base_url('restaurant/kot_print/'); ?>"+MCNo+'/'+MergeNo+'/'+FKOTNo;
+                                        <?php } ?>
+                                    }else{
+                                        window.location = "<?= base_url('restaurant/kot_print/'); ?>"+MCNo+'/'+MergeNo+'/'+FKOTNo;    
+                                    }
                                 }
                             } else {
                                 alert("Failed To Place Order");

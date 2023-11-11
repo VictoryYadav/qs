@@ -668,7 +668,7 @@ Essential Scripts
 
 </body>
 <script type="text/javascript">
-    
+    var deliveryVal = 0;
 	var prList = 'grid';
 	function showProdct(val=''){
 		if(val != ''){
@@ -698,6 +698,23 @@ Essential Scripts
             $('#add-qty').prop('disabled', false);
             if ($('#qty-val').val() == 1) {
                 $('#minus-qty').prop('disabled', true);
+            }
+        });
+
+        // deliver buttons
+        $('#add-serve').click(function() {
+
+            $('#serve-val').val(parseInt($('#serve-val').val()) + 1);
+            $('#minus-serve').prop('disabled', false);
+            if ($('#serve-val').val() == 99) {
+                $('#add-serve').prop('disabled', true);
+            }
+        });
+        $('#minus-serve').click(function() {
+            $('#serve-val').val(parseInt($('#serve-val').val()) - 1);
+            $('#add-serve').prop('disabled', false);
+            if ($('#serve-val').val() == deliveryVal) {
+                $('#minus-serve').prop('disabled', true);
             }
         });
 
@@ -1033,7 +1050,7 @@ Essential Scripts
             itemPortion = $(item).attr('item-portion');
             PrepTime = $(item).attr('item-prepTime');
             FID = $(item).attr('item-fid');
-
+            deliveryVal = PrepTime;
             $('#itemTyp').val(itemTyp);
             
             // console.log('itemPortion - '+itemPortion);
