@@ -152,7 +152,7 @@
         <?php if($CustNo == 0){?>
         <tr style="border-bottom: 1px solid black;">
           <td>
-            <?php if(!empty($Fullname)){ echo $Fullname.',   '; } ?> Cell : <?php if(!empty($CellNo)) { echo $CellNo; } ?>
+            <?php if(!empty($Fullname)){ echo $Fullname.',   '; } ?> <?php if(!empty($CellNo)) { echo 'Cell :'.$CellNo; } ?>
           </td>
         </tr>
         <?php } ?>
@@ -306,7 +306,7 @@
                             <?php
                                 if ($total_discount_amount != 0) {?>
                                     <tr>
-                                        <td>Discounts Availed</td>
+                                        <td>Total Discounts</td>
                                         <td><?= $total_discount_amount; ?></td>
                                     </tr>
                             <?php   }?>

@@ -628,7 +628,7 @@ class Cust extends CI_Model{
 
 				if($TblTyp == 0){
                     // QSR
-                    $OType = 0;
+                    $OType = 1;
                 }else if($TblTyp == 5){
                     // Seat no basis - common table like in bars
                     $OType = 5;
@@ -1465,6 +1465,7 @@ class Cust extends CI_Model{
         	$CellNo = $this->session->userdata('CellNo');
         }
 
+        $cust_discount = 0;
         // by customer
         $billingObjStat = 1;
         if($paymentMode == 'RCash'){
@@ -1472,6 +1473,7 @@ class Cust extends CI_Model{
         	// by rest
         	$billingObjStat = 5;
         	$TableNo = $this->session->userdata('TableNo');
+        	$cust_discount = $postData['cust_discount'];
         }else{
         	$MergeNo = $this->session->userdata('MergeNo');
         	$TableNo = authuser()->TableNo;
@@ -1557,6 +1559,7 @@ class Cust extends CI_Model{
                 $billingObj['PymtRef'] = $orderId;
                 $billingObj['TotItemDisc'] = $TotItemDisc;
                 $billingObj['BillDiscAmt'] = $BillDiscAmt;
+                $billingObj['custDiscAmt'] = $cust_discount;
                 $billingObj['TotPckCharge'] = $TotPckCharge;
                 $billingObj['DelCharge'] = $DelCharge;
                 $billingObj['PymtType'] = 0;

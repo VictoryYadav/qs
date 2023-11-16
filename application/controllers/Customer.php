@@ -1651,7 +1651,7 @@ class Customer extends CI_Controller {
             $grandTotal = $sgstamt + $cgstamt + $data['bservecharge'] + $data['tipamt'];
             $data['thankuline'] = isset($billData[0]['Tagline'])?$billData[0]['Tagline']:"";
 
-            $data['total_discount_amount'] = $billData[0]['TotItemDisc'] + $billData[0]['BillDiscAmt'];
+            $data['total_discount_amount'] = $billData[0]['TotItemDisc'] + $billData[0]['BillDiscAmt'] + $billData[0]['custDiscAmt'];
             $data['total_packing_charge_amount'] = $billData[0]['TotPckCharge'];
             $data['total_delivery_charge_amount'] = $billData[0]['DelCharge'];
 

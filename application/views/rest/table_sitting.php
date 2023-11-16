@@ -257,11 +257,12 @@ width: 100%;*/
             <!-- ============================================================== -->
             <!-- Start right Content here -->
             <!-- ============================================================== -->
-            <div class="Po_to_land" style="width:100%;height:100%;">
+            <!-- <div class="Po_to_land" style="width:100%;height:100%;">
                 <img src="<?= base_url();?>assets/img/ptl.gif" alt="" width:33px; style="padding-left:29px;">
                 <span style="padding: 2px;">Screen Available only Landscape mode on Mobile Devices.</span>
-            </div>
-            <div class="main-content Po_to_land1">
+            </div> -->
+            <!-- <div class="main-content Po_to_land1"> -->
+            <div class="main-content Po_to_land11111">
 
                 <div class="page-content">
                     <div class="container-fluid">
@@ -293,15 +294,17 @@ width: 100%;*/
                                                 <button class="btn btn-primary btn-sm" title="Bill Create" id="billCreatebtn" style="display: none;">
                                                     <i class="fas fa-file-invoice"></i>
                                                 </button>
-
-                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#move_table_modal" >
+                                                 <?php
+                                                if (($EType == 5) && ($this->session->userdata('Move') > 0)) {
+                                                    ?>
+                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#move_table_modal" title="Move Table">
                                                     <i class="far fa-user"></i>
                                                 </button>
-                                                
+                                                <?php } ?>
                                                 <?php
-                                                if ($EType == 5) {
+                                                if (($EType == 5) && ($this->session->userdata('JoinTable') > 0)) {
                                                     ?>
-                                                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#merge_table_modal" >
+                                                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#merge_table_modal" title="Join Table">
                                                         <i class="dripicons-network-3"></i>.
                                                     </button>
                                                 <?php } ?>
@@ -373,8 +376,7 @@ width: 100%;*/
                                                         <tr>
                                                             <th>Item</th>
                                                             <th>OQty</th>
-                                                            <th>AQty</th>
-                                                            <th>DQty</th>
+                                                            <!-- <th>DQty</th> -->
                                         <?php if($this->session->userdata('EDT') == 1){ ?>
                                                             <th>EDT</th>
                                                             <?php } ?>
@@ -953,10 +955,10 @@ width: 100%;*/
                         <input type="hidden" name="billMergeNo" id="billMergeNo">
                         <div class="row">
                             <div class="col-md-6 col-6">
-                                <input type="number" name="billDiscPer" id="billDiscPer" class="form-control form-control-sm" required="" value="0">
+                                <input type="number" name="billDiscPer" id="billDiscPer" class="form-control form-control-sm" required="" value="0" readonly="">
                             </div>
                             <div class="col-md-6 col-6">
-                                <button class="btn btn-sm btn-success" onclick="billCreateA()">Save</button>
+                                <button class="btn btn-sm btn-success" onclick="billCreateA()">Submit</button>
                             </div>
                         </div>
                     </form>
@@ -1068,7 +1070,7 @@ width: 100%;*/
                 bgcolor = '#B3E5FC'; // blue
             }
 
-            template += `<tr onclick="getRowBill(0,${item.MergeNo})" id="${item.TableNo}" mergeNo="${item.MergeNo}" custId="${item.CustId}" mCNo="${item.MCNo}" billStat="${item.BillStat}" oTyp="${item.OType}"   style="background-color: ${bgcolor};" class="" >
+            template += `<tr onclick="getRowBill(0,${item.MergeNo}, ${item.CustId})" id="${item.TableNo}" mergeNo="${item.MergeNo}" custId="${item.CustId}" mCNo="${item.MCNo}" billStat="${item.BillStat}" oTyp="${item.OType}"   style="background-color: ${bgcolor};" class="" >
             <td><input type="radio" name="selectOption" onchange="handleKot(${item.MergeNo},${item.CustId},${item.MCNo},${item.BillStat},${item.OType})"> &nbsp;${item.MergeNo}</td>
             <td>${item.Amt}</td>
             <td>${item.StTime}</td>
@@ -1117,7 +1119,7 @@ width: 100%;*/
                 }
             }
         }
-        function getRowBill(id, mergeNo){
+        function getRowBill(id, mergeNo, custId){
             if(id > 0){
                 var STVCd = $('#kitchen-code').val();
                 $.ajax({
@@ -1178,7 +1180,7 @@ width: 100%;*/
                 $('#billCreatebtn').hide();
                 
             }else{
-                $('#billCreatebtn').attr('onclick', "billCreate("+mergeNo+")");
+                $('#billCreatebtn').attr('onclick', "billCreate("+mergeNo+","+custId+")");
                 $('#billCreatebtn').show();
                 $('#bill_data_table').hide();
             }
@@ -1398,12 +1400,14 @@ width: 100%;*/
 
             $('#btnBillOption').hide();
             $('#btnCash').hide();
+            // $('#billCreatebtn').show();
             if(BillStat > 0){
                 $('#btnBillOption').attr('onclick', "billOptions("+custId+","+MCNo+","+mergeNo+")");
                 $('#btnBillOption').show();
 
                 $('#btnCash').attr('onclick', "cashCollect("+custId+","+MCNo+","+mergeNo+","+oTyp+")");
                 $('#btnCash').show();
+                $('#billCreatebtn').hide();
             }
             $.ajax({
                 url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
@@ -1432,14 +1436,13 @@ width: 100%;*/
                             if (item.KOTPrintNo == 1) {
  
                                 if(new_head == 1){
-                                    template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>KOT No: ${item.FKOTNo}</b></td>
-                                    <td colspan="2" class="text-center" style=""><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo}, ${item.MergeNo},${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
+                                    template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>KOT No: ${item.FKOTNo}</b><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo}, ${item.MergeNo},${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
                                     </tr>`;
                                     new_head = 0;
                                 }
                                 var b = '';
                                 b += '<tr style="background: #FFF;"><td>'+item.ItemNm+'</td>\
-                                <td>'+item.Qty+'</td><td>'+item.AQty+'</td><td>'+item.DQty+'</td>\
+                                <td>'+item.Qty+'</td>\
                                 <?php if($this->session->userdata('EDT') == 1){ ?>
                                 <td>'+item.EDT+'</td>\
                                 <?php } ?>
@@ -1448,13 +1451,12 @@ width: 100%;*/
                             } else {
                                 // $("#table-view").css("background-color", "#0100ff3b"); 
                                 if(new_head == 1){
-                                    template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>KOT No: ${item.FKOTNo}</b></td>
-                                    <td colspan="2" class="text-right" ><b><span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo},${item.MergeNo}, ${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
+                                    template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>KOT No: ${item.FKOTNo}</b><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo}, ${item.MergeNo},${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
                                     </tr>`;
                                     new_head = 0;
                                 }
                                 var b = '';
-                                b += '<tr style="background: #FFF;"><td>'+item.ItemNm+'</td><td>'+item.Qty+'</td><td>'+item.AQty+'</td><td>'+item.DQty+'</td>\
+                                b += '<tr style="background: #FFF;"><td>'+item.ItemNm+'</td><td>'+item.Qty+'</td>\
                                 <?php if($this->session->userdata('EDT') == 1){ ?>
                                 <td>'+item.EDT+'</td>\
                                 <?php } ?>
@@ -1483,17 +1485,21 @@ width: 100%;*/
                   var temp = '';
                   if(data.length > 0){
                       for (var i =0;  i< data.length; i++) {
-
+                        var bilUrl = "<?= base_url('restaurant/bill/'); ?>"+data[i].BillId;
+                        var settleBtn = '';
+                        if(data[i].payRest > 0){
+                            settleBtn = '<button class="btn btn-sm btn-success" onclick="setPaidAmount('+data[i].BillId+','+data[i].CNo+','+data[i].MergeNo+','+data[i].CustId+','+data[i].BillNo+','+data[i].TotBillAmt+',\''+data[i].pymtName+'\')">\
+                                            <i class="fas fa-check-double"></i> \
+                                        </button>';
+                        } 
                           temp +='<tr>\
-                                    <td>'+data[i].BillNo+'</td>\
-                                    <td>'+data[i].TotBillAmt+'</td>\
+                                    <td><a href="'+bilUrl+'">'+data[i].BillNo+'</a></td>\
+                                    <td>'+data[i].BillValue+'</td>\
                                     <td>'+data[i].PaidAmt+'</td>\
                                     <td>'+data[i].pymtName+'</td>\
                                     <td>\
                                     <?php if($this->session->userdata('AutoSettle') == 0){ ?>
-                                        <button class="btn btn-sm btn-success" onclick="setPaidAmount('+data[i].BillId+','+data[i].CNo+','+data[i].MergeNo+','+data[i].CustId+','+data[i].BillNo+','+data[i].TotBillAmt+',\''+data[i].pymtName+'\')">\
-                                            <i class="fas fa-check-double"></i> \
-                                        </button>\
+                                        '+settleBtn+'\
                                     <?php } ?>
                                         <a class="btn btn-sm btn-info" href="<?= base_url('restaurant/print/'); ?>'+data[i].BillId+'">\
                                             <i class="fas fa-print"></i> \
@@ -2470,30 +2476,49 @@ function get_phone_num(){
     });
 }
 
-function billCreate(mergeNo){
+function billCreate(mergeNo, custId){
         // console.log(mergeNo);
     var disc = "<?php echo $this->session->userdata('Discount'); ?>";
     if(disc > 0){
-        $('#billMergeNo').val(mergeNo);
-        $('#billDiscountModel').modal('show');
+        if(custId > 0){
+            $.post('<?= base_url('restaurant/checkCustDiscount') ?>',{custId:custId},function(res){
+                if(res.status == 'success'){
+                    var data = res.response;
+                    if(data.Disc > 0){
+                        $('#billDiscPer').val(data.Disc);
+                        $('#billMergeNo').val(mergeNo);
+                        $('#billDiscountModel').modal('show');
+                    }else{
+                        // alert('Bill Create Without Discount');
+                    billCreateWitoutDisc(mergeNo);
+                    }
+                }else{
+                  alert(res.response);
+                }
+            });
+        }
     }else{
-        var billDiscPer = 0;
-        $.post('<?= base_url('restaurant/billCreateRest') ?>',{mergeNo:mergeNo,billDiscPer:billDiscPer},function(res){
-            if(res.status == 'success'){
-                var billId = res.response;
-              window.location = "<?php echo base_url('restaurant/bill/'); ?>"+billId;
-            }else{
-              alert(res.response);
-              
-            }
-        });
+        billCreateWitoutDisc(mergeNo);
     }
+}
+
+function billCreateWitoutDisc(mergeNo){
+    var custDiscPer = 0;
+    $.post('<?= base_url('restaurant/billCreateRest') ?>',{mergeNo:mergeNo,custDiscPer:custDiscPer},function(res){
+        if(res.status == 'success'){
+            var billId = res.response;
+          window.location = "<?php echo base_url('restaurant/bill/'); ?>"+billId;
+        }else{
+          alert(res.response);
+          
+        }
+    });
 }
 
 function billCreateA(){
     var mergeNo = $('#billMergeNo').val();
-    var billDiscPer = $('#billDiscPer').val();
-    $.post('<?= base_url('restaurant/billCreateRest') ?>',{mergeNo:mergeNo, billDiscPer:billDiscPer},function(res){
+    var custDiscPer = $('#billDiscPer').val();
+    $.post('<?= base_url('restaurant/billCreateRest') ?>',{mergeNo:mergeNo, custDiscPer:custDiscPer},function(res){
         if(res.status == 'success'){
             var billId = res.response;
           window.location = "<?php echo base_url('restaurant/bill/'); ?>"+billId;

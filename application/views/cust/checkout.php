@@ -187,7 +187,9 @@
                 <div class="row" style="margin: 0px;">
                     <div class="col-12 text-center" width="100%;">
                         <a href="<?= base_url('customer'); ?>" class="btn btn-sm backbtn">Menu</a>
+                        <?php if($this->session->userdata('BillMergeOpt') > 0){ ?>
                         <a href="<?= base_url('customer/merge_order/'.$TableNo); ?>" class="btn orderbtn btn-sm">Merge Orders</a>
+                        <?php } ?>
                         <button class="btn btn-sm paybtn" onclick="payNow()"> Pay Now</button>
                         
                         <?php if($this->session->flashdata('error')): ?>

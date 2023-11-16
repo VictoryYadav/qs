@@ -36,7 +36,7 @@ class AuthController extends CI_Controller {
 
                 if (!empty($login_check)) {
 
-                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, c.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,c.Fest ,e.Name, c.CustAssist, c.TableAcceptReqd,c.OrderWithoutTable,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT, c.new_order,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint')
+                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, c.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,c.Fest ,e.Name, c.CustAssist, c.TableAcceptReqd,c.OrderWithoutTable,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT, c.new_order,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint,c.JoinTable')
                             ->join('Eatary e',' u.EID = e.EID', 'inner')
                             ->join('Config c','u.EID = c.EID','inner')
                             // u.ChainId = c.ChainId 
@@ -62,6 +62,8 @@ class AuthController extends CI_Controller {
                         $this->session->set_userdata('Decline', $checkNumber['Decline']);
                         $this->session->set_userdata('Reassign', '');
                         $this->session->set_userdata('Move', $checkNumber['Move']);
+                        $this->session->set_userdata('JoinTable', $checkNumber['JoinTable']);
+                        
                         $this->session->set_userdata('TableReservation', $checkNumber['TableReservation']);
                         $this->session->set_userdata('RestName', $checkNumber['Name']);
                         $this->session->set_userdata('CustAssist', $checkNumber['CustAssist']);

@@ -2104,7 +2104,7 @@ class Restaurant extends CI_Controller {
             // die;
             $pymtModes = $this->db2->query("SELECT PMNo, Name FROM `PymtModes`WHERE Stat = 0 AND Country = 'India' AND PMNo NOT IN (SELECT PMNo FROM PymtMode_Eat_Disable WHERE EID = $EID)")->result_array();
             $a = array('bill' => $billData[0], 'payment_modes' => $pymtModes);
-            // print_r($a);exit();
+            echo print_r($a);exit();
             echo json_encode($a);
         }
         if(!empty($_POST['check_new_orders'])){
@@ -2833,6 +2833,8 @@ class Restaurant extends CI_Controller {
             // print_r($_POST);
             // exit;
 
+            createCustUser($phone);
+
             if ($CNo == 0) {
                 $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo,$data_type, $orderType);
             }
@@ -3466,8 +3468,8 @@ class Restaurant extends CI_Controller {
                     foreach ($kitcheData as $kit ) {
 
                         $orderAmt = $orderAmt + $kit['OrdAmt'];
-                        $discount = $discount + $kit['TotItemDisc'] + $kit['RtngDiscAmt'] + $kit['BillDiscAmt']; 
-                        $charge = $charge + $kit['TotPckCharge'] + $kit['DelCharge'];
+                        // $discount = $discount + $kit['TotItemDisc'] + $kit['RtngDiscAmt'] + $kit['BillDiscAmt']; 
+                        // $charge = $charge + $kit['TotPckCharge'] + $kit['DelCharge'];
 
                         $intial_value = $kit['TaxType'];
                         $CNo = $kit['CNo'];
@@ -3490,6 +3492,11 @@ class Restaurant extends CI_Controller {
                         }
                         
                     }
+
+                    // add 16-nov-23
+                    $discount = $kitcheData[0]['TotItemDisc'] + $kitcheData[0]['RtngDiscAmt'] + $kitcheData[0]['BillDiscAmt']; 
+                    $charge = $kitcheData[0]['TotPckCharge'] + $kitcheData[0]['DelCharge'];
+                    // add 16-nov-23 end
                     //tax calculate
                     for ($index = 0; $index < count($taxDataArray[$initil_value]); $index++) {
                             $element = $taxDataArray[$initil_value][$index];
@@ -3497,6 +3504,7 @@ class Restaurant extends CI_Controller {
                         }
 
                     $orderAmt = $orderAmt + $SubAmtTax;
+                    $custDiscount = ($orderAmt * $_POST['custDiscPer']) / 100;
 
                     $this->session->set_userdata('TipAmount', 0);
                     $this->session->set_userdata('itemTotalGross', $orderAmt);
@@ -3508,20 +3516,23 @@ class Restaurant extends CI_Controller {
                     $this->session->set_userdata('TableNo', $MergeNo);
                     // grand total
                     $srvCharg = ($orderAmt * $kitcheData[0]['ServChrg']) / 100;
-                    $total = $orderAmt + $srvCharg + $charge - $discount;
+                    $total = $orderAmt + $srvCharg + $charge - $discount - $custDiscount;
 
                     // die;
                     $postData["orderAmount"] = $total;
                     $postData["paymentMode"] = 'RCash';
                     $postData["MergeNo"] = $MergeNo;
+                    $postData["cust_discount"] = $custDiscount;
                     $custId = $kitcheData[0]['CustId'];
                     $this->session->set_userdata('CustId', $custId);
                     $res = billCreate($EID, $CNo, $postData);
                     if($res['status'] > 0){
-                        updateRecord('KitchenMain', array('discount' => $_POST['billDiscPer']), array('CNo' => $CNo, 'MergeNo' => $MergeNo,'EID' => $EID));
+                        updateRecord('KitchenMain', array('discount' => $_POST['custDiscPer']), array('CNo' => $CNo, 'MergeNo' => $MergeNo,'EID' => $EID));
                         $status = 'success';
                         $response = $res['billId'];         
                     }
+                }else{
+                    $response = 'Bill Already Generated.';
                 }
                 // print_r($taxDataArray);
                 // print_r($orderAmt);echo "<br>";
@@ -3856,7 +3867,6 @@ class Restaurant extends CI_Controller {
         $CustId = $detail['CustId'];
 
         $data['CustNo'] = $detail['CustNo'];
-        $data['CellNo'] = $detail['CellNo'];
 
         $dbname = $this->session->userdata('my_db');
 
@@ -3874,6 +3884,7 @@ class Restaurant extends CI_Controller {
             $data['hotelName'] = $billData[0]['Name'];
             $data['TableNo'] = $billData[0]['TableNo'];
             $data['Fullname'] = $billData[0]['FName'].' '.$billData[0]['LName'];
+            $data['CellNo'] = $billData[0]['MobileNo'];
             $data['phone'] = $billData[0]['PhoneNos'];
             $data['gstno'] = $billData[0]['GSTno'];
             $data['fssaino'] = $billData[0]['FSSAINo'];
@@ -3895,7 +3906,7 @@ class Restaurant extends CI_Controller {
             $grandTotal = $sgstamt + $cgstamt + $data['bservecharge'] + $data['tipamt'];
             $data['thankuline'] = isset($billData[0]['Tagline'])?$billData[0]['Tagline']:"";
 
-            $data['total_discount_amount'] = $billData[0]['TotItemDisc'] + $billData[0]['BillDiscAmt'];
+            $data['total_discount_amount'] = $billData[0]['TotItemDisc'] + $billData[0]['BillDiscAmt'] + $billData[0]['custDiscAmt'];
             $data['total_packing_charge_amount'] = $billData[0]['TotPckCharge'];
             $data['total_delivery_charge_amount'] = $billData[0]['DelCharge'];
 
@@ -4090,6 +4101,75 @@ class Restaurant extends CI_Controller {
         // print_r($data);
         // die;
         $this->load->view('rest/kitchen_plan', $data);
+    }
+
+    public function checkCustDiscount(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+            $custId = $_POST['custId'];
+
+            $data = $this->db2->select('uId, FName,CustId, Disc, visit')
+                            ->get_where('Users', array('CustId' => $custId))
+                            ->row_array();
+            if(!empty($data)){
+                $response = $data;
+            }
+            // echo "<pre>";
+            // print_r($data);die;
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+
+    public function sendSMS_test()
+    {
+
+        $curl = curl_init();
+$apikey = '7652383520739183947';//if you use apikey then userid and password is not required
+$userId = 'vtrend';
+$password = 'Sn197022';
+$sendMethod = 'simpleMsg'; //(simpleMsg|groupMsg|excelMsg)
+$messageType = 'text'; //(text|unicode|flash)
+$senderId = 'EATOUT';
+$mobile = '917697807008';//comma separated
+$msg = "123456 is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+$scheduleTime = '';//mention time if you want to schedule else leave blank
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "http://www.smsgateway.center/SMSApi/rest/send",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_POSTFIELDS => "userId=$userId&password=$password&senderId=$senderId&sendMethod=$sendMethod&msgType=$messageType&mobile=$mobile&msg=$msg&duplicateCheck=true&format=json",
+  CURLOPT_HTTPHEADER => array(
+    "apikey: $apikey",
+    "cache-control: no-cache",
+    "content-type: application/x-www-form-urlencoded"
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+        // sendSMS('7697807008', '541');
+        // sendSMS('8850876764', '54122');
     }
 
 

@@ -770,13 +770,13 @@ class Rest extends CI_Model{
 
 	public function getBillDetailsForSettle($custId, $MCNo, $mergeNo){
 			$EID = authuser()->EID;
-			return $this->db2->select("b.TableNo,b.MergeNo, b.BillId, b.BillNo, DATE_FORMAT(DATE(billTime),'%d/%m/%Y') as BillDate, TotAmt, TotAmt as BillValue, bp.PaidAmt, bp.PaymtMode, bp.TotBillAmt, bp.PymtType, b.CNo, u.CustId, cp.Name as pymtName")
+			return $this->db2->select("b.TableNo,b.MergeNo, b.BillId, b.BillNo, DATE_FORMAT(DATE(billTime),'%d/%m/%Y') as BillDate, b.TotAmt as BillValue, b.PaidAmt, bp.PaymtMode, bp.TotBillAmt, bp.PymtType, b.CNo, u.CustId, (case when cp.Name != '' Then cp.Name ELSE 'Unpaid' end) as pymtName,b.payRest")
 						->order_by('BillId', 'ASC')
 						->group_by('BillId')
 						->join('Eat_tables et','b.EID = et.EID','inner')
-						->join('BillPayments bp','bp.BillId = b.BillId','inner')
+						->join('BillPayments bp','bp.BillId = b.BillId','left')
 						->join('Users u','b.CustId=u.CustId','inner')
-						->join('ConfigPymt cp','cp.PymtMode=bp.PaymtMode','inner')
+						->join('ConfigPymt cp','cp.PymtMode=bp.PaymtMode','left')
 						->get_where('Billing b', array('b.EID' => $EID,
 														'b.MergeNo' => $mergeNo,
 														'b.CNo' => $MCNo,

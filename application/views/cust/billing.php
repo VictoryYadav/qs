@@ -494,7 +494,7 @@
                             <?php
                                 if ($total_discount_amount != 0) {?>
                                     <tr>
-                                        <td>Discounts Availed</td>
+                                        <td>Total Discounts</td>
                                         <td style="text-align: right;"><?= $total_discount_amount; ?></td>
                                     </tr>
                             <?php   }?>

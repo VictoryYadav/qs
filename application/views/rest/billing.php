@@ -37,7 +37,7 @@
         $grandTotal = $sgstamt + $cgstamt + $bservecharge + $tipamt;
         $thankuline = isset($billData[0]['Tagline'])?$billData[0]['Tagline']:"";
 
-        $total_discount_amount = $billData[0]['TotItemDisc'] + $billData[0]['BillDiscAmt'];
+        $total_discount_amount = $billData[0]['TotItemDisc'] + $billData[0]['BillDiscAmt'] + $billData[0]['custDiscAmt'];
         $total_packing_charge_amount = $billData[0]['TotPckCharge'];
         $total_delivery_charge_amount = $billData[0]['DelCharge'];
 
@@ -475,7 +475,7 @@
                             <?php
                                 if ($total_discount_amount != 0) {?>
                                     <tr>
-                                        <td>Discounts Availed</td>
+                                        <td>Total Discounts</td>
                                         <td style="text-align: right;"><?= $total_discount_amount; ?></td>
                                     </tr>
                             <?php   }?>

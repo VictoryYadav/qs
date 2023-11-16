@@ -890,7 +890,7 @@ Essential Scripts
 											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
 										</a>\
 										<?php } else{ ?>
-										<a href="<?= base_url('customer/signup') ?>" >\
+										<a href="<?= base_url('customer/login') ?>" >\
 											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
 										</a>\
 									<?php } ?>
@@ -923,7 +923,7 @@ Essential Scripts
 					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
 					            </a>\
 					            <?php } else{ ?>
-					            	<a href="<?= base_url('customer/signup') ?>" >\
+					            	<a href="<?= base_url('customer/login') ?>" >\
 					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
 					            </a>\
 					            <?php } ?>
