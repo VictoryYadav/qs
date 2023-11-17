@@ -37,6 +37,13 @@ class Cust extends CI_Model{
 							->order_by('Rank', 'ASC')
 							->get_where('FoodType', array('CTyp' => $data['mcat'][0]['CTyp'], 'Stat' => 0))
 							->result_array();
+		// echo "<pre>";
+		// print_r($data);
+		// die;
+		$this->session->set_userdata('f_fid', '0');
+		$this->session->set_userdata('f_cid', $cid);
+		$this->session->set_userdata('f_mcat', $data['mcat'][0]['MCatgId']);
+
 		return $data;
 	}
 
@@ -51,7 +58,7 @@ class Cust extends CI_Model{
         	$this->session->set_userdata('f_mcat', $mcat);
             $this->db2->where('mc.MCatgId', $mcat);
         }
-        if(!empty($fl) && $fl > 0){
+        if(!empty($fl) && ($fl > 0) ){
         	$this->db2->where('mi.FID', $fl);
         	$this->session->set_userdata('f_fid', $fl);
         }

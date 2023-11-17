@@ -787,7 +787,11 @@ Essential Scripts
     }
 
     function clickMcat(mcatId){
+
+    var fid_session = "<?php $this->session->set_userdata('f_fid', '0'); ?>";
+
         mcatIdg = mcatId; 
+        filterg = 0;
         console.log('cid='+cidg+',mcat='+mcatIdg+',fl='+filterg);
         getItemDetails(cidg, mcatIdg, filterg);
     }

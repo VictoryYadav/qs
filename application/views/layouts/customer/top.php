@@ -37,8 +37,8 @@ $folder = 'e'.authuser()->EID;
                         </a>
                         <!-- Dropdown list -->
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item @@dashboardPage" href="dashboard.html">Dashboard</a></li>
-                                <li><a class="dropdown-item @@dashboardMyAds" href="dashboard-my-ads.html">Dashboard My Ads</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="set_lang('en')">English</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="set_lang('hi')">Hindi</a></li>
                             </ul>
                     </li>
                     <?php } ?>
@@ -53,3 +53,9 @@ $folder = 'e'.authuser()->EID;
         </div>
     </div>
 </section>
+
+<script>
+    function set_lang(lang){
+        console.log(lang);
+    }
+</script>

@@ -94,13 +94,11 @@ class Customer extends CI_Controller {
         $data['cid'] = !empty($this->session->userdata('f_cid'))?$this->session->userdata('f_cid'):$cid;
         $data['fmcat'] = !empty($this->session->userdata('f_mcat'))?$this->session->userdata('f_mcat'):'';
         $data['ffid'] = !empty($this->session->userdata('f_fid'))?$this->session->userdata('f_fid'):'';
-
         
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
             $status = 'success';
-            
             
             if(isset($_POST['cid']) && !empty($_POST['cid'])){
                 $cid = $_POST['cid'];
@@ -129,6 +127,9 @@ class Customer extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
             $status = 'success';
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
             extract($_POST);
             $res = $this->cust->getItemDetailLists($cid, $mcatId, $filter);  
                     
