@@ -92,8 +92,8 @@ class Customer extends CI_Controller {
         $cid = $data['cuisinList'][0]['CID'];
 
         $data['cid'] = !empty($this->session->userdata('f_cid'))?$this->session->userdata('f_cid'):$cid;
-        $data['fmcat'] = !empty($this->session->userdata('f_mcat'))?$this->session->userdata('f_mcat'):'';
-        $data['ffid'] = !empty($this->session->userdata('f_fid'))?$this->session->userdata('f_fid'):'';
+        $data['fmcat'] = !empty($this->session->userdata('f_mcat'))?$this->session->userdata('f_mcat'):0;
+        $data['ffid'] = !empty($this->session->userdata('f_fid'))?$this->session->userdata('f_fid'):0;
         
         $status = "error";
         $response = "Something went wrong! Try again later.";

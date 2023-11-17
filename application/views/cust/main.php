@@ -268,7 +268,7 @@
 	<div class="container text-center">
 		<div class="row">
 			<div class="col-md-6 col-6">
-				<div class="sec2-radio-grp btn-group btn-group-toggle" data-toggle="buttons" id="filters">
+				<div class="sec2-radio-grp btn-group btn-group-toggle" data-toggle="buttons" id="filters" style="width: 100%;">
 		        </div>
 			</div>
 			<div class="col-md-6 col-6 text-right">
