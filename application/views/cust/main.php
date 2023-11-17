@@ -809,7 +809,9 @@ Essential Scripts
         $("#gridView").html('<div class="loader"></div>');
         $.post('<?= base_url('customer/getItemDetailsData') ?>',{cid:cid,mcatId:mcatId,filter:filter},function(res){
             if(res.status == 'success'){
-              var data = res.response;
+              var data = res.response.data;
+              var filter = res.response.filter;
+              var fltr = '';
               console.log(data);
               var total = data.length;
               var listView = '';
@@ -967,6 +969,21 @@ Essential Scripts
                 }else{
                     grid += '<div class="text-center text-danger">No Options Available! </div>';
                 }
+
+                // filter fid
+                if(filter.length > 0){
+                    $('#filterBlock').show();
+                    fltr = '<label class="btn btn-b veg-btn active">\
+                        <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" checked="" onchange="filterChange(0)">ALL</label>';
+                    for(i=0; i < filter.length; i++){
+                        fltr += '<label class="btn btn-b nonveg-btn">\
+                        <input type="radio" value="'+filter[i].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[i].FID+')">'+filter[i].Opt+'</label>';
+                    }
+                    $('#filters').html(fltr);
+                }else{
+                    $('#filterBlock').hide();
+                }
+                // end of fid
               $('#gridView').html(grid);
               $('.view').html(listView);
             }else{
