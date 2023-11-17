@@ -96,10 +96,17 @@ class Cust extends CI_Model{
          }
 
          // return $data;
-         $filter = $this->db2->select('FID, Opt, Rank')
+         $filter = array();
+         $mcat_ctyp = $this->db2->select('MCatgId, MCatgNm, L1MCatgNm, L2MCatgNm, L3MCatgNm, CTyp, CID')
+         ->get_where('MenuCatg', array('MCatgId' => $mcat))
+         ->row_array();
+         $filter_list = $this->db2->select('FID, Opt, Rank')
 							->order_by('Rank', 'ASC')
-							->get_where('FoodType', array('CTyp' => $data[0]['CTyp'], 'Stat' => 0))
+							->get_where('FoodType', array('CTyp' => $mcat_ctyp['CTyp'], 'Stat' => 0))
 							->result_array();
+		if(!empty($filter_list)){
+         	$filter = $filter_list;
+         }
          $res = array('data' => $data,'filter' => $filter);
          // echo "<pre>";
          // print_r($res);

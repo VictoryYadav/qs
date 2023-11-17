@@ -753,6 +753,26 @@ Essential Scripts
             }else{
                 $('#mcatgBlock').hide();
             }
+
+                if(filter.length > 0){
+                    $('#filterBlock').show();
+                    fltr = '<label class="btn btn-b veg-btn active">\
+                        <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" checked="" onchange="filterChange(0)">ALL</label>';
+                    for(i=0; i < filter.length; i++){
+                        fltr += '<label class="btn btn-b nonveg-btn">\
+                        <input type="radio" value="'+filter[i].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[i].FID+')">'+filter[i].Opt+'</label>';
+                    }
+
+                    // fltr += '<label class="btn btn-b veg-btn active">\
+                    //     <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" checked="" onchange="filterChange(0)">ALL</label>\
+                    // <label class="btn btn-b nonveg-btn">\
+                    //     <input type="radio" value="'+filter[0].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[0].FID+')">'+filter[0].Opt+'</label>\
+                    // <label class="btn btn-b both-btn">\
+                    //     <input type="radio" value="'+filter[0].FIdA+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[0].FIdA+')">'+filter[0].AltOpt+'</label>';
+                    $('#filters').html(fltr);
+                }else{
+                    $('#filterBlock').hide();
+                }
                 $('#mCategory').html(mcat);
                 // call grid view
                 console.log('mcat='+mcatIdg);
@@ -954,7 +974,7 @@ Essential Scripts
                 if(filter.length > 0){
                     $('#filterBlock').show();
                     fltr = '<label class="btn btn-b veg-btn active">\
-                        <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" onchange="filterChange(0)">ALL</label>';
+                        <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" checked="" onchange="filterChange(0)">ALL</label>';
                     for(i=0; i < filter.length; i++){
                         fltr += '<label class="btn btn-b nonveg-btn">\
                         <input type="radio" value="'+filter[i].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[i].FID+')">'+filter[i].Opt+'</label>';
