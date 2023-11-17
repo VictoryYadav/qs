@@ -91,13 +91,17 @@ class Customer extends CI_Controller {
         $this->session->set_userdata('cuisine', $data['cuisinList'][0]['CID']);
         $cid = $data['cuisinList'][0]['CID'];
 
-        $data['cid'] = !empty($this->session->userdata('f_cid'))?$this->session->userdata('f_cid'):$cid;
-        $data['fmcat'] = !empty($this->session->userdata('f_mcat'))?$this->session->userdata('f_mcat'):0;
-        $data['ffid'] = !empty($this->session->userdata('f_fid'))?$this->session->userdata('f_fid'):0;
+        // $data['cid'] = !empty($this->session->userdata('f_cid'))?$this->session->userdata('f_cid'):$cid;
+        // $data['fmcat'] = !empty($this->session->userdata('f_mcat'))?$this->session->userdata('f_mcat'):0;
+        // $data['ffid'] = 0;
+        $this->session->set_userdata('f_fid',0);
         
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
+            $data['ffid'] = 0;
+            $this->session->set_userdata('f_fid',0);
+
             $status = 'success';
             
             if(isset($_POST['cid']) && !empty($_POST['cid'])){

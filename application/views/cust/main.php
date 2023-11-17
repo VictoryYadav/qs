@@ -668,6 +668,11 @@ Essential Scripts
 
 </body>
 <script type="text/javascript">
+
+    var cidg = "<?= $this->session->set_userdata('f_cid') ?>";
+    var mcatIdg = "<?= $this->session->set_userdata('f_mcat') ?>";
+    var filterg = "<?= $this->session->set_userdata('f_fid') ?>";
+
     var deliveryVal = 0;
 	var prList = 'grid';
 	function showProdct(val=''){
@@ -720,12 +725,10 @@ Essential Scripts
 
     });
 
-    var cidg = '<?= $cid; ?>';
-    var mcatIdg = '<?= $fmcat; ?>';
-    var filterg = '<?= $ffid; ?>';
-
     getCuisineList(cidg);
     function getCuisineList(cid){
+
+    var fid_session = "<?php $this->session->set_userdata('f_fid', '0'); ?>";
 
         cidg = cid;
         console.log('cid='+cidg);
@@ -948,6 +951,7 @@ Essential Scripts
                   }
                 }else{
                     grid += '<div class="text-center text-danger">No Options Available! </div>';
+                // var vv = "<?php $this->session->set_userdata('f_fid',0); ?>";
                 }
 
                 // filter fid
