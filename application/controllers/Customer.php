@@ -91,9 +91,9 @@ class Customer extends CI_Controller {
         $this->session->set_userdata('cuisine', $data['cuisinList'][0]['CID']);
         $cid = $data['cuisinList'][0]['CID'];
 
-        // $data['cid'] = !empty($this->session->userdata('f_cid'))?$this->session->userdata('f_cid'):$cid;
-        // $data['fmcat'] = !empty($this->session->userdata('f_mcat'))?$this->session->userdata('f_mcat'):0;
-        // $data['ffid'] = 0;
+        $data['cid'] = !empty($this->session->userdata('f_cid'))?$this->session->userdata('f_cid'):$cid;
+        $data['fmcat'] = !empty($this->session->userdata('f_mcat'))?$this->session->userdata('f_mcat'):0;
+        $data['ffid'] = 0;
         $this->session->set_userdata('f_fid',0);
         
         $status = "error";
@@ -573,7 +573,6 @@ class Customer extends CI_Controller {
             }else{
                 $response = "Username is not found!";
             }
-            
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -590,8 +589,8 @@ class Customer extends CI_Controller {
 
     private function genOTPLogin($emailMobile){
         $otp = rand(9999,1000);
-        $this->session->set_userdata('cust_otp', '1212');
-        $check = $this->db2->select('token')
+        $this->session->set_userdata('cust_otp', $otp);
+        $check = $this->db2->select('token, CustId')
                             ->group_start() 
                                     ->where('MobileNo', $emailMobile)
                                     ->or_where('email',$emailMobile)
@@ -599,7 +598,9 @@ class Customer extends CI_Controller {
                             ->get('Users')
                             ->row_array();
         if(!empty($check)){
-            $msg = 'Your One Time Password is '.$otp;
+            updateRecord('Users', array('otp' => $otp), array('CustId' => $check['CustId']));
+
+            $msg = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
             $message = array(
               'body'   => $msg,
               'title'   => 'Your OTP',
@@ -607,7 +608,11 @@ class Customer extends CI_Controller {
               'sound'   => 1
             );
             if(!empty($check['token'])){
-                // firebaseNotification($check['token'], $message);
+                firebaseNotification($check['token'], $message);
+            }else{
+                if($emailMobile){
+                    sendSMS($emailMobile, $otp);
+                }
             }
         }
         return $otp;
@@ -749,7 +754,7 @@ class Customer extends CI_Controller {
 
     private function generateOTP($mobile, $email){
         $otp = rand(9999,1000);
-        $this->session->set_userdata('cust_otp', '1212');
+        $this->session->set_userdata('cust_otp', $otp);
         $check = $this->db2->select('token')
                             ->group_start() 
                                     ->where('MobileNo', $mobile)
@@ -758,7 +763,7 @@ class Customer extends CI_Controller {
                             ->get('Users')
                             ->row_array();
         if(!empty($check)){
-            $msg = 'Your One Time Password is '.$otp;
+            $msg = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
             $message = array(
               'body'   => $msg,
               'title'   => 'Your OTP',
@@ -777,7 +782,7 @@ class Customer extends CI_Controller {
                                 ->row_array();
 
             if(!empty($chckGen)){
-                $msg = 'Your One Time Password is '.$otp;
+                $msg = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
                 $message = array(
                   'body'   => $msg,
                   'title'   => 'Your OTP',
@@ -786,6 +791,9 @@ class Customer extends CI_Controller {
                 );
                 firebaseNotification($chckGen['token'], $message);
             }else{
+                if($mobile){
+                    sendSMS($mobile, $otp);
+                }
                 return $otp;
             // send otp 
             }
@@ -841,6 +849,7 @@ class Customer extends CI_Controller {
                         $data1['MobileNo']  = $gen_check['MobileNo'];
                         $data1['DOB']       = $gen_check['DOB'];
                         $data1['Gender']    = $gen_check['Gender'];
+                        $data1['otp']    = $otp;
                         insertRecord('Users',$data1);    
                     }else{
                         $data = $ses_data;
@@ -848,6 +857,7 @@ class Customer extends CI_Controller {
                         $CustId = $genTblDb->insert_id();
                         $this->session->set_userdata('CustId', $CustId);
                         $data['CustId'] = $CustId;
+                        $data['otp']    = $otp;
                         insertRecord('Users',$data);
                     }
                 }
@@ -2595,6 +2605,27 @@ class Customer extends CI_Controller {
             }else{
                 redirect(base_url('customer/checkout'));
             }
+        }
+    }
+
+    public function tokenGenerate(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            $data['token'] = $_POST['token']; 
+            $data['LstModDt'] = date('Y-m-d H:i:s'); 
+            updateRecord('UsersRest', $data, array('RUserId' => authuser()->RUserId) );
+            $status = 'success';
+            $response = 'Token Generated.';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
         }
     }
 

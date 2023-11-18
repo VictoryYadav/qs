@@ -16,7 +16,7 @@
                 <div class="row">
                     <div class="col-md-6 mx-auto">
                         <div class="form-group">
-                            <input type="text" name="emailMobile" class="form-control" placeholder="Enter Mobile or Email" required="" autocomplete="off">
+                            <input type="number" name="emailMobile" class="form-control" placeholder="Enter Mobile" required="" autocomplete="off" maxlength="10">
                             <small id="loginMsg" class="text-danger" style="font-size: 10px;"></small>
                         </div>
 

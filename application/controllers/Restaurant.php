@@ -3085,9 +3085,9 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
-            echo "<pre>";
-            print_r($_POST);
-            die;
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
             $data['token'] = $_POST['token']; 
             $data['LstModDt'] = date('Y-m-d H:i:s'); 
             updateRecord('UsersRest', $data, array('RUserId' => authuser()->RUserId) );
@@ -4131,44 +4131,43 @@ class Restaurant extends CI_Controller {
     public function sendSMS_test()
     {
 
-        $curl = curl_init();
-$apikey = '7652383520739183947';//if you use apikey then userid and password is not required
-$userId = 'vtrend';
-$password = 'Sn197022';
-$sendMethod = 'simpleMsg'; //(simpleMsg|groupMsg|excelMsg)
-$messageType = 'text'; //(text|unicode|flash)
-$senderId = 'EATOUT';
-$mobile = '917697807008';//comma separated
-$msg = "123456 is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
-$scheduleTime = '';//mention time if you want to schedule else leave blank
+//         $curl = curl_init();
+// $apikey = '7652383520739183947';//if you use apikey then userid and password is not required
+// $userId = 'vtrend';
+// $password = 'Sn197022';
+// $sendMethod = 'simpleMsg'; //(simpleMsg|groupMsg|excelMsg)
+// $messageType = 'text'; //(text|unicode|flash)
+// $senderId = 'EATOUT';
+// $mobile = '917697807008';//comma separated
+// $msg = "12333 is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+// $scheduleTime = '';//mention time if you want to schedule else leave blank
 
-curl_setopt_array($curl, array(
-  CURLOPT_URL => "http://www.smsgateway.center/SMSApi/rest/send",
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => "",
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 30,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => "POST",
-  CURLOPT_POSTFIELDS => "userId=$userId&password=$password&senderId=$senderId&sendMethod=$sendMethod&msgType=$messageType&mobile=$mobile&msg=$msg&duplicateCheck=true&format=json",
-  CURLOPT_HTTPHEADER => array(
-    "apikey: $apikey",
-    "cache-control: no-cache",
-    "content-type: application/x-www-form-urlencoded"
-  ),
-));
+// curl_setopt_array($curl, array(
+//   CURLOPT_URL => "http://www.smsgateway.center/SMSApi/rest/send",
+//   CURLOPT_RETURNTRANSFER => true,
+//   CURLOPT_ENCODING => "",
+//   CURLOPT_MAXREDIRS => 10,
+//   CURLOPT_TIMEOUT => 30,
+//   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//   CURLOPT_CUSTOMREQUEST => "POST",
+//   CURLOPT_POSTFIELDS => "userId=$userId&password=$password&senderId=$senderId&sendMethod=$sendMethod&msgType=$messageType&mobile=$mobile&msg=$msg&duplicateCheck=true&format=json",
+//   CURLOPT_HTTPHEADER => array(
+//     "cache-control: no-cache",
+//     "content-type: application/x-www-form-urlencoded"
+//   ),
+// ));
 
-$response = curl_exec($curl);
-$err = curl_error($curl);
+// $response = curl_exec($curl);
+// $err = curl_error($curl);
 
-curl_close($curl);
+// curl_close($curl);
 
-if ($err) {
-  echo "cURL Error #:" . $err;
-} else {
-  echo $response;
-}
-        // sendSMS('7697807008', '541');
+// if ($err) {
+//   echo "cURL Error #:" . $err;
+// } else {
+//   echo $response;
+// }
+        sendSMS('7697807008', '541');
         // sendSMS('8850876764', '54122');
     }
 
