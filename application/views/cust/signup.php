@@ -24,7 +24,7 @@
                       </div>
                       <div class="col-md-6">
                           <div class="form-group">
-                              <input type="email" name="email" class="form-control" placeholder="Enter Email (Bills will be sent on this Email)" required="" autocomplete="off">
+                              <input type="email" name="email" class="form-control" placeholder="Enter Email (Bills will be sent on this Email)" autocomplete="off">
                           </div>
                       </div>
                       <div class="col-md-6">

@@ -2612,13 +2612,13 @@ class Customer extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
-            echo "<pre>";
-            print_r($_POST);
-            die;
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
             $data['token'] = $_POST['token']; 
             $data['updated_token_time'] = date('Y-m-d H:i:s'); 
             $CustId = $this->session->userdata('CustId');
-            updateRecord('Users', $data, array('CustId' => authuser()->CustId) );
+            updateRecord('Users', $data, array('CustId' => $CustId) );
             $status = 'success';
             $response = 'Token Generated.';
             header('Content-Type: application/json');
