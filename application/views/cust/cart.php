@@ -229,7 +229,12 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
     <!-- end Js Plugins -->
 
 </body>
-
+<!-- firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-messaging.js"></script>
+<!-- end of firebase -->
 
 <script>
 
