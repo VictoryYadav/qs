@@ -242,13 +242,20 @@ width: 100%;*/
     }
 
     #top {
-    position: fixed;
-    /*top: 0;*/
-    /*left: 0;*/
-    z-index: 999;
-    width: 77%;
-    background: #fff;
-    /*height: 23px;*/
+        position: fixed;
+        /*top: 0;*/
+        /*left: 0;*/
+        z-index: 999;
+        width: 77%;
+        background: #fff;
+        /*height: 23px;*/
+    }
+
+/*mobile screen only*/
+@media only screen and (max-width: 480px) {
+    #top {
+        width: 88%;
+    }   
 }
 </style>
         <?php $this->load->view('layouts/admin/top'); ?>
