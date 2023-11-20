@@ -22,8 +22,6 @@ class Customer extends CI_Controller {
 
     public function index1(){
 
-        
-
         // print_r(base64_decode('ZT01MSZjPTAmdD0yMiZvPTA'));
         // die;
         
@@ -101,7 +99,9 @@ class Customer extends CI_Controller {
         if($this->input->method(true)=='POST'){
             $data['ffid'] = 0;
             $this->session->set_userdata('f_fid',0);
-
+            // echo "<pre>";
+            // print_r($_SESSION);
+            // die;
             $status = 'success';
             
             if(isset($_POST['cid']) && !empty($_POST['cid'])){
@@ -124,6 +124,41 @@ class Customer extends CI_Controller {
         $data['Itm_Portion'] = 1;
 
         $this->load->view('cust/main', $data);
+    }
+
+    public function getFoodTypeList(){
+        $this->session->set_userdata('f_fid',0);
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $this->session->set_userdata('f_fid',0);
+            $status = 'success';
+            // echo "<pre>";
+            // print_r($_POST);
+            // print_r($this->session->userdata('f_fid'));
+            // die;
+            extract($_POST);
+
+            $filter = array();
+            $mcat_ctyp = $this->db2->select('MCatgId, MCatgNm, L1MCatgNm, L2MCatgNm, L3MCatgNm, CTyp, CID')
+             ->get_where('MenuCatg', array('MCatgId' => $mcatId))
+             ->row_array();
+
+            $filter_list = $this->db2->select('FID, Opt, Rank')
+                                ->order_by('Rank', 'ASC')
+                                ->get_where('FoodType', array('CTyp' => $mcat_ctyp['CTyp'], 'Stat' => 0))
+                                ->result_array();
+            if(!empty($filter_list)){
+                $filter = $filter_list;
+             } 
+                    
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $filter
+              ));
+             die;
+        }
     }
 
     public function getItemDetailsData(){
@@ -590,6 +625,7 @@ class Customer extends CI_Controller {
     private function genOTPLogin($emailMobile){
         $otp = rand(9999,1000);
         $this->session->set_userdata('cust_otp', $otp);
+        // $this->session->set_userdata('cust_otp', '1212');
         $check = $this->db2->select('token, CustId')
                             ->group_start() 
                                     ->where('MobileNo', $emailMobile)

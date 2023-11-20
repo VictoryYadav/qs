@@ -727,8 +727,6 @@ Essential Scripts
     getCuisineList(cidg);
     function getCuisineList(cid){
 
-    var fid_session = "<?php $this->session->set_userdata('f_fid', '0'); ?>";
-
         cidg = cid;
         console.log('cid='+cidg);
         $.post('<?= base_url('customer') ?>',{cid:cid},function(res){
@@ -749,7 +747,7 @@ Essential Scripts
                     if(MCatgId == mCatList[i].MCatgId){
                         sts = 'active';
                     }
-                    // mcat += '<li role="presentation" ><a href="#" aria-controls="home" role="tab" data-toggle="tab">'+mCatList[i].MCatgNm+'</a></li> data-filter="*"';
+                    
                     mcat +='<li class="list-inline-item '+sts+'" data-filter="*" onclick="clickMcat('+mCatList[i].MCatgId+')" style="font-size:14px;">'+mCatList[i].MCatgNm+'</li>';
                 }
             }else{
@@ -759,22 +757,47 @@ Essential Scripts
                 // call grid view
                 console.log('mcat='+mcatIdg);
                 console.log('filter='+filterg);
+                clickMcat(mcatIdg);
                 getItemDetails(cid, mcatIdg, filterg);
             }else{
               alert(res.response);
               // show error msg pending
             }
         });
-
     }
 
     function clickMcat(mcatId){
 
-    var fid_session = "<?php $this->session->set_userdata('f_fid', '0'); ?>";
-
         mcatIdg = mcatId; 
         filterg = 0;
         console.log('cid='+cidg+',mcat='+mcatIdg+',fl='+filterg);
+
+        $.post('<?= base_url('customer/getFoodTypeList') ?>',{mcatId:mcatId},function(res){
+            if(res.status == 'success'){
+                
+                var filter = res.response;
+              
+              console.log('ff'+filter.length);
+
+                if(filter.length > 0){
+                    $('#filterBlock').show();
+                    fltr = '<label class="btn btn-b veg-btn active">\
+                        <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" onchange="filterChange(0)">ALL</label>';
+                    for(i=0; i < filter.length; i++){
+                        fltr += '<label class="btn btn-b nonveg-btn">\
+                        <input type="radio" value="'+filter[i].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[i].FID+')">'+filter[i].Opt+'</label>';
+                    }
+                    $('#filters').html(fltr);
+                }else{
+                    $('#filterBlock').hide();
+                }
+                // end of fid
+            }else{
+              alert(res.response);
+              // show error msg pending
+            }
+        });
+
         getItemDetails(cidg, mcatIdg, filterg);
     }
 
@@ -791,9 +814,8 @@ Essential Scripts
         $("#gridView").html('<div class="loader"></div>');
         $.post('<?= base_url('customer/getItemDetailsData') ?>',{cid:cid,mcatId:mcatId,filter:filter},function(res){
             if(res.status == 'success'){
-              var data = res.response.data;
-              var filter = res.response.filter;
-              var fltr = '';
+              var data = res.response;
+
               console.log(data);
               var total = data.length;
               var listView = '';
@@ -950,23 +972,8 @@ Essential Scripts
                   }
                 }else{
                     grid += '<div class="text-center text-danger">No Options Available! </div>';
-                // var vv = "<?php $this->session->set_userdata('f_fid',0); ?>";
                 }
 
-                // filter fid
-                if(filter.length > 0){
-                    $('#filterBlock').show();
-                    fltr = '<label class="btn btn-b veg-btn active">\
-                        <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" onchange="filterChange(0)">ALL</label>';
-                    for(i=0; i < filter.length; i++){
-                        fltr += '<label class="btn btn-b nonveg-btn">\
-                        <input type="radio" value="'+filter[i].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[i].FID+')">'+filter[i].Opt+'</label>';
-                    }
-                    $('#filters').html(fltr);
-                }else{
-                    $('#filterBlock').hide();
-                }
-                // end of fid
               $('#gridView').html(grid);
               $('.view').html(listView);
             }else{

@@ -40,7 +40,7 @@ class Cust extends CI_Model{
 		// echo "<pre>";
 		// print_r($data);
 		// die;
-		$this->session->set_userdata('f_fid', '0');
+		$this->session->set_userdata('f_fid', 0);
 		$this->session->set_userdata('f_cid', $cid);
 		$this->session->set_userdata('f_mcat', $data['mcat'][0]['MCatgId']);
 
@@ -95,24 +95,7 @@ class Cust extends CI_Model{
 			}
          }
 
-         // return $data;
-         $filter = array();
-         $mcat_ctyp = $this->db2->select('MCatgId, MCatgNm, L1MCatgNm, L2MCatgNm, L3MCatgNm, CTyp, CID')
-         ->get_where('MenuCatg', array('MCatgId' => $mcat))
-         ->row_array();
-         $filter_list = $this->db2->select('FID, Opt, Rank')
-							->order_by('Rank', 'ASC')
-							->get_where('FoodType', array('CTyp' => $mcat_ctyp['CTyp'], 'Stat' => 0))
-							->result_array();
-		if(!empty($filter_list)){
-         	$filter = $filter_list;
-         }
-         $res = array('data' => $data,'filter' => $filter);
-         // echo "<pre>";
-         // print_r($res);
-         // die;
-
-         return $res;
+         return $data;
 
         echo "<pre>";
         print_r($data);
@@ -1480,6 +1463,7 @@ class Cust extends CI_Model{
         $COrgId = $this->session->userdata('COrgId');
 
         $EType = $this->session->userdata('EType');
+        $EDTs = $this->session->userdata('EDT');
 
         $per_cent = 1;
         if($paymentMode == 'Due'){
@@ -1595,6 +1579,13 @@ class Cust extends CI_Model{
                 // print_r($billingObj);
                 // die;
                 $this->db2->trans_start();
+
+                	if(($EType == 1) && ($EDTs > 0)){
+                		$edtMax = $this->db2->select('MCNo, ItemId, EDT, max(EDT) as EDT')->where_not_in('Stat', array(4,6,7,9,99))->get_where('Kitchen',array('MCNo' => $CNo, 'EID' => $EID))->row_array();
+                		if(!empty($edtMax)){
+                			updateRecord('Kitchen', array('EDT' => $edtMax['EDT']), array('MCNo' => $CNo, 'EID' => $EID) );
+                		}
+                	}
             
                     $lastInsertBillId = insertRecord('Billing', $billingObj);
 
