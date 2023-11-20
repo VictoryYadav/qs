@@ -240,6 +240,16 @@ width: 100%;*/
             display: none;
         }
     }
+
+    #top {
+    position: fixed;
+    /*top: 0;*/
+    /*left: 0;*/
+    z-index: 999;
+    width: 77%;
+    background: #fff;
+    /*height: 23px;*/
+}
 </style>
         <?php $this->load->view('layouts/admin/top'); ?>
             <!-- ========== Left Sidebar Start ========== -->
@@ -270,7 +280,7 @@ width: 100%;*/
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
-                                    <div class="card-body">
+                                    <div class="card-body" id="top">
                                         <div class="row">
                                             <div class="col-md-6 col-6">
                                                 <select class="form-control form-control-sm" id="kitchen-code" onchange="getTableView();">
@@ -322,7 +332,7 @@ width: 100%;*/
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row" style="margin-top: 57px;">
                             <div class="col-md-7 col-7">
                                 <div class="card">
                                     <div class="card-body">
