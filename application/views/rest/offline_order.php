@@ -496,6 +496,7 @@
                                         window.location = "<?= base_url('restaurant/kot_print/'); ?>"+MCNo+'/'+MergeNo+'/'+FKOTNo;    
                                     }
                                 }
+                                location.reload();
                             } else {
                                 alert("Failed To Place Order");
                             }

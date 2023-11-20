@@ -309,7 +309,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$sendMethod = 'simpleMsg'; //(simpleMsg|groupMsg|excelMsg)
 		$messageType = 'text'; //(text|unicode|flash)
 		$senderId = 'EATOUT';
-		$mobile = '917697807008';//comma separated
+		$mobile = $mobileNO;//comma separated
 		$msg = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
 		$scheduleTime = '';//mention time if you want to schedule else leave blank
 

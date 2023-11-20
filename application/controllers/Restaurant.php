@@ -3029,9 +3029,6 @@ class Restaurant extends CI_Controller {
             $tableno = $_POST['table_no'];
             $q = "SELECT k.*,km.BillStat kmBillStat, i.ItemNm,i.Value from KitchenMain as km, Kitchen as k, MenuItem as i where km.CNo = k.CNo and km.MergeNo = '$tableno' and k.stat not in(0,10, 4, 6, 9, 99, 7) and i.Itemid = k.Itemid";
             $data = $this->db2->query($q)->result_array();
-            if(empty($data)){
-                $data = array(array('kmBillStat' => 0));
-            }
             
             echo json_encode($data);
         }

@@ -239,6 +239,9 @@ width: 100%;*/
         .Po_to_land {
             display: none;
         }
+        #top {
+            width: 100%;
+        } 
     }
 
     #top {
@@ -246,7 +249,7 @@ width: 100%;*/
         /*top: 0;*/
         /*left: 0;*/
         z-index: 999;
-        width: 77%;
+        width: 79%;
         background: #fff;
         /*height: 23px;*/
     }
@@ -367,9 +370,9 @@ width: 100%;*/
                                                     <thead class="table-header">
                                                         <tr>
                                                             <th>Table No</th>
-                                                            <th>Ord AMT</th>
+                                                            <th>Ord Amt</th>
                                                             <th>From Time</th>
-                                                            <th>Cell NO</th>
+                                                            <th>Cell No</th>
                                                             <th>Visit No</th>
                                                             <!-- <th>Acc/Rej</th> -->
                                                         </tr>

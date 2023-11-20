@@ -14,6 +14,8 @@ class Customer extends CI_Controller {
             redirect(base_url());
         }
 
+        $this->lang->load('message','china');
+
         $my_db = $this->session->userdata('my_db');
         $this->db2 = $this->load->database($my_db, TRUE);
 
@@ -117,7 +119,9 @@ class Customer extends CI_Controller {
              die;
         }
 
-        $data['title'] = 'Item Details';
+        // $data['title'] = 'Item Details';
+        $data['title'] = $this->lang->line('welcome_message');
+        
         $data['language'] = languageArray();
         $data['EType'] = $this->session->userdata('EType');
         $data['Charity'] = $this->session->userdata('Charity');
