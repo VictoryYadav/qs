@@ -2582,7 +2582,7 @@ function cashCollect(custId, MCNo, mergeNo, oType){
                             <input type="hidden" name="EID" value="'+data.EID+'"/>\
                             <input type="hidden" name="MergeNo" value="'+data.MergeNo+'"/>\
                             <input type="hidden" name="CellNo" value="'+data.CellNo+'"/>\
-                            <input type="hidden" name="TotBillAmt" value="'+data.TotAmt+'"/>\
+                            <input type="hidden" name="TotBillAmt" value="'+data.PaidAmt+'"/>\
                             <input type="text" name="PaidAmt" style="width:70px;" required value="0" id="cashAmtR" />\
                             </td>\
                         <td>\
@@ -2603,6 +2603,10 @@ function cashCollect(custId, MCNo, mergeNo, oType){
 function cashCollectData(){
     var data = $('#cashForm').serializeArray();
   
+    var PaidAmt = data[9].value;
+    var TotBillAmt = data[8].value;
+  // console.log(PaidAmt+' , '+TotBillAmt);
+  if(parseFloat(PaidAmt) >= parseFloat(TotBillAmt)){
     $.post('<?= base_url('restaurant/collect_payment') ?>',data,function(res){
         if(res.status == 'success'){
           alert(res.response);
@@ -2611,5 +2615,8 @@ function cashCollectData(){
         }
         location.reload();
     });
+  }else{
+    alert('Amount has to be greater than or equal to Bill Amount.');
+  }
 }
 </script>

@@ -14,7 +14,7 @@ class Customer extends CI_Controller {
             redirect(base_url());
         }
 
-        $this->lang->load('message','china');
+        $this->lang->load('message','english');
 
         $my_db = $this->session->userdata('my_db');
         $this->db2 = $this->load->database($my_db, TRUE);
@@ -261,7 +261,7 @@ class Customer extends CI_Controller {
                 if (isset($_POST['getSendToKitchenList']) && $_POST['getSendToKitchenList']) {
 
                     // Get all Temp Item list
-                    $kitcheData = $this->db2->query("SELECT k.OrdNo, k.ItemId, k.Qty, k.TA, k.Itm_Portion, (if (k.ItemTyp > 0,(CONCAT(mi.ItemNm, ' - ' , k.CustItemDesc)),(mi.ItemNm ))) as ItemNm,  k.ItmRate as Value, mi.PckCharge, k.OType, k.OrdTime , ip.Name as Portions, k.Stat from Kitchen k, MenuItem mi,ItemPortions ip where k.Itm_Portion = ip.IPCd and k.CustId = $CustId AND k.EID = $EID AND k.TableNo = $TableNo AND k.ItemId = mi.ItemId AND k.BillStat = 0 AND (k.Stat = 1 or k.Stat = 0) and k.CNo = $CNo")
+                    $kitcheData = $this->db2->query("SELECT k.OrdNo, k.ItemId, k.Qty, k.TA, k.Itm_Portion, (if (k.ItemTyp > 0,(CONCAT(mi.ItemNm, ' - ' , k.CustItemDesc)),(mi.ItemNm ))) as ItemNm,  k.ItmRate as Value, mi.PckCharge, k.OType, k.OrdTime , ip.Name as Portions, k.Stat from Kitchen k, MenuItem mi,ItemPortions ip where k.Itm_Portion = ip.IPCd and k.CustId = $CustId AND k.EID = $EID AND k.TableNo = $TableNo AND k.ItemId = mi.ItemId AND k.BillStat = 0 AND (k.Stat = 1 or k.Stat = 2) and k.CNo = $CNo")
                     ->result_array();
 
                     foreach ($kitcheData as &$key) {
@@ -486,11 +486,11 @@ class Customer extends CI_Controller {
 
                         if ($EType == 5) {
                             // $orderType = 7;
-                            if($TableAcceptReqd == 0){
+                            if($TableAcceptReqd > 0){
                                 $checkStat = $this->db2->select('Stat')->get_where('KitchenMain', array('CNo' => $CNo, 'EID' => $EID, 'BillStat' => 0))->row_array();
                                 $stat = $checkStat['Stat'];
                             }else{
-                                $stat = 0;
+                                $stat = 2;
                             }
                             //$newUKOTNO = date('dmy_') . $KOTNo;
 
@@ -517,7 +517,7 @@ class Customer extends CI_Controller {
                         }else{
                             //For ETpye 1 Order Type Will Be 0 and Stat = 1
                             $OType = 0;
-                            $stat = 0;
+                            $stat = 1;
                         }
                         $newUKOTNO = date('dmy_') . $KOTNo;
                         $prepration_time = $_POST['prepration_time'][$itemId][0];
@@ -1106,16 +1106,17 @@ class Customer extends CI_Controller {
                 updateRecord('KitchenMain', array('BillDiscAmt' => $dis), array('CNo' => $CNo));
 
                 $resp1 = '';
-                $statuss = 1;
-                if($EType == 5){
-                    $check = $this->db2->select('CNo')
-                                        ->get_where('Kitchen', array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 1, 'CNo' => $CNo))
-                                        ->row_array();
-                    if(!empty($check)){
-                        $statuss = 2;
-                        updateRecord('Kitchen', array('Stat' => 2), array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 1, 'CNo' => $CNo));
-                    }
-                }
+                // $statuss = 1;
+                $statuss = 2;
+                // if($EType == 5){
+                //     $check = $this->db2->select('CNo')
+                //                         ->get_where('Kitchen', array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 1, 'CNo' => $CNo))
+                //                         ->row_array();
+                //     if(!empty($check)){
+                //         $statuss = 2;
+                //         updateRecord('Kitchen', array('Stat' => 2), array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 1, 'CNo' => $CNo));
+                //     }
+                // }
 
                 // bill based offers
 

@@ -717,9 +717,9 @@ class Cust extends CI_Model{
 						$kitchenMainObj['TableNo'] = $TableNo;
 						$kitchenMainObj['OldTableNo'] = $TableNo;
 						$kitchenMainObj['MergeNo'] = $MergeNo;
-						$kitchenMainObj['Stat'] = 0;
+						$kitchenMainObj['Stat'] = 1;
 						if($TableAcceptReqd == 0){
-							$kitchenMainObj['Stat'] = 1;
+							$kitchenMainObj['Stat'] = 2;
 						}
 						// $kitchenMainObj['Stat'] = $this->session->userdata('TableAcceptReqd');
 						// $kitchenMainObj['CnfSettle'] = ($this->session->userdata('AutoSettle') == 1)?0:1;
@@ -746,17 +746,17 @@ class Cust extends CI_Model{
 				// For EType = 5
 				if ($EType == 5) {
 					// $orderType = 7;
-					if($TableAcceptReqd == 0){
+					if($TableAcceptReqd > 0){
 					
 						$checkStat = $this->db2->query("SELECT Stat FROM KitchenMain WHERE CNo = $CNo AND EID = $EID AND BillStat = 0")->row_array();
 						if(!empty($checkStat)){
 							$stat = $checkStat['Stat'];
 						}else{
-							$stat=1;
+							$stat=2;
 						}
 						// $this->session->set_userdata('TableAcceptReqd', '0');
 					}else{
-						$stat = 0;
+						$stat = 2;
 					}
 					//$newUKOTNO = date('dmy_') . $KOTNo;
 
@@ -783,7 +783,7 @@ class Cust extends CI_Model{
 				}else{
 					//For ETpye 1 Order Type Will Be 0 and Stat = 1
 					// $OType = 0;
-					$stat = 0;
+					$stat = 1;
 				}
 
 				$newUKOTNO = date('dmy_') . $KOTNo;
@@ -1585,6 +1585,11 @@ class Cust extends CI_Model{
                 		if(!empty($edtMax)){
                 			updateRecord('Kitchen', array('EDT' => $edtMax['EDT']), array('MCNo' => $CNo, 'EID' => $EID) );
                 		}
+                	}
+
+                	if($EType == 1){
+                		$this->db2->where_not_in('Stat', array(4,6,7,9,99));
+                		$this->db2->update('Kitchen',array('Stat' => 2), array('MCNo' => $CNo, 'EID' => $EID) );
                 	}
             
                     $lastInsertBillId = insertRecord('Billing', $billingObj);
