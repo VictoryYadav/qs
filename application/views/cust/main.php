@@ -737,9 +737,8 @@ Essential Scripts
                 var MCatgId = mCatList[0].MCatgId;
                 mcatIdg = MCatgId;
               // console.log(mCatList[0].MCatgId);
-              console.log('ff'+filter.length);
+              // console.log('ff'+filter.length);
               var mcat = '';
-              var fltr = '';
               if(mCatList.length > 0){
                 $('#mcatgBlock').show();
                 for (var i = 0; i < mCatList.length; i++) {
@@ -755,8 +754,8 @@ Essential Scripts
             }
                 $('#mCategory').html(mcat);
                 // call grid view
-                console.log('mcat='+mcatIdg);
-                console.log('filter='+filterg);
+                // console.log('mcat='+mcatIdg);
+                // console.log('filter='+filterg);
                 clickMcat(mcatIdg);
                 getItemDetails(cid, mcatIdg, filterg);
             }else{
@@ -782,7 +781,7 @@ Essential Scripts
                 if(filter.length > 0){
                     $('#filterBlock').show();
                     fltr = '<label class="btn btn-b veg-btn active">\
-                        <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" onchange="filterChange(0)">ALL</label>';
+                        <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" onchange="filterChange(0)" checked="">ALL</label>';
                     for(i=0; i < filter.length; i++){
                         fltr += '<label class="btn btn-b nonveg-btn">\
                         <input type="radio" value="'+filter[i].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[i].FID+')">'+filter[i].Opt+'</label>';
