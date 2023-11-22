@@ -312,7 +312,13 @@
             <div id="download-to-pdf" class="container billView">
                 <a href="<?= base_url('customer/print/'.$billId); ?>" class="btn btn-sm btn-primary" target="_blank">Print</a>
                     <div class="text-center">
-                        <p style="font-weight: bold;"><?= $hotelName ?></p>
+                        <p style="font-weight: bold;font-size: 18px !important;margin-bottom: 1px;"><?php 
+                        if($BillName !='-'){
+                            echo $BillName;
+                        }else{
+                            echo $hotelName;
+                        }
+                         ?></p>
                         <p style="margin-bottom: unset;"><?= $address ?>, <?= $city ?>-<?= $pincode ?></p>
                         <p style="margin-bottom: unset;">Phone: <?= $phone ?></p>
                         <?php if ($gstno != '-') { ?>
@@ -331,11 +337,12 @@
                     <?php if($CustNo == 0){?>
 
                         <div class="row">
-
                             <div class="col-6"> 
-                            <!-- Name : Ashitosh salvi -->
+                            <?php if(!empty($Fullname)){
+                                echo $Fullname;
+                            }
+                             ?>
                             </div>
-
                             <div class="col-6" style=" text-align: right;"> 
                                 Cell No: <?= $CellNo; ?>
                             </div>
@@ -348,7 +355,7 @@
 
                     <div class="row">
                         <div class="col-6">
-                            <p style="margin-bottom: unset;font-weight: bold;">Bill No: <?= $billno ?></p>
+                            <p style="margin-bottom: unset;font-weight: bold;font-size: 15px !important;">Bill No: <?= $billno ?></p>
                         </div>
                         <?php if ($CustNo != "0") : ?>
                             <div class="col-6">
@@ -356,8 +363,7 @@
                             </div>
                         <?php endif; ?>
                         <div class="col-12">
-                            <p style="margin-bottom: unset;">DATE: <?= $dateOfBill ?></p>
-                            <!-- <p><?= $dateOfBill ?></p> -->
+                            <p style="margin-bottom: unset;font-size: 15px !important;">Date: <?= $dateOfBill ?></p>
                         </div>
                     </div>
                     

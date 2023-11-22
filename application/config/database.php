@@ -117,6 +117,28 @@ $query_builder = TRUE;
 	'save_queries' => TRUE
 );
 
+$db['101e'] = array(
+	'dsn'	=> '',
+	'hostname' => 'localhost',
+    'username' => 'root',
+    'password' => '',
+	'database' => '101e',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);
+
 $db['GenTableData'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
@@ -495,24 +517,24 @@ $db['99e'] = array(
 
 */
 
-$db['101e'] = array(
-	'dsn'	=> '',
-	'hostname' => '139.59.28.122',
-    'username' => 'developer',
-    'password' => 'pqowie321*',
-	'database' => '99e',
-	'dbdriver' => 'mysqli',
-	'dbprefix' => '',
-	'pconnect' => FALSE,
-	'db_debug' => (ENVIRONMENT !== 'production'),
-	'cache_on' => FALSE,
-	'cachedir' => '',
-	'char_set' => 'utf8',
-	'dbcollat' => 'utf8_general_ci',
-	'swap_pre' => '',
-	'encrypt' => FALSE,
-	'compress' => FALSE,
-	'stricton' => FALSE,
-	'failover' => array(),
-	'save_queries' => TRUE
-);
+// $db['101e'] = array(
+// 	'dsn'	=> '',
+// 	'hostname' => '139.59.28.122',
+//     'username' => 'developer',
+//     'password' => 'pqowie321*',
+// 	'database' => '99e',
+// 	'dbdriver' => 'mysqli',
+// 	'dbprefix' => '',
+// 	'pconnect' => FALSE,
+// 	'db_debug' => (ENVIRONMENT !== 'production'),
+// 	'cache_on' => FALSE,
+// 	'cachedir' => '',
+// 	'char_set' => 'utf8',
+// 	'dbcollat' => 'utf8_general_ci',
+// 	'swap_pre' => '',
+// 	'encrypt' => FALSE,
+// 	'compress' => FALSE,
+// 	'stricton' => FALSE,
+// 	'failover' => array(),
+// 	'save_queries' => TRUE
+// );

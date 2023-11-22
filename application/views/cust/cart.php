@@ -136,13 +136,13 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                     $width = '33.33%';
                 }
                 ?>
-                <button type="button" class="btn btn-sm backbtn" data-dismiss="modal" onclick="goBack()" style="width: <?= $width; ?>">Menu</button>
+                <button type="button" class="btn btn-sm backbtn" data-dismiss="modal" onclick="goBack()" style="width: <?= $width; ?>"><?php echo  $this->lang->line('menu'); ?></button>
                 <?php 
                 if($EType == 5){
                 ?>
-                <button type="button" class="btn btn-sm orderbtn" data-dismiss="modal" onclick="kotGenerate()" style="width: <?= $width; ?>">Order</button>
+                <button type="button" class="btn btn-sm orderbtn" data-dismiss="modal" onclick="kotGenerate()" style="width: <?= $width; ?>"><?php echo  $this->lang->line('order'); ?></button>
                 <?php } ?>
-                <button type="button" class="btn btn-sm paybtn" data-dismiss="modal" onclick="goBill()" style="width: <?= $width; ?>">Checkout</button>
+                <button type="button" class="btn btn-sm paybtn" data-dismiss="modal" onclick="goBill()" style="width: <?= $width; ?>"><?php echo  $this->lang->line('checkout'); ?></button>
 
             </div>
             <!-- end of btn -->

@@ -134,9 +134,14 @@ class Rcheck extends CI_Controller {
         $this->session->set_userdata('MultiLingual', $orgCheck['MultiLingual']);    
         $this->session->set_userdata('MultiPayment', $orgCheck['MultiPayment']);
         $this->session->set_userdata('pymtENV', $orgCheck['pymtENV']); 
-               
+        $this->session->set_userdata('site_lang', 'english');
 
-        redirect(base_url('customer'));
+        if($orgCheck['CatgID'] < 10){
+            redirect(base_url('customer'));
+        }else{
+            // multi restaurant
+            redirect(base_url('customer/outlets'));
+        }
 	}
 
     public function page_not_found(){

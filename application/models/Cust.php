@@ -17,7 +17,18 @@ class Cust extends CI_Model{
 	}
 
 	public function getCuisineList(){
-		return $this->db2->select('c.CID, c.Name, c.Name2, c.Name3, c.Name4')
+		$site_lang = $this->session->userdata('site_lang');
+		$name5 = '';
+
+		if($site_lang == 'english'){
+			$name5 = ',c.Name as Name';
+		}else{
+			$name5 = ',c.Name2 as Name';
+		}
+		// sum(case when rs.TransType < 10 Then rsd.Qty ELSE 0 end) as sell
+		// c.CID, c.Name, c.Name2, c.Name3, c.Name4 $name5
+		$select_sql = "c.CID,c.Name2, c.Name3, c.Name4 $name5";
+		return $this->db2->select($select_sql)
 						->order_by('ec.Rank', 'ASC')
 						->join('Cuisines c', 'c.CID = ec.CID', 'inner')
 						->get_where('EatCuisine ec', array('ec.EID' => $this->EID,'ec.Stat' => 0))
@@ -1367,6 +1378,17 @@ class Cust extends CI_Model{
 
 	public function getOffers(){
 		return $this->db2->query('SELECT c.SchNm, c.SchCd, cod.SDetCd, cod.SchDesc, c.PromoCode, c.SchTyp, c.Rank, cod.Qty as FreeQty, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.SchImg, c1.Name, mi.ItemNm,mi.ItemId, m.MCatgNm, ip.Name as portionName from CustOffersDet as cod join CustOffers as c on c.SchCd=cod.SchCd left outer join Cuisines as c1 on cod.CID=c1.CID left outer join MenuCatg as m on cod.MCatgId = m.MCatgId left outer join ItemPortions as ip on cod.IPCd = ip.IPCd left outer join ItemTypes as i on cod.ItemTyp = i.ItmTyp left outer join MenuItem as mi on mi.ItemId = cod.ItemId where (IF(c.ToTime < c.FrmTime, (CURRENT_TIME() >= c.FrmTime OR CURRENT_TIME() <= c.ToTime) ,(CURRENT_TIME() >= c.FrmTime AND CURRENT_TIME() <= c.ToTime)) OR IF(c.AltToTime < c.AltFrmTime, (CURRENT_TIME() >= c.AltFrmTime OR CURRENT_TIME() <= c.AltToTime) ,(CURRENT_TIME() >=c.AltFrmTime AND CURRENT_TIME() <= c.AltToTime))) and ((DAYOFWEEK(CURDATE()) >= c.FrmDayNo and DAYOFWEEK(CURDATE()) <= c.ToDayNo)  or DayNo = 0) and (DATE(CURDATE()) >= c.FrmDt and DATE(CURDATE()) <= c.ToDt) group by c.schcd, cod.sDetCd order by c.Rank, cod.Rank')->result_array();
+	}
+
+	public function getEntertainmentList(){
+		return $this->db2->select('ee.Dayno, DAYNAME(ee.Dayno) as DayName, e.Name, ee.performBy,ee.PerImg')
+						->order_by('ee.Dayno', 'ASC')
+                        ->join('Entertainment e', 'e.EntId = ee.EntId', 'inner')
+                        ->get_where('Eat_Ent ee', array('ee.Stat' => 0,
+                        				 'ee.EID' => authuser()->EID,
+                        				 'ee.Dayno >=' => date('Y-m-d')
+                        				))
+                        ->result_array();
 	}
 
 	public function checkRecommendation($itemId){

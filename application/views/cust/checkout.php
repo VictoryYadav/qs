@@ -173,7 +173,7 @@
 
                 <div class="row paybl" style="margin-left: 0px;margin-right: 0px;">
                     <div class="col-8">
-                        <label class="bill-ord-amt" style="margin-bottom: 7px;">Payable</label>
+                        <label class="bill-ord-amt" style="margin-bottom: 7px;"><?php echo  $this->lang->line('payable'); ?></label>
                     </div>
                     <div class="col-4">
                         <input type="hidden" name="payable" id="payableAmt">
@@ -186,11 +186,11 @@
 
                 <div class="row" style="margin: 0px;">
                     <div class="col-12 text-center" width="100%;">
-                        <a href="<?= base_url('customer'); ?>" class="btn btn-sm backbtn">Menu</a>
+                        <a href="<?= base_url('customer'); ?>" class="btn btn-sm backbtn"><?php echo  $this->lang->line('menu'); ?></a>
                         <?php if($this->session->userdata('BillMergeOpt') > 0){ ?>
-                        <a href="<?= base_url('customer/merge_order/'.$TableNo); ?>" class="btn orderbtn btn-sm">Merge Orders</a>
+                        <a href="<?= base_url('customer/merge_order/'.$TableNo); ?>" class="btn orderbtn btn-sm"><?php echo  $this->lang->line('mergeorder'); ?></a>
                         <?php } ?>
-                        <button class="btn btn-sm paybtn" onclick="payNow()"> Pay Now</button>
+                        <button class="btn btn-sm paybtn" onclick="payNow()"><?php echo  $this->lang->line('payNow'); ?></button>
                         
                         <?php if($this->session->flashdata('error')): ?>
                             <div class="">

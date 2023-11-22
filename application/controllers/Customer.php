@@ -22,6 +22,30 @@ class Customer extends CI_Controller {
         $this->load->model('Cust', 'cust');
 	}
 
+    function switchLang() {
+        // https://www.codexworld.com/multi-language-implementation-in-codeigniter/
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+            extract($_POST);
+            $language = ($language != "") ? $language : "english";
+            $this->session->set_userdata('site_lang', $language);
+            $response = $language;
+            
+            // redirect($_SERVER['HTTP_REFERER']);
+           
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        
+    }
+
     public function index1(){
 
         // print_r(base64_decode('ZT01MSZjPTAmdD0yMiZvPTA'));
@@ -85,9 +109,26 @@ class Customer extends CI_Controller {
         $this->load->view('cust/index', $data);
     }
 
+    public function outlets(){
+
+        $data['title'] = $this->lang->line('multiOutlets');
+        
+        $data['outlets'] = $this->db2->select('EID, Name, Stall, QRLink')
+                                    ->order_by('e.Stall', 'ASC')
+                                    ->get_where('Eatary e', array('e.CatgId >' => 10, 'Stat' => 0,'dbEID' => authuser()->EID))
+                                    ->result_array();
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $this->load->view('cust/multi_outlets', $data);
+    }
+
     public function index(){
 
         $data['cuisinList'] = $this->cust->getCuisineList();
+        // echo "<pre>";
+        // print_r($data);
+        // die;
         $this->session->set_userdata('cuisine', $data['cuisinList'][0]['CID']);
         $cid = $data['cuisinList'][0]['CID'];
 
@@ -120,7 +161,7 @@ class Customer extends CI_Controller {
         }
 
         // $data['title'] = 'Item Details';
-        $data['title'] = $this->lang->line('welcome_message');
+        $data['title'] = $this->lang->line('main');
         
         $data['language'] = languageArray();
         $data['EType'] = $this->session->userdata('EType');
@@ -170,9 +211,6 @@ class Customer extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
             $status = 'success';
-            // echo "<pre>";
-            // print_r($_POST);
-            // die;
             extract($_POST);
             $res = $this->cust->getItemDetailLists($cid, $mcatId, $filter);  
                     
@@ -354,7 +392,7 @@ class Customer extends CI_Controller {
         $data['EID'] = $EID;
         $data['EType'] = $EType;
 
-        $data['title'] = 'Order Details';
+        $data['title'] = $this->lang->line('cart');
         $data['language'] = languageArray();
 
         $this->load->view('cust/cart', $data);
@@ -598,10 +636,7 @@ class Customer extends CI_Controller {
         if($this->input->method(true)=='POST'){
             $emailMobile = $_POST['emailMobile'];
             $check = $this->db2->select('token')
-                            ->group_start() 
-                                    ->where('MobileNo', $emailMobile)
-                                    ->or_where('email',$emailMobile)
-                            ->group_end()
+                            ->where('MobileNo', $emailMobile)
                             ->get('Users')
                             ->row_array();
             if(!empty($check)){
@@ -621,20 +656,17 @@ class Customer extends CI_Controller {
              die;
         }
 
-        $data['title'] = 'Log In';
+        $data['title'] = $this->lang->line('log_in');
         $data['language'] = languageArray();
         $this->load->view('cust/login', $data);
     }
 
     private function genOTPLogin($emailMobile){
         $otp = rand(9999,1000);
-        $this->session->set_userdata('cust_otp', $otp);
-        // $this->session->set_userdata('cust_otp', '1212');
+        // $this->session->set_userdata('cust_otp', $otp);
+        $this->session->set_userdata('cust_otp', '1212');
         $check = $this->db2->select('token, CustId')
-                            ->group_start() 
-                                    ->where('MobileNo', $emailMobile)
-                                    ->or_where('email',$emailMobile)
-                            ->group_end()
+                            ->where('MobileNo', $emailMobile)
                             ->get('Users')
                             ->row_array();
         if(!empty($check)){
@@ -651,7 +683,7 @@ class Customer extends CI_Controller {
                 firebaseNotification($check['token'], $message);
             }else{
                 if($emailMobile){
-                    sendSMS($emailMobile, $otp);
+                    // sendSMS($emailMobile, $otp);
                 }
             }
         }
@@ -669,10 +701,7 @@ class Customer extends CI_Controller {
                 $ses_data = $this->session->userdata('emailMobile');
 
                 $check = $this->db2->select('*')
-                                    ->group_start() 
-                                        ->where('MobileNo',  $ses_data)
-                                        ->or_where('email', $ses_data)
-                                    ->group_end()
+                                    ->where('MobileNo',  $ses_data)
                                     ->get_where('Users')
                                     ->row_array();
 
@@ -775,9 +804,17 @@ class Customer extends CI_Controller {
             // echo "<pre>";
             // print_r($_SESSION);
             // die;
-            $otp = $this->generateOTP($_POST['MobileNo'], $_POST['email']);
-            $status = 'success';
-            $response = "Your otp is $otp";
+            $checkUser = $this->db2->select('token')
+                            ->where('MobileNo', $_POST['MobileNo'])
+                            ->get('Users')
+                            ->row_array();
+            if(!empty($checkUser)){
+                $response = "User Already Exists!";
+            }else{
+                $otp = $this->generateOTP($_POST['MobileNo'], $_POST['email']);
+                $status = 'success';
+                $response = "Your otp is $otp";
+            }
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -787,7 +824,7 @@ class Customer extends CI_Controller {
              die;
         }
 
-        $data['title'] = 'Signup';
+        $data['title'] = $this->lang->line('signup');
         $data['language'] = languageArray();
         $this->load->view('cust/signup', $data);
     }
@@ -795,49 +832,32 @@ class Customer extends CI_Controller {
     private function generateOTP($mobile, $email){
         $otp = rand(9999,1000);
         $this->session->set_userdata('cust_otp', $otp);
-        $check = $this->db2->select('token')
-                            ->group_start() 
-                                    ->where('MobileNo', $mobile)
-                                    ->or_where('email',$email)
-                            ->group_end()
-                            ->get('Users')
-                            ->row_array();
-        if(!empty($check)){
-            $msg = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
-            $message = array(
-              'body'   => $msg,
-              'title'   => 'Your OTP',
-              'vibrate' => 1,
-              'sound'   => 1
-            );
-            firebaseNotification($check['token'], $message);
-        }else{
+        
             $genTblDb = $this->load->database('GenTableData', TRUE);
             $chckGen = $genTblDb->select('token')
-                                ->group_start() 
-                                    ->where('MobileNo', $mobile)
-                                    ->or_where('email',$email)
-                                ->group_end()
-                                ->get('AllUsers')
+                                ->get_where('AllUsers', array('MobileNo' => $mobile))
                                 ->row_array();
 
             if(!empty($chckGen)){
-                $msg = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
-                $message = array(
-                  'body'   => $msg,
-                  'title'   => 'Your OTP',
-                  'vibrate' => 1,
-                  'sound'   => 1
-                );
-                firebaseNotification($chckGen['token'], $message);
+                if(!empty($chckGen['token'])){
+                    $msg = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+                    $message = array(
+                    'body'   => $msg,
+                    'title'   => 'Your OTP',
+                    'vibrate' => 1,
+                    'sound'   => 1
+                    );
+                    firebaseNotification($chckGen['token'], $message);
+                }else{
+                    sendSMS($mobile, $otp);
+                }
             }else{
                 if($mobile){
                     sendSMS($mobile, $otp);
                 }
-                return $otp;
-            // send otp 
             }
-        }
+        
+            return $otp;
     }
 
     public function verifyOTP(){
@@ -852,58 +872,50 @@ class Customer extends CI_Controller {
 
                 $this->session->set_userdata('CellNo', $ses_data['MobileNo']);
 
-                $check = $this->db2->select('*')
-                                    ->group_start() 
-                                        ->where('MobileNo',  $ses_data['MobileNo'])
-                                        ->or_where('email', $ses_data['email'])
-                                    ->group_end()
-                                    ->get_where('Users')
-                                    ->row_array();
-
                 $EType = $this->session->userdata('EType');
                 $EID = authuser()->EID;
                 $TableNo = authuser()->TableNo;
+                $CustId = 0;
+                $genTblDb = $this->load->database('GenTableData', TRUE);
 
-                if(!empty($check)){
-                    $this->session->set_userdata('CustId', $check['CustId']);
-                    $CustId = $check['CustId'];
+                $gen_check = $genTblDb->select('*')
+                                        ->where('MobileNo',  $ses_data['MobileNo'])
+                                        ->get('AllUsers')
+                                        ->row_array();
+
+                // $genTblDb->select('*')
+                //                         ->group_start() 
+                //                             ->where('MobileNo',  $ses_data['MobileNo'])
+                //                             ->or_where('email', $ses_data['email'])
+                //                         ->group_end()
+                //                         ->get('AllUsers')
+                //                         ->row_array();
+                if(!empty($gen_check)){
+                    $this->session->set_userdata('CustId', $gen_check['CustId']);
+
+                    $CustId = $gen_check['CustId'];
+                    
+                    $data1['CustId']    = $gen_check['CustId'];
+                    $data1['FName']     = $gen_check['FName'];
+                    $data1['LName']     = $gen_check['LName'];
+                    // $data1['Email']     = $gen_check['Email'];
+                    $data1['MobileNo']  = $gen_check['MobileNo'];
+                    $data1['DOB']       = $gen_check['DOB'];
+                    $data1['Gender']    = $gen_check['Gender'];
+                    $data1['otp']    = $otp;
+                    insertRecord('Users',$data1);    
                 }else{
-                    $genTblDb = $this->load->database('GenTableData', TRUE);
-
-                    $gen_check = $genTblDb->select('*')
-                                            ->group_start() 
-                                                ->where('MobileNo',  $ses_data['MobileNo'])
-                                                ->or_where('email', $ses_data['email'])
-                                            ->group_end()
-                                            ->get('AllUsers')
-                                            ->row_array();
-                    if(!empty($gen_check)){
-                        $this->session->set_userdata('CustId', $gen_check['CustId']);
-
-                        $CustId = $gen_check['CustId'];
-                        
-                        $data1['CustId']    = $gen_check['CustId'];
-                        $data1['FName']     = $gen_check['FName'];
-                        $data1['LName']     = $gen_check['LName'];
-                        $data1['Email']     = $gen_check['Email'];
-                        $data1['MobileNo']  = $gen_check['MobileNo'];
-                        $data1['DOB']       = $gen_check['DOB'];
-                        $data1['Gender']    = $gen_check['Gender'];
-                        $data1['otp']    = $otp;
-                        insertRecord('Users',$data1);    
-                    }else{
-                        $data = $ses_data;
-                        $genTblDb->insert('AllUsers', $data);
-                        $CustId = $genTblDb->insert_id();
-                        $this->session->set_userdata('CustId', $CustId);
-                        $data['CustId'] = $CustId;
-                        $data['otp']    = $otp;
-                        insertRecord('Users',$data);
-                    }
+                    $data = $ses_data;
+                    $genTblDb->insert('AllUsers', $data);
+                    $CustId = $genTblDb->insert_id();
+                    $this->session->set_userdata('CustId', $CustId);
+                    $data['CustId'] = $CustId;
+                    $data['otp']    = $otp;
+                    insertRecord('Users',$data);
                 }
-
+                
                 if(!empty($CustId) && $CustId > 0){
-                    $res = $this->db2->query("SELECT * from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = '$TableNo' AND timediff(Now(),LstModDt) < ('03:00:00') order by CNo desc limit 1")->row_array();
+                    $res = $this->db2->query("SELECT CNo from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = '$TableNo' AND timediff(Now(),LstModDt) < ('03:00:00') order by CNo desc limit 1")->row_array();
                     if(!empty($res)){
                         $this->session->set_userdata('CNo', $res['CNo']);
                     }
@@ -1307,7 +1319,7 @@ class Customer extends CI_Controller {
             redirect(base_url('customer/cart'));
         }
 
-        $data['title'] = 'Checkout';
+        $data['title'] = $this->lang->line('checkout');
         $data['language'] = languageArray();
 
         $this->load->view('cust/checkout', $data);
@@ -1658,7 +1670,7 @@ class Customer extends CI_Controller {
 
     public function bill($billId){
 
-        $data['title'] = 'Billing';
+        $data['title'] = $this->lang->line('bill');
         $data['language'] = languageArray();
         $data['billId'] = $billId;
 
@@ -1686,6 +1698,8 @@ class Customer extends CI_Controller {
             $data['taxDataArray'] = $res['taxDataArray'];
 
             $data['hotelName'] = $billData[0]['Name'];
+            $data['BillName'] = $billData[0]['BillName'];
+            $data['Fullname'] = $billData[0]['FName'].' '.$billData[0]['LName'];
             $data['phone'] = $billData[0]['PhoneNos'];
             $data['gstno'] = $billData[0]['GSTno'];
             $data['fssaino'] = $billData[0]['FSSAINo'];
@@ -1722,6 +1736,7 @@ class Customer extends CI_Controller {
 
     public function print($billId){
 
+        $data['title'] = $this->lang->line('print');
         $data['billId'] = $billId;
 
         $EID = authuser()->EID;
@@ -1788,7 +1803,7 @@ class Customer extends CI_Controller {
         // echo "<pre>";
         // print_r($_SESSION);
         // die;
-        $data['title'] = 'Merge Order';
+        $data['title'] = $this->lang->line('mergeorder');
         $data['language'] = languageArray();
         $data['orders'] = $this->cust->getOrderDetailsByTableNo($TableNo);
         $data['MergeNo'] = $TableNo;
@@ -1908,11 +1923,10 @@ class Customer extends CI_Controller {
         $data['MCNo'] = $CNo;
         $data['tot_sgst'] = $_POST['tot_sgst'];
         
-        $data['title'] = 'Split Bill';
+        $data['title'] = $this->lang->line('splitbill');
         $data['language'] = languageArray();
         $data['MergeNo'] = $MergeNo;
         if($_POST['btnName'] == 'splitBill'){
-            $data['title'] = 'Split Bill';
             $this->load->view('cust/split_bill', $data);
         }else if($_POST['btnName'] == 'payNow'){
             
@@ -2081,7 +2095,7 @@ class Customer extends CI_Controller {
 
         }
 
-        $data['title'] = 'Rating';
+        $data['title'] = $this->lang->line('rating');
         $data['language'] = languageArray();
         $data['billId'] = $billId;
 
@@ -2162,7 +2176,7 @@ class Customer extends CI_Controller {
     }
 
     public function share_rating($billId, $MCNo){
-        $data['title'] = 'Share Rating';
+        $data['title'] = $this->lang->line('sharerating');
         $data['language'] = languageArray();
         $data['billId'] = $billId;
         $data['shareDetails'] = $this->cust->getShareDetails($billId, $MCNo);
@@ -2171,6 +2185,7 @@ class Customer extends CI_Controller {
 
     public function transactions(){
 
+        $data['title'] = $this->lang->line('transactions');
         $data['country'] = 0;
         $data['city'] = 0;
         if($this->input->method(true)=='POST'){
@@ -2182,7 +2197,6 @@ class Customer extends CI_Controller {
         }
 
         $CustId = $this->session->userdata('CustId');
-        $data['title'] = 'Transactions';
         $genTblDb = $this->load->database('GenTableData', TRUE);
         // $data['custPymt'] = $genTblDb->query("SELECT date(cp.BillDt) as billdt , cp.BillId, cp.BillNo, cp.EID , cp.PaidAmt , cp.CustId , ed.Name , ed.DBName, ed.DBPasswd FROM `CustPymts` cp , `EIDDet` ed where cp.CustId = $CustId and ed.EID = cp.EID ORDER BY `BNo`  DESC")->result_array();
         if(!empty($data['country'])){
@@ -2257,7 +2271,7 @@ class Customer extends CI_Controller {
              die;
         }
 
-        $data['title'] = 'Reserve Table';
+        $data['title'] = $this->lang->line('reservetable');
         $data['language'] = languageArray();
         // echo "<pre>";
         // print_r($data);
@@ -2281,7 +2295,7 @@ class Customer extends CI_Controller {
 
 
     public function contact(){
-        $data['title'] = 'Contact Us';
+        $data['title'] = $this->lang->line('contact');
         $data['language'] = languageArray();
         if($this->input->method(true)=='POST'){
             $feedback = $_POST;
@@ -2295,21 +2309,21 @@ class Customer extends CI_Controller {
     }
 
     public function privacy_policy(){
-       $data['title'] = 'Privacy Policy';
+       $data['title'] = $this->lang->line('PrivacyPolicy');
         $data['language'] = languageArray();
 
         $this->load->view('privacyPolicy', $data); 
     }
 
     public function terms_conditions(){
-       $data['title'] = 'Terms & Conditions';
+       $data['title'] = $this->lang->line('TermsConditions');
         $data['language'] = languageArray();
 
         $this->load->view('terms_conditions', $data); 
     }
 
     public function cookie_policy(){
-       $data['title'] = 'Cookie Policy';
+       $data['title'] = $this->lang->line('Cookie Policy');
        $data['language'] = languageArray();
 
         $this->load->view('CookiePolicy', $data); 
@@ -2354,7 +2368,7 @@ class Customer extends CI_Controller {
     }
 
     public function pay($BillId, $MCNo){
-        $data['title'] = 'Pay Now';
+        $data['title'] = $this->lang->line('payNow');
         $data['language'] = languageArray();
         $data["modes"] = $this->cust->getPaymentModes();
         $data['payable'] = $this->session->userdata('payable');
@@ -2600,7 +2614,7 @@ class Customer extends CI_Controller {
     }
 
     public function profile(){
-        $data['title'] = 'Profile';
+        $data['title'] = $this->lang->line('profile');
         $data['language'] = languageArray();
         $CustId = $this->session->userdata('CustId');
 
@@ -2627,7 +2641,7 @@ class Customer extends CI_Controller {
     }
 
     public function current_order(){
-        $data['title'] = 'Current Order / Bill';
+        $data['title'] = $this->lang->line('currentorder');
         $data['language'] = languageArray();
         $CustId = $this->session->userdata('CustId');
 

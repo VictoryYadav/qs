@@ -16,13 +16,18 @@ $folder = 'e'.authuser()->EID;
                     </li>
                     <li class="list-inline-item">
                         <a data-toggle="modal" data-target="#item-list-modal">
-                            <img src="<?= base_url() ?>assets/img/search.png" alt="Quick Service" style="width: 30px;height: 28px;" >
+                            <img src="<?= base_url() ?>assets/img/search.png" alt="Eat Out" style="width: 30px;height: 28px;" >
                         </a>
                     </li>
                 </ul>
             </div>
             <div class="col-md-8 col-sm-8 col-8 text-right">
                 <ul class="list-inline product-meta">
+                    <li class="list-inline-item">
+                        <a href="<?= base_url('customer/outlets'); ?>">
+                            <i class="fa fa-home" aria-hidden="true" style="color:blue;font-size: 19px;"></i>
+                        </a>
+                    </li>
                     <?php if($this->session->userdata('CustAssist') == 1){ ?>
                     <li class="list-inline-item">
                         <a onclick="call_help()" id="yellow_bell">
@@ -37,8 +42,9 @@ $folder = 'e'.authuser()->EID;
                         </a>
                         <!-- Dropdown list -->
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#" onclick="set_lang('en')">English</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="set_lang('hi')">Hindi</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="set_lang('english')">English</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="set_lang('hindi')">Hindi</a></li>
+                                <!-- <li><a class="dropdown-item" href="#" onclick="set_lang('china')">Chinese</a></li> -->
                             </ul>
                     </li>
                     <?php } ?>
@@ -55,7 +61,16 @@ $folder = 'e'.authuser()->EID;
 </section>
 
 <script>
-    function set_lang(lang){
-        console.log(lang);
+    function set_lang(language){
+        console.log(language);
+
+        $.post('<?= base_url('customer/switchLang') ?>',{language:language},function(res){
+            if(res.status == 'success'){
+              // alert(res.response);
+            }else{
+              alert(res.response);
+            }
+              location.reload();
+        });
     }
 </script>

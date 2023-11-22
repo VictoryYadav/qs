@@ -289,7 +289,7 @@
                             <?php endif; ?>
                             <?php if ($tipamt > 0) : ?>
                                 <tr>
-                                    <th>TIP Amount</th>
+                                    <td>TIP Amount</td>
                                     <td><?= $tipamt ?></td>
                                 </tr>
                             <?php endif; ?>

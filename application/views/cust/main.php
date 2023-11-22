@@ -469,9 +469,9 @@
         </div> -->
 
         <div class="modal-footer" style="bottom: 0px;background-color: #ffffff;padding: 3px;padding-left: 15px;right: 0px;bottom: 0px;left: 0px;z-index: 1050;outline: 0px;position: fixed; width: 100%;">
-            <button type="button" class="btn col-5 modal-back" data-dismiss="modal" style="padding: 5px 5px 5px; font-size: 12px;"><?= $language['back']?></button>
+            <button type="button" class="btn col-5 modal-back" data-dismiss="modal" style="padding: 5px 5px 5px; font-size: 12px;"><?php echo  $this->lang->line('back'); ?></button>
             <label class="col-2" style="padding: 3px;height: 25px;text-align: center;"><b id="totalAmount">0</b></label>
-            <button type="button" class="btn col-5 modal-confirm" data-dismiss="modal" id="confirm-order" tax_type="" tbltyp="" style="background: #ffc245;padding: 5px 5px 5px; font-size: 12px;"><?= $language['add_item']?></button>
+            <button type="button" class="btn col-5 modal-confirm" data-dismiss="modal" id="confirm-order" tax_type="" tbltyp="" style="background: #ffc245;padding: 5px 5px 5px; font-size: 12px;"><?php echo  $this->lang->line('addItem'); ?></button>
         </div>
     </div>
 

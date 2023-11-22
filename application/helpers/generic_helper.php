@@ -251,6 +251,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $CI->Cust->getOffers();
 	}
 
+	function allEntertainments(){
+		$CI = & get_instance();
+		$CI->load->model('Cust');
+		return $CI->Cust->getEntertainmentList();
+	}
+
 	// sendgrid email
 	function send_email($to, $subject, $msg){
 

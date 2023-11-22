@@ -3,6 +3,7 @@
 body{
     font-size: 13px;
 }
+
 </style>
 
 </head>
@@ -14,22 +15,13 @@ body{
     <!-- Header Section End -->
 
     <section class="common-section p-2 dashboard-container">
-        <div class="container">
+        <div class="container" id="showBlock">
 
             <div class="row">
                 <div class="col-md-2 col-6">
-                    <label for="">Payble: </label>
+                    <label for=""><?php echo  $this->lang->line('payable'); ?>: </label>
                     <b id="payable"><?= round($payable); ?></b>
                 </div>
-                <!-- <div class="col-md-2">
-                    <label for="">Gross Amount : </label>
-                    <b id="grossAmt">0</b>
-                </div>
-
-                <div class="col-md-2">
-                    <label for="">Tip Amount : </label>
-                    <b id="tipAmt">0</b>
-                </div> -->
                 
                 <?php if($this->session->userdata('MultiPayment') > 0){ ?>
                 <div class="col-md-2 col-6">
@@ -78,7 +70,7 @@ body{
                                     </td>
                                     
                                     <td>
-                                        <button class="btn btn-sm btn-success" id="go" onclick="goPay(0)" disabled="true">Pay</button>
+                                        <button class="btn btn-sm btn-success" id="go" onclick="goPay(0)" disabled="true"><?php echo  $this->lang->line('click'); ?></button>
                                     </td>
                                     <td>
                                         <span id="payStatus"><i class="fa fa-check" style="color:green;"></i></span>
@@ -106,7 +98,7 @@ body{
                                     </td>
                                     
                                     <td>
-                                        <button class="btn btn-sm btn-success btngo" id="go1" onclick="goPay(1)">Go</button>
+                                        <button class="btn btn-sm btn-success btngo" id="go1" onclick="goPay(1)"><?php echo  $this->lang->line('click'); ?></button>
                                     </td>
                                     <td>
                                         <span id="payStatus1"><i class="fa fa-spinner" style="color:orange;"></i></span>
@@ -122,10 +114,10 @@ body{
 
                             <tr>
                                 <td colspan="1">
-                                    Total: <span id="grandtotal"><?= round($payable); ?></span>
+                                    <?php echo  $this->lang->line('total'); ?>: <span id="grandtotal"><?= round($payable); ?></span>
                                 </td>
                                 <td colspan="2">
-                                    Balance: <b><span id="balance">0</span></b>
+                                    <?php echo  $this->lang->line('balance'); ?>: <b><span id="balance">0</span></b>
                                 </td>
                             </tr>
                         </tfoot>
@@ -133,6 +125,9 @@ body{
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="container text-center" id="loadBlock" style="display: none;">
+            <img src="<?= base_url('assets/images/loader.gif'); ?>" alt="Eat Out">
         </div>
     </section>
 
@@ -258,7 +253,9 @@ function goPay(val){
             if(res.status == 'success'){
               // alert(res.response);
               payNo = res.response;
-
+              // for loading
+                $('#showBlock').hide();
+                $('#loadBlock').show();
               setInterval(function() {
                     checkStatus(BillId,payNo, val);
                 }, 20000);
@@ -297,9 +294,13 @@ function checkStatus(billId,payNo, serialNo){
           $('#payStatus'+serialNo).html('<i class="fa fa-check" style="color:green;"></i>');    
           $('#go'+serialNo).attr("disabled",true);  
           $('#delBtn'+serialNo).attr("disabled",true); 
+          $('#loadBlock').hide();
+          $('#showBlock').show();
           location.reload();     
         }else{
           $('#payStatus'+serialNo).html('<i class="fa fa-spinner" style="color:orange;">'); 
+          $('#showBlock').hide();
+          $('#loadBlock').show();
           // $('#payStatus'+serialNo).html(res.response);  
         }
     });
