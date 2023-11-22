@@ -3392,7 +3392,15 @@ class Restaurant extends CI_Controller {
                 $status = 'success';
                 
             }else if($pay['oType']==7){
-                updateRecord('BillPayments', array('PymtType' => $pay['PymtType']), array('EID' => $pay['EID'],'BillId' => $pay['BillId']));
+                
+                $checkBP = $this->db2->get_where('BillPayments', array('EID' => $pay['EID'],'BillId' => $pay['BillId']))->row_array();
+                if(!empty($checkBP)){
+                    updateRecord('BillPayments', array('PymtType' => $pay['PymtType']), array('EID' => $pay['EID'],'BillId' => $pay['BillId']));
+                }else{
+                    unset($pay['oType']);
+                    $payNo = insertRecord('BillPayments', $pay);
+                }
+
                 $status = 'success';
             }
             

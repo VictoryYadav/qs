@@ -2583,7 +2583,7 @@ function cashCollect(custId, MCNo, mergeNo, oType){
                             <input type="hidden" name="MergeNo" value="'+data.MergeNo+'"/>\
                             <input type="hidden" name="CellNo" value="'+data.CellNo+'"/>\
                             <input type="hidden" name="TotBillAmt" value="'+data.PaidAmt+'"/>\
-                            <input type="text" name="PaidAmt" style="width:70px;" required value="0" id="cashAmtR" />\
+                            <input type="text" name="PaidAmt" style="width:70px;" required value="0" id="cashAmtR" value="'+data.PaidAmt+'"/>\
                             </td>\
                         <td>\
                             <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success">\

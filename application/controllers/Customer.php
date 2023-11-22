@@ -663,8 +663,8 @@ class Customer extends CI_Controller {
 
     private function genOTPLogin($emailMobile){
         $otp = rand(9999,1000);
-        // $this->session->set_userdata('cust_otp', $otp);
-        $this->session->set_userdata('cust_otp', '1212');
+        $this->session->set_userdata('cust_otp', $otp);
+        // $this->session->set_userdata('cust_otp', '1212');
         $check = $this->db2->select('token, CustId')
                             ->where('MobileNo', $emailMobile)
                             ->get('Users')
@@ -683,7 +683,7 @@ class Customer extends CI_Controller {
                 firebaseNotification($check['token'], $message);
             }else{
                 if($emailMobile){
-                    // sendSMS($emailMobile, $otp);
+                    sendSMS($emailMobile, $otp);
                 }
             }
         }
