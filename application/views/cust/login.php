@@ -52,7 +52,7 @@
     <!-- end Js Plugins -->
 
     <!-- Modal -->
-<div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index: 1000">
+<div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -78,7 +78,8 @@
   var mobile = ''; 
     $('#loginForm').on('submit', function(e){
         e.preventDefault();
-
+        $('#welcomeModal').modal('show');
+        return false;
         var data = $(this).serializeArray();
         // console.log(data[0].value);
         mobile = data[0].value;
@@ -103,7 +104,7 @@
             if(res.status == 'success'){
 
                 if(res.response.visit > 0){
-                  window.location = '<?= base_url('customer'); ?>';
+                  
                     $('#labelName').html(res.response.name);
                     $('#lableVisit').html(res.response.visit);
                     $('#lableRating').html(res.response.rating);
@@ -122,8 +123,8 @@
    }
 
    function resendOTP(){
-
-      $.post('<?= base_url('customer/resendOTP') ?>',{mobile:mobile},function(res){
+    var page = 'Resend Login';
+      $.post('<?= base_url('customer/resendOTP') ?>',{mobile:mobile,page:page},function(res){
             if(res.status == 'success'){
                 $('#errorMsg').html(res.response);
             }else{

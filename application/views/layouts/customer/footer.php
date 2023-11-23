@@ -9,13 +9,13 @@
   justify-content: center;
 }
 
-.modal.fade .modal-dialog {
+./*modal.fade .modal-dialog {
   transform: translate(0, -100%);
 }
 
 .modal.in .modal-dialog {
   transform: translate(0, 0);
-}
+}*/
 /* end modal center*/
 </style>
 <div class="navbar menu-footer fixed-bottom" style="background: #dee2e6;">

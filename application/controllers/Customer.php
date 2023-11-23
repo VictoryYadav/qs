@@ -921,10 +921,10 @@ class Customer extends CI_Controller {
         if($this->input->method(true)=='POST'){
             $status = "success";
             $res = 'OTP Not Send.';
-            
+
             extract($_POST);
             if($mobile){
-                $otp  = generateOTP($mobile, 'resend');
+                $otp  = generateOTP($mobile, $page);
                 $res = 'Resend OTP Successfully.';
             }
 

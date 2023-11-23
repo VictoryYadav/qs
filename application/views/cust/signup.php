@@ -119,8 +119,8 @@
     });
 
    function resendOTP(){
-
-      $.post('<?= base_url('customer/resendOTP') ?>',{mobile:mobile},function(res){
+    var page = 'Resend Signup';
+      $.post('<?= base_url('customer/resendOTP') ?>',{mobile:mobile,page:page},function(res){
             if(res.status == 'success'){
                 $('#errorMsg').html(res.response);
             }else{
