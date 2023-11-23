@@ -1991,7 +1991,11 @@ class Customer extends CI_Controller {
             $RatingDetQuery = $this->db2->query("INSERT INTO `RatingDet`(RCd,ItemId,ItemRtng) VALUES $queryString ");
 
             $ravg = $totRtng / $itemCount;
-            updateRecord('Ratings',array('avgBillRtng' => round($ravg),2),array('RCd' => $RCd,'EID' => $EID,'BillID' => $billid));
+            updateRecord('Ratings',
+                        array('avgBillRtng' => round($ravg,2)
+                             ),
+                array('RCd' => $RCd,'EID' => $EID,'BillID' => $billid)
+                        );
 
             $genTblDb = $this->load->database('GenTableData', TRUE);
             // gen db
