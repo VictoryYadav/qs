@@ -35,6 +35,7 @@
                             <span class="text-danger" id="errorMsg" style="font-size: 9px;"></span>
                         </div>
                         <input type="submit" class="btn btn-sm btn-success" value="Verify OTP">
+                        <button class="btn btn-sm btn-warning" type="button" onclick="resendOTP()">Resend OTP</button>
                     </div>
                 </div>
             </form>
@@ -51,7 +52,7 @@
     <!-- end Js Plugins -->
 
     <!-- Modal -->
-<div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index: 1000">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -74,10 +75,14 @@
 </body>
 
 <script type="text/javascript">
+  var mobile = ''; 
     $('#loginForm').on('submit', function(e){
         e.preventDefault();
 
         var data = $(this).serializeArray();
+        // console.log(data[0].value);
+        mobile = data[0].value;
+
         $.post('<?= base_url('customer/login') ?>',data,function(res){
             if(res.status == 'success'){
               $('#otpForm').show();
@@ -96,7 +101,9 @@
         var data = $(this).serializeArray();
         $.post('<?= base_url('customer/loginVerify') ?>',data,function(res){
             if(res.status == 'success'){
+
                 if(res.response.visit > 0){
+                  window.location = '<?= base_url('customer'); ?>';
                     $('#labelName').html(res.response.name);
                     $('#lableVisit').html(res.response.visit);
                     $('#lableRating').html(res.response.rating);
@@ -112,6 +119,17 @@
 
    function goHome(){
         window.location = '<?= base_url('customer'); ?>';
+   }
+
+   function resendOTP(){
+
+      $.post('<?= base_url('customer/resendOTP') ?>',{mobile:mobile},function(res){
+            if(res.status == 'success'){
+                $('#errorMsg').html(res.response);
+            }else{
+              $('#errorMsg').html(res.response);
+            }
+      });
    }
 </script>
 

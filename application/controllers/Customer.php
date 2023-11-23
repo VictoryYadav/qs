@@ -640,6 +640,7 @@ class Customer extends CI_Controller {
                             ->get('Users')
                             ->row_array();
             if(!empty($check)){
+                // $otp = 1;
                 $otp = generateOTP($emailMobile, 'login');
                 $status = 'success';
                 $response = "Your otp is ";
@@ -912,6 +913,28 @@ class Customer extends CI_Controller {
               ));
              die;
         }
+    }
+
+    public function resendOTP(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+            $res = 'OTP Not Send.';
+            
+            extract($_POST);
+            if($mobile){
+                $otp  = generateOTP($mobile, 'resend');
+                $res = 'Resend OTP Successfully.';
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $res
+              ));
+             die;
+        }   
     }
 
     public function order_details_ajax(){
