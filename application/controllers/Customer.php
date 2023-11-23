@@ -642,7 +642,7 @@ class Customer extends CI_Controller {
             if(!empty($check)){
                 $otp = generateOTP($emailMobile, 'login');
                 $status = 'success';
-                $response = "Your otp is $otp";
+                $response = "Your otp is ";
                 $this->session->set_userdata('emailMobile', $emailMobile);
             }else{
                 $response = "Username is not found!";
@@ -694,13 +694,15 @@ class Customer extends CI_Controller {
                     if(!empty($res)){
                         $this->session->set_userdata('CNo', $res['CNo']);
                     }else{
+                        $this->session->set_userdata('CNo', 0);
 
                         $visited = $this->db2->select('count(CNo) as counts')->get_where('KitchenMain', array('EID' => $EID, 'CustId' => $CustId))->row_array();
                         $visit = $visited['counts'];
+                        if($visit > 0){
+                            $rating1 = $this->db2->select('avg(avgBillRtng) as rtng')->get_where('Ratings', array('EID' => $EID, 'CustId' => $CustId))->row_array();
 
-                        $rating1 = $this->db2->select('avg(avgBillRtng) as rtng')->get_where('Ratings', array('EID' => $EID, 'CustId' => $CustId))->row_array();
-
-                        $rating = $rating1['rtng'];
+                            $rating = $rating1['rtng'];
+                        }
                     }
                 }
 
@@ -784,7 +786,7 @@ class Customer extends CI_Controller {
             }else{
                 $otp = generateOTP($_POST['MobileNo'], 'signup');
                 $status = 'success';
-                $response = "Your otp is $otp";
+                $response = "Your otp is ";
             }
 
             header('Content-Type: application/json');
@@ -1060,6 +1062,7 @@ class Customer extends CI_Controller {
                 $resp1 = '';
                 // $statuss = 1;
                 $statuss = 2;
+                $this->session->set_userdata('KOTNo', 0);
                 // if($EType == 5){
                 //     $check = $this->db2->select('CNo')
                 //                         ->get_where('Kitchen', array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 1, 'CNo' => $CNo))
@@ -2584,22 +2587,32 @@ class Customer extends CI_Controller {
         $data['title'] = $this->lang->line('currentorder');
         $data['language'] = languageArray();
         $CustId = $this->session->userdata('CustId');
+        if($this->session->userdata('CNo') > 0){
 
-        $data['detail'] = $this->cust->getCurrenOrderBill($CustId);
-        
-        if(!empty($data['detail'])){
-            if($data['detail'] > 0){
-                $billData = $this->db2->select('BillId, Stat, CNo, PaidAmt')
-                                    ->order_by('Billid','DESC')
-                                    ->get_where('Billing', array('CustId' => $CustId,
-                                                         'EID' => authuser()->EID
-                                                        )
-                                                )->row_array();
-                $this->session->set_userdata('payable', $billData['PaidAmt']); 
-                redirect(base_url('customer/pay/'.$billData['BillId'].'/'.$billData['CNo']));
+            $data['detail'] = $this->cust->getCurrenOrderBill($CustId);
+            
+            if(!empty($data['detail'])){
+                if($data['detail'] > 0){
+                    $billData = $this->db2->select('BillId, Stat, CNo, PaidAmt')
+                                        ->order_by('Billid','DESC')
+                                        ->get_where('Billing', array('CustId' => $CustId,
+                                                             'EID' => authuser()->EID
+                                                            )
+                                                    )->row_array();
+                    if(!empty($billData)){
+                        $this->session->set_userdata('payable', $billData['PaidAmt']); 
+                        redirect(base_url('customer/pay/'.$billData['BillId'].'/'.$billData['CNo']));
+                    }else{
+                        redirect(base_url('customer/checkout'));    
+                    }
+                }else{
+                    redirect(base_url('customer/checkout'));
+                }
             }else{
-                redirect(base_url('customer/checkout'));
-            }
+                    redirect(base_url('customer/checkout'));
+                }
+        }else{
+            redirect(base_url('customer'));
         }
     }
 
