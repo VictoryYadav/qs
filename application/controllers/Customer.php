@@ -640,7 +640,7 @@ class Customer extends CI_Controller {
                             ->get('Users')
                             ->row_array();
             if(!empty($check)){
-                $otp = $this->genOTPLogin($emailMobile);
+                $otp = generateOTP($emailMobile, 'login');
                 $status = 'success';
                 $response = "Your otp is $otp";
                 $this->session->set_userdata('emailMobile', $emailMobile);
@@ -659,35 +659,6 @@ class Customer extends CI_Controller {
         $data['title'] = $this->lang->line('log_in');
         $data['language'] = languageArray();
         $this->load->view('cust/login', $data);
-    }
-
-    private function genOTPLogin($emailMobile){
-        $otp = rand(9999,1000);
-        $this->session->set_userdata('cust_otp', $otp);
-        // $this->session->set_userdata('cust_otp', '1212');
-        $check = $this->db2->select('token, CustId')
-                            ->where('MobileNo', $emailMobile)
-                            ->get('Users')
-                            ->row_array();
-        if(!empty($check)){
-            updateRecord('Users', array('otp' => $otp), array('CustId' => $check['CustId']));
-
-            $msg = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
-            $message = array(
-              'body'   => $msg,
-              'title'   => 'Your OTP',
-              'vibrate' => 1,
-              'sound'   => 1
-            );
-            if(!empty($check['token'])){
-                firebaseNotification($check['token'], $message);
-            }else{
-                if($emailMobile){
-                    sendSMS($emailMobile, $otp);
-                }
-            }
-        }
-        return $otp;
     }
 
     public function loginVerify(){
@@ -811,7 +782,7 @@ class Customer extends CI_Controller {
             if(!empty($checkUser)){
                 $response = "User Already Exists!";
             }else{
-                $otp = $this->generateOTP($_POST['MobileNo'], $_POST['email']);
+                $otp = generateOTP($_POST['MobileNo'], 'signup');
                 $status = 'success';
                 $response = "Your otp is $otp";
             }
@@ -827,37 +798,6 @@ class Customer extends CI_Controller {
         $data['title'] = $this->lang->line('signup');
         $data['language'] = languageArray();
         $this->load->view('cust/signup', $data);
-    }
-
-    private function generateOTP($mobile, $email){
-        $otp = rand(9999,1000);
-        $this->session->set_userdata('cust_otp', $otp);
-        
-            $genTblDb = $this->load->database('GenTableData', TRUE);
-            $chckGen = $genTblDb->select('token')
-                                ->get_where('AllUsers', array('MobileNo' => $mobile))
-                                ->row_array();
-
-            if(!empty($chckGen)){
-                if(!empty($chckGen['token'])){
-                    $msg = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
-                    $message = array(
-                    'body'   => $msg,
-                    'title'   => 'Your OTP',
-                    'vibrate' => 1,
-                    'sound'   => 1
-                    );
-                    firebaseNotification($chckGen['token'], $message);
-                }else{
-                    sendSMS($mobile, $otp);
-                }
-            }else{
-                if($mobile){
-                    sendSMS($mobile, $otp);
-                }
-            }
-        
-            return $otp;
     }
 
     public function verifyOTP(){

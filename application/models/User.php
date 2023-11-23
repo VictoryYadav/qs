@@ -219,6 +219,25 @@ class User extends CI_Model{
 		}
 	}
 
+	public function generate_otp($mobile, $page){
+		$otp = rand(9999,1000);
+        $this->session->set_userdata('cust_otp', $otp);
+        // $this->session->set_userdata('cust_otp', '1212');
+        $otpData['mobileNo'] = $mobile;
+        $otpData['otp'] = $otp;
+        $otpData['stat'] = 0;
+        $otpData['pageRequest'] = $page;
+
+        if($mobile){
+            $smsRes = sendSMS($mobile, $otp);
+            if($smsRes){
+                $otpData['stat'] = 1;
+            }
+            insertRecord('OTP', $otpData);
+        }
+        return $otp;
+	}
+
 
 
 	

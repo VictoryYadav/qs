@@ -339,18 +339,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$err = curl_error($curl);
 
 		curl_close($curl);
-
-		// if ($err) {
-		//   echo "cURL Error #:" . $err;
-		// } else {
-		//   echo $response;
-		// }
+		$val = 0;
+		if ($err) {
+		  // echo "cURL Error #:" . $err;
+		} else {
+		  // echo $response;
+			$val = 1;
+		}
+		return $val;
     }
 
 	function createCustUser($mobile){
 		$CI = & get_instance();
 	    $CI->load->model('User');
 	    return $CI->User->createCustomerUser($mobile);
+	}
+
+	function generateOTP($mobile, $page){
+		$CI = & get_instance();
+	    $CI->load->model('User');
+	    return $CI->User->generate_otp($mobile, $page);
 	}
 
 
