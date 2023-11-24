@@ -189,7 +189,7 @@ class User extends CI_Model{
 	public function createCustomerUser($mobile){
 
 		$localDb = $this->db2->get_where('Users', array('MobileNo' => $mobile))->row_array();
-		if(!empty($localDb)){
+		if(empty($localDb)){
 
 			$genTblDb = $this->load->database('GenTableData', TRUE);
 
@@ -203,14 +203,18 @@ class User extends CI_Model{
 	            $data1['CustId']    = $gen_check['CustId'];
 	            $data1['FName']     = $gen_check['FName'];
 	            $data1['LName']     = $gen_check['LName'];
-	            $data1['Email']     = $gen_check['Email'];
+	            $data1['email']     = $gen_check['email'];
 	            $data1['MobileNo']  = $gen_check['MobileNo'];
 	            $data1['DOB']       = $gen_check['DOB'];
 	            $data1['Gender']    = $gen_check['Gender'];
 	            insertRecord('Users',$data1);    
 	        }else{
 	        	$data['MobileNo'] = $mobile;
-	            $genTblDb->insert('AllUsers', $data);
+
+	        	$Adata = $data;
+	        	$Adata['EID'] = authuser()->EID;
+	        	$Adata['page'] = 'offline order';
+	            $genTblDb->insert('AllUsers', $Adata);
 	            $CustId = $genTblDb->insert_id();
 	            
 	            $data['CustId'] = $CustId;

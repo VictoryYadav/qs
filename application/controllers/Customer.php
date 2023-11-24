@@ -849,7 +849,11 @@ class Customer extends CI_Controller {
                     insertRecord('Users',$data1);    
                 }else{
                     $data = $ses_data;
-                    $genTblDb->insert('AllUsers', $data);
+
+                    $Adata = $data;
+                    $Adata['EID'] = authuser()->EID;
+                    $Adata['page'] = 'signup';
+                    $genTblDb->insert('AllUsers', $Adata);
                     $CustId = $genTblDb->insert_id();
                     $this->session->set_userdata('CustId', $CustId);
                     $data['CustId'] = $CustId;
