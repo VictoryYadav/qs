@@ -521,7 +521,7 @@ class Restaurant extends CI_Controller {
             // $CustOffers['Remarks'] = '';
             $CustOffers['FrmDt'] = $FrmDt; 
             $CustOffers['ToDt'] = $ToDt;
-            $CustOffers['LoginCd'] = 0;
+            $CustOffers['LoginCd'] = authuser()->RUserId;;
             
             $SchCd = insertRecord('CustOffers', $CustOffers);
             $updat['PromoCode'] = $SchCd.'~'.$EID.'~'.$ChainId.'~'.$SchTyp.'~'.$SchCatg;
@@ -2834,7 +2834,11 @@ class Restaurant extends CI_Controller {
 
             if ($CNo == 0) {
                 $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo,$data_type, $orderType);
+                if($orderType == 8){
+                    updateRecord('Eat_tables', array('Stat' => 1), array('TableNo' => $tableNo, 'EID' => $EID));
+                }
             }
+
             // For KOTNo == 0 Generate New KOT
             // echo $KOTNo;
             if ($KOTNo == 0) {
@@ -2915,6 +2919,7 @@ class Restaurant extends CI_Controller {
                 $kitchenObj['CellNo'] = $phone;
                 $kitchenObj['Itm_Portion'] = $Itm_Portion[$i];
                 $kitchenObj['TaxType'] = $taxtype[$i];
+                $kitchenObj['LoginCd'] = authuser()->RUserId;
                 // echo "<pre>";print_r($kitchenObj);exit();
                 insertRecord('Kitchen', $kitchenObj);
 
@@ -3061,7 +3066,7 @@ class Restaurant extends CI_Controller {
             $kitchenMainObj['MergeNo'] = $TableNo;
             $kitchenMainObj['OldTableNo'] = $TableNo;
             $kitchenMainObj['Stat'] = 2;
-            $kitchenMainObj['LoginCd'] = 1;
+            $kitchenMainObj['LoginCd'] = authuser()->RUserId;
             $kitchenMainObj['TPRefNo'] = '';
             $kitchenMainObj['TPId'] = 0;
             $kitchenMainObj['MngtRmks'] = '';
@@ -3886,10 +3891,16 @@ class Restaurant extends CI_Controller {
             $billData = $res['billData'];
             $data['ra'] = $res['ra'];
             $data['taxDataArray'] = $res['taxDataArray'];
-
+            $Fullname = '';
+            if(!empty($billData[0]['FName']) && ($billData[0]['FName']!='-')){
+                $Fullname = $billData[0]['FName'];
+            }
+            if(!empty($billData[0]['LName']) && ($billData[0]['LName']!='-')){
+                $Fullname .= $Fullname.' '.$billData[0]['LName'];
+            }
             $data['hotelName'] = $billData[0]['Name'];
             $data['TableNo'] = $billData[0]['TableNo'];
-            $data['Fullname'] = $billData[0]['FName'].' '.$billData[0]['LName'];
+            $data['Fullname'] = $Fullname;
             $data['CellNo'] = $billData[0]['MobileNo'];
             $data['phone'] = $billData[0]['PhoneNos'];
             $data['gstno'] = $billData[0]['GSTno'];

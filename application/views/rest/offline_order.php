@@ -435,11 +435,13 @@
                                     alert("Order Billed Successfully");
                                     window.location = "<?= base_url('restaurant/bill/'); ?>"+response.data.billId;
                                 }else{
-                                    alert("Order Placed Successfully");
-                                // location.reload();
+                                alert("Order Placed Successfully");
                                 var MCNo = response.data.MCNo;
                                 var MergeNo = response.data.MergeNo;
                                 var FKOTNo = response.data.FKOTNo;
+                                
+                                
+                                // location.reload();
                                     if(orderType == 8){
                                         <?php if($this->session->userdata('sitinKOTPrint') > 0){ ?>
                                             window.location = "<?= base_url('restaurant/kot_print/'); ?>"+MCNo+'/'+MergeNo+'/'+FKOTNo;

@@ -78,8 +78,6 @@
   var mobile = ''; 
     $('#loginForm').on('submit', function(e){
         e.preventDefault();
-        $('#welcomeModal').modal('show');
-        return false;
         var data = $(this).serializeArray();
         // console.log(data[0].value);
         mobile = data[0].value;
