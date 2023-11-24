@@ -2708,7 +2708,7 @@ class Restaurant extends CI_Controller {
         // print_r($data);
         // die;
         $data['title'] = 'Offline Orders';
-        $this->load->view('rest/offline_order', $data);
+        $this->load->view('rest/offline_order -bkup23Nov', $data);
     }
 // 3p_order_ajax
     public function order_ajax_3p(){
@@ -2811,10 +2811,10 @@ class Restaurant extends CI_Controller {
         }
 
         if (isset($_POST['sendToKitchen']) && $_POST['sendToKitchen']) {
-            
+
             $orderType = $_POST['orderType'];
             $tableNo = $_POST['tableNo'];
-            $thirdParty = $_POST['thirdParty'];
+            $thirdParty = !isset($_POST['thirdParty'])?$_POST['thirdParty']:0;
             $thirdPartyRef = $_POST['thirdPartyRef'];
             $itemIds = !empty($_POST['itemIds'])?$_POST['itemIds']:array();
             $itemKitCds = !empty($_POST['itemKitCds'])?$_POST['itemKitCds']:0;
@@ -2829,9 +2829,6 @@ class Restaurant extends CI_Controller {
             $CNo = $_POST['CNo'];
             $taxtype = !empty($_POST['taxtype'])?$_POST['taxtype']:0;
             $take_away = !empty($_POST['take_away'])?$_POST['take_away']:0;
-            // echo "<pre>";
-            // print_r($_POST);
-            // exit;
 
             createCustUser($phone);
 
@@ -2994,6 +2991,9 @@ class Restaurant extends CI_Controller {
                     $postData["orderAmount"] = $total;
                     $postData["paymentMode"] = 'RCash';
                     $postData["MergeNo"] = $MergeNo;
+                    // ref by billCreateRest()
+                    $postData["cust_discount"] = 0;
+
                     $custId = $kitcheData[0]['CustId'];
                     $this->session->set_userdata('CustId', $custId);
                     $res = billCreate($EID, $CNo, $postData);
@@ -4133,50 +4133,57 @@ class Restaurant extends CI_Controller {
         }
     }
 
-
-    public function sendSMS_test()
-    {
-
-//         $curl = curl_init();
-// $apikey = '7652383520739183947';//if you use apikey then userid and password is not required
-// $userId = 'vtrend';
-// $password = 'Sn197022';
-// $sendMethod = 'simpleMsg'; //(simpleMsg|groupMsg|excelMsg)
-// $messageType = 'text'; //(text|unicode|flash)
-// $senderId = 'EATOUT';
-// $mobile = '917697807008';//comma separated
-// $msg = "12333 is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
-// $scheduleTime = '';//mention time if you want to schedule else leave blank
-
-// curl_setopt_array($curl, array(
-//   CURLOPT_URL => "http://www.smsgateway.center/SMSApi/rest/send",
-//   CURLOPT_RETURNTRANSFER => true,
-//   CURLOPT_ENCODING => "",
-//   CURLOPT_MAXREDIRS => 10,
-//   CURLOPT_TIMEOUT => 30,
-//   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-//   CURLOPT_CUSTOMREQUEST => "POST",
-//   CURLOPT_POSTFIELDS => "userId=$userId&password=$password&senderId=$senderId&sendMethod=$sendMethod&msgType=$messageType&mobile=$mobile&msg=$msg&duplicateCheck=true&format=json",
-//   CURLOPT_HTTPHEADER => array(
-//     "cache-control: no-cache",
-//     "content-type: application/x-www-form-urlencoded"
-//   ),
-// ));
-
-// $response = curl_exec($curl);
-// $err = curl_error($curl);
-
-// curl_close($curl);
-
-// if ($err) {
-//   echo "cURL Error #:" . $err;
-// } else {
-//   echo $response;
-// }
-        sendSMS('7697807008', '541');
-        // sendSMS('8850876764', '54122');
+    public function thirdParty(){
+        $EID = authuser()->EID;
+        $data['EID'] = $EID;
+        $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
+        $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $data['title'] = 'Third Party';
+        $data['OType'] = 101;
+        $this->load->view('rest/offline_order', $data);
     }
 
+    public function takeAway(){
+        $EID = authuser()->EID;
+        $data['EID'] = $EID;
+        $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
+        $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $data['title'] = 'Take Away';
+        $data['OType'] = 105;
+        $this->load->view('rest/offline_order', $data);
+    }
+
+    public function Deliver(){
+        $EID = authuser()->EID;
+        $data['EID'] = $EID;
+        $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
+        $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $data['title'] = 'Deliver';
+        $data['OType'] = 110;
+        $this->load->view('rest/offline_order', $data);
+    }
+
+    public function sitIn(){
+        $EID = authuser()->EID;
+        $data['EID'] = $EID;
+        $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
+        $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $data['title'] = 'Sit In';
+        $data['OType'] = 8;
+        $this->load->view('rest/offline_order', $data);
+    }
 
 
 }

@@ -25,8 +25,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="row">
-                                            <input type="hidden" id="order-type" value="<?= $OType; ?>">
-                                            <!-- <div class="col-md-3 form-group col-6">
+                                            <div class="col-md-3 form-group col-6">
                                                 <label>Order Type</label>
                                                 <select class="form-control form-control-sm" id="order-type">
                                                     <option value="0">Select</option>
@@ -35,22 +34,21 @@
                                                     <option value="110">Deliver</option>
                                                     <option value="8">Sit-In</option>
                                                 </select>
-                                            </div> -->
-                                            <?php if($OType == 8) { ?>
+                                            </div>
+
                                             <div class="col-md-3 form-group col-6">
                                                 <label>Table No</label>
-                                                <select class="form-control form-control-sm" id="table-id" onchange="get_table_order_items(this)">
+                                                <select class="form-control form-control-sm" id="table-id" disabled="" onchange="get_table_order_items(this)">
                                                     <option value="0">Select</option>
                                                     <?php foreach ($tablesAlloted as $data) : ?>
                                                         <option value="<?= $data['TableNo'] ?>"><?= $data['MergeNo'] ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div>
-                                            <?php } ?>
-                                            <?php if($OType == 101) { ?>
+
                                             <div class="col-md-3 form-group col-6">
                                                 <label>3rd Party</label>
-                                                <select class="form-control form-control-sm" id="3rd-party">
+                                                <select class="form-control form-control-sm" id="3rd-party" disabled="">
                                                     <option value="0">Select</option>
                                                     <?php foreach ($thirdOrdersData as $data) : ?>
                                                         <option value="<?= $data['3PId'] ?>"><?= $data['Name'] ?></option>
@@ -60,24 +58,19 @@
 
                                             <div class="col-md-3 form-group col-6">
                                                 <label>3rd Party Ref No</label>
-                                                <input type="text" id="3rd-party-refNo" class="form-control form-control-sm">
-                                            </div>
-                                        <?php } ?>
-                                            <div class="col-md-3 form-group col-6">
-                                                <label>Phone No</label>
-                                                <input type="text" id="phone" class="form-control form-control-sm">
+                                                <input type="text" id="3rd-party-refNo" class="form-control form-control-sm" disabled="">
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-9 form-group col-6">
                                                 <label>Customer Address</label>
-                                                <input type="text" class="form-control form-control-sm" id="cust-address" <?php if($OType != 110){ echo 'disabled'; } ?>>
+                                                <input type="text" class="form-control form-control-sm" id="cust-address" disabled="">
                                             </div>
 
                                             <div class="col-md-3 form-group col-6">
-                                                <label>Item Amt</label>
-                                                <input type="text" id="total-value" readonly="" value="0" class="form-control form-control-sm">
+                                                <label>Phone No</label>
+                                                <input type="text" id="phone" class="form-control form-control-sm" disabled="">
                                             </div>
                                         </div>
 
@@ -86,12 +79,10 @@
                                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#item-list-modal" title="Kitchen Order Ticket">KOT 
                                                     <i class="fa fa-plus"></i>
                                                 </button>
-                                                <?php if($OType == 8){ ?>
-                                                <button class="btn btn-success btn-sm send-to-kitchen" data_type="save_to_kitchen" id="btnOrder">Order</button>
-                                                <?php } ?>
-                                                <?php if($OType != 8){ ?>
-                                                <button class="btn btn-warning btn-sm send-to-kitchen" data_type="bill" id="btnBill">Bill</button>
-                                                <?php } ?>
+
+                                                <button class="btn btn-success btn-sm send-to-kitchen" data_type="save_to_kitchen" id="btnOrder">Order</button style="display: none;">
+                                                <button class="btn btn-warning btn-sm send-to-kitchen" data_type="bill" id="btnBill" style="display: none;">Bill</button>
+
                                             </div>
 
                                             <!-- <div class="col-md-4 form-group text-center col-8">
@@ -99,7 +90,14 @@
                                                 <button class="btn btn-success send-to-kitchen" data_type="save_to_kitchen">Send to Kitchen</button>
                                                 <button class="btn btn-warning send-to-kitchen" data_type="bill">Bill</button>
                                             </div> -->
-                                            
+                                            <div class="col-md-2 form-group text-right d-none d-sm-block">
+                                                <label>I.Amt : </label>
+                                            </div>
+                                            <div class="col-md-3 form-group col-6">
+                                                <div>
+                                                    <input type="text" id="total-value" readonly="" value="0" class="form-control form-control-sm">
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="row">
@@ -230,7 +228,62 @@
         }
 
         $(document).ready(function() {
+            $('#btnOrder').hide();
+            $("#order-type").change(function(event) {
+                $('#order-table-body').html('');
+                var orderType = $(this).val();
+                if (orderType == 101) {
+                    $("#table-id").prop('disabled', true);
+                    $("#table-id").val(0);
+                    $("#3rd-party").prop('disabled', false);
+                    $("#3rd-party-refNo").prop('disabled', false);
+                    $("#cust-address").prop('disabled', true);
+                    $("#cust-address").val("");
+                    $("#phone").prop('disabled', true);
+                    $("#phone").val("");
+                    $('#btnBill').show();
+                    $('#btnOrder').hide();
+                } else
+                 if (orderType == 105) {
+                    $("#table-id").prop('disabled', true);
+                    $("#table-id").val(0);
+                    $("#3rd-party").prop('disabled', true);
+                    $("#3rd-party").val(0);
+                    $("#3rd-party-refNo").prop('disabled', true);
+                    $("#3rd-party-refNo").val('');
+                    $("#cust-address").prop('disabled', true);
+                    $("#cust-address").val("");
+                    $("#phone").prop('disabled', false);
+                    $('#btnBill').show();
+                    $('#btnOrder').hide();
+                } else if (orderType == 110) {
+                    $("#table-id").prop('disabled', true);
+                    $("#table-id").val(0);
+                    $("#3rd-party").prop('disabled', true);
+                    $("#3rd-party").val(0);
+                    $("#3rd-party-refNo").prop('disabled', true);
+                    $("#3rd-party-refNo").val('');
+                    $("#cust-address").prop('disabled', false);
+                    $("#phone").prop('disabled', false);
+                    $("#phone").val('');
+                    $('#btnBill').show();
+                    $('#btnOrder').hide();
+                } else if (orderType == 8) {
+                    $("#table-id").prop('disabled', false);
+                    $("#3rd-party").val(0);
+                    $("#3rd-party").prop('disabled', true);
+                    $("#3rd-party-refNo").val('');
+                    $("#3rd-party-refNo").prop('disabled', true);
+                    $("#cust-address").prop('disabled', true);
+                    $("#cust-address").val("");
+                    // $("#phone").prop('disabled', true);
+                    $("#phone").prop('disabled', false);
+                    $("#phone").val("");
+                    $('#btnBill').hide();
+                    $('#btnOrder').show();
+                }
 
+            });
 
             $("#search-item").keyup(function(event) {
                 var itemName = $(this).val();
@@ -396,12 +449,7 @@
                     });
 
                     var Uphone = $('#phone').val();
-                    
-                    <?php if($OType != 101){ ?>
-                        thirdParty = 0;
-                        thirdPartyRef = 0;
-                    <?php } ?>
-
+                    console.log(itemIds);
                     $.ajax({
                         url: "<?php echo base_url('restaurant/order_ajax_3p'); ?>",
                         type: "post",

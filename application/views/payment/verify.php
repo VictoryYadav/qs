@@ -17,12 +17,15 @@
     use Razorpay\Api\Api;
     use Razorpay\Api\Errors\SignatureVerificationError;
 
-        // $keyId = 'rzp_test_Z50p6ZM95VvlSy';
-        // $keySecret = 'gtQvvO7aRLLoMefAWCV7Pcwp';
+        // test
+        $keyId = 'rzp_test_Z50p6ZM95VvlSy';
+        $keySecret = 'gtQvvO7aRLLoMefAWCV7Pcwp';
 
         // live
-        $keyId = 'rzp_live_orBqBQnXLQF7i9';
-        $keySecret = 'gFjtLHcPZIZ9S81lrjMHyeDi';
+        if($this->session->userdata('pymtENV') > 0){
+            $keyId = 'rzp_live_orBqBQnXLQF7i9';
+            $keySecret = 'gFjtLHcPZIZ9S81lrjMHyeDi';
+        }
 
         $displayCurrency = 'INR';
 
