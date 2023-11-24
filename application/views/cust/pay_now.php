@@ -80,7 +80,7 @@ body{
                                     </td>
                                 </tr>
                             <?php  } ?>
-                                    <input type="hidden" id="sum" value="<?= $sum; ?>">
+                                    <input type="hidden" id="sum" value="<?= round($sum); ?>">
                                 <?php } else{ ?>
                                 <tr>
                                     <td>
