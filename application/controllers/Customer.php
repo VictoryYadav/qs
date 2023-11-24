@@ -966,12 +966,12 @@ class Customer extends CI_Controller {
                     $temp['OrdNo'] = $OrdNo;
                     $temp['qty'] = $_POST['qty'][$i];
                     // $data[] = $temp;
-                    updateRecord('Kitchen', array('Qty' => $temp['qty']), array('OrdNo' => $OrdNo));
+                    updateRecord('Kitchen', array('Qty' => $temp['qty'],'Stat' => 3), array('OrdNo' => $OrdNo, 'EID' => $EID));
                     $i++;
                 }
                 
-                $res = $this->db2->query("SELECT mi.ItemId as MItemId, mi.MCatgId as MMCatgId, mi.CID as MCID, k.OrdNo, k.ItemId as KItemId, k.ItemTyp as KItemTyp, k.Itm_Portion, k.ItmRate, k.Qty as KQty, cod.* from Kitchen as k join CustOffersDet as cod on k.SchCd = cod.SchCd and k.SDetCd = cod.SDetCd join MenuItem as mi on mi.ItemId = k.ItemId where k.CNo = '$CNo'")->result_array();
-                $price = $this->db2->query("SELECT sum(ItmRate) as total_amount from Kitchen where CNo = '$CNo' group by CNo")->result_array();
+                $res = $this->db2->query("SELECT mi.ItemId as MItemId, mi.MCatgId as MMCatgId, mi.CID as MCID, k.OrdNo, k.ItemId as KItemId, k.ItemTyp as KItemTyp, k.Itm_Portion, k.ItmRate, k.Qty as KQty, cod.* from Kitchen as k join CustOffersDet as cod on k.SchCd = cod.SchCd and k.SDetCd = cod.SDetCd join MenuItem as mi on mi.ItemId = k.ItemId where k.EID= $EID and k.CNo = '$CNo'")->result_array();
+                $price = $this->db2->query("SELECT sum(ItmRate) as total_amount from Kitchen where CNo = '$CNo' and EID = $EID group by CNo")->result_array();
 
                 $total_price = 0;
                 if(!empty($price)){
@@ -1084,7 +1084,7 @@ class Customer extends CI_Controller {
                     $dis+=$item_dis;
                 }
 
-                updateRecord('KitchenMain', array('BillDiscAmt' => $dis), array('CNo' => $CNo));
+                updateRecord('KitchenMain', array('BillDiscAmt' => $dis), array('CNo' => $CNo, 'EID' => $EID));
 
                 $resp1 = '';
                 // $statuss = 1;
@@ -1114,15 +1114,16 @@ class Customer extends CI_Controller {
                                                 ->get_where('Kitchen', 
                                                             array('CNo' => $CNo, 
                                                                 'Stat <= ' => 5,
-                                                                'BillStat' => 0)
+                                                                'BillStat' => 0,'EID' => $EID)
                                                             )->row_array();
 
                         $billOfferAmt = $this->db2->select("c.SchNm, cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId,if(cod.Disc_ItemId > 0,(select ItemNm from MenuItem where ItemId = cod.Disc_ItemId),'-') as itemName, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent ")
                                     ->order_by('cod.MinBillAmt', 'DESC')
-                                    ->join('CustOffers c', 'c.SchCd = cod.SchCd')
+                                    ->join('CustOffers c', 'c.SchCd = cod.SchCd', 'inner')
                                     ->get_where('CustOffersDet cod', 
                                      array('cod.MinBillAmt > ' => $orderValue['itmValue'],
-                                        'c.SchCatg <' => 20))
+                                        'c.SchCatg <' => 20,
+                                        'c.EID' => $EID))
                                     ->result_array();
 
                         if(!empty($billOfferAmt)){
@@ -2573,7 +2574,7 @@ class Customer extends CI_Controller {
                 $i++;
             }
 
-            updateRecord('Kitchen', array('Stat' => 2), array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 1, 'CNo' => $CNo));
+            updateRecord('Kitchen', array('Stat' => 3), array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 2, 'CNo' => $CNo));
             // set Kot to 0
             $this->session->set_userdata('KOTNo', 0);
             $status = 'success';
