@@ -1618,6 +1618,11 @@ class Cust extends CI_Model{
             
                     $lastInsertBillId = insertRecord('Billing', $billingObj);
 
+                    if(!empty($lastInsertBillId)){
+                    	$this->db2->where_in('Stat', array(1,2));
+                    	$this->db2->update('Kitchen',array('Stat' => 7),array('EID' => $EID, 'MCNo' => $CNo));
+                    }
+
                     foreach ($res['taxDataArray'] as $key => $value1) {
                         foreach ($value1 as $key => $value) {
                             $BillingTax['BillId'] = $lastInsertBillId;
@@ -1700,7 +1705,7 @@ class Cust extends CI_Model{
                 $this->db2->trans_complete();
 
                 $this->session->set_userdata('KOTNo', 0);
-                // $this->session->set_userdata('CNo', 0);
+                $this->session->set_userdata('CNo', 0);
                 $this->session->set_userdata('itemTotalGross', 0);
 
                 if(!empty($lastInsertBillId)){

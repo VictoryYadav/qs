@@ -314,7 +314,7 @@ function goToBill(){
     var total = $('#sum').val();
 
     if(payable == total){
-        $.post('<?= base_url('customer/updateCustPayment') ?>',function(res){
+        $.post('<?= base_url('customer/updateCustPayment') ?>',{BillId:BillId},function(res){
         
         });
         

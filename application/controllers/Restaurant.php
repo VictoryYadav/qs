@@ -1568,7 +1568,7 @@ class Restaurant extends CI_Controller {
             if($EType == 1){
                 $stat = 1;
                 //Session::set('KOTNo',0);
-                $q2 = "UPDATE Kitchen k, KitchenMain km SET  k.Stat = $stat, k.payRest=1, km.payRest=1 WHERE (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
+                $q2 = "UPDATE Kitchen k, KitchenMain km SET  k.Stat = $stat, k.payRest=1, km.payRest=1 WHERE (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
                 // print_r($q2);
                 $kitchenUpdate = $this->db2->query($q2);
             }
@@ -1585,7 +1585,7 @@ class Restaurant extends CI_Controller {
                 
             }
 
-            $q2 = "UPDATE Kitchen k, KitchenMain km SET  k.Stat = $stat, k.payRest=1, km.payRest=1 WHERE (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
+            $q2 = "UPDATE Kitchen k, KitchenMain km SET  k.Stat = $stat, k.payRest=1, km.payRest=1 WHERE (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
                 // print_r($q2);
             $kitchenUpdate = $this->db2->query($q2);
 
@@ -1615,7 +1615,7 @@ class Restaurant extends CI_Controller {
 
             $billData = $this->db2->query("UPDATE Billing SET Stat = 99 WHERE BillId = $id AND EID = $EID");
 
-            $kitchenUpdate = $this->db2->query("UPDATE Kitchen k, KitchenMain km SET  k.Stat = 99 WHERE km.BillStat = $id AND (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)");
+            $kitchenUpdate = $this->db2->query("UPDATE Kitchen k, KitchenMain km SET  k.Stat = 99 WHERE km.BillStat = $id AND (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)");
 
 
             $kitchenMainUpdate = $this->db2->query("UPDATE KitchenMain SET Stat = 99 WHERE BillStat = $id AND EID = $EID and (CNo = $cNo OR MCNo = $cNo)");
@@ -1775,7 +1775,7 @@ class Restaurant extends CI_Controller {
             die;
             $f = $_POST['FKOTNo'];
             $c = $_POST['CNo'];
-            $data = $this->db2->query("SELECT k.FKOTNo, ek.KitName, k.UKOTNo FROM Eat_Kit ek, Kitchen k, KitchenMain km WHERE ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>99 ) AND k.EID=km.EID AND k.CNo = km.CNo AND km.EID = $EID and (km.CNo = $c OR km.MCNo = $c) and k.FKOTNo = $f and k.MergeNo = km.MergeNo and ek.KitCd=k.KitCd and ek.EID=km.EID GROUP BY k.FKOTNo, ek.KitName, k.UKOTNo order by k.FKOTNo, ek.KitName, k.UKOTNo ASC")->result_array();
+            $data = $this->db2->query("SELECT k.FKOTNo, ek.KitName, k.UKOTNo FROM Eat_Kit ek, Kitchen k, KitchenMain km WHERE ( k.Stat = 3) AND k.EID=km.EID AND k.CNo = km.CNo AND km.EID = $EID and (km.CNo = $c OR km.MCNo = $c) and k.FKOTNo = $f and k.MergeNo = km.MergeNo and ek.KitCd=k.KitCd and ek.EID=km.EID GROUP BY k.FKOTNo, ek.KitName, k.UKOTNo order by k.FKOTNo, ek.KitName, k.UKOTNo ASC")->result_array();
             $response['status'] = 1;
             $response['data'] = $data;
             echo json_encode($response);
@@ -1828,7 +1828,7 @@ class Restaurant extends CI_Controller {
             $CNo = $_POST['cNo'];
 
             // get kot from kitchen for particular row  - 14/1/20 
-            $kots = $this->db2->query("SELECT km.TableNo, FKOTNo, KOTNo, UKOTNo, KitCd, SUM(Qty) as Qty , KOTPrintNo, km.CellNo, km.CNo, km.MergeNo FROM Kitchen k, KitchenMain km WHERE ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>99 ) AND k.EID=km.EID AND k.CNo = km.CNo  AND km.EID = $EID and (km.CNo = $CNo OR km.MCNo = $CNo)  and k.MergeNo = km.MergeNo GROUP BY FKOTNo, UKOTNo, KOTNo, KitCd, km.TableNo, km.CellNo, km.CNo, KOTPrintNo order by KOTNo DESC, UKOTNO DESC")->result_array();
+            $kots = $this->db2->query("SELECT km.TableNo, FKOTNo, KOTNo, UKOTNo, KitCd, SUM(Qty) as Qty , KOTPrintNo, km.CellNo, km.CNo, km.MergeNo FROM Kitchen k, KitchenMain km WHERE ( k.Stat = 3 ) AND k.EID=km.EID AND k.CNo = km.CNo  AND km.EID = $EID and (km.CNo = $CNo OR km.MCNo = $CNo)  and k.MergeNo = km.MergeNo GROUP BY FKOTNo, UKOTNo, KOTNo, KitCd, km.TableNo, km.CellNo, km.CNo, KOTPrintNo order by KOTNo DESC, UKOTNO DESC")->result_array();
 
             if (empty($kots)) {
                 $response = [
@@ -1874,7 +1874,7 @@ class Restaurant extends CI_Controller {
             $CNo = $_POST['cNo'];
 
             // get all Items details from kitchen for table  - 14/1/20
-            $itemDetails = $this->db2->query("SELECT  k.ItemId, i.ItemNm, SUM(k.Qty) as Qty, SUM(k.AQty) as AQty, SUM(k.DQty) as DQty FROM Kitchen k, KitchenMain km, MenuItem i WHERE k.ItemId = i.ItemId AND k.EID = km.EID AND (k.Stat<>4 and k.Stat<>6 AND k.Stat<>7  AND k.Stat<>10   AND k.Stat<>99)  AND km.CNo = k.CNo AND km.EID = 51 AND (km.CNo = $CNo OR km.MCNo = $CNo) AND km.MergeNo = k.MergeNo  group by i.ItemId ORDER by i.ItemNm")->result_array();
+            $itemDetails = $this->db2->query("SELECT  k.ItemId, i.ItemNm, SUM(k.Qty) as Qty, SUM(k.AQty) as AQty, SUM(k.DQty) as DQty FROM Kitchen k, KitchenMain km, MenuItem i WHERE k.ItemId = i.ItemId AND k.EID = km.EID AND (k.Stat = 3)  AND km.CNo = k.CNo AND km.EID = 51 AND (km.CNo = $CNo OR km.MCNo = $CNo) AND km.MergeNo = k.MergeNo  group by i.ItemId ORDER by i.ItemNm")->result_array();
             
             if (empty($itemDetails)) {
                 $response = [
@@ -1895,7 +1895,7 @@ class Restaurant extends CI_Controller {
             $uKotNo = $_POST['uKotNo'];
             $CNo = $_POST['cNo'];
             // get Items details from kitchen - 14/1/20
-            $itemDetails = $this->db2->query("SELECT  k.ItemId, i.ItemNm, SUM(k.Qty) as Qty, SUM(k.AQty) as AQty, SUM(k.DQty) as DQty FROM Kitchen k, KitchenMain km, MenuItem i WHERE k.ItemId = i.ItemId AND k.EID = km.EID AND (k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.UKOTNo = '$uKotNo'  AND k.Stat<>10   AND k.Stat<>99)  AND km.CNo = k.CNo AND km.EID = $EID AND (km.CNo = $CNo OR km.MCNo = $CNo) AND km.MergeNo = k.MergeNo  group by i.ItemId ORDER by i.ItemNm")->result_array();
+            $itemDetails = $this->db2->query("SELECT  k.ItemId, i.ItemNm, SUM(k.Qty) as Qty, SUM(k.AQty) as AQty, SUM(k.DQty) as DQty FROM Kitchen k, KitchenMain km, MenuItem i WHERE k.ItemId = i.ItemId AND k.EID = km.EID AND (k.Stat = 3)  AND km.CNo = k.CNo AND km.EID = $EID AND (km.CNo = $CNo OR km.MCNo = $CNo) AND km.MergeNo = k.MergeNo  group by i.ItemId ORDER by i.ItemNm")->result_array();
 
             if (empty($itemDetails)) {
                 $response = [
@@ -2028,9 +2028,9 @@ class Restaurant extends CI_Controller {
             $cNo = $_POST['cNo'];
 
             // update kitchen for Decline Item
-            $declineItem = $this->db2->query("UPDATE Kitchen SET Stat = 6, DReason = $declineReason WHERE ItemId = $itemId AND TableNo = '$tableNo' AND CustId = $custId AND EID = $EID AND Stat = 1");
+            $declineItem = $this->db2->query("UPDATE Kitchen SET Stat = 6, DReason = $declineReason WHERE ItemId = $itemId AND TableNo = '$tableNo' AND CustId = $custId AND EID = $EID AND Stat = 3");
 
-            $kitTableItemCount = $this->db2->query("SELECT count(itemid) AS itmcnt FROM Kitchen WHERE custId = $custId AND TableNo ='$tableNo' AND EID =$EID AND Stat <> 4 AND Stat <> 6 AND Stat <> 7 AND Stat <> 0 AND Stat <> 10");
+            $kitTableItemCount = $this->db2->query("SELECT count(itemid) AS itmcnt FROM Kitchen WHERE custId = $custId AND TableNo ='$tableNo' AND EID =$EID AND Stat 3 ");
 
             if ($kitTableItemCount[0]['itmcnt'] == 0) {
                 $res =  $this->db2->query("DELETE FROM Eat_tables_Occ WHERE CustId = $custId AND EID= $EID AND TableNo=  '$tableNo'");
@@ -2585,7 +2585,7 @@ class Restaurant extends CI_Controller {
             // print_r($q1);
             updateRecord('BillPayments', array('Stat' => 1), array('BillId' => $id,'EID' => $EID));
 
-            $q2 = "UPDATE Kitchen k, KitchenMain km SET k.payRest=1, km.payRest=1 WHERE (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
+            $q2 = "UPDATE Kitchen k, KitchenMain km SET k.payRest=1, km.payRest=1 WHERE (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
             $kitchenUpdate = $this->db2->query($q2);
 
             if ($EType == 5) {
@@ -2621,7 +2621,7 @@ class Restaurant extends CI_Controller {
 
             $billData = $this->db2->query("UPDATE Billing SET Stat = 99 WHERE BillId = $id AND EID = $EID");
 
-            $kitchenUpdate = $this->db2->query("UPDATE Kitchen k, KitchenMain km SET  k.Stat = 99 WHERE km.BillStat = $id AND (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)");
+            $kitchenUpdate = $this->db2->query("UPDATE Kitchen k, KitchenMain km SET  k.Stat = 99 WHERE km.BillStat = $id AND (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)");
 
             // $kitchenUpdate = $kitchenObj->exec("UPDATE Kitchen SET Stat = 99 WHERE BillStat = $id AND EID = $EID");
 
@@ -4015,7 +4015,7 @@ class Restaurant extends CI_Controller {
             // print_r($q1);
             updateRecord('BillPayments', array('Stat' => 1), array('BillId' => $id,'EID' => $EID));
 
-            $q2 = "UPDATE Kitchen k, KitchenMain km SET k.payRest=1, km.payRest=1 WHERE (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
+            $q2 = "UPDATE Kitchen k, KitchenMain km SET k.payRest=1, km.payRest=1 WHERE (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
             $kitchenUpdate = $this->db2->query($q2);
 
             if ($EType == 5) {
@@ -4054,12 +4054,14 @@ class Restaurant extends CI_Controller {
         // print_r($q1);
         updateRecord('BillPayments', array('Stat' => 1), array('BillId' => $billId,'EID' => $EID));
 
-        $q2 = "UPDATE Kitchen k, KitchenMain km SET k.payRest=1, km.payRest=1 WHERE (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
+        $q2 = "UPDATE Kitchen k, KitchenMain km SET k.payRest=1, km.payRest=1 WHERE (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
         $kitchenUpdate = $this->db2->query($q2);
 
         if ($EType == 5) {
             updateRecord('Eat_tables', array('Stat' => 0, 'MergeNo' => $TableNo), array(' EID' => $EID,'MergeNo' => $MergeNo));
-        }        
+        }
+
+        $this->db2->query("UPDATE KitchenMain km, Billing b set km.CnfSettle = 1 where b.BillId = $billId  and (km.CNo = b.CNo or km.MCNo = b.CNo) and b.EID=km.EID and b.EID=$EID");        
     }
 
     public function kds(){
