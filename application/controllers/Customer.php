@@ -555,7 +555,7 @@ class Customer extends CI_Controller {
                         }else{
                             //For ETpye 1 Order Type Will Be 0 and Stat = 1
                             $OType = 0;
-                            $stat = 1;
+                            $stat = 2;
                         }
                         $newUKOTNO = date('dmy_') . $KOTNo;
                         $prepration_time = $_POST['prepration_time'][$itemId][0];
@@ -1308,20 +1308,17 @@ class Customer extends CI_Controller {
 
         $orderOption = $_POST['orderOption'];
         $status = 0;
-
+        $resp = 1;
         if($orderOption == 'yes'){
-            $status = 2;
+            $status = 3;
             $resp = 2;
         }else if($orderOption == 'no'){
             $status = 7;
             $resp = 2;
-        }else{
-            $status = 0;
-            $resp = 1;
         }
 
-        if($status > 0){
-            updateRecord('Kitchen', array('Stat' => $status), array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 1, 'CNo' => $CNo));
+        if($resp > 1){
+            updateRecord('Kitchen', array('Stat' => $status), array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 2, 'CNo' => $CNo));
         }
 
         header('Content-Type: application/json');
@@ -1771,7 +1768,7 @@ class Customer extends CI_Controller {
         $billId = $_POST['BillId'];
 
         $this->db2->query("UPDATE KitchenMain km, Billing b set km.CnfSettle = 1 where b.BillId = $billId  and (km.CNo = b.CNo or km.MCNo = b.CNo) and b.EID=km.EID and b.EID=$EID");
-        
+
         $MergeNo = $this->session->userdata('MergeNo');
 
         autoSettlePayment($billId, $MergeNo);

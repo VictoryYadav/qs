@@ -794,7 +794,7 @@ class Cust extends CI_Model{
 				}else{
 					//For ETpye 1 Order Type Will Be 0 and Stat = 1
 					// $OType = 0;
-					$stat = 1;
+					$stat = 2;
 				}
 
 				$newUKOTNO = date('dmy_') . $KOTNo;
