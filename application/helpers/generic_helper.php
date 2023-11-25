@@ -49,6 +49,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $CI->Cust->checkCheckoutItem($custId, $CNo, $stat);	
 	}
 
+	function billCheck($CNo){
+		$CI = & get_instance();
+		$CI->load->model('Cust');
+		return $CI->Cust->checkBillCreation($CNo);	
+	}
+
 	function send_mail_gmail($to, $from, $subject, $body, $cc = null, $bcc = null){
 		$CI =& get_instance();
 		$CI->load->library('email');

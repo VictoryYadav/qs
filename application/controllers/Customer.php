@@ -1287,11 +1287,15 @@ class Customer extends CI_Controller {
         $data['Cash'] = $this->session->userdata('Cash');
         $data['KOTNo'] = $this->session->userdata('KOTNo');
         $CNo = $this->session->userdata('CNo');
-
-        $valCheck = checkCheckout($data['CustId'], $CNo, 3);
-        if(empty($valCheck)){
-            // after alert
-            redirect(base_url('customer/cart'));
+        $bilchk = billCheck($CNo);
+        if(!empty($bilchk)){
+            redirect(base_url('customer/pay/'.$bilchk['BillId'].'/'.$bilchk['CNo']));
+        }else{
+            $valCheck = checkCheckout($data['CustId'], $CNo, 3);
+            if(empty($valCheck)){
+                // after alert
+                redirect(base_url('customer/cart'));
+            }
         }
 
         $data['title'] = $this->lang->line('checkout');

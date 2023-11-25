@@ -1786,6 +1786,13 @@ class Cust extends CI_Model{
 									)->row_array();
 	}
 
+	public function checkBillCreation($MCNo){
+		return $this->db2->select('BillId, CNo')
+						->where_in('Stat', array(1,5))
+						->get_where('Billing', array('CNo' => $MCNo, 'EID' => authuser()->EID))
+						->row_array();
+	}
+
 
 	
 }
