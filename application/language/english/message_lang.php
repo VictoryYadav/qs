@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 $lang['main'] = 'Item Details';
-$lang['cart'] = 'Order Details';
+$lang['cart'] = 'Cart';
 $lang['log_in'] = 'Log In';
 $lang['signup'] = 'Signup';
 $lang['checkout'] = 'Checkout';

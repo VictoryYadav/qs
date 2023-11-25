@@ -1649,7 +1649,7 @@ class Cust extends CI_Model{
                     
                     // $as = ($this->session->userdata('AutoSettle') == 1)?0:1;
 
-                    $this->db2->query("UPDATE Kitchen SET BillStat = $billingObjStat  WHERE EID = $EID and MCNo = $CNo and TableNo = $TableNo AND BillStat = 0 ");
+                    $this->db2->query("UPDATE Kitchen SET BillStat = $billingObjStat  WHERE EID = $EID and MCNo = $CNo and TableNo = $TableNo AND BillStat = 0 and Stat = 3 ");
 
                     $this->db2->query("UPDATE KitchenMain SET BillStat = $billingObjStat WHERE MCNo = $CNo and TableNo = $TableNo AND BillStat = 0 AND EID = $EID ");
 
@@ -1756,8 +1756,8 @@ class Cust extends CI_Model{
 						->result_array();
 	}
 
-	public function checkCheckoutItem($custId, $CNo){
-		return $this->db2->select('OrdNo')->get_where('Kitchen', array('CustId' => $custId, 'CNo' => $CNo, 'Stat' => 3, 'BillStat' => 0, 'EID' => $this->EID))->row_array();
+	public function checkCheckoutItem($custId, $CNo, $stat){
+		return $this->db2->select('OrdNo')->get_where('Kitchen', array('CustId' => $custId, 'CNo' => $CNo, 'Stat' => $stat, 'BillStat' => 0, 'EID' => $this->EID))->row_array();
 	}
 
 	public function getCountryList(){
