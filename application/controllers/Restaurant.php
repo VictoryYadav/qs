@@ -3032,7 +3032,7 @@ class Restaurant extends CI_Controller {
         if(isset($_POST['get_table_order_items'])){
 
             $tableno = $_POST['table_no'];
-            $q = "SELECT k.*,km.BillStat kmBillStat, i.ItemNm,i.Value from KitchenMain as km, Kitchen as k, MenuItem as i where km.CNo = k.CNo and km.MergeNo = '$tableno' and k.stat = 3 and i.Itemid = k.Itemid";
+            $q = "SELECT k.*,km.BillStat kmBillStat, i.ItemNm,i.Value from KitchenMain as km, Kitchen as k, MenuItem as i where km.CNo = k.CNo and km.MergeNo = '$tableno' and k.stat = 3 and i.Itemid = k.Itemid and km.BillStat = 0 ";
             $data = $this->db2->query($q)->result_array();
             
             echo json_encode($data);
