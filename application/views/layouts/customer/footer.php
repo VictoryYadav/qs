@@ -85,11 +85,12 @@
             <?php }
                 $CustId = $this->session->userdata('CustId');
                 $CNo = $this->session->userdata('CNo');
-                $val = checkCheckout($CustId, $CNo);
+                $val = checkCheckout($CustId, $CNo, 2);
              if(!empty($val)){
              ?>
-            <a class="dropdown-item" href="#" onclick="goCheckout()"><?= $this->lang->line('checkout'); ?></a>
-            <!-- <a class="dropdown-item" href="<?= base_url('customer/checkout'); ?>">Checkout</a> -->
+             <a class="dropdown-item" href="#" onclick="goCheckout()"><?= $this->lang->line('checkout'); ?></a>
+            <?php }else{ ?>
+            <a class="dropdown-item" href="<?= base_url('customer/checkout'); ?>"><?= $this->lang->line('checkout'); ?></a>
             <?php } ?>
         </div>
     </div>

@@ -43,10 +43,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $CI->User->getAllRecord($tbl,$where);	
 	}
 
-	function checkCheckout($custId, $CNo){
+	function checkCheckout($custId, $CNo, $stat){
 		$CI = & get_instance();
 		$CI->load->model('Cust');
-		return $CI->Cust->checkCheckoutItem($custId, $CNo);	
+		return $CI->Cust->checkCheckoutItem($custId, $CNo, $stat);	
 	}
 
 	function send_mail_gmail($to, $from, $subject, $body, $cc = null, $bcc = null){

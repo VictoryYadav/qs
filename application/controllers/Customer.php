@@ -1288,7 +1288,7 @@ class Customer extends CI_Controller {
         $data['KOTNo'] = $this->session->userdata('KOTNo');
         $CNo = $this->session->userdata('CNo');
 
-        $valCheck = checkCheckout($data['CustId'], $CNo);
+        $valCheck = checkCheckout($data['CustId'], $CNo, 3);
         if(empty($valCheck)){
             // after alert
             redirect(base_url('customer/cart'));
