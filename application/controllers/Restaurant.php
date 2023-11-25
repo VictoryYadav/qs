@@ -3411,7 +3411,7 @@ class Restaurant extends CI_Controller {
             
             if($status == 'success'){
                 if($this->session->userdata('AutoSettle') == 1){
-                    $this->autoSettlePayment($pay['BillId'], $pay['MCNo'], $pay['MergeNo'], $TableNo);
+                    autoSettlePayment($pay['BillId'], $pay['MergeNo']);
                 }
 
                 $response = 'Payment Collected';
@@ -4042,26 +4042,6 @@ class Restaurant extends CI_Controller {
             echo json_encode($response);
             die();
         }
-    }
-
-    private function autoSettlePayment($billId, $cNo, $MergeNo, $TableNo){
-
-        $EID = authuser()->EID;
-        $EType = $this->session->userdata('EType');
-
-        $q1 = "UPDATE Billing  SET Stat = 1,payRest=1  WHERE BillId = $billId AND EID = $EID";
-        $billData = $this->db2->query($q1);
-        // print_r($q1);
-        updateRecord('BillPayments', array('Stat' => 1), array('BillId' => $billId,'EID' => $EID));
-
-        $q2 = "UPDATE Kitchen k, KitchenMain km SET k.payRest=1, km.payRest=1 WHERE (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
-        $kitchenUpdate = $this->db2->query($q2);
-
-        if ($EType == 5) {
-            updateRecord('Eat_tables', array('Stat' => 0, 'MergeNo' => $TableNo), array(' EID' => $EID,'MergeNo' => $MergeNo));
-        }
-
-        $this->db2->query("UPDATE KitchenMain km, Billing b set km.CnfSettle = 1 where b.BillId = $billId  and (km.CNo = b.CNo or km.MCNo = b.CNo) and b.EID=km.EID and b.EID=$EID");        
     }
 
     public function kds(){

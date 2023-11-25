@@ -716,7 +716,7 @@ class Customer extends CI_Controller {
                 if ($EType == 5) {
                     // $this->db2->where('Stat', 0);
                     // $this->db2->or_where('Stat', 1);
-                    $this->db2->where_in('Stat', array(0,1));
+                    $this->db2->where_in('Stat', array(0,1,2));
                     $this->db2->update('Kitchen', array('Stat' => 99), array('EID' => $EID,
                             'CustId' => $CustId,
                             'TableNo' => $TableNo,
@@ -725,7 +725,7 @@ class Customer extends CI_Controller {
                             )
                         );
 
-                    $this->db2->where_in('Stat', array(0,1));
+                    $this->db2->where_in('Stat', array(0,1,2));
                     // $this->db2->or_where('Stat', 1);
                     $this->db2->update('KitchenMain', array('Stat' => 99), array('EID' => $EID,
                             'CustId' => $CustId,
@@ -745,9 +745,13 @@ class Customer extends CI_Controller {
                     //         )
                     //     );
                 } else {
-                    updateRecord('Kitchen', array('Stat' => 99), array('EID' => $EID,
-                        'CustId' => $CustId , 'BillStat' => 0 , 'Stat' => 0 )
-                                );
+
+                    $this->db2->where_in('Stat', array(0,1,2));
+                    $this->db2->update('Kitchen', array('Stat' => 99), array('EID' => $EID,
+                            'CustId' => $CustId,
+                            'BillStat' => 0
+                            )
+                        );
 
                     updateRecord('KitchenMain', array('Stat' => 99), array('EID' => $EID,
                             'CustId' => $CustId, 
@@ -1767,7 +1771,10 @@ class Customer extends CI_Controller {
         $billId = $_POST['BillId'];
 
         $this->db2->query("UPDATE KitchenMain km, Billing b set km.CnfSettle = 1 where b.BillId = $billId  and (km.CNo = b.CNo or km.MCNo = b.CNo) and b.EID=km.EID and b.EID=$EID");
+        
+        $MergeNo = $this->session->userdata('MergeNo');
 
+        autoSettlePayment($billId, $MergeNo);
         // $this->session->set_userdata('CNo', 0);
     }
 

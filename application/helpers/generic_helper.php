@@ -361,6 +361,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	    return $CI->User->generate_otp($mobile, $page);
 	}
 
+	function autoSettlePayment($billId, $MergeNo){
+		$CI = & get_instance();
+	    $CI->load->model('User');
+	    return $CI->User->SettlePayment($billId, $MergeNo);	
+	}
+
 
 
 
