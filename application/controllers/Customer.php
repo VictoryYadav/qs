@@ -298,8 +298,12 @@ class Customer extends CI_Controller {
 
                 if (isset($_POST['getSendToKitchenList']) && $_POST['getSendToKitchenList']) {
 
+                    $qry = " k.Stat = 1";
+                    if($EType == 5){
+                        $qry = " (k.Stat = 1 or k.Stat = 2)";
+                    }
                     // Get all Temp Item list
-                    $kitcheData = $this->db2->query("SELECT k.OrdNo, k.ItemId, k.Qty, k.TA, k.Itm_Portion, (if (k.ItemTyp > 0,(CONCAT(mi.ItemNm, ' - ' , k.CustItemDesc)),(mi.ItemNm ))) as ItemNm,  k.ItmRate as Value, mi.PckCharge, k.OType, k.OrdTime , ip.Name as Portions, k.Stat from Kitchen k, MenuItem mi,ItemPortions ip where k.Itm_Portion = ip.IPCd and k.CustId = $CustId AND k.EID = $EID AND k.TableNo = $TableNo AND k.ItemId = mi.ItemId AND k.BillStat = 0 AND (k.Stat = 1 or k.Stat = 2) and k.CNo = $CNo")
+                    $kitcheData = $this->db2->query("SELECT k.OrdNo, k.ItemId, k.Qty, k.TA, k.Itm_Portion, (if (k.ItemTyp > 0,(CONCAT(mi.ItemNm, ' - ' , k.CustItemDesc)),(mi.ItemNm ))) as ItemNm,  k.ItmRate as Value, mi.PckCharge, k.OType, k.OrdTime , ip.Name as Portions, k.Stat from Kitchen k, MenuItem mi,ItemPortions ip where k.Itm_Portion = ip.IPCd and k.CustId = $CustId AND k.EID = $EID AND k.TableNo = $TableNo AND k.ItemId = mi.ItemId AND k.BillStat = 0 AND $qry and k.CNo = $CNo")
                     ->result_array();
 
                     foreach ($kitcheData as &$key) {
@@ -965,12 +969,15 @@ class Customer extends CI_Controller {
             if (isset($_POST['goBill']) && $_POST['goBill']) {
                 // $temp = array();
                 // $data = array();
+
+                $stat = ($EType == 5)?3:2;
+
                 $i=0;
                 foreach ($_POST['OrdNo'] as $OrdNo ) {
                     $temp['OrdNo'] = $OrdNo;
                     $temp['qty'] = $_POST['qty'][$i];
                     // $data[] = $temp;
-                    updateRecord('Kitchen', array('Qty' => $temp['qty'],'Stat' => 3), array('OrdNo' => $OrdNo, 'EID' => $EID));
+                    updateRecord('Kitchen', array('Qty' => $temp['qty'],'Stat' => $stat), array('OrdNo' => $OrdNo, 'EID' => $EID));
                     $i++;
                 }
                 
@@ -1291,7 +1298,8 @@ class Customer extends CI_Controller {
         if(!empty($bilchk)){
             redirect(base_url('customer/pay/'.$bilchk['BillId'].'/'.$bilchk['CNo']));
         }else{
-            $valCheck = checkCheckout($data['CustId'], $CNo, 3);
+            $stat = ($data['EType'] == 5)?3:2;
+            $valCheck = checkCheckout($data['CustId'], $CNo, $stat);
             if(empty($valCheck)){
                 // after alert
                 redirect(base_url('customer/cart'));
@@ -1771,10 +1779,7 @@ class Customer extends CI_Controller {
         $EID  = authuser()->EID;
         $billId = $_POST['BillId'];
 
-        $this->db2->query("UPDATE KitchenMain km, Billing b set km.CnfSettle = 1, km.custPymt = 1 where b.BillId = $billId  and (km.CNo = b.CNo or km.MCNo = b.CNo) and b.EID=km.EID and b.EID=$EID");
-
         $MergeNo = $this->session->userdata('MergeNo');
-
         autoSettlePayment($billId, $MergeNo);
 
         // $this->session->set_userdata('CNo', 0);

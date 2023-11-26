@@ -1750,8 +1750,11 @@ class Restaurant extends CI_Controller {
             } else {
                 $STVCd = 0;
             }
+
+            $EType = $this->session->userdata('EType');
+            $stat = ($EType == 5)?3:2;
             
-            $kitchenData = $this->db2->query("SELECT (SUM(k.Qty) - SUM(k.DQty)) as AllDelivered, SUM(k.AQty) as AnyAssigned,km.CNo, km.CustId,  SUM(k.ItmRate * k.Qty) as Amt,  IF((SELECT MIN(k1.KOTPrintNo) FROM Kitchen k1 WHERE k1.KOTPrintNo = 1 AND (km.CNo = k1.CNo OR km.MCNo = k1.CNo)  AND k1.MergeNo = km.MergeNo AND k1.EID = km.EID AND ec.EID = km.EID GROUP BY k1.MergeNo, km.EID)=1,0,1) AS NEW_KOT, TIME_FORMAT(km.LstModDt,'%H:%i') as StTime,   km.MergeNo, km.MCNo, km.BillStat,  km.EID, km.CNo, km.CellNo, (select count(km2.CellNo) from KitchenMain km2 where km2.CellNo=km.CellNo and km2.EID = km.EID group by km2.CellNo) as visitNo, km.TableNo,km.OType,km.payRest,km.custPymt,km.CnfSettle, ec.CCd, ec.Name FROM Kitchen k,  MenuItem i , Eat_tables et, Eat_Casher ec, KitchenMain km WHERE (km.CNo = k.CNo OR km.MCNo = k.CNo) And  et.TableNo = km.TableNo AND k.ItemId = i.ItemId  AND et.EID = km.EID AND km.payRest=0 and km.CnfSettle=0 AND (k.Stat = 3) AND (k.OType = 7 OR k.OType = 8) AND et.CCd = ec.CCd AND ec.CCd = $STVCd  AND k.EID = km.EID AND k.MergeNo = km.MergeNo AND km.EID = $EID GROUP BY km.CNo,  km.Mergeno, km.MCNo order by MergeNo, km.LstModDt")->result_array();
+            $kitchenData = $this->db2->query("SELECT (SUM(k.Qty) - SUM(k.DQty)) as AllDelivered, SUM(k.AQty) as AnyAssigned,km.CNo, km.CustId,  SUM(k.ItmRate * k.Qty) as Amt,  IF((SELECT MIN(k1.KOTPrintNo) FROM Kitchen k1 WHERE k1.KOTPrintNo = 1 AND (km.CNo = k1.CNo OR km.MCNo = k1.CNo)  AND k1.MergeNo = km.MergeNo AND k1.EID = km.EID AND ec.EID = km.EID GROUP BY k1.MergeNo, km.EID)=1,0,1) AS NEW_KOT, TIME_FORMAT(km.LstModDt,'%H:%i') as StTime,   km.MergeNo, km.MCNo, km.BillStat,  km.EID, km.CNo, km.CellNo, (select count(km2.CellNo) from KitchenMain km2 where km2.CellNo=km.CellNo and km2.EID = km.EID group by km2.CellNo) as visitNo, km.TableNo,km.OType,km.payRest,km.custPymt,km.CnfSettle, ec.CCd, ec.Name FROM Kitchen k,  MenuItem i , Eat_tables et, Eat_Casher ec, KitchenMain km WHERE (km.CNo = k.CNo OR km.MCNo = k.CNo) And  et.TableNo = km.TableNo AND k.ItemId = i.ItemId  AND et.EID = km.EID AND km.payRest=0 and km.CnfSettle=0 AND (k.Stat = $stat) AND (k.OType = 7 OR k.OType = 8) AND et.CCd = ec.CCd AND ec.CCd = $STVCd  AND k.EID = km.EID AND k.MergeNo = km.MergeNo AND km.EID = $EID GROUP BY km.CNo,  km.Mergeno, km.MCNo order by MergeNo, km.LstModDt")->result_array();
             // echo "<pre>";
             // print_r($kitchenData);exit();
             if (empty($kitchenData)) {
@@ -1849,8 +1852,11 @@ class Restaurant extends CI_Controller {
             $custId = $_POST['custId'];
             $CNo = $_POST['cNo'];
 
+            $EType = $this->session->userdata('EType');
+            $stat = ($EType == 5)?3:2;
+
             // get kot from kitchen for particular row  - 14/1/20 
-            $q = "SELECT k.MergeNo,km.TableNo, k.FKOTNo, k.KOTNo, k.KitCd, SUM(k.Qty) as Qty , k.KOTPrintNo, k.ItemId, i.ItemNm, SUM(k.Qty) as Qty, SUM(k.AQty) as AQty, SUM(k.DQty) as DQty,TIME_FORMAT(ADDTIME(k.OrdTime,k.EDT), '%H:%i') as EDT, km.CellNo, km.CNo,km.MCNo, km.MergeNo FROM Kitchen k, KitchenMain km, MenuItem i WHERE k.ItemId = i.ItemId AND ( k.Stat = 3 ) AND k.EID=km.EID AND k.CNo = km.CNo AND km.EID = $EID and (km.CNo = $CNo OR km.MCNo = $CNo) and k.MergeNo = km.MergeNo and km.MergeNo = $mergeNo GROUP BY k.FKOTNo, k.KOTNo, k.KitCd, k.KOTPrintNo, k.ItemId, k.EDT, km.TableNo, km.CellNo, km.CNo order by k.KOTNo, k.FKOTNo, i.ItemNm DESC";
+            $q = "SELECT k.MergeNo,km.TableNo, k.FKOTNo, k.KOTNo, k.KitCd, SUM(k.Qty) as Qty , k.KOTPrintNo, k.ItemId, i.ItemNm, SUM(k.Qty) as Qty, SUM(k.AQty) as AQty, SUM(k.DQty) as DQty,TIME_FORMAT(ADDTIME(k.OrdTime,k.EDT), '%H:%i') as EDT, km.CellNo, km.CNo,km.MCNo, km.MergeNo FROM Kitchen k, KitchenMain km, MenuItem i WHERE k.ItemId = i.ItemId AND ( k.Stat = $stat ) AND k.EID=km.EID AND k.CNo = km.CNo AND km.EID = $EID and (km.CNo = $CNo OR km.MCNo = $CNo) and k.MergeNo = km.MergeNo and km.MergeNo = $mergeNo GROUP BY k.FKOTNo, k.KOTNo, k.KitCd, k.KOTPrintNo, k.ItemId, k.EDT, km.TableNo, km.CellNo, km.CNo order by k.KOTNo, k.FKOTNo, i.ItemNm DESC";
             
             $kots = $this->db2->query($q)->result_array();
             
@@ -2871,6 +2877,9 @@ class Restaurant extends CI_Controller {
             $orderAmount = 0;
             $itemKitCd = 0;
             $newUKOTNO = 0;
+
+            $stat = ($EType == 5)?3:2;
+
             for ($i = 0; $i < sizeof($itemIds); $i++) {
                 $itemKitCd = $itemKitCds[$i];
 
@@ -2915,7 +2924,7 @@ class Restaurant extends CI_Controller {
                 $kitchenObj['ItmRate'] = $ItmRate[$i];
                 $kitchenObj['OrigRate'] = $ItmRate[$i];
                 $kitchenObj['PckCharge'] = $pckValue[$i];
-                $kitchenObj['Stat'] = 3;
+                $kitchenObj['Stat'] = $stat;
                 $kitchenObj['CellNo'] = $phone;
                 $kitchenObj['Itm_Portion'] = $Itm_Portion[$i];
                 $kitchenObj['TaxType'] = $taxtype[$i];
@@ -2930,11 +2939,9 @@ class Restaurant extends CI_Controller {
 
             if ($data_type == 'bill') {
 
-                // $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7 AND k1.Stat<>9  AND k1.Stat<>99) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7  AND k1.Stat<>9 AND k1.Stat<>99) GROUP BY k1.EID) as TotPckCharge,  ip.Name as Portions, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.MergeNo  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7  AND k.Stat<>9 AND k.Stat<>10 AND k.Stat<>99) and km.EID = k.EID and km.EID = $EID And k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) AND km.BillStat=0 AND TIMEDIFF(Now(), km.LstModDt) < '10:00:00' group by km.CNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by TaxType, m.ItemNm Asc")->result_array();
-
                 $MergeNo = $tableNo;
 
-                $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotItemDisc,(SELECT sum(k1.PckCharge*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotPckCharge,   ip.Name as Portions,km.CNo,km.MergeNo, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.CustId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = 3) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.MCNo AND km.MCNo IN (Select km1.MCNo from KitchenMain km1 where km1.MergeNo=$MergeNo group by km1.MergeNo) group by km.MCNo, k.ItemId, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by k.TaxType, m.ItemNm Asc")->result_array();
+                $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotItemDisc,(SELECT sum(k1.PckCharge*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotPckCharge,   ip.Name as Portions,km.CNo,km.MergeNo, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.CustId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.MCNo AND km.MCNo IN (Select km1.MCNo from KitchenMain km1 where km1.MergeNo=$MergeNo group by km1.MergeNo) group by km.MCNo, k.ItemId, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by k.TaxType, m.ItemNm Asc")->result_array();
 
                 $taxDataArray = array();
                 if(!empty($kitcheData)){
@@ -2965,7 +2972,7 @@ class Restaurant extends CI_Controller {
                         }
 
                         foreach ($tax_type_array as $key => $value) {
-                            $q = "SELECT t.ShortName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included,k.ItmRate, k.Qty,k.ItemId, (sum(k.ItmRate*k.Qty)) as ItemAmt, (if (t.Included <5,((sum(k.ItmRate*k.Qty)) - ((sum(k.ItmRate*k.Qty)) / (1+t.TaxPcent/100))),((sum(k.ItmRate*k.Qty))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where (k.Stat = 3) and k.EID=km.EID and k.CNo=km.CNo and (km.CNo=$CNo or km.MCNo =$CNo) and t.TaxType = k.TaxType and t.TaxType = $value  and t.EID= $EID AND km.BillStat = 0 group by t.ShortName,t.TNo,t.TaxPcent, t.TaxType, t.TaxOn, t.TaxGroup, t.Included order by t.rank";
+                            $q = "SELECT t.ShortName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included,k.ItmRate, k.Qty,k.ItemId, (sum(k.ItmRate*k.Qty)) as ItemAmt, (if (t.Included <5,((sum(k.ItmRate*k.Qty)) - ((sum(k.ItmRate*k.Qty)) / (1+t.TaxPcent/100))),((sum(k.ItmRate*k.Qty))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where (k.Stat = $stat) and k.EID=km.EID and k.CNo=km.CNo and (km.CNo=$CNo or km.MCNo =$CNo) and t.TaxType = k.TaxType and t.TaxType = $value  and t.EID= $EID AND km.BillStat = 0 group by t.ShortName,t.TNo,t.TaxPcent, t.TaxType, t.TaxOn, t.TaxGroup, t.Included order by t.rank";
                             // print_r($q);exit();
                             $TaxData = $this->db2->query($q)->result_array();
                             $taxDataArray[$value] = $TaxData;
@@ -3377,6 +3384,7 @@ class Restaurant extends CI_Controller {
 
             // echo "<pre>";
             // print_r($_POST);
+            // die;
 
             $pay = $_POST;
             $pay['PaymtMode'] = 1;
@@ -3390,31 +3398,32 @@ class Restaurant extends CI_Controller {
             $TableNo = $pay['TableNo'];
             unset($pay['TableNo']);
             // print_r($pay);
-            if($pay['oType']==8){
+
+            $checkBP = $this->db2->get_where('BillPayments', array('EID' => $pay['EID'],'BillId' => $pay['BillId']))->row_array();
+
+            if(!empty($checkBP)){
+                updateRecord('BillPayments', array('PymtType' => $pay['PymtType']), array('EID' => $pay['EID'],'BillId' => $pay['BillId']));
+            }else{
                 unset($pay['oType']);
                 $payNo = insertRecord('BillPayments', $pay);
-                updateRecord('KitchenMain', array('custPymt' => 1), array('MCNo' => $pay['MCNo'],'EID' => $pay['EID']));
-                $status = 'success';
-                
-            }else if($pay['oType']==7){
-                
-                $checkBP = $this->db2->get_where('BillPayments', array('EID' => $pay['EID'],'BillId' => $pay['BillId']))->row_array();
-                if(!empty($checkBP)){
-                    updateRecord('BillPayments', array('PymtType' => $pay['PymtType']), array('EID' => $pay['EID'],'BillId' => $pay['BillId']));
-                }else{
-                    unset($pay['oType']);
-                    $payNo = insertRecord('BillPayments', $pay);
-                }
-
-                $status = 'success';
             }
-            
-            if($status == 'success'){
-                if($this->session->userdata('AutoSettle') == 1){
-                    autoSettlePayment($pay['BillId'], $pay['MergeNo']);
-                }
 
-                $response = 'Payment Collected';
+            $status = 'success';
+            $response = 'Payment Collected';
+            
+            if($this->session->userdata('AutoSettle') == 1){
+                autoSettlePayment($pay['BillId'], $pay['MergeNo']);
+            }else{
+                if($this->session->userdata('EType') == 1){
+                    $billId = $pay['BillId'];
+                    $EID = $pay['EID'];
+
+                    updateRecord('Billing', array('Stat' => 1,'payRest' => 1), array('BillId' => $billId, 'EID' => $EID));
+
+                    updateRecord('BillPayments', array('Stat' => 1), array('BillId' => $billId,'EID' => $EID));
+
+                    $this->db2->query("UPDATE Kitchen k, KitchenMain km, Billing b SET k.payRest=1, km.payRest=1, km.CnfSettle = 1, k.Stat = 3, km.custPymt = 1 WHERE b.BillId = $billId and (k.Stat = 2) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo)");
+                }
             }
             
             header('Content-Type: application/json');
@@ -4015,6 +4024,8 @@ class Restaurant extends CI_Controller {
             // print_r($q1);
             updateRecord('BillPayments', array('Stat' => 1), array('BillId' => $id,'EID' => $EID));
 
+
+
             $q2 = "UPDATE Kitchen k, KitchenMain km SET k.payRest=1, km.payRest=1 WHERE (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)";
             $kitchenUpdate = $this->db2->query($q2);
 
@@ -4144,6 +4155,9 @@ class Restaurant extends CI_Controller {
         $data['EID'] = $EID;
         $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
         $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
+
+        $data['bills'] = $this->rest->getTAPendingBills();
+        $data['payModes'] = $this->db2->get_where('PymtModes', array('Stat' => 0))->result_array();
         // echo "<pre>";
         // print_r($data);
         // die;

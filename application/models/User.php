@@ -55,9 +55,6 @@ class User extends CI_Model{
 	// common function for both sides
 	public function gettingBiliingData($dbname, $EID, $billId, $CustId, $flag){
 
-		// $billData = $this->db2->query("SELECT SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as ItemAmt, (if (k.ItemTyp > 0, (CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm, k.ItmRate, SUM(k.Qty) as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, b.BillPrefix, b.BillSuffix, b.TaxInclusive, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo, b.TotItemDisc, b.BillDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt, b.SerCharge as bservecharge, b.Tip, b.billTime as BillDt,ip.Name as Portions, k.Itm_Portion  from ".$dbname."Kitchen k, ".$dbname."KitchenMain km, ".$dbname."Billing b, ".$dbname."MenuItem m, ".$dbname."Eatary e , ".$dbname."ItemPortions ip where k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and (k.Stat<>4 and k.Stat<>6 and k.Stat<>7 and k.Stat<>99) and km.CNo = k.CNo AND km.BillStat = b.BillId and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID  and b.ChainId = km.ChainId and km.EID = $EID and b.BillId = $billId Group By m.ItemNm, k.ItmRate, k.ItemTyp, k.CustItemDesc, k.TaxType, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno,  e.PhoneNos, e.Remarks, k.Stat, e.Tagline, b.BillNo, b.TotAmt, b.TaxInclusive, b.SerCharge, b.Tip, b.billTime ,k.Itm_Portion,ip.Name Order By k.TaxType, m.ItemNm")->result_array();
-		// Repository : billing/bill_print.repo.php
-
 		$my_db = $this->session->userdata('my_db');
 		$comDb = $this->db2;
 		if($dbname != $my_db){
@@ -76,7 +73,15 @@ class User extends CI_Model{
 
 		// if there is in error for user table we have to create two query 1 from customer to join user table and another query remove join to users table for restaurant side, currently we are adding user with custid =0 in users table
 
-		$billData = $comDb->query("SELECT ((k.ItmRate+m.PckCharge)* sum(k.Qty) * b.splitPercent) as ItemAmt, m.ItemNm, k.CustItemDesc, k.ItmRate, sum(k.Qty) * b.splitPercent as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, e.BillName, b.BillPrefix, b.BillSuffix, b.TaxInclusive, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo, b.TotItemDisc, b.BillDiscAmt,b.custDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt,b.PaidAmt, b.SerCharge as bservecharge,b.SerChargeAmt, b.Tip,b.TableNo, b.billTime as BillDt,ip.Name as Portions, k.Itm_Portion, u.FName, u.LName, u.MobileNo  from Kitchen k, KitchenMain km, Billing b, MenuItem m, Eatary e , ItemPortions ip, Users u where u.CustId = km.CustId and k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and (k.Stat = 3) and (km.CNo = k.CNo or km.MCNo = k.MCNo) and (km.CNo = b.CNo or km.MCNo = b.CNo) and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID  and b.ChainId = km.ChainId and km.EID = $EID and b.BillId = $billId $custAnd Group By m.ItemNm, k.ItmRate, k.ItemTyp, k.CustItemDesc, k.TaxType, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno,  e.PhoneNos, e.Remarks, k.Stat, e.Tagline, b.BillNo, b.TotAmt, b.TaxInclusive, b.SerCharge, b.Tip, b.billTime ,k.Itm_Portion,ip.Name Order By k.TaxType, m.ItemNm")->result_array();
+		$EType = $this->session->userdata('EType');
+		
+
+		$qry = " (k.Stat = 2 or k.Stat = 3)";
+		if($EType == 5){
+			$qry = " k.Stat = 3";
+		}
+
+		$billData = $comDb->query("SELECT ((k.ItmRate+m.PckCharge)* sum(k.Qty) * b.splitPercent) as ItemAmt, m.ItemNm, k.CustItemDesc, k.ItmRate, sum(k.Qty) * b.splitPercent as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, e.BillName, b.BillPrefix, b.BillSuffix, b.TaxInclusive, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo, b.TotItemDisc, b.BillDiscAmt,b.custDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt,b.PaidAmt, b.SerCharge as bservecharge,b.SerChargeAmt, b.Tip,b.TableNo, b.billTime as BillDt,ip.Name as Portions, k.Itm_Portion, u.FName, u.LName, u.MobileNo  from Kitchen k, KitchenMain km, Billing b, MenuItem m, Eatary e , ItemPortions ip, Users u where u.CustId = km.CustId and k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and $qry and (km.CNo = k.CNo or km.MCNo = k.MCNo) and (km.CNo = b.CNo or km.MCNo = b.CNo) and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID  and b.ChainId = km.ChainId and km.EID = $EID and b.BillId = $billId $custAnd Group By m.ItemNm, k.ItmRate, k.ItemTyp, k.CustItemDesc, k.TaxType, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno,  e.PhoneNos, e.Remarks, k.Stat, e.Tagline, b.BillNo, b.TotAmt, b.TaxInclusive, b.SerCharge, b.Tip, b.billTime ,k.Itm_Portion,ip.Name Order By k.TaxType, m.ItemNm")->result_array();
 // print_r($this->db2->last_query());die;
 		if(!empty($billData)){
 			$intial_value = $billData[0]['TaxType'];
@@ -257,9 +262,9 @@ class User extends CI_Model{
         if ($EType == 5) {
         	$this->db2->query("UPDATE Eat_tables SET MergeNo = TableNo, Stat = 0 where EID = $EID and MergeNo = $MergeNo");
         	// check for split bill payments , for km tables
-        	$this->db2->query("UPDATE Kitchen k, KitchenMain km, Billing b SET k.payRest=1, km.payRest=1, km.CnfSettle = 1 WHERE b.BillId = $billId and (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo)");
+        	$this->db2->query("UPDATE Kitchen k, KitchenMain km, Billing b SET k.payRest=1, km.payRest=1, km.CnfSettle = 1, km.custPymt = 1 WHERE b.BillId = $billId and (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo)");
         }else{
-        	$this->db2->query("UPDATE Kitchen k, KitchenMain km, Billing b SET k.payRest=1, km.payRest=1, km.CnfSettle = 1, k.Stat = 3 WHERE b.BillId = $billId and (k.Stat = 2) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo)");
+        	$this->db2->query("UPDATE Kitchen k, KitchenMain km, Billing b SET k.payRest=1, km.payRest=1, km.CnfSettle = 1, k.Stat = 3, km.custPymt = 1 WHERE b.BillId = $billId and (k.Stat = 2) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo)");
         }
         
 	}

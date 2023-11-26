@@ -187,7 +187,7 @@
                 <div class="row" style="margin: 0px;">
                     <div class="col-12 text-center" width="100%;">
                         <a href="<?= base_url('customer'); ?>" class="btn btn-sm backbtn"><?php echo  $this->lang->line('menu'); ?></a>
-                        <?php if($this->session->userdata('BillMergeOpt') > 0){ ?>
+                        <?php if($this->session->userdata('BillMergeOpt') > 0 && ($EType == 5)){ ?>
                         <a href="<?= base_url('customer/merge_order/'.$TableNo); ?>" class="btn orderbtn btn-sm"><?php echo  $this->lang->line('mergeorder'); ?></a>
                         <?php } ?>
                         <button class="btn btn-sm paybtn" onclick="payNow()"><?php echo  $this->lang->line('payNow'); ?></button>

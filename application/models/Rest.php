@@ -875,6 +875,19 @@ class Rest extends CI_Model{
 
 	}
 
+	public  function getTAPendingBills()
+	{
+		return $this->db2->select('b.BillId,b.BillNo, b.billTime,b.PaidAmt, b.CellNo,b.OType,b.TableNo,b.CNo,b.EID, b.MergeNo,')
+						->order_by('b.BillId', 'ASC')
+						->group_by('b.BillId')
+						->get_where('Billing b', array(
+											'b.payRest' => 0,
+											'b.LoginCd' => authuser()->RUserId,
+											'b.EID' => authuser()->EID
+											))
+						->result_array();
+	}
+
 	
 
 	

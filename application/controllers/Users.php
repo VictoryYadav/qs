@@ -8,30 +8,10 @@ class Users extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model('User', 'user');
-
-        $my_db = $this->session->userdata('my_db');
-        $this->db2 = $this->load->database($my_db, TRUE);
 	}
 
     public function index(){
 
-        $dd = $this->db2->select("c.SchNm, cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId,if(cod.Disc_ItemId > 0,(select ItemNm from MenuItem where ItemId = cod.Disc_ItemId),'-') as itemName, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent ")
-                                    ->order_by('cod.MinBillAmt', 'DESC')
-                                    ->join('CustOffers c', 'c.SchCd = cod.SchCd')
-                                    ->get_where('CustOffersDet cod', 
-                                     array('cod.MinBillAmt > ' => 1000,
-                                        'c.SchCatg <' => 20))
-                                    ->result_array();
-
-                            echo "<pre>";
-                            print_r($dd);
-                            print_r($this->db2->last_query());
-                            die;
-
-        $e = $this->db2->get_where('Eatary', array('EID' => 51))->row_array();
-        echo "vijay";
-        echo "<pre>";
-        print_r($e);die;
     }
 
     public function print(){
