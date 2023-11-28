@@ -67,7 +67,7 @@
                                                         </td>
                                                         <td><?= date('d-M-Y',strtotime($key['BillDate'])); ?></td>
 
-                                                        <td><?= $key['TotAmt']; ?></td>   
+                                                        <td><?= $key['bPaidAmt']; ?></td>   
                                                         <td ><?= $key['PaidAmt']; ?></td>
                                                         <td><?= $key['Company']; ?></td>
                                                         <td><?= $key['PymtType']; ?></td>

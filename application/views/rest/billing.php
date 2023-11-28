@@ -13,6 +13,7 @@
         $taxDataArray = $res['taxDataArray'];
 
         $hotelName = $billData[0]['Name'];
+        $BillName = $billData[0]['BillName'];
         $TableNo = $billData[0]['TableNo'];
         $phone = $billData[0]['PhoneNos'];
         $gstno = $billData[0]['GSTno'];
@@ -308,7 +309,13 @@
             <a href="<?= base_url('restaurant/print/'.$billId); ?>" class="'btn btn-sm btn-primary">Print</a>
             <div id="download-to-pdf" class="container billView">
                     <div class="text-center">
-                        <p style="font-weight: bold;font-size: 18px !important;margin-bottom: 1px;"><?= $hotelName ?></p>
+                        <p style="font-weight: bold;font-size: 18px !important;margin-bottom: 1px;"><?php
+                                            if($BillName !='-'){
+                                                echo $BillName;
+                                            }else{
+                                                echo $hotelName;
+                                            }
+                         ?></p>
                         <p style="margin-bottom: unset;"><?= $address ?>, <?= $city ?>-<?= $pincode ?></p>
                         <p style="margin-bottom: unset;">Phone: <?= $phone ?></p>
                         <?php if ($gstno != '-') { ?>

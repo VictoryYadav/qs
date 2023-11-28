@@ -38,6 +38,7 @@ class Restaurant extends CI_Controller {
 		$data['title'] = 'Add User';
         $data['EID'] = authuser()->EID;
         $data['restaurant'] = $this->rest->getrestaurantList(authuser()->ChainId);
+        $data['users'] = $this->rest->getUserList();
 		$this->load->view('rest/add_user',$data);
     }
 
@@ -1126,7 +1127,8 @@ class Restaurant extends CI_Controller {
                         $status = 'success';
                         $this->session->set_userdata('new_pwd', $data['password']);
                         $this->session->set_userdata('old_pwd', $data['old_password']);
-                        $this->generateOTP(authuser()->RUserId);
+                        // $this->generateOTP(authuser()->RUserId);
+                        $otp = generateOTP(authuser()->mobile, 'Change Password');
                         $res = "OTP has been send.";
                     }else{
                         $res = "OLD Password does not matched.";
@@ -1170,7 +1172,7 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
-            $otp = $this->session->userdata('new_otp');
+            $otp = $this->session->userdata('cust_otp');
             if($_POST['otp'] == $otp){
                 $password = $this->session->userdata('new_pwd');
                 $this->rest->passwordUpdate($password);
@@ -2746,7 +2748,7 @@ class Restaurant extends CI_Controller {
                 $likeQry = " (ItemNm like '$itemName%' or i.IMcCd like '$itemName%' or i.ItemId like '$itemName%') ";
             }
 
-            $items = $this->db2->query("SELECT i.ItemId, i.ItemNm, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd  FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId order by i.Rank")->result_array();
+            $items = $this->db2->query("SELECT i.ItemId, i.ItemNm, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId order by i.Rank")->result_array();
             
             if (!empty($items)) {
                 $response = [
@@ -2818,6 +2820,9 @@ class Restaurant extends CI_Controller {
 
         if (isset($_POST['sendToKitchen']) && $_POST['sendToKitchen']) {
 
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
             $orderType = $_POST['orderType'];
             $tableNo = $_POST['tableNo'];
             $thirdParty = !isset($_POST['thirdParty'])?$_POST['thirdParty']:0;
@@ -2835,6 +2840,7 @@ class Restaurant extends CI_Controller {
             $CNo = $_POST['CNo'];
             $taxtype = !empty($_POST['taxtype'])?$_POST['taxtype']:0;
             $take_away = !empty($_POST['take_away'])?$_POST['take_away']:0;
+            $prep_time = !empty($_POST['prep_time'])?$_POST['prep_time']:0;
 
             createCustUser($phone);
 
@@ -2928,6 +2934,14 @@ class Restaurant extends CI_Controller {
                 $kitchenObj['CellNo'] = $phone;
                 $kitchenObj['Itm_Portion'] = $Itm_Portion[$i];
                 $kitchenObj['TaxType'] = $taxtype[$i];
+                // edt
+                $date = date("Y-m-d H:i:s");
+                $date = strtotime($date);
+                $time = $prep_time[$i];
+                $date = strtotime("+" . $time . " minute", $date);
+                $edtTime = date('H:i', $date);
+                // edt
+                $kitchenObj['EDT'] = $edtTime;
                 $kitchenObj['LoginCd'] = authuser()->RUserId;
                 // echo "<pre>";print_r($kitchenObj);exit();
                 insertRecord('Kitchen', $kitchenObj);
@@ -2935,7 +2949,8 @@ class Restaurant extends CI_Controller {
                 $orderAmount = $orderAmount + $ItmRate[$i];
             }
 
-            $dArray = array('MCNo' => $CNo, 'MergeNo' => $tableNo,'FKOTNo' => $fKotNo);
+            $url = base_url('restaurant/kot_print/').$CNo.'/'.$tableNo.'/'.$fKotNo;
+            $dArray = array('MCNo' => $CNo, 'MergeNo' => $tableNo,'FKOTNo' => $fKotNo,'sitinKOTPrint' => $this->session->userdata('sitinKOTPrint'), 'url' => $url);
 
             if ($data_type == 'bill') {
 
@@ -3039,8 +3054,17 @@ class Restaurant extends CI_Controller {
         if(isset($_POST['get_table_order_items'])){
 
             $tableno = $_POST['table_no'];
-            $q = "SELECT k.*,km.BillStat kmBillStat, i.ItemNm,i.Value from KitchenMain as km, Kitchen as k, MenuItem as i where km.CNo = k.CNo and km.MergeNo = '$tableno' and k.stat = 3 and i.Itemid = k.Itemid and km.BillStat = 0 ";
-            $data = $this->db2->query($q)->result_array();
+            $data = $this->db2->select('k.CNo, k.TA, k.Qty, k.ItmRate, k.CustRmks,k.CellNo, km.BillStat kmBillStat, mi.ItemNm,mi.Value')
+                        ->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
+                        ->join('MenuItem mi', 'mi.ItemId = k.ItemId', 'inner')
+                        ->get_where('KitchenMain km', array(
+                                            'km.MergeNo' => $tableno,
+                                            'k.Stat' => 3,
+                                            'km.BillStat' => 0)
+                                    )
+                        ->result_array();
+            // $q = "SELECT k.*,km.BillStat kmBillStat, i.ItemNm,i.Value from KitchenMain as km, Kitchen as k, MenuItem as i where km.CNo = k.CNo and km.MergeNo = '$tableno' and k.stat = 3 and i.Itemid = k.Itemid and km.BillStat = 0 ";
+            // $data = $this->db2->query($q)->result_array();
             
             echo json_encode($data);
         }
@@ -3900,17 +3924,11 @@ class Restaurant extends CI_Controller {
             $billData = $res['billData'];
             $data['ra'] = $res['ra'];
             $data['taxDataArray'] = $res['taxDataArray'];
-            $Fullname = '';
-            if(!empty($billData[0]['FName']) && ($billData[0]['FName']!='-')){
-                $Fullname = $billData[0]['FName'];
-            }
-            if(!empty($billData[0]['LName']) && ($billData[0]['LName']!='-')){
-                $Fullname .= $Fullname.' '.$billData[0]['LName'];
-            }
+            
             $data['hotelName'] = $billData[0]['Name'];
             $data['TableNo'] = $billData[0]['TableNo'];
-            $data['Fullname'] = $Fullname;
-            $data['CellNo'] = $billData[0]['MobileNo'];
+            $data['Fullname'] = getName($billData[0]['CustId']);
+            $data['CellNo'] = $billData[0]['CellNo'];
             $data['phone'] = $billData[0]['PhoneNos'];
             $data['gstno'] = $billData[0]['GSTno'];
             $data['fssaino'] = $billData[0]['FSSAINo'];
@@ -4008,7 +4026,9 @@ class Restaurant extends CI_Controller {
     }
 
     public function bill_settle(){
-        if ($_POST['setPaidAmount']) {
+        $status = 'error';
+        $response = 'Something went wrong please try again!';
+        if($this->input->method(true)=='POST'){
             // echo "<pre>";
             // print_r($_POST);
             // die;
@@ -4030,28 +4050,18 @@ class Restaurant extends CI_Controller {
             $kitchenUpdate = $this->db2->query($q2);
 
             if ($EType == 5) {
-                // $q3 = "DELETE from Eat_tables_Occ where EID=$EID and CNo = $cNo AND ((TableNo = '$TableNo' AND CustId = $CustId) OR (MergeNo = '$TableNo'))";
-                // $deleteETO = $this->db2->query($q3);
 
               $this->db2->query("UPDATE Eat_tables SET Stat = 0 WHERE EID = $EID AND MergeNo = $MergeNo");
             }
 
-            // store to gen db
-            $genTblDb = $this->load->database('GenTableData', TRUE);
-            $custPymtObj['BillId'] = $id;
-            $custPymtObj['BillNo'] = $billNo;
-            $custPymtObj['EID'] = $EID;
-            $custPymtObj['PaidAmt'] = $billAmt;
-            $custPymtObj['PaymtMode'] = $pymtMode;
-            // $genTblDb->insert('CustPymts', $custPymtObj);
-
-            $response = [
-                "status" => 1,
-                "msg" => "Billing Updated"
-            ];
-
-            echo json_encode($response);
-            die();
+            $status = 'success';
+            $response = 'Billing Updated';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
         }
     }
 
@@ -4142,6 +4152,7 @@ class Restaurant extends CI_Controller {
         $data['EID'] = $EID;
         $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
         $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
+        $data['bills'] = $this->rest->getTAPendingBills();
         // echo "<pre>";
         // print_r($data);
         // die;
@@ -4171,6 +4182,7 @@ class Restaurant extends CI_Controller {
         $data['EID'] = $EID;
         $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
         $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
+        $data['bills'] = $this->rest->getTAPendingBills();
         // echo "<pre>";
         // print_r($data);
         // die;

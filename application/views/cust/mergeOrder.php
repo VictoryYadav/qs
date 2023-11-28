@@ -145,7 +145,7 @@
 
                                 </td>
                                 <td>
-                                    <?= $ord['CellNo']; ?> <small>(<?= $ord['FName'].' '.$ord['LName']; ?>)</small>
+                                    <?= $ord['CellNo']; ?> <small>(<?= getName($ord['CustId']); ?>)</small>
                                 </td>
                                 <td>
                                     <?= $ord['OrdAmt']; ?>
@@ -214,10 +214,10 @@
                     <div class="col-12 text-center">
                         
                         <button class="btn btn-sm backbtn" type="submit" name="btnName" value="splitBill">
-                        Split Bill
+                        <?php echo  $this->lang->line('splitbill'); ?>
                         </button>
                          <button class="btn btn-sm paybtn" type="submit" name="btnName" value="payNow">
-                            Pay Now
+                            <?php echo  $this->lang->line('payNow'); ?>
                         </button>
                             
                     </div>

@@ -1968,7 +1968,7 @@ width: 100%;*/
         function alreadyMearge(event) {
             console.log($(event).is(':checked'));
             if ($(event).is(':checked')) {
-                alert('Already Merged');
+            alert('Already Merged');
             } else {}
         };
 
@@ -1988,29 +1988,14 @@ width: 100%;*/
         }
         function setPaidAmount(id , CNo , MergeNo , CustId, billNo, billAmt, pymtMode) {
 
-            formData = new FormData();
-            formData.append('setPaidAmount', 1);
-            formData.append('id', id);
-            formData.append('CNo', CNo);
-            formData.append('MergeNo', MergeNo);
-            formData.append('CustId', CustId);
-            formData.append('billNo', billNo);
-            formData.append('billAmt', billAmt);
-            formData.append('pymtMode', pymtMode);
-            // console.log($('#selRt').val());
-            axios.post("<?php echo base_url('restaurant/bill_settle'); ?>", formData)
-            .then(response => {
-                // console.log(response.data);
-                if(response.data.status == 1) {
-                    alert("Successfully Updated");
-                    // getTableView();
-                    location.reload();
+            $.post('<?= base_url('restaurant/bill_settle') ?>',{id:id,CNo:CNo,MergeNo:MergeNo,CustId:CustId,billNo:billNo,billAmt:billAmt},function(response){
+
+                if(response.status == 'success') {
+                        alert("Successfully Settled");
                 }else {
-                    console.log("error in updating billing");
+                    alert("Not Settled");
                 }
-            })
-            .catch(error => {
-                console.log(error);
+                location.reload();
             });
         }
 

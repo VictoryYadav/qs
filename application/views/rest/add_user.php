@@ -123,6 +123,56 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table id="usersTBL" class="table table-bordered topics">
+                                                <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>User Name</th>
+                                                    <th>Mobile No</th>
+                                                    <th>Type</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                                </thead>
+            
+                                                <tbody>
+                                                    <?php
+                                                    if(!empty($users)){
+                                                        $i=1;
+                                                        foreach ($users as $key) {
+                                                            if($key['UTyp'] == 1){
+                                                                $type = 'Normal User';
+                                                            }else if($key['UTyp'] == 5){
+                                                                $type = 'Manager';
+                                                            }if($key['UTyp'] == 9){
+                                                                $type = 'Admin';
+                                                            }
+                                                     ?>
+                                                    
+                                                <tr>
+                                                    <td><?php echo $i++; ?></td>
+                                                    <td><?php echo $key['FName'].' '.$key['LName']; ?></td>
+                                                    <td>
+                                                        <?php echo $key['MobileNo']; ?><br>
+                                                           <small><?php echo $key['PEmail']; ?></small> 
+                                                        </td>
+                                                    <td><?php echo $type; ?></td>
+                                                    <td></td>
+                                                </tr>
+                                                <?php }
+                                                 }
+                                                ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         
                     </div> <!-- container-fluid -->
                 </div>
@@ -146,6 +196,8 @@
 
 
 <script type="text/javascript">
-
+$(document).ready(function () {
+    $('#usersTBL').DataTable();
+});
 
 </script>

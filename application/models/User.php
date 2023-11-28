@@ -75,13 +75,12 @@ class User extends CI_Model{
 
 		$EType = $this->session->userdata('EType');
 		
-
 		$qry = " (k.Stat = 2 or k.Stat = 3)";
 		if($EType == 5){
 			$qry = " k.Stat = 3";
 		}
 
-		$billData = $comDb->query("SELECT ((k.ItmRate+m.PckCharge)* sum(k.Qty) * b.splitPercent) as ItemAmt, m.ItemNm, k.CustItemDesc, k.ItmRate, sum(k.Qty) * b.splitPercent as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, e.BillName, b.BillPrefix, b.BillSuffix, b.TaxInclusive, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo, b.TotItemDisc, b.BillDiscAmt,b.custDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt,b.PaidAmt, b.SerCharge as bservecharge,b.SerChargeAmt, b.Tip,b.TableNo, b.billTime as BillDt,ip.Name as Portions, k.Itm_Portion, u.FName, u.LName, u.MobileNo  from Kitchen k, KitchenMain km, Billing b, MenuItem m, Eatary e , ItemPortions ip, Users u where u.CustId = km.CustId and k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and $qry and (km.CNo = k.CNo or km.MCNo = k.MCNo) and (km.CNo = b.CNo or km.MCNo = b.CNo) and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID  and b.ChainId = km.ChainId and km.EID = $EID and b.BillId = $billId $custAnd Group By m.ItemNm, k.ItmRate, k.ItemTyp, k.CustItemDesc, k.TaxType, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno,  e.PhoneNos, e.Remarks, k.Stat, e.Tagline, b.BillNo, b.TotAmt, b.TaxInclusive, b.SerCharge, b.Tip, b.billTime ,k.Itm_Portion,ip.Name Order By k.TaxType, m.ItemNm")->result_array();
+		$billData = $comDb->query("SELECT ((k.ItmRate+m.PckCharge)* sum(k.Qty) * b.splitPercent) as ItemAmt, m.ItemNm, k.CustItemDesc, k.ItmRate, sum(k.Qty) * b.splitPercent as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, e.BillName, b.BillPrefix, b.BillSuffix, b.TaxInclusive, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo, b.TotItemDisc, b.BillDiscAmt,b.custDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt,b.PaidAmt, b.SerCharge as bservecharge,b.SerChargeAmt, b.Tip,b.TableNo, b.billTime as BillDt,ip.Name as Portions, k.Itm_Portion,b.CustId,b.CellNo  from Kitchen k, KitchenMain km, Billing b, MenuItem m, Eatary e , ItemPortions ip where k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and $qry and (km.CNo = k.CNo or km.MCNo = k.MCNo) and (km.CNo = b.CNo or km.MCNo = b.CNo) and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID  and b.ChainId = km.ChainId and km.EID = $EID and b.BillId = $billId $custAnd Group By m.ItemNm, k.ItmRate, k.ItemTyp, k.CustItemDesc, k.TaxType, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno,  e.PhoneNos, e.Remarks, k.Stat, e.Tagline, b.BillNo, b.TotAmt, b.TaxInclusive, b.SerCharge, b.Tip, b.billTime ,k.Itm_Portion,ip.Name Order By k.TaxType, m.ItemNm")->result_array();
 // print_r($this->db2->last_query());die;
 		if(!empty($billData)){
 			$intial_value = $billData[0]['TaxType'];
@@ -194,7 +193,7 @@ class User extends CI_Model{
 
 	// common for create user at first time enter our app
 	public function createCustomerUser($mobile){
-
+		$CustId = 0;
 		$localDb = $this->db2->get_where('Users', array('MobileNo' => $mobile))->row_array();
 		if(empty($localDb)){
 
@@ -207,7 +206,7 @@ class User extends CI_Model{
 
 	            $CustId = $gen_check['CustId'];
 	            
-	            $data1['CustId']    = $gen_check['CustId'];
+	            $data1['CustId']    = $CustId;
 	            $data1['FName']     = $gen_check['FName'];
 	            $data1['LName']     = $gen_check['LName'];
 	            $data1['email']     = $gen_check['email'];
@@ -227,7 +226,10 @@ class User extends CI_Model{
 	            $data['CustId'] = $CustId;
 	            insertRecord('Users',$data);
 	        }
+		}else{
+			$CustId = $localDb['CustId'];
 		}
+		return $CustId;
 	}
 
 	public function generate_otp($mobile, $page){
@@ -267,6 +269,17 @@ class User extends CI_Model{
         	$this->db2->query("UPDATE Kitchen k, KitchenMain km, Billing b SET k.payRest=1, km.payRest=1, km.CnfSettle = 1, k.Stat = 3, km.custPymt = 1 WHERE b.BillId = $billId and (k.Stat = 2) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo)");
         }
         
+	}
+
+	public function getUserName($custId){
+		$name = '';
+		if($custId > 0){
+			$user = $this->db2->select("concat(FName,' ',LName) as name")->get_where('Users', array('CustId' => $custId))->row_array();
+			if(!empty($user)){
+				$name = $user['name'];
+			}
+		}
+		return $name;
 	}
 
 	

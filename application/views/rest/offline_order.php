@@ -83,7 +83,10 @@
 
                                         <div class="row">
                                             <div class="col-md-7 form-group col-6">
-                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#item-list-modal" title="Kitchen Order Ticket">KOT 
+                                                <!-- <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#item-list-modal" title="Kitchen Order Ticket">KOT 
+                                                    <i class="fa fa-plus"></i>
+                                                </button> -->
+                                                <button class="btn btn-primary btn-sm" title="Kitchen Order Ticket" onclick="searchKOT()">KOT 
                                                     <i class="fa fa-plus"></i>
                                                 </button>
                                                 <?php if($OType == 8){ ?>
@@ -126,7 +129,7 @@
                                 </div>
                             </div>
                         </div>
-
+                        <?php if($OType != 8){ ?>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -157,12 +160,20 @@
                                                         <td><?= $key['PaidAmt']; ?></td>   
                                                         <td ><?= $key['CellNo']; ?></td>
                                                         <td>
-                                                            
+                                                            <a href="<?php echo base_url('restaurant/kot_print/'.$key['CNo'].'/'.$key['MergeNo'].'/'.$key['FKOTNo']); ?>" class='btn btn-primary btn-sm'>
+                                                                <i class="fas fa-print"></i>
+                                                            </a>
                                                             <a href="<?php echo base_url('restaurant/print/'.$key['BillId']); ?>" class='btn btn-warning btn-sm'>
                                                                 <i class="fas fa-print"></i>
                                                             </a>
                                                             <button title="Cash Collect" class="btn btn-sm btn-info" id="btnCash" onclick="cashCollect(<?= $key['BillId']; ?>,<?= $key['OType']; ?>,<?= $key['TableNo']; ?>,<?= $key['MergeNo']; ?>,'<?= $key['CellNo']; ?>',<?= $key['PaidAmt']; ?>,<?= $key['CNo']; ?>,<?= $key['EID']; ?>)"><i class="fas fa-money-check"></i>
                                                 </button>
+                                                <?php if($this->session->userdata('AutoSettle') == 0){ ?>
+
+                                                <button class="btn btn-sm btn-success" onclick="setPaidAmount(<?= $key['BillId']; ?>,<?= $key['CNo']; ?>,<?= $key['MergeNo']; ?>,<?= $key['CustId']; ?>,<?= $key['BillNo']; ?>,<?= $key['PaidAmt']; ?>)">
+                                            <i class="fas fa-check-double"></i>
+                                        </button>
+                                            <?php } ?>
                                                         </td>
                                                     </tr>
                                                 <?php } } ?>
@@ -173,6 +184,7 @@
                                 </div>
                             </div>
                         </div>
+                        <?php } ?>
 
                         
                     </div> <!-- container-fluid -->
@@ -273,7 +285,7 @@
             $(event).parent().parent().remove();
         }
 
-        function itemSlected(itemId, itemName, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType) {
+        function itemSlected(itemId, itemName, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime) {
             var orderType = $('#order-type').val();
             ch = '';
             if(orderType != 8){
@@ -296,6 +308,8 @@
                     <i class="fa fa-trash" aria-hidden="true"></i>
                 </button>
                 <input type="hidden" value="${TaxType}" class="taxtype">
+                <input type="hidden" value="${PrepTime}" class="preptime">
+                
                 </td>
             </tr>`;
                 // check if table is empty 
@@ -355,7 +369,7 @@
                                     }
                                     
                                     template += `
-                                <li onclick="itemSlected(${item.ItemId}, '${item.ItemNm}', ${item.Value}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType});" style="cursor: pointer;">${printItemName}</li>
+                                <li onclick="itemSlected(${item.ItemId}, '${item.ItemNm}', ${item.Value}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime});" style="cursor: pointer;">${printItemName}</li>
                             `;
                                 });
                                 template += `</ul>`;
@@ -415,6 +429,7 @@
                 var item_value = [];
                 var pckValue = [];
                 var take_away = [];
+                var prep_time = [];
                 var dataType = $(this).attr('data_type');
                 // Page Validation
                 if (orderType == 0) {
@@ -473,6 +488,10 @@
                         taxtype.push($(this).val());
                     });
 
+                    $(".preptime").each(function(index, el) {
+                        prep_time.push($(this).val());
+                    });
+
 
                     $(".item-remarks").each(function(index, el) {
                         itemRemarks.push($(this).val());
@@ -520,7 +539,8 @@
                             data_type : dataType,
                             CNo:cno,
                             taxtype:taxtype,
-                            take_away:take_away
+                            take_away:take_away,
+                            prep_time:prep_time
                         },
 
                         dataType: "json",
@@ -530,22 +550,22 @@
                                 if (data_type == 'bill') {
                                     alert("Order Billed Successfully");
                                     window.location = "<?= base_url('restaurant/bill/'); ?>"+response.data.billId;
+                                    return false;
                                 }else{
                                 alert("Order Placed Successfully");
-                                var MCNo = response.data.MCNo;
-                                var MergeNo = response.data.MergeNo;
-                                var FKOTNo = response.data.FKOTNo;
                                 
-                                
-                                // location.reload();
+                                var sitinKOTPrint = response.data.sitinKOTPrint;
+                                // alert(response.data.url)
                                     if(orderType == 8){
-                                        <?php if($this->session->userdata('sitinKOTPrint') > 0){ ?>
-                                            window.location = "<?= base_url('restaurant/kot_print/'); ?>"+MCNo+'/'+MergeNo+'/'+FKOTNo;
-                                        <?php } ?>
+                                        if(sitinKOTPrint > 0){
+                                            window.location = `${response.data.url}`;
+                                         } 
                                     }else{
-                                        window.location = "<?= base_url('restaurant/kot_print/'); ?>"+MCNo+'/'+MergeNo+'/'+FKOTNo;    
+                                        window.location = `${response.data.url}`;
                                     }
+                                    return false;
                                 }
+
                                 location.reload();
                             } else {
                                 alert("Failed To Place Order");
@@ -572,28 +592,30 @@
                 $('#order-table-body').html('');
                 var a = JSON.parse(data);
                 // alert(a.length);
-                var billStat = a[0].kmBillStat;
-                var b = '';
-                if(billStat > 0){
-                    alert('Cannot add more items, as bill has been generated for this table')
-                }else{
-                    for(i = 0;i<a.length;i++){
-                        cno = a[i].CNo;
-                        var ch = '';
-                        // alert(a[i].TA);
-                        if(a[i].TA == 1){
-                            ch = 'checked';
+                if(a.length > 0){
+                    var billStat = a[0].kmBillStat;
+                    var b = '';
+                    if(billStat > 0){
+                        alert('Cannot add more items, as bill has been generated for this table')
+                    }else{
+                        for(i = 0;i<a.length;i++){
+                            cno = a[i].CNo;
+                            var ch = '';
+                            // alert(a[i].TA);
+                            if(a[i].TA == 1){
+                                ch = 'checked';
+                            }
+                            b+='<tr>';
+                            b+='<td>'+a[i].ItemNm+'</td><td>'+a[i].Qty+'</td><td>'+a[i].ItmRate+'</td><td class="item-value">'+a[i].Value+'</td><td><input type="checkbox" value="'+a[i].TA+'" '+ch+' disabled /></td><td>'+a[i].CustRmks+'</td>';
+                            b+='</tr>';
                         }
-                        b+='<tr>';
-                        b+='<td>'+a[i].ItemNm+'</td><td>'+a[i].Qty+'</td><td>'+a[i].ItmRate+'</td><td class="item-value">'+a[i].Value+'</td><td><input type="checkbox" value="'+a[i].TA+'" '+ch+' disabled /></td><td>'+a[i].CustRmks+'</td>';
-                        b+='</tr>';
+
+                        $('#phone').val(a[0].CellNo);
+
+                        $('#order-table-body').append(b);
+                        calculateTotal();
                     }
-
-                    $('#phone').val(a[0].CellNo);
-
-                    $('#order-table-body').append(b);
-                    calculateTotal();
-                }
+                } // a.length
               }
           });
 
@@ -630,5 +652,34 @@
           }else{
             alert('Amount has to be greater than or equal to Bill Amount.');
           }
+        }
+
+        const searchKOT = () => {
+            var OType = "<?= $OType; ?>";
+            // console.log('hilll '+OType);
+            if(OType == 8){
+                var table = $('#table-id').val();
+                if(table > 0){
+                    $('#item-list-modal').modal('show');
+                }else{
+                    alert('Please select table first.');
+                }
+            }else{
+                $('#item-list-modal').modal('show');
+            }
+        }
+
+        // settle payments
+        function setPaidAmount(id , CNo , MergeNo , CustId, billNo, billAmt) {
+
+            $.post('<?= base_url('restaurant/bill_settle') ?>',{id:id,CNo:CNo,MergeNo:MergeNo,CustId:CustId,billNo:billNo,billAmt:billAmt},function(response){
+
+                if(response.status == 'success') {
+                        alert("Successfully Settled");
+                }else {
+                    alert("Not Settled");
+                }
+                location.reload();
+            });
         }
     </script>

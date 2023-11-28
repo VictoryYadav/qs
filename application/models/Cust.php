@@ -1691,19 +1691,22 @@ class Cust extends CI_Model{
 	}
 
 	public function getOrderDetailsByTableNo($TableNo){	
+		$EType = $this->session->userdata('EType');
+		$stat = ($EType == 5)?3:2;
 
-		return $this->db2->select('u.CustId, u.FName, u.LName, m.ItemId,m.ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt,km.CNo,km.CellNo, km.BillStat, k.Stat')
+		return $this->db2->select('km.CustId, m.ItemId,m.ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt,km.CNo,km.CellNo, km.BillStat, k.Stat')
 						->order_by('km.CNo', 'asc')
-						->group_by('km.CNo')
+						->group_by('km.CNo, km.CellNo')
 						->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
 						->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
-						->join('Users u', 'u.CustId = km.CustId', 'inner')
-						->where_in('k.Stat', array(1,2))
+						// ->join('Users u', 'u.CustId = km.CustId', 'inner')
+						// ->where_in('k.Stat', array(1,2))
 						->get_where('KitchenMain km', array('km.MergeNo' => $TableNo, 
 							'km.EID' => $this->EID,
 							'k.BillStat' => 0,
 							'km.BillStat' => 0,
-							'k.EID' => $this->EID
+							'k.EID' => $this->EID,
+							'k.Stat' => $stat
 							 )
 							)
 						->result_array();
@@ -1714,13 +1717,13 @@ class Cust extends CI_Model{
 	}
 
 	public function getSplitPayments($billId){
-		return $this->db2->get_where('BillPayments', array('BillId' => $billId,'Stat' => 1))->result_array();
+		return $this->db2->get_where('BillPayments', array('BillId' => $billId,'Stat' => 1,'EID' => $this->EID))->result_array();
 	}
 
 	public function getShareDetails($billId, $MCNo){
 		return $this->db2->select('km.CellNo, km.CustId, b.BillId, km.MCNo, km.CNo')
 						->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
-						->get_where('Billing b', array('b.BillId' => $billId, 'b.CNo' => $MCNo))
+						->get_where('Billing b', array('b.BillId' => $billId, 'b.CNo' => $MCNo, 'EID' => $this->EID))
 						->result_array();
 	}
 

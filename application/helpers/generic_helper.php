@@ -373,6 +373,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	    return $CI->User->SettlePayment($billId, $MergeNo);	
 	}
 
+	function getName($custId){
+		$CI = & get_instance();
+	    $CI->load->model('User');
+	    return $CI->User->getUserName($custId);	
+	}
+
 
 
 

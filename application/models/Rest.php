@@ -56,7 +56,7 @@ class Rest extends CI_Model{
 			$data['ChainId'] = $createrData['ChainId'];
 			$data['ONo'] = $createrData['ONo'];
 			$data['Stat'] = $createrData['Stat'];
-			$data['LoginCd'] = $createrData['LoginCd'];
+			$data['LoginCd'] = authuser()->RUserId;
 			// $data['token'] = $this->generateToken();
 			 $newRUserId = insertRecord('UsersRest', $data);
 
@@ -748,8 +748,8 @@ class Rest extends CI_Model{
 
 	public function getKotList($MCNo, $mergeNo, $FKOTNo){
 		$EID = authuser()->EID;
-		// SELECT k.ItemId, m.ItemNm, k.TableNo, k.FKOTNo, ek.KitName, k.UKOTNo FROM Eat_Kit ek, Kitchen k, MenuItem m WHERE ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>99 ) and m.ItemId = k.ItemId and k.CNo = 21 AND k.EID = 51 and k.FKOTNo = 1 and k.MergeNo = 22 and ek.KitCd=k.KitCd and ek.EID=k.EID GROUP BY k.ItemId, ek.KitName order by k.FKOTNo, ek.KitName, k.UKOTNo ASC;
-		// $or_where = '( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7 AND k.Stat<>99 )';
+		$EType = $this->session->userdata('EType');
+		$stat = ($EType == 5)?3:2;
          return $this->db2->select("k.ItemId, k.MCNo, m.ItemNm,k.CustItemDesc,k.CustRmks, ip.Name as Portions, sum(k.Qty) Qty,k.TableNo,k.KOTNo, k.FKOTNo,k.KitCd, ek.KitName, k.UKOTNo,k.LstModDt,k.TA,k.EDT, k.OType")
         					->order_by('k.FKOTNo, ek.KitName, k.UKOTNo', 'ASC')
         					->group_by('k.ItemId, ek.KitName')
@@ -757,12 +757,13 @@ class Rest extends CI_Model{
          					->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
          					->join('Eat_Kit ek', 'ek.KitCd=k.KitCd', 'inner')
         					// ->where($or_where)
-        					->where_not_in('k.Stat', array(4,6,7,99))
+        					// ->where_not_in('k.Stat', array(4,6,7,99))
         					->get_where('Kitchen k', array(
         											'k.EID' => $EID,
         											'k.MCNo' => $MCNo,
         											'k.MergeNo' => $mergeNo,
-        											'k.FKOTNo' => $FKOTNo)
+        											'k.FKOTNo' => $FKOTNo,
+        											'k.Stat' => $stat)
         								)
         					->result_array();
         					print_r($this->db2->last_query());die;
@@ -792,7 +793,7 @@ class Rest extends CI_Model{
 			$to = date('Y-m-d', strtotime("+1 day", strtotime($to)));
 			$EID = authuser()->EID;
 
-			$billData = $this->db2->select('b.TableNo, b.BillId, b.BillNo, b.billTime as BillDate, b.CellNo,b.CustId,b.TotAmt, bp.MergeNo, bp.PaidAmt, bp.OrderRef, bp.PymtRef, bp.PaymtMode, bp.PymtType, bp.Stat, bp.PymtDate,cp.Name, cp.Company')
+			$billData = $this->db2->select('b.TableNo, b.BillId, b.BillNo, b.billTime as BillDate, b.CellNo,b.CustId,b.TotAmt,b.PaidAmt bPaidAmt, bp.MergeNo, bp.PaidAmt, bp.OrderRef, bp.PymtRef, bp.PaymtMode, bp.PymtType, bp.Stat, bp.PymtDate,cp.Name, cp.Company')
 					->order_by('b.BillId', 'ASC')
 					->join('BillPayments bp','bp.BillId = b.BillId','left')
 					->join('ConfigPymt cp','cp.PymtMode = bp.PaymtMode','left')
@@ -823,10 +824,10 @@ class Rest extends CI_Model{
 						  ->group_by('k.KitCd, k.FKOTNo, k.ItemId,k.CustItemDesc, k.Itm_Portion,k.CustRmks,k.TA')
 						  ->join('MenuItem m','m.ItemId = k.ItemId','inner')
          				  ->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
-         				  ->where_not_in('k.Stat', array(4,6,7,9,99))
          				  ->get_where('Kitchen k', array(
 						  						'k.EID' => $EID,
-						  						'k.KStat' => 0
+						  						'k.KStat' => 0,
+						  						'k.Stat' => 3
 						  							)
 									)
 						  ->result_array();
@@ -863,10 +864,10 @@ class Rest extends CI_Model{
 						  ->group_by('k.KitCd,k.ItemId')
 						  ->join('MenuItem m','m.ItemId = k.ItemId','inner')
          				  ->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
-         				  ->where_not_in('k.Stat', array(4,6,7,9,99))
          				  ->get_where('Kitchen k', array(
 						  						'k.EID' => $EID,
-						  						'k.KStat' => 0
+						  						'k.KStat' => 0,
+						  						'k.Stat' => 3
 						  							)
 									)
 						  ->result_array();
@@ -877,15 +878,21 @@ class Rest extends CI_Model{
 
 	public  function getTAPendingBills()
 	{
-		return $this->db2->select('b.BillId,b.BillNo, b.billTime,b.PaidAmt, b.CellNo,b.OType,b.TableNo,b.CNo,b.EID, b.MergeNo,')
+		return $this->db2->select('b.BillId,b.BillNo, b.billTime,b.PaidAmt, b.CellNo,b.OType,b.TableNo,b.CNo,b.EID, b.MergeNo,b.CustId, k.FKOTNo')
 						->order_by('b.BillId', 'ASC')
 						->group_by('b.BillId')
+						->join('Kitchen k','k.MCNo = b.CNo', 'inner')
 						->get_where('Billing b', array(
 											'b.payRest' => 0,
 											'b.LoginCd' => authuser()->RUserId,
 											'b.EID' => authuser()->EID
 											))
 						->result_array();
+	}
+
+	public function getUserList(){
+		return $this->db2->get_where('UsersRest', array('EID' => authuser()->EID,'Stat' => 0))
+		->result_array();
 	}
 
 	

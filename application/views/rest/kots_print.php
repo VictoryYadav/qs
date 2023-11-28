@@ -176,29 +176,36 @@
                     <th class="Hours" style="text-align: left;">Qty</th>
                 </tr>
                 <?php
+                foreach($kotList as $key){
                 $portions = '';
                 $std = '';
                 $ta = '';
-                foreach($kotList as $key){
                   if($key['Portions'] != 'Std'){
                     $portions = ' ('.$key['Portions'].')';
                   }
                   if($key['CustItemDesc'] != 'Std'){
                     $std = ' - '.$key['CustItemDesc'];
                   }
-                  if($key['TA'] > 0){
-                    $ta = '<br>(TA)';
+                  
+                  if(in_array($kotList[0]['OType'], array(1,7,8))){
+                    if($key['TA'] > 0){
+                      $ta = '(TA)';
+                    }
                   }
                   $edt = '';
                   if($this->session->userdata('EDT') > 0 && $this->session->userdata('EType')== 5 && ($key['OType'] == 7 || $key['OType'] ==8)){
-                    $ta = $ta.'  '.$key['EDT'];
-                    if(empty($ta)){
-                      $ta = '<br>'.$key['EDT'];
-                    }
+                      if(!empty($key['EDT'])){
+                        $ta = $ta.'  Del: '.date('H:i',strtotime($key['EDT']));
+                        if(empty($ta)){
+                          $ta = '<br>Del: '.date('H:i',strtotime($key['EDT']));
+                        }
+                      }
                   }
                  ?>
                 <tr class="service">
-                    <td class="tableitem"><?= $key['ItemNm'].$std.$portions; ?><br><?= $key['CustRmks']; ?><?= $ta ?></td>
+                    <td class="tableitem">
+                      <?= $key['ItemNm'].$std.$portions; ?><br><?= $key['CustRmks']; ?><?= $ta ?>
+                    </td>
                     <td class="tableitem"><?= $key['Qty']; ?></td>
                 </tr>
                 <?php } ?>

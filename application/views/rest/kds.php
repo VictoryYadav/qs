@@ -122,10 +122,10 @@
                                                 <th class="Hours" style="text-align: left;">Qty</th>
                                             </tr>
                                             <?php 
-                                            $portions = '';
-                                            $std = '';
                                             $ordNoArr = [];
                                             foreach ($fkot as $item) {
+                                            $portions = '';
+                                            $std = '';
                                                 $fkotno = $item['FKOTNo'];
                                                 $ordNoArr[] = $item['OrdNo'];
                                     $etype = $this->session->userdata('EType');

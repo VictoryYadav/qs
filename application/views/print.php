@@ -181,9 +181,9 @@
                             // build table with title
                             $sameTaxType  = '';
                             $itemTotal = 0;
+                            foreach ($billData as $keyData => $data) {
                             $portions = '';
                             $std = '';
-                            foreach ($billData as $keyData => $data) {
                               if($data['Portions'] != 'Std'){
                                   $portions = ' ('.$data['Portions'].')';
                                 }

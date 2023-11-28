@@ -1683,7 +1683,7 @@ class Customer extends CI_Controller {
 
             $data['hotelName'] = $billData[0]['Name'];
             $data['BillName'] = $billData[0]['BillName'];
-            $data['Fullname'] = $billData[0]['FName'].' '.$billData[0]['LName'];
+            $data['Fullname'] = getName($billData[0]['CustId']);
             $data['phone'] = $billData[0]['PhoneNos'];
             $data['gstno'] = $billData[0]['GSTno'];
             $data['fssaino'] = $billData[0]['FSSAINo'];
@@ -1792,6 +1792,7 @@ class Customer extends CI_Controller {
         $data['title'] = $this->lang->line('mergeorder');
         $data['language'] = languageArray();
         $data['orders'] = $this->cust->getOrderDetailsByTableNo($TableNo);
+
         $data['MergeNo'] = $TableNo;
         $data['Tips'] = 1;
         $data['EType'] = $this->session->userdata('EType');
@@ -1897,10 +1898,12 @@ class Customer extends CI_Controller {
         // die;
         $EID = authuser()->EID;
         $CNo = $this->session->userdata('CNo');
+        $EType = $this->session->userdata('EType');
+        $stat = ($EType == 5)?3:2;
         for ($i=0; $i < sizeof($_POST['mobile']) ; $i++) { 
             $ccno = $_POST['CNo'][$i];
-            updateRecord('KitchenMain', array('MCNo' => $CNo), array('CNo' => $ccno));
-            updateRecord('Kitchen', array('MCNo' => $CNo), array('CNo' => $ccno));
+            updateRecord('KitchenMain', array('MCNo' => $CNo), array('CNo' => $ccno, 'EID' => $EID));
+            updateRecord('Kitchen', array('MCNo' => $CNo), array('CNo' => $ccno, 'EID' => $EID, 'Stat' => $stat));
         }
         $data['mobile'] = $this->session->userdata('split_mobile');
         $data['payable'] = $_POST['payable'];
@@ -1922,10 +1925,16 @@ class Customer extends CI_Controller {
             $this->session->set_userdata('payable', $data['payable']);
             $this->session->set_userdata('TipAmount', $data['tip']);
             $this->session->set_userdata('itemTotalGross', $data['grossItemAmt']);
-            // $res = billCreate($EID, $CNo, $pData);
-            $BillId = 1233;
-            $this->session->set_userdata('BillId', $BillId);
-            redirect(base_url('customer/pay/'.$BillId.'/'.$data['MCNo']));
+            $res = billCreate($EID, $CNo, $pData);
+            if($res['status'] == 1){
+                $BillId = $res['billId'];
+                $this->session->set_userdata('BillId', $BillId);
+                redirect(base_url('customer/pay/'.$BillId.'/'.$data['MCNo']));
+            }else{
+                $this->session->set_flashdata('error','Bill Not Generated.');
+                redirect(base_url('customer/splitOrder/'.$MergeNo));
+            }
+
         }
     }
 
@@ -1952,8 +1961,25 @@ class Customer extends CI_Controller {
             // echo "<pre>";
             // print_r($pData);
             // die;
+            
+            
+            // $this->session->set_userdata('payable', $_POST['payable']);
+            // $this->session->set_userdata('TipAmount', $_POST['tip']);
+            // $this->session->set_userdata('itemTotalGross', $_POST['itemGrossAmt']);
+
             $res = billCreate($EID, $CNo, $pData);
+            if($res['status'] == 1){
+                $billId = $res['billId'];
+                $my_db = $this->session->userdata('my_db');
+                $url = $EID . "_b_" . $billId . "_" .$my_db. "_" . $CNo. "_" . $pData['CellNo']. "_" . $pData['MergeNo']. "_" . $pData['orderAmount'];
+
+                $url = base64_encode($url);
+                $url = rtrim($url, "=");
+                $link = base_url('users?eatout='.$url);
+                $this->session->set_userdata('blink', $link);
             // link send with bill no, sms or email => pending status
+                // redirect(base_url('customer/pay/'.$BillId.'/'.$data['MCNo']));
+            }
         }
 
         if(!empty($res)){
@@ -2089,11 +2115,11 @@ class Customer extends CI_Controller {
         $data['language'] = languageArray();
         $data['billId'] = $billId;
 
-        $url = $EID . "_" . $ChainId . "_" . $billId;
+        $url = $EID . "_r_" . $billId;
 
         $url = base64_encode($url);
         $url = rtrim($url, "=");
-        $data['link'] = base_url('customer/rating/'.$billId).'?rat='.$url;
+        $data['link'] = base_url('users?eatout='.$url);
         // print_r($data['link']);die;
 
         // $data['link'] = "https://qs.vtrend.org/share_rating.php?qs=" . $CustId . "_" . $EID . "_" . $ChainId . "_" . $billId . "_" . $CellNo . "";
