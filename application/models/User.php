@@ -262,9 +262,21 @@ class User extends CI_Model{
         updateRecord('BillPayments', array('Stat' => 1), array('BillId' => $billId,'EID' => $EID));
 
         if ($EType == 5) {
-        	$this->db2->query("UPDATE Eat_tables SET MergeNo = TableNo, Stat = 0 where EID = $EID and MergeNo = $MergeNo");
-        	// check for split bill payments , for km tables
-        	$this->db2->query("UPDATE Kitchen k, KitchenMain km, Billing b SET k.payRest=1, km.payRest=1, km.CnfSettle = 1, km.custPymt = 1 WHERE b.BillId = $billId and (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo)");
+        	$billSplit = $this->db2->select('splitTyp')->get_where('Billing', array('BillId' => $billId))->row_array();
+        	if($billSplit['splitTyp'] == 0){
+	        	$this->db2->query("UPDATE Eat_tables SET MergeNo = TableNo, Stat = 0 where EID = $EID and MergeNo = $MergeNo");
+	        	// check for split bill payments , for km tables
+	        	$this->db2->query("UPDATE Kitchen k, KitchenMain km, Billing b SET k.payRest=1, km.payRest=1, km.CnfSettle = 1, km.custPymt = 1 WHERE b.BillId = $billId and (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo)");
+        	}else{
+        		$splitbilDT = $this->db2->query("SELECT sum(bp.PaidAmt) as rcvdamt, sum(b.PaidAmt) as totpayable from Billing b,BillPayments bp     where bp.MCNo=b.CNo and b.BillId=bp.BillId and b.BillId= $billId and b.EID = bp.EID and b.EID = $EID")->row_array();
+        		if(!empty($splitbilDT)){
+        			if($splitbilDT['rcvdamt'] == $splitbilDT['totpayable']){
+        				$this->db2->query("UPDATE Eat_tables SET MergeNo = TableNo, Stat = 0 where EID = $EID and MergeNo = $MergeNo");
+		        	// check for split bill payments , for km tables
+		        	$this->db2->query("UPDATE Kitchen k, KitchenMain km, Billing b SET k.payRest=1, km.payRest=1, km.CnfSettle = 1, km.custPymt = 1 WHERE b.BillId = $billId and (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo)");		
+        			}
+        		}
+        	}
         }else{
         	$this->db2->query("UPDATE Kitchen k, KitchenMain km, Billing b SET k.payRest=1, km.payRest=1, km.CnfSettle = 1, k.Stat = 3, km.custPymt = 1 WHERE b.BillId = $billId and (k.Stat = 2) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo)");
         }

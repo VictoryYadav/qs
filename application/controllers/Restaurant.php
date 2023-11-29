@@ -2743,12 +2743,14 @@ class Restaurant extends CI_Controller {
             $itemName = $_POST['itemName'];
 
             $likeQry = " (ItemNm like '$itemName%' or i.ItemId like '$itemName%' or i.IMcCd like '$itemName%') ";
+            $order_by = " i.ItemNm";
 
             if($this->session->userdata('IMcCdOpt') == 2){
                 $likeQry = " (ItemNm like '$itemName%' or i.IMcCd like '$itemName%' or i.ItemId like '$itemName%') ";
+                $order_by = " i.IMcCd";
             }
 
-            $items = $this->db2->query("SELECT i.ItemId, i.ItemNm, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId order by i.Rank")->result_array();
+            $items = $this->db2->query("SELECT i.ItemId, i.ItemNm, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId order by $order_by")->result_array();
             
             if (!empty($items)) {
                 $response = [

@@ -18,7 +18,7 @@ class Users extends CI_Controller {
                 // echo "<pre>";print_r($req);exit();
                 $this->session->set_userdata('EID', $req[0]);
                 $this->session->set_userdata('page', $req[1]);
-                $this->session->set_userdata('billId', $req[2]);
+                $this->session->set_userdata('BillId', $req[2]);
                 $billId = $req[2];
                 // db load
                 $this->session->set_userdata('my_db', $req[3]);
@@ -31,7 +31,11 @@ class Users extends CI_Controller {
                     $MCNo = $req[4];
                     $this->session->set_userdata('bCellNo', $req[5]);
                     $this->session->set_userdata('MergeNo', $req[6]);
+                    $this->session->set_userdata('TableNo', $req[6]);
                     $this->session->set_userdata('payable', $req[7]);
+                    $this->session->set_userdata('pymtENV',0);
+                    $this->session->set_userdata('CNo',$MCNo);
+                    $this->session->set_userdata('EType',5);
                     redirect(base_url('users/pay/'.$billId.'/'.$MCNo));    
                 }
             }
@@ -56,7 +60,7 @@ class Users extends CI_Controller {
 
             extract($_POST);
 
-            $CellNo = $this->session->userdata('mobile');;
+            $CellNo = $this->session->userdata('CellNo');;
             $CustId = 0;
             $ChainId = 0;
 
@@ -130,24 +134,25 @@ class Users extends CI_Controller {
             $RatingDetQuery = $genTblDb->query("INSERT INTO `RatingDet`(RCd,ItemId,ItemRtng) VALUES $queryStringGen ");
 
             if ($RatingDetQuery >= 1 && $RatingInsert >= 1) {
-                echo 1;
+                $status =  1;
             } else {
-                echo 0;
+                $status =  0;
             }
-            die;
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status
+              ));
+             die;
 
         }
 
         $data['title'] = $this->lang->line('rating');
         $data['billId'] = $billId;
 
-        $url = $EID . "_" . "_" . $billId;
+        $data['link'] = '';
 
-        $url = base64_encode($url);
-        $url = rtrim($url, "=");
-        $data['link'] = base_url('customer/rating/'.$billId).'?rat='.$url;
-
-        $data['kitchenGetData'] = $this->db2->select('b.BillId,k.ItemId , m.UItmCd, CONCAT(m.ItemNm, k.CustItemDesc) as ItemNm, k.CustItemDesc')
+        $data['kitchenGetData'] = $this->db2->select('b.BillId,k.ItemId , m.UItmCd, m.ItemNm, k.CustItemDesc')
                                     ->order_by('m.ItemNm','ASC')
                                     ->group_by('k.ItemId,k.MCNo')
                                     ->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
@@ -172,7 +177,7 @@ class Users extends CI_Controller {
             $otp = generateOTP($mobile, 'rating');
             $status = 'success';
             $response = "Your otp is ";
-            $this->session->set_userdata('mobile', $mobile);
+            $this->session->set_userdata('CellNo', $mobile);
             $this->session->set_userdata('CustId', $CustId);
 
             header('Content-Type: application/json');
@@ -230,7 +235,7 @@ class Users extends CI_Controller {
     }
 
     public function pay($BillId, $MCNo){
-        // $this->session->set_userdata('ratingShow', 0);
+        
         $my_db = $this->session->userdata('my_db');
         $this->db2 = $this->load->database($my_db, TRUE);
 
@@ -252,17 +257,17 @@ class Users extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
-            echo "<pre>";
-            print_r($_POST);
-            die;
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
             
             $pay['BillId'] = $_POST['BillId'];
             $pay['MCNo'] = $_POST['MCNo'];
             $pay['MergeNo'] = 0;
             $pay['TotBillAmt'] = $_POST['payable'];
-            $pay['CellNo'] = $this->session->userdata('mobile');
-            $pay['SplitTyp'] = 0;
-            $pay['SplitAmt'] = 0;
+            $pay['CellNo'] = $this->session->userdata('CellNo');
+            $pay['SplitTyp'] = 2;
+            $pay['SplitAmt'] = $_POST['amount'];
             $pay['PymtId'] = 0;
             $pay['PaidAmt'] = $_POST['amount'];
             $pay['OrderRef'] = 0;
@@ -316,14 +321,80 @@ class Users extends CI_Controller {
     }
 
     public function updateCustPayment(){
-        // $CNo = $this->session->userdata('CNo');
         $EID  = $this->session->userdata('EID');
         $billId = $_POST['BillId'];
 
         $MergeNo = $this->session->userdata('MergeNo');
-        // autoSettlePayment($billId, $MergeNo);
+        autoSettlePayment($billId, $MergeNo);
+    }
 
-        // $this->session->set_userdata('CNo', 0);
+    public function bill($billId){
+        $data['title'] = $this->lang->line('bill');
+        $data['billId'] = $billId;
+
+        $EID = $this->session->userdata('EID');
+        $CustId = $this->session->userdata('CustId');
+
+        $data['CustNo'] = 0;
+        $data['CellNo'] = $this->session->userdata('CellNo');
+
+        $dbname = $this->session->userdata('my_db');
+
+        $flag = 'rest';
+        $res = getBillData($dbname, $EID, $billId, $CustId, $flag);
+        // echo "<pre>";
+        // print_r($res);
+        // die;
+        if(!empty($res['billData'])){
+
+            $billData = $res['billData'];
+            $data['ra'] = $res['ra'];
+            $data['taxDataArray'] = $res['taxDataArray'];
+
+            $data['hotelName'] = $billData[0]['Name'];
+            $data['BillName'] = $billData[0]['BillName'];
+            $data['Fullname'] = getName($billData[0]['CustId']);
+            $data['phone'] = $billData[0]['PhoneNos'];
+            $data['gstno'] = $billData[0]['GSTno'];
+            $data['fssaino'] = $billData[0]['FSSAINo'];
+            $data['cinno'] = $billData[0]['CINNo'];
+            $data['billno'] = $billData[0]['BillNo'];
+            $data['dateOfBill'] = date('d-m-Y @ H:i', strtotime($billData[0]['BillDt']));
+            $data['address'] = $billData[0]['Addr'];
+            $data['pincode'] = $billData[0]['Pincode'];
+            $data['city'] = $billData[0]['City'];
+            $data['servicecharge'] = isset($billData[0]['ServChrg'])?$billData[0]['ServChrg']:"";
+            $data['bservecharge'] = $billData[0]['bservecharge'];
+            $data['SerChargeAmt'] = $billData[0]['SerChargeAmt'];
+
+            $data['tipamt'] = $billData[0]['Tip'];
+            $Stat = $billData[0]['Stat'];
+            $total = 0;
+            $sgstamt=0;
+            $cgstamt=0;
+            $grandTotal = $sgstamt + $cgstamt + $data['bservecharge'] + $data['tipamt'];
+            $data['thankuline'] = isset($billData[0]['Tagline'])?$billData[0]['Tagline']:"";
+
+            $data['total_discount_amount'] = $billData[0]['TotItemDisc'] + $billData[0]['BillDiscAmt'] + $billData[0]['custDiscAmt'];
+            $data['total_packing_charge_amount'] = $billData[0]['TotPckCharge'];
+            $data['total_delivery_charge_amount'] = $billData[0]['DelCharge'];
+
+            $data['billData'] = $res['billData'];
+            $this->load->view('user/billing', $data);
+        }else{
+            $this->load->view('cust/billing_not', $data);
+        }
+    }
+
+    public function thanku(){
+        $data['title'] = 'Thank You.';
+        $this->load->view('user/thanku', $data);
+    }
+
+    public function test(){
+        echo "<pre>";
+        print_r($_SESSION);
+        die;
     }
 
   

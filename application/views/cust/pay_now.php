@@ -271,7 +271,7 @@ function goPay(val){
         var tips = 0;
         // var dd = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&totAmt='+btoa(totAmt)+'&tips='+btoa(tips);
         // alert(dd);
-        window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&totAmt='+btoa(totAmt)+'&tips='+btoa(tips)+'&billId='+btoa(BillId);
+        window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&billId='+btoa(BillId);
     }
 
     // phoenpe = 46

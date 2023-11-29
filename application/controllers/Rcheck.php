@@ -56,6 +56,7 @@ class Rcheck extends CI_Controller {
             'ChainId' => $_REQUEST['c'],
         );
         $this->session->set_userdata('EID', $_REQUEST['e']);
+        $this->session->set_userdata('TableNo', $_REQUEST['t']);
         $this->session->set_userdata('logged_in', $session_data);
 
         $this->session->set_userdata('MergeNo', $_REQUEST['t']);

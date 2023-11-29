@@ -1694,7 +1694,7 @@ class Cust extends CI_Model{
 		$EType = $this->session->userdata('EType');
 		$stat = ($EType == 5)?3:2;
 
-		return $this->db2->select('km.CustId, m.ItemId,m.ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt,km.CNo,km.CellNo, km.BillStat, k.Stat')
+		return $this->db2->select('km.CustId, m.ItemId,m.ItemNm,k.Qty ,k.ItmRate,  sum(k.OrigRate*k.Qty) as OrdAmt,km.CNo,km.CellNo, km.BillStat, k.Stat')
 						->order_by('km.CNo', 'asc')
 						->group_by('km.CNo, km.CellNo')
 						->join('Kitchen k', 'k.CNo = km.CNo', 'inner')

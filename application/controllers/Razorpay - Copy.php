@@ -1,9 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once APPPATH.'third_party/razorpay-php/Razorpay.php';        
+require_once APPPATH.'third_party/razorpay-php/Razorpay.php';
+        
 
-use Razorpay\Api\Api;
+        use Razorpay\Api\Api;
 
 class Razorpay extends CI_Controller {
 
@@ -31,30 +32,50 @@ class Razorpay extends CI_Controller {
 
         $api = new Api($keyId, $keySecret);
 
-        $EID = $this->session->userdata('EID');        
+        //Session Variables;
+        $EID = authuser()->EID;
+        $ChainId = authuser()->ChainId;
         $CustId = $this->session->userdata('CustId');
+        $EType = $this->session->userdata('EType');
+        $CNo = $this->session->userdata('CNo');
+        $PymtOpt = $this->session->userdata('PymtOpt');
+        $KOTNo = $this->session->userdata('KOTNo');
         $TableNo = $this->session->userdata('TableNo');
+        $COrgId = $this->session->userdata('COrgId');
+    
+        $Fest = $this->session->userdata('Fest');
+        $ServChrg = $this->session->userdata('ServChrg');
         
+        // if ($CNo == 0 && $KOTNo == 0) {
+        //     redirect(base_url('customer'));
+        // }
+
+
+        // mode decide to this code 19-aug-2023
+
         $payable = base64_decode(rtrim($_GET['payable'], "="));
-        // $tips = base64_decode(rtrim($_GET['tips'], "="));
-        // $itemTotalGross = base64_decode(rtrim($_GET['totAmt'], "="));
+        $tips = base64_decode(rtrim($_GET['tips'], "="));
+        $itemTotalGross = base64_decode(rtrim($_GET['totAmt'], "="));
         $billId = base64_decode(rtrim($_GET['billId'], "="));
 
         if (empty($billId)) {
             redirect(base_url('customer'));
         }
 
-        // $tips = !empty($tips)?$tips:0;
-        // $this->session->set_userdata('TipAmount', $tips);
-        // $this->session->set_userdata('itemTotalGross', $itemTotalGross);
+        $tips = !empty($tips)?$tips:0;
+        $this->session->set_userdata('TipAmount', $tips);
+        $this->session->set_userdata('itemTotalGross', $itemTotalGross);
 
         $totalAmount = round($payable, 2);
+        // $orderId = "$EID-$TableNo-$CustId-$CNo-$totalAmount";
 
         $orderId = "$EID-$TableNo-$CustId-$billId-$totalAmount";
 
         $this->session->set_userdata('rez_totalAmount', $totalAmount);
+
         // We create an razorpay order using orders api
         // Docs: https://docs.razorpay.com/docs/orders
+        //
         $orderData = [
             'receipt'         => $orderId,
             'amount'          => $totalAmount * 100, // 2000 rupees in paise
@@ -71,6 +92,7 @@ class Razorpay extends CI_Controller {
         if ($displayCurrency !== 'INR') {
             $url = "https://api.fixer.io/latest?symbols=$displayCurrency&base=INR";
             $exchange = json_decode(file_get_contents($url), true);
+
             $displayAmount = $exchange['rates'][$displayCurrency] * $amount / 100;
         }
 
@@ -105,6 +127,7 @@ class Razorpay extends CI_Controller {
             $data['display_currency']  = $displayCurrency;
             $data['display_amount']    = $displayAmount;
         }
+
         // echo "<pre>";
         // print_r($data);
         // die;
@@ -133,8 +156,9 @@ class Razorpay extends CI_Controller {
             }
         }
 
-        $EID = $this->session->userdata('EID');
+        $EID = authuser()->EID;
         $CNo = $this->session->userdata('CNo');   
+        
 
         $orderId = $_POST["orderId"];
         $totalAmount = $_POST["orderAmount"];
@@ -149,7 +173,7 @@ class Razorpay extends CI_Controller {
 
             $pay['BillId'] = $this->session->userdata('BillId');
             $pay['MCNo'] = $CNo;
-            $pay['MergeNo'] = $this->session->userdata('TableNo');
+            $pay['MergeNo'] = authuser()->TableNo;
             $pay['TotBillAmt'] = $this->session->userdata('payable');
             $pay['CellNo'] = $this->session->userdata('CellNo');
             $pay['SplitTyp'] = 0;
@@ -162,11 +186,19 @@ class Razorpay extends CI_Controller {
             $pay['PymtRef'] = $referenceId;
             $pay['Stat'] = 1;
             $pay['EID'] = $EID;
+
             // echo "<pre>";
             // print_r($pay);
             // die;
             $payNo = insertRecord('BillPayments', $pay);
             redirect(base_url('customer/pay/'.$pay['BillId'].'/'.$pay['MCNo']));
+            // $res = billCreate($EID, $CNo, $_POST);
+            // if($res['status'] == 1){
+            //     redirect(base_url('customer/bill/'.$res['billId']));
+            // }else{
+            //     echo json_encode($res);
+            //     die();
+            // }
 
         } else {
             echo "Payment Fail";

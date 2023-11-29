@@ -460,8 +460,8 @@ $folder = 'e'.$this->session->userdata('EID');
     } ?>
 
     function SubmitRating() {
-        $.ajax({
 
+        $.ajax({
             url: "<?php echo base_url('users/rating/'.$billId); ?>",
             type: 'post',
             data: {
@@ -475,13 +475,14 @@ $folder = 'e'.$this->session->userdata('EID');
                 billid: <?= $billId; ?>
             },
 
-            success: function(data) {
-                console.log(data);
-                if (data == 1) {
+            success: function(res) {
+                // console.log(data);
+                if (res.status == 1) {
+                    window.location = "<?php echo base_url('users/thanku'); ?>" ;
+                    return false;
                     $('#shareRating').css('display', 'block');
                     $('#SubmitRating').css('display', 'none');
                     $("input").attr('disabled', 'disabled');
-                    // $('#MenuBackButton').css('display', 'none');
                 }
             },
 

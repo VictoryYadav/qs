@@ -1790,9 +1790,11 @@ class Customer extends CI_Controller {
         // print_r($_SESSION);
         // die;
         $data['title'] = $this->lang->line('mergeorder');
-        $data['language'] = languageArray();
+        // $data['language'] = languageArray();
         $data['orders'] = $this->cust->getOrderDetailsByTableNo($TableNo);
-
+// echo "<pre>";
+// print_r($data);
+// die;
         $data['MergeNo'] = $TableNo;
         $data['Tips'] = 1;
         $data['EType'] = $this->session->userdata('EType');
@@ -1945,6 +1947,9 @@ class Customer extends CI_Controller {
         $CNo = $_POST['MCNo'];
         $EID = authuser()->EID;
         $res = array();
+        $CellNo = $this->session->userdata('CellNo');
+        $pMCNo = 0;
+        $pBillId = 0;
         for ($i=0; $i < sizeof($_POST['mobile']);  $i++) { 
             $pData['paymentMode'] = 'Due';
             $pData['CellNo'] = $_POST['mobile'][$i];
@@ -1962,7 +1967,6 @@ class Customer extends CI_Controller {
             // print_r($pData);
             // die;
             
-            
             // $this->session->set_userdata('payable', $_POST['payable']);
             // $this->session->set_userdata('TipAmount', $_POST['tip']);
             // $this->session->set_userdata('itemTotalGross', $_POST['itemGrossAmt']);
@@ -1978,14 +1982,22 @@ class Customer extends CI_Controller {
                 $link = base_url('users?eatout='.$url);
                 $this->session->set_userdata('blink', $link);
             // link send with bill no, sms or email => pending status
-                // redirect(base_url('customer/pay/'.$BillId.'/'.$data['MCNo']));
+                // for send to pay now to current customer
+                if($CellNo == $pData['CellNo']){
+                    $pMCNo = $pData['CNo'];
+                    $pBillId = $billId;
+                }
             }
         }
 
         if(!empty($res)){
             if($res['status'] > 0){
                 // after bill generate = 1 => status
-                redirect(base_url('customer'), 'refresh');
+                if($pBillId > 0 && $pMCNo > 0){
+                    redirect(base_url('customer/pay/'.$pBillId.'/'.$pMCNo));
+                }else{
+                    redirect(base_url('customer/'));
+                }
             }else{
                 redirect(base_url('customer/splitOrder/'.$_POST['MergeNo']), 'refresh');
             }
@@ -2115,14 +2127,15 @@ class Customer extends CI_Controller {
         $data['language'] = languageArray();
         $data['billId'] = $billId;
 
-        $url = $EID . "_r_" . $billId;
+        $my_db = $this->session->userdata('my_db');
+
+        $url = $EID . "_r_" . $billId . "_" .$my_db;
 
         $url = base64_encode($url);
         $url = rtrim($url, "=");
         $data['link'] = base_url('users?eatout='.$url);
+        $this->session->set_userdata('rlink', $data['link']);
         // print_r($data['link']);die;
-
-        // $data['link'] = "https://qs.vtrend.org/share_rating.php?qs=" . $CustId . "_" . $EID . "_" . $ChainId . "_" . $billId . "_" . $CellNo . "";
 
         $data['kitchenGetData'] = $this->db2->select('b.BillId,k.ItemId , m.UItmCd, CONCAT(m.ItemNm, k.CustItemDesc) as ItemNm, k.CustItemDesc')
                                     ->order_by('m.ItemNm','ASC')
