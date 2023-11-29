@@ -286,9 +286,14 @@ class User extends CI_Model{
 	public function getUserName($custId){
 		$name = '';
 		if($custId > 0){
-			$user = $this->db2->select("concat(FName,' ',LName) as name")->get_where('Users', array('CustId' => $custId))->row_array();
+			$user = $this->db2->select("FName, LName")->get_where('Users', array('CustId' => $custId))->row_array();
 			if(!empty($user)){
-				$name = $user['name'];
+				if($user['FName'] !='-'){
+					$name = $user['FNname'];	
+				}
+				if($user['LName'] !='-'){
+					$name = $name.' '.$user['LNname'];	
+				}
 			}
 		}
 		return $name;

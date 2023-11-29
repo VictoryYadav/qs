@@ -559,7 +559,9 @@
                                     if(orderType == 8){
                                         if(sitinKOTPrint > 0){
                                             window.location = `${response.data.url}`;
-                                         } 
+                                         }else{
+                                            location.reload();
+                                         }
                                     }else{
                                         window.location = `${response.data.url}`;
                                     }

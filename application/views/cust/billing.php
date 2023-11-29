@@ -310,7 +310,6 @@
         <div class="container">
 
             <div id="download-to-pdf" class="container billView">
-                <a href="<?= base_url('customer/print/'.$billId); ?>" class="btn btn-sm btn-primary" target="_blank">Print</a>
                     <div class="text-center">
                         <p style="font-weight: bold;font-size: 18px !important;margin-bottom: 1px;"><?php 
                         if($BillName !='-'){
