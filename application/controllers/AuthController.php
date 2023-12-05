@@ -36,7 +36,7 @@ class AuthController extends CI_Controller {
 
                 if (!empty($login_check)) {
 
-                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, c.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,c.Fest ,e.Name, c.CustAssist, c.TableAcceptReqd,c.OrderWithoutTable,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT, c.new_order,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint,c.JoinTable')
+                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, c.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,c.Fest ,e.Name, c.CustAssist, c.TableAcceptReqd,c.OrderWithoutTable,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT, c.new_order,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint,c.JoinTable')
                             ->join('Eatary e',' u.EID = e.EID', 'inner')
                             ->join('Config c','u.EID = c.EID','inner')
                             // u.ChainId = c.ChainId 
@@ -44,6 +44,9 @@ class AuthController extends CI_Controller {
                             ->row_array();
 
                         $this->session->set_userdata('RUserId', $checkNumber['RUserId']);
+                        $this->session->set_userdata('COrgId', 0);
+                        $this->session->set_userdata('CustNo', 0);
+                        $this->session->set_userdata('CustId', 0);
                         // $this->session->set_userdata('EID', $checkNumber['EID']);
                         // $this->session->set_userdata('ChainId', $checkNumber['ChainId']);
                         $this->session->set_userdata('UTyp', $checkNumber['UTyp']);
@@ -81,7 +84,9 @@ class AuthController extends CI_Controller {
                         $this->session->set_userdata('Discount',$checkNumber['Discount']);
                         $this->session->set_userdata('IMcCdOpt',$checkNumber['IMcCdOpt']); 
                         $this->session->set_userdata('billPrintTableNo',$checkNumber['billPrintTableNo']); 
-                        $this->session->set_userdata('sitinKOTPrint',$checkNumber['sitinKOTPrint']);                       
+                        $this->session->set_userdata('sitinKOTPrint',$checkNumber['sitinKOTPrint']);      
+
+                        $this->session->set_userdata('multiCustTable',$checkNumber['multiCustTable']);                  
                         $session_data = array(
                         'EID' => $checkNumber['EID'],
                         'RestName' => $checkNumber['Name'],

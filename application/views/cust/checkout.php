@@ -188,7 +188,7 @@
                     <div class="col-12 text-center" width="100%;">
                         <a href="<?= base_url('customer'); ?>" class="btn btn-sm backbtn"><?php echo  $this->lang->line('menu'); ?></a>
                         <?php if($this->session->userdata('BillMergeOpt') > 0 && ($EType == 5)){ ?>
-                        <a href="<?= base_url('customer/merge_order/'.$TableNo); ?>" class="btn orderbtn btn-sm"><?php echo  $this->lang->line('mergeorder'); ?></a>
+                        <a href="<?= base_url('customer/merge_order/'.$MergeNo); ?>" class="btn orderbtn btn-sm"><?php echo  $this->lang->line('mergeorder'); ?></a>
                         <?php } ?>
                         <button class="btn btn-sm paybtn" onclick="payNow()"><?php echo  $this->lang->line('payNow'); ?></button>
                         
@@ -256,19 +256,21 @@
                 
                 var hr_line = `<div style="border-bottom: 1px solid;margin-top: 5px; margin-bottom: 5px;color: #fff;"></div>`;
 
+                var itemAmount = 0;
+
                 response.kitcheData.forEach(item => {
+                    
+                    var ta = '';
+                    if(item.TA != 0){
+                     ta = '[TA]';
+                    }
                     
                     if(initil_value == item.TaxType){
                         html += `<tr>`;
-                        
-                        if(item.Itm_Portions > 4){
-
-                            html += `<td>${item.ItemNm} ( ${item.Portion} ) </td>`;
-
+                        if(item.Itm_Portion > 4){
+                            html += `<td>${item.ItemNm} (${item.Portions}) ${ta} </td>`;
                         }else{
-
-                            html += `<td>${item.ItemNm} </td>`;
-
+                            html += `<td>${item.ItemNm} ${ta} </td>`;
                         }
                         
                         html += `<td class="text-center">${item.Qty}</td>`;
@@ -314,7 +316,7 @@
                         }
 
                         grand_total = grand_total + sub_total;
-
+                        itemAmount = parseFloat(itemAmount) + parseFloat(sub_total.toFixed(2));
                         html += `<tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
                         html += `<td><b>Sub Total :</b> </td>`;
                         html += `<td class="text-center"></td>`;
@@ -327,7 +329,7 @@
                         sub_total = 0;
 
                         html += `<tr>`;
-                        html += `<td>${item.ItemNm}</td>`;
+                        html += `<td>${item.ItemNm} ${ta}</td>`;
                         html += `<td class="text-center">${item.Qty}</td>`;
                         html += `<td class="text-center">${item.ItmRate}</td>`;
                         html += `<td class="text-right">${item.OrdAmt}</td>`;
@@ -373,7 +375,7 @@
                         html += `<td class="text-center"></td>`;
                         html += `<td class="text-right"><b style="color: orange;">${sub_total.toFixed(2)}</b></td>`;
                         html += `</tr>`;
-                
+                itemAmount = parseFloat(itemAmount) + parseFloat(sub_total.toFixed(2));
                 sub_total = 0;
 
                 html_body +=`<div class="order-list col-12">`;
@@ -442,7 +444,8 @@
                     grand_total = grand_total + parseInt(pck_charge);
                 }
 
-                var itemGrossAmt = (grand_total - serv).toFixed(2);
+                // var itemGrossAmt = (grand_total - serv - pck_charge).toFixed(2);
+                var itemGrossAmt = (grand_total).toFixed(2);
 
                 var tt = '<?php echo $Tips?>';
                 if(tt == 1){
@@ -464,7 +467,9 @@
 
                 $("#payable").text(grand_total);
                 $("#payableAmt").val(grand_total);
-                $("#totalAmt").val(itemGrossAmt);
+                // $("#totalAmt").val(itemGrossAmt);
+                $("#totalAmt").val(itemAmount);
+                
 
             },
             error: (xhr, status, error) => {

@@ -124,8 +124,8 @@
 
 <!-- <body translate="no"> -->
 <body translate="no" onload="window.print()">
-
   <div id="invoice-POS">
+  <?php if(!empty($kotList)){ ?>
     <center id="top">
         <h2 style="margin-bottom: 5px;font-size: 16px;"><?= authuser()->RestName.' ('.$kotList[0]['KitName'].')';  ?></h2>
     </center>
@@ -213,6 +213,9 @@
         </div><!--End Table-->
 
     </div><!--End InvoiceBot-->
+  <?php }else{ ?>
+    <h1>Something went wrong, please pick to support!</h1>
+  <?php } ?>
   </div><!--End Invoice-->
 
 

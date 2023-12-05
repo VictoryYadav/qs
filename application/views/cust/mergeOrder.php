@@ -328,19 +328,19 @@
                     var disc = parseInt(response.kitcheData[0]['totBillDiscAmt']) + parseInt(response.kitcheData[0]['TotItemDisc']) + parseFloat(response.kitcheData[0]['RtngDiscAmt']);
                     
                     var hr_line = `<div style="border-bottom: 1px solid;margin-top: 5px; margin-bottom: 5px;color: #fff;"></div>`;
-
+                    var itemAmount = 0;
                     response.kitcheData.forEach(item => {
+                        var ta = (item.TA != 0)?'[TA]':'';
                         
                         if(initil_value == item.TaxType){
                             html += `<tr>`;
-                            
-                            if(item.Itm_Portions > 4){
+                            if(item.Itm_Portion > 4){
 
-                                html += `<td>${item.ItemNm} ( ${item.Portion} ) </td>`;
+                                html += `<td>${item.ItemNm} (${item.Itm_Portion} )${ta} </td>`;
 
                             }else{
 
-                                html += `<td>${item.ItemNm} </td>`;
+                                html += `<td>${item.ItemNm} ${ta} </td>`;
 
                             }
                             
@@ -387,6 +387,7 @@
                             }
 
                             grand_total = grand_total + sub_total;
+                            itemAmount = parseFloat(itemAmount) + parseFloat(sub_total.toFixed(2));
 
                             html += `<tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
                             html += `<td><b>Sub Total :</b> </td>`;
@@ -400,7 +401,7 @@
                             sub_total = 0;
 
                             html += `<tr>`;
-                            html += `<td>${item.ItemNm}</td>`;
+                            html += `<td>${item.ItemNm} ${ta}</td>`;
                             html += `<td class="text-center">${item.Qty}</td>`;
                             html += `<td class="text-center">${item.ItmRate}</td>`;
                             html += `<td class="text-right">${item.OrdAmt}</td>`;
@@ -447,6 +448,8 @@
                             html += `<td class="text-center"></td>`;
                             html += `<td class="text-right"><b style="color: orange;">${sub_total.toFixed(2)}</b></td>`;
                             html += `</tr>`;
+
+                    itemAmount = parseFloat(itemAmount) + parseFloat(sub_total.toFixed(2));
                     
                     sub_total = 0;
 
@@ -533,7 +536,8 @@
                     $('.bill_box').html(html_body);
                     $("#payable").text(grand_total);
                     $("#payableAmt").val(grand_total);
-                    $("#totalAmt").val(itemGrossAmt);
+                    $("#totalAmt").val(itemAmount);
+                    // $("#totalAmt").val(itemGrossAmt);
                     $("#payableAmount").val(grand_total);
 
                 },

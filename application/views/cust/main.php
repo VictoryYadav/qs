@@ -471,7 +471,7 @@
         <div class="modal-footer" style="bottom: 0px;background-color: #ffffff;padding: 3px;padding-left: 15px;right: 0px;bottom: 0px;left: 0px;z-index: 1050;outline: 0px;position: fixed; width: 100%;">
             <button type="button" class="btn col-5 modal-back" data-dismiss="modal" style="padding: 5px 5px 5px; font-size: 12px;"><?php echo  $this->lang->line('back'); ?></button>
             <label class="col-2" style="padding: 3px;height: 25px;text-align: center;"><b id="totalAmount">0</b></label>
-            <button type="button" class="btn col-5 modal-confirm" data-dismiss="modal" id="confirm-order" tax_type="" tbltyp="" style="background: #ffc245;padding: 5px 5px 5px; font-size: 12px;"><?php echo  $this->lang->line('addItem'); ?></button>
+            <button type="button" class="btn col-5 modal-confirm" data-dismiss="modal" id="confirm-order" tax_type="" tbltyp="" pck="" style="background: #ffc245;padding: 5px 5px 5px; font-size: 12px;"><?php echo  $this->lang->line('addItem'); ?></button>
         </div>
     </div>
 
@@ -895,7 +895,7 @@ Essential Scripts
                                         </div>\
                                     <?php } ?>
 										<?php if(!empty($this->session->userdata('CustId'))){ ?>
-										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-NV="'+data[i].NV+'">\
+										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-NV="'+data[i].NV+'" item-pck="'+data[i].PckCharge+'">\
 											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
 										</a>\
 										<?php } else{ ?>
@@ -928,7 +928,7 @@ Essential Scripts
 					    <div class="row p-lg-3 p-sm-5 p-1">\
 					        <div class="col-lg-4 col-md-4 col-sm-4 col-4 align-self-center">\
 					        <?php if(!empty($this->session->userdata('CustId'))){ ?>
-					            <a data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'" item-NV="'+data[i].NV+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'">\
+					            <a data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'" item-NV="'+data[i].NV+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-pck="'+data[i].PckCharge+'">\
 					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
 					            </a>\
 					            <?php } else{ ?>
@@ -1062,6 +1062,9 @@ Essential Scripts
             FID = $(item).attr('item-fid');
             deliveryVal = PrepTime;
             $('#itemTyp').val(itemTyp);
+
+
+            var PckCharge = $(item).attr('item-pck');
             
             // console.log('itemPortion - '+itemPortion);
             console.log('itemId d - '+itemId);
@@ -1076,6 +1079,7 @@ Essential Scripts
             $('#serve-val').val($(item).attr('item-preptime'));
             $('#confirm-order').attr('tax_type',$(item).attr('taxtype'));
             $('#confirm-order').attr('tbltyp',$(item).attr('tbltyp'));
+            $('#confirm-order').attr('pck',$(item).attr('item-pck'));
 
             // for common 7 sep 2023
             $("#item-name-modal").text($(item).attr('item-nm'));
@@ -1700,7 +1704,6 @@ Essential Scripts
 
             var custRemarks = $("#cust-remarks").val();
             var qty = $("#qty-val").val();
-            var takeAway = 0;
             var serveTime = $("#serve-val").val();
             var itmrate = $("#product-price").text();
             var itemPortionText = itemPortion;
@@ -1712,10 +1715,9 @@ Essential Scripts
             var itemTyp = $('#itemTyp').val();
             var total = $('#totalAmount').text();
 
-            if ($("#take-away").prop('checked') == true) {
-                takeAway = 1;
-            }
-            // return false;
+            takeAway = $("#take-away").val();
+            var PckCharge = $('#confirm-order').attr('pck');
+            
             $.ajax({
                 url: "<?php echo base_url('customer/item_details_ajax'); ?>",
                 type: "post",
@@ -1727,6 +1729,7 @@ Essential Scripts
                     qty: qty,
                     itemPortionText: $('#item_portions').val(),
                     takeAway: takeAway,
+                    PckCharge:PckCharge,
                     serveTime: serveTime,
                     itemKitCd: itemKitCd,
                     itmrate: itmrate,

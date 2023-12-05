@@ -65,7 +65,7 @@
                                         <?php } ?>
                                             <div class="col-md-3 form-group col-6">
                                                 <label>Phone No</label>
-                                                <input type="text" id="phone" class="form-control form-control-sm">
+                                                <input type="number" id="phone" class="form-control form-control-sm">
                                             </div>
                                         </div>
 
@@ -613,11 +613,15 @@
                         }
 
                         $('#phone').val(a[0].CellNo);
+                        $('#phone').prop('readonly', true);
 
                         $('#order-table-body').append(b);
                         calculateTotal();
                     }
-                } // a.length
+                }else{
+                    $('#phone').val('');
+                    $('#phone').prop('readonly', false);
+                }
               }
           });
 

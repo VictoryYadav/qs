@@ -192,14 +192,15 @@
                                 }
 
                                 if($data['TaxType'] == $value['TaxType']){
+                                  $ta = ($data['TA'] != 0)?'[TA]':'';
                                         $sameTaxType .= ' <tr class="service"> ';
                                         if($data['Itm_Portion'] > 4 ){
                                             
-                                            $sameTaxType .= ' <td class="tableitem">'.$data['ItemNm'].$std.$portions.'</td> ';
+                                            $sameTaxType .= ' <td class="tableitem">'.$data['ItemNm'].$std.$portions.$ta.'</td> ';
 
                                         }else{
 
-                                            $sameTaxType .= ' <td>'.$data['ItemNm'].$std.$portions.'</td> ';
+                                            $sameTaxType .= ' <td>'.$data['ItemNm'].$std.$portions.$ta.'</td> ';
 
                                         }
                                         

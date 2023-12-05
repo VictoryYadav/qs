@@ -751,8 +751,8 @@ class Rest extends CI_Model{
 		$EType = $this->session->userdata('EType');
 		$stat = ($EType == 5)?3:2;
          return $this->db2->select("k.ItemId, k.MCNo, m.ItemNm,k.CustItemDesc,k.CustRmks, ip.Name as Portions, sum(k.Qty) Qty,k.TableNo,k.KOTNo, k.FKOTNo,k.KitCd, ek.KitName, k.UKOTNo,k.LstModDt,k.TA,k.EDT, k.OType")
-        					->order_by('k.FKOTNo, ek.KitName, k.UKOTNo', 'ASC')
-        					->group_by('k.ItemId, ek.KitName')
+        					->order_by('k.FKOTNo, m.ItemNm, ek.KitName, k.UKOTNo', 'ASC')
+        					->group_by('k.ItemId, ek.KitName,k.Itm_Portion')
          					->join('MenuItem m','m.ItemId = k.ItemId','inner')
          					->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
          					->join('Eat_Kit ek', 'ek.KitCd=k.KitCd', 'inner')
@@ -760,7 +760,7 @@ class Rest extends CI_Model{
         					// ->where_not_in('k.Stat', array(4,6,7,99))
         					->get_where('Kitchen k', array(
         											'k.EID' => $EID,
-        											'k.MCNo' => $MCNo,
+        											// 'k.MCNo' => $MCNo,
         											'k.MergeNo' => $mergeNo,
         											'k.FKOTNo' => $FKOTNo,
         											'k.Stat' => $stat)
@@ -771,7 +771,7 @@ class Rest extends CI_Model{
 
 	public function getBillDetailsForSettle($custId, $MCNo, $mergeNo){
 			$EID = authuser()->EID;
-			return $this->db2->select("b.TableNo,b.MergeNo, b.BillId, b.BillNo, DATE_FORMAT(DATE(billTime),'%d/%m/%Y') as BillDate, b.TotAmt as BillValue, b.PaidAmt, bp.PaymtMode, bp.TotBillAmt, bp.PymtType, b.CNo, u.CustId, (case when cp.Name != '' Then cp.Name ELSE 'Unpaid' end) as pymtName,b.payRest")
+			return $this->db2->select("b.TableNo,b.MergeNo, b.BillId, b.BillNo, DATE_FORMAT(DATE(billTime),'%d/%m/%Y') as BillDate, b.TotAmt as BillValue, b.PaidAmt, bp.PaymtMode, bp.TotBillAmt, bp.PymtType,bp.PaidAmt as bpPaidAmt, b.CNo, u.CustId, (case when cp.Name != '' Then cp.Name ELSE 'Unpaid' end) as pymtName,b.payRest")
 						->order_by('BillId', 'ASC')
 						->group_by('BillId')
 						->join('Eat_tables et','b.EID = et.EID','inner')

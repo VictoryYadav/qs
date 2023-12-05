@@ -80,8 +80,10 @@ class User extends CI_Model{
 			$qry = " k.Stat = 3";
 		}
 
-		$billData = $comDb->query("SELECT ((k.ItmRate+m.PckCharge)* sum(k.Qty) * b.splitPercent) as ItemAmt, m.ItemNm, k.CustItemDesc, k.ItmRate, sum(k.Qty) * b.splitPercent as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, e.BillName, b.BillPrefix, b.BillSuffix, b.TaxInclusive, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo, b.TotItemDisc, b.BillDiscAmt,b.custDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt,b.PaidAmt, b.SerCharge as bservecharge,b.SerChargeAmt, b.Tip,b.TableNo, b.billTime as BillDt,ip.Name as Portions, k.Itm_Portion,b.CustId,b.CellNo  from Kitchen k, KitchenMain km, Billing b, MenuItem m, Eatary e , ItemPortions ip where k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and $qry and (km.CNo = k.CNo or km.MCNo = k.MCNo) and (km.CNo = b.CNo or km.MCNo = b.CNo) and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID  and b.ChainId = km.ChainId and km.EID = $EID and b.BillId = $billId $custAnd Group By m.ItemNm, k.ItmRate, k.ItemTyp, k.CustItemDesc, k.TaxType, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno,  e.PhoneNos, e.Remarks, k.Stat, e.Tagline, b.BillNo, b.TotAmt, b.TaxInclusive, b.SerCharge, b.Tip, b.billTime ,k.Itm_Portion,ip.Name Order By k.TaxType, m.ItemNm")->result_array();
+		$billData = $comDb->query("SELECT ((k.ItmRate)* sum(k.Qty) * b.splitPercent) as ItemAmt, m.ItemNm, k.CustItemDesc, k.TA, k.ItmRate, sum(k.Qty) * b.splitPercent as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, e.BillName, b.BillPrefix, b.BillSuffix, b.TaxInclusive, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo,b.BillId, b.TotItemDisc, b.BillDiscAmt,b.custDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt,b.PaidAmt, b.SerCharge as bservecharge,b.SerChargeAmt, b.Tip,b.TableNo, b.billTime as BillDt,ip.Name as Portions, k.Itm_Portion,b.CustId,b.CellNo  from Kitchen k, KitchenMain km, Billing b, MenuItem m, Eatary e , ItemPortions ip where k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and $qry and ((km.CNo = k.CNo) or (km.MCNo = k.MCNo)) and ( km.MergeNo = k.MergeNo) and ((km.CNo = b.CNo) or (km.MCNo = b.CNo)) and (km.MergeNo = b.MergeNo) and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID  and b.ChainId = km.ChainId and km.EID = $EID and b.BillId = $billId $custAnd Group By k.ItemId, k.CustItemDesc, k.TaxType ,k.Itm_Portion Order By k.TaxType, m.ItemNm")->result_array();
 // print_r($this->db2->last_query());die;
+		// echo "<pre>";
+		// print_r($billData);die;
 		if(!empty($billData)){
 			$intial_value = $billData[0]['TaxType'];
 			$tax_type_array = array();
@@ -112,70 +114,6 @@ class User extends CI_Model{
 
 	}
 
-	private function calculatTotalTax($total_tax, $new_tax){
-	    return $total_tax + $new_tax;
-	}
-
-	//bill.repo.php
-	public function getTaxDataArray($EID, $CNo){
-
-		$q = "SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID) as TotPckCharge,  ip.Name as Portion, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = 3) and km.EID = k.EID and km.EID = $EID And k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) and k.TaxType>0 group by km.CNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by TaxType, m.ItemNm Asc";
-		$kitcheData = $this->db2->query($q)->result_array();
-		// print_r($kitcheData);exit();
-		$intial_value = $kitcheData[0]['TaxType'];
-
-		$ServChrg = $kitcheData[0]['ServChrg'];
-		$Tips = $kitcheData[0]['Tips'];
-		$Resturant_name = $kitcheData[0]['Name'];
-
-		$tax_type_array = array();
-		$tax_type_array[$intial_value] = $intial_value;
-
-		foreach ($kitcheData as $key => $value) {
-		    if($value['TaxType'] != $intial_value){
-		        $intial_value = $value['TaxType'];
-		        $tax_type_array[$intial_value] = $value['TaxType'];
-		    }
-		}
-
-		$taxDataArray = array();
-
-		foreach ($tax_type_array as $key => $value) {
-		    $q = "SELECT t.ShortName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included, (sum(k.ItmRate*k.Qty)) as ItemAmt, (if (t.Included <5,((sum(k.ItmRate*k.Qty)) - ((sum(k.ItmRate*k.Qty)) / (1+t.TaxPcent/100))),((sum(k.ItmRate*k.Qty))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where k.EID=km.EID and k.CNo=km.CNo and (km.CNo=$CNo or km.MCNo =$CNo) and t.TaxType = k.TaxType and t.TaxType = $value  and t.EID= $EID AND km.BillStat = 0 group by t.ShortName,t.TNo,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.rank";
-		    // print_r($q);exit();
-		    $TaxData = $this->db2->query($q)->result_array();
-		    // and CurDate() between FrmDt and EndDt
-			// print_r($TaxData);exit();
-		    $taxDataArray[$value] = $TaxData;
-		}
-
-		return $taxDataArray;
-
-		$orderAmount= 0;
-		foreach ($taxDataArray as $key => $value) {
-		    $total_tax = 0;
-		    $sub_total = 0;
-		    foreach ($value as $key1 => $value1) {
-		        $tno = $value[$key1]['TNo'];
-		        if($key1 != 0){
-		            $tno = $value[$key1-1]['TNo'];
-		        }
-
-		        $total_tax = calculatTotalTax($total_tax,number_format($value1['SubAmtTax'],2));
-
-		        if($tno == $value1['TNo']){
-		            $sub_total = $sub_total + $value1['ItemAmt'];
-		        }
-
-		        if(count($value) == ($key1 + 1) && $value1['Included'] >= 5){
-		           $sub_total = $sub_total  + $total_tax;
-		        }
-		    }
-
-		    $orderAmount = $orderAmount + $sub_total;
-		}
-	}
-
 	public function getMenuList(){
 
 		$EID = authuser()->EID;
@@ -194,40 +132,44 @@ class User extends CI_Model{
 	// common for create user at first time enter our app
 	public function createCustomerUser($mobile){
 		$CustId = 0;
-		$localDb = $this->db2->get_where('Users', array('MobileNo' => $mobile))->row_array();
-		if(empty($localDb)){
+		if(!empty($mobile)){
+			$localDb = $this->db2->get_where('Users', array('MobileNo' => $mobile))->row_array();
+			if(empty($localDb)){
 
-			$genTblDb = $this->load->database('GenTableData', TRUE);
+				$genTblDb = $this->load->database('GenTableData', TRUE);
 
-	        $gen_check = $genTblDb->select('*')
-	                            ->get_where('AllUsers', array('MobileNo' => $mobile))
-	                            ->row_array();
-	        if(!empty($gen_check)){
+		        $gen_check = $genTblDb->select('*')
+		                            ->get_where('AllUsers', array('MobileNo' => $mobile))
+		                            ->row_array();
+		        if(!empty($gen_check)){
 
-	            $CustId = $gen_check['CustId'];
-	            
-	            $data1['CustId']    = $CustId;
-	            $data1['FName']     = $gen_check['FName'];
-	            $data1['LName']     = $gen_check['LName'];
-	            $data1['email']     = $gen_check['email'];
-	            $data1['MobileNo']  = $gen_check['MobileNo'];
-	            $data1['DOB']       = $gen_check['DOB'];
-	            $data1['Gender']    = $gen_check['Gender'];
-	            insertRecord('Users',$data1);    
-	        }else{
-	        	$data['MobileNo'] = $mobile;
+		            $CustId = $gen_check['CustId'];
+		            
+		            $data1['CustId']    = $CustId;
+		            $data1['FName']     = $gen_check['FName'];
+		            $data1['LName']     = $gen_check['LName'];
+		            $data1['email']     = $gen_check['email'];
+		            $data1['MobileNo']  = $gen_check['MobileNo'];
+		            $data1['DOB']       = $gen_check['DOB'];
+		            $data1['Gender']    = $gen_check['Gender'];
+		            $data1['visit'] = 1;
+		            insertRecord('Users',$data1);    
+		        }else{
+		        	$data['MobileNo'] = $mobile;
 
-	        	$Adata = $data;
-	        	$Adata['EID'] = authuser()->EID;
-	        	$Adata['page'] = 'offline order';
-	            $genTblDb->insert('AllUsers', $Adata);
-	            $CustId = $genTblDb->insert_id();
-	            
-	            $data['CustId'] = $CustId;
-	            insertRecord('Users',$data);
-	        }
-		}else{
-			$CustId = $localDb['CustId'];
+		        	$Adata = $data;
+		        	$Adata['EID'] = authuser()->EID;
+		        	$Adata['page'] = 'offline order';
+		            $genTblDb->insert('AllUsers', $Adata);
+		            $CustId = $genTblDb->insert_id();
+		            
+		            $data['CustId'] = $CustId;
+		            $data['visit'] = 1;
+		            insertRecord('Users',$data);
+		        }
+			}else{
+				$CustId = $localDb['CustId'];
+			}
 		}
 		return $CustId;
 	}
@@ -289,14 +231,82 @@ class User extends CI_Model{
 			$user = $this->db2->select("FName, LName")->get_where('Users', array('CustId' => $custId))->row_array();
 			if(!empty($user)){
 				if($user['FName'] !='-'){
-					$name = $user['FNname'];	
+					$name = $user['FName'];	
 				}
 				if($user['LName'] !='-'){
-					$name = $name.' '.$user['LNname'];	
+					$name = $name.' '.$user['LName'];	
 				}
 			}
 		}
 		return $name;
+	}
+
+	public function getRestVist($CellNo){
+		$visit = 0;
+		if($CellNo > 0){
+			$user = $this->db2->select("visit")->get_where('Users', array('MobileNo' => $CellNo))->row_array();
+			if(!empty($user)){
+				$visit = $user['visit'];
+			}
+		}
+		return $visit;	
+	}
+
+	public function getTaxCalculation($kitcheData, $EID, $CNo, $MergeNo){
+
+		$EType = $this->session->userdata('EType');
+		$stat = ($EType == 5)?3:2; 
+
+		$intial_value = $kitcheData[0]['TaxType'];
+		$ServChrg = $kitcheData[0]['ServChrg'];
+		$Tips = $kitcheData[0]['Tips'];
+
+		$tax_type_array = array();
+		$tax_type_array[$intial_value] = $intial_value;
+		foreach ($kitcheData as $key => $value) {
+		    if($value['TaxType'] != $intial_value){
+		        $intial_value = $value['TaxType'];
+		        $tax_type_array[$intial_value] = $value['TaxType'];
+		    }
+		}
+
+		$taxDataArray = array();
+		foreach ($tax_type_array as $key => $value) {
+
+		    $TaxData = $this->db2->query("SELECT t.ShortName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included,k.ItmRate, k.Qty,k.ItemId, (sum(k.OrigRate*k.Qty)) as ItemAmt, (if (t.Included <5,((sum(k.OrigRate*k.Qty)) - ((sum(k.OrigRate*k.Qty)) / (1+t.TaxPcent/100))),((sum(k.OrigRate*k.Qty))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where (k.Stat = $stat) and k.EID=km.EID and (k.MergeNo = km.MergeNo) and km.MergeNo = '$MergeNo' and (km.CNo=$CNo or km.MCNo =$CNo) and k.CNo = km.CNo and t.TaxType = k.TaxType and t.TaxType = $value  and t.EID= $EID AND km.BillStat = 0 group by t.ShortName,t.TNo,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.rank")->result_array();
+		    $taxDataArray[$value] = $TaxData;
+		}
+
+		// $orderAmount= 0;
+		// foreach ($taxDataArray as $key => $value) {
+		//     $total_tax = 0;
+		//     $sub_total = 0;		    
+
+		//     foreach ($value as $key1 => $value1) {
+		//         $tno = $value[$key1]['TNo'];
+		//         if($key1 != 0){
+		//             $tno = $value[$key1-1]['TNo'];
+		//         }
+		//         $total_tax = $this->calculatTotalTax($total_tax,number_format($value1['SubAmtTax'],2));
+		        
+		//         if($tno == $value1['TNo']){
+		//             $sub_total = $sub_total + $value1['ItemAmt'];
+		//         }
+
+		//         if(count($value) == ($key1 + 1) && $value1['Included'] >= 5){
+		//            $sub_total = $sub_total  + $total_tax;
+		//         }
+		//     }
+		//     $orderAmount = $orderAmount + $sub_total;
+		// }
+
+		$data['taxDataArray'] 	 = $taxDataArray;
+		// $data['orderAmount'] = $orderAmount;
+		return $data;
+	}
+
+	private function calculatTotalTax($total_tax, $new_tax){
+		return $total_tax + $new_tax;
 	}
 
 	

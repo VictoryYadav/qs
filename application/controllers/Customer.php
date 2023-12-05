@@ -481,19 +481,19 @@ class Customer extends CI_Controller {
                             $OType = 7;
                         }else if($TblTyp == 8){
                             // Sit-In offline
-                            $OType = 8;
-                        }else if($TblTyp == 15){
+                            // $OType = 8;
+                        }else if($TblTyp == 105){
                             // personal TakeAway
-                            $OType = 15;
-                        }else if($TblTyp == 17){
+                            $OType = 105;
+                        }else if($TblTyp == 110){
                             // Rest Delivery
-                            $OType = 17;
-                        }else if($TblTyp == 20){
+                            $OType = 110;
+                        }else if($TblTyp == 101){
                             // 3P Delivery - swiggy/zomato
-                            $OType = 20;
-                        }else if($TblTyp == 25){
+                            $OType = 101;
+                        }else if($TblTyp == 115){
                             // Drive-In
-                            $OType = 25;
+                            $OType = 115;
                         }else if($TblTyp == 30){
                             // Charity
                             $OType = 30;
@@ -1294,6 +1294,11 @@ class Customer extends CI_Controller {
         $data['Cash'] = $this->session->userdata('Cash');
         $data['KOTNo'] = $this->session->userdata('KOTNo');
         $CNo = $this->session->userdata('CNo');
+
+        $kitchenData = $this->db2->select('MCNo, MergeNo')->order_by('CNo', 'DESC')->get_where('KitchenMain', array('EID' => $data['EID'], 'CustId' => $data['CustId'], 'CNo' => $CNo))->row_array();
+
+        $data['MergeNo'] = $kitchenData['MergeNo'];
+
         $bilchk = billCheck($CNo);
         if(!empty($bilchk)){
             redirect(base_url('customer/pay/'.$bilchk['BillId'].'/'.$bilchk['CNo']));
@@ -1354,6 +1359,7 @@ class Customer extends CI_Controller {
         $PymtOpt = $this->session->userdata('PymtOpt');
         $KOTNo = $this->session->userdata('KOTNo');
         $TableNo = authuser()->TableNo;
+        $MergeNo = $this->session->userdata('MergeNo');
         $COrgId = $this->session->userdata('COrgId');
         $CustNo = $this->session->userdata('CustNo');
         $Fest = $this->session->userdata('Fest');
@@ -1362,43 +1368,15 @@ class Customer extends CI_Controller {
 
             if (isset($_POST['getBillAmount']) && $_POST['getBillAmount']) {
 
-                // pending for common function 
-                // get repository  : billing/getBillAmount.repo.php
-                // include('../repository/billing/getBillAmount.repo.php');
                 $kitcheData = $this->cust->getBillAmount($EID, $CNo);
-                    // echo "<pre>";
-                    // print_r($kitcheData);
-                    // die;
-                $taxDataArray = array();
                 if(!empty($kitcheData)){
-                    $intial_value = $kitcheData[0]['TaxType'];
+                   $res = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo);
 
-                    $ServChrg = $kitcheData[0]['ServChrg'];
-                    $Tips = $kitcheData[0]['Tips'];
-                    $Resturant_name = $kitcheData[0]['Name'];
-
-                    $tax_type_array = array();
-                    $tax_type_array[$intial_value] = $intial_value;
-
-                    foreach ($kitcheData as $key => $value) {
-                        if($value['TaxType'] != $intial_value){
-                            $intial_value = $value['TaxType'];
-                            $tax_type_array[$intial_value] = $value['TaxType'];
-                        }
-                    }
-
-                    foreach ($tax_type_array as $key => $value) {
-                        $q = "SELECT t.ShortName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included,k.ItmRate, k.Qty,k.ItemId, (sum(k.ItmRate*k.Qty)) as ItemAmt, (if (t.Included <5,((sum(k.ItmRate*k.Qty)) - ((sum(k.ItmRate*k.Qty)) / (1+t.TaxPcent/100))),((sum(k.ItmRate*k.Qty))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where (k.Stat = 3) and k.EID=km.EID and k.CNo=km.CNo and (km.CNo=$CNo or km.MCNo =$CNo) and t.TaxType = k.TaxType and t.TaxType = $value  and t.EID= $EID AND km.BillStat = 0 group by t.ShortName,t.TNo,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.rank";
-                        // print_r($q);exit();
-                        $TaxData = $this->db2->query($q)->result_array();
-                        $taxDataArray[$value] = $TaxData;
-                    }
+                    $response['kitcheData'] = $kitcheData;
+                    $response['TaxData'] = $res['taxDataArray'];
                 }
-
-                $response['kitcheData'] = $kitcheData;
-                $response['TaxData'] = $taxDataArray;
-                // echo "<pre>";print_r($response);exit();
-                $d = $this->db2->get_where('KitchenMain', 
+                
+                $d = $this->db2->select('BillDiscAmt')->get_where('KitchenMain', 
                                     array('CNo' => $CNo))
                                 ->result_array();
                 $km = 0;
@@ -1446,152 +1424,6 @@ class Customer extends CI_Controller {
                 echo json_encode($response);
                 die();
             }
-
-            // if (isset($_POST['confirm'])) {
-            //     if ($Tips == 1) {
-            //         $tips = $_POST['tips'];
-            //         $this->session->set_userdata('TipAmount', $tips);
-            //     } else {
-            //         $this->session->set_userdata('TipAmount', 0);
-            //     }
-
-            //     $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7 AND k1.Stat<>9  AND k1.Stat<>99) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat<>4 AND k1.Stat<>6 AND k1.Stat<>7  AND k1.Stat<>9 AND k1.Stat<>99) GROUP BY k1.EID) as TotPckCharge,  ip.Name as Portion, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat<>4 and k.Stat<>6 AND k.Stat<>7  AND k.Stat<>9 AND k.Stat<>10 AND k.Stat<>99) and km.EID = k.EID and km.EID = $EID And k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) AND km.BillStat=0 AND TIMEDIFF(Now(), km.LstModDt) < '05:00:00' group by km.CNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by TaxType, m.ItemNm Asc")->result_array();
-
-            //     include('../repository/payment/payment.repo.php');
-
-            //     if (empty($kitcheData)) {
-            //         $response = [
-            //             "status" => 0,
-            //             "msg" => "No Bill Pending..."
-            //         ];
-            //         echo json_encode($response);
-            //         die();
-            //     } else {
-            //         $lastBillNo = $this->db2->query("SELECT max(BillNo) as BillNo from Billing where EID = $EID")->result_array();
-
-            //         if ($lastBillNo[0]['BillNo'] == '') {
-            //             $newBillNo = 1;
-            //         } else {
-            //             $newBillNo = $lastBillNo[0]['BillNo'] + 1;
-            //         }
-
-            //         $cgst = $kitcheData[0]['CGSTRate'];
-            //         $sgst = $kitcheData[0]['SGSTRate'];
-            //         $gst = $kitcheData[0]['GSTInclusiveRates'];
-            //         $ServChrg = $kitcheData[0]['ServChrg'];
-            //         $Tips = $kitcheData[0]['Tips'];
-            //         $TotItemDisc = $kitcheData[0]['TotItemDisc'];
-            //         $TotPckCharge = $kitcheData[0]['TotPckCharge'];
-            //         $DelCharge = $kitcheData[0]['DelCharge'];
-            //         $BillDiscAmt = $kitcheData[0]['BillDiscAmt'];
-
-            //         $orderAmount = 0;
-            //         foreach ($kitcheData as $key => $data) {
-            //             $orderAmount += $data['OrdAmt'];
-            //         }
-
-            //         if ($Tips == 0) {
-            //             $TipAmount = 0;
-            //         } else {
-            //             $TipAmount = $this->session->userdata('TipAmount');
-            //         }
-
-            //         if ($ServChrg > 0) {
-            //             $serviceCharge = $ServChrg * ($orderAmount / 100);
-            //         } else {
-            //             $serviceCharge = 0;
-            //         }
-
-            //         if ($gst == 0) {
-            //             if($BillCalc == 0){
-            //                 $CGST = number_format((float) ($orderAmount * $cgst / 100), 2, '.', '');
-            //                 $SGST = number_format((float) ($orderAmount * $sgst / 100), 2, '.', '');
-            //             }else{
-            //                 $CGST = number_format((float) (($orderAmount - ($TotItemDisc + $BillDiscAmt)) * $cgst / 100), 2, '.', '');
-            //                 $SGST = number_format((float) (($orderAmount - ($TotItemDisc + $BillDiscAmt)) * $sgst / 100), 2, '.', '');
-            //             }
-            //         } else {
-            //             $CGST = 0;
-            //             $SGST = 0;
-            //         }
-
-            //         switch ($BillCalc) {
-            //             case 0:
-            //                 $totalAmount =(($orderAmount + $CGST + $SGST) - ($TotItemDisc + $BillDiscAmt) ) + $TotPckCharge + $DelCharge + $TipAmount + $serviceCharge;
-            //                 break;
-            //             case 1:
-            //                 $totalAmount =($orderAmount - ($TotItemDisc + $BillDiscAmt)) + $TotPckCharge + $DelCharge +  $CGST + $SGST + $TipAmount + $serviceCharge;
-            //                 break;
-            //         }
-
-            //         $billingObj['EID'] = $EID;
-            //         $billingObj['TableNo'] = $TableNo;
-            //         $billingObj['ChainId'] = $ChainId;
-            //         $billingObj['ONo'] = $ONo;
-            //         $billingObj['CNo'] = $CNo;
-            //         $billingObj['BillNo'] = $newBillNo;
-            //         $billingObj['CustId'] = $CustId;
-            //         $billingObj['COrgId'] = $COrgId;
-            //         $billingObj['CustNo'] = $CustNo;
-            //         $billingObj['TotAmt'] = $totalAmount;
-            //         $billingObj['SGSTpcent'] = $sgst;
-            //         $billingObj['CGSTpcent'] = $cgst;
-            //         $billingObj['CGSTAmt'] = $CGST;
-            //         $billingObj['SGSTAmt'] = $SGST;
-            //         $billingObj['SerCharge'] = $ServChrg;
-            //         $billingObj['Tip'] = $tips;
-            //         $billingObj['PaymtMode'] = "Post Paid";
-            //         $billingObj['PymtRef'] = "NA";
-            //         $billingObj['TotItemDisc'] = $TotItemDisc;
-            //         $billingObj['BillDiscAmt'] = $BillDiscAmt;
-            //         $billingObj['TotPckCharge'] = $TotPckCharge;
-            //         $billingObj['DelCharge'] = $DelCharge;
-
-            //         if ($billingObj->create()) {
-            //             $lastInsertBillId = $billingObj->lastInsertId();
-
-            //             foreach ($taxDataArray as $key => $value1) {
-            //                 foreach ($value1 as $key => $value) {
-            //                     $BillingTax['BillId'] = $lastInsertBillId;
-            //                     $BillingTax['TNo'] = $value['TNo'];
-            //                     $BillingTax['TaxPcent'] = $value['TaxPcent'];
-            //                     $BillingTax['TaxAmt'] = $value['SubAmtTax'];
-            //                     $BillingTax['EID'] = $EID;
-            //                     $BillingTax['TaxIncluded'] = $value['Included'];
-            //                     $BillingTax['TaxType'] = $value['TaxType'];
-            //                     $BillingTax->create();
-            //                 }
-            //             }
-
-            //             if ($EType == 1) {
-                            
-            //                 $stat = 1;
-            //             } else {
-                              
-            //                 $stat = 9;
-            //             }
-
-            //             $this->session->set_userdata('KOTNo', 0);
-            //             $as = ($this->session->userdata('AutoSettle') == 1)?0:1;
-            //             $kitchenUpdate = $this->db2->query("UPDATE Kitchen k, KitchenMain km SET k.BillStat = $lastInsertBillId, k.Stat = 9, k.payRest = ".$as."  WHERE (k.Stat<>4 and k.Stat<>6 and k.Stat<>7  AND k.Stat<>99)  and k.EID = $EID AND km.EID = k.EID and ( (km.CNo = $CNo OR km.MCNo = $CNo) )  AND BillStat = 0 AND k.CNo = km.CNo");
-
-            //             $kitchenMainUpdate = $this->db2->query("UPDATE KitchenMain SET BillStat = $lastInsertBillId, payRest = ".$as." WHERE (CNo = $CNo OR MCNo = $CNo)  AND BillStat = 0 AND EID = $EID ");
-
-            //             $response = [
-            //                 "status" => 1,
-            //                 "msg" => "success",
-            //                 "billId" => $lastInsertBillId
-            //             ];
-            //         } else {
-            //             $response = [
-            //                 "status" => 1,
-            //                 "msg" => "Fail to insert to Billing  / Billing TAX"
-            //             ];
-            //         }
-            //         echo json_encode($response);
-            //         die();
-            //     }
-            // }
 
             if (isset($_POST['cash'])) {
 
@@ -1778,24 +1610,25 @@ class Customer extends CI_Controller {
         // $CNo = $this->session->userdata('CNo');
         $EID  = authuser()->EID;
         $billId = $_POST['BillId'];
-
         $MergeNo = $this->session->userdata('MergeNo');
-        autoSettlePayment($billId, $MergeNo);
+
+        if($this->session->userdata('AutoSettle') > 0){
+            autoSettlePayment($billId, $MergeNo);
+        }else{
+            $this->db2->query("UPDATE KitchenMain km, Billing b SET km.custPymt = 1 WHERE b.BillId = $billId and km.EID=b.EID and km.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo) and km.MergeNo = b.MergeNo");
+        }
 
         // $this->session->set_userdata('CNo', 0);
     }
 
-    public function merge_order($TableNo){
-        // echo "<pre>";
-        // print_r($_SESSION);
-        // die;
+    public function merge_order($MergeNo){
+        
         $data['title'] = $this->lang->line('mergeorder');
-        // $data['language'] = languageArray();
-        $data['orders'] = $this->cust->getOrderDetailsByTableNo($TableNo);
-// echo "<pre>";
-// print_r($data);
-// die;
-        $data['MergeNo'] = $TableNo;
+        $data['orders'] = $this->cust->getOrderDetailsByTableNo($MergeNo);
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $data['MergeNo'] = $MergeNo;
         $data['Tips'] = 1;
         $data['EType'] = $this->session->userdata('EType');
         $data['Cash'] = $this->session->userdata('Cash');
@@ -1835,6 +1668,7 @@ class Customer extends CI_Controller {
 
     public function merge_checkout(){
         $EID = authuser()->EID;
+        $CNo = $this->session->userdata('CNo');
 
         if($this->input->method(true)=='POST'){
             
@@ -1844,10 +1678,10 @@ class Customer extends CI_Controller {
 
             $MergeNo = $_POST['MergeNo'];
 
-            $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID) as TotPckCharge,   ip.Name as Portions,km.CNo,km.MergeNo, km.MCNo,sum(km.BillDiscAmt) as totBillDiscAmt, sum(km.DelCharge) as totDelCharge, sum(km.RtngDiscAmt) as totRtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = 3) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND km.CNo IN (Select km1.CNo from KitchenMain km1 where km1.CNo in $in_CNo) group by km.CNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by TaxType, m.ItemNm Asc")->result_array();
-                    // echo "<pre>";
-                    // print_r($kitcheData);
-                    // die;
+            $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate,k.ItmRate,  SUM(if (k.TA=1,((k.OrigRate)*k.Qty),(k.OrigRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where k1.MergeNo = km.MergeNo and k1.MergeNo = $MergeNo  and k1.EID=km.EID AND (k1.Stat = 3) and k1.BillStat = km.BillStat GROUP BY k1.EID) as TotPckCharge,   ip.Name as Portions,km.CNo,km.MergeNo, km.MCNo,sum(km.BillDiscAmt) as totBillDiscAmt, sum(km.DelCharge) as totDelCharge, sum(km.RtngDiscAmt) as totRtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType, k.TA,  c.ServChrg, c.Tips,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = 3) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND km.MergeNo = $MergeNo group by km.CNo, k.TA,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by TaxType, m.ItemNm Asc")->result_array();
+                // echo "<pre>";
+                // print_r($kitcheData);
+                // die;
             $taxDataArray = array();
             if(!empty($kitcheData)){
                 $intial_value = $kitcheData[0]['TaxType'];
@@ -1861,34 +1695,19 @@ class Customer extends CI_Controller {
                         $tax_type_array[$intial_value] = $value['TaxType'];
                     }
                 }
-
-                // echo "<pre>";
-                // print_r($tax_type_array);
-                // die;
-
                 // (km.CNo=$CNo or km.MCNo =$CNo)
                 foreach ($tax_type_array as $key => $value) {
                     $q = "SELECT t.ShortName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included,k.ItmRate, k.Qty,k.ItemId, (sum(k.ItmRate*k.Qty)) as ItemAmt, (if (t.Included <5,((sum(k.ItmRate*k.Qty)) - ((sum(k.ItmRate*k.Qty)) / (1+t.TaxPcent/100))),((sum(k.ItmRate*k.Qty))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where (k.Stat = 3) and k.EID=km.EID and k.CNo=km.CNo and km.MergeNo = $MergeNo and t.TaxType = k.TaxType and t.TaxType = $value  and t.EID= $EID AND km.BillStat = 0 and k.BillStat = 0 group by t.ShortName,t.TNo,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.rank";
-                    // print_r($q);exit();
+                    
                     $TaxData = $this->db2->query($q)->result_array();
                     $taxDataArray[$value] = $TaxData;
-                    // print_r($taxDataArray);
                 }
-                    // print_r($this->db2->last_query());
+
             }
-            // die;
 
             $response['kitcheData'] = $kitcheData;
             $response['TaxData'] = $taxDataArray;
 
-            // $d = $this->db2->get_where('KitchenMain', 
-            //                     array('CNo' => $CNo))
-            //                 ->result_array();
-            // $km = 0;
-            // if(!empty($d)){
-            //     $km = $d[0];
-            // }
-            // $response['kitchen_main_data'] = $km;
             echo json_encode($response);
             die();
         }
@@ -1909,13 +1728,12 @@ class Customer extends CI_Controller {
         }
         $data['mobile'] = $this->session->userdata('split_mobile');
         $data['payable'] = $_POST['payable'];
-        $data['grossItemAmt'] = $_POST['grossItemAmt'];
+        $data['grossItemAmt'] = $_POST['totalAmt'];
         $data['tip'] = $_POST['tip'];
         $data['MCNo'] = $CNo;
         $data['tot_sgst'] = $_POST['tot_sgst'];
         
         $data['title'] = $this->lang->line('splitbill');
-        $data['language'] = languageArray();
         $data['MergeNo'] = $MergeNo;
         if($_POST['btnName'] == 'splitBill'){
             $this->load->view('cust/split_bill', $data);
@@ -1943,13 +1761,13 @@ class Customer extends CI_Controller {
     public function splitBill(){
         // echo "<pre>";
         // print_r($_POST);
-        // die;
         $CNo = $_POST['MCNo'];
         $EID = authuser()->EID;
         $res = array();
         $CellNo = $this->session->userdata('CellNo');
         $pMCNo = 0;
         $pBillId = 0;
+        $linkData = array();
         for ($i=0; $i < sizeof($_POST['mobile']);  $i++) { 
             $pData['paymentMode'] = 'Due';
             $pData['CellNo'] = $_POST['mobile'][$i];
@@ -1966,11 +1784,8 @@ class Customer extends CI_Controller {
             // echo "<pre>";
             // print_r($pData);
             // die;
-            
-            // $this->session->set_userdata('payable', $_POST['payable']);
-            // $this->session->set_userdata('TipAmount', $_POST['tip']);
-            // $this->session->set_userdata('itemTotalGross', $_POST['itemGrossAmt']);
 
+            // $res = array('status' => 1, 'billId' => 2);
             $res = billCreate($EID, $CNo, $pData);
             if($res['status'] == 1){
                 $billId = $res['billId'];
@@ -1980,6 +1795,12 @@ class Customer extends CI_Controller {
                 $url = base64_encode($url);
                 $url = rtrim($url, "=");
                 $link = base_url('users?eatout='.$url);
+
+                $temp['mobileNo'] = $pData['CellNo'];
+                $temp['link'] = $link;
+                $temp['billId'] = $billId;
+                $temp['EID'] = $EID;
+                $linkData[] = $temp;
                 $this->session->set_userdata('blink', $link);
             // link send with bill no, sms or email => pending status
                 // for send to pay now to current customer
@@ -1989,6 +1810,12 @@ class Customer extends CI_Controller {
                 }
             }
         }
+
+        // echo "<pre>";
+        // print_r($linkData);
+        // die;
+
+        $this->db2->insert_batch('BillingLinks', $linkData);
 
         if(!empty($res)){
             if($res['status'] > 0){
@@ -2400,10 +2227,12 @@ class Customer extends CI_Controller {
         $data['title'] = $this->lang->line('payNow');
         $data['language'] = languageArray();
         $data["modes"] = $this->cust->getPaymentModes();
-        $data['payable'] = $this->session->userdata('payable');
         $data['BillId'] = $BillId;
         $data['MCNo'] = $MCNo;
+        $bills = getRecords('Billing', array('BillId' => $BillId, 'CNo' => $MCNo, 'EID' => authuser()->EID));
+        $data['payable'] = $bills['PaidAmt'];
         $data["splitBills"] = $this->cust->getSplitPayments($BillId);
+        $data["billLinks"] = $this->cust->getBillLinks();
         // echo "<pre>";
         // print_r($data);
         // die;

@@ -269,7 +269,7 @@ function billBaseOffer(){
                 } else if (response.status == 1) {
                     response.kitcheData.forEach((item) => {
                         if (item.TA != 0) {
-                            var rate = parseInt(item.Value) + parseInt(item.PckCharge);
+                            var rate = parseInt(item.Value);
                             var itemName = item.ItemNm + ` (TA)`;
                         } else {
                             var rate = item.Value;

@@ -700,7 +700,7 @@ width: 100%;*/
                                 <div class="text-center">
                                     <button id="merge-table" type="button" class="btn btn-success btn-rounded btn-sm mt-4">Join Tables</button>
                                 </div>
-                                <div class="col-md-12 text-center" id="no-tables" style="display: none;">
+                                <div class="col-md-12 text-center" id="notables" style="display: none;">
                                     <h1>No Tables are Free</h1>
                                 </div>
                             </form>
@@ -737,6 +737,7 @@ width: 100%;*/
         </div>
     </div>
 </div>
+
 <div class="modal" id="move_table_modal">
     <div class="modal-dialog">
         <div class="modal-content" >
@@ -1090,12 +1091,17 @@ width: 100%;*/
                 bgcolor = '#B3E5FC'; // blue
             }
 
-            template += `<tr onclick="getRowBill(0,${item.MergeNo}, ${item.CustId})" id="${item.TableNo}" mergeNo="${item.MergeNo}" custId="${item.CustId}" mCNo="${item.MCNo}" billStat="${item.BillStat}" oTyp="${item.OType}"   style="background-color: ${bgcolor};" class="" >
-            <td><input type="radio" name="selectOption" onchange="handleKot(${item.MergeNo},${item.CustId},${item.MCNo},${item.BillStat},${item.OType})"> &nbsp;${item.MergeNo}</td>
+            template += `<tr onclick="getRowBill(0,'${item.MergeNo}', ${item.CustId})" id="${item.TableNo}" mergeNo="'${item.MergeNo}'" custId="${item.CustId}" mCNo="${item.MCNo}" billStat="${item.BillStat}" oTyp="${item.OType}"   style="background-color: ${bgcolor};" class="" >
+            <td><input type="radio" name="selectOption" onchange="handleKot('${item.MergeNo}',${item.CustId},${item.MCNo},${item.BillStat},${item.OType})"> &nbsp;${item.MergeNo}</td>
             <td>${item.Amt}</td>
             <td>${item.StTime}</td>
             <td>${item.CellNo}</td>
-            <td>${item.visitNo}</td>`;
+            <td>${item.visitNo}
+            <input type="hidden" name="custId" value="${item.CustId}">
+            <input type="hidden" name="MCNo" value="${item.MCNo}">
+            <input type="hidden" name="MergeNo" value="'${item.MergeNo}'">
+            <input type="hidden" name="billId" value="">
+            </td>`;
 
             // if (item.BillStat > 0) {
             //             template += `<tr onclick="getRowBill(${item.BillId},${item.MergeNo})" id="${item.TableNo}" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"  style="background-color: #FB8E7E;" class="${item.BillStat > 0 ? ' bill-paid' : ''} ${item.NEW_KOT > 0 ? ' new_order' : ''} ">
@@ -1200,7 +1206,7 @@ width: 100%;*/
                 $('#billCreatebtn').hide();
                 
             }else{
-                $('#billCreatebtn').attr('onclick', "billCreate("+mergeNo+","+custId+")");
+                $('#billCreatebtn').attr('onclick', "billCreate('"+mergeNo+"',"+custId+")");
                 $('#billCreatebtn').show();
                 $('#bill_data_table').hide();
             }
@@ -1413,7 +1419,8 @@ width: 100%;*/
         }
 
         function handleKot(mergeNo, custId, MCNo, BillStat, oTyp) {
-            // console.log(tableNo, custId, cNo);
+            console.log(mergeNo, custId, MCNo, BillStat, oTyp);
+            
             var eid = '<?= $_SESSION['EID']; ?>';
             // console.log('SES_EID'+eid);
             // $('#mydiv').show();
@@ -1425,7 +1432,7 @@ width: 100%;*/
                 $('#btnBillOption').attr('onclick', "billOptions("+custId+","+MCNo+","+mergeNo+")");
                 $('#btnBillOption').show();
 
-                $('#btnCash').attr('onclick', "cashCollect("+custId+","+MCNo+","+mergeNo+","+oTyp+")");
+                $('#btnCash').attr('onclick', "cashCollect("+custId+","+MCNo+",'"+mergeNo+"',"+oTyp+")");
                 $('#btnCash').show();
                 $('#billCreatebtn').hide();
             }
@@ -1434,7 +1441,7 @@ width: 100%;*/
                 type: "POST",
                 data: {
                     getKot_data: 1,
-                    tableNo: mergeNo,
+                    mergeNo: mergeNo,
                     custId: custId,
                     cNo: MCNo
                 },
@@ -1456,7 +1463,7 @@ width: 100%;*/
                             if (item.KOTPrintNo == 1) {
  
                                 if(new_head == 1){
-                                    template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>KOT No: ${item.FKOTNo}</b><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo}, ${item.MergeNo},${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
+                                    template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>KOT No: ${item.FKOTNo}</b><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo}, '${item.MergeNo}',${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
                                     </tr>`;
                                     new_head = 0;
                                 }
@@ -1471,7 +1478,7 @@ width: 100%;*/
                             } else {
                                 // $("#table-view").css("background-color", "#0100ff3b"); 
                                 if(new_head == 1){
-                                    template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>KOT No: ${item.FKOTNo}</b><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo}, ${item.MergeNo},${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
+                                    template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>KOT No: ${item.FKOTNo}</b><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo}, '${item.MergeNo}',${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
                                     </tr>`;
                                     new_head = 0;
                                 }
@@ -1503,11 +1510,14 @@ width: 100%;*/
                 if(res.status == 'success'){
                   var data = res.response;
                   var temp = '';
+                
                   if(data.length > 0){
                       for (var i =0;  i< data.length; i++) {
                         var bilUrl = "<?= base_url('restaurant/bill/'); ?>"+data[i].BillId;
                         var settleBtn = '';
-                        if(data[i].payRest > 0){
+
+                        if(Math.round(data[i].bpPaidAmt) >= Math.round(data[i].PaidAmt) ){
+
                             settleBtn = '<button class="btn btn-sm btn-success" onclick="setPaidAmount('+data[i].BillId+','+data[i].CNo+','+data[i].MergeNo+','+data[i].CustId+','+data[i].BillNo+','+data[i].TotBillAmt+',\''+data[i].pymtName+'\')">\
                                             <i class="fas fa-check-double"></i> \
                                         </button>';
@@ -1988,7 +1998,7 @@ width: 100%;*/
         }
         function setPaidAmount(id , CNo , MergeNo , CustId, billNo, billAmt, pymtMode) {
 
-            $.post('<?= base_url('restaurant/bill_settle') ?>',{id:id,CNo:CNo,MergeNo:MergeNo,CustId:CustId,billNo:billNo,billAmt:billAmt},function(response){
+            $.post('<?= base_url('restaurant/bill_settle') ?>',{billId:id,CNo:CNo,MergeNo:MergeNo,CustId:CustId,billNo:billNo,billAmt:billAmt},function(response){
 
                 if(response.status == 'success') {
                         alert("Successfully Settled");
@@ -2244,15 +2254,16 @@ width: 100%;*/
                 $("#unmerge-table").show();
                 availableTables = '';
                 response.tables.forEach(function(table) {
-                    var b = `<div class="col-md-4">`+`<input type="checkbox" class="form-check-input" value="`+table.TableNo+`" id="`+table.TableNo+`"><label class="form-check-label" for="`+table.TableNo+`">TableNo `+table.TableNo+`</label>`;
-                    availableTables += `<div class="col-md-4">`+`<input type="checkbox" class="form-check-input" value="`+table.TableNo+`" id="`+table.TableNo+`" /><label class="form-check-label" for="`+table.TableNo+`">TableNo `+table.TableNo+`</label></div>`;
+                    var b = `<div class="col-md-4 col-6">`+`<input type="checkbox" class="form-check-input" value="`+table.TableNo+`" id="`+table.TableNo+`"><label class="form-check-label" for="`+table.TableNo+`">TableNo `+table.TableNo+`</label>`;
+                    availableTables += `<div class="col-md-4 col-6">`+`<input type="checkbox" class="form-check-input" value="`+table.TableNo+`" id="`+table.TableNo+`" /><label class="form-check-label" for="`+table.TableNo+`">TableNo `+table.TableNo+`</label></div>`;
                 });
 
                 $("#unmerge_tables").html(availableTables);
+                $("#notables").hide();
             }else {
                 $("#merge-table-body").html('');
                 $("#unmerge-table").hide();
-                $("#no-tables").show();
+                $("#notables").show();
             }
         },
         error: function(xhr, status, error) {
@@ -2482,6 +2493,7 @@ function get_phone_num(){
 }
 
 function billCreate(mergeNo, custId){
+    var mergeNo = "'"+mergeNo+"'";
         // console.log(mergeNo);
     var disc = "<?php echo $this->session->userdata('Discount'); ?>";
     if(disc > 0){
@@ -2501,6 +2513,8 @@ function billCreate(mergeNo, custId){
                   alert(res.response);
                 }
             });
+        }else{
+            billCreateWitoutDisc(mergeNo);    
         }
     }else{
         billCreateWitoutDisc(mergeNo);
@@ -2539,43 +2553,51 @@ function cashCollect(custId, MCNo, mergeNo, oType){
     $.post('<?= base_url('restaurant/get_cash_collect') ?>',{custId:custId,MCNo:MCNo,mergeNo:mergeNo},function(res){
         if(res.status == 'success'){
           var data = res.response.bills;
+          var sts = res.response.sts;
           var payModes = res.response.payModes;
           $("#cashAmtR").prop("disabled", true);
           if(oType == 7){
             // alert(oType)
             $('#cashAmtR').prop('readonly', true);
           }
+          console.log(data.length);
 
-          var temp = '';
-          var pm = "<select name='PymtType' required='' class='form-control form-control-sm'>";
+          if(sts > 0){
 
-          for (var i =0;  i< payModes.length; i++) {
-              pm +='<option value="'+payModes[i].Name+'">'+payModes[i].Name+'</option>';
-            }
-            pm +='</option>';
+              var temp = '';
+              var pm = "<select name='PymtType' required='' class='form-control form-control-sm'>";
 
-            temp +='<tr>\
-                        <td>'+data.BillNo+'</td>\
-                        <td>'+data.TableNo+'</td>\
-                        <td>'+data.PaidAmt+'</td>\
-                        <td>'+pm+'</td>\
-                        <td>\
-                        <input type="hidden" name="oType" value="'+oType+'"/>\
-                        <input type="hidden" name="TableNo" value="'+data.TableNo+'"/>\
-                            <input type="hidden" name="BillId" value="'+data.BillId+'"/>\
-                            <input type="hidden" name="MCNo" value="'+data.CNo+'"/>\
-                            <input type="hidden" name="EID" value="'+data.EID+'"/>\
-                            <input type="hidden" name="MergeNo" value="'+data.MergeNo+'"/>\
-                            <input type="hidden" name="CellNo" value="'+data.CellNo+'"/>\
-                            <input type="hidden" name="TotBillAmt" value="'+data.PaidAmt+'"/>\
-                            <input type="text" name="PaidAmt" style="width:70px;" required id="cashAmtR" value="'+data.PaidAmt+'"/>\
-                            </td>\
-                        <td>\
-                            <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success">\
-                                <i class="fas fa-save"></i>\
-                            </button>\
-                            </td>\
-                    </tr>';
+              for (var i =0;  i< payModes.length; i++) {
+                  pm +='<option value="'+payModes[i].Name+'">'+payModes[i].Name+'</option>';
+                }
+                pm +='</option>';
+
+                temp +='<tr>\
+                            <td>'+data.BillNo+'</td>\
+                            <td>'+data.TableNo+'</td>\
+                            <td>'+data.PaidAmt+'</td>\
+                            <td>'+pm+'</td>\
+                            <td>\
+                            <input type="hidden" name="oType" value="'+oType+'"/>\
+                            <input type="hidden" name="TableNo" value="'+data.TableNo+'"/>\
+                                <input type="hidden" name="BillId" value="'+data.BillId+'"/>\
+                                <input type="hidden" name="MCNo" value="'+data.CNo+'"/>\
+                                <input type="hidden" name="EID" value="'+data.EID+'"/>\
+                                <input type="hidden" name="MergeNo" value="'+data.MergeNo+'"/>\
+                                <input type="hidden" name="CellNo" value="'+data.CellNo+'"/>\
+                                <input type="hidden" name="TotBillAmt" value="'+data.PaidAmt+'"/>\
+                                <input type="text" name="PaidAmt" style="width:70px;" required id="cashAmtR" value="'+data.PaidAmt+'"/>\
+                                </td>\
+                            <td>\
+                                <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success">\
+                                    <i class="fas fa-save"></i>\
+                                </button>\
+                                </td>\
+                        </tr>';
+            }else{
+                temp = '<tr><td colspan="6" class="text-center">Payment Received</td></tr>';
+            } 
+
           
           $('#cashBody').html(temp);
           $('#cashCollectModel').modal('show');

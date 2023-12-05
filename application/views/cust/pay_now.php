@@ -124,6 +124,31 @@ body{
                         </table>
                     </div>
                 </div>
+                <div class="col-md12">
+                    <div class="table-responsive">
+                        <table class="table order-list" >
+                            <thead>
+                                <tr>
+                                    <th>BillId</th>
+                                    <th>Mobile</th>
+                                    <th>Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                if(!empty($billLinks)){
+                                    foreach ($billLinks as $key ) {
+                                ?>
+                                <tr>
+                                    <td><?= $key['billId']; ?></td>
+                                    <td><?= $key['mobileNo']; ?></td>
+                                    <td><?= $key['link']; ?></td>
+                                </tr>
+                            <?php } } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="container text-center" id="loadBlock" style="display: none;">
@@ -314,11 +339,13 @@ function goToBill(){
     var total = $('#sum').val();
 
     if(payable == total){
+
         $.post('<?= base_url('customer/updateCustPayment') ?>',{BillId:BillId},function(res){
         
+            window.location = '<?= base_url();?>customer/bill/'+BillId;   
+            return false;
         });
         
-     window.location = '<?= base_url();?>customer/bill/'+BillId;   
     }
 
     // setInterval(function(){ goToBill(); }, 3000);

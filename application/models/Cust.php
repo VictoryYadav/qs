@@ -622,13 +622,18 @@ class Cust extends CI_Model{
 
 				$checkKM = $this->db2->select('custPymt, BillStat, payRest')->get_where('KitchenMain', array('BillStat >' => 0, 'EID' => $EID, 'CNo' => $CNo))->row_array();
 				if(!empty($checkKM)){
-					$response = [
-						"status" => 2,
-						"data" => $checkKM
-					];
-					$response["redirectTo"]  = base_url('customer/current_order');
-					echo json_encode($response);
-					die;
+					if($checkKM['payRest'] == 1){
+						$this->session->set_userdata('CNo' , 0);
+						$this->session->set_userdata('MergeNo' , $TableNo);
+					}else{
+						$response = [
+							"status" => 2,
+							"data" => $checkKM
+						];
+						$response["redirectTo"]  = base_url('customer/current_order');
+						echo json_encode($response);
+						die;
+					}
 				}
 
 				$CellNo = $_SESSION['signup']['MobileNo'];
@@ -656,18 +661,18 @@ class Cust extends CI_Model{
                 }else if($TblTyp == 8){
                     // Sit-In offline
                     // $OType = 8;
-                }else if($TblTyp == 15){
+                }else if($TblTyp == 105){
                     // personal TakeAway
-                    $OType = 15;
-                }else if($TblTyp == 17){
+                    $OType = 105;
+                }else if($TblTyp == 110){
                     // Rest Delivery
-                    $OType = 17;
-                }else if($TblTyp == 20){
+                    $OType = 110;
+                }else if($TblTyp == 101){
                     // 3P Delivery - swiggy/zomato
-                    $OType = 20;
-                }else if($TblTyp == 25){
+                    $OType = 101;
+                }else if($TblTyp == 115){
                     // Drive-In
-                    $OType = 25;
+                    $OType = 115;
                 }else if($TblTyp == 30){
                     // Charity
                     $OType = 30;
@@ -723,8 +728,12 @@ class Cust extends CI_Model{
 						$kitchenMainObj['EID'] = $EID;
 						$kitchenMainObj['ChainId'] = $ChainId;
 						$kitchenMainObj['ONo'] = $ONo;
-						// $kitchenMainObj['OType'] = $orderType;
 						$kitchenMainObj['OType'] = $OType;
+						// delivery charge for deliver = 110
+						if($OType == 110){
+							$kitchenMainObj['DelCharge'] = $this->session->userdata('DelCharge');
+						}
+
 						$kitchenMainObj['TableNo'] = $TableNo;
 						$kitchenMainObj['OldTableNo'] = $TableNo;
 						$kitchenMainObj['MergeNo'] = $MergeNo;
@@ -732,8 +741,7 @@ class Cust extends CI_Model{
 						if($TableAcceptReqd == 0){
 							$kitchenMainObj['Stat'] = 2;
 						}
-						// $kitchenMainObj['Stat'] = $this->session->userdata('TableAcceptReqd');
-						// $kitchenMainObj['CnfSettle'] = ($this->session->userdata('AutoSettle') == 1)?0:1;
+						
 						$kitchenMainObj['LoginCd'] = $CustId;
 						$kitchenMainObj['payRest'] = 0;
 
@@ -768,7 +776,7 @@ class Cust extends CI_Model{
 						$stat = 2;
 					}
 					//$newUKOTNO = date('dmy_') . $KOTNo;
-					updateRecord('Eat_tables', array('Stat' => 1, 'MergeNo' => $MergeNo), array('EID' => $EID ,'TableNo' => $TableNo, 'Stat' => 0));						
+					updateRecord('Eat_tables', array('Stat' => 1), array('EID' => $EID ,'TableNo' => $TableNo, 'Stat' => 0));						
 				}else{
 					//For ETpye 1 Order Type Will Be 0 and Stat = 1
 					// $OType = 0;
@@ -826,6 +834,10 @@ class Cust extends CI_Model{
 				$kitchenObj['DelTime'] = date('Y-m-d H:i:s', $date);
 				$kitchenObj['EDT'] = $edtTime;
 				$kitchenObj['TA'] = $postData['takeAway'];
+				$kitchenObj['PckCharge'] = 0;
+				if($kitchenObj['TA'] == 1){
+					$kitchenObj['PckCharge'] = $postData['PckCharge'];
+				}
 				$kitchenObj['Stat'] = $stat;
 				$kitchenObj['LoginCd'] = $CustId;
 				$kitchenObj['ItemTyp'] = $postData['itemTyp'];
@@ -1383,62 +1395,15 @@ class Cust extends CI_Model{
 			$EType = $this->session->userdata('EType');
 			$stat = ($EType == 5)?3:2;
 
-		return $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate, k.ItmRate,(k.OrigRate*sum(k.Qty)) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate)*k1.Qty from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID and k1.CNo =$CNo AND (k1.Stat = $stat) and (k1.OrigRate-k1.ItmRate) > 0) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotPckCharge,  ip.Name as Portions, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) group by km.CNo, k.ItemId ,k.CustItemDesc order by TaxType, m.ItemNm Asc")->result_array();
+		return $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate, k.ItmRate,sum(k.OrigRate*k.Qty) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate)*k1.Qty from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID and k1.CNo =$CNo AND (k1.Stat = $stat) and (k1.OrigRate-k1.ItmRate) > 0) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotPckCharge,  ip.Name as Portions, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name, k.TA  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) group by km.CNo, k.ItemId, k.Itm_Portion ,k.CustItemDesc order by TaxType, m.ItemNm Asc")->result_array();
 		}
 	}
 
-	public function fetchBiliingData($EID, $CNo, $per_cent){
+// create common for customer and rest side showing and insert to billing and billing tax table
+	public function fetchBiliingData($EID, $CNo, $MergeNo, $per_cent){
 		$EType = $this->session->userdata('EType');
 		$stat = ($EType == 5)?3:2; 
-		$kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty * $per_cent) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty * $per_cent),(k.ItmRate*k.Qty * $per_cent))) as OrdAmt, km.OType, km.LoginCd, (SELECT sum((k1.OrigRate-k1.ItmRate) * $per_cent) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge * $per_cent) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotPckCharge,  ip.Name as Portions, km.BillDiscAmt * $per_cent as BillDiscAmt, km.DelCharge * $per_cent as DelCharge, km.RtngDiscAmt * $per_cent as RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.payRest = 0 and km.payRest = 0 and k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) group by km.CNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by TaxType, m.ItemNm Asc")->result_array();
-
-		$intial_value = $kitcheData[0]['TaxType'];
-		$ServChrg = $kitcheData[0]['ServChrg'];
-		$Tips = $kitcheData[0]['Tips'];
-
-		$tax_type_array = array();
-		$tax_type_array[$intial_value] = $intial_value;
-		foreach ($kitcheData as $key => $value) {
-		    if($value['TaxType'] != $intial_value){
-		        $intial_value = $value['TaxType'];
-		        $tax_type_array[$intial_value] = $value['TaxType'];
-		    }
-		}
-
-		$taxDataArray = array();
-		foreach ($tax_type_array as $key => $value) {
-		    $TaxData = $this->db2->query("SELECT t.ShortName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included, (sum(k.ItmRate*k.Qty * $per_cent)) as ItemAmt, (if (t.Included <5,((sum(k.ItmRate*k.Qty * $per_cent)) - ((sum(k.ItmRate*k.Qty * $per_cent)) / (1+t.TaxPcent/100))),((sum(k.ItmRate*k.Qty * $per_cent))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where k.EID=km.EID and k.CNo=km.CNo and (km.CNo=$CNo or km.MCNo =$CNo) and t.TaxType = k.TaxType and t.TaxType = $value  and t.EID= $EID AND km.BillStat = 0 and k.Stat = $stat group by t.ShortName,t.TNo,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.rank")->result_array();
-
-		    $taxDataArray[$value] = $TaxData;
-		}
-
-		$orderAmount= 0;
-		foreach ($taxDataArray as $key => $value) {
-		    $total_tax = 0;
-		    $sub_total = 0;		    
-
-		    foreach ($value as $key1 => $value1) {
-		        $tno = $value[$key1]['TNo'];
-		        if($key1 != 0){
-		            $tno = $value[$key1-1]['TNo'];
-		        }
-		        $total_tax = $this->calculatTotalTax($total_tax,number_format($value1['SubAmtTax'],2));
-		        
-		        if($tno == $value1['TNo']){
-		            $sub_total = $sub_total + $value1['ItemAmt'];
-		        }
-
-		        if(count($value) == ($key1 + 1) && $value1['Included'] >= 5){
-		           $sub_total = $sub_total  + $total_tax;
-		        }
-		    }
-		    $orderAmount = $orderAmount + $sub_total;
-		}
-
-		$data['kitcheData']  = $kitcheData;
-		$data['taxDataArray'] 	 = $taxDataArray;
-		$data['orderAmount'] = $orderAmount;
-		return $data;
+		return $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty * $per_cent) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty * $per_cent),(k.ItmRate*k.Qty * $per_cent))) as OrdAmt, km.OType, km.LoginCd, (SELECT sum((k1.OrigRate-k1.ItmRate) * $per_cent) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty * $per_cent) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotPckCharge,  ip.Name as Portions, km.BillDiscAmt * $per_cent as BillDiscAmt, km.DelCharge * $per_cent as DelCharge, km.RtngDiscAmt * $per_cent as RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.MergeNo,km.TableNo, km.MCNo, km.CustId, km.CellNo, k.ItemId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.payRest = 0 and km.payRest = 0 and (k.CNo = km.CNo OR km.MCNo = k.MCNo) and (km.MCNo = $CNo and km.CNo = $CNo) and (km.MergeNo = k.MergeNo and km.MergeNo = '$MergeNo') group by km.MCNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by TaxType, m.ItemNm Asc")->result_array();
 	}
 
 	private function calculatTotalTax($total_tax, $new_tax){
@@ -1474,14 +1439,16 @@ class Cust extends CI_Model{
         $billingObjStat = 1;
         if($paymentMode == 'RCash'){
         	$MergeNo = $postData['MergeNo'];
+        	$TableNo = $postData['TableNo'];
         	// by rest
         	$billingObjStat = 5;
-        	$TableNo = $this->session->userdata('TableNo');
         	$cust_discount = $postData['cust_discount'];
         }else{
         	$MergeNo = $this->session->userdata('MergeNo');
         	$TableNo = authuser()->TableNo;
         }
+
+        $strMergeNo = "'".$MergeNo."'";
         // Due => split type, RCash => Restorent side(offline), multiPayment
         if($paymentMode == 'cash' || $paymentMode == 'RCash' || $paymentMode == 'Due' || $paymentMode == 'multiPayment'){
         	$orderId = 'NA';
@@ -1491,24 +1458,31 @@ class Cust extends CI_Model{
 
         if($this->session->userdata('billFlag') > 0){
 	        // delete billing, billingtax with existing cno
-	        updateRecord('Billing', array('Stat' => 25), array('CNo' => $CNo,'EID' => $EID,'MergeNo' => $MergeNo));
+	        updateRecord('Billing', array('Stat' => 25), array('CNo' => $CNo,'EID' => $EID,'MergeNo' => $strMergeNo));
 
 	        updateRecord('Kitchen', array('BillStat' => 0), array('EID' => $EID,
-	        				'MCNo' => $CNo,'MergeNo' => $MergeNo));
+	        				'MCNo' => $CNo,'MergeNo' => $strMergeNo));
 	        updateRecord('KitchenMain', array('BillStat' => 0), array('EID' => $EID,
-	        				'MCNo' => $CNo,'MergeNo' => $MergeNo));
+	        				'MCNo' => $CNo,'MergeNo' => $strMergeNo));
 	        $this->session->set_userdata('billFlag',0);
 	        // end of code 
         }
-		$res = getBillingDataByEID_CNo($EID, $CNo, $per_cent);
+
+		$kitcheData = getBillingDataByEID_CNo($EID, $CNo, $MergeNo, $per_cent);
+
+		// echo "<pre>";
+		// print_r($kitcheData);
+		// die;
       
-            if (empty($res['kitcheData'])) {
+            if (empty($kitcheData)) {
                 $response = [
                     "status" => 0,
                     "msg" => "NO BILL CREATION REQUIRED "
                 ];
                 
             } else {
+
+            	$res = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo);
 
                 $lastBillNo = $this->db2->query("SELECT max(BillNo) as BillNo from Billing where EID = $EID")->row_array();
 
@@ -1518,10 +1492,10 @@ class Cust extends CI_Model{
                     $newBillNo = $lastBillNo['BillNo'] + 1;
                 }
 
-                $TotItemDisc    = $res['kitcheData'][0]['TotItemDisc'];
-                $TotPckCharge   = $res['kitcheData'][0]['TotPckCharge'];
-                $DelCharge      = $res['kitcheData'][0]['DelCharge'];
-                $BillDiscAmt    = $res['kitcheData'][0]['BillDiscAmt'];
+                $TotItemDisc    = $kitcheData[0]['TotItemDisc'];
+                $TotPckCharge   = $kitcheData[0]['TotPckCharge'];
+                $DelCharge      = $kitcheData[0]['DelCharge'];
+                $BillDiscAmt    = $kitcheData[0]['BillDiscAmt'];
                 
                 $splitTyp = 0; 
                 $splitPercent = 1;
@@ -1545,19 +1519,19 @@ class Cust extends CI_Model{
                 
                 // FOR ONLINE PAYMENTS
                 $billingObj['EID'] = $EID;
-                $billingObj['TableNo'] = $TableNo;
-                $billingObj['MergeNo'] = $MergeNo;
+                $billingObj['TableNo'] = $kitcheData[0]['TableNo'];
+                $billingObj['MergeNo'] = $kitcheData[0]['MergeNo'];
                 $billingObj['ChainId'] = $ChainId;
                 $billingObj['ONo'] = $ONo;
                 $billingObj['CNo'] = $CNo;
                 $billingObj['BillNo'] = $newBillNo;
-                $billingObj['CustId'] = $CustId;
+                $billingObj['CustId'] = $kitcheData[0]['CustId'];
                 $billingObj['COrgId'] = $COrgId;
                 $billingObj['CustNo'] = $CustNo;
                 $billingObj['TotAmt'] = $itemTotalGross;
                 $billingObj['PaidAmt'] = $totalAmount;
-                $billingObj['SerCharge'] = $res['kitcheData'][0]['ServChrg'];
-                $billingObj['SerChargeAmt'] = round(($itemTotalGross * $res['kitcheData'][0]['ServChrg']) /100 ,2);
+                $billingObj['SerCharge'] = $kitcheData[0]['ServChrg'];
+                $billingObj['SerChargeAmt'] = round(($itemTotalGross * $kitcheData[0]['ServChrg']) /100 ,2);
                 $billingObj['Tip'] = $TipAmount;
                 $billingObj['PaymtMode'] = $paymentMode;
                 $billingObj['PymtRef'] = $orderId;
@@ -1568,11 +1542,15 @@ class Cust extends CI_Model{
                 $billingObj['DelCharge'] = $DelCharge;
                 $billingObj['PymtType'] = 0;
                 $billingObj['Stat'] = $billingObjStat;
-                $billingObj['CellNo'] = $CellNo;
+                if($paymentMode == 'Due'){
+		        	$billingObj['CellNo'] = $postData['CellNo'];
+		        }else{
+                	$billingObj['CellNo'] = $kitcheData[0]['CellNo'];
+		        }
                 $billingObj['splitTyp'] = $splitTyp;
                 $billingObj['splitPercent'] = $splitPercent;
-                $billingObj['OType'] = $res['kitcheData'][0]['OType'];
-                $billingObj['LoginCd'] = $res['kitcheData'][0]['LoginCd'];
+                $billingObj['OType'] = $kitcheData[0]['OType'];
+                $billingObj['LoginCd'] = $kitcheData[0]['LoginCd'];
                 
                 // echo "<pre>";
                 // print_r($billingObj);
@@ -1621,55 +1599,11 @@ class Cust extends CI_Model{
                     $custPymtObj['PaymtMode'] = $paymentMode;
                     $genTblDb->insert('CustPymts', $custPymtObj);
                     
-                    // $as = ($this->session->userdata('AutoSettle') == 1)?0:1;
                     $kstat = ($EType == 5)?3:2;
-                    $this->db2->query("UPDATE Kitchen SET BillStat = $billingObjStat  WHERE EID = $EID and MCNo = $CNo and TableNo = $TableNo AND BillStat = 0 and Stat = $kstat ");
+                    $this->db2->query("UPDATE Kitchen SET BillStat = $billingObjStat  WHERE EID = $EID and MCNo = $CNo and MergeNo = $strMergeNo AND BillStat = 0 and Stat = $kstat ");
 
-                    $this->db2->query("UPDATE KitchenMain SET BillStat = $billingObjStat WHERE MCNo = $CNo and TableNo = $TableNo AND BillStat = 0 AND EID = $EID ");
+                    $this->db2->query("UPDATE KitchenMain SET BillStat = $billingObjStat WHERE MCNo = $CNo and MergeNo = $strMergeNo AND BillStat = 0 AND EID = $EID ");
 
-                if($paymentMode != 'RCash' && $paymentMode != 'Due'){
-                    // gen db
-                    $genCheckid = $genTblDb->query("SELECT RCd  FROM `Ratings` WHERE EID = $EID AND BillId = $lastInsertBillId AND CustId = $CustId AND CellNo = $CellNo")->result_array();
-
-                    // gen db
-                    if (!empty($genCheckid)) {
-                        $RCd = $genCheckid[0]['RCd'];
-                        $genTblDb->query("DELETE FROM `Ratings` WHERE EID = $EID AND BillId = $lastInsertBillId AND CustId = $CustId AND CellNo = $CellNo");
-
-                        $genTblDb->query("DELETE FROM `RatingDet` WHERE RCd = $RCd");
-                    }
-                    // gen db
-                    $gndbRat['EID']     =   $EID;
-                    $gndbRat['ChainId'] =   $ChainId; 
-                    $gndbRat['BillId']  =   $lastInsertBillId; 
-                    $gndbRat['CustId']  =   $CustId;
-                    $gndbRat['CellNo']  =   $CellNo; 
-                    $gndbRat['Remarks'] =   '-'; 
-                    $gndbRat['ServRtng']=   0;
-                    $gndbRat['AmbRtng'] =   0;
-                    $gndbRat['VFMRtng'] =   0;
-                    $gndbRat['LstModDt']=   date('Y-m-d H:i:s');
-                    $genTblDb->insert('Ratings', $gndbRat);
-                    $genRCd = $genTblDb->insert_id();
-                
-                    $kitcheItemData = $this->db2->where_not_in('Stat', array(4,6,7,99))
-                                                ->get_where('Kitchen', array(
-                                                // 'BillStat' => $billingObjStat,
-                                                'EID' => $EID, 
-                                                'MCNo' => $CNo)
-                                            )->result_array();
-                    // gen table
-                    $queryStringGen = '';
-                    for ($i = 0; $i < count($kitcheItemData); $i++) {
-                        if ($i >= 1) {
-                            $queryStringGen .= ',';
-                        }
-                        $queryStringGen .= '(' . $genRCd . ',' . $kitcheItemData[$i]['ItemId'] . ',' . 0 . ')';
-                    }
-                    
-                    // gen table
-                    	$RatingDetQuery = $genTblDb->query("INSERT INTO `RatingDet`(RCd,ItemId,ItemRtng) VALUES $queryStringGen ");
-                }
                 $this->db2->trans_complete();
 
                 $this->session->set_userdata('KOTNo', 0);
@@ -1690,18 +1624,18 @@ class Cust extends CI_Model{
             return $response;
 	}
 
-	public function getOrderDetailsByTableNo($TableNo){	
+	public function getOrderDetailsByTableNo($MergeNo){	
 		$EType = $this->session->userdata('EType');
 		$stat = ($EType == 5)?3:2;
 
-		return $this->db2->select('km.CustId, m.ItemId,m.ItemNm,k.Qty ,k.ItmRate,  sum(k.OrigRate*k.Qty) as OrdAmt,km.CNo,km.CellNo, km.BillStat, k.Stat')
+		$whr = " k.CNo = km.CNo ";
+		return $this->db2->select('km.CustId, m.ItemId,m.ItemNm,k.Qty ,k.ItmRate,  sum(k.OrigRate*k.Qty) as OrdAmt,km.CNo,km.CellNo, km.BillStat, k.Stat, km.MergeNo')
 						->order_by('km.CNo', 'asc')
 						->group_by('km.CNo, km.CellNo')
-						->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
+						->join('Kitchen k', 'k.MergeNo = km.MergeNo', 'inner')
 						->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
-						// ->join('Users u', 'u.CustId = km.CustId', 'inner')
-						// ->where_in('k.Stat', array(1,2))
-						->get_where('KitchenMain km', array('km.MergeNo' => $TableNo, 
+						->where($whr)
+						->get_where('KitchenMain km', array('km.MergeNo' => $MergeNo, 
 							'km.EID' => $this->EID,
 							'k.BillStat' => 0,
 							'km.BillStat' => 0,
@@ -1762,6 +1696,17 @@ class Cust extends CI_Model{
 						->where_in('Stat', array(1,5))
 						->get_where('Billing', array('CNo' => $MCNo, 'EID' => authuser()->EID))
 						->row_array();
+	}
+
+	public function getBillLinks(){
+		$CellNo = $this->session->userdata('CellNo');
+		$hours_2 = date('Y-m-d H:i:s', strtotime("-2 hours"));
+		
+		return $this->db2->get_where('BillingLinks', array(
+									'created_by' => $CellNo,
+									'billDate >' => $hours_2
+									))
+				->result_array();
 	}
 
 

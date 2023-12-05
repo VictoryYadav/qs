@@ -135,10 +135,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $CI->User->gettingBiliingData($dbname, $EID, $billId, $CustId, $flag);
 	}
 
-	function getBillingDataByEID_CNo($EID, $CNo, $per_cent){
+	function getBillingDataByEID_CNo($EID, $CNo, $MergeNo, $per_cent){
 		$CI = & get_instance();
 		$CI->load->model('Cust');
-		return $CI->Cust->fetchBiliingData($EID, $CNo, $per_cent);
+		return $CI->Cust->fetchBiliingData($EID, $CNo, $MergeNo, $per_cent);
 	}
 
 	function billCreate($EID, $CNo, $postData){
@@ -377,6 +377,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$CI = & get_instance();
 	    $CI->load->model('User');
 	    return $CI->User->getUserName($custId);	
+	}
+
+	function getVisits($cellNo){
+		$CI = & get_instance();
+	    $CI->load->model('User');
+	    return $CI->User->getRestVist($cellNo);	
+	}
+
+	function taxCalculateData($kitcheData, $EID, $CNo, $MergeNo){
+		$CI = & get_instance();
+	    $CI->load->model('User');
+	    return $CI->User->getTaxCalculation($kitcheData, $EID, $CNo, $MergeNo);	
 	}
 
 
