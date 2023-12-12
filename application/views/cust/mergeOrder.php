@@ -139,6 +139,7 @@
 
                             <tr onclick="getOrderDetails(<?= $ord['CNo']; ?>)">
                                 <input type="hidden" name="mobile[]" value="<?= $ord['CellNo']; ?>">
+                                <input type="hidden" name="cust_id[]" value="<?= $ord['CustId']; ?>">
                                 <td>
                                     <input type="hidden" name="CNo[]" value="<?= $ord['CNo']; ?>">
                                      <input type="checkbox" name="chck_cno[]" checked="" onchange="calcValue(<?= $ord['CNo']; ?>,<?= $ord['OrdAmt']; ?>)" id="item_<?= $ord['CNo']; ?>" class="cnoClass" value="<?= $ord['CNo']; ?>">

@@ -175,7 +175,8 @@ class User extends CI_Model{
 	}
 
 	public function generate_otp($mobile, $page){
-		$otp = rand(9999,1000);
+		// $otp = rand(9999,1000);
+		$otp = 1212;
         $this->session->set_userdata('cust_otp', $otp);
         // $this->session->set_userdata('cust_otp', '1212');
         $otpData['mobileNo'] = $mobile;
@@ -198,6 +199,8 @@ class User extends CI_Model{
 		$EID = authuser()->EID;
         $EType = $this->session->userdata('EType');
 
+        $this->db2->trans_start();
+
         updateRecord('Billing', array('Stat' => 1,'payRest' => 1), array('BillId' => $billId, 'EID' => $EID));
 
         // print_r($q1);
@@ -206,14 +209,14 @@ class User extends CI_Model{
         if ($EType == 5) {
         	$billSplit = $this->db2->select('splitTyp')->get_where('Billing', array('BillId' => $billId))->row_array();
         	if($billSplit['splitTyp'] == 0){
-	        	$this->db2->query("UPDATE Eat_tables SET MergeNo = TableNo, Stat = 0 where EID = $EID and MergeNo = $MergeNo");
+	        	$this->db2->query("UPDATE Eat_tables SET MergeNo = TableNo, Stat = 0 where EID = $EID and MergeNo = '$MergeNo'");
 	        	// check for split bill payments , for km tables
 	        	$this->db2->query("UPDATE Kitchen k, KitchenMain km, Billing b SET k.payRest=1, km.payRest=1, km.CnfSettle = 1, km.custPymt = 1 WHERE b.BillId = $billId and (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo)");
         	}else{
         		$splitbilDT = $this->db2->query("SELECT sum(bp.PaidAmt) as rcvdamt, sum(b.PaidAmt) as totpayable from Billing b,BillPayments bp     where bp.MCNo=b.CNo and b.BillId=bp.BillId and b.BillId= $billId and b.EID = bp.EID and b.EID = $EID")->row_array();
         		if(!empty($splitbilDT)){
         			if($splitbilDT['rcvdamt'] == $splitbilDT['totpayable']){
-        				$this->db2->query("UPDATE Eat_tables SET MergeNo = TableNo, Stat = 0 where EID = $EID and MergeNo = $MergeNo");
+        				$this->db2->query("UPDATE Eat_tables SET MergeNo = TableNo, Stat = 0 where EID = $EID and MergeNo = '$MergeNo'");
 		        	// check for split bill payments , for km tables
 		        	$this->db2->query("UPDATE Kitchen k, KitchenMain km, Billing b SET k.payRest=1, km.payRest=1, km.CnfSettle = 1, km.custPymt = 1 WHERE b.BillId = $billId and (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo)");		
         			}
@@ -222,6 +225,7 @@ class User extends CI_Model{
         }else{
         	$this->db2->query("UPDATE Kitchen k, KitchenMain km, Billing b SET k.payRest=1, km.payRest=1, km.CnfSettle = 1, k.Stat = 3, km.custPymt = 1 WHERE b.BillId = $billId and (k.Stat = 2) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo)");
         }
+        $this->db2->trans_complete();
         
 	}
 

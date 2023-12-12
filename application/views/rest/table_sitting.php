@@ -1429,7 +1429,7 @@ width: 100%;*/
             $('#btnCash').hide();
             // $('#billCreatebtn').show();
             if(BillStat > 0){
-                $('#btnBillOption').attr('onclick', "billOptions("+custId+","+MCNo+","+mergeNo+")");
+                $('#btnBillOption').attr('onclick', "billOptions("+custId+","+MCNo+",'"+mergeNo+"')");
                 $('#btnBillOption').show();
 
                 $('#btnCash').attr('onclick', "cashCollect("+custId+","+MCNo+",'"+mergeNo+"',"+oTyp+")");
@@ -1518,7 +1518,7 @@ width: 100%;*/
 
                         if(Math.round(data[i].bpPaidAmt) >= Math.round(data[i].PaidAmt) ){
 
-                            settleBtn = '<button class="btn btn-sm btn-success" onclick="setPaidAmount('+data[i].BillId+','+data[i].CNo+','+data[i].MergeNo+','+data[i].CustId+','+data[i].BillNo+','+data[i].TotBillAmt+',\''+data[i].pymtName+'\')">\
+                            settleBtn = '<button class="btn btn-sm btn-success" onclick="setPaidAmount('+data[i].BillId+','+data[i].CNo+',\''+data[i].MergeNo+'\','+data[i].CustId+','+data[i].BillNo+','+data[i].TotBillAmt+',\''+data[i].pymtName+'\')">\
                                             <i class="fas fa-check-double"></i> \
                                         </button>';
                         } 

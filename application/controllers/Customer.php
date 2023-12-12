@@ -1732,6 +1732,7 @@ class Customer extends CI_Controller {
         $data['tip'] = $_POST['tip'];
         $data['MCNo'] = $CNo;
         $data['tot_sgst'] = $_POST['tot_sgst'];
+        $data['cust_id'] = $_POST['cust_id'];
         
         $data['title'] = $this->lang->line('splitbill');
         $data['MergeNo'] = $MergeNo;
@@ -1771,6 +1772,7 @@ class Customer extends CI_Controller {
         for ($i=0; $i < sizeof($_POST['mobile']);  $i++) { 
             $pData['paymentMode'] = 'Due';
             $pData['CellNo'] = $_POST['mobile'][$i];
+            $pData['CustId'] = $_POST['custid'][$i];
             $pData['CNo'] = $_POST['MCNo'];
             $pData['TotalGross'] = $_POST['totItemAmt'][$i];
             $pData['orderAmount'] = $_POST['amount'][$i];
@@ -1800,6 +1802,7 @@ class Customer extends CI_Controller {
                 $temp['link'] = $link;
                 $temp['billId'] = $billId;
                 $temp['EID'] = $EID;
+                $temp['created_by'] = $CellNo;
                 $linkData[] = $temp;
                 $this->session->set_userdata('blink', $link);
             // link send with bill no, sms or email => pending status
@@ -1814,7 +1817,7 @@ class Customer extends CI_Controller {
         // echo "<pre>";
         // print_r($linkData);
         // die;
-
+        $this->session->set_userdata('billSplit', 2);
         $this->db2->insert_batch('BillingLinks', $linkData);
 
         if(!empty($res)){
@@ -2202,6 +2205,8 @@ class Customer extends CI_Controller {
             $this->session->set_userdata('itemTotalGross', $_POST['itemGrossAmt']);
             $EID = authuser()->EID;
             $CNo = $this->session->userdata('CNo');
+            $CellNo = $this->session->userdata('CellNo');
+            $MergeNo = $this->session->userdata('MergeNo');
             $res = billCreate($EID, $CNo, $pData);
             
             if(!empty($res)){
@@ -2211,6 +2216,21 @@ class Customer extends CI_Controller {
                     $dt['BillId'] = $res['billId'];
                     $dt['MCNo'] = $CNo;
                     $response = $dt;
+
+                    $my_db = $this->session->userdata('my_db');
+                    $url = $EID . "_b_" . $res['billId'] . "_" .$my_db. "_" . $CNo. "_" . $CellNo. "_" . $MergeNo. "_" . $pData['orderAmount'];
+
+                    $url = base64_encode($url);
+                    $url = rtrim($url, "=");
+                    $link = base_url('users?eatout='.$url);
+
+                    $linkData['billId'] = $res['billId'];
+                    $linkData['mobileNo'] = $CellNo;
+                    $linkData['link'] = $link;
+                    $linkData['EID'] = $EID;
+                    $linkData['created_by'] = $CellNo;
+                    $this->session->set_userdata('billSplit', 1);
+                    $this->db2->insert('BillingLinks', $linkData);
                 }
             }
 
@@ -2229,10 +2249,10 @@ class Customer extends CI_Controller {
         $data["modes"] = $this->cust->getPaymentModes();
         $data['BillId'] = $BillId;
         $data['MCNo'] = $MCNo;
-        $bills = getRecords('Billing', array('BillId' => $BillId, 'CNo' => $MCNo, 'EID' => authuser()->EID));
+        $bills = getRecords('Billing', array('BillId' => $BillId, 'EID' => authuser()->EID));
         $data['payable'] = $bills['PaidAmt'];
         $data["splitBills"] = $this->cust->getSplitPayments($BillId);
-        $data["billLinks"] = $this->cust->getBillLinks();
+        $data["billLinks"] = $this->cust->getBillLinks($BillId);
         // echo "<pre>";
         // print_r($data);
         // die;

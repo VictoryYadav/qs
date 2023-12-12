@@ -222,6 +222,7 @@ class Cust extends CI_Model{
 		$ONo = $this->session->userdata('ONo');
 		$EType = $this->session->userdata('EType');
 		$TableNo = authuser()->TableNo;
+		$MergeNo = $this->session->userdata('MergeNo');
 		$KOTNo = $this->session->userdata('KOTNo');
 		$CellNo = $_SESSION['signup']['MobileNo'];
 		$MultiKitchen = $this->session->userdata('MultiKitchen');
@@ -623,7 +624,8 @@ class Cust extends CI_Model{
 				$checkKM = $this->db2->select('custPymt, BillStat, payRest')->get_where('KitchenMain', array('BillStat >' => 0, 'EID' => $EID, 'CNo' => $CNo))->row_array();
 				if(!empty($checkKM)){
 					if($checkKM['payRest'] == 1){
-						$this->session->set_userdata('CNo' , 0);
+						$CNo = 0;
+						$this->session->set_userdata('CNo' , $CNo);
 						$this->session->set_userdata('MergeNo' , $TableNo);
 					}else{
 						$response = [
@@ -713,11 +715,11 @@ class Cust extends CI_Model{
 						// 	$orderType = 0;
 						// }
 
-						$MergeNo = $this->session->userdata('MergeNo');
 						if($TableNo == $MergeNo){
-							$mergeTable = $this->db2->select('MergeNo')->get_where('Eat_tables', array('EID' => $EID , 'TableNo' => $TableNo))->row_array();
+							$mergeTable = getRecords('Eat_tables', array('EID' => $EID , 'TableNo' => $TableNo));
 							if(!empty($mergeTable)){
 								$MergeNo = $mergeTable['MergeNo'];
+								$this->session->set_userdata('MergeNo', $MergeNo);
 							}
 						}
 						// $kitchenMainObj
@@ -758,8 +760,8 @@ class Cust extends CI_Model{
 					// end of kitchen main
 					$MergeNo = $TableNo;
 				} else {
-					$MergeNoGet = $this->db2->query("SELECT MergeNo FROM KitchenMain WHERE EID = $EID AND CNo = $CNo and BillStat = 0")->result_array();
-					$MergeNo = $MergeNoGet[0]['MergeNo'];
+					$MergeNoGet = $this->db2->query("SELECT MergeNo FROM KitchenMain WHERE EID = $EID AND CNo = $CNo and BillStat = 0")->row_array();
+					$MergeNo = $MergeNoGet['MergeNo'];
 				}
 
 				// For EType = 5
@@ -811,6 +813,11 @@ class Cust extends CI_Model{
 						$newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
 					}
 				}
+
+				// check for asking
+				$MergeNoGet = $this->db2->query("SELECT MergeNo FROM KitchenMain WHERE EID = $EID AND CNo = $CNo and BillStat = 0")->row_array();
+				$MergeNo = $MergeNoGet['MergeNo'];
+				// end check for
 
 				// offer
 				$kitchenObj['CNo'] = $CNo;
@@ -1525,7 +1532,6 @@ class Cust extends CI_Model{
                 $billingObj['ONo'] = $ONo;
                 $billingObj['CNo'] = $CNo;
                 $billingObj['BillNo'] = $newBillNo;
-                $billingObj['CustId'] = $kitcheData[0]['CustId'];
                 $billingObj['COrgId'] = $COrgId;
                 $billingObj['CustNo'] = $CustNo;
                 $billingObj['TotAmt'] = $itemTotalGross;
@@ -1544,8 +1550,10 @@ class Cust extends CI_Model{
                 $billingObj['Stat'] = $billingObjStat;
                 if($paymentMode == 'Due'){
 		        	$billingObj['CellNo'] = $postData['CellNo'];
+		        	$billingObj['CustId'] = $postData['CustId'];
 		        }else{
                 	$billingObj['CellNo'] = $kitcheData[0]['CellNo'];
+                	$billingObj['CustId'] = $kitcheData[0]['CustId'];
 		        }
                 $billingObj['splitTyp'] = $splitTyp;
                 $billingObj['splitPercent'] = $splitPercent;
@@ -1698,13 +1706,20 @@ class Cust extends CI_Model{
 						->row_array();
 	}
 
-	public function getBillLinks(){
-		$CellNo = $this->session->userdata('CellNo');
-		$hours_2 = date('Y-m-d H:i:s', strtotime("-2 hours"));
+	public function getBillLinks($billId){
 		
+		if($this->session->userdata('billSplit') > 1){
+			$CellNo = $this->session->userdata('CellNo');
+			$hours_2 = date('Y-m-d H:i:s', strtotime("-2 hours"));
+
+			$this->db2->where('created_by', $CellNo,);
+			$this->db2->where('billDate >', $hours_2);
+		}else{
+			$this->db2->where('billId', $billId);
+		}
+
 		return $this->db2->get_where('BillingLinks', array(
-									'created_by' => $CellNo,
-									'billDate >' => $hours_2
+									'EID' => authuser()->EID
 									))
 				->result_array();
 	}

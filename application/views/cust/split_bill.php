@@ -68,12 +68,13 @@ body{
                         <tbody id="addBody">
                             <?php 
                                 $count = 0;
-                                foreach ($mobile as $key) {
+                                for ($i=0; $i < sizeof($mobile) ; $i++) {
                                     $count++;
                                 ?>
                             <tr>
                                 <td>
-                                    <input type="number" value="<?= $key; ?>" placeholder="Mobile" class="form-control" required name="mobile[]">
+                                    <input type="number" value="<?= $mobile[$i]; ?>" placeholder="Mobile" class="form-control" required name="mobile[]">
+                                    <input type="hidden" value="<?= $cust_id[$i]; ?>" class="form-control" name="custid[]">
                                 </td>
                                 <!-- <td>
                                     <select name="msgFormat[]" id="" class="form-control" required>
