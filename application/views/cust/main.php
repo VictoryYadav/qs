@@ -459,14 +459,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- <div class="modal-footer" style="border-top: none;">
-            <button type="button" class="btn modal-back" data-dismiss="modal" width="50%">
-                <?= $language['back']?>
-            </button>
-            
-            <button type="button" class="btn modal-confirm" data-dismiss="modal" width="50%" id="confirm-order" tax_type="" tbltyp=""><?= $language['add_item']?></button>
-        </div> -->
 
         <div class="modal-footer" style="bottom: 0px;background-color: #ffffff;padding: 3px;padding-left: 15px;right: 0px;bottom: 0px;left: 0px;z-index: 1050;outline: 0px;position: fixed; width: 100%;">
             <button type="button" class="btn col-5 modal-back" data-dismiss="modal" style="padding: 5px 5px 5px; font-size: 12px;"><?php echo  $this->lang->line('back'); ?></button>
@@ -747,7 +739,7 @@ Essential Scripts
                         sts = 'active';
                     }
                     
-                    mcat +='<li class="list-inline-item '+sts+'" data-filter="*" onclick="clickMcat('+mCatList[i].MCatgId+')" style="font-size:14px;">'+mCatList[i].MCatgNm+'</li>';
+                    mcat +='<li class="list-inline-item '+sts+'" data-filter="*" onclick="clickMcat('+mCatList[i].MCatgId+')" style="font-size:14px;">'+mCatList[i].lname+'</li>';
                 }
             }else{
                 $('#mcatgBlock').hide();
@@ -775,16 +767,17 @@ Essential Scripts
             if(res.status == 'success'){
                 
                 var filter = res.response;
+                var all = res.all;
               
               console.log('ff'+filter.length);
 
                 if(filter.length > 0){
                     $('#filterBlock').show();
                     fltr = '<label class="btn btn-b veg-btn active">\
-                        <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" onchange="filterChange(0)" checked="">ALL</label>';
+                        <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" onchange="filterChange(0)" checked="">'+all+'</label>';
                     for(i=0; i < filter.length; i++){
                         fltr += '<label class="btn btn-b nonveg-btn">\
-                        <input type="radio" value="'+filter[i].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[i].FID+')">'+filter[i].Opt+'</label>';
+                        <input type="radio" value="'+filter[i].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[i].FID+')">'+filter[i].lname+'</label>';
                     }
                     $('#filters').html(fltr);
                 }else{
@@ -822,7 +815,7 @@ Essential Scripts
               if(total > 0){
                   for (var i = 0; i< data.length; i++) {
                     var openModal = '#itemModal';
-                    var itemName = "'"+data[i].ItemNm+"'";
+                    var itemName = "'"+data[i].itemName+"'";
                     var ingrediant = "'"+data[i].Ingeredients+"'";
                     var imgUrl = "'<?= base_url(); ?>"+data[i].imgSrc+"'";
 
@@ -851,30 +844,30 @@ Essential Scripts
                     var sale = '';
                     var saleView = '';
                     if(data[i].ItemSale == 1){
-                        sale = '<div class="priceRight" style="background:#f5b6b6;color:#343a40">New</div>';
-                        saleView = '<span style="background:#f5b6b6;color:#000;border-radius:50px;padding:3px;font-size:10px;">New</span>';
+                        sale = '<div class="priceRight" style="background:#f5b6b6;color:#343a40"><?= $this->lang->line('new'); ?></div>';
+                        saleView = '<span style="background:#f5b6b6;color:#000;border-radius:50px;padding:3px;font-size:10px;"><?= $this->lang->line('new'); ?></span>';
                     }else if(data[i].ItemSale == 2){
-                        sale = '<div class="priceRight" style="background:#92d6ebcc;color:#343a40">Must Try</div>';
-                        saleView = '<span style="background:#92d6ebcc;color:#000;border-radius:50px;padding:3px;font-size:10px;">Must Try</span>';
+                        sale = '<div class="priceRight" style="background:#92d6ebcc;color:#343a40"><?= $this->lang->line('mustTry'); ?></div>';
+                        saleView = '<span style="background:#92d6ebcc;color:#000;border-radius:50px;padding:3px;font-size:10px;"><?= $this->lang->line('mustTry'); ?></span>';
                     }else if(data[i].ItemSale == 3){
-                        sale = '<div class="priceRight" style="background:#ecf10a;color:#343a40">Bestseller</div>';
-                        saleView = '<span style="background:#ecf10a;color:#000;border-radius:50px;padding:3px;font-size:10px;">Bestseller</span>';
+                        sale = '<div class="priceRight" style="background:#ecf10a;color:#343a40"><?= $this->lang->line('bestseller'); ?></div>';
+                        saleView = '<span style="background:#ecf10a;color:#000;border-radius:50px;padding:3px;font-size:10px;"><?= $this->lang->line('bestseller'); ?></span>';
                     }
 
                     var attrib = '';
                     var attribView = '';
                     if(data[i].ItemAttrib == 1){
-                        attrib = '<div class="price" style="background:#fd4800;color:#fff;">Spicy</div>';
-                        attribView = '<span style="background:#fd4800;color:#fff;border-radius:50px;padding:3px;margin-right:2px;font-size:10px;">Spicy</span>';
+                        attrib = '<div class="price" style="background:#fd4800;color:#fff;"><?= $this->lang->line('spicy'); ?></div>';
+                        attribView = '<span style="background:#fd4800;color:#fff;border-radius:50px;padding:3px;margin-right:2px;font-size:10px;"><?= $this->lang->line('spicy'); ?></span>';
                     }else if(data[i].ItemAttrib == 2){
-                        attrib = '<div class="price" style="background:#c51919;color:#fff;">Very Spicy</div>';
-                        attribView = '<span style="background:#c51919;color:#fff;border-radius:50px;padding:3px;margin-right:2px;font-size:10px;">Very Spicy</span>';
+                        attrib = '<div class="price" style="background:#c51919;color:#fff;"><?= $this->lang->line('verySpicy'); ?></div>';
+                        attribView = '<span style="background:#c51919;color:#fff;border-radius:50px;padding:3px;margin-right:2px;font-size:10px;"><?= $this->lang->line('verySpicy'); ?></span>';
                     }else if(data[i].ItemAttrib == 3){
-                        attrib = '<div class="price" style="background:#80b927;color:#fff;">Sweet</div>';
-                        attribView = '<span style="background:#80b927;color:#fff;border-radius:50px;padding:3px;margin-right:2px;font-size:10px;">Sweet</span>';
+                        attrib = '<div class="price" style="background:#80b927;color:#fff;"><?= $this->lang->line('sweet'); ?></div>';
+                        attribView = '<span style="background:#80b927;color:#fff;border-radius:50px;padding:3px;margin-right:2px;font-size:10px;"><?= $this->lang->line('sweet'); ?></span>';
                     }else if(data[i].ItemAttrib == 4){
-                        attrib = '<div class="price" style="background:#567d1a;color:#fff;">Very Sweet</div>';
-                        attribView = '<span style="background:#567d1a;color:#fff;border-radius:50px;padding:3px;margin-right:2px;font-size:10px;">Very Sweet</span>';
+                        attrib = '<div class="price" style="background:#567d1a;color:#fff;"><?= $this->lang->line('verySweet'); ?></div>';
+                        attribView = '<span style="background:#567d1a;color:#fff;border-radius:50px;padding:3px;margin-right:2px;font-size:10px;"><?= $this->lang->line('verySweet'); ?></span>';
                     }
 
                                     // <div class="priceBottom">$400</div>\
@@ -895,7 +888,7 @@ Essential Scripts
                                         </div>\
                                     <?php } ?>
 										<?php if(!empty($this->session->userdata('CustId'))){ ?>
-										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-NV="'+data[i].NV+'" item-pck="'+data[i].PckCharge+'">\
+										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+itemName+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-NV="'+data[i].NV+'" item-pck="'+data[i].PckCharge+'">\
 											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
 										</a>\
 										<?php } else{ ?>
@@ -905,7 +898,7 @@ Essential Scripts
 									<?php } ?>
 									</div>\
 									<div class="card-body">\
-                                        <p data-toggle="tooltip" data-placement="top" title="'+data[i].ItemNm+'" class="strTruncate">'+data[i].ItemNm+'</p>\
+                                        <p data-toggle="tooltip" data-placement="top" title="'+data[i].ItemNm+'" class="strTruncate">'+data[i].itemName+'</p>\
                                         <ul class="list-inline product-meta">\
                                             <li class="list-inline-item">\
                                                 <i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+data[i].AvgRtng+'\
@@ -928,7 +921,7 @@ Essential Scripts
 					    <div class="row p-lg-3 p-sm-5 p-1">\
 					        <div class="col-lg-4 col-md-4 col-sm-4 col-4 align-self-center">\
 					        <?php if(!empty($this->session->userdata('CustId'))){ ?>
-					            <a data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+data[i].ItemNm+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'" item-NV="'+data[i].NV+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-pck="'+data[i].PckCharge+'">\
+					            <a data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+itemName+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'" item-NV="'+data[i].NV+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-pck="'+data[i].PckCharge+'">\
 					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
 					            </a>\
 					            <?php } else{ ?>
@@ -1020,7 +1013,7 @@ Essential Scripts
 
                                 // add cid and mcatgid to me
                                 template += `
-                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.ItmRate}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" item-NV="${item.NV}" style="cursor: pointer;" item-prepTime="${item.PrepTime}">${item.ItemNm}</li>
+                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemName}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.ItmRate}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" item-NV="${item.NV}" style="cursor: pointer;" item-prepTime="${item.PrepTime}">${item.ItemNm}</li>
                             `;
                             });
                             template += `</ul>`;
@@ -1102,8 +1095,8 @@ Essential Scripts
             // read more
             var showChar = 100;  // How many characters are shown by default
             var ellipsestext = "";
-            var moretext = "Read More";
-            var lesstext = "Read Less";
+            var moretext = "<?= $this->lang->line('readMore'); ?>";
+            var lesstext = "<?= $this->lang->line('readLess'); ?>";
         
             $('.more').each(function() {
                 var content = $(this).html();

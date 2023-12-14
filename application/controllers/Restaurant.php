@@ -4260,10 +4260,10 @@ class Restaurant extends CI_Controller {
     public function csv_file(){
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
-            echo "<pre>";
-            print_r($_POST);
-            print_r($_FILES);
-            die;
+            // echo "<pre>";
+            // print_r($_POST);
+            // print_r($_FILES);
+            // die;
             $folderPath = 'uploads/e'.$EID.'/csv';
             // remove all files inside this folder uploads/qrcode/
             $filesPath = glob($folderPath.'/*'); // get all file names
@@ -4375,10 +4375,10 @@ class Restaurant extends CI_Controller {
                 break;
 
                 case 'menucatg':
-                    if(isset($_FILES['eatary_file']['name']) && !empty($_FILES['eatary_file']['name'])){ 
-                        $files = $_FILES['eatary_file'];
+                    if(isset($_FILES['mcatg_file']['name']) && !empty($_FILES['mcatg_file']['name'])){ 
+                        $files = $_FILES['mcatg_file'];
                         $allowed = array('csv');
-                        $filename_c = $_FILES['eatary_file']['name'];
+                        $filename_c = $_FILES['mcatg_file']['name'];
                         $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
                         if (!in_array($ext, $allowed)) {
                             $flag = 1;
@@ -4389,69 +4389,49 @@ class Restaurant extends CI_Controller {
                             $flag = 1;
                             $this->session->set_flashdata('error','File upload less than 1MB!');   
                         }
-                        $_FILES['eatary_file']['name']= $files['name'];
-                        $_FILES['eatary_file']['type']= $files['type'];
-                        $_FILES['eatary_file']['tmp_name']= $files['tmp_name'];
-                        $_FILES['eatary_file']['error']= $files['error'];
-                        $_FILES['eatary_file']['size']= $files['size'];
+                        $_FILES['mcatg_file']['name']= $files['name'];
+                        $_FILES['mcatg_file']['type']= $files['type'];
+                        $_FILES['mcatg_file']['tmp_name']= $files['tmp_name'];
+                        $_FILES['mcatg_file']['error']= $files['error'];
+                        $_FILES['mcatg_file']['size']= $files['size'];
                         $file = $files['name'];
 
                         if($flag == 0){
-                            $res = do_upload('eatary_file',$file,$folderPath,'*');
+                            $res = do_upload('mcatg_file',$file,$folderPath,'*');
                             if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
                                 while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
-                                    // echo "<pre>";
-                                    // print_r($csv_data);
-                                    // die;
-                                    if($csv_data[0] !='EID'){
+                                    echo "<pre>";
+                                    print_r($csv_data);
+                                    die;
+                                    if($csv_data[0] !='Cuisine'){
                                         // echo "<pre>";
                                     // print_r($csv_data);
                                     // die;
-                                        $eat = $this->db2->select('Name')->like('Name', $csv_data[5])->get_where('Eatary', array('EID' => $EID))->row_array();
+                                        $eat = $this->db2->select('MCatgNm')->like('MCatgNm', $csv_data[1])->get_where('MenuCatg', array('EID' => $EID))->row_array();
                                         // print_r($this->db2->last_query());
                                         // print_r($eat);
                                         if(empty($eat)){
-                                            $eatObj['dbEID'] = $csv_data[1];
-                                            $eatObj['ChainId'] = $csv_data[2];
-                                            $eatObj['ONo'] = $csv_data[3];
-                                            $eatObj['Stall'] = $csv_data[4];
-                                            $eatObj['Name'] = $csv_data[5];
-                                            $eatObj['CatgID'] = $csv_data[6];
-                                            $eatObj['ECatg'] = $csv_data[7];
-                                            $eatObj['CountryCd'] = $csv_data[8];
-                                            $eatObj['CityCd'] = $csv_data[9];
-                                            $eatObj['Addr'] = $csv_data[10];
-                                            $eatObj['Suburb'] = $csv_data[11];
-                                            $eatObj['EWNS'] = $csv_data[12];
-                                            $eatObj['City'] = $csv_data[13];
-                                            $eatObj['Pincode'] = $csv_data[14];
-                                            $eatObj['Tagline'] = $csv_data[15];
-                                            $eatObj['Remarks'] = $csv_data[16];
-                                            $eatObj['GSTNo'] = $csv_data[17];
-                                            $eatObj['CINNo'] = $csv_data[18];
-                                            $eatObj['FSSAINo'] = $csv_data[19];
-                                            $eatObj['PhoneNos'] = $csv_data[20];
-                                            $eatObj['Email'] = $csv_data[21];
-                                            $eatObj['Website'] = $csv_data[22];
-                                            $eatObj['Logo'] = $csv_data[23];
-                                            $eatObj['ContactNos'] = $csv_data[24];
-                                            $eatObj['ContactAddr'] = $csv_data[25];
-                                            $eatObj['BillerName'] = $csv_data[26];
-                                            $eatObj['BillerLogo'] = $csv_data[27];
-                                            $eatObj['BillerGSTNo'] = $csv_data[28];
-                                            $eatObj['BTyp'] = $csv_data[29];
-                                            $eatObj['VFM'] = $csv_data[30];
-                                            $eatObj['Stat'] = $csv_data[31];
-                                            // $eatObj['LoginCd'] = $csv_data[32];
-                                            $eatObj['LoginCd'] = authuser()->RUserId;
-                                            // $eatObj['LstModDt'] = $csv_data[33];
-                                            $eatObj['TaxInBill'] = $csv_data[34];
-                                            $eatObj['QRLink'] = $csv_data[35];
-                                            $eatObj['BillName'] = $csv_data[36];
+                                            $CTyp = 0;
+                                            if($csv_data[2] == 'Bar'){
+                                                $CTyp = 1;
+                                            }else if($csv_data[2] == 'Beverages'){
+                                                $CTyp = 2;
+                                            }else if($csv_data[2] == 'Desserts'){
+                                                $CTyp = 3;
+                                            }else if($csv_data[2] == 'Custom'){
+                                                $CTyp = 4;
+                                            }
+
+                                            $mc['CID'] = $this->checkCuisine($csv_data[0], $CTyp);
+                                            $mc['MCatgNm'] = $csv_data[1];
+                                            $mc['CTyp'] = $CTyp;
+                                            $mc['Rank'] = $csv_data[3];
+                                            $mc['KitCd'] = $csv_data[4];
+                                            $mc['EID'] = $EID;
                                             // echo "<pre>";
-                                            // print_r($eatObj);
+                                            // print_r($mc);
                                             // die;
-                                            $id = insertRecord('Eatary', $eatObj);
+                                            $id = insertRecord('MenuCatg', $mc);
                                             if(!empty($id)){
                                                 $this->session->set_flashdata('success','Data Inserted.');
                                             }
@@ -4467,12 +4447,239 @@ class Restaurant extends CI_Controller {
                 break;
 
                 case 'menuitem':
+                    if(isset($_FILES['mitem_file']['name']) && !empty($_FILES['mitem_file']['name'])){ 
+                        $files = $_FILES['mitem_file'];
+                        $allowed = array('csv');
+                        $filename_c = $_FILES['mitem_file']['name'];
+                        $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                        if (!in_array($ext, $allowed)) {
+                            $flag = 1;
+                            $this->session->set_flashdata('error','Support only CSV format!');
+                        }
+                        // less than 1mb size upload
+                        if($files['size'] > 1048576){
+                            $flag = 1;
+                            $this->session->set_flashdata('error','File upload less than 1MB!');   
+                        }
+                        $_FILES['mitem_file']['name']= $files['name'];
+                        $_FILES['mitem_file']['type']= $files['type'];
+                        $_FILES['mitem_file']['tmp_name']= $files['tmp_name'];
+                        $_FILES['mitem_file']['error']= $files['error'];
+                        $_FILES['mitem_file']['size']= $files['size'];
+                        $file = $files['name'];
+
+                        if($flag == 0){
+                            $res = do_upload('mitem_file',$file,$folderPath,'*');
+                            if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
+                                while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
+                                    echo "<pre>";
+                                    print_r($csv_data);
+                                    die;
+                                    if($csv_data[0] !='Cuisine'){
+                                        // echo "<pre>";
+                                    // print_r($csv_data);
+                                    // die;
+                                        $eat = $this->db2->select('ItemNm')->like('ItemNm', $csv_data[4])->get_where('MenuItem', array('EID' => $EID))->row_array();
+                                        // print_r($this->db2->last_query());
+                                        // print_r($eat);
+                                        if(empty($eat)){
+                                            $mItem['CID'] = $csv_data[0];
+                                            $mItem['MCatgId'] = $csv_data[1];
+                                            $mItem['CTyp'] = $csv_data[2];
+                                            $mItem['FID'] = $csv_data[3];
+                                            $mItem['ItemNm'] = $csv_data[4];
+                                            $mItem['PckCharge'] = $csv_data[5];
+                                            $mItem['ItemTyp'] = $csv_data[6];
+                                            $mItem['ItemTag'] = $csv_data[7];
+                                            $mItem['Rank'] = $csv_data[9];
+                                            $mItem['ItmDesc'] = $csv_data[10];
+                                            $mItem['Ingeredients'] = $csv_data[11];
+                                            $mItem['PrepTime'] = $csv_data[12];
+                                            $mItem['FrmTime'] = $csv_data[14];
+                                            $mItem['ToTime'] = $csv_data[15];
+                                            $mItem['AltFrmTime'] = $csv_data[16];
+                                            $mItem['AltToTime'] = $csv_data[17];
+                                            $mItem['DayNo'] = $csv_data[18];
+                                            $mItem['KitCd'] = $csv_data[19];
+                                            $mItem['EID'] = authuser()->EID;
+                                            $mItem['LoginCd'] = authuser()->RUserId;
+
+                                            echo "<pre>";
+                                            print_r($mItem);
+                                            die;
+                                            $id = insertRecord('MenuItem', $mItem);
+                                            if(!empty($id)){
+                                                $this->session->set_flashdata('success','Data Inserted.');   
+                                            }
+                                        }else{
+                                            $this->session->set_flashdata('success','Data Already Exist'); 
+                                        }
+                                    }
+                                    
+                                }
+                             
+                                fclose($open);
+                            }
+                        }
+                      }
+                break;
+
+                case 'itemrates':
+                    if(isset($_FILES['mitem_rates']['name']) && !empty($_FILES['mitem_rates']['name'])){ 
+                        $files = $_FILES['mitem_rates'];
+                        $allowed = array('csv');
+                        $filename_c = $_FILES['mitem_rates']['name'];
+                        $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                        if (!in_array($ext, $allowed)) {
+                            $flag = 1;
+                            $this->session->set_flashdata('error','Support only CSV format!');
+                        }
+                        // less than 1mb size upload
+                        if($files['size'] > 1048576){
+                            $flag = 1;
+                            $this->session->set_flashdata('error','File upload less than 1MB!');   
+                        }
+                        $_FILES['mitem_rates']['name']= $files['name'];
+                        $_FILES['mitem_rates']['type']= $files['type'];
+                        $_FILES['mitem_rates']['tmp_name']= $files['tmp_name'];
+                        $_FILES['mitem_rates']['error']= $files['error'];
+                        $_FILES['mitem_rates']['size']= $files['size'];
+                        $file = $files['name'];
+
+                        if($flag == 0){
+                            $res = do_upload('mitem_rates',$file,$folderPath,'*');
+                            if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
+                                while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
+                                    echo "<pre>";
+                                    print_r($csv_data);
+                                    die;
+                                    if($csv_data[0] !='ItemNm'){
+                                        // echo "<pre>";
+                                    // print_r($csv_data);
+                                    // die;
+                                        $itemId = 0;
+                                        $Itm_Portion = 0;
+                                        $eat = $this->db2->select('ItemId')->get_where('MenuItemRates', array('EID' => $EID, 'ItemId' => $itemId, 'Itm_Portion' => $Itm_Portion))->row_array();
+                                        // print_r($this->db2->last_query());
+                                        // print_r($eat);
+                                        if(empty($eat)){
+                                            
+                                            $mc['ItemId'] = $itemId;
+                                            $mc['SecId'] = $csv_data[1];
+                                            $mc['Itm_Portion'] = $Itm_Portion;
+                                            $mc['OrigRate'] = $csv_data[3];
+                                            $mc['ChainId'] = 0;
+                                            $mc['EID'] = $EID;
+                                            // echo "<pre>";
+                                            // print_r($mc);
+                                            // die;
+                                            $id = insertRecord('MenuItemRates', $mc);
+                                            if(!empty($id)){
+                                                $this->session->set_flashdata('success','Data Inserted.');
+                                            }
+                                        }else{
+                                            $this->session->set_flashdata('success','Data Already Exist'); 
+                                        }
+                                    }
+                                }
+                                fclose($open);
+                            }
+                        }
+                      }
+                break;
+
+                case 'itemRecom':
+                    if(isset($_FILES['mitem_recos']['name']) && !empty($_FILES['mitem_recos']['name'])){ 
+                        $files = $_FILES['mitem_recos'];
+                        $allowed = array('csv');
+                        $filename_c = $_FILES['mitem_recos']['name'];
+                        $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                        if (!in_array($ext, $allowed)) {
+                            $flag = 1;
+                            $this->session->set_flashdata('error','Support only CSV format!');
+                        }
+                        // less than 1mb size upload
+                        if($files['size'] > 1048576){
+                            $flag = 1;
+                            $this->session->set_flashdata('error','File upload less than 1MB!');   
+                        }
+                        $_FILES['mitem_recos']['name']= $files['name'];
+                        $_FILES['mitem_recos']['type']= $files['type'];
+                        $_FILES['mitem_recos']['tmp_name']= $files['tmp_name'];
+                        $_FILES['mitem_recos']['error']= $files['error'];
+                        $_FILES['mitem_recos']['size']= $files['size'];
+                        $file = $files['name'];
+
+                        if($flag == 0){
+                            $res = do_upload('mitem_recos',$file,$folderPath,'*');
+                            if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
+                                while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
+                                    echo "<pre>";
+                                    print_r($csv_data);
+                                    die;
+                                    if($csv_data[0] !='ItemNm'){
+                                        // echo "<pre>";
+                                    // print_r($csv_data);
+                                    // die;
+                                        $itemId = 0;
+                                        $Itm_Portion = 0;
+                                        $eat = $this->db2->select('ItemId')->get_where('MenuItemRates', array('EID' => $EID, 'ItemId' => $itemId, 'Itm_Portion' => $Itm_Portion))->row_array();
+                                        // print_r($this->db2->last_query());
+                                        // print_r($eat);
+                                        if(empty($eat)){
+                                            
+                                            $mc['ItemId'] = $itemId;
+                                            $mc['SecId'] = $csv_data[1];
+                                            $mc['Itm_Portion'] = $Itm_Portion;
+                                            $mc['OrigRate'] = $csv_data[3];
+                                            $mc['ChainId'] = 0;
+                                            $mc['EID'] = $EID;
+                                            // echo "<pre>";
+                                            // print_r($mc);
+                                            // die;
+                                            $id = insertRecord('MenuItemRates', $mc);
+                                            if(!empty($id)){
+                                                $this->session->set_flashdata('success','Data Inserted.');
+                                            }
+                                        }else{
+                                            $this->session->set_flashdata('success','Data Already Exist'); 
+                                        }
+                                    }
+                                }
+                                fclose($open);
+                            }
+                        }
+                      }
                 break;
             }
             
         }
         $data['title'] = 'Eatary';
         $this->load->view('rest/csv_file', $data);   
+    }
+
+    private function checkCuisine($name, $ctyp){
+        $cuisine = $this->db2->select('CID, Name')->like('Name', $name)->get('Cuisines')->row_array();
+        if(empty($cuisine)){
+            $data['Name'] = $name;
+            $data['CTyp'] = $ctyp;
+            $cid = insertRecord('Cuisines', $data);
+        }else{
+            $cid = $cuisine['CID'];
+        }
+        return $cid;
+    }
+
+    private function checkKitchen($name){
+        $cuisine = $this->db2->select('KitCd, KitName')->like('KitName', $name)->get('Eat_Kit')->row_array();
+        if(empty($cuisine)){
+            $data['KitName'] = $name;
+            $data['EID'] = authuser()->EID;
+            $KitCd = insertRecord('Eat_Kit', $data);
+        }else{
+            $KitCd = $cuisine['KitCd'];
+        }
+        return $KitCd;
     }
 
 

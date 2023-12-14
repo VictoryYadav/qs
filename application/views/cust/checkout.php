@@ -284,7 +284,7 @@
                     }else{
 
                         html += `<tr style="border-top: 1px solid white;">`;
-                        html += `<td><b>Item Total :</b> </td>`;
+                        html += `<td><b><?= $this->lang->line('itemTotal'); ?> :</b> </td>`;
                         html += `<td class="text-center"></td>`;
                         html += `<td class="text-center"></td>`;
                         html += `<td class="text-right"><b>${sub_total}</b></td>`;
@@ -318,7 +318,7 @@
                         grand_total = grand_total + sub_total;
                         itemAmount = parseFloat(itemAmount) + parseFloat(sub_total.toFixed(2));
                         html += `<tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
-                        html += `<td><b>Sub Total :</b> </td>`;
+                        html += `<td><b><?= $this->lang->line('subTotal'); ?> :</b> </td>`;
                         html += `<td class="text-center"></td>`;
                         html += `<td class="text-center"></td>`;
                         html += `<td class="text-right"><b style="color: orange;">${sub_total.toFixed(2)}</b></td>`;
@@ -340,7 +340,7 @@
                 });
 
                 html += `<tr style="border-top: 1px solid white;">`;
-                html += `<td><b>Item Total :</b> </td>`;
+                html += `<td><b><?= $this->lang->line('itemTotal'); ?> :</b> </td>`;
                 html += `<td class="text-center"></td>`;
                 html += `<td class="text-center"></td>`;
                 html += `<td class="text-right"><b>${sub_total}</b></td>`;
@@ -370,7 +370,7 @@
                 }
                 grand_total = grand_total + sub_total;
                 html += `<tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
-                        html += `<td><b>Sub Total :</b> </td>`;
+                        html += `<td><b><?= $this->lang->line('subTotal'); ?> :</b> </td>`;
                         html += `<td class="text-center"></td>`;
                         html += `<td class="text-center"></td>`;
                         html += `<td class="text-right"><b style="color: orange;">${sub_total.toFixed(2)}</b></td>`;
@@ -382,10 +382,10 @@
                 html_body +=`<table class="fixed_headers" style="width:100%">`;
                 html_body +=`<thead>`;
                 html_body +=`<tr>`;
-                html_body +=`<th> Menu Item </th>`;
-                html_body +=`<th class="text-center">Qty</th>`;
-                html_body +=`<th class="text-center">Rate</th>`;
-                html_body +=`<th class="text-right">Amt</th>`;
+                html_body +=`<th><?= $this->lang->line('menuItem'); ?></th>`;
+                html_body +=`<th class="text-center"><?= $this->lang->line('quantity'); ?></th>`;
+                html_body +=`<th class="text-center"><?= $this->lang->line('rate'); ?></th>`;
+                html_body +=`<th class="text-right"><?= $this->lang->line('amount'); ?></th>`;
                 html_body +=`</tr>`;
                 html_body +=`</thead>`;
                 html_body +=`<tbody id="order-amount-table-body">`;
@@ -400,7 +400,7 @@
                     html_body +=`<div class="main-ammount">`;
                     html_body +=`<table style="width:100%;">`;
                     html_body +=`<tr>`;
-                    html_body +=`   <th>Service Charge @ `+ServChrg+` %</th>`;
+                    html_body +=`   <th><?= $this->lang->line('serviceCharge'); ?> @ `+ServChrg+` %</th>`;
                     html_body +=`   <td class="text-right">`+serv.toFixed(2)+`</td>`;
                     html_body +=`</tr>`;
                     html_body +=`</table>`;
@@ -452,7 +452,7 @@
                     html_body +=`<div class="main-ammount">`;
                     html_body +=`<table style="width:100%;">`;
                     html_body +=`<tr class="<?= ($Tips == 0 ? 'hideDiv' : ''); ?>">`;
-                    html_body +=`   <th>Tips</th>`;
+                    html_body +=`   <th><?= $this->lang->line('tips'); ?></th>`;
                     html_body +=`   <td><input id="tips" type="number" class="" value="0" onchange="change_tip()"></td>`;
                     html_body +=`</tr>`;
                     html_body +=`</table>`;

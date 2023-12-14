@@ -16,12 +16,12 @@
                 <div class="row">
                     <div class="col-md-6 mx-auto">
                         <div class="form-group">
-                            <input type="number" name="emailMobile" class="form-control" placeholder="Enter Mobile" required="" autocomplete="off" maxlength="10">
+                            <input type="number" name="emailMobile" class="form-control" placeholder="<?= $this->lang->line('enterMobile'); ?>" required="" autocomplete="off" maxlength="10">
                             <small id="loginMsg" class="text-danger" style="font-size: 10px;"></small>
                         </div>
 
-                        <input type="submit" class="btn btn-sm btn-success" value="Login">
-                        <a href="<?= base_url('customer/signup');?>"><span style="font-size: 12px;">Sign Up</span></a>
+                        <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('log_in'); ?>">
+                        <a href="<?= base_url('customer/signup');?>"><span style="font-size: 12px;"><?= $this->lang->line('signup'); ?></span></a>
                     </div>
                     
                 </div>
@@ -31,11 +31,11 @@
                 <div class="row">
                     <div class="col-md-6 mx-auto">
                         <div class="form-group">
-                            <input type="number" name="otp" class="form-control" placeholder="Enter OTP" autocomplete="off" required="">
+                            <input type="number" name="otp" class="form-control" placeholder="<?= $this->lang->line('enterOTP'); ?>" autocomplete="off" required="">
                             <span class="text-danger" id="errorMsg" style="font-size: 9px;"></span>
                         </div>
-                        <input type="submit" class="btn btn-sm btn-success" value="Verify OTP">
-                        <button class="btn btn-sm btn-warning" type="button" onclick="resendOTP()">Resend OTP</button>
+                        <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('verifyOTP'); ?>">
+                        <button class="btn btn-sm btn-warning" type="button" onclick="resendOTP()"><?= $this->lang->line('resendOTP'); ?></button>
                     </div>
                 </div>
             </form>
@@ -66,7 +66,7 @@
         <p>Your average rating for this outlet  : <b><span id="lableRating">-</span></b></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary btn-sm" onclick="goHome()">Ok</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="goHome()"><?= $this->lang->line('ok'); ?></button>
       </div>
     </div>
   </div>

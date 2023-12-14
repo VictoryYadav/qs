@@ -39,7 +39,17 @@ class Cust extends CI_Model{
 		$data['mcat'] = array();
 		$data['filter'] = array();
 
-		$data['mcat'] = $this->db2->select('MCatgId, MCatgNm, L1MCatgNm, L2MCatgNm, L3MCatgNm, CTyp, CID')
+		$site_lang = $this->session->userdata('site_lang');
+        $lname = '';
+
+        if($site_lang == 'english'){
+            $lname = 'MCatgNm as lname';
+        }else{
+            $lname = 'L1MCatgNm as lname';
+        }
+        $select_sql = "MCatgId, MCatgNm, L1MCatgNm, L2MCatgNm, L3MCatgNm, CTyp, CID, $lname";
+
+		$data['mcat'] = $this->db2->select($select_sql)
 								->order_by('Rank', 'ASC')
 								->get_where('MenuCatg', array('CID' => $cid))
 								->result_array();
@@ -59,12 +69,22 @@ class Cust extends CI_Model{
 	}
 
 	function getItemDetailLists($CID, $mcat, $fl){
+
+		$site_lang = $this->session->userdata('site_lang');
+        $lname = '';
+
+        if($site_lang == 'english'){
+            $lname = 'mi.ItemNm as itemName';
+        }else{
+            $lname = 'mi.ItemNm2 as itemName';
+        }
+
 		$this->session->set_userdata('f_cid', $CID);
         $tableNo = authuser()->TableNo;
 
 		$where = "mi.Stat = 0 and (DAYOFWEEK(CURDATE()) = mi.DayNo OR mi.DayNo = 0)  AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and mi.ItemId Not in (Select md.ItemId from MenuItem_Disabled md where md.ItemId=mi.ItemId and md.EID = $this->EID and md.Chainid=mi.ChainId)";
 // et.TblTyp
-        $sql = "mc.TaxType, mc.KitCd,mc.CTyp, mi.ItemId, mi.ItemNm, mi.ItemNm2, mi.ItemNm3, mi.ItemNm4, mi.ItemTyp, mi.NV, mi.PckCharge, mi.ItmDesc, mi.ItmDesc2, mi.ItmDesc3, mi.ItmDesc4, mi.Ingeredients, mi.Ingeredients2, mi.Ingeredients3, mi.Ingeredients4, mi.Rmks, mi.Rmks2, mi.Rmks3, mi.Rmks4, mi.PrepTime, mi.AvgRtng, mi.FID,mi.ItemAttrib, mi.ItemSale, mi.ItemTag, ItemNm as imgSrc, mi.UItmCd,mi.CID,mi.Itm_Portion,mi.Value,mi.MCatgId,mi.videoLink,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$tableNo' AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId and mi.Stat = 0 ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$this->EID' and et1.TableNo = '$tableNo') as TblTyp";
+        $select_sql = "mc.TaxType, mc.KitCd,mc.CTyp, mi.ItemId, mi.ItemNm, mi.ItemNm2, mi.ItemNm3, mi.ItemNm4, $lname, mi.ItemTyp, mi.NV, mi.PckCharge, mi.ItmDesc, mi.ItmDesc2, mi.ItmDesc3, mi.ItmDesc4, mi.Ingeredients, mi.Ingeredients2, mi.Ingeredients3, mi.Ingeredients4, mi.Rmks, mi.Rmks2, mi.Rmks3, mi.Rmks4, mi.PrepTime, mi.AvgRtng, mi.FID,mi.ItemAttrib, mi.ItemSale, mi.ItemTag, ItemNm as imgSrc, mi.UItmCd,mi.CID,mi.Itm_Portion,mi.Value,mi.MCatgId,mi.videoLink,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$tableNo' AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId and mi.Stat = 0 ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$this->EID' and et1.TableNo = '$tableNo') as TblTyp";
         if(!empty($mcat)){
         	$this->session->set_userdata('f_mcat', $mcat);
             $this->db2->where('mc.MCatgId', $mcat);
@@ -73,7 +93,7 @@ class Cust extends CI_Model{
         	$this->db2->where('mi.FID', $fl);
         	$this->session->set_userdata('f_fid', $fl);
         }
-        $data =  $this->db2->select($sql)
+        $data =  $this->db2->select($select_sql)
         				->order_by('mi.Rank', 'ASC')
                         ->join('MenuItem mi', 'mi.MCatgId = mc.MCatgId')
                         // ->join('MenuItem_Disabled mid', 'mid.ItemId = mi.ItemId', 'inner')
@@ -1402,7 +1422,16 @@ class Cust extends CI_Model{
 			$EType = $this->session->userdata('EType');
 			$stat = ($EType == 5)?3:2;
 
-		return $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate, k.ItmRate,sum(k.OrigRate*k.Qty) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate)*k1.Qty from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID and k1.CNo =$CNo AND (k1.Stat = $stat) and (k1.OrigRate-k1.ItmRate) > 0) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotPckCharge,  ip.Name as Portions, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name, k.TA  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) group by km.CNo, k.ItemId, k.Itm_Portion ,k.CustItemDesc order by TaxType, m.ItemNm Asc")->result_array();
+			$site_lang = $this->session->userdata('site_lang');
+            $lname = '';
+
+            if($site_lang == 'english'){
+                $lname = 'm.ItemNm';
+            }else{
+                $lname = 'm.ItemNm2';
+            }
+
+		return $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate, k.ItmRate,sum(k.OrigRate*k.Qty) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate)*k1.Qty from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID and k1.CNo =$CNo AND (k1.Stat = $stat) and (k1.OrigRate-k1.ItmRate) > 0) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotPckCharge,  ip.Name as Portions, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name, k.TA  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) group by km.CNo, k.ItemId, k.Itm_Portion ,k.CustItemDesc order by TaxType, m.ItemNm Asc")->result_array();
 		}
 	}
 
@@ -1655,7 +1684,17 @@ class Cust extends CI_Model{
 	}
 
 	public function getPaymentModes(){
-		return $this->db2->select('PymtMode,Name,Company, CodePage1')->get_where('ConfigPymt', array('Stat' => 1))->result_array();
+		$site_lang = $this->session->userdata('site_lang');
+            $lname = '';
+
+            if($site_lang == 'english'){
+                $lname = 'Name as Name';
+            }else{
+                $lname = 'Name1 as Name';
+            }
+            $select_sql = "PymtMode, $lname ,Company, CodePage1";
+
+		return $this->db2->select($select_sql)->get_where('ConfigPymt', array('Stat' => 1))->result_array();
 	}
 
 	public function getSplitPayments($billId){
@@ -1712,7 +1751,7 @@ class Cust extends CI_Model{
 			$CellNo = $this->session->userdata('CellNo');
 			$hours_2 = date('Y-m-d H:i:s', strtotime("-2 hours"));
 
-			$this->db2->where('created_by', $CellNo,);
+			$this->db2->where('created_by', $CellNo);
 			$this->db2->where('billDate >', $hours_2);
 		}else{
 			$this->db2->where('billId', $billId);

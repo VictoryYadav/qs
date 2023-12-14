@@ -174,7 +174,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                                   </table>
                                 </div>
                                 <div class="text-right">
-                                    <button class="btn btn-sm btn-success">Add</button>
+                                    <button class="btn btn-sm btn-success"><?= $this->lang->line('add'); ?></button>
                                 </div>
                             </form>
                         </div>
@@ -425,7 +425,7 @@ function billBaseOffer(){
               var temp = '';
               for(i=0; i<data.length; i++){
                 temp += '<tr><input type="hidden" name="TblTyp['+data[i].ItemId+'][]" value="'+data[i].TblTyp+'"><input type="hidden" name="itemKitCd['+data[i].ItemId+'][]" value="'+data[i].KitCd+'"><input type="hidden" name="tax_type['+data[i].ItemId+'][]" value="'+data[i].TaxType+'"><input type="hidden" name="prepration_time['+data[i].ItemId+'][]" value="'+data[i].PrepTime+'"><input type="hidden" name="Itm_Portions['+data[i].ItemId+'][]" value="'+data[i].Itm_Portions+'">\
-                            <td><input type="hidden" name="itemArray[]" value="'+data[i].ItemId+'">'+data[i].ItemNm+'</td>\
+                            <td><input type="hidden" name="itemArray[]" value="'+data[i].ItemId+'">'+data[i].lname+'</td>\
                             <td><div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;"><span class="input-group-btn">\
                                     <button type="button" id="minus-qty'+data[i].ItemId+'" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 25px;" disabled="" onclick="decQty('+data[i].ItemId+')">-\
                                     </button>\

@@ -41,16 +41,44 @@ $lang['no'] = 'No';
 $lang['done'] = 'Done';
 $lang['go'] = 'Go';
 $lang['click'] = 'Click';
+$lang['submit'] = 'Submit';
+$lang['verifyOTP'] = 'Verify OTP';
+$lang['resendOTP'] = 'Resend OTP';
 
 $lang['back'] = 'Back';
 $lang['addItem'] = 'Add Item';
-$lang['quantity'] = 'Quantity';
+$lang['quantity'] = 'Qty';
 $lang['rate'] = 'Rate';
 $lang['amount'] = 'Amount';
 $lang['payable'] = 'Payable';
 $lang['total'] = 'Total';
 $lang['balance'] = 'Balance';
 $lang['multiOutlets'] = 'Multi Outlets';
+$lang['add'] = 'Add';
+
+$lang['all'] = 'All';
+$lang['spicy'] = 'Spicy';
+$lang['verySpicy'] = 'Very Spicy';
+$lang['sweet'] = 'Sweet';
+$lang['verySweet'] = 'Very Sweet';
+$lang['new'] = 'New';
+$lang['mustTry'] = 'Must Try';
+$lang['bestseller'] = 'Bestseller';
+$lang['readMore'] = 'Read More';
+$lang['readLess'] = 'Read Less';
+$lang['menuItem'] = 'Menu Item';
+$lang['itemTotal'] = 'Item Total';
+$lang['subTotal'] = 'Sub Total';
+$lang['serviceCharge'] = 'service Charge';
+$lang['tips'] = 'Tips';
+$lang['billNo'] = 'BillId';
+$lang['mobile'] = 'Mobile';
+$lang['link'] = 'Link';
+$lang['chooseMode'] = 'Choose Mode';
+
+// text box leble
+$lang['enterMobile'] = 'Enter Mobile';
+$lang['enterOTP'] = 'Enter OTP';
 
 
 

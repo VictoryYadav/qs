@@ -36,7 +36,7 @@ body{
                         <table class="table order-list" id="splitTable">
                             <thead>
                                 <tr>
-                                    <th style="width: 150px;">Amount</th>
+                                    <th style="width: 150px;"><?= $this->lang->line('amount'); ?></th>
                                     <th>Pymt.Mode</th>
                                     <th></th>
                                     <th></th>
@@ -60,7 +60,7 @@ body{
                                     </td>
                                     <td>
                                         <select name="mode" id="mode" class="form-control" disabled="">
-                                            <option value="">Choose Mode</option>
+                                            <option value=""><?= $this->lang->line('chooseMode'); ?></option>
                                             <?php
                                             foreach ($modes as $key) {
                                             ?>
@@ -88,7 +88,7 @@ body{
                                     </td>
                                     <td>
                                         <select name="mode" id="mode1" class="form-control" required>
-                                            <option value="">Choose Mode</option>
+                                            <option value=""><?= $this->lang->line('chooseMode'); ?></option>
                                             <?php
                                             foreach ($modes as $key) {
                                             ?>
@@ -124,14 +124,16 @@ body{
                         </table>
                     </div>
                 </div>
-                <div class="col-md12">
+            </div>
+            <div class="row">
+                <div class="col-md-12">
                     <div class="table-responsive">
-                        <table class="table order-list" >
+                        <table class="table" >
                             <thead>
                                 <tr>
-                                    <th>BillId</th>
-                                    <th>Mobile</th>
-                                    <th>Link</th>
+                                    <th><?= $this->lang->line('billNo'); ?></th>
+                                    <th><?= $this->lang->line('mobile'); ?></th>
+                                    <th><?= $this->lang->line('link'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -187,7 +189,7 @@ body{
                         </td>\
                         <td>\
                             <select name="mode'+counter+'" id="mode'+counter+'" class="form-control" required>\
-                                <option value="">Choose Mode</option>\
+                                <option value=""><?= $this->lang->line('chooseMode'); ?></option>\
                                 <?php
                                     foreach ($modes as $key) {
                                     ?>

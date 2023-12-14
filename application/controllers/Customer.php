@@ -189,7 +189,16 @@ class Customer extends CI_Controller {
              ->get_where('MenuCatg', array('MCatgId' => $mcatId))
              ->row_array();
 
-            $filter_list = $this->db2->select('FID, Opt, Rank')
+            $site_lang = $this->session->userdata('site_lang');
+            $lname = '';
+
+            if($site_lang == 'english'){
+                $lname = 'Opt as lname';
+            }else{
+                $lname = 'L1Opt as lname';
+            }
+            $select_sql = "FID, Opt, Rank, $lname";
+            $filter_list = $this->db2->select($select_sql)
                                 ->order_by('Rank', 'ASC')
                                 ->get_where('FoodType', array('CTyp' => $mcat_ctyp['CTyp'], 'Stat' => 0))
                                 ->result_array();
@@ -200,7 +209,8 @@ class Customer extends CI_Controller {
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
-                'response' => $filter
+                'response' => $filter,
+                'all' => $this->lang->line('all')
               ));
              die;
         }
@@ -302,8 +312,18 @@ class Customer extends CI_Controller {
                     if($EType == 5){
                         $qry = " (k.Stat = 1 or k.Stat = 2)";
                     }
+
+                    $site_lang = $this->session->userdata('site_lang');
+                    $lname = '';
+
+                    if($site_lang == 'english'){
+                        $lname = 'mi.ItemNm';
+                    }else{
+                        $lname = 'mi.ItemNm2';
+                    }
+
                     // Get all Temp Item list
-                    $kitcheData = $this->db2->query("SELECT k.OrdNo, k.ItemId, k.Qty, k.TA, k.Itm_Portion, (if (k.ItemTyp > 0,(CONCAT(mi.ItemNm, ' - ' , k.CustItemDesc)),(mi.ItemNm ))) as ItemNm,  k.ItmRate as Value, mi.PckCharge, k.OType, k.OrdTime , ip.Name as Portions, k.Stat from Kitchen k, MenuItem mi,ItemPortions ip where k.Itm_Portion = ip.IPCd and k.CustId = $CustId AND k.EID = $EID AND k.TableNo = $TableNo AND k.ItemId = mi.ItemId AND k.BillStat = 0 AND $qry and k.CNo = $CNo")
+                    $kitcheData = $this->db2->query("SELECT k.OrdNo, k.ItemId, k.Qty, k.TA, k.Itm_Portion, (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,  k.ItmRate as Value, mi.PckCharge, k.OType, k.OrdTime , ip.Name as Portions, k.Stat from Kitchen k, MenuItem mi,ItemPortions ip where k.Itm_Portion = ip.IPCd and k.CustId = $CustId AND k.EID = $EID AND k.TableNo = $TableNo AND k.ItemId = mi.ItemId AND k.BillStat = 0 AND $qry and k.CNo = $CNo")
                     ->result_array();
 
                     foreach ($kitcheData as &$key) {
@@ -414,7 +434,16 @@ class Customer extends CI_Controller {
             $status = 'success';
             $itemId = $_POST['itemId'];
 
-            $select = "mc.TaxType, mc.KitCd, mi.ItemId, mi.ItemNm, mi.ItemNm2, mi.ItemNm3, mi.ItemNm4, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, mi.ItmDesc, mi.ItmDesc2, mi.ItmDesc3, mi.ItmDesc4, mi.Ingeredients, mi.Ingeredients2, mi.Ingeredients3, mi.Ingeredients4, mi.Rmks, mi.Rmks2, mi.Rmks3, mi.Rmks4, mi.PrepTime, mi.AvgRtng, mi.FID,ItemNm as imgSrc, mi.UItmCd,mi.CID,mi.Itm_Portion,mi.Value,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
+            $site_lang = $this->session->userdata('site_lang');
+            $lname = '';
+
+            if($site_lang == 'english'){
+                $lname = 'mi.ItemNm as lname';
+            }else{
+                $lname = 'mi.ItemNm2 as lname';
+            }
+
+            $select = "mc.TaxType, mc.KitCd, mi.ItemId, mi.ItemNm, mi.ItemNm2, mi.ItemNm3, mi.ItemNm4, $lname, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, mi.ItmDesc, mi.ItmDesc2, mi.ItmDesc3, mi.ItmDesc4, mi.Ingeredients, mi.Ingeredients2, mi.Ingeredients3, mi.Ingeredients4, mi.Rmks, mi.Rmks2, mi.Rmks3, mi.Rmks4, mi.PrepTime, mi.AvgRtng, mi.FID,ItemNm as imgSrc, mi.UItmCd,mi.CID,mi.Itm_Portion,mi.Value,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
             $rec = $this->db2->select($select)
                             ->join('MenuItem mi','mi.ItemId = mr.RcItemId', 'inner')
                             ->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')

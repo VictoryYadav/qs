@@ -18,7 +18,7 @@
                   <div class="row">
                       <div class="col-md-6">
                           <div class="form-group">
-                              <input type="text" name="MobileNo" class="form-control" placeholder="Enter Mobile" required="" autocomplete="off" minlength="10" maxlength="10" pattern="[6-9]{1}[0-9]{9}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                              <input type="text" name="MobileNo" class="form-control" placeholder="<?= $this->lang->line('enterMobile'); ?>" required="" autocomplete="off" minlength="10" maxlength="10" pattern="[6-9]{1}[0-9]{9}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
                               <small id="signupMsg" class="text-danger" style="font-size: 10px;"></small>
                           </div>
                       </div>
@@ -52,21 +52,21 @@
                           </div>
                       </div>
                   </div>
-                  <input type="submit" class="btn btn-sm btn-success" value="Submit">
-                  <a href="<?= base_url('customer/login');?>"><span style="font-size: 12px;">Login</span></a>
+                  <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('submit'); ?>">
+                  <a href="<?= base_url('customer/login');?>"><span style="font-size: 12px;"><?= $this->lang->line('log_in'); ?></span></a>
               </form>
 
               <form method="post" id="otpForm" style="display: none;">
                   <div class="row">
                       <div class="col-md-12">
                           <div class="form-group">
-                              <input type="number" name="otp" class="form-control" placeholder="Enter OTP" autocomplete="off" required="">
+                              <input type="number" name="otp" class="form-control" placeholder="<?= $this->lang->line('enterOTP'); ?>" autocomplete="off" required="">
                               <span class="text-danger" id="errorMsg" style="font-size: 9px;"></span>
                           </div>
                       </div>
                   </div>
-                  <input type="submit" class="btn btn-sm btn-success" value="Verify OTP">
-                  <button class="btn btn-sm btn-warning" type="button" onclick="resendOTP()">Resend OTP</button>
+                  <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('verifyOTP'); ?>">
+                  <button class="btn btn-sm btn-warning" type="button" onclick="resendOTP()"><?= $this->lang->line('resendOTP'); ?></button>
               </form>
             </div>
           </div>
