@@ -95,10 +95,16 @@ body[data-topbar=dark] .header-item {
                                 <a class="dropdown-item" href="#"><i class="dripicons-wallet d-inlne-block text-muted mr-2"></i> My Wallet</a>
                                 <a class="dropdown-item d-block" href="#"><i class="dripicons-gear d-inlne-block text-muted mr-2"></i> Settings</a> -->
                                 <?php 
+                                $langId = $this->session->userdata('site_lang');
                                     $langs = langMenuList();
+                                    $name = '';
                                     foreach ($langs as $key) {
+                                        $name = $key['LngName'];
+                                        if($langId == 1){
+                                            $name = ucwords($key['LngName']);
+                                        }
                                 ?>
-                                <a class="dropdown-item" href="#" onclick="set_lang(<?= $key['LCd']; ?>,'<?= $key['Name1']; ?>')"><?= $key['LngName']; ?></a>
+                                <a class="dropdown-item" href="#" onclick="set_lang(<?= $key['LCd']; ?>,'<?= $key['Name1']; ?>')"><?= $name; ?></a>
 
                                 <?php } ?>
 

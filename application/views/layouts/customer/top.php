@@ -43,10 +43,16 @@ $folder = 'e'.authuser()->EID;
                         <!-- Dropdown list -->
                             <ul class="dropdown-menu">
                                 <?php 
+                                    $langId = $this->session->userdata('site_lang');
                                     $langs = langMenuList();
+                                    $name = '';
                                     foreach ($langs as $key) {
+                                        $name = $key['LngName'];
+                                        if($langId == 1){
+                                            $name = ucwords($key['LngName']);
+                                        }
                                 ?>
-                                <li><a class="dropdown-item" href="#" onclick="set_lang(<?= $key['LCd']; ?>,'<?= $key['Name1']; ?>')"><?= $key['LngName']; ?></a></li>
+                                <li><a class="dropdown-item" href="#" onclick="set_lang(<?= $key['LCd']; ?>,'<?= $key['Name1']; ?>')"><?= $name; ?></a></li>
                             <?php } ?>
                             </ul>
                     </li>

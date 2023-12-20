@@ -143,6 +143,20 @@ $lang['userAccess'] 		= 'User Access';
 $lang['availableRoles'] 	= 'Select All Available Roles';
 $lang['assignedRoles'] 		= 'Select All Assigned Roles';
 $lang['roleAssignment'] 	= 'Role Assignment';
+$lang['sitIn'] 				= 'Sit In';
+$lang['tableNo'] 			= 'Table No';
+$lang['select'] 			= 'Select';
+$lang['thirdParty'] 		= '3rd Party';
+$lang['thirdPartyRefNo'] 	= '3rd Party Ref No';
+$lang['customerAddress'] 	= 'Customer Address';
+$lang['itemAmount'] 		= 'Item Amt';
+$lang['kot'] 				= 'KOT';
+$lang['value'] 				= 'Value';
+$lang['remarks'] 			= 'Remarks';
+$lang['bilNo'] 				= 'Bill No';
+$lang['billDate'] 			= 'Bill Date';
+$lang['billAmount'] 		= 'Bill Amt';
+$lang['deliver'] 			= 'Deliver';
 
 
 

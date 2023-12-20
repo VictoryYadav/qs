@@ -147,7 +147,7 @@ class Rcheck extends CI_Controller {
         $this->session->set_userdata('pymtENV', $orgCheck['pymtENV']); 
         // set site_lang = 1 => english
         $this->session->set_userdata('site_lang', 1);
-        $this->session->set_userdata('site_langName', 'English');
+        $this->session->set_userdata('site_langName', 'english');
 
         if($_REQUEST['c'] > 10){
             redirect(base_url('customer'));

@@ -16,7 +16,7 @@ class Restaurant extends CI_Controller {
         }
 		$this->load->model('Rest', 'rest');
 
-        $this->lang->load('message','English');
+        $this->lang->load('message','english');
 
         $my_db = $this->session->userdata('my_db');
         $this->db2 = $this->load->database($my_db, TRUE);
@@ -38,7 +38,7 @@ class Restaurant extends CI_Controller {
             $status = 'success';
             extract($_POST);
             $langId = ($langId != "") ? $langId : 1;
-            $langName = ($langName != "") ? $langName : 'English';
+            $langName = ($langName != "") ? $langName : 'english';
             $this->session->set_userdata('site_lang', $langId);
             $this->session->set_userdata('site_langName', $langName);
             $response = $langId;
@@ -1788,21 +1788,12 @@ class Restaurant extends CI_Controller {
             $EType = $this->session->userdata('EType');
             $stat = ($EType == 5)?3:2;
 
-            // $groupby = '';
-            // if($this->session->userdata('multiCustTable') == 0){
-            //     // only 1 group same table
-            //     $groupby = ' GROUP BY km.MergeNo';
-            // }else{
-            //     // multi customer same tables
-            //     $groupby = ' GROUP BY km.MergeNo, km.MCNo';
-            // }
-
             $groupby = ' GROUP BY km.MergeNo, km.MCNo';
 
-            $kitchenData = $this->db2->query("SELECT (SUM(k.Qty) - SUM(k.DQty)) as AllDelivered, SUM(k.AQty) as AnyAssigned,km.CNo, km.CustId,  SUM(k.OrigRate * k.Qty) as Amt,  IF((SELECT MIN(k1.KOTPrintNo) FROM Kitchen k1 WHERE k1.KOTPrintNo = 1 AND (km.CNo = k1.CNo OR km.MCNo = k1.CNo) AND k1.EID = km.EID and km.BillStat = 0 GROUP BY k1.CNo, km.EID)=1,0,1) AS NEW_KOT, TIME_FORMAT(km.LstModDt,'%H:%i') as StTime,   km.MergeNo, km.MCNo, km.BillStat,  km.EID, km.CNo, km.CellNo, IF(km.CellNo > 0,(select count(km2.CellNo) from KitchenMain km2 where km2.CellNo=km.CellNo and km2.EID = km.EID group by km2.CellNo),0) as visitNo, km.TableNo,km.OType,km.payRest,km.custPymt,km.CnfSettle FROM Kitchen k, KitchenMain km WHERE km.payRest=0 and km.CnfSettle=0 AND (k.Stat = 3) AND (k.OType = 7 OR k.OType = 8) and (km.CNo = k.CNo) AND k.EID = km.EID AND k.MergeNo = km.MergeNo AND km.EID = $EID $groupby")->result_array();
-            // print_r($this->db2->last_query());die;
+            $kitchenData = $this->db2->query("SELECT (SUM(k.Qty) - SUM(k.DQty)) as AllDelivered, SUM(k.AQty) as AnyAssigned,km.CNo, km.CustId,  SUM(k.OrigRate * k.Qty) as Amt, TIME_FORMAT(km.LstModDt,'%H:%i') as StTime,   km.MergeNo, km.MCNo, km.BillStat,  km.EID, km.CNo, km.CellNo, IF(km.CellNo > 0,(select count(km2.CellNo) from KitchenMain km2 where km2.CellNo=km.CellNo and km2.EID = km.EID group by km2.CellNo),0) as visitNo, km.TableNo,km.OType,km.payRest,km.custPymt,km.CnfSettle FROM Kitchen k, KitchenMain km WHERE km.payRest=0 and km.CnfSettle=0 AND (k.Stat = 3) AND (k.OType = 7 OR k.OType = 8) and (km.CNo = k.CNo) AND k.EID = km.EID AND k.MergeNo = km.MergeNo AND km.EID = $EID $groupby")->result_array();
 
-            // $kitchenData = $this->db2->query("SELECT (SUM(k.Qty) - SUM(k.DQty)) as AllDelivered, SUM(k.AQty) as AnyAssigned,km.CNo, km.CustId,  SUM(k.ItmRate * k.Qty) as Amt,  IF((SELECT MIN(k1.KOTPrintNo) FROM Kitchen k1 WHERE k1.KOTPrintNo = 1 AND (km.CNo = k1.CNo OR km.MCNo = k1.CNo)  AND k1.MergeNo = km.MergeNo AND k1.EID = km.EID AND ec.EID = km.EID GROUP BY k1.MergeNo, km.EID)=1,0,1) AS NEW_KOT, TIME_FORMAT(km.LstModDt,'%H:%i') as StTime,   km.MergeNo, km.MCNo, km.BillStat,  km.EID, km.CNo, km.CellNo, (select count(km2.CellNo) from KitchenMain km2 where km2.CellNo=km.CellNo and km2.EID = km.EID group by km2.CellNo) as visitNo, km.TableNo,km.OType,km.payRest,km.custPymt,km.CnfSettle, ec.CCd, ec.Name FROM Kitchen k,  MenuItem i , Eat_tables et, Eat_Casher ec, KitchenMain km WHERE (km.CNo = k.CNo OR km.MCNo = k.CNo) And  et.TableNo = km.TableNo AND k.ItemId = i.ItemId  AND et.EID = km.EID AND km.payRest=0 and km.CnfSettle=0 AND (k.Stat = $stat) AND (k.OType = 7 OR k.OType = 8) AND et.CCd = ec.CCd AND ec.CCd = $STVCd  AND k.EID = km.EID AND k.MergeNo = km.MergeNo AND km.EID = $EID GROUP BY km.CNo,  km.Mergeno, km.MCNo order by MergeNo, km.LstModDt")->result_array();
+            // $kitchenData = $this->db2->query("SELECT (SUM(k.Qty) - SUM(k.DQty)) as AllDelivered, SUM(k.AQty) as AnyAssigned,km.CNo, km.CustId,  SUM(k.OrigRate * k.Qty) as Amt,  IF((SELECT MIN(k1.KOTPrintNo) FROM Kitchen k1 WHERE k1.KOTPrintNo = 1 AND (km.CNo = k1.CNo OR km.MCNo = k1.CNo) AND k1.EID = km.EID and km.BillStat = 0 GROUP BY k1.CNo, km.EID)=1,0,1) AS NEW_KOT, TIME_FORMAT(km.LstModDt,'%H:%i') as StTime,   km.MergeNo, km.MCNo, km.BillStat,  km.EID, km.CNo, km.CellNo, IF(km.CellNo > 0,(select count(km2.CellNo) from KitchenMain km2 where km2.CellNo=km.CellNo and km2.EID = km.EID group by km2.CellNo),0) as visitNo, km.TableNo,km.OType,km.payRest,km.custPymt,km.CnfSettle FROM Kitchen k, KitchenMain km WHERE km.payRest=0 and km.CnfSettle=0 AND (k.Stat = 3) AND (k.OType = 7 OR k.OType = 8) and (km.CNo = k.CNo) AND k.EID = km.EID AND k.MergeNo = km.MergeNo AND km.EID = $EID $groupby")->result_array();
+            
             // echo "<pre>";
             // print_r($kitchenData);exit();
             if (empty($kitchenData)) {
@@ -1903,22 +1894,14 @@ class Restaurant extends CI_Controller {
             $EType = $this->session->userdata('EType');
             $stat = ($EType == 5)?3:2;
 
-            // $where = '';
-            // if($this->session->userdata('multiCustTable') == 0){
-            //     // only 1 group same table
-            //     $groupby = '';
-            // }else{
-            //     // multi customer same tables
-            //     $groupby = ' ,k.CNo';
-            //     $where = " and (k.CNo = $CNo OR k.MCNo = $CNo) ";
-            // }
-
             $groupby = ' ,k.CNo';
             $where = " and (k.CNo = $CNo OR k.MCNo = $CNo) ";
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "i.ItemNm$langId as ItemNm";
+
             // get kot from kitchen for particular row  - 14/1/20 
-            $q = "SELECT k.MergeNo,k.TableNo, k.FKOTNo, k.KOTNo, k.KitCd, SUM(k.Qty) as Qty , k.KOTPrintNo, k.ItemId, i.ItemNm, SUM(k.Qty) as Qty, SUM(k.AQty) as AQty, SUM(k.DQty) as DQty,TIME_FORMAT(ADDTIME(k.OrdTime,k.EDT), '%H:%i') as EDT, k.CellNo, k.CNo,k.MCNo FROM Kitchen k, MenuItem i WHERE k.ItemId = i.ItemId AND ( k.Stat = $stat ) AND k.EID = $EID $where and k.MergeNo = '$mergeNo' and k.payRest = 0  GROUP BY k.FKOTNo, k.KOTNo, k.KitCd, k.ItemId, k.EDT, k.MergeNo $groupby order by k.KOTNo, k.FKOTNo, i.ItemNm DESC";
-            
-            $kots = $this->db2->query($q)->result_array();
+            $kots = $this->db2->query("SELECT k.MergeNo,k.TableNo, k.FKOTNo, k.KOTNo, k.KitCd, SUM(k.Qty) as Qty , k.KOTPrintNo, k.ItemId, $lname, SUM(k.Qty) as Qty, SUM(k.AQty) as AQty, SUM(k.DQty) as DQty,TIME_FORMAT(ADDTIME(k.OrdTime,k.EDT), '%H:%i') as EDT, k.CellNo, k.CNo,k.MCNo FROM Kitchen k, MenuItem i WHERE k.ItemId = i.ItemId AND ( k.Stat = $stat ) AND k.EID = $EID $where and k.MergeNo = '$mergeNo' and k.payRest = 0  GROUP BY k.FKOTNo, k.KOTNo, k.KitCd, k.ItemId, k.EDT, k.MergeNo $groupby order by k.KOTNo, k.FKOTNo, i.ItemNm1 DESC")->result_array();
             
             if (empty($kots)) {
                 $response = [
@@ -2779,32 +2762,32 @@ class Restaurant extends CI_Controller {
         $EID = authuser()->EID;
         $ChainId = authuser()->ChainId;
         $EType = $this->session->userdata('EType');
-        //$Stall = Session::get('Stall');
-        //$Ops = Session::get('Ops');
+        
         $CellNo = $this->session->userdata('CellNo');
         $CustNo = $this->session->userdata('CustNo');
         $MultiKitchen = $this->session->userdata('MultiKitchen');
-        //$ONo = Session::get('ONo');
-        // $CNo = Session::get('CNo');
-        // $TableNo = Session::get('TableNo');
-        // $KOTNo = Session::get('KOTNo');
+        
         $CNo = 0;
         $TableNo = 0;
         $KOTNo = 0;
         $ONo = 0;
 
+        $langId = $this->session->userdata('site_lang');
+        $itemName1 = "i.ItemNm$langId as LngName";
+        $lname = "i.ItemNm$langId";
+
         if (isset($_POST['searchItem']) && $_POST['searchItem']) {
             $itemName = $_POST['itemName'];
 
-            $likeQry = " (ItemNm like '$itemName%' or i.ItemId like '$itemName%' or i.IMcCd like '$itemName%') ";
-            $order_by = " i.ItemNm";
+            $likeQry = " ($lname like '$itemName%' or i.ItemId like '$itemName%' or i.IMcCd like '$itemName%') ";
+            $order_by = " i.ItemNm1";
 
             if($this->session->userdata('IMcCdOpt') == 2){
-                $likeQry = " (ItemNm like '$itemName%' or i.IMcCd like '$itemName%' or i.ItemId like '$itemName%') ";
+                $likeQry = " ($lname like '$itemName%' or i.IMcCd like '$itemName%' or i.ItemId like '$itemName%') ";
                 $order_by = " i.IMcCd";
             }
 
-            $items = $this->db2->query("SELECT i.ItemId, i.ItemNm, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId order by $order_by")->result_array();
+            $items = $this->db2->query("SELECT i.ItemId, $itemName1, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId order by $order_by")->result_array();
             
             if (!empty($items)) {
                 $response = [
@@ -4239,7 +4222,7 @@ class Restaurant extends CI_Controller {
         // echo "<pre>";
         // print_r($data);
         // die;
-        $data['title'] = 'Third Party';
+        $data['title'] = $this->lang->line('thirdParty');
         $data['OType'] = 101;
         $this->load->view('rest/offline_order', $data);
     }
@@ -4255,7 +4238,7 @@ class Restaurant extends CI_Controller {
         // echo "<pre>";
         // print_r($data);
         // die;
-        $data['title'] = 'Take Away';
+        $data['title'] = $this->lang->line('takeAway');
         $data['OType'] = 105;
         $this->load->view('rest/offline_order', $data);
     }
@@ -4269,7 +4252,7 @@ class Restaurant extends CI_Controller {
         // echo "<pre>";
         // print_r($data);
         // die;
-        $data['title'] = 'Deliver';
+        $data['title'] = $this->lang->line('deliver');
         $data['OType'] = 110;
         $this->load->view('rest/offline_order', $data);
     }
@@ -4282,7 +4265,7 @@ class Restaurant extends CI_Controller {
         // echo "<pre>";
         // print_r($data);
         // die;
-        $data['title'] = 'Sit In';
+        $data['title'] = $this->lang->line('sitIn');
         $data['OType'] = 8;
         $this->load->view('rest/offline_order', $data);
     }

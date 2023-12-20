@@ -14,7 +14,7 @@ class Customer extends CI_Controller {
             redirect(base_url());
         }
 
-        $this->lang->load('message','English');
+        $this->lang->load('message','english');
 
         $my_db = $this->session->userdata('my_db');
         $this->db2 = $this->load->database($my_db, TRUE);
@@ -30,7 +30,7 @@ class Customer extends CI_Controller {
             $status = 'success';
             extract($_POST);
             $langId = ($langId != "") ? $langId : 1;
-            $langName = ($langName != "") ? $langName : 'English';
+            $langName = ($langName != "") ? $langName : 'english';
             $this->session->set_userdata('site_lang', $langId);
             $this->session->set_userdata('site_langName', $langName);
             $response = $langId;
@@ -49,15 +49,7 @@ class Customer extends CI_Controller {
     }
 
     public function index1(){
-        $langId = $this->session->userdata('site_lang');
-        $lname = "mi.ItemNm$langId as LngName";
-        $cuiname = "c1.Name$langId as cuiName";
-        $mname = "m.Name$langId as mcName";
-        $ipname = "ip.Name$langId as portionName";
-        $dd = $this->db2->query("SELECT c.SchNm, c.SchCd, cod.SDetCd, cod.SchDesc, c.PromoCode, c.SchTyp, c.Rank, cod.Qty as FreeQty, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.SchImg, $lname ,mi.ItemId, $mname, $cuiname, $ipname from CustOffersDet as cod join CustOffers as c on c.SchCd=cod.SchCd left outer join Cuisines as c1 on cod.CID=c1.CID left outer join MenuCatg as m on cod.MCatgId = m.MCatgId left outer join ItemPortions as ip on cod.IPCd = ip.IPCd left outer join ItemTypes as i on cod.ItemTyp = i.ItmTyp left outer join MenuItem as mi on mi.ItemId = cod.ItemId where (IF(c.ToTime < c.FrmTime, (CURRENT_TIME() >= c.FrmTime OR CURRENT_TIME() <= c.ToTime) ,(CURRENT_TIME() >= c.FrmTime AND CURRENT_TIME() <= c.ToTime)) OR IF(c.AltToTime < c.AltFrmTime, (CURRENT_TIME() >= c.AltFrmTime OR CURRENT_TIME() <= c.AltToTime) ,(CURRENT_TIME() >=c.AltFrmTime AND CURRENT_TIME() <= c.AltToTime))) and ((DAYOFWEEK(CURDATE()) >= c.FrmDayNo and DAYOFWEEK(CURDATE()) <= c.ToDayNo)  or DayNo = 0) and (DATE(CURDATE()) >= c.FrmDt and DATE(CURDATE()) <= c.ToDt) group by c.schcd, cod.sDetCd order by c.Rank, cod.Rank")->result_array();
-        echo "<pre>";
-        print_r($dd);
-        die;
+        
 
         // print_r(base64_decode('ZT01MSZjPTAmdD0yMiZvPTA'));
         // die;
@@ -136,6 +128,7 @@ class Customer extends CI_Controller {
 
     public function index(){
         // $this->session->set_userdata('site_lang', 1);
+        // $this->session->set_userdata('site_langName', 'english');
 
         $data['cuisinList'] = $this->cust->getCuisineList();
         // echo "<pre>";

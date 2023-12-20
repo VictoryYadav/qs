@@ -64,18 +64,20 @@ function convertToUnicodeNo(amount){
   
     let digits = 0 ;
     // 1=english, 2=hindi, 3=malay, 4=thai
-    switch (site_lang) {
-      case '1':
-        // digits = amount.replace(/[०१२३४५६७८९]/g, function(s) {
-        //           return englishDigits[s];
-        //       });
-        digits = amount;
-        break;
-      case '2':
-        digits = amount.toString().replace(/[0123456789]/g, function(s) {
-                    return devanagariDigits[s];
-                });
-        break;
+    if(amount){
+        switch (site_lang) {
+          case '1':
+            // digits = amount.replace(/[०१२३४५६७८९]/g, function(s) {
+            //           return englishDigits[s];
+            //       });
+            digits = amount;
+            break;
+          case '2':
+            digits = amount.toString().replace(/[0123456789]/g, function(s) {
+                        return devanagariDigits[s];
+                    });
+            break;
+        }
     }
     return digits;
 

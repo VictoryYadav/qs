@@ -2,9 +2,7 @@
         <?php $this->load->view('layouts/admin/top'); ?>
             <!-- ========== Left Sidebar Start ========== -->
             <div class="vertical-menu">
-
                 <div data-simplebar class="h-100">
-
                     <!--- Sidemenu -->
                     <?php $this->load->view('layouts/admin/sidebar'); ?>
                     <!-- Sidebar -->
@@ -26,82 +24,64 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <input type="hidden" id="order-type" value="<?= $OType; ?>">
-                                            <!-- <div class="col-md-3 form-group col-6">
-                                                <label>Order Type</label>
-                                                <select class="form-control form-control-sm" id="order-type">
-                                                    <option value="0">Select</option>
-                                                    <option value="101">3rd Party</option>
-                                                    <option value="105">Take Away</option>
-                                                    <option value="110">Deliver</option>
-                                                    <option value="8">Sit-In</option>
-                                                </select>
-                                            </div> -->
                                             <?php if($OType == 8) { ?>
                                             <div class="col-md-3 form-group col-6">
-                                                <label>Table No</label>
+                                                <label><?= $this->lang->line('tableNo'); ?></label>
                                                 <select class="form-control form-control-sm" id="table-id" onchange="get_table_order_items(this)">
-                                                    <option value="0">Select</option>
+                                                    <option value="0"><?= $this->lang->line('select'); ?></option>
                                                     <?php foreach ($tablesAlloted as $data) : ?>
-                                                        <option value="<?= $data['TableNo'] ?>"><?= $data['MergeNo'] ?></option>
+                                                        <option value="<?= $data['TableNo'] ?>"><?= convertToUnicodeNumber($data['MergeNo']); ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div>
                                             <?php } ?>
                                             <?php if($OType == 101) { ?>
                                             <div class="col-md-3 form-group col-6">
-                                                <label>3rd Party</label>
+                                                <label><?= $this->lang->line('thirdParty'); ?></label>
                                                 <select class="form-control form-control-sm" id="3rd-party">
-                                                    <option value="0">Select</option>
+                                                    <option value="0"><?= $this->lang->line('select'); ?></option>
                                                     <?php foreach ($thirdOrdersData as $data) : ?>
-                                                        <option value="<?= $data['3PId'] ?>"><?= $data['Name'] ?></option>
+                                                        <option value="<?= $data['3PId'] ?>"><?= $data['LngName']; ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div>
 
                                             <div class="col-md-3 form-group col-6">
-                                                <label>3rd Party Ref No</label>
+                                                <label><?= $this->lang->line('thirdPartyRefNo'); ?></label>
                                                 <input type="text" id="3rd-party-refNo" class="form-control form-control-sm">
                                             </div>
                                         <?php } ?>
                                             <div class="col-md-3 form-group col-6">
-                                                <label>Phone No</label>
+                                                <label><?= $this->lang->line('mobile'); ?></label>
                                                 <input type="number" id="phone" class="form-control form-control-sm">
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-9 form-group col-6">
-                                                <label>Customer Address</label>
+                                                <label><?= $this->lang->line('customerAddress'); ?></label>
                                                 <input type="text" class="form-control form-control-sm" id="cust-address" <?php if($OType != 110){ echo 'disabled'; } ?>>
                                             </div>
 
                                             <div class="col-md-3 form-group col-6">
-                                                <label>Item Amt</label>
+                                                <label><?= $this->lang->line('itemAmount'); ?></label>
                                                 <input type="text" id="total-value" readonly="" value="0" class="form-control form-control-sm">
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-7 form-group col-6">
-                                                <!-- <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#item-list-modal" title="Kitchen Order Ticket">KOT 
-                                                    <i class="fa fa-plus"></i>
-                                                </button> -->
-                                                <button class="btn btn-primary btn-sm" title="Kitchen Order Ticket" onclick="searchKOT()">KOT 
+                                                
+                                                <button class="btn btn-primary btn-sm" title="Kitchen Order Ticket" onclick="searchKOT()"><?= $this->lang->line('kot'); ?> 
                                                     <i class="fa fa-plus"></i>
                                                 </button>
                                                 <?php if($OType == 8){ ?>
-                                                <button class="btn btn-success btn-sm send-to-kitchen" data_type="save_to_kitchen" id="btnOrder">Order</button>
+                                                <button class="btn btn-success btn-sm send-to-kitchen" data_type="save_to_kitchen" id="btnOrder"><?= $this->lang->line('order'); ?></button>
                                                 <?php } ?>
                                                 <?php if($OType != 8){ ?>
-                                                <button class="btn btn-warning btn-sm send-to-kitchen" data_type="bill" id="btnBill">Bill</button>
+                                                <button class="btn btn-warning btn-sm send-to-kitchen" data_type="bill" id="btnBill"><?= $this->lang->line('bill'); ?></button>
                                                 <?php } ?>
                                             </div>
-
-                                            <!-- <div class="col-md-4 form-group text-center col-8">
-
-                                                <button class="btn btn-success send-to-kitchen" data_type="save_to_kitchen">Send to Kitchen</button>
-                                                <button class="btn btn-warning send-to-kitchen" data_type="bill">Bill</button>
-                                            </div> -->
                                             
                                         </div>
 
@@ -111,13 +91,13 @@
                                                 <table class="table table-bordered" id="tableData">
                                                     <thead>
                                                         <tr>
-                                                            <th>Item</th>
-                                                            <th>Qty</th>
-                                                            <th>Rate</th>
-                                                            <th>Value</th>
-                                                            <th>TA</th>
-                                                            <th>Remark</th>
-                                                            <th>Action</th>
+                                                            <th><?= $this->lang->line('item'); ?></th>
+                                                            <th><?= $this->lang->line('quantity'); ?></th>
+                                                            <th><?= $this->lang->line('rate'); ?></th>
+                                                            <th><?= $this->lang->line('value'); ?></th>
+                                                            <th><?= $this->lang->line('takeAway'); ?></th>
+                                                            <th><?= $this->lang->line('remarks'); ?></th>
+                                                            <th><?= $this->lang->line('action'); ?></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="order-table-body"></tbody>
@@ -138,11 +118,11 @@
                                             <table class="table table-bordered" id="billViewTbl">
                                                 <thead>
                                                     <tr>
-                                                        <th>Bill No</th>
-                                                        <th>Bill Date</th>
-                                                        <th>Bill Amt</th>
-                                                        <th>Phone No</th>
-                                                        <th>Action</th>
+                                                        <th><?= $this->lang->line('bilNo'); ?></th>
+                                                        <th><?= $this->lang->line('billDate'); ?></th>
+                                                        <th><?= $this->lang->line('billAmount'); ?></th>
+                                                        <th><?= $this->lang->line('mobile'); ?></th>
+                                                        <th><?= $this->lang->line('action'); ?></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -361,15 +341,15 @@
                                     var printItemName = '';
                                     var IMcCd = "<?php echo $this->session->userdata('IMcCdOpt'); ?>";
                                     if(IMcCd == 0){
-                                        printItemName = item.ItemNm;
+                                        printItemName = item.LngName;
                                     }else if(IMcCd == 1){
-                                        printItemName = item.ItemId+' - '+item.ItemNm;
+                                        printItemName = item.ItemId+' - '+item.LngName;
                                     }else if(IMcCd == 2){
-                                        printItemName = item.IMcCd+' - '+item.ItemNm;
+                                        printItemName = item.IMcCd+' - '+item.LngName;
                                     }
                                     
                                     template += `
-                                <li onclick="itemSlected(${item.ItemId}, '${item.ItemNm}', ${item.Value}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime});" style="cursor: pointer;">${printItemName}</li>
+                                <li onclick="itemSlected(${item.ItemId}, '${item.LngName}', ${item.Value}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime});" style="cursor: pointer;">${printItemName}</li>
                             `;
                                 });
                                 template += `</ul>`;

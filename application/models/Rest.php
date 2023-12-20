@@ -657,7 +657,9 @@ class Rest extends CI_Model{
 	}
 
 	public function getThirdOrderData(){
-		return $this->db2->get_where('3POrders', array("Stat" => 0))->result_array();
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as LngName";
+		return $this->db2->select("3PId, $lname")->get_where('3POrders', array("Stat" => 0))->result_array();
 	}
 
 	public function getTablesAllotedData($EID){
@@ -758,8 +760,13 @@ class Rest extends CI_Model{
 		$EID = authuser()->EID;
 		$EType = $this->session->userdata('EType');
 		$stat = ($EType == 5)?3:2;
-         return $this->db2->select("k.ItemId, k.MCNo, m.ItemNm,k.CustItemDesc,k.CustRmks, ip.Name as Portions, sum(k.Qty) Qty,k.TableNo,k.KOTNo, k.FKOTNo,k.KitCd, ek.KitName, k.UKOTNo,k.LstModDt,k.TA,k.EDT, k.OType")
-        					->order_by('k.FKOTNo, m.ItemNm, ek.KitName, k.UKOTNo', 'ASC')
+
+		$langId = $this->session->userdata('site_lang');
+        $lname = "m.ItemNm$langId as ItemNm";
+        $ipName = "ip.Name$langId as Portions";
+
+         return $this->db2->select("k.ItemId, k.MCNo, $lname,k.CustItemDesc,k.CustRmks, $ipName, sum(k.Qty) Qty,k.TableNo,k.KOTNo, k.FKOTNo,k.KitCd, ek.KitName, k.UKOTNo,k.LstModDt,k.TA,k.EDT, k.OType")
+        					->order_by('k.FKOTNo, m.ItemNm1, ek.KitName, k.UKOTNo', 'ASC')
         					->group_by('k.ItemId, ek.KitName,k.Itm_Portion')
          					->join('MenuItem m','m.ItemId = k.ItemId','inner')
          					->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
