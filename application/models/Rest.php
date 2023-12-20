@@ -288,6 +288,15 @@ class Rest extends CI_Model{
 
 	public function getUserAccessRole($postdata){
 		$EID = authuser()->EID;
+		$site_lang = $this->session->userdata('site_lang');
+        $lname = '';
+
+        if($site_lang == 'english'){
+            $lname = 'ur.Name as Name';
+        }else{
+            $lname = 'ur.Name1 as Name';
+        }
+	        
 			if (isset($postdata['getUser']) && $postdata['getUser']==1) {
 				$mobileNumber =  $postdata['mobileNumber'];
 				// $user = $userRestObj->search(["MobileNo" => $mobileNumber, "EID" => $EID]);
@@ -311,8 +320,7 @@ class Rest extends CI_Model{
 			if (isset($postdata['getAvailableRoles']) && $postdata['getAvailableRoles']==1) {
 			$userId =  $postdata['userId'];
 
-			// $availableRoles = $userRolesObj->exec("SELECT ur.RoleId, ur.Name FROM UserRoles ur WHERE  ur.Stat = 0 AND ur.RoleId NOT IN (SELECT RoleId FROM UserRolesAccess WHERE RUserId = $userId AND EID = $EID) Order by ur.Name");
-			$availableRoles = $this->db2->query("SELECT ur.RoleId, ur.Name FROM UserRoles ur WHERE  ur.Stat = 0 AND ur.RoleId NOT IN (SELECT RoleId FROM UserRolesAccess WHERE RUserId = $userId AND EID = $EID) Order by ur.Name")->result_array();
+			$availableRoles = $this->db2->query("SELECT ur.RoleId, $lname FROM UserRoles ur WHERE  ur.Stat = 0 AND ur.RoleId NOT IN (SELECT RoleId FROM UserRolesAccess WHERE RUserId = $userId AND EID = $EID) Order by ur.Name")->result_array();
 			if (!empty($availableRoles)) {
 				$response = [
 					"status" => 1,
@@ -360,7 +368,7 @@ class Rest extends CI_Model{
 			$userId = $postdata['userId'];
 			// $getAssignedRoles = $userRolesAccessObj->exec("SELECT ura.URNo, ur.Name FROM `UserRolesAccess` ura, UserRoles ur WHERE ura.RoleId = ur.RoleId AND ur.Stat = 0 AND ura.EID = $EID AND ura.RUserId = $userId Order by ur.Name");
 
-			$getAssignedRoles = $this->db2->query("SELECT ura.URNo, ur.Name FROM `UserRolesAccess` ura, UserRoles ur WHERE ura.RoleId = ur.RoleId AND ur.Stat = 0 AND ura.EID = $EID AND ura.RUserId = $userId Order by ur.Name")->result_array();
+			$getAssignedRoles = $this->db2->query("SELECT ura.URNo, $lname FROM `UserRolesAccess` ura, UserRoles ur WHERE ura.RoleId = ur.RoleId AND ur.Stat = 0 AND ura.EID = $EID AND ura.RUserId = $userId Order by ur.Name")->result_array();
 
 			if (!empty($getAssignedRoles)) {
 				$response = [

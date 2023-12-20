@@ -1,9 +1,6 @@
         <!-- for white background -->
         <!-- <link href="<?= base_url() ?>assets_admin/css/bootstrap.min.css"  rel="stylesheet" type="text/css" />
         <link href="<?= base_url() ?>assets_admin/css/app.min.css"  rel="stylesheet" type="text/css" /> -->
-
-
-
 <!doctype html>
 <html lang="en">
 

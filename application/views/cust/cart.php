@@ -114,9 +114,9 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                             <table class="table table-hover">
                             <thead>
                               <tr>
-                                <th class="text-center">Order</th>
-                                <th class="text-center">Quantity</th>
-                                <th class="text-center">Rate</th>
+                                <th class="text-center"><?= $this->lang->line('order'); ?></th>
+                                <th class="text-center"><?= $this->lang->line('quantity'); ?></th>
+                                <th class="text-center"><?= $this->lang->line('rate'); ?></th>
                                 <th class="text-center"></th>
                               </tr>
                             </thead>
@@ -153,7 +153,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
         <div class="modal-dialog">
             <div class="modal-content">
                 <div style="margin-left: 14px;margin-bottom: -15px;">
-                    <h6>Recommendation</h6>
+                    <h6><?= $this->lang->line('recommendation'); ?></h6>
                     <p id="item_name"></p>
                 </div>
                 <div class="modal-body">
@@ -164,9 +164,9 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                                   <table class="table">
                                     <thead>
                                         <tr>
-                                            <td>Item</td>
-                                            <td>Qty</td>
-                                            <td>Rate</td>
+                                            <td><?= $this->lang->line('item'); ?></td>
+                                            <td><?= $this->lang->line('quantity'); ?></td>
+                                            <td><?= $this->lang->line('rate'); ?></td>
                                         </tr>
                                     </thead>
                                     <tbody id="recom-body">
@@ -229,12 +229,6 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
     <!-- end Js Plugins -->
 
 </body>
-<!-- firebase -->
-<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-messaging.js"></script>
-<!-- end of firebase -->
 
 <script>
 
@@ -303,13 +297,14 @@ function billBaseOffer(){
                                     <button type="button" id="minus-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 25px;"  onclick="decQty(${item.OrdNo})">-
                                     </button>
                                 </span>
-                                <input type="text" readonly="" id="qty-val${item.OrdNo}" class="form-control input-number" value="${item.Qty}" min="1" max="10" style="text-align: center; height:20px;" name="qty[]">
+                                <input type="hidden" id="qty-val${item.OrdNo}" value="${item.Qty}" name="qty[]">
+                                <input type="text" readonly="" id="qty-valView${item.OrdNo}" class="form-control input-number" value="${convertToUnicodeNo(item.Qty)}" min="1" max="10" style="text-align: center; height:20px;">
                                 <span class="input-group-btn">
                                     <button type="button" id="add-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 25px;" onclick="incQty(${item.OrdNo})">+
                                     </button>
                                 </span>
                             </div></td> `;
-                        template += ` <td class="text-center">${rate}</td> `;
+                        template += ` <td class="text-center">${convertToUnicodeNo(rate)}</td> `;
                         template += ` <td class="text-center">
                                         <button type="button" onclick="cancelOrder(${item.OrdNo});" style="border-radius:50px;background:red;color:#fff;border:1px solid red;">
                                         <i class="fa fa-trash" style="font-size:12px;"></i>
@@ -401,7 +396,10 @@ function billBaseOffer(){
 
     // quantity increase and decrease
     function incQty(ord){
-        $('#qty-val'+ord).val(parseInt($('#qty-val'+ord).val()) + 1);
+        let val = parseInt($('#qty-val'+ord).val()) + 1;
+        $('#qty-val'+ord).val(val);
+        $('#qty-valView'+ord).val(convertToUnicodeNo(val));
+
         $('#minus-qty'+ord).prop('disabled', false);
         if ($('#qty-val'+ord).val() == 99) {
             $('#add-qty'+ord).prop('disabled', true);
@@ -409,11 +407,16 @@ function billBaseOffer(){
     }
 
     function decQty(ord){
-        $('#qty-val'+ord).val(parseInt($('#qty-val'+ord).val()) - 1);
-        $('#add-qty'+ord).prop('disabled', false);
-        if ($('#qty-val'+ord).val() < 1) {
+        var val = $('#qty-val'+ord).val();
+        if(val < 2){
             $('#minus-qty'+ord).prop('disabled', true);
+        }else{
+            val = parseInt(val) - 1;
         }
+        
+        $('#qty-val'+ord).val(val);
+        $('#qty-valView'+ord).val(convertToUnicodeNo(val));
+        $('#add-qty'+ord).prop('disabled', false);
     }
     // end quantity increase and decrease
 
@@ -476,7 +479,7 @@ function billBaseOffer(){
                 console.log(response);
                 if (response.status == 2) {
                     Swal.fire({
-                      text: 'Order Sent To Kitchen Successfully',
+                      text: '<?= $this->lang->line('kitchen_msg'); ?>',
                       confirmButtonText: 'OK',
                       confirmButtonColor: "green",
                     });
@@ -522,158 +525,6 @@ function billBaseOffer(){
 
     }
     
-</script>
-
-<script type="module">
-    
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig1 = {
-    apiKey: "AIzaSyAmEAaStxXGQM0_MIB4NSzXMdFK8pIkgOs",
-    authDomain: "quick-service-e248d.firebaseapp.com",
-    projectId: "quick-service-e248d",
-    storageBucket: "quick-service-e248d.appspot.com",
-    messagingSenderId: "430697983359",
-    appId: "1:430697983359:web:74cdf763ee9077392a7e4a",
-    measurementId: "G-64V1TKM6PX"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig1);
-  const analytics = getAnalytics(app);
-
-            
-  // Let's check if the browser supports notifications
-  if (!("Notification" in window)) {
-    alert("This browser does not support desktop notification");
-  }
-  
-  // Let's check whether notification permissions have already been granted
-  else if (Notification.permission === "granted") {
-    console.log('kk');
-    // If it's okay let's create a notification
-    // var notification = new Notification("Hi there!");
-    var config = {
-
-            apiKey: "AIzaSyD2p6lWVTEbneI2gm6aheeHjTFRQdBdN2o",
-
-            authDomain: "progressive-apps-builder.firebaseapp.com",
-
-            databaseURL: "https://progressive-apps-builder.firebaseio.com",
-
-            projectId: "progressive-apps-builder",
-
-            storageBucket: "progressive-apps-builder.appspot.com",
-
-            messagingSenderId: "692054876427"
-
-        };
-        var firebaseConfig = {
-            apiKey: "AIzaSyAmEAaStxXGQM0_MIB4NSzXMdFK8pIkgOs",
-            authDomain: "quick-service-e248d.firebaseapp.com",
-            projectId: "quick-service-e248d",
-            storageBucket: "quick-service-e248d.appspot.com",
-            messagingSenderId: "430697983359",
-            appId: "1:430697983359:web:74cdf763ee9077392a7e4a",
-            measurementId: "G-64V1TKM6PX"
-          };
-
-        firebase.initializeApp(firebaseConfig);
-
-        const messaging = firebase.messaging();
-
-        messaging.requestPermission()
-        .then(function() {
-          console.log('Notification permission granted.');
-          // alert("granted");
-          return messaging.getToken();
-          $('#loader_div').show();
-        })
-        .then(function(token) {
-            
-          $.ajax({
-                url: "<?php echo base_url('customer/tokenGenerate'); ?>",
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    save_firebase_token: 1,
-                    token: token
-                },
-                success: function(response) {
-                 // alert(token);
-                 $('#loader_div').hide();
-                },
-                error: function(xhr, status, error) {
-                    console.log(xhr);
-                    console.log(status);
-                    console.log(error);
-                }
-            });
-          console.log('Tokenv:'+token); // Display user token
-        })
-        .catch(function(err) { // Happen if user deney permission
-          console.log('Unable to get permission to notify.', err);
-        });
-  }
-
-  // Otherwise, we need to ask the user for permission
-  else if (Notification.permission !== "denied") {
-    Notification.requestPermission().then(function (permission) {
-      // If the user accepts, let's create a notification
-      if (permission === "granted") {
-        // var notification = new Notification("Hi there!");
-        var config = {
-
-            apiKey: "AIzaSyD2p6lWVTEbneI2gm6aheeHjTFRQdBdN2o",
-
-            authDomain: "progressive-apps-builder.firebaseapp.com",
-
-            databaseURL: "https://progressive-apps-builder.firebaseio.com",
-
-            projectId: "progressive-apps-builder",
-
-            storageBucket: "progressive-apps-builder.appspot.com",
-
-            messagingSenderId: "692054876427"
-
-        };
-        var firebaseConfig = {
-            apiKey: "AIzaSyAmEAaStxXGQM0_MIB4NSzXMdFK8pIkgOs",
-            authDomain: "quick-service-e248d.firebaseapp.com",
-            projectId: "quick-service-e248d",
-            storageBucket: "quick-service-e248d.appspot.com",
-            messagingSenderId: "430697983359",
-            appId: "1:430697983359:web:74cdf763ee9077392a7e4a",
-            measurementId: "G-64V1TKM6PX"
-          };
-
-        firebase.initializeApp(firebaseConfig);
-
-        const messaging = firebase.messaging();
-
-        messaging.requestPermission()
-        .then(function() {
-          console.log('Notification permission granted.');
-          // alert("granted");
-          return messaging.getToken();
-        })
-        .then(function(token) {
-          
-          console.log('Token:'+token); // Display user token
-        })
-        .catch(function(err) { // Happen if user deney permission
-          console.log('Unable to get permission to notify.', err);
-        });
-      }
-    });
-  }
-
 </script>
 
 </html>

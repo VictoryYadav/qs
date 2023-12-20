@@ -39,6 +39,7 @@ class Razorpay extends CI_Controller {
         // $tips = base64_decode(rtrim($_GET['tips'], "="));
         // $itemTotalGross = base64_decode(rtrim($_GET['totAmt'], "="));
         $billId = base64_decode(rtrim($_GET['billId'], "="));
+        $MCNo = base64_decode(rtrim($_GET['MCNo'], "="));
 
         if (empty($billId)) {
             redirect(base_url('customer'));
@@ -83,6 +84,7 @@ class Razorpay extends CI_Controller {
         $data = [
             "key"               => $keyId,
             "amount"            => $amount,
+            "MCNo"              => $MCNo,
             "name"              => "Eat-Out",
             "description"       => "Eat-Out",
             "image"             => base_url('theme/')."images/Eat-Out-Icon.png",
@@ -134,7 +136,7 @@ class Razorpay extends CI_Controller {
         }
 
         $EID = $this->session->userdata('EID');
-        $CNo = $this->session->userdata('CNo');   
+        $CNo = $_POST["MCNo"];   
 
         $orderId = $_POST["orderId"];
         $totalAmount = $_POST["orderAmount"];

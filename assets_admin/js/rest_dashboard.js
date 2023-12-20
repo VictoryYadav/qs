@@ -1,7 +1,17 @@
 var base_url = '';
+var lunch = '';
+var dinner = '';
+var takeAway = '';
+var offers = '';
 
 $(document).ready(function () {
 base_url = $('#base_url').val();
+
+  lunch = $('#lunch').val();
+  dinner = $('#dinner').val();
+  offers = $('#offers').val();
+  takeAway = $('#takeAway').val();
+
   TakeAways();
 
   TakeAwaysModel();
@@ -54,7 +64,7 @@ function TakeAways() {
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -64,7 +74,7 @@ function TakeAways() {
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "#dc3545",
 
@@ -82,7 +92,7 @@ function TakeAways() {
 
             display: true,
 
-            text: "TakeAways",
+            text: takeAway,
 
           },
 
@@ -157,7 +167,7 @@ function TakeAwaysModel() {
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -167,7 +177,7 @@ function TakeAwaysModel() {
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "#dc3545",
 
@@ -185,7 +195,7 @@ function TakeAwaysModel() {
 
             display: true,
 
-            text: "TakeAways",
+            text: takeAway,
 
           },
 
@@ -257,7 +267,7 @@ function Offers() {
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -267,7 +277,7 @@ function Offers() {
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "#dc3545",
 
@@ -285,7 +295,7 @@ function Offers() {
 
             display: true,
 
-            text: "Offers",
+            text: offers,
 
           },
 
@@ -469,7 +479,7 @@ var range = $('#offer_range').val();
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -479,7 +489,7 @@ var range = $('#offer_range').val();
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "#dc3545",
 
@@ -497,7 +507,7 @@ var range = $('#offer_range').val();
 
             display: true,
 
-            text: "Offers",
+            text: offers,
 
           },
 

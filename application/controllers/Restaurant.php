@@ -16,6 +16,8 @@ class Restaurant extends CI_Controller {
         }
 		$this->load->model('Rest', 'rest');
 
+        $this->lang->load('message','English');
+
         $my_db = $this->session->userdata('my_db');
         $this->db2 = $this->load->database($my_db, TRUE);
 	}
@@ -25,7 +27,37 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/index',$data);
     }
 
+    function switchLang() {
+        // https://www.codexworld.com/multi-language-implementation-in-codeigniter/
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            $status = 'success';
+            extract($_POST);
+            $langId = ($langId != "") ? $langId : 1;
+            $langName = ($langName != "") ? $langName : 'English';
+            $this->session->set_userdata('site_lang', $langId);
+            $this->session->set_userdata('site_langName', $langName);
+            $response = $langId;
+            
+            // redirect($_SERVER['HTTP_REFERER']);
+           
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        
+    }
+
     public function add_user(){
+
         if($this->input->method(true)=='POST'){
             // echo "<pre>";
             // print_r($_POST);
@@ -35,7 +67,7 @@ class Restaurant extends CI_Controller {
             redirect(base_url('restaurant/add_user'));
         }
 
-		$data['title'] = 'Add User';
+		$data['title'] = $this->lang->line('addUser');
         $data['EID'] = authuser()->EID;
         $data['restaurant'] = $this->rest->getrestaurantList(authuser()->ChainId);
         $data['users'] = $this->rest->getUserList();
@@ -56,7 +88,7 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-		 $data['title'] = 'User Disable';
+		 $data['title'] = $this->lang->line('userDisabled');
 		 $data['users'] = $this->rest->getDisableUserList(authuser()->ChainId, authuser()->EID);
 		 // echo "<pre>";
 		 // print_r($data);
@@ -75,7 +107,7 @@ class Restaurant extends CI_Controller {
         }
         $EID = authuser()->EID;
         $data['usersRestData'] = $this->db2->select('RUserId, FName, LName, MobileNo')->get_where('UsersRest', array('DeputedEID' => $EID, 'Stat' => 0 ))->result_array(); 
-    	$data['title'] = 'User Access';
+    	$data['title'] = $this->lang->line('userAccess');
 		$this->load->view('rest/access_users',$data);
     }
 
@@ -123,7 +155,7 @@ class Restaurant extends CI_Controller {
         $EID = authuser()->EID;
         $data['usersRestData'] = $this->db2->select('RUserId, FName, LName, MobileNo')->get_where('UsersRest', array('DeputedEID' => $EID, 'Stat' => 0 ))->result_array();        
 
-        $data['title'] = 'Role Assignment';
+        $data['title'] = $this->lang->line('roleAssignment');
         $this->load->view('rest/assign_role',$data);   
     }
 

@@ -94,7 +94,14 @@ body[data-topbar=dark] .header-item {
                                 <!-- <a class="dropdown-item" href="<?= base_url('student/profile') ?>"><i class="dripicons-user d-inlne-block text-muted mr-2"></i> Profile</a>
                                 <a class="dropdown-item" href="#"><i class="dripicons-wallet d-inlne-block text-muted mr-2"></i> My Wallet</a>
                                 <a class="dropdown-item d-block" href="#"><i class="dripicons-gear d-inlne-block text-muted mr-2"></i> Settings</a> -->
-                                <!-- <a class="dropdown-item" href="<?php echo base_url('dashboard'); ?>"><i class="mdi mdi-speedometer"></i> Dashboard</a> -->
+                                <?php 
+                                    $langs = langMenuList();
+                                    foreach ($langs as $key) {
+                                ?>
+                                <a class="dropdown-item" href="#" onclick="set_lang(<?= $key['LCd']; ?>,'<?= $key['Name1']; ?>')"><?= $key['LngName']; ?></a>
+
+                                <?php } ?>
+
                                 <a class="dropdown-item" href="<?php echo base_url('restaurant/change_password'); ?>"><i class="dripicons-lock d-inlne-block text-muted mr-2"></i> Change Password</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="<?php echo base_url('logout'); ?>"><i class="dripicons-exit d-inlne-block text-muted mr-2"></i> Logout</a>
@@ -110,3 +117,16 @@ body[data-topbar=dark] .header-item {
                     </div>
                 </div>
             </header>
+
+            <script>
+                function set_lang(langId, langName){
+                    $.post('<?= base_url('restaurant/switchLang') ?>',{langId:langId, langName:langName},function(res){
+                        if(res.status == 'success'){
+                          // alert(res.response);
+                        }else{
+                          alert(res.response);
+                        }
+                          location.reload();
+                    });
+                }
+            </script>

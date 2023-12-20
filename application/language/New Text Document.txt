@@ -1,0 +1,4 @@
+res1 => english
+res2 => hinid
+res3 => malay
+res4 => thai

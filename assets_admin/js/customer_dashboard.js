@@ -1,8 +1,21 @@
 var base_url = '';
+var lunch = '';
+var dinner = '';
+
+var customerFootfalls = '';
+var customerOrder = '';
+var paymentModes = '';
+
 
 $(document).ready(function () {
-base_url = $('#base_url').val();
-
+  base_url = $('#base_url').val();
+  
+  lunch = $('#lunch').val();
+  dinner = $('#dinner').val();
+  customerFootfalls = $('#customerFootfalls').val();
+  customerOrder = $('#customerOrder').val();
+  paymentModes = $('#paymentModes').val();
+  
   $("#customer").click(function (e) {
 
     $("#restaurant-parent-div").css("display", "none");
@@ -84,7 +97,7 @@ function customersFootfalls() {
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -94,7 +107,7 @@ function customersFootfalls() {
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "orange",
 
@@ -112,7 +125,7 @@ function customersFootfalls() {
 
             display: true,
 
-            text: "Customer footfalls for lunch / dinner",
+            text: customerFootfalls,
 
           },
 
@@ -174,7 +187,7 @@ function customersFootfallsModel() {
 
       var ctx = document.getElementById("cust01_model").getContext("2d");
 
-      $("#cust01Title").html("Customer footfalls for lunch / dinner");
+      $("#cust01Title").html(customerFootfalls);
 
       var myChart = new Chart(ctx, {
 
@@ -188,7 +201,7 @@ function customersFootfallsModel() {
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -198,7 +211,7 @@ function customersFootfallsModel() {
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "orange",
 
@@ -216,7 +229,7 @@ function customersFootfallsModel() {
 
             display: true,
 
-            text: "Customer footfalls for lunch / dinner",
+            text: customerFootfalls,
 
           },
 
@@ -289,7 +302,7 @@ function customersOrderValue() {
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -299,7 +312,7 @@ function customersOrderValue() {
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "orange",
 
@@ -317,7 +330,7 @@ function customersOrderValue() {
 
             display: true,
 
-            text: "Customer order values for lunch / dinner",
+            text: customerOrder,
 
           },
 
@@ -381,7 +394,7 @@ function customersOrderValueModel() {
 
       var ctx = document.getElementById("cust02_model").getContext("2d");
 
-      $("#cust02Title").html("Customer order values for lunch / dinner");
+      $("#cust02Title").html(customerOrder);
 
       var myChart = new Chart(ctx, {
 
@@ -395,7 +408,7 @@ function customersOrderValueModel() {
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -405,7 +418,7 @@ function customersOrderValueModel() {
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "orange",
 
@@ -423,7 +436,7 @@ function customersOrderValueModel() {
 
             display: true,
 
-            text: "Customer order values for lunch / dinner",
+            text: customerOrder,
 
           },
 
@@ -484,7 +497,7 @@ function paymentModeModel() {
 
       var ctx = document.getElementById("cust03_model").getContext("2d");
 
-      $("#cust03Title").html("Payment modes used by customer");
+      $("#cust03Title").html(paymentModes);
 
       var myChart = new Chart(ctx, {
 
@@ -498,7 +511,7 @@ function paymentModeModel() {
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -508,7 +521,7 @@ function paymentModeModel() {
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "orange",
 
@@ -526,7 +539,7 @@ function paymentModeModel() {
 
             display: true,
 
-            text: "Payment modes used by customer",
+            text: paymentModes,
 
           },
 
@@ -593,7 +606,7 @@ function paymentMode(){
 
               {
 
-                label: "Lunch",
+                label: lunch,
 
                 backgroundColor: "#1091e8",
 
@@ -603,7 +616,7 @@ function paymentMode(){
 
               {
 
-                label: "Dinner",
+                label: dinner,
 
                 backgroundColor: "orange",
 
@@ -621,7 +634,7 @@ function paymentMode(){
 
               display: true,
 
-              text: "Payment modes used by customer",
+              text: paymentModes,
 
             },
 

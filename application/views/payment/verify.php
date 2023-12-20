@@ -113,6 +113,12 @@
                     .val("<?= $_POST['razorpay_signature']; ?>");
                 $(form).append($(input_8));
 
+                var input_9 = $("<input>")
+                    .attr("type", "text")
+                    .attr("name", "MCNo")
+                    .val("<?= $_POST['MCNo']; ?>");
+                $(form).append($(input_9));
+
                 form.appendTo(document.body);
                 $(form).submit();
             </script>

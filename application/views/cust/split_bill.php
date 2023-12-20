@@ -24,17 +24,17 @@ body{
 
                 <div class="row">
                     <div class="col-md-2 col-4">
-                        <label for="">Payble: </label>
-                        <b id="payable"><?= round($payable); ?></b>
+                        <label for=""><?= $this->lang->line('payable'); ?>: </label>
+                        <b id="payable"><?= convertToUnicodeNumber(round($payable)); ?></b>
                     </div>
                     <div class="col-md-2 col-5">
-                        <label for="">Ord Amt: </label>
-                        <b id="grossAmt"><?= round($grossItemAmt); ?></b>
+                        <label for=""><?= $this->lang->line('orderAmount'); ?>: </label>
+                        <b id="grossAmt"><?= convertToUnicodeNumber(round($grossItemAmt)); ?></b>
                     </div>
 
                     <div class="col-md-2 col-3">
-                        <label for="">Tip: </label>
-                        <b id="tipAmt"><?= round($tip); ?></b>
+                        <label for=""><?= $this->lang->line('tips'); ?>: </label>
+                        <b id="tipAmt"><?= convertToUnicodeNumber(round($tip)); ?></b>
                     </div>
                     
                     <div class="col-md-2 col-3">
@@ -42,13 +42,13 @@ body{
                     </div>
 
                     <div class="col-md-4 col-9">
-                        <label for="">Split Type : </label>
+                        <label for=""><?= $this->lang->line('splitType'); ?> : </label>
                         <select name="splitType" id="splitType" onchange="splitChange()" required="">
-                            <option value="">Choose Split Type</option>
-                            <option value="1">Food & Bar Separate</option>
-                            <option value="2">Equal Split</option>
-                            <option value="3">Manual Percent</option>
-                            <option value="4">Manual Amount</option>
+                            <option value=""><?= $this->lang->line('chooseSplitType'); ?></option>
+                            <option value="1"><?= $this->lang->line('foodBarSeparate'); ?></option>
+                            <option value="2"><?= $this->lang->line('equalSplit'); ?></option>
+                            <option value="3"><?= $this->lang->line('manualPercent'); ?></option>
+                            <option value="4"><?= $this->lang->line('manualAmount'); ?></option>
                         </select>
                     </div>
                 </div>
@@ -57,11 +57,11 @@ body{
                     <table class="table" id="splitTable">
                         <thead>
                             <tr>
-                                <th width="155px;">Mobile</th>
+                                <th width="155px;"><?= $this->lang->line('mobile'); ?></th>
                                 <!-- <th>Messaging Channel</th> -->
                                 <th width="100px;"></th>
                                 <th width="100px;">%</th>
-                                <th width="100px;">Amount</th>
+                                <th width="100px;"><?= $this->lang->line('amount'); ?></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -101,7 +101,7 @@ body{
                         </tbody>
                     </table>
                 </div>
-                <input type="submit" class="btn btn-sm btn-success" value="Split">
+                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('splitbill'); ?>">
             </form>
                 
                 
@@ -121,9 +121,10 @@ body{
 </body>
 
 <script type="text/javascript">
-   $(document).ready(function() {
-        
-    });
+
+    var totalAmt = "<?= round($payable); ?>";
+    var grossAmt = "<?= round($grossItemAmt); ?>";
+    var tipAmt   = "<?= round($tip); ?>";
 
    var rowCount = $('#splitTable tr').length - 1;
    // add row
@@ -170,9 +171,6 @@ body{
     });
 
    function splitChange(){
-        var totalAmt = $('#payable').text();
-        var grossAmt = $('#grossAmt').text();
-        var tipAmt = $('#tipAmt').text();
 
         var rowCount = $('#splitTable tr').length - 1;
         var val = $('#splitType').val();
@@ -225,9 +223,6 @@ body{
    }
 
    function calcPerAmt(rowCount){
-    var totalAmt = $('#payable').text();
-    var grossAmt = $('#grossAmt').text();
-    var tipAmt = $('#tipAmt').text();
 
     var val = $('#percentRow_'+rowCount).val();
     console.log(rowCount+' v '+val);
@@ -241,9 +236,6 @@ body{
    }
 
    function calcAmt(rowCount){
-    var totalAmt = $('#payable').text();
-    var grossAmt = $('#grossAmt').text();
-    var tipAmt = $('#tipAmt').text();
 
     var val = $('#amountRow_'+rowCount).val();
     console.log(rowCount+' v '+val);

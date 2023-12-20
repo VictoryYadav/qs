@@ -15,16 +15,24 @@ class Rcheck extends CI_Controller {
             if(!empty($req)){
                 $e_data = explode("=", $req[0]);
                 if($e_data[0] == 'e'){
+
                     $_REQUEST['e'] = $e_data[1];
-                    $my_db = $e_data[1].'e';
-                    $this->session->set_userdata('my_db', $my_db);
-                }
-                if(isset($req[1])){
-                    $c_data = explode("=", $req[1]);
-                    if($c_data[0] == 'c'){
-                        $_REQUEST['c'] = $c_data[1];
+                    // checking category_id  = $req[1]= 11
+                    if(isset($req[1])){
+                        $c_data = explode("=", $req[1]);
+                        if($c_data[0] == 'c'){
+                            $_REQUEST['c'] = $c_data[1];
+                            if($_REQUEST['c'] != 11){
+                                $my_db = $e_data[1].'e';
+                                $this->session->set_userdata('my_db', $my_db);
+                                $this->session->set_userdata('oldEID', $e_data[1]);
+                            }else{
+                                $my_db = $this->session->userdata('my_db');
+                            }
+                        }
                     }
                 }
+                
                 if(isset($req[2])){
                     $t_data = explode("=", $req[2]);
                     if($t_data[0] == 't'){
@@ -49,15 +57,9 @@ class Rcheck extends CI_Controller {
             die;
         }
 
-        $session_data = array(
-            'EID' => $_REQUEST['e'],
-            'TableNo' => $_REQUEST['t'],
-            'Stall' => $_REQUEST['o'],
-            'ChainId' => $_REQUEST['c'],
-        );
+
         $this->session->set_userdata('EID', $_REQUEST['e']);
         $this->session->set_userdata('TableNo', $_REQUEST['t']);
-        $this->session->set_userdata('logged_in', $session_data);
 
         $this->session->set_userdata('MergeNo', $_REQUEST['t']);
         $this->session->set_userdata('ONo', 0);
@@ -85,23 +87,31 @@ class Rcheck extends CI_Controller {
             $this->session->set_userdata('CellNo', '1111111111');         
         }
 
-        $EID = authuser()->EID;
-        $ChainId = authuser()->ChainId;
+        $EID = $_REQUEST['e'];
 
         // load  GenTableData db
-        $genTblDb = $this->load->database('GenTableData', TRUE);
+        // $genTblDb = $this->load->database('GenTableData', TRUE);
 
-        $eidDetData = $genTblDb->select('PymtGateway, DBName')->get_where('EIDDet', array('EID' => $EID))->row_array();
+        // $eidDetData = $genTblDb->select('PymtGateway, DBName')->get_where('EIDDet', array('EID' => $EID))->row_array();
 
-        $this->session->set_userdata('paymentGateway', $eidDetData['PymtGateway']);
-        $this->session->set_userdata('DynamicDB', $eidDetData['DBName']);
+        // $this->session->set_userdata('paymentGateway', $eidDetData['PymtGateway']);
+        // $this->session->set_userdata('DynamicDB', $eidDetData['DBName']);
         
         // load db
         $db2 = $this->load->database($my_db, TRUE);
 
-        $orgCheck = $db2->query("SELECT e.CatgID, e.ONo, c.StTime, c.CloseTime, c.EType, c.CustOrgs, c.MultiKitchen, c.MultiScan, c.Kitchen, c.AutoAllot, c.AutoDeliver, c.SchPop, c.SchType, c.ServChrg, c.Tips, c.EDT, c.TableReservation, c.Fest, c.Hostel,c.Deliver, c.CustAssist, c.TableAcceptReqd,c.OrderWithoutTable,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge, c.Charity, c.Ing_Cals, c.NV,c.WelcomeMsg,c.Ent,c.MultiLingual,c.MultiPayment,c.pymtENV FROM Config c, Eatary e where e.EID = $EID AND e.ChainId = $ChainId and e.EID = c.EID And c.ChainId = e.ChainId")->row_array();
+        $orgCheck = $db2->query("SELECT e.CatgID,e.ChainId, e.ONo, c.StTime, c.CloseTime, c.EType, c.CustOrgs, c.MultiKitchen, c.MultiScan, c.Kitchen, c.AutoAllot, c.AutoDeliver, c.SchPop, c.SchType, c.ServChrg, c.Tips, c.EDT, c.TableReservation, c.Fest, c.Hostel,c.Deliver, c.CustAssist, c.TableAcceptReqd,c.OrderWithoutTable,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge, c.Charity, c.Ing_Cals, c.NV,c.WelcomeMsg,c.Ent,c.MultiLingual,c.MultiPayment,c.pymtENV FROM Config c, Eatary e where e.EID = $EID and e.EID = c.EID")->row_array();
 
-        $this->session->set_userdata('CatgID', $orgCheck['CatgID']);
+        $session_data = array(
+            'EID' => $_REQUEST['e'],
+            'TableNo' => $_REQUEST['t'],
+            'Stall' => $_REQUEST['o'],
+            'CatgID' => $_REQUEST['c'],
+            'ChainId' => $orgCheck['ChainId'],
+        );
+        $this->session->set_userdata('logged_in', $session_data);
+
+        $this->session->set_userdata('ChainId', $orgCheck['ChainId']);
         $this->session->set_userdata('ONo', $orgCheck['ONo']);
         $this->session->set_userdata('EType', $orgCheck['EType']);
         $this->session->set_userdata('CustOrgs', $orgCheck['CustOrgs']);
@@ -135,9 +145,11 @@ class Rcheck extends CI_Controller {
         $this->session->set_userdata('MultiLingual', $orgCheck['MultiLingual']);    
         $this->session->set_userdata('MultiPayment', $orgCheck['MultiPayment']);
         $this->session->set_userdata('pymtENV', $orgCheck['pymtENV']); 
-        $this->session->set_userdata('site_lang', 'english');
+        // set site_lang = 1 => english
+        $this->session->set_userdata('site_lang', 1);
+        $this->session->set_userdata('site_langName', 'English');
 
-        if($orgCheck['CatgID'] < 10){
+        if($_REQUEST['c'] > 10){
             redirect(base_url('customer'));
         }else{
             // multi restaurant

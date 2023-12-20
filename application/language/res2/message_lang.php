@@ -44,9 +44,6 @@ $lang['click'] = 'क्लिक';
 $lang['submit'] = 'सुरक्षित करे';
 $lang['verifyOTP'] = 'ओटीपी सत्यापित करें';
 $lang['resendOTP'] = 'ओटीपी पुनः भेजें';
-$lang['reject'] = 'रिजेक्ट';
-$lang['viewCart'] = 'व्यू कार्ट';
-$lang['sendYourPendingOrdersToKitchen'] = 'अपने लंबित ऑर्डर रसोई में भेजें?';
 
 $lang['back'] = 'पीछे';
 $lang['addItem'] = 'ऐड आइटम';

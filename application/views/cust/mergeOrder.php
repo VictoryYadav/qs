@@ -120,8 +120,8 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>CellNo</th>
-                                <th>Order Amt</th>
+                                <th><?= $this->lang->line('cellNo'); ?></th>
+                                <th><?= $this->lang->line('orderAmount'); ?></th>
                             </tr>
                         </thead>
 
@@ -149,7 +149,7 @@
                                     <?= $ord['CellNo']; ?> <small>(<?= getName($ord['CustId']); ?>)</small>
                                 </td>
                                 <td>
-                                    <?= $ord['OrdAmt']; ?>
+                                    <?= convertToUnicodeNumber($ord['OrdAmt']); ?>
                                 </td>
                             </tr>
                         <?php }
@@ -159,10 +159,10 @@
                             $this->session->set_userdata('split_mobile', $split_mobile);
                          ?>
                         <tr>
-                           <td></td> <td><b>Item Total</b></td>
+                           <td></td> <td><b><?= $this->lang->line('itemTotal'); ?></b></td>
                            <td id="grandTotal" style="font-weight: bold;">
                             <input type="hidden" name="grossItemAmt" value="<?= $total; ?>">
-                            <?= $total; ?>
+                            <?= convertToUnicodeNumber($total); ?>
                            </td>
                         </tr>
                         </tbody>
@@ -198,7 +198,7 @@
 
                 <div class="row paybl" style="margin-left: 0px;margin-right: 0px;">
                     <div class="col-8">
-                        <label class="bill-ord-amt" style="margin-bottom: 7px;">Payable</label>
+                        <label class="bill-ord-amt" style="margin-bottom: 7px;"><?= $this->lang->line('payable'); ?></label>
                     </div>
                     <div class="col-4">
                         <input type="hidden" id="payableAmt">
@@ -338,16 +338,13 @@
                             if(item.Itm_Portion > 4){
 
                                 html += `<td>${item.ItemNm} (${item.Itm_Portion} )${ta} </td>`;
-
                             }else{
-
                                 html += `<td>${item.ItemNm} ${ta} </td>`;
-
                             }
                             
-                            html += `<td class="text-center">${item.Qty}</td>`;
-                            html += `<td class="text-center">${item.OrigRate}</td>`;
-                            html += `<td class="text-right">${item.OrdAmt}</td>`;
+                            html += `<td class="text-center">${convertToUnicodeNo(item.Qty)}</td>`;
+                            html += `<td class="text-center">${convertToUnicodeNo(item.OrigRate)}</td>`;
+                            html += `<td class="text-right">${convertToUnicodeNo(item.OrdAmt)}</td>`;
                             html += `</tr>`;
 
                             sub_total = sub_total +  parseInt(item.OrdAmt);
@@ -356,10 +353,10 @@
                         }else{
 
                             html += `<tr style="border-top: 1px solid white;">`;
-                            html += `<td><b>Item Total :</b> </td>`;
+                            html += `<td><b><?= $this->lang->line('itemTotal'); ?> :</b> </td>`;
                             html += `<td class="text-center"></td>`;
                             html += `<td class="text-center"></td>`;
-                            html += `<td class="text-right"><b>${sub_total}</b></td>`;
+                            html += `<td class="text-right"><b>${convertToUnicodeNo(sub_total)}</b></td>`;
                             html += `</tr>`;
 
                             var sub_total_temp = sub_total;
@@ -373,7 +370,7 @@
                                         html += `<td>${element['ShortName']} ${element['TaxPcent']} % </td>`;
                                         html += `<td class="text-center"></td>`;
                                         html += `<td class="text-center"></td>`;
-                                        html += `<td class="text-right">${parseFloat(element['SubAmtTax']).toFixed(2)}</td>`;
+                                        html += `<td class="text-right">${convertToUnicodeNo(parseFloat(element['SubAmtTax']).toFixed(2))}</td>`;
 
                                         html += `</tr>`;
                                         
@@ -391,10 +388,10 @@
                             itemAmount = parseFloat(itemAmount) + parseFloat(sub_total.toFixed(2));
 
                             html += `<tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
-                            html += `<td><b>Sub Total :</b> </td>`;
+                            html += `<td><b><?= $this->lang->line('subTotal'); ?> :</b> </td>`;
                             html += `<td class="text-center"></td>`;
                             html += `<td class="text-center"></td>`;
-                            html += `<td class="text-right"><b style="color: orange;">${sub_total.toFixed(2)}</b></td>`;
+                            html += `<td class="text-right"><b style="color: orange;">${convertToUnicodeNo(sub_total.toFixed(2))}</b></td>`;
                             html += `</tr> <tr style="height: 25px;"></tr>`;
 
                             initil_value = item.TaxType;
@@ -403,9 +400,9 @@
 
                             html += `<tr>`;
                             html += `<td>${item.ItemNm} ${ta}</td>`;
-                            html += `<td class="text-center">${item.Qty}</td>`;
-                            html += `<td class="text-center">${item.ItmRate}</td>`;
-                            html += `<td class="text-right">${item.OrdAmt}</td>`;
+                            html += `<td class="text-center">${convertToUnicodeNo(item.Qty)}</td>`;
+                            html += `<td class="text-center">${convertToUnicodeNo(item.ItmRate)}</td>`;
+                            html += `<td class="text-right">${convertToUnicodeNo(item.OrdAmt)}</td>`;
                             html += `</tr>`;
 
                             sub_total = sub_total +  parseInt(item.OrdAmt);
@@ -413,10 +410,10 @@
                     });
 
                     html += `<tr style="border-top: 1px solid white;">`;
-                    html += `<td><b>Item Total :</b> </td>`;
+                    html += `<td><b><?= $this->lang->line('itemTotal'); ?> :</b> </td>`;
                     html += `<td class="text-center"></td>`;
                     html += `<td class="text-center"></td>`;
-                    html += `<td class="text-right"><b>${sub_total}</b></td>`;
+                    html += `<td class="text-right"><b>${convertToUnicodeNo(sub_total)}</b></td>`;
                     html += `</tr>`;
 
                     var sub_total_temp = sub_total;
@@ -430,7 +427,7 @@
                                 html += `<td>${element['ShortName']} ${element['TaxPcent']} % </td>`;
                                 html += `<td class="text-center"></td>`;
                                 html += `<td class="text-center"></td>`;
-                                html += `<td class="text-right">${parseFloat(element['SubAmtTax']).toFixed(2)}</td>`;
+                                html += `<td class="text-right">${convertToUnicodeNo(parseFloat(element['SubAmtTax']).toFixed(2))}</td>`;
                                 html += `</tr>`;
 
                             }
@@ -444,10 +441,10 @@
                     }
                     grand_total = grand_total + sub_total;
                     html += `<input type="hidden" name="tot_sgst" value="`+totSGST+`" ><tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
-                            html += `<td><b>Sub Total :</b> </td>`;
+                            html += `<td><b><?= $this->lang->line('subTotal'); ?> :</b> </td>`;
                             html += `<td class="text-center"></td>`;
                             html += `<td class="text-center"></td>`;
-                            html += `<td class="text-right"><b style="color: orange;">${sub_total.toFixed(2)}</b></td>`;
+                            html += `<td class="text-right"><b style="color: orange;">${convertToUnicodeNo(sub_total.toFixed(2))}</b></td>`;
                             html += `</tr>`;
 
                     itemAmount = parseFloat(itemAmount) + parseFloat(sub_total.toFixed(2));
@@ -458,10 +455,10 @@
                     html_body +=`<table class="fixed_headers" style="width:100%">`;
                     html_body +=`<thead>`;
                     html_body +=`<tr>`;
-                    html_body +=`<th> Menu Item </th>`;
-                    html_body +=`<th class="text-center">Qty</th>`;
-                    html_body +=`<th class="text-center">Rate</th>`;
-                    html_body +=`<th class="text-right">Amt</th>`;
+                    html_body +=`<th><?= $this->lang->line('menuItem'); ?></th>`;
+                    html_body +=`<th class="text-center"><?= $this->lang->line('quantity'); ?></th>`;
+                    html_body +=`<th class="text-center"><?= $this->lang->line('rate'); ?></th>`;
+                    html_body +=`<th class="text-right"><?= $this->lang->line('amount'); ?></th>`;
                     html_body +=`</tr>`;
                     html_body +=`</thead>`;
                     html_body +=`<tbody id="order-amount-table-body">`;
@@ -476,8 +473,8 @@
                         html_body +=`<div class="main-ammount">`;
                         html_body +=`<table style="width:100%;">`;
                         html_body +=`<tr>`;
-                        html_body +=`<th>Service Charge @ `+ServChrg+` %</th>`;
-                        html_body +=`<td class="text-right">`+serv.toFixed(2)+`</td>`;
+                        html_body +=`<th><?= $this->lang->line('serviceCharge'); ?> @ `+convertToUnicodeNo(ServChrg)+` %</th>`;
+                        html_body +=`<td class="text-right">`+convertToUnicodeNo(serv.toFixed(2))+`</td>`;
                         html_body +=`</tr>`;
                         html_body +=`</table>`;
                         html_body +=`</div>`;
@@ -488,8 +485,8 @@
                         html_body +=`<div class="main-ammount">`;
                         html_body +=`<table style="width:100%;">`;
                         html_body +=`<tr>`;
-                        html_body +=`   <th style="font-style: italic">Total Discount / Savings</th>`;
-                        html_body +=`   <th class="text-right" style="font-style: italic">`+disc+`</th>`;
+                        html_body +=`   <th style="font-style: italic"><?= $this->lang->line('totalDiscount'); ?></th>`;
+                        html_body +=`   <th class="text-right" style="font-style: italic">`+convertToUnicodeNo(disc)+`</th>`;
                         html_body +=`</tr>`;
                         html_body +=`</table>`;
                         html_body +=`</div>`;
@@ -500,8 +497,8 @@
                         html_body +=`<div class="main-ammount">`;
                         html_body +=`<table style="width:100%;">`;
                         html_body +=`<tr>`;
-                        html_body +=`   <th style="font-style: italic">Delivery Charge</th>`;
-                        html_body +=`   <th class="text-right" style="font-style: italic">`+del_charge+`</th>`;
+                        html_body +=`   <th style="font-style: italic"><?= $this->lang->line('deliveryCharge'); ?></th>`;
+                        html_body +=`   <th class="text-right" style="font-style: italic">`+convertToUnicodeNo(del_charge)+`</th>`;
                         html_body +=`</tr>`;
                         html_body +=`</table>`;
                         html_body +=`</div>`;
@@ -512,8 +509,8 @@
                         html_body +=`<div class="main-ammount">`;
                         html_body +=`<table style="width:100%;">`;
                         html_body +=`<tr>`;
-                        html_body +=`   <th style="font-style: italic">Packing Charge</th>`;
-                        html_body +=`   <th class="text-right" style="font-style: italic">`+pck_charge+`</th>`;
+                        html_body +=`   <th style="font-style: italic"><?= $this->lang->line('packingCharge'); ?></th>`;
+                        html_body +=`   <th class="text-right" style="font-style: italic">`+convertToUnicodeNo(pck_charge)+`</th>`;
                         html_body +=`</tr>`;
                         html_body +=`</table>`;
                         html_body +=`</div>`;
@@ -527,7 +524,7 @@
                         html_body +=`<div class="main-ammount">`;
                         html_body +=`<table style="width:100%;">`;
                         html_body +=`<tr class="<?= ($Tips == 0 ? 'hideDiv' : ''); ?>">`;
-                        html_body +=`   <th>Tips</th>`;
+                        html_body +=`   <th><?= $this->lang->line('tips'); ?></th>`;
                         html_body +=`   <td><input type="hidden" name="MCNo" value="`+MCNo+`"><input id="tips" type="number" class="" value="0" onchange="change_tip()" name="tip"></td>`;
                         html_body +=`</tr>`;
                         html_body +=`</table>`;
@@ -535,7 +532,7 @@
                     }
 
                     $('.bill_box').html(html_body);
-                    $("#payable").text(grand_total);
+                    $("#payable").text(convertToUnicodeNo(grand_total));
                     $("#payableAmt").val(grand_total);
                     $("#totalAmt").val(itemAmount);
                     // $("#totalAmt").val(itemGrossAmt);
@@ -560,10 +557,12 @@
         var tips = $("#tips").val();
         var payableAmt  = $('#payableAmt').val();
 
+        tips = convertDigitToEnglish(tips);
+
         var total =parseFloat( payableAmt ) + parseInt(tips);
 
-        $("#payable").text(total);
-        $("#payableAmount").val(total);
+        $("#payable").text(convertToUnicodeNo(total));
+        $("#payableAmount").val(convertToUnicodeNo(total));
     }
 
    function getOrderDetails(CNo){

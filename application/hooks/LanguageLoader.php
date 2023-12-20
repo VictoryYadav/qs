@@ -5,11 +5,7 @@ class LanguageLoader
     function initialize() {
         $ci =& get_instance();
         $ci->load->helper('language');
-        $siteLang = $ci->session->userdata('site_lang');
-        if ($siteLang) {
-            $ci->lang->load('message',$siteLang);
-        } else {
-            $ci->lang->load('message','english');
-        }
+        $site_lang = $ci->session->userdata('site_langName');
+        $ci->lang->load('message',$site_lang);
     }
 }

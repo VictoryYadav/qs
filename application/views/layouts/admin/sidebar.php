@@ -19,7 +19,7 @@
         <li>
             <a href="<?= $url; ?>" class="waves-effect">
                 <i class="mdi mdi-speedometer"></i>
-                <span><?= $menu['Name']; ?></span>
+                <span><?= $menu['LngName']; ?></span>
             </a>
         </li>
         <?php }

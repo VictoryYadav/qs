@@ -186,6 +186,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $CI->User->getMenuList();
 	}
 
+	function langMenuList(){
+		$CI = & get_instance();
+		$CI->load->model('User');
+		return $CI->User->getLangMenuList();
+	}
+
 	function languageArray(){
 		return array(
 		'about_us' => 'About Us',
@@ -390,6 +396,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	    $CI->load->model('User');
 	    return $CI->User->getTaxCalculation($kitcheData, $EID, $CNo, $MergeNo);	
 	}
+
+	function convertToUnicodeNumber($input) {
+    	$CI = & get_instance();
+    	$site_lang = $CI->session->userdata('site_lang');
+    
+    	$standard_numsets = array("0","1","2","3","4","5","6","7","8","9");
+    	$devanagari_numsets = array("०","१","२","३","४","५","६","७","८","९");
+
+    	$digits = 0;
+    	switch ($site_lang) {
+    		// 1=english, 2=hindi, 3=malay, 4=thai
+    		case 1:
+    			$digits = str_replace($devanagari_numsets, $standard_numsets, $input);
+    			break;
+    		case 2:
+    			$digits = str_replace($standard_numsets, $devanagari_numsets, $input);
+    			break;
+    	}
+
+    	return $digits;
+
+        if($site_lang == 'english'){
+            return str_replace($devanagari_numsets,$standard_numsets, $input);
+        }else{
+			return str_replace($standard_numsets, $devanagari_numsets, $input);
+        }
+
+  }
 
 
 

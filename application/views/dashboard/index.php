@@ -39,14 +39,27 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <input type="hidden" id="base_url" value="<?php echo base_url(); ?>">
+                                <input type="hidden" id="lunch" value="<?= $this->lang->line('lunch'); ?>">
+                                <input type="hidden" id="dinner" value="<?= $this->lang->line('dinner'); ?>">
+                                <input type="hidden" id="customerFootfalls" value="<?= $this->lang->line('customerFootfallsForLunchDinner'); ?>">
+                                <input type="hidden" id="customerOrder" value="<?= $this->lang->line('customerOrderValuesForLunchDinner'); ?>">
+                                <input type="hidden" id="paymentModes" value="<?= $this->lang->line('paymentModesUsedByCustomer'); ?>">
+
+                                <input type="hidden" id="revenueAndDiscounts" value="<?= $this->lang->line('revenueAndDiscounts'); ?>">
+                                <input type="hidden" id="ordersByHour" value="<?= $this->lang->line('ordersByHour'); ?>">
+                                <input type="hidden" id="billsAndRatings" value="<?= $this->lang->line('billsAndRatings'); ?>">
+
+                                <input type="hidden" id="offers" value="<?= $this->lang->line('offers'); ?>">
+                                <input type="hidden" id="takeAway" value="<?= $this->lang->line('takeAway'); ?>">
+
                                     <!-- header -->
                                     <nav class="navbar navbar-expand-lg navbar-light">
                                         <div class="col-md-12 create_graph_button_div">
-                                            <button type="button" class="btn btn-warning btn-sm" href="#" id="customer">Customer</button>
+                                            <button type="button" class="btn btn-warning btn-sm" href="#" id="customer"><?= $this->lang->line('customer'); ?></button>
 
-                                            <button type="button" class="btn btn-success btn-sm" href="#" id="food">Food</button>
+                                            <button type="button" class="btn btn-success btn-sm" href="#" id="food"><?= $this->lang->line('food'); ?></button>
 
-                                            <button type="button" class="btn btn-danger btn-sm" href="#" id="restaurant">Restaurant</button>
+                                            <button type="button" class="btn btn-danger btn-sm" href="#" id="restaurant"><?= $this->lang->line('restaurant'); ?></button>
                                         </div>
                                     </nav>
                                     <!-- /header -->

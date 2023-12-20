@@ -10,6 +10,7 @@ $displayCurrency = 'INR';
   </script>
   <!-- Any extra fields to be submitted with the form but not sent to Razorpay -->
   <input type="hidden" name="shopping_order_id" value="3456">
+  <input type="hidden" name="MCNo" value="<?php echo $data['MCNo'] ?>">
 </form>
 
 <script src="<?php echo base_url(); ?>assets/js/jquery-3.3.1.min.js" crossorigin="anonymous"></script>

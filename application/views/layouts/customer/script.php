@@ -13,6 +13,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
 
 <script src="<?= base_url(); ?>theme/js/script.js"></script>
 <script src="<?= base_url(); ?>assets/js/ajax.js"></script>
+<script src="<?= base_url(); ?>assets/js/sendalert_notification.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>

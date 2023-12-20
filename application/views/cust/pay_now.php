@@ -20,7 +20,8 @@ body{
             <div class="row">
                 <div class="col-md-2 col-6">
                     <label for=""><?php echo  $this->lang->line('payable'); ?>: </label>
-                    <b id="payable"><?= round($payable); ?></b>
+                    <input type="hidden" id="payableAmt" value="<?= round($payable); ?>">
+                    <b id="payable"><?= convertToUnicodeNumber(round($payable)); ?></b>
                 </div>
                 
                 <?php if($this->session->userdata('MultiPayment') > 0){ ?>
@@ -84,7 +85,7 @@ body{
                                 <?php } else{ ?>
                                 <tr>
                                     <td>
-                                        <input type="number" placeholder="Amount" class="form-control" required name="amount" id="amount1" value="<?= round($payable); ?>" <?php if($this->session->userdata('MultiPayment') == 0){ echo 'readonly'; } ?>>
+                                        <input type="text" placeholder="Amount" class="form-control" required name="amount" id="amount1" value="<?= round($payable); ?>" <?php if($this->session->userdata('MultiPayment') == 0){ echo 'readonly'; } ?>>
                                     </td>
                                     <td>
                                         <select name="mode" id="mode1" class="form-control" required>
@@ -114,7 +115,7 @@ body{
 
                             <tr>
                                 <td colspan="1">
-                                    <?php echo  $this->lang->line('total'); ?>: <span id="grandtotal"><?= round($payable); ?></span>
+                                    <?php echo  $this->lang->line('total'); ?>: <span id="grandtotal"><?= convertToUnicodeNumber(round($payable)); ?></span>
                                 </td>
                                 <td colspan="2">
                                     <?php echo  $this->lang->line('balance'); ?>: <b><span id="balance">0</span></b>
@@ -175,7 +176,7 @@ body{
     var totalPayable ='<?= round($payable); ?>';
 
     $(document).ready(function () {
-        
+
         goToBill();
 
     var counter = 1;
@@ -185,7 +186,7 @@ body{
 
         var newRow = '<tr>\
                         <td>\
-                            <input type="number" placeholder="Amount" class="form-control" required name="amount'+counter+'" id="amount'+counter+'">\
+                            <input type="text" placeholder="Amount" class="form-control" required name="amount'+counter+'" id="amount'+counter+'">\
                         </td>\
                         <td>\
                             <select name="mode'+counter+'" id="mode'+counter+'" class="form-control" required>\
@@ -228,7 +229,7 @@ function calculateRow(row) {
 }
 
 function calculateGrandTotal() {
-    var payable = $('#payable').text();
+    var payable = $('#payableAmt').val();
     var balance = 0;
     var grandTotal = 0;
     var countRow = 0;
@@ -243,7 +244,7 @@ function calculateGrandTotal() {
           confirmButtonColor: "red",
         });
     }
-    $("#grandtotal").text(grandTotal);
+    $("#grandtotal").text(convertToUnicodeNo(grandTotal));
     balance = parseFloat(payable) - parseFloat(grandTotal);
     $("#balance").text(balance);
 }
@@ -258,7 +259,7 @@ function goPay(val){
 
     var BillId = '<?= $BillId; ?>';
     var MCNo = '<?= $MCNo; ?>';
-    var payable = $('#payable').text();
+    var payable = $('#payableAmt').val();
     console.log('val ='+val+' ,am = '+amount+' ,mode '+mode+' ,pble '+payable);
 
     if(amount < 0 || amount == ''){
@@ -298,7 +299,9 @@ function goPay(val){
         var tips = 0;
         // var dd = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&totAmt='+btoa(totAmt)+'&tips='+btoa(tips);
         // alert(dd);
-        window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&billId='+btoa(BillId);
+        
+        amount = convertDigitToEnglish(amount);
+        window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&billId='+btoa(BillId)+'&MCNo='+btoa(MCNo);
     }
 
     // phoenpe = 46
@@ -337,7 +340,7 @@ function checkStatus(billId,payNo, serialNo){
 function goToBill(){
     console.log('hi');
     var BillId = '<?= $BillId; ?>';
-    var payable = $('#payable').text();
+    var payable = $('#payableAmt').val();
     var total = $('#sum').val();
 
     if(payable == total){

@@ -42,9 +42,12 @@ $folder = 'e'.authuser()->EID;
                         </a>
                         <!-- Dropdown list -->
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#" onclick="set_lang('english')">English</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="set_lang('hindi')">Hindi</a></li>
-                                <!-- <li><a class="dropdown-item" href="#" onclick="set_lang('china')">Chinese</a></li> -->
+                                <?php 
+                                    $langs = langMenuList();
+                                    foreach ($langs as $key) {
+                                ?>
+                                <li><a class="dropdown-item" href="#" onclick="set_lang(<?= $key['LCd']; ?>,'<?= $key['Name1']; ?>')"><?= $key['LngName']; ?></a></li>
+                            <?php } ?>
                             </ul>
                     </li>
                     <?php } ?>
@@ -61,10 +64,9 @@ $folder = 'e'.authuser()->EID;
 </section>
 
 <script>
-    function set_lang(language){
-        console.log(language);
-
-        $.post('<?= base_url('customer/switchLang') ?>',{language:language},function(res){
+    
+    function set_lang(langId, langName){
+        $.post('<?= base_url('customer/switchLang') ?>',{langId:langId, langName:langName},function(res){
             if(res.status == 'success'){
               // alert(res.response);
             }else{

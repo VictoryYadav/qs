@@ -42,9 +42,9 @@
                                                 <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>User Name</th>
-                                                    <th>Mobile No</th>
-                                                    <th>Action</th>
+                                                    <th><?= $this->lang->line('userName'); ?></th>
+                                                    <th><?= $this->lang->line('mobile'); ?></th>
+                                                    <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
                                                 </thead>
             
@@ -62,7 +62,7 @@
                                                     <td>
                                                         <div class="custom-control custom-checkbox">
                                                             <input type="checkbox" class="custom-control-input" id="customCheck1" onchange="enableDisable(<?= $key['RUserId'];?>, this);" <?= ($key['Stat'] == 3 ? 'checked' : '');?>>
-                                                            <label class="custom-control-label" for="customCheck1" style="font-size: 11px;font-weight: normal;"><?= ($key['Stat'] == 3) ? 'Disabled' : 'Enabled';?></label>
+                                                            <label class="custom-control-label" for="customCheck1" style="font-size: 11px;font-weight: normal;"><?= ($key['Stat'] == 3) ? $this->lang->line('disabled') : $this->lang->line('enabled');?></label>
                                                         </div>     
                                                     </td>
                                                 </tr>

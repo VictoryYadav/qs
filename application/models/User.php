@@ -80,7 +80,11 @@ class User extends CI_Model{
 			$qry = " k.Stat = 3";
 		}
 
-		$billData = $comDb->query("SELECT ((k.ItmRate)* sum(k.Qty) * b.splitPercent) as ItemAmt, m.ItemNm, k.CustItemDesc, k.TA, k.ItmRate, sum(k.Qty) * b.splitPercent as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, e.BillName, b.BillPrefix, b.BillSuffix, b.TaxInclusive, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo,b.BillId, b.TotItemDisc, b.BillDiscAmt,b.custDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt,b.PaidAmt, b.SerCharge as bservecharge,b.SerChargeAmt, b.Tip,b.TableNo, b.billTime as BillDt,ip.Name as Portions, k.Itm_Portion,b.CustId,b.CellNo  from Kitchen k, KitchenMain km, Billing b, MenuItem m, Eatary e , ItemPortions ip where k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and $qry and ((km.CNo = k.CNo) or (km.MCNo = k.MCNo)) and ( km.MergeNo = k.MergeNo) and ((km.CNo = b.CNo) or (km.MCNo = b.CNo)) and (km.MergeNo = b.MergeNo) and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID  and b.ChainId = km.ChainId and km.EID = $EID and b.BillId = $billId $custAnd Group By k.ItemId, k.CustItemDesc, k.TaxType ,k.Itm_Portion Order By k.TaxType, m.ItemNm")->result_array();
+		$langId = $this->session->userdata('site_lang');
+        $itmName = "m.ItemNm$langId as ItemNm";
+        $ipName = "ip.Name$langId as Portions";
+
+		$billData = $comDb->query("SELECT ((k.ItmRate)* sum(k.Qty) * b.splitPercent) as ItemAmt, $itmName, k.CustItemDesc, k.TA, k.ItmRate, sum(k.Qty) * b.splitPercent as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, e.BillName, b.BillPrefix, b.BillSuffix, b.TaxInclusive, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo,b.BillId, b.TotItemDisc, b.BillDiscAmt,b.custDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt,b.PaidAmt, b.SerCharge as bservecharge,b.SerChargeAmt, b.Tip,b.TableNo, b.billTime as BillDt, $ipName , k.Itm_Portion,b.CustId,b.CellNo  from Kitchen k, KitchenMain km, Billing b, MenuItem m, Eatary e , ItemPortions ip where k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and $qry and ((km.CNo = k.CNo) or (km.MCNo = k.MCNo)) and ( km.MergeNo = k.MergeNo) and ((km.CNo = b.CNo) or (km.MCNo = b.CNo)) and (km.MergeNo = b.MergeNo) and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID  and b.ChainId = km.ChainId and km.EID = $EID and b.BillId = $billId $custAnd Group By k.ItemId, k.CustItemDesc, k.TaxType ,k.Itm_Portion Order By k.TaxType, m.ItemNm1")->result_array();
 // print_r($this->db2->last_query());die;
 		// echo "<pre>";
 		// print_r($billData);die;
@@ -96,9 +100,11 @@ class User extends CI_Model{
 			    }
 			}
 
+			$taxName = "t.ShortName$langId as ShortName";
+
 			$taxDataArray = array();
 			foreach ($tax_type_array as $key => $value) {
-				$TaxData = $comDb->query("SELECT t.ShortName, t.TaxPcent, t.TaxType, t.Included, Sum(bt.TaxAmt) as SubAmtTax, t.rank from Tax t, BillingTax bt where bt.EID=t.EID and bt.TNo=t.TNo and bt.EID=$EID and bt.BillId = $billId and bt.TNo=t.TNo and t.TaxType = $value group by t.ShortName,t.TaxPcent, t.TaxType, t.Included ,t.rank order by t.rank")->result_array();
+				$TaxData = $comDb->query("SELECT $taxName, t.TaxPcent, t.TaxType, t.Included, Sum(bt.TaxAmt) as SubAmtTax, t.rank from Tax t, BillingTax bt where bt.EID=t.EID and bt.TNo=t.TNo and bt.EID=$EID and bt.BillId = $billId and bt.TNo=t.TNo and t.TaxType = $value group by t.ShortName1,t.TaxPcent, t.TaxType, t.Included ,t.rank order by t.rank")->result_array();
 				
 			    $taxDataArray[$value] = $TaxData;
 			}
@@ -119,7 +125,11 @@ class User extends CI_Model{
 		$EID = authuser()->EID;
         $RUserId = authuser()->RUserId;
 
-		return $this->db2->select('ur.Name,ur.RoleTyp,ur.pageUrl,ur.Rank, ur.PhpPage')
+        $langId = $this->session->userdata('site_lang');
+        $lname = "ur.Name$langId as LngName";
+        $select_sql = "$lname, ur.RoleTyp, ur.pageUrl, ur.Rank, ur.PhpPage";
+
+		return $this->db2->select($select_sql)
                         ->order_by('ur.Rank', 'ASC')
                         ->join('UserRolesAccess ura', 'ura.RoleId = ur.RoleId','inner')
                         ->get_where('UserRoles ur', 
@@ -127,6 +137,20 @@ class User extends CI_Model{
                                 'EID' => $EID)
                                 )
                         ->result_array();
+	}
+
+	public function getLangMenuList(){
+		$EID = authuser()->EID;
+		$langId = $this->session->userdata('site_lang');
+		$lname = "Name$langId as LngName";
+        $select_sql = "$lname, Name1, LCd, EID, Rank";
+
+		return $this->db2->select($select_sql)
+                        ->order_by('Rank', 'ASC')
+                        ->get_where('Eat_Lang', 
+                            				array('Stat' => 0, 'EID' => $EID)
+                                )
+                        ->result_array();	
 	}
 
 	// common for create user at first time enter our app
@@ -274,10 +298,13 @@ class User extends CI_Model{
 		    }
 		}
 
+		$langId = $this->session->userdata('site_lang');
+        $taxName = "t.ShortName$langId as ShortName";
+
 		$taxDataArray = array();
 		foreach ($tax_type_array as $key => $value) {
 
-		    $TaxData = $this->db2->query("SELECT t.ShortName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included,k.ItmRate, k.Qty,k.ItemId, (sum(k.OrigRate*k.Qty)) as ItemAmt, (if (t.Included <5,((sum(k.OrigRate*k.Qty)) - ((sum(k.OrigRate*k.Qty)) / (1+t.TaxPcent/100))),((sum(k.OrigRate*k.Qty))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where (k.Stat = $stat) and k.EID=km.EID and (k.MergeNo = km.MergeNo) and km.MergeNo = '$MergeNo' and (km.CNo=$CNo or km.MCNo =$CNo) and k.CNo = km.CNo and t.TaxType = k.TaxType and t.TaxType = $value  and t.EID= $EID AND km.BillStat = 0 group by t.ShortName,t.TNo,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.rank")->result_array();
+		    $TaxData = $this->db2->query("SELECT $taxName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included,k.ItmRate, k.Qty,k.ItemId, (sum(k.OrigRate*k.Qty)) as ItemAmt, (if (t.Included <5,((sum(k.OrigRate*k.Qty)) - ((sum(k.OrigRate*k.Qty)) / (1+t.TaxPcent/100))),((sum(k.OrigRate*k.Qty))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where (k.Stat = $stat) and k.EID=km.EID and (k.MergeNo = km.MergeNo) and km.MergeNo = '$MergeNo' and (km.CNo=$CNo or km.MCNo =$CNo) and k.CNo = km.CNo and t.TaxType = k.TaxType and t.TaxType = $value  and t.EID= $EID AND km.BillStat = 0 group by t.ShortName1,t.TNo,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.rank")->result_array();
 		    $taxDataArray[$value] = $TaxData;
 		}
 

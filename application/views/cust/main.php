@@ -316,7 +316,6 @@
 <?php $this->load->view('layouts/customer/footer'); ?>
 <!-- end of footer -->
 
-
 <!-- search model -->
     <div class="modal" id="item-list-modal">
         <div class="modal-dialog">
@@ -363,7 +362,8 @@
                     <?php } ?>
 				    	<li class="list-inline-item">
 				    		<i class="fa fa-inr" style="color:blue;"></i>
-				    		<span class="modal-price price" id="product-price">000</span>
+                            <input type="hidden" id="product-price" value="0">
+				    		<span class="modal-price price" id="product-priceView">000</span>
 				    	</li>
 				    </ul>
 
@@ -371,18 +371,19 @@
 
                     <div class="row" style="margin-left: 0px;margin-right: 0px;position: relative;">
                         <div class="form-group" style="width: 156px; margin-bottom: 4px;">
-                            <label for="item_portions" style="margin: 0px;font-size: 14px;"><?= $language['portion']?>:</label>
+                            <label for="item_portions" style="margin: 0px;font-size: 14px;"><?= $this->lang->line('portion'); ?>:</label>
                             <select class="form-control" id="item_portions" name="item_portions"  style="font-size: 13px; height: 30px; padding: 4px; width: 103px; font-weight: 600;" <?php if ($Itm_Portion == 0) {echo "disabled";} ?>>
                             </select>
                         </div>
                         <div style="position: absolute;right: 0pc;">
-                            <label style="margin: 0px;font-size: 14px;">&nbsp;<?= $language['quantity']?>:</label>
+                            <label style="margin: 0px;font-size: 14px;">&nbsp;<?= $this->lang->line('quantity'); ?>:</label>
                             <div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;">
                                 <span class="input-group-btn">
                                     <button type="button" id="minus-qty" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;" disabled="">-
                                     </button>
                                 </span>
-                                <input type="text" readonly="" id="qty-val" class="form-control input-number" value="1" min="1" max="10" style="text-align: center;">
+                                <input type="hidden"  id="qty-val" >
+                                <input type="text" readonly="" id="qty-valView" class="form-control input-number" min="1" max="10" style="text-align: center;">
                                 <span class="input-group-btn">
                                     <button type="button" id="add-qty" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 30px;">+
                                     </button>
@@ -395,29 +396,27 @@
                         <div class="row" style="margin-left: 0px;margin-right: 0px;margin-bottom: 10px;">
 
                             <div >
-                                <label style="display: grid;margin: 0px;font-size: 14px;"><?= $language['take_away']?></label>
-                                <!-- <label class="switch">
-                                    <input type="checkbox" id="take-away">
-                                    <span class="slider round"></span>
-                                </label> -->
+                                <label style="display: grid;margin: 0px;font-size: 14px;"><?= $this->lang->line('takeAway'); ?></label>
+                                
                                 <select class="form-control" style="font-size: 13px; height: 30px; padding: 4px;width: 103px;" id="take-away">
-                                    <option value="0">Sit In</option>
-                                    <option value="1">Take Away</option>
+                                    <option value="0"><?= $this->lang->line('sitIn'); ?></option>
+                                    <option value="1"><?= $this->lang->line('takeAway'); ?></option>
                                     <?php if($Charity == 1){ ?>
-                                    <option value="2">Charity</option>
+                                    <option value="2"><?= $this->lang->line('charity'); ?></option>
                                     <?php } ?>
                                 </select>
                             </div>
                             <?php if($this->session->userdata('EDT') > 0 ){ ?>
                             <div style="position: absolute;right: 1pc;">
-                                <label for="sel1" style="margin: 0px;font-size: 14px;"><?= $language['delivery_time']?></label>
+                                <label for="sel1" style="margin: 0px;font-size: 14px;"><?= $this->lang->line('delivery_time'); ?></label>
                                 <div id="waiting-btn" class="your-class1 btn-group btn-group-toggle" data-toggle="buttons" style="width: 96px;display: block;">
                                     <div class="input-group">
                                         <span class="input-group-btn">
                                             <button type="button" id="minus-serve" class="btn btn-default btn-number active" data-type="minus" style="background-color: #0a88ff;color: #fff;border-radius: 0px; padding: 1px 7px;height: 30px;" aria-pressed="true" disabled="">-
                                             </button>
                                         </span>
-                                        <input type="text" readonly="" id="serve-val" class="form-control input-number" value="5" min="5" max="30" style="text-align: center;">
+                                        <input type="hidden" id="serve-val">
+                                        <input type="text" readonly="" id="serve-valView" class="form-control input-number" value="5" min="5" max="30" style="text-align: center;">
                                         <span class="input-group-btn">
                                             <button type="button" id="add-serve" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;" aria-pressed="false" >+
                                             </button>
@@ -434,12 +433,12 @@
                         <?php if($this->session->userdata('SchPop') > 0 ){ ?>
                         <div class="form-group" style="width: 100%;">
                             <select name="schcd" id="schcd" class="form-control" >
-                                <option value="">Select Offer</option>
+                                <option value=""><?= $this->lang->line('selectOffer'); ?></option>
                             </select>
                         </div>
                         <?php } ?>
                         <div class="remark" style="width: 100%">
-                            <input id="cust-remarks" type="text" class="form-control Remarks-input" placeholder="Enter Remarks" name="remark-box">
+                            <input id="cust-remarks" type="text" class="form-control Remarks-input" placeholder="<?= $this->lang->line('enterRemarks'); ?>" name="remark-box">
                         </div>
 
                         <div class="widget category" style="width: 100%;display: none;" id="radioOption">
@@ -462,154 +461,11 @@
 
         <div class="modal-footer" style="bottom: 0px;background-color: #ffffff;padding: 3px;padding-left: 15px;right: 0px;bottom: 0px;left: 0px;z-index: 1050;outline: 0px;position: fixed; width: 100%;">
             <button type="button" class="btn col-5 modal-back" data-dismiss="modal" style="padding: 5px 5px 5px; font-size: 12px;"><?php echo  $this->lang->line('back'); ?></button>
-            <label class="col-2" style="padding: 3px;height: 25px;text-align: center;"><b id="totalAmount">0</b></label>
+            <label class="col-2" style="padding: 3px;height: 25px;text-align: center;">
+                <input type="hidden" value="0" id="totalAmount">
+                <b id="totalAmountView">0</b>
+            </label>
             <button type="button" class="btn col-5 modal-confirm" data-dismiss="modal" id="confirm-order" tax_type="" tbltyp="" pck="" style="background: #ffc245;padding: 5px 5px 5px; font-size: 12px;"><?php echo  $this->lang->line('addItem'); ?></button>
-        </div>
-    </div>
-
-    <!-- customizeModal Modal -->
-    <div class="modal" id="customizeModal">
-        <div class="modal-dialog" style="position: fixed;right: 0;bottom: 40px;left: 0;z-index: 1050;outline: 0;position: fixed;">
-            <div>
-                <div class="modal-content" style="height: 400px;z-index: -1;overflow: auto;bottom: 0px;">
-                    
-                    <div>
-                        <img :src="itemImg" class="modal-item-img" style=" width: 100%; background-size: cover;">
-                    </div>
-
-                    <div class="modal-header" style="border-bottom: none;padding-bottom: 0px;">
-                        <p id="item-name-modal_custome"><b>{{itemName}}</b></p>
-                        <span id="item_offer_remark"></span>
-                        <!-- <p id="item-prepare-time_custome" time="" style="font-size: 12px;color: blue;margin-bottom: 2px;">{{item_prepTime}} min to prepare</p> -->
-                        
-                        <ul class="list-inline product-meta">
-					    	<li class="list-inline-item">
-					    		<i class="fa fa-star ratings text-warning" aria-hidden="true">
-	                            </i>
-	                            <span id="item-rating-modal" class="rating-no" style="color: #000;">4.5</span>
-					    	</li>
-					    	<li class="list-inline-item">
-					    		<i class="fa fa-heartbeat" style="color:green;"></i>
-					    		<span class="" id="nvRating">000</span>
-					    	</li>
-					    	<li class="list-inline-item">
-					    		<i class="fa fa-inr" style="color:blue;"></i>
-					    		<span class="modal-price price" id="product-price">{{defaultPrice}}</span>
-					    	</li>
-					    </ul>
-                        
-                    </div>
-
-                    <div class="modal-body" style="padding-top: 0px;">
-                        <p>{{itemDescription}}</p>
-
-                        <div class="row" style="margin-left: 0px;margin-right: 0px;position: relative;">
-                            <div class="form-group" style="width: 156px; margin-bottom: 4px;">
-                                <label for="item_portions_custome" style="margin: 0px;font-size: 14px;"><?= $language['portion']?>:</label>
-                            <select class="form-control" id="item_portions_custome" name="item_portions"   @change="selectPortion()" style="font-size: 13px; height: 30px; padding: 4px; width: 103px; font-weight: 600;" <?php if ($Itm_Portion == 0) {                                    echo "disabled";
-                               } ?>>
-                                </select>
-                            </div>
-                            <div style="position: absolute;right: 2pc;">
-                                <label style="margin: 0px;font-size: 14px;"><?= $language['quantity']?>:</label>
-                                <div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;">
-                                    <span class="input-group-btn">
-                                        <button type="button" @click="(qty > 1 ? qty-- : qty = 1)" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;">-
-                                        </button>
-                                    </span>
-                                    <input type="text" readonly="" type="number" v-model="qty" min="1" class="form-control input-number" value="1" max="10" style="height :28px;">
-                                    <span class="input-group-btn">
-                                        <button type="button" @click="qty++" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 30px;">+
-                                        </button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <?php if ($EType < 25) { ?>
-                            <div class="row" style="margin-left: 0px;margin-right: 0px;margin-bottom: 10px;">
-
-                            	<div>
-                                    <label style="display: grid;margin: 0px;font-size: 14px;"><?= $language['take_away']?></label>
-                                    <!-- <label class="switch">
-                                        <input type="checkbox" v-model="takeAway">
-                                        <span class="slider round"></span>
-                                    </label> -->
-                                    <select v-model="takeAway" class="form-control" style="font-size: 13px; height: 30px; padding: 4px;width: 103px;">
-                                        <option value="0">Sit In</option>
-                                        <option value="1">Take Away</option>
-                                        <?php if($Charity == 1){ ?>
-                                        <option value="2">Charity</option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-
-                                <div style="position: absolute;right: 2pc;width: 109px;">
-                                    <label for="sel1" style="margin: 0px;font-size: 14px;"><?= $language['delivery_time']?></label>
-                                    <div id="waiting-btn" class="your-class1 btn-group btn-group-toggle" data-toggle="buttons" style="width: 96px;display: block;">
-                                        <div class="input-group">
-                                            <span class="input-group-btn">
-                                                <button type="button" @click="(del > 1 ? del-- : del = 1)" class="btn btn-default btn-number active" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;" aria-pressed="true">-
-                                                </button>
-                                            </span>
-                                            <input type="text" readonly="" v-model="del" class="form-control input-number" value="5" min="5" max="30" style="height: 28px;">
-                                            <span class="input-group-btn">
-                                                <button type="button" @click="(del < 5 ? del++ : del = 5)" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 30px;" aria-pressed="false">+
-                                                </button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        <?php } ?>
-
-
-                        <div class="form-group">
-                            <select name="custOffer" id="custOffer" class="form-control">
-                                <option value="0">CustOffer</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <input class="form-control" type="text" placeholder="Enter Remarks" v-model="custRemarks" style="background: #ced4da; padding: 3px;">
-                        </div>
-
-                        <div>
-                            <!-- <p>{{itemDescription}}</p> -->
-                        </div>
-
-                        <div v-for="(form, index) in customForm" :key="index">
-                            <div v-if="form.GrpType == 1">
-                                <h4>{{form.ItemGrpName}}</h4>
-                                <div v-for="detail in form.Details">
-                                    <label>
-                                        <input type="radio" :value="detail.ItemOptCd" :name="form.ItemGrpName" :rate="detail.Rate" v-model="radioVal[index]" @click="calculateTotal(form.ItemGrpCd, index, detail.Name, $event)">
-                                        {{detail.Name}}
-                                    </label>
-                                    <label class="float-right">{{detail.Rate}}</label>
-                                </div>
-                            </div>
-                            <div v-if="form.GrpType == 2">
-                                <h4>{{form.ItemGrpName}}</h4>
-                                <div v-for="(detail,checkIndex) in form.Details">
-                                    <label>
-                                        <input type="checkbox" :value="detail.ItemOptCd" v-model="checkboxVal[checkIndex]" :rate="detail.Rate" @click="calculateTotal(form.ItemGrpCd, checkIndex, detail.Name, $event)">
-                                        {{detail.Name}}
-                                    </label>
-                                    <label class="float-right">{{detail.Rate}}</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal footer -->
-        <div class="modal-footer" style="bottom: 0px;background-color: #ffffff;padding: 3px;padding-left: 15px;/right: 0px;bottom: 0px;left: 0px;z-index: 1050;outline: 0px;position: fixed; width: 100%;">
-            <button type="button" class="btn col-5" data-dismiss="modal">Back</button>
-            <label class="col-2" style="padding: 3px;height: 25px;text-align: center;"><b>{{parseInt(total) + parseInt(defaultPrice)}}</b></label>
-            <button type="button" class="btn col-5" @click="addItem()" style="background: #ffc245;">Add</button>
         </div>
     </div>
 
@@ -649,13 +505,6 @@
         </div>
     </div>
 
-    
-
-
-
-<!-- 
-Essential Scripts
-=====================================-->
 <?php $this->load->view('layouts/customer/script'); ?>
 
 </body>
@@ -678,15 +527,28 @@ Essential Scripts
    $(document).ready(function() {
         // $("body").tooltip({ selector: '[data-toggle=tooltip]' });
 
+        $('#qty-val').val(1);
+        $('#qty-valView').val(convertToUnicodeNo(1));
+
         $('#add-qty').click(function() {
-            $('#qty-val').val(parseInt($('#qty-val').val()) + 1);
+            let val = 0;
+            val = $('#qty-val').val(); 
+            val = parseInt(val) + 1;
+            $('#qty-val').val(val);
+            $('#qty-valView').val(convertToUnicodeNo(val));
+
             $('#minus-qty').prop('disabled', false);
             if ($('#qty-val').val() == 99) {
                 $('#add-qty').prop('disabled', true);
             }
         });
         $('#minus-qty').click(function() {
-            $('#qty-val').val(parseInt($('#qty-val').val()) - 1);
+            let val = 0;
+            val = $('#qty-val').val(); 
+            val = parseInt(val) - 1;
+            $('#qty-val').val(val);
+            $('#qty-valView').val(convertToUnicodeNo(val));
+
             $('#add-qty').prop('disabled', false);
             if ($('#qty-val').val() == 1) {
                 $('#minus-qty').prop('disabled', true);
@@ -695,15 +557,22 @@ Essential Scripts
 
         // deliver buttons
         $('#add-serve').click(function() {
+            let val = parseInt($('#serve-val').val()) + 1;
 
-            $('#serve-val').val(parseInt($('#serve-val').val()) + 1);
+            $('#serve-val').val(val);
+            $('#serve-valView').val(convertToUnicodeNo(val));
+
             $('#minus-serve').prop('disabled', false);
             if ($('#serve-val').val() == 99) {
                 $('#add-serve').prop('disabled', true);
             }
         });
         $('#minus-serve').click(function() {
-            $('#serve-val').val(parseInt($('#serve-val').val()) - 1);
+            let val = parseInt($('#serve-val').val()) - 1;
+
+            $('#serve-val').val(val);
+            $('#serve-valView').val(convertToUnicodeNo(val));
+
             $('#add-serve').prop('disabled', false);
             if ($('#serve-val').val() == deliveryVal) {
                 $('#minus-serve').prop('disabled', true);
@@ -718,18 +587,15 @@ Essential Scripts
 
     getCuisineList(cidg);
     function getCuisineList(cid){
-
         cidg = cid;
-        console.log('cid='+cidg);
+        
         $.post('<?= base_url('customer') ?>',{cid:cid},function(res){
             if(res.status == 'success'){
-                
                 var mCatList = res.response.list.mcat;
                 var filter = res.response.list.filter;
                 var MCatgId = mCatList[0].MCatgId;
                 mcatIdg = MCatgId;
-              // console.log(mCatList[0].MCatgId);
-              // console.log('ff'+filter.length);
+              
               var mcat = '';
               if(mCatList.length > 0){
                 $('#mcatgBlock').show();
@@ -739,15 +605,14 @@ Essential Scripts
                         sts = 'active';
                     }
                     
-                    mcat +='<li class="list-inline-item '+sts+'" data-filter="*" onclick="clickMcat('+mCatList[i].MCatgId+')" style="font-size:14px;">'+mCatList[i].lname+'</li>';
+                    mcat +='<li class="list-inline-item '+sts+'" data-filter="*" onclick="clickMcat('+mCatList[i].MCatgId+')" style="font-size:14px;">'+mCatList[i].LngName+'</li>';
                 }
             }else{
                 $('#mcatgBlock').hide();
             }
                 $('#mCategory').html(mcat);
                 // call grid view
-                // console.log('mcat='+mcatIdg);
-                // console.log('filter='+filterg);
+                
                 clickMcat(mcatIdg);
                 getItemDetails(cid, mcatIdg, filterg);
             }else{
@@ -761,15 +626,12 @@ Essential Scripts
 
         mcatIdg = mcatId; 
         filterg = 0;
-        console.log('cid='+cidg+',mcat='+mcatIdg+',fl='+filterg);
 
         $.post('<?= base_url('customer/getFoodTypeList') ?>',{mcatId:mcatId},function(res){
             if(res.status == 'success'){
                 
                 var filter = res.response;
                 var all = res.all;
-              
-              console.log('ff'+filter.length);
 
                 if(filter.length > 0){
                     $('#filterBlock').show();
@@ -777,7 +639,7 @@ Essential Scripts
                         <input id="both-v-nv" type="radio" value="0" name="veg-nonveg" autocomplete="off" onchange="filterChange(0)" checked="">'+all+'</label>';
                     for(i=0; i < filter.length; i++){
                         fltr += '<label class="btn btn-b nonveg-btn">\
-                        <input type="radio" value="'+filter[i].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[i].FID+')">'+filter[i].lname+'</label>';
+                        <input type="radio" value="'+filter[i].FID+'" name="veg-nonveg" autocomplete="off" onchange="filterChange('+filter[i].FID+')">'+filter[i].LngName+'</label>';
                     }
                     $('#filters').html(fltr);
                 }else{
@@ -795,20 +657,16 @@ Essential Scripts
 
     function filterChange(filter){
         filterg = filter; 
-        console.log('cid='+cidg+',mcat='+mcatIdg+',fl='+filterg);
         getItemDetails(cidg, mcatIdg, filterg);
     }
 
     function getItemDetails(cid, mcatId, filter){
-        // var cid = '10';
-        // var mcatId = '1';
-        // var filter = '3';
+        
         $("#gridView").html('<div class="loader"></div>');
         $.post('<?= base_url('customer/getItemDetailsData') ?>',{cid:cid,mcatId:mcatId,filter:filter},function(res){
             if(res.status == 'success'){
               var data = res.response;
 
-              console.log(data);
               var total = data.length;
               var listView = '';
               var grid = '';
@@ -888,12 +746,12 @@ Essential Scripts
                                         </div>\
                                     <?php } ?>
 										<?php if(!empty($this->session->userdata('CustId'))){ ?>
-										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+itemName+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-NV="'+data[i].NV+'" item-pck="'+data[i].PckCharge+'">\
-											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
+										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+itemName+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].itemDescr+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-NV="'+data[i].NV+'" item-pck="'+data[i].PckCharge+'">\
+											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+itemName+'">\
 										</a>\
 										<?php } else{ ?>
 										<a href="<?= base_url('customer/login') ?>" >\
-											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
+											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+itemName+'">\
 										</a>\
 									<?php } ?>
 									</div>\
@@ -901,15 +759,15 @@ Essential Scripts
                                         <p data-toggle="tooltip" data-placement="top" title="'+data[i].ItemNm+'" class="strTruncate">'+data[i].itemName+'</p>\
                                         <ul class="list-inline product-meta">\
                                             <li class="list-inline-item">\
-                                                <i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+data[i].AvgRtng+'\
+                                                <i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+convertToUnicodeNo(data[i].AvgRtng)+'\
                                             </li>\
                                             <?php if($this->session->userdata('Ing_cals') == 1){ ?>
                                             <li class="list-inline-item">\
-                                                <i class="fa fa-heartbeat" style="color:green;"></i> '+data[i].NV+'\
+                                                <i class="fa fa-heartbeat" style="color:green;"></i> '+convertToUnicodeNo(data[i].NV)+'\
                                             </li>\
                                             <?php } ?>
                                             <li class="list-inline-item">\
-                                                <i class="fa fa-handshake-o " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
+                                                <i class="fa fa-handshake-o " aria-hidden="true" style="color:blue;"></i> '+convertToUnicodeNo(data[i].ItmRate)+'\
                                             </li>\
                                         </ul>\
 									</div>\
@@ -921,7 +779,7 @@ Essential Scripts
 					    <div class="row p-lg-3 p-sm-5 p-1">\
 					        <div class="col-lg-4 col-md-4 col-sm-4 col-4 align-self-center">\
 					        <?php if(!empty($this->session->userdata('CustId'))){ ?>
-					            <a data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+itemName+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].ItmDesc+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'" item-NV="'+data[i].NV+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-pck="'+data[i].PckCharge+'">\
+					            <a data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+itemName+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].itemDescr+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'" item-NV="'+data[i].NV+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-pck="'+data[i].PckCharge+'">\
 					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
 					            </a>\
 					            <?php } else{ ?>
@@ -1001,7 +859,7 @@ Essential Scripts
                     },
                     dataType: "json",
                     success: (response) => {
-                        console.log(response);
+                        
                         if (response.status) {
                             var template = `<ul style='list-style-type:none;padding:5px;'>`;
                             response.items.forEach((item) => {
@@ -1013,7 +871,7 @@ Essential Scripts
 
                                 // add cid and mcatgid to me
                                 template += `
-                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemName}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.ItmRate}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" item-NV="${item.NV}" style="cursor: pointer;" item-prepTime="${item.PrepTime}">${item.ItemNm}</li>
+                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemName}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.ItmRate}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.itemDescr}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" item-NV="${item.NV}" style="cursor: pointer;" item-prepTime="${item.PrepTime}">${item.ItemNm}</li>
                             `;
                             });
                             template += `</ul>`;
@@ -1044,7 +902,6 @@ Essential Scripts
 
             window.itemMaxQtyValidation = $(item).attr('item-maxqty');
             $('#item-list-modal').modal('hide');
-            console.log(item);
 
             itemId = $(item).attr('item-id');
             cid = $(item).attr('cid');
@@ -1056,20 +913,19 @@ Essential Scripts
             deliveryVal = PrepTime;
             $('#itemTyp').val(itemTyp);
 
-
             var PckCharge = $(item).attr('item-pck');
-            
-            // console.log('itemPortion - '+itemPortion);
-            console.log('itemId d - '+itemId);
 
             itemKitCd = $(item).attr('item-kitcd');
-            // console.log('itemKitCd - '+itemKitCd);
 
             //get item portion from data base 
             getItemPortion(itemId, itemPortion, cid, itemTyp, mCatgId, FID);
 
             $('#minus-serve').attr("disabled", true);
             $('#serve-val').val($(item).attr('item-preptime'));
+            $('#serve-valView').val(convertToUnicodeNo($(item).attr('item-preptime')));
+            $('#qty-val').val(1);
+            $('#qty-valView').val(convertToUnicodeNo(1));
+
             $('#confirm-order').attr('tax_type',$(item).attr('taxtype'));
             $('#confirm-order').attr('tbltyp',$(item).attr('tbltyp'));
             $('#confirm-order').attr('pck',$(item).attr('item-pck'));
@@ -1078,7 +934,7 @@ Essential Scripts
             $("#item-name-modal").text($(item).attr('item-nm'));
             $("#item-prepare-time").text(PrepTime + ' min to prepare');
             $("#item-prepare-time").attr('time', PrepTime);
-            $("#item-rating-modal").text($(item).attr('item-avgrtng'));
+            $("#item-rating-modal").text(convertToUnicodeNo( $(item).attr('item-avgrtng')) );
             
             if($(item).attr('item-dedc') != '-'){
                 $("#item-desc-modal").text($(item).attr('item-dedc'));
@@ -1086,11 +942,15 @@ Essential Scripts
 
             $("#product-img").attr('src', $(item).attr('item-imgsrc'));
 
-            $("#product-price").text(' ' + $(item).attr('item-value'));
-            $("#nvRating").text(' ' + $(item).attr('item-NV'));
-            $('#totalAmount').text($(item).attr('item-value'));
-            // end for common
+            $("#product-price").val(' ' + $(item).attr('item-value') );
 
+            $("#product-priceView").text(' ' + convertToUnicodeNo($(item).attr('item-value')) );
+
+            $("#nvRating").text(' ' + convertToUnicodeNo($(item).attr('item-NV')) );
+            $('#totalAmount').val($(item).attr('item-value') );
+            $('#totalAmountView').text(convertToUnicodeNo($(item).attr('item-value')) );
+
+            // end for common
 
             // read more
             var showChar = 100;  // How many characters are shown by default
@@ -1125,25 +985,12 @@ Essential Scripts
 
             if (itemTyp == 0) {
                 groupNameList = [];
-                // $("#item-name-modal").text($(item).attr('item-nm'));
-                // $("#item-prepare-time").text(PrepTime + ' min to prepare');
-                // $("#item-prepare-time").attr('time', PrepTime);
-                // $("#item-rating-modal").text($(item).attr('item-avgrtng'));
                 
-                // if($(item).attr('item-dedc') != '-'){
-                //     $("#item-desc-modal").text($(item).attr('item-dedc'));
-                // }
-
-                // $("#product-img").attr('src', $(item).attr('item-imgsrc'));
-
-                // $("#product-price").text(' ' + $(item).attr('item-value'));
-                // $("#nvRating").text(' ' + $(item).attr('item-NV'));
             } else {
-                // customizeModalVue.getCustomItem($(item).attr('item-id'), itemTyp, $(item).attr('item-nm'), $(item).attr('item-value'), itemPortion, itemKitCd, $(item).attr('item-dedc'), $(item).attr('item-imgsrc'), $(item).attr('item-prepTime'), $(item).attr('item-portion-code'), $(item).attr('item-fid'));
-
+                
                 getCustomItemDetails(itemId, itemTyp, $(item).attr('item-portion-code'), $(item).attr('item-fid'));
             }
-            getCustOffer(itemId, $(item).attr('item-nm'), cid, itemTyp, mCatgId);
+            // getCustOffer(itemId, $(item).attr('item-nm'), cid, itemTyp, mCatgId);
             getItemOffers(itemId, $(item).attr('item-nm'), cid, itemTyp, mCatgId);
             
         }
@@ -1178,30 +1025,28 @@ Essential Scripts
             ajaxCall('<?= base_url('customer/get_item_portion_ajax') ?>', 'post', data, handleData);
         }
 
-        function getCustOffer(itemId, itemNm, cid, itemTyp, mCatgId) {
+        // function getCustOffer(itemId, itemNm, cid, itemTyp, mCatgId) {
 
-            $.ajax({
-                url: '<?= base_url('customer/offer_cust_ajax') ?>',
-                type: 'post',
-                data: {
-                    getOrderData: 1,
-                    itemId: itemId,
-                    cid:cid,
-                    itemTyp:itemTyp,
-                    MCatgId:mCatgId
-                },
-                success: function(response) {
-                    console.log(response);
-                    if (response != 0) {
-                        
-                            $('#itemOffer').modal('show');
-                            $('#carouselExampleCaptions').html(response);
-                            $('.modal-title').html(itemNm + ' Offer');
-                        
-                    }
-                }
-            });
-        }
+        //     $.ajax({
+        //         url: '<?= base_url('customer/offer_cust_ajax') ?>',
+        //         type: 'post',
+        //         data: {
+        //             getOrderData: 1,
+        //             itemId: itemId,
+        //             cid:cid,
+        //             itemTyp:itemTyp,
+        //             MCatgId:mCatgId
+        //         },
+        //         success: function(response) {
+        //             console.log(response);
+        //             if (response != 0) {
+        //                 $('#itemOffer').modal('show');
+        //                 $('#carouselExampleCaptions').html(response);
+        //                 $('.modal-title').html(itemNm + ' Offer');
+        //             }
+        //         }
+        //     });
+        // }
 
         function getItemOffers(itemId, itemNm, cid, itemTyp, mCatgId) {
 
@@ -1218,7 +1063,7 @@ Essential Scripts
                 success: function(res) {
                     if(res.status == 'success'){
                         var data = res.response;
-                        var temp = '<option value="0">Select Offer111</option>';
+                        var temp = '<option value="0"><?= $this->lang->line('selectOffer'); ?></option>';
                         for(i=0; i<data.length; i++){
                             temp += '<option value="'+data[i].SchCd+'" sdcode="'+data[i].SDetCd+'" Qty="'+data[i].Qty+'" Disc_Qty="'+data[i].Disc_Qty+'" Disc_pcent="'+data[i].Disc_pcent+'" Disc_Amt="'+data[i].Disc_Amt+'" ipcd="'+data[i].IPCd+'" itemid="'+data[i].ItemId+'">'+data[i].SchNm+'-'+data[i].SchDesc+'</option>';
                         }
@@ -1231,7 +1076,6 @@ Essential Scripts
         }
 
         function getCustomItemDetails(itemId, itemTyp, itemPortionCode, FID){
-            console.log('custom items details '+itemId, itemTyp, itemPortionCode, FID);
             
             $.post('<?= base_url('customer/get_custom_item') ?>',
                 {
@@ -1247,7 +1091,7 @@ Essential Scripts
 
                         var customItem = res.response;
                         radioList = customItem;
-                        console.log('cc '+customItem);
+                        
                         for(i=0; i< customItem.length; i++){
                             // alert(customItem[i].ItemGrpName);
                             if(customItem[i].GrpType == 1){
@@ -1290,7 +1134,7 @@ Essential Scripts
 
         $('#schcd').change(function(){
             var schcd = $(this).val();
-            // console.log($('option:selected', this).attr('sdcode'));
+            
             var itemId = $('option:selected', this).attr('itemid');
             var ipcd = $('option:selected', this).attr('ipcd');
 
@@ -1304,7 +1148,6 @@ Essential Scripts
 
             item_portions_call();
 
-            console.log('schcd '+schcd);
         })
 
         function item_portions_call(){
@@ -1319,8 +1162,11 @@ Essential Scripts
             if (itemTyp != 0) {
                 getCustomItemDetails(itemId, itemTyp, portionCode, FID);
             }
-            $("#product-price").text(' ' + rate);
-            $('#totalAmount').text(rate);
+            $("#product-price").val(' ' + rate);
+            $("#product-priceView").text(' ' + rate);
+
+            $('#totalAmount').val(rate);
+            $('#totalAmountView').text(rate);
             var remarks = $('#item_portions option:selected').attr('offer_remark');
             
             if(remarks !== 'null'){
@@ -1337,13 +1183,15 @@ Essential Scripts
             var itemId = $('option:selected', this).attr('itemid');
             var itemTyp = $('option:selected', this).attr('itemtyp');
             var FID = $('option:selected', this).attr('fid');
-            console.log(element.val(), itemId, itemTyp, FID);
             // change custom item price according to itemPortionCode
             if (itemTyp != 0) {
                 getCustomItemDetails(itemId, itemTyp, element.val(), FID);
             }
-            $("#product-price").text(' ' + rate);
-            $('#totalAmount').text(rate);
+            $("#product-price").val(' ' + rate);
+            $("#product-priceView").text(' ' + convertToUnicodeNo(rate));
+
+            $('#totalAmount').val(rate);
+            $('#totalAmountView').text(convertToUnicodeNo(rate));
             var remarks = $('option:selected', this).attr('offer_remark');
             // var det = $('option:selected', this).attr('sdetcd');
             // var sch = $('option:selected', this).attr('schcd');
@@ -1395,7 +1243,7 @@ Essential Scripts
         }
 
         function getTotalc() {
-            var itemAmount =  $('#product-price').text();
+            var itemAmount =  $('#product-price').val();
             var radioTotal = 0;
             this.radioRate.forEach(item => {
                 radioTotal += parseInt(item);
@@ -1407,246 +1255,9 @@ Essential Scripts
             });
 
             this.total = parseInt(itemAmount) + parseInt(radioTotal) + parseInt(checkTotal);
-            console.log('getTotal = '+ this.total);
-            $('#totalAmount').text(this.total);
+            $('#totalAmount').val(this.total);
+            $('#totalAmountView').text(this.total);
         }
-
-        var customizeModalVue = new Vue({
-            el: "#customizeModal",
-            data: {
-                itemId: 0,
-                itemTyp: 0,
-                defaultPrice: 0,
-                msg: "test",
-                customForm: [],
-                radioVal: [],
-                radioRate: [],
-                raidoGrpCd: [],
-                reqIndex: [],
-                radioName: [],
-                checkboxVal: [],
-                checkboxRate: [],
-                checkboxItemCd: [],
-                checkboxGrpCd: "",
-                checkboxName: [],
-                total: 0,
-                itemName: '',
-                itemPortion: '',
-                custRemarks: '',
-                qty: 1,
-                del: 5,
-                itemKitCd: '',
-                takeAway: false,
-                itemDescription: '',
-                itemImg: '',
-                item_prepTime: '',
-                TaxType:''
-            },
-            methods: {
-                addItem() {
-
-                    var mandatory = false;
-                    this.reqIndex.forEach(item => {
-                        if (this.radioVal[item] == 0) {
-                            alert(this.customForm[item].ItemGrpName + " is Mandatory");
-                            mandatory = true;
-                        }
-                    });
-
-                    if (mandatory) {
-                        return;
-                    }
-
-                    var setCustomItem = false;
-
-                    if (this.total == 0) {
-                        if (confirm("Place Order For Item Without Customisation?")) {
-                            setCustomItem = true;
-                        }
-                    } else {
-                        setCustomItem = true;
-                    }
-
-                    if (setCustomItem) {
-
-                        formData = new FormData();
-                        formData.append('setCustomItem', 1);
-                        formData.append('itemId', this.itemId);
-                        formData.append('itemTyp', this.itemTyp);
-                        formData.append('radioVal', this.radioVal);
-                        formData.append('radioRate', this.radioRate);
-                        formData.append('raidoGrpCd', this.raidoGrpCd);
-                        formData.append('radioName', this.radioName);
-                        formData.append('checkboxVal', this.checkboxVal);
-                        formData.append('checkboxRate', this.checkboxRate);
-                        formData.append('checkboxItemCd', this.checkboxItemCd);
-                        formData.append('checkboxGrpCd', this.checkboxGrpCd);
-                        formData.append('checkboxName', this.checkboxName);
-                        formData.append('itemPortion', $('#item_portions').val());
-                        formData.append('custRemarks', this.custRemarks);
-                        formData.append('item_prepTime', this.item_prepTime);
-                        formData.append('qty', this.qty);
-                        formData.append('del', this.del);
-                        formData.append('itemKitCd', this.itemKitCd);
-                        formData.append('tax_type',$('#confirm-order').attr('tax_type'));
-                        
-
-                        if (this.takeAway) {
-                            this.takeAway = 1;
-                        } else {
-                            this.takeAway = 0;
-                        }
-
-                        formData.append('takeAway', this.takeAway);
-                        formData.append('rate', parseInt(this.total) + parseInt(this.defaultPrice));
-                        formData.append('total', parseInt(this.total));
-
-                        axios.post("<?php echo base_url('customer/item_details_ajax'); ?>", formData)
-                            .then(response => {
-                                if (response.data.status == 100) {
-                                    alert(response.msg);
-                                    window.location.reload();
-                                } else if (response.data.status == 1) {
-                                    console.log(response.data);
-                                    window.location = `${response.data.redirectTo}`;
-                                } else {
-                                    console.log(response.data);
-                                }
-                            }).
-                        catch(err => console.log(err));
-                    }
-                },
-                calculateTotal(itemGrpCd, index, itemName, event) {
-                    element = event.currentTarget;
-                    var rate = element.getAttribute('rate');
-                    // console.log(index);
-                    if (event.target.type == "radio") {
-                        this.radioRate[index] = parseInt(rate);
-                        this.raidoGrpCd[index] = itemGrpCd;
-                        this.radioName[index] = itemName;
-                    } else {
-                        // console.log(event.target.checked);
-                        if (event.target.checked) {
-                            this.checkboxRate[index] = parseInt(rate);
-                            this.checkboxName[index] = itemName;
-                        } else {
-                            this.checkboxRate[index] = 0;
-                            this.checkboxName[index] = 0;
-                            // console.log(index);
-                        }
-                    }
-
-                    this.getTotal();
-                    // console.log(event.target.type);
-                },
-
-                getCustomItem(itemId, itemTyp, itemName, defaultPrice, itemPortion, itemKitCd, itemDescription, itemImg, item_prepTime, itemPortionCode, FID) {
-                    this.itemId = itemId;
-                    this.itemTyp = itemTyp;
-                    this.defaultPrice = defaultPrice;
-                    this.customForm = [];
-                    this.radioVal = [];
-                    this.radioRate = [];
-                    this.reqIndex = [];
-                    this.radioName = [];
-                    this.checkboxVal = [];
-                    this.checkboxRate = [];
-                    this.checkboxItemCd = [];
-                    this.checkboxName = [];
-                    this.total = 0;
-                    this.itemName = itemName;
-                    this.itemPortion = itemPortion;
-                    this.custRemarks = '';
-                    this.qty = 1;
-                    this.del = 5;
-                    this.itemKitCd = itemKitCd;
-                    this.itemDescription = itemDescription;
-                    this.itemImg = itemImg;
-                    this.item_prepTime = item_prepTime;
-                    this.FID = FID;
-
-                    var formData = new FormData();
-                    formData.append('getCustomItem', 1);
-                    formData.append('itemId', itemId);
-                    formData.append('itemTyp', itemTyp);
-                    formData.append('itemPortionCode', itemPortionCode);
-                    formData.append('FID', FID);
-
-                    axios.post("<?php echo base_url('customer/item_details_ajax'); ?>", formData)
-                        .then(response => {
-                            if (response.data.status == 100) {
-                                alert(response.msg);
-                                window.location.reload();
-                            } else if (response.data.status == 1) {
-                                console.log(response.data);
-                                this.customForm = response.data.customDetails;
-                                response.data.customDetails.forEach((item, index) => {
-                                    if (item.GrpType == 1) {
-                                        this.radioVal.push(0);
-                                        this.radioRate.push(0);
-                                        this.raidoGrpCd.push(0);
-                                        this.radioName.push(0);
-                                        if (item.Reqd == 1) {
-                                            this.reqIndex.push(index);
-                                        }
-                                        // console.log(this.radioVal);
-                                    } else {
-                                        this.checkboxGrpCd = item.ItemGrpCd;
-                                        item.Details.forEach(checkboxItem => {
-                                            this.checkboxRate.push(0);
-                                            this.checkboxVal.push(0);
-                                            this.checkboxItemCd.push(checkboxItem.ItemOptCd);
-                                            this.checkboxName.push(0);
-                                        });
-                                    }
-                                });
-                            } else {
-                                console.log(response.data);
-                            }
-                        }).
-                    catch(err => console.log(err));
-                },
-
-                getTotal() {
-                    var radioTotal = 0;
-
-                    this.radioRate.forEach(item => {
-                        radioTotal += parseInt(item);
-                    });
-
-                    var checkTotal = 0;
-
-                    this.checkboxRate.forEach(item => {
-                        checkTotal += parseInt(item);
-                    });
-
-                    this.total = parseInt(radioTotal) + parseInt(checkTotal);
-                },
-                selectPortion(){
-                    var element = $("option:selected", '#item_portions');
-                    var myTag = $('#item_portions_custome option:selected').attr('rate');
-                    var itemPortionCode = $('#item_portions_custome option:selected').attr('value');
-                    this.total = 0;
-                    this.defaultPrice = myTag;
-                    i=0;
-                    while(i<this.radioVal.length) {
-                        this.radioRate[i] = 0;
-                        i++;
-                    };
-
-                    i=0;
-                    while(i<this.checkboxVal.length) {
-                        this.checkboxRate[i] = 0;
-                        i++;
-                    };
-                    // $("#product-price").text(' ' + myTag);
-                    $('input:checked').prop('checked', false);
-                    $('input:radio:checked').prop('checked', false);
-
-                    this.getCustomItem(this.itemId, this.itemTyp, this.itemName, this.defaultPrice, this.itemPortion, this.itemKitCd, this.itemDescription, this.itemImg, this.item_prepTime, itemPortionCode, FID);
-                }
-            }
-        });
 
         $("#confirm-order").click(function(event) {
             if (window.itemMaxQtyValidation > 0) {
@@ -1698,7 +1309,7 @@ Essential Scripts
             var custRemarks = $("#cust-remarks").val();
             var qty = $("#qty-val").val();
             var serveTime = $("#serve-val").val();
-            var itmrate = $("#product-price").text();
+            var itmrate = $("#product-price").val();
             var itemPortionText = itemPortion;
             var prepration_time = $('#item-prepare-time').attr('time');
             var tax_type = $('#confirm-order').attr('tax_type');
@@ -1706,7 +1317,7 @@ Essential Scripts
             var sdetcd = $('#sdetcd').val();
             var schcd = $('#schcd').val();
             var itemTyp = $('#itemTyp').val();
-            var total = $('#totalAmount').text();
+            var total = $('#totalAmount').val();
 
             takeAway = $("#take-away").val();
             var PckCharge = $('#confirm-order').attr('pck');

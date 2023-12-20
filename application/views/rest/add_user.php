@@ -32,53 +32,53 @@
                                             <div class="row">
                                                 <div class="col-md-6 col-6">
                                                     <div class="form-group">
-                                                        <label>First Name</label>
-                                                        <input type="text" name="FName" class="form-control form-control-sm" placeholder="First Name" required="">
+                                                        <label><?= $this->lang->line('firstName'); ?></label>
+                                                        <input type="text" name="FName" class="form-control form-control-sm" placeholder="<?= $this->lang->line('firstName'); ?>" required="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6 col-6">
                                                     <div class="form-group">
-                                                        <label>Last Name</label>
-                                                        <input type="text" name="LName" class="form-control form-control-sm" placeholder="Last Name" required="">
+                                                        <label><?= $this->lang->line('lastName'); ?></label>
+                                                        <input type="text" name="LName" class="form-control form-control-sm" placeholder="<?= $this->lang->line('lastName'); ?>" required="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6 col-6">
                                                     <div class="form-group">
-                                                        <label>Mobile</label>
-                                                        <input type="tel" name="MobileNo" class="form-control form-control-sm" placeholder="Phone" required="" pattern="[6789][0-9]{9}" maxlength="10" minlength="10">
+                                                        <label><?= $this->lang->line('mobile'); ?></label>
+                                                        <input type="tel" name="MobileNo" class="form-control form-control-sm" placeholder="<?= $this->lang->line('mobile'); ?>" required="" pattern="[6789][0-9]{9}" maxlength="10" minlength="10">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6 col-6">
                                                     <div class="form-group">
-                                                        <label>Email</label>
-                                                        <input type="email" name="PEmail" class="form-control form-control-sm" required="">
+                                                        <label><?= $this->lang->line('email'); ?></label>
+                                                        <input type="email" name="PEmail" class="form-control form-control-sm" required="" placeholder="<?= $this->lang->line('email'); ?>">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6 col-6">
                                                     <div class="form-group">
-                                                        <label>DOB</label>
+                                                        <label><?= $this->lang->line('dob'); ?></label>
                                                         <input type="date" name="DOB" class="form-control form-control-sm" value="<?php echo date('Y-m-d'); ?>" required>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6 ">
                                                     <div class="form-group">
-                                                        <label>Gender</label><br>
+                                                        <label><?= $this->lang->line('gender'); ?></label><br>
                                                         <div class="form-check-inline my-1">
                                                             <div class="custom-control custom-radio">
                                                                 <input type="radio" id="customRadio7" name="Gender" class="custom-control-input" value="0" required="">
-                                                                <label class="custom-control-label" for="customRadio7">Male</label>
+                                                                <label class="custom-control-label" for="customRadio7"><?= $this->lang->line('male'); ?></label>
                                                             </div>
                                                         </div>
 
                                                         <div class="form-check-inline my-1">
                                                             <div class="custom-control custom-radio">
                                                                 <input type="radio" id="customRadio8" name="Gender" class="custom-control-input" value="1" required="">
-                                                                <label class="custom-control-label" for="customRadio8">Female</label>
+                                                                <label class="custom-control-label" for="customRadio8"><?= $this->lang->line('female'); ?></label>
                                                             </div>
                                                         </div>
 
@@ -87,12 +87,12 @@
 
                                                 <div class="col-md-6 col-6">
                                                     <div class="form-group">
-                                                        <label>User Type</label>
+                                                        <label><?= $this->lang->line('userType'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="UTyp">
-                                                            <option value="">Choose</option>
-                                                            <option value="1">Normal</option>
-                                                            <option value="5">Manager</option>
-                                                            <option value="9">Admin</option>
+                                                            <option value=""><?= $this->lang->line('chooseUser'); ?></option>
+                                                            <option value="1"><?= $this->lang->line('normal'); ?></option>
+                                                            <option value="5"><?= $this->lang->line('manager'); ?></option>
+                                                            <option value="9"><?= $this->lang->line('admin'); ?></option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -100,7 +100,7 @@
                                                 <div class="col-md-6 col-6">
                                                     <div class="form-group">
 
-                                                        <label>Outlet Name</label>
+                                                        <label><?= $this->lang->line('outletName'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="EID">
                                                             <option value="">Choose</option>
                                                             <?php
@@ -114,7 +114,7 @@
 
                                             </div>
                                             <div class="text-center">
-                                                <input type="submit" class="btn btn-sm btn-success" value="Submit">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('submit'); ?>">
                                             </div>
                                         </form>
                                     </div>
@@ -132,10 +132,10 @@
                                                 <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>User Name</th>
-                                                    <th>Mobile No</th>
-                                                    <th>Type</th>
-                                                    <th>Action</th>
+                                                    <th><?= $this->lang->line('userName'); ?></th>
+                                                    <th><?= $this->lang->line('mobile'); ?></th>
+                                                    <th><?= $this->lang->line('type'); ?></th>
+                                                    <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
                                                 </thead>
             
@@ -145,11 +145,11 @@
                                                         $i=1;
                                                         foreach ($users as $key) {
                                                             if($key['UTyp'] == 1){
-                                                                $type = 'Normal User';
+                                                                $type = $this->lang->line('normal');
                                                             }else if($key['UTyp'] == 5){
-                                                                $type = 'Manager';
+                                                                $type = $this->lang->line('manager');
                                                             }if($key['UTyp'] == 9){
-                                                                $type = 'Admin';
+                                                                $type = $this->lang->line('admin');
                                                             }
                                                      ?>
                                                     

@@ -1,7 +1,20 @@
 var base_url = '';
+var lunch = '';
+var dinner = '';
+
+var revenueAndDiscounts = '';
+var ordersByHour = '';
+var billsAndRatings = '';
 
 $(document).ready(function () {
-base_url = $('#base_url').val();
+  base_url = $('#base_url').val();
+
+  lunch = $('#lunch').val();
+  dinner = $('#dinner').val();
+  revenueAndDiscounts = $('#revenueAndDiscounts').val();
+  ordersByHour = $('#ordersByHour').val();
+  billsAndRatings = $('#billsAndRatings').val();
+
   RevenueAndDiscounts();
 
   RevenueAndDiscountsModel();
@@ -56,7 +69,7 @@ function RevenueAndDiscounts() {
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -66,7 +79,7 @@ function RevenueAndDiscounts() {
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "#28a745",
 
@@ -84,7 +97,7 @@ function RevenueAndDiscounts() {
 
             display: true,
 
-            text: "Revenue And Discounts",
+            text: revenueAndDiscounts,
 
           },
 
@@ -151,7 +164,7 @@ var range = $('#rev_dis_range').val();
 
       var ctx = document.getElementById("food01_model").getContext("2d");
 
-      $("#food01Title").html("Revenue And Discounts");
+      $("#food01Title").html(revenueAndDiscounts);
 
       var myChart = new Chart(ctx, {
 
@@ -165,7 +178,7 @@ var range = $('#rev_dis_range').val();
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -175,7 +188,7 @@ var range = $('#rev_dis_range').val();
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "#28a745",
 
@@ -193,7 +206,7 @@ var range = $('#rev_dis_range').val();
 
             display: true,
 
-            text: "Revenue And Discounts",
+            text: revenueAndDiscounts,
 
           },
 
@@ -265,7 +278,7 @@ function OrdersByHour() {
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -275,7 +288,7 @@ function OrdersByHour() {
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "#28a745",
 
@@ -293,7 +306,7 @@ function OrdersByHour() {
 
             display: true,
 
-            text: "Orders by Hour",
+            text: ordersByHour,
 
           },
 
@@ -354,7 +367,7 @@ var range = $('#orders_by_hour_range').val();
 
       var ctx = document.getElementById("food02_model").getContext("2d");
 
-      $("#food02Title").html("Orders by Hour");
+      $("#food02Title").html(ordersByHour);
 
       var myChart = new Chart(ctx, {
 
@@ -368,7 +381,7 @@ var range = $('#orders_by_hour_range').val();
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -378,7 +391,7 @@ var range = $('#orders_by_hour_range').val();
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "#28a745",
 
@@ -396,7 +409,7 @@ var range = $('#orders_by_hour_range').val();
 
             display: true,
 
-            text: "Orders by Hour",
+            text: ordersByHour,
 
           },
 
@@ -468,7 +481,7 @@ function BillsAndRatings() {
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -478,7 +491,7 @@ function BillsAndRatings() {
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "#28a745",
 
@@ -496,7 +509,7 @@ function BillsAndRatings() {
 
             display: true,
 
-            text: "Bills and Ratings",
+            text: billsAndRatings,
 
           },
 
@@ -557,7 +570,7 @@ function BillsAndRatingsModel() {
 
       var ctx = document.getElementById("food03_model").getContext("2d");
 
-      $("#food03Title").html("Bills and Ratings");
+      $("#food03Title").html(billsAndRatings);
 
       var myChart = new Chart(ctx, {
 
@@ -571,7 +584,7 @@ function BillsAndRatingsModel() {
 
             {
 
-              label: "Lunch",
+              label: lunch,
 
               backgroundColor: "#1091e8",
 
@@ -581,7 +594,7 @@ function BillsAndRatingsModel() {
 
             {
 
-              label: "Dinner",
+              label: dinner,
 
               backgroundColor: "#28a745",
 
@@ -599,7 +612,7 @@ function BillsAndRatingsModel() {
 
             display: true,
 
-            text: "Bills and Ratings",
+            text: billsAndRatings,
 
           },
 
