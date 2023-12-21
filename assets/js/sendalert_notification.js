@@ -99,21 +99,21 @@ function convertDigitToEnglish(amount){
         '९': '9'
       };
 
-    var languageDigit = checkDigit(amount);
-  
     let digits = 0 ;
-    
-    switch (languageDigit) {
-        case 'EnglishDigit':
-            digits = amount;
-        break;
+    if(amount){
+        var languageDigit = checkDigit(amount);    
+        switch (languageDigit) {
+            case 'EnglishDigit':
+                digits = amount;
+            break;
 
-      case 'HindiDigit':
-            digits = amount.replace(/[०१२३४५६७८९]/g, function(s) {
-                  return englishDigits[s];
-              });
-        break;
-        
+          case 'HindiDigit':
+                digits = amount.replace(/[०१२३४५६७८९]/g, function(s) {
+                      return englishDigits[s];
+                  });
+            break;
+            
+        }
     }
     return digits;
 

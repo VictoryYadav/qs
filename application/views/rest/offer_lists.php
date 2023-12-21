@@ -32,7 +32,7 @@
                                 <div class="page-title-box align-items-center justify-content-between">
 
                                     <a class="btn btn-sm btn-primary float-right" href="<?php echo base_url('restaurant/new_offer'); ?>">
-                                                <i class="fa fa-plus"></i> New Offer
+                                                <i class="fa fa-plus"></i> <?= $this->lang->line('newOffer');?>
                                             </a>
                                 </div>
 
@@ -53,14 +53,14 @@
                                                 <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>Scheme Name</th>
-                                                    <th>Scheme Type</th>
-                                                    <th>Scheme Category</th>
-                                                    <th style="width: 65px;">From Date</th>
-                                                    <th style="width: 65px;">To Date</th>
-                                                    <th>From Day</th>
-                                                    <th>To Day</th>
-                                                    <th style="width: 81px;">Action</th>
+                                                    <th><?= $this->lang->line('schemeName');?></th>
+                                                    <th><?= $this->lang->line('schemeType');?></th>
+                                                    <th><?= $this->lang->line('schemeCategory');?></th>
+                                                    <th style="width: 65px;"><?= $this->lang->line('fromDate');?></th>
+                                                    <th style="width: 65px;"><?= $this->lang->line('toDate');?></th>
+                                                    <th><?= $this->lang->line('fromDay');?></th>
+                                                    <th><?= $this->lang->line('toDay');?></th>
+                                                    <th style="width: 81px;"><?= $this->lang->line('action');?></th>
                                                 </tr>
                                                 </thead>
             

@@ -121,13 +121,6 @@
                                                     <option value="15">Take Away</option>
                                                     <option value="17">Deliver</option>
                                                 </select>
-
-                                                <!-- <select class="form-control form-control-sm" id="dispMode" onchange="getTableView();">  
-                                                    <option value="0">Choose</option> 
-                                                    <?php foreach($dispenseMode as $key):?>
-                                                    <option value="<?= $key['3PId']?>"><?= $key['Name']?></option>
-                                                    <?php endforeach; ?>
-                                                </select> -->
                                             </div>
                                             <div class="col-6">
                                                 <div class="text-right" id="showActionBtn">
@@ -148,12 +141,12 @@
                                                 <table class="display" id="order-view-table" style="width: 100%;">
                                                     <thead>
                                                         <tr>
-                                                            <th>Bill No</th>
-                                                            <th>OQty</th>
-                                                            <th class="hidden-sm">AQty</th>
-                                                            <th>Cell NO</th>
-                                                            <th>3P</th>
-                                                            <th>3P Ref</th>
+                                                            <th><?= $this->lang->line('billNo'); ?></th>
+                                                            <th><?= $this->lang->line('qqty'); ?></th>
+                                                            <th class="hidden-sm"><?= $this->lang->line('aqty'); ?></th>
+                                                            <th><?= $this->lang->line('mobile'); ?></th>
+                                                            <th><?= $this->lang->line('thirdParty'); ?></th>
+                                                            <th><?= $this->lang->line('thirdPartyRefNo'); ?></th>
                                                             <!-- <th>Order</th> -->
                                                         </tr>
                                                     </thead>
@@ -173,10 +166,10 @@
                                                 <table class="display" id="item-view-table" >
                                                     <thead>
                                                         <tr>
-                                                            <th>Item Name</th>
-                                                            <th>PQty</th>
-                                                            <th>Take Away</th>
-                                                            <th>Remark</th>
+                                                            <th><?= $this->lang->line('itemName'); ?></th>
+                                                            <th><?= $this->lang->line('pqty'); ?></th>
+                                                            <th><?= $this->lang->line('takeAway'); ?></th>
+                                                            <th><?= $this->lang->line('remarks'); ?></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="item-view-tbody1"></tbody>
@@ -391,28 +384,7 @@
                                 response
                                     .kitchenData
                                     .forEach(item => {
-                                        // <input type="radio" name="selectOption" onchange="showAction('${item.CNo}', ${item.CustId},${item.BillNo}, ${start},${item.UKOTNo})" />
-
-                                    //     <td>
-                                    //     <button onclick="handleDelivery('${item.CNo}', ${item.CustId},${item.BillNo}, ${start})" class="btn btn-sm btn-primary">
-                                    //         <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                    //     </button>
-                                    //     <button onclick="handleDetails('${item.CNo}')" class="btn btn-sm btn-success">
-                                    //     <i class="fa fa-eye"></i>
-                                    //     </button>
-
-                                    //     <a href="vtrend:billid=0&eid=<?= $EID;?>&kotno=${item.UKOTNo}" class="btn btn-sm btn-warning">
-                                    //         <i class="fa fa-print" aria-hidden="true"></i>
-                                    //     </a>
-
-                                    //     <a onclick="sendNotification(${item.CustId},0,${item.BillNo},1)" class="btn btn-sm btn-danger">
-                                    //         <i class="fa fa-bullhorn"></i>
-                                    //     </a>
-
-                                    // </td>
-
-                                        // alert(item.CellNo);
-                                        //if (item.OType > 7) {
+                                        
                                             template += `
                                 <tr id="${ (
                                                 start == 1
@@ -423,11 +395,11 @@
                                                     ? 'success-table-status'
                                                     : ''
                                             )}" cno="${item.CNo}">
-                                    <td><input type="radio" name="selectOption" onchange="showAction('${item.CNo}', ${item.CustId},${item.BillNo}, ${start})" /> &nbsp;${item.BillNo}</td>
-                                    <td>${item.Qty}</td>
-                                    <td>${item.AQty}</td>
-                                    <td>${item.CellNo}</td>
-                                    <td>${item.TPId}</td>
+                                    <td><input type="radio" name="selectOption" onchange="showAction('${item.CNo}', ${item.CustId},${item.BillNo}, ${start})" /> &nbsp;${convertToUnicodeNo(item.BillNo)}</td>
+                                    <td>${convertToUnicodeNo(item.Qty)}</td>
+                                    <td>${convertToUnicodeNo(item.AQty)}</td>
+                                    <td>${convertToUnicodeNo(item.CellNo)}</td>
+                                    <td>${convertToUnicodeNo(item.TPId)}</td>
                                     <td>${item.TPRefNo}</td>
                                 </tr>
                             `;
@@ -824,7 +796,7 @@
                                                 : ''
                                         )}">
                                 <td>${item.ItemNm}</td>
-                                <td>${item.Qty}</td>
+                                <td>${convertToUnicodeNo(item.Qty)}</td>
                                 <td>${item.TA}</td>
                                 <td>${item.CustRmks}</td>
                             </tr>
@@ -979,27 +951,37 @@
                 }
             }
 
+            var billNo = "<?= $this->lang->line('billNo'); ?>";
+            var qqty = "<?= $this->lang->line('qqty'); ?>";
+            var aqty = "<?= $this->lang->line('aqty'); ?>";
+            var mobile = "<?= $this->lang->line('mobile'); ?>";
+            var thirdp = "<?= $this->lang->line('thirdParty'); ?>";
+            var thiref = "<?= $this->lang->line('thirdPartyRefNo'); ?>";
+
             var tableStructure = '<table class="table" id="order-view-table" class="display" ' + '> \ <thead>\ <tr>\
-                <th>Bill No</th>\
-                <th>OQty</t' +
-                        'h>\
-                <th>AQty</th>\
-                <th>Cell NO</th>\
-                <th>3P</th>\
-                <th>3P Ref</th>' +
-                        '\
+                <th>'+billNo+'</th>\
+                <th>'+qqty+'</th>\
+                <th>'+aqty+'</th>\
+                <th>'+mobile+'</th>\
+                <th>'+thirdp+'</th>\
+                <th>'+thiref+'</th>\
                 </tr>\
                 </thead>\
                 <tbody id="table-' + 'view">\
                 </tbody>\
                 </table>';
 
+            var itemName = "<?= $this->lang->line('item'); ?>";
+            var pqty = "<?= $this->lang->line('pqty'); ?>";
+            var takeAway = "<?= $this->lang->line('takeAway'); ?>";
+            var remarks = "<?= $this->lang->line('remarks'); ?>";
+
             var tableStructureItem = '<table class="table" id="item-view-table" class="display" >' + '\ <thead>\ <tr>\
-                <th>Item Name</th>\
-                <th>PQty</t' +
+                <th>'+itemName+'</th>\
+                <th>'+pqty+'</t' +
                         'h>\
-                <th>Take Away</th>\
-                <th>Remark</th>\
+                <th>'+takeAway+'</th>\
+                <th>'+remarks+'</th>\
                 </tr>\ </thead>\ <tbody id=' + '"item-view-tbody1"></tbody>\ </table>'
         
         </script>

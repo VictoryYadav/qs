@@ -20,18 +20,6 @@
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <!-- start page title -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="page-title-box align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18 text-center"><?php echo $title; ?>
-                                    </h4>
-
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end page title -->
-
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -41,14 +29,14 @@
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label>Scheme Name</label>
-                                                        <input type="text" id="schnm" name="SchNm" class="form-control form-control-sm" placeholder="Enter scheme name" required="" />
+                                                        <label><?= $this->lang->line('schemeName');?></label>
+                                                        <input type="text" id="schnm" name="SchNm" class="form-control form-control-sm" required="" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <label>Scheme Type</label>
+                                                        <label><?= $this->lang->line('schemeType');?></label>
                                                         <select class="form-control form-control-sm" id="sch_typ" name="SchTyp" required="">
                                                             <option value="">Select Scheme Type</option>
                                                             <?php 
@@ -63,7 +51,7 @@
 
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <label>Scheme Category</label>
+                                                        <label><?= $this->lang->line('schemeCategory');?></label>
                                                         <select class="form-control form-control-sm" id="schcatg" name="SchCatg" required="">
                                                             <option value="">Select Scheme Category</option>
                                                             <?php 
@@ -78,21 +66,21 @@
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label>From Date</label>
+                                                        <label><?= $this->lang->line('fromDate');?></label>
                                                         <input type="date" name="FrmDt" class="form-control form-control-sm" id="from_date" value="<?php echo date('Y-m-d'); ?>" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label>To Date</label>
+                                                        <label><?= $this->lang->line('toDate');?></label>
                                                         <input type="date" name="ToDt" class="form-control form-control-sm" id="to_date" value="<?php echo date('Y-m-d'); ?>" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label>From Day</label>
+                                                        <label><?= $this->lang->line('fromDay');?></label>
                                                         <select class="form-control form-control-sm" id="from_day" name="FromDayNo" required="">
                                                             <option value="">Select From Day</option>
                                                             <?php 
@@ -107,7 +95,7 @@
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label>To Day</label>
+                                                        <label><?= $this->lang->line('toDay');?></label>
                                                         <select class="form-control form-control-sm" id="to_day" name="ToDayNo" required="">
                                                             <option value="">Select To Day</option>
                                                             <?php 
@@ -122,50 +110,50 @@
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label>From Time</label>
+                                                        <label><?= $this->lang->line('fromTime');?></label>
                                                         <input type="time" name="FrmTime" class="form-control form-control-sm" id="from_time" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label>To Time</label>
+                                                        <label><?= $this->lang->line('toTime');?></label>
                                                         <input type="time" name="ToTime" class="form-control form-control-sm" id="to_time" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label>Alternate From Time</label>
+                                                        <label><?= $this->lang->line('alternateFromTime');?></label>
                                                         <input type="time" name="AltFrmTime" class="form-control form-control-sm" id="alt_from_time" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label> Alternate To Time</label>
+                                                        <label><?= $this->lang->line('alternateToTime');?></label>
                                                         <input type="time" name="AltToTime" class="form-control form-control-sm" id="alt_to_time" />
                                                     </div>
                                                 </div>
 
                                             </div>
 
-                                            <button type="button" class="btn btn-primary btn-sm" onclick="add_description()" id="add_desc">Offer Details</button>
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="add_description()" id="add_desc"><?= $this->lang->line('offerDetails');?></button>
                                             <div class="offer_descriptions" id="offer_descriptions">
                                                 <div class="description1" id="description1" style="display: none;">
                                                     <hr>
-                                                    <div class="text-center"><h3>Offer Details - 1</h3></div>
+                                                    <div class="text-center"><h3><?= $this->lang->line('offerDetails');?> - <?= convertToUnicodeNumber(1); ?></h3></div>
                                                     <div class="row">
                                                         <div class="form-group col-md-4 col-6">
-                                                            <label for="description1_description">Description</label>
+                                                            <label for="description1_description"><?= $this->lang->line('description');?></label>
                                                             <input type="text" name="description[]" class="form-control form-control-sm" id="description1_description" maxlength="100" placeholder="Enter Scheme Description" />
                                                         </div>
                                                         <div class="form-group col-md-4 col-6">
-                                                            <label for="description1_image">Image</label>
+                                                            <label for="description1_image"><?= $this->lang->line('image');?></label>
                                                             <input type="file" name="description_image" class="form-control form-control-sm" id="description1_image" />
                                                         </div>
                                                         <div class="form-group col-md-4 col-6">
-                                                            <label for="description1_cid">CID</label>
+                                                            <label for="description1_cid"><?= $this->lang->line('cuisine');?></label>
                                                             <select class="form-control form-control-sm" id="description1_cid" name="description_cid[]" onchange="getCategory(this, 1)">
                                                                 <option value="">Select Cuisine</option>
                                                                 <?php 
@@ -176,14 +164,14 @@
                                                             </select>
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_mcatgid_div" style="display: none;">
-                                                            <label for="description1_mcatgid">Menu Category</label>
+                                                            <label for="description1_mcatgid"><?= $this->lang->line('menuCategory');?></label>
                                                             <select class="form-control form-control-sm" id="description1_mcatgid" name="description_mcatgid[]">
                                                                 <option value="">Select Menu Category</option>
                                                                 
                                                             </select>
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_itemtyp_div" style="display: none;">
-                                                            <label for="description1_itemtyp">Item Type</label>
+                                                            <label for="description1_itemtyp"><?= $this->lang->line('itemType');?></label>
                                                             <select class="form-control form-control-sm" id="description1_itemtyp" name="description_itemtyp[]" onchange="getItems(this, 1)">
                                                                 <option value="">Select Item Type</option>
                                                                 <?php foreach($item_types as $key){?>
@@ -192,25 +180,25 @@
                                                             </select>
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_item_div" style="display: none;">
-                                                            <label for="description1_item">Item</label>
+                                                            <label for="description1_item"><?= $this->lang->line('item');?></label>
                                                             <select class="form-control form-control-sm" id="description1_item" name="description_item[]" onchange="getItemPortion(this, 1)">
                                                                 <option value="">Select Item</option>
                                                                 
                                                             </select>
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_itemportion_div" style="display: none;">
-                                                            <label for="description1_itemportion">Item Portion</label>
+                                                            <label for="description1_itemportion"><?= $this->lang->line('itemPortion');?></label>
                                                             <select class="form-control form-control-sm" id="description1_itemportion" name="description_itemportion[]">
                                                                 <option value="">Select Item Portion</option>
                                                                 
                                                             </select>
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_quantity_div" style="display: none;">
-                                                            <label for="description1_quantity">Quantity</label>
+                                                            <label for="description1_quantity"><?= $this->lang->line('quantity');?></label>
                                                             <input type="number" class="form-control form-control-sm" id="description1_quantity" name="description_quantity[]" value="0">
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_discountitem_div" style="display: none;">
-                                                            <label for="description1_discountitem">Discount Item</label>
+                                                            <label for="description1_discountitem"><?= $this->lang->line('discountItem');?></label>
                                                             <select class="form-control form-control-sm" id="description1_discountitem" name="description_discountitem[]" onchange="getDiscItemPortion(this, 1)">
                                                                 <option value="">Select Item</option>
                                                                 
@@ -218,25 +206,25 @@
                                                         </div>
                                                         
                                                         <div class="form-group col-md-4 col-6" id="description1_discountitemportion_div" style="display: none;">
-                                                            <label for="description1_discountitemportion">Discount Item Portion</label>
+                                                            <label for="description1_discountitemportion"><?= $this->lang->line('discountItemPortion');?></label>
                                                             <select class="form-control form-control-sm" id="description1_discountitemportion" name="description_discountitemportion[]">
                                                                 <option value="">Select Discount Item Portion</option>
                                                             </select>
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_discountquantity_div" style="display: none;">
-                                                            <label for="description1_discountquantity">Discount Item Quantity</label>
+                                                            <label for="description1_discountquantity"><?= $this->lang->line('discountItemQuantity');?></label>
                                                             <input type="number" class="form-control form-control-sm" id="description1_discountquantity" name="description_discountquantity[]" value="0">
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_minbillamount_div" style="display: none;">
-                                                            <label for="description1_minbillamount">Minimum Bill Amount</label>
+                                                            <label for="description1_minbillamount"><?= $this->lang->line('minimumBillAmount');?></label>
                                                             <input type="number" class="form-control form-control-sm" id="description1_minbillamount" name="description_minbillamount[]" value="0">
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_discountpercent_div" style="display: none;">
-                                                            <label for="description1_discountpercent">Discount Percentage</label>
+                                                            <label for="description1_discountpercent"><?= $this->lang->line('discountPercentage');?></label>
                                                             <input type="number" class="form-control form-control-sm" id="description1_discountpercent" name="description_discountpercent[]" value="0">
                                                         </div>
                                                         <div class="form-group col-md-4 col-6" id="description1_discountamount_div" style="display: none;">
-                                                            <label for="description1_discountamount">Discount Amount</label>
+                                                            <label for="description1_discountamount"><?= $this->lang->line('discountAmount');?></label>
                                                             <input type="number" class="form-control form-control-sm" id="description1_discountamount" name="description_discountamount[]" value="0">
                                                         </div>
                                                     </div>
@@ -244,7 +232,7 @@
                                             </div>
             
                                             <div class="text-center">
-                                                <input type="submit" class="btn btn-sm btn-success" value="Submit">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('submit');?>">
                                             </div>
                                         </form>
                                     </div>

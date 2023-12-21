@@ -10,6 +10,7 @@
                 copyright - <script>document.write(new Date().getFullYear())</script> © <a href="#">Eat-Out</a>
             </div>
             <div class="col-sm-6">
+                <input type="hidden" value="<?php echo $this->session->userdata('site_lang'); ?>" id="site_lang">
                 <!-- <div class="text-sm-right d-none d-sm-block">
                     Developed <i class="mdi mdi-heart text-danger"></i> by vijayyadav132200@gmail.com
                 </div> -->

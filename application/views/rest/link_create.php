@@ -46,45 +46,45 @@
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label for="">QR Code Print</label>
+                                                        <label for=""><?= $this->lang->line('qrCodePrint'); ?></label>
                                                             <select name="qrcode" id="qrcode" class="form-control form-control-sm" onchange="showTable()">
-                                                                <option value="table">Table</option>
-                                                                <option value="stall">Stall / Seat</option>
+                                                                <option value="table"><?= $this->lang->line('table'); ?></option>
+                                                                <option value="stall"><?= $this->lang->line('stallSeat'); ?></option>
                                                             </select>
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="col-md-3 col-6 stall_show" style="display: none;">
                                                     <div class="form-group">
-                                                        <label>From Stall / Seat</label>
-                                                        <input type="number" name="from_stall" class="form-control form-control-sm stall_req" required="" placeholder="From Stall" value="1">
+                                                        <label><?= $this->lang->line('fromStallSeat'); ?></label>
+                                                        <input type="text" name="from_stall" class="form-control form-control-sm stall_req" required="" placeholder="From Stall" value="1" onblur="changeValue(this)">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6  stall_show" style="display: none;">
                                                     <div class="form-group">
-                                                        <label>To Stall / Seat</label>
-                                                        <input type="number" name="to_stall" class="form-control form-control-sm stall_req" required="" placeholder="To Stall" value="1">
+                                                        <label><?= $this->lang->line('toStallSeat'); ?></label>
+                                                        <input type="text" name="to_stall" class="form-control form-control-sm stall_req" required="" placeholder="To Stall" value="1" onblur="changeValue(this)">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6 table_show">
                                                     <div class="form-group">
-                                                        <label>From Table</label>
-                                                        <input type="number" name="from_table" class="form-control form-control-sm table_req" placeholder="Table" required="" value="1">
+                                                        <label><?= $this->lang->line('fromTable'); ?></label>
+                                                        <input type="text" name="from_table" class="form-control form-control-sm table_req" placeholder="Table" required="" value="1" onblur="changeValue(this)">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6 table_show">
                                                     <div class="form-group">
-                                                        <label>To Table</label>
-                                                        <input type="number" name="to_table" class="form-control form-control-sm table_req" placeholder="Table" required="" value="1">
+                                                        <label><?= $this->lang->line('toTable'); ?></label>
+                                                        <input type="text" name="to_table" class="form-control form-control-sm table_req" placeholder="Table" required="" value="1" onblur="changeValue(this)">
                                                     </div>
                                                 </div>
 
                                             </div>
                                             <div class="text-center">
-                                                <input type="submit" class="btn btn-sm btn-success" value="Generate">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('linkGenerate'); ?>">
                                             </div>
                                         </form>
                                     </div>
@@ -163,6 +163,11 @@
             $('.stall_req').prop('required',false);
             $('.table_req').prop('required',true);
         }
+    }
+
+    function changeValue(input) {
+        var val = $(input).val();
+        $(input).val(convertToUnicodeNo(val));
     }
 
 </script>

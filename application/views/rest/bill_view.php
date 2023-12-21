@@ -37,7 +37,7 @@
                                             </div>
                                             <div class="col-md-4 col-4">
                                                 <div class="form-group">
-                                                    <input type="submit" class="btn btn-sm btn-success" value="Search">
+                                                    <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('search'); ?>">
                                                 </div>
                                             </div>
                                         </div>
@@ -46,13 +46,13 @@
                                             <table class="table table-bordered" id="billViewTbl">
                                                 <thead>
                                                     <tr>
-                                                        <th>Bill No</th>
-                                                        <th>Bill Date</th>
-                                                        <th>Bill Amt</th>
-                                                        <th>Paid Amt</th>
-                                                        <th>P.Mode</th>
-                                                        <th>P.Inst</th>
-                                                        <th>Action</th>
+                                                        <th><?= $this->lang->line('billNo'); ?></th>
+                                                        <th><?= $this->lang->line('billDate'); ?></th>
+                                                        <th><?= $this->lang->line('billAmount'); ?></th>
+                                                        <th><?= $this->lang->line('paidAmount'); ?></th>
+                                                        <th><?= $this->lang->line('mode'); ?></th>
+                                                        <th><?= $this->lang->line('paymentInstrument'); ?></th>
+                                                        <th><?= $this->lang->line('action'); ?></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -62,17 +62,16 @@
                                                      ?>
                                                     <tr>
                                                         <td>
-                                                            <a href="<?php echo base_url('restaurant/bill/'.$key['BillId']); ?>" target="_blank"><?= $key['BillNo']; ?>
+                                                            <a href="<?php echo base_url('restaurant/bill/'.$key['BillId']); ?>" target="_blank"><?= convertToUnicodeNumber($key['BillNo']); ?>
                                                             </a>
                                                         </td>
                                                         <td><?= date('d-M-Y',strtotime($key['BillDate'])); ?></td>
 
-                                                        <td><?= $key['bPaidAmt']; ?></td>   
-                                                        <td ><?= $key['PaidAmt']; ?></td>
+                                                        <td><?= convertToUnicodeNumber($key['bPaidAmt']); ?></td>   
+                                                        <td ><?= convertToUnicodeNumber($key['PaidAmt']); ?></td>
                                                         <td><?= $key['Company']; ?></td>
                                                         <td><?= $key['PymtType']; ?></td>
                                                         <td>
-                                                            
                                                             <a href="<?php echo base_url('restaurant/print/'.$key['BillId']); ?>" class='btn btn-warning btn-sm'>
                                                                 <i class="fas fa-print"></i>
                                                             </a>

@@ -347,33 +347,15 @@ width: 100%;*/
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <div id="mydiv" style="display: none;">
-                                                <h6>KOT Details</h6>
-                                                <div class="table-responsive">
-                                                    <table class="table table-bordered">
-                                                        <thead class="table-header">
-                                                            <tr>
-                                                                <th style="border:1px solid #dee2e6;">KOT</th>
-                                                                <th style="border:1px solid #dee2e6;">Qty</th>
-                                                                <th style="border:1px solid #dee2e6;">PN0</th>
-                                                                <th style="border:1px solid #dee2e6;">Print</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="kot-list"></tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="table-responsive">
                                             <div class="items-data" id="order-view-parent">
                                                 <table class="table" id="order-view-table" class="display">
                                                     <thead class="table-header">
                                                         <tr>
-                                                            <th>Table No</th>
-                                                            <th>Ord Amt</th>
-                                                            <th>From Time</th>
-                                                            <th>Cell No</th>
-                                                            <th>Visit No</th>
+                                                            <th><?= $this->lang->line('tableNo');?></th>
+                                                            <th><?= $this->lang->line('orderAmount');?></th>
+                                                            <th><?= $this->lang->line('fromTime');?></th>
+                                                            <th><?= $this->lang->line('mobile');?></th>
+                                                            <th><?= $this->lang->line('visitNo');?></th>
                                                             <!-- <th>Acc/Rej</th> -->
                                                         </tr>
                                                     </thead>
@@ -394,11 +376,11 @@ width: 100%;*/
                                                 <table id="item-detail-table1" class="table table-bordered">
                                                     <thead class="table-header">
                                                         <tr>
-                                                            <th>Item</th>
-                                                            <th>OQty</th>
+                                                            <th><?= $this->lang->line('item');?></th>
+                                                            <th><?= $this->lang->line('qqty');?></th>
                                                             <!-- <th>DQty</th> -->
                                         <?php if($this->session->userdata('EDT') == 1){ ?>
-                                                            <th>EDT</th>
+                                                            <th><?= $this->lang->line('edt');?></th>
                                                             <?php } ?>
                                                         </tr>
                                                     </thead>
@@ -409,43 +391,7 @@ width: 100%;*/
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
-                        <!-- bill settlement -->
-                        <div class="row" id="bill_data_table" style="display: none;">
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered text-center">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Bill No</th>
-                                                        <th>Bill Date</th>
-                                                        <?php if($EType == 5){?>
-                                                            <th>Table No</th>
-                                                        <?php } else {?>
-                                                            <th>Cell No</th>
-                                                        <?php } ?>
-
-                                                        <th>Bill Amt</th>
-                                                        <!-- <th>Item Amt</th> -->
-                                                        <th title="online">O.Pymt</th>
-                                                        <th title="manual">M.Pymt</th>
-                                                        <th>Mode</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="bill_table">
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         
                     </div> <!-- container-fluid -->
                 </div>
@@ -556,24 +502,6 @@ width: 100%;*/
         </div>
     </div>
 
-    <!-- Order Detail Modal -->
-    <!-- The Modal -->
-    <div class="modal" id="order-detail-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Order Details</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <!-- Modal body -->
-                <div class="modal-body">
-                </div>
-                <!-- Modal footer -->
-            </div>
-        </div>
-    </div>
-
     <!-- Reassign Modal -->
     <!-- The Modal -->
     <div class="modal" id="reassign-order-modal">
@@ -676,7 +604,7 @@ width: 100%;*/
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header text-center">
-                <h6>TABLE - JOIN / UNJOIN</h6>
+                <h6><?= $this->lang->line('tableJoinUnjoin'); ?></h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -685,10 +613,10 @@ width: 100%;*/
 
                 <ul class="nav nav-tabs nav-tabs-custom" id="myTab" role="tablist">
                   <li class="nav-item">
-                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Join</a>
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><?= $this->lang->line('join'); ?></a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Unjoin</a>
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><?= $this->lang->line('unJoin'); ?></a>
                   </li>
                 </ul>
                 <div class="tab-content">
@@ -698,10 +626,10 @@ width: 100%;*/
                                 <div id="unmerge_tables" class="row">
                                 </div>
                                 <div class="text-center">
-                                    <button id="merge-table" type="button" class="btn btn-success btn-rounded btn-sm mt-4">Join Tables</button>
+                                    <button id="merge-table" type="button" class="btn btn-success btn-rounded btn-sm mt-4"><?= $this->lang->line('joinTables'); ?></button>
                                 </div>
                                 <div class="col-md-12 text-center" id="notables" style="display: none;">
-                                    <h1>No Tables are Free</h1>
+                                    <h1><?= $this->lang->line('noTablesAreFree'); ?></h1>
                                 </div>
                             </form>
                         </p>
@@ -712,7 +640,7 @@ width: 100%;*/
                         <div class="row">
                             <div class="col-md-12">
                                 <select class="form-control" id="merged_tables" onchange="get_each_table()">
-                                    <option value="">Select Tables</option>
+                                    <option value=""><?= $this->lang->line('selectTable'); ?></option>
                                 </select>
                             </div>
                         </div>
@@ -722,11 +650,11 @@ width: 100%;*/
 
                         <div class="text-center mt-4">
                             <input type="hidden" id="selected_merge_no">
-                            <button type="button" id="unmerge-table-btn" class="btn btn-danger btn-rounded btn-sm" >Unjoin Tables</button>
+                            <button type="button" id="unmerge-table-btn" class="btn btn-danger btn-rounded btn-sm" ><?= $this->lang->line('unJoinTables'); ?></button>
                         </div>
 
                         <div class="col-md-12 text-center" id="no-tables" style="display: none;">
-                            <h1 style="margin-top: 30px;">No Tables are Free</h1>
+                            <h1 style="margin-top: 30px;"><?= $this->lang->line('noTablesAreFree'); ?></h1>
                         </div>
 
                     </form>
@@ -901,7 +829,7 @@ width: 100%;*/
         <div class="modal-dialog">
             <div class="modal-content" >
                 <div class="modal-header">
-                    <h6>Bill Options</h6>
+                    <h6><?= $this->lang->line('billOptions'); ?></h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
@@ -911,11 +839,11 @@ width: 100%;*/
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>BillNo</th>
-                                        <th>Item Amt</th>
-                                        <th>Payable</th>
-                                        <th>Mode</th>
-                                        <th>Action</th>
+                                        <th><?= $this->lang->line('billNo'); ?></th>
+                                        <th><?= $this->lang->line('itemAmount'); ?></th>
+                                        <th><?= $this->lang->line('payable'); ?></th>
+                                        <th><?= $this->lang->line('mode'); ?></th>
+                                        <th><?= $this->lang->line('action'); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody id="billOptionBody">
@@ -932,7 +860,7 @@ width: 100%;*/
         <div class="modal-dialog">
             <div class="modal-content" >
                 <div class="modal-header">
-                    <h6>Cash Collect</h6>
+                    <h6><?= $this->lang->line('cashCollect'); ?></h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
@@ -943,11 +871,11 @@ width: 100%;*/
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>BillNo</th>
-                                    <th>T.No</th>
-                                    <th>B.Amt</th>
-                                    <th>P.Type</th>
-                                    <th>Amt</th>
+                                    <th><?= $this->lang->line('billNo'); ?></th>
+                                    <th><?= $this->lang->line('tableNo'); ?></th>
+                                    <th><?= $this->lang->line('billAmount'); ?></th>
+                                    <th><?= $this->lang->line('paymentType'); ?></th>
+                                    <th><?= $this->lang->line('amount'); ?></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -1050,7 +978,7 @@ width: 100%;*/
                     destroyDataTableForOrder();
                     // getTableView();
                     
-                    $('#mydiv').hide();
+                    // $('#mydiv').hide();
                     dataTableForOrder();
                     // resetGlobal();
                 },
@@ -1091,44 +1019,17 @@ width: 100%;*/
                 bgcolor = '#B3E5FC'; // blue
             }
 
-            template += `<tr onclick="getRowBill(0,'${item.MergeNo}', ${item.CustId})" id="${item.TableNo}" mergeNo="'${item.MergeNo}'" custId="${item.CustId}" mCNo="${item.MCNo}" billStat="${item.BillStat}" oTyp="${item.OType}"   style="background-color: ${bgcolor};" class="" >
-            <td><input type="radio" name="selectOption" onchange="handleKot('${item.MergeNo}',${item.CustId},${item.MCNo},${item.BillStat},${item.OType})"> &nbsp;${item.MergeNo}</td>
-            <td>${item.Amt}</td>
-            <td>${item.StTime}</td>
-            <td>${item.CellNo}</td>
-            <td>${item.visitNo}
+            template += `<tr  id="${item.TableNo}" mergeNo="'${item.MergeNo}'" custId="${item.CustId}" mCNo="${item.MCNo}" billStat="${item.BillStat}" oTyp="${item.OType}"   style="background-color: ${bgcolor};" class="" >
+            <td><input type="radio" name="selectOption" onchange="handleKot('${item.MergeNo}',${item.CustId},${item.MCNo},${item.BillStat},${item.OType})"> &nbsp;${convertToUnicodeNo(item.MergeNo)}</td>
+            <td>${convertToUnicodeNo(item.Amt)}</td>
+            <td>${convertToUnicodeNo(item.StTime)}</td>
+            <td>${convertToUnicodeNo(item.CellNo)}</td>
+            <td>${convertToUnicodeNo(item.visitNo)}
             <input type="hidden" name="custId" value="${item.CustId}">
             <input type="hidden" name="MCNo" value="${item.MCNo}">
             <input type="hidden" name="MergeNo" value="'${item.MergeNo}'">
             <input type="hidden" name="billId" value="">
             </td>`;
-
-            // if (item.BillStat > 0) {
-            //             template += `<tr onclick="getRowBill(${item.BillId},${item.MergeNo})" id="${item.TableNo}" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"  style="background-color: #FB8E7E;" class="${item.BillStat > 0 ? ' bill-paid' : ''} ${item.NEW_KOT > 0 ? ' new_order' : ''} ">
-            //     <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})">&nbsp;${item.MergeNo}</td>
-            //     <td>${item.Amt}</td>
-            //     <td>${item.StTime}</td>
-            //     <td>${item.CellNo}</td>
-            //     <td>${item.visitNo}</td>
-            //     `;
-            // } else if (item.NEW_KOT == 1) {
-            //     template += `<tr onclick="getRowBill(0,${item.MergeNo})" id="${item.TableNo}" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"   style="background-color: #FDCF76;" class="${item.BillStat > 0 ? ' bill-paid' : ''} ${item.NEW_KOT > 0 ? ' new_order' : ''} " >
-            // <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})"> &nbsp;${item.MergeNo}</td>
-            // <td>${item.Amt}</td>
-            // <td>${item.StTime}</td>
-            // <td>${item.CellNo}</td>
-            // <td>${item.visitNo}</td>
-            // `;
-            // } else {
-            //     template += `<tr id="${item.TableNo}" onclick="getRowBill(0,${item.MergeNo})" tableNo="${item.TableNo}" custId="${item.CustId}" cNo="${item.CNo}"  class="${item.BillStat > 0 ? ' bill-paid' : ''}  ${item.NEW_KOT > 0 ? 'new_order' : ''} " >
-            // <td><input type="radio" name="selectOption" onchange="handleKot(${item.TableNo},${item.CustId},${item.CNo})"> &nbsp;${item.MergeNo}</td>
-            // <td>${item.Amt}</td>
-            // <td>${item.StTime}</td>
-            // <td>${item.CellNo}</td>
-            // <td>${item.visitNo}</td>
-            // `;
-
-            // }
 
             template += `</tr>`;
             $("#table-view").append(template);
@@ -1145,72 +1046,7 @@ width: 100%;*/
                 }
             }
         }
-        function getRowBill(id, mergeNo, custId){
-            if(id > 0){
-                var STVCd = $('#kitchen-code').val();
-                $.ajax({
-                    url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
-                    type: "post",
-                    data: {
-                        BillId: id,
-                        STVCd: STVCd,
-                        getBill: 1
-                    },
-                    success: function(data) {
-                        // if(id > 0){
-                            var temp = JSON.parse(data);
-                            $('#bill_data_table').show();
-                            data = temp.bill;
-                            // alert(temp.payment_modes.length);
-                             var et = '<?= $EType?>';
-                            var b = '<tr><td><a href="bill_rcpt?restaurant=1&billId='+ data.BillNo+'&CustId='+ data.CustId+'" target="_blank" >'+
-                                    data.BillNo+'</a></td>';
-                            b+='<td>'+data.BillDate+'</td>';
-                            if(et == 5){
-                                b+='<td>'+data.TableNo+'</td>';
-                            }else{
-                                b+='<td>'+data.MobileNo+'</td>';
-                            }
-                            b+='<td>'+ data.TotAmt +'</td>';
-                            if(data.PaymtMode == 'cash'){
-                                b+='<td>'+0+'</td>';
-                                b+='<td><input type="number" name="PaidAmt" id="PaidAmt"  v-model="data.BillValue"  value="data.BillValue" style="width: 125px;"></td>';
-                                var s = '<select id="cash_payment_mode"><option value="">Select Mode</option>';
-                                for(i=0;i<temp.payment_modes.length;i++){
-                                    s+='<option value="'+temp.payment_modes[i].PMNo+'">'+temp.payment_modes[i].Name+'</option>';
-                                }
-                                s+='</select>';
-                                b+='<td>'+s+'</td>';
-                                // b+=';
-                            }else{
-                                b+='<td>'+data.PaidAmt+'</td><td>0</td><td>Online</td>';
-                            }
-                            
-                            b+='<td><button class="btn btn-sm btn-success btn-rounded" onclick="setPaidAmount('+data.BillId+','+data.CNo+','+data.TableNo+','+data.CustId+','+data.BillNo+','+data.TotAmt+',\''+data.PaymtMode+'\');"><i class="fas fa-check-double"></i></button>|<a href="billid='+data.BillId+'&eid=<?= $EID;?>&kotno=0&s=<?= $_SESSION["DynamicDB"]?>"><button class="btn btn-warning btn-rounded btn-sm"><i class="fas fa-print"></i></button></a>|<button class="btn btn-danger btn-rounded btn-sm" onclick="rejectBill('+data.BillId+','+data+','+ data.CNo+','+ data.TableNo+','+ data.CustId+');"><i class="fas fa-window-close"></i></button></td>';
-                            // alert(b);
-                            $('#bill_table').html(b);
-                            bill_data = data;
-                            $('#bill_data_table').show();
-
-                        // }else{
-                        //  $('#bill_data_table').hide();
-                        // }
-                        console.log(data);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log(xhr);
-                        console.log(status);
-                        console.log(error);
-                    }
-                });
-                $('#billCreatebtn').hide();
-                
-            }else{
-                $('#billCreatebtn').attr('onclick', "billCreate('"+mergeNo+"',"+custId+")");
-                $('#billCreatebtn').show();
-                $('#bill_data_table').hide();
-            }
-        }
+        
         function destroyDataTableForOrder() {
             var table = $('#order-view-table').DataTable();
             table.destroy();
@@ -1266,52 +1102,6 @@ width: 100%;*/
         }
 
         $(document).ready(function() {
-            // Make the DIV element draggable:
-            dragElement(document.getElementById("mydiv"));
-
-            function dragElement(elmnt) {
-                var pos1 = 0,
-                    pos2 = 0,
-                    pos3 = 0,
-                    pos4 = 0;
-                if (document.getElementById(elmnt.id + "header")) {
-                    // if present, the header is where you move the DIV from:
-                    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-                } else {
-                    // otherwise, move the DIV from anywhere inside the DIV:
-                    elmnt.onmousedown = dragMouseDown;
-                }
-
-                function dragMouseDown(e) {
-                    e = e || window.event;
-                    e.preventDefault();
-                    // get the mouse cursor position at startup:
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    document.onmouseup = closeDragElement;
-                    // call a function whenever the cursor moves:
-                    document.onmousemove = elementDrag;
-                }
-
-                function elementDrag(e) {
-                    e = e || window.event;
-                    e.preventDefault();
-                    // calculate the new cursor position:
-                    pos1 = pos3 - e.clientX;
-                    pos2 = pos4 - e.clientY;
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    // set the element's new position:
-                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-                }
-
-                function closeDragElement() {
-                    // stop moving when mouse button is released:
-                    document.onmouseup = null;
-                    document.onmousemove = null;
-                }
-            }
 
             getTableView();
             dataTableForItem();
@@ -1422,6 +1212,7 @@ width: 100%;*/
             console.log(mergeNo, custId, MCNo, BillStat, oTyp);
             
             var eid = '<?= $_SESSION['EID']; ?>';
+            var kotNo = "<?= $this->lang->line('kotNo'); ?>";
             // console.log('SES_EID'+eid);
             // $('#mydiv').show();
 
@@ -1435,6 +1226,9 @@ width: 100%;*/
                 $('#btnCash').attr('onclick', "cashCollect("+custId+","+MCNo+",'"+mergeNo+"',"+oTyp+")");
                 $('#btnCash').show();
                 $('#billCreatebtn').hide();
+            }else{
+                $('#billCreatebtn').attr('onclick', "billCreate('"+mergeNo+"',"+custId+")");
+                $('#billCreatebtn').show();
             }
             $.ajax({
                 url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
@@ -1463,29 +1257,29 @@ width: 100%;*/
                             if (item.KOTPrintNo == 1) {
  
                                 if(new_head == 1){
-                                    template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>KOT No: ${item.FKOTNo}</b><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo}, '${item.MergeNo}',${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
+                                    template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>${kotNo}: ${convertToUnicodeNo(item.FKOTNo)}</b><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo}, '${item.MergeNo}',${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
                                     </tr>`;
                                     new_head = 0;
                                 }
                                 var b = '';
                                 b += '<tr style="background: #FFF;"><td>'+item.ItemNm+'</td>\
-                                <td>'+item.Qty+'</td>\
+                                <td>'+convertToUnicodeNo(item.Qty)+'</td>\
                                 <?php if($this->session->userdata('EDT') == 1){ ?>
-                                <td>'+item.EDT+'</td>\
+                                <td>'+convertToUnicodeNo(item.EDT)+'</td>\
                                 <?php } ?>
                                 </tr>';
                                 template+=b;
                             } else {
                                 // $("#table-view").css("background-color", "#0100ff3b"); 
                                 if(new_head == 1){
-                                    template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>KOT No: ${item.FKOTNo}</b><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo}, '${item.MergeNo}',${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
+                                    template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>${kotNo}: ${(item.FKOTNo)}</b><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo}, '${item.MergeNo}',${item.FKOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
                                     </tr>`;
                                     new_head = 0;
                                 }
                                 var b = '';
-                                b += '<tr style="background: #FFF;"><td>'+item.ItemNm+'</td><td>'+item.Qty+'</td>\
+                                b += '<tr style="background: #FFF;"><td>'+item.ItemNm+'</td><td>'+convertToUnicodeNo(item.Qty)+'</td>\
                                 <?php if($this->session->userdata('EDT') == 1){ ?>
-                                <td>'+item.EDT+'</td>\
+                                <td>'+convertToUnicodeNo(item.EDT)+'</td>\
                                 <?php } ?>
                                 </tr>';
                                 template+=b;
@@ -1523,9 +1317,9 @@ width: 100%;*/
                                         </button>';
                         } 
                           temp +='<tr>\
-                                    <td><a href="'+bilUrl+'">'+data[i].BillNo+'</a></td>\
-                                    <td>'+data[i].BillValue+'</td>\
-                                    <td>'+data[i].PaidAmt+'</td>\
+                                    <td><a href="'+bilUrl+'">'+convertToUnicodeNo(data[i].BillNo)+'</a></td>\
+                                    <td>'+convertToUnicodeNo(data[i].BillValue)+'</td>\
+                                    <td>'+convertToUnicodeNo(data[i].PaidAmt)+'</td>\
                                     <td>'+data[i].pymtName+'</td>\
                                     <td>\
                                     <?php if($this->session->userdata('AutoSettle') == 0){ ?>
@@ -1575,50 +1369,6 @@ width: 100%;*/
                         response.itemDetails.forEach((item) => {
                             template += `
                             <tr onclick="handleSelectedItem(${item.ItemId}, '${item.TableNo}', ${item.CustId}, ${item.CNo}, ${item.AQty}, this)" class="${item.AQty > 0 ? 'allocated-item' : ''} ${item.Qty == item.DQty ? 'delivered-item' : ''}" style="background-color:${item.AQty > 0 ? 'yellow' : ''} ${item.Qty == item.DQty ? 'lightgreen' : ''};">
-                                <td style="width: 300px;">${item.ItemNm}</td>
-                                <td>${item.Qty}</td>
-                                <td>${item.AQty}</td>
-                                <td>${item.DQty}</td>
-                                <td>EDT</td>
-                            </tr>
-                        `;
-                        });
-                    } else {
-                        console.log(response.msg);
-                    }
-                    destroyDataTableForItem();
-                    $("#item-detail-body").html(template);
-                    dataTableForItem();
-                },
-                error: (xhr, status, error) => {
-                    console.log(xhr);
-                    console.log(status);
-                    console.log(error);
-                }
-            });
-        }
-
-        function getItemsByKot(uKotNo, cNo, input) {
-            $('#kot-list tr').css('background-color', 'white');
-            $(input).css('background-color', '#0100ff3b');
-            resetGlobal();
-
-            $.ajax({
-                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
-                type: "POST",
-                data: {
-                    getItemsByKot: 1,
-                    uKotNo: uKotNo,
-                    cNo: cNo
-                },
-                dataType: "json",
-                success: (response) => {
-                    // console.log(response);
-                    var template = ``;
-                    if (response.status == 1) {
-                        response.itemDetails.forEach((item) => {
-                            template += `
-                            <tr onclick="handleSelectedItem(${item.ItemId}, '${item.TableNo}', ${item.CustId}, ${item.CNo},  ${item.AQty}, this)" class="${item.AQty > 0 ? 'allocated-item' : ''} ${item.Qty == item.DQty ? 'delivered-item' : ''}" style="background-color:${item.AQty > 0 ? 'yellow' : ''} ${item.Qty == item.DQty ? 'lightgreen' : ''};">
                                 <td style="width: 300px;">${item.ItemNm}</td>
                                 <td>${item.Qty}</td>
                                 <td>${item.AQty}</td>
@@ -2001,9 +1751,9 @@ width: 100%;*/
             $.post('<?= base_url('restaurant/bill_settle') ?>',{billId:id,CNo:CNo,MergeNo:MergeNo,CustId:CustId,billNo:billNo,billAmt:billAmt},function(response){
 
                 if(response.status == 'success') {
-                        alert("Successfully Settled");
+                    alert(response.response);
                 }else {
-                    alert("Not Settled");
+                    alert(response.response);
                 }
                 location.reload();
             });
@@ -2254,8 +2004,9 @@ width: 100%;*/
                 $("#unmerge-table").show();
                 availableTables = '';
                 response.tables.forEach(function(table) {
+                    var TableNoL = "<?= $this->lang->line('tableNo'); ?>";
                     var b = `<div class="col-md-4 col-6">`+`<input type="checkbox" class="form-check-input" value="`+table.TableNo+`" id="`+table.TableNo+`"><label class="form-check-label" for="`+table.TableNo+`">TableNo `+table.TableNo+`</label>`;
-                    availableTables += `<div class="col-md-4 col-6">`+`<input type="checkbox" class="form-check-input" value="`+table.TableNo+`" id="`+table.TableNo+`" /><label class="form-check-label" for="`+table.TableNo+`">TableNo `+table.TableNo+`</label></div>`;
+                    availableTables += `<div class="col-md-4 col-6">`+`<input type="checkbox" class="form-check-input" value="`+table.TableNo+`" id="`+table.TableNo+`" /><label class="form-check-label" for="`+table.TableNo+`">`+TableNoL+`  `+convertToUnicodeNo(table.TableNo)+`</label></div>`;
                 });
 
                 $("#unmerge_tables").html(availableTables);
@@ -2555,6 +2306,8 @@ function cashCollect(custId, MCNo, mergeNo, oType){
           var data = res.response.bills;
           var sts = res.response.sts;
           var payModes = res.response.payModes;
+          var paymentReceived = "<?= $this->lang->line('paymentReceived'); ?>";
+
           $("#cashAmtR").prop("disabled", true);
           if(oType == 7){
             // alert(oType)
@@ -2573,9 +2326,9 @@ function cashCollect(custId, MCNo, mergeNo, oType){
                 pm +='</option>';
 
                 temp +='<tr>\
-                            <td>'+data.BillNo+'</td>\
-                            <td>'+data.TableNo+'</td>\
-                            <td>'+data.PaidAmt+'</td>\
+                            <td>'+convertToUnicodeNo(data.BillNo)+'</td>\
+                            <td>'+convertToUnicodeNo(data.TableNo)+'</td>\
+                            <td>'+convertToUnicodeNo(data.PaidAmt)+'</td>\
                             <td>'+pm+'</td>\
                             <td>\
                             <input type="hidden" name="oType" value="'+oType+'"/>\
@@ -2586,7 +2339,7 @@ function cashCollect(custId, MCNo, mergeNo, oType){
                                 <input type="hidden" name="MergeNo" value="'+data.MergeNo+'"/>\
                                 <input type="hidden" name="CellNo" value="'+data.CellNo+'"/>\
                                 <input type="hidden" name="TotBillAmt" value="'+data.PaidAmt+'"/>\
-                                <input type="text" name="PaidAmt" style="width:70px;" required id="cashAmtR" value="'+data.PaidAmt+'"/>\
+                                <input type="text" name="PaidAmt" style="width:70px;" required id="cashAmtR" value="'+convertToUnicodeNo(data.PaidAmt)+'" onblur="changeValue(this)" />\
                                 </td>\
                             <td>\
                                 <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success">\
@@ -2595,7 +2348,7 @@ function cashCollect(custId, MCNo, mergeNo, oType){
                                 </td>\
                         </tr>';
             }else{
-                temp = '<tr><td colspan="6" class="text-center">Payment Received</td></tr>';
+                temp = '<tr><td colspan="6" class="text-center">'+paymentReceived+'</td></tr>';
             } 
 
           
@@ -2610,9 +2363,11 @@ function cashCollect(custId, MCNo, mergeNo, oType){
 function cashCollectData(){
     var data = $('#cashForm').serializeArray();
   
-    var PaidAmt = data[9].value;
     var TotBillAmt = data[8].value;
-  // console.log(PaidAmt+' , '+TotBillAmt);
+    var PaidAmt = data[9].value;
+    
+    PaidAmt = convertDigitToEnglish(PaidAmt);
+    data[9].value = PaidAmt;
   if(parseFloat(PaidAmt) >= parseFloat(TotBillAmt)){
     $.post('<?= base_url('restaurant/collect_payment') ?>',data,function(res){
         if(res.status == 'success'){
@@ -2626,4 +2381,10 @@ function cashCollectData(){
     alert('Amount has to be greater than or equal to Bill Amount.');
   }
 }
+
+function changeValue(input) {
+    var val = $(input).val();
+    $(input).val(convertToUnicodeNo(val));
+}
+
 </script>

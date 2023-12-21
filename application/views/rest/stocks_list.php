@@ -33,11 +33,11 @@ $RestName = authuser()->RestName;
                                         <form method="post" action="<?php echo base_url('restaurant/stock_list'); ?>">
                                             <div class="row">
                                                 <div class="col-md-2 col-6">
-                                                    <label>Trans No</label>
+                                                    <label><?= $this->lang->line('transactionNo'); ?></label>
                                                     <input type="number" name="trans_id" id="trans_id" class="form-control form-control-sm" value="<?php if($trans_id){echo $trans_id;}?>" />
                                                 </div>
                                                 <div class="col-md-2 col-6">
-                                                    <label>Transaction Type</label>
+                                                    <label><?= $this->lang->line('transactionType'); ?></label>
                                                     <select class="form-control form-control-sm" name="trans_type">
                                                         <option value="">Transaction Type</option>
                                                         <?php foreach($trans_type as $key => $value){?>
@@ -46,11 +46,11 @@ $RestName = authuser()->RestName;
                                                     </select>
                                                 </div>
                                                 <div class="col-md-2 col-6">
-                                                    <label>From Date</label>
+                                                    <label><?= $this->lang->line('fromDate'); ?></label>
                                                     <input type="date" name="from_date" class="form-control form-control-sm" value="<?php if($from_date){echo $from_date;}?>">
                                                 </div>
                                                 <div class="col-md-2 col-6">
-                                                    <label>To Date</label>
+                                                    <label><?= $this->lang->line('toDate'); ?></label>
                                                     <input type="date" name="to_date" class="form-control form-control-sm" value="<?php if($to_date){echo $to_date;}?>">
                                                 </div>
                                                 <div class="col-md-1 col-2">
@@ -62,15 +62,15 @@ $RestName = authuser()->RestName;
                                                 <div class="col-md-3 col-10">
                                                     <div class="d-none d-sm-block">
                                                     <label>&nbsp;</label><br>
-                                                    <a target="_blank" href="<?php echo base_url('restaurant/stock_consumption'); ?>" class="btn btn-info btn-sm">Consumption</a>
-                                                    <a target="_blank" href="<?php echo base_url('restaurant/stock_report'); ?>" class="btn btn-warning btn-sm">Report</a>
-                                                    <a href="<?php echo base_url('restaurant/add_stock'); ?>" class="btn btn-success btn-sm">Add Stock</a>
+                                                    <a target="_blank" href="<?php echo base_url('restaurant/stock_consumption'); ?>" class="btn btn-info btn-sm"><?= $this->lang->line('consumption'); ?></a>
+                                                    <a target="_blank" href="<?php echo base_url('restaurant/stock_report'); ?>" class="btn btn-warning btn-sm"><?= $this->lang->line('report'); ?></a>
+                                                    <a href="<?php echo base_url('restaurant/add_stock'); ?>" class="btn btn-success btn-sm"><?= $this->lang->line('addStock'); ?></a>
                                                 </div>
                                                     <div class="d-sm-block d-md-none text-right">
                                                         <label>&nbsp;</label><br>
-                                                    <a target="_blank" href="<?php echo base_url('restaurant/stock_consumption'); ?>" class="btn btn-info btn-sm">Consumption</a>
-                                                    <a target="_blank" href="<?php echo base_url('restaurant/stock_report'); ?>" class="btn btn-warning btn-sm">Report</a>
-                                                    <a href="<?php echo base_url('restaurant/add_stock'); ?>" class="btn btn-primary btn-sm">Add Stock</a>
+                                                    <a target="_blank" href="<?php echo base_url('restaurant/stock_consumption'); ?>" class="btn btn-info btn-sm"><?= $this->lang->line('consumption'); ?></a>
+                                                    <a target="_blank" href="<?php echo base_url('restaurant/stock_report'); ?>" class="btn btn-warning btn-sm"><?= $this->lang->line('report'); ?></a>
+                                                    <a href="<?php echo base_url('restaurant/add_stock'); ?>" class="btn btn-primary btn-sm"><?= $this->lang->line('addStock'); ?></a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -85,11 +85,11 @@ $RestName = authuser()->RestName;
                                                 <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>Trans No</th>
-                                                    <th>Trans Date</th>
-                                                    <th>Transaction Type</th>
-                                                    <th>From</th>
-                                                    <th>To</th>
+                                                    <th><?= $this->lang->line('transactionNo'); ?></th>
+                                                    <th><?= $this->lang->line('transactionDate'); ?></th>
+                                                    <th><?= $this->lang->line('transactionType'); ?></th>
+                                                    <th><?= $this->lang->line('from'); ?></th>
+                                                    <th><?= $this->lang->line('to'); ?></th>
                                                 </tr>
                                                 </thead>
             
@@ -101,7 +101,7 @@ $RestName = authuser()->RestName;
                                                   ?>
                                                   <tr onclick="edit(<?= $key['TransId']?>)" >
                                                     <td><?= $i++; ?></td>
-                                                    <td><?= $key['TransId']?></td>
+                                                    <td><?= convertToUnicodeNumber($key['TransId']); ?></td>
                                                     <td><?= date('d-M-Y',strtotime($key['TransDt']));?></td>
                                                    <td><?= getTransType($key['TransType']) ?></td>
                                                     <td>

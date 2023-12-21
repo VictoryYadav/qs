@@ -32,7 +32,10 @@ class Rest extends CI_Model{
 	}
 
 	public function getOffersList(){
-		return $this->db2->order_by('SchCd', 'desc')->get_where('CustOffers', array('Stat' => 0))->result_array();
+		$langId = $this->session->userdata('site_lang');
+        $scName = "SchNm$langId as SchNm";
+
+		return $this->db2->select("$scName, SchCd, SchTyp ,SchCatg,FrmDt, ToDt, FrmDayNo, ToDayNo, ")->order_by('SchCd', 'desc')->get_where('CustOffers', array('Stat' => 0))->result_array();
 	}
 
 	public function passwordUpdate($password){
@@ -288,14 +291,9 @@ class Rest extends CI_Model{
 
 	public function getUserAccessRole($postdata){
 		$EID = authuser()->EID;
-		$site_lang = $this->session->userdata('site_lang');
-        $lname = '';
-
-        if($site_lang == 'english'){
-            $lname = 'ur.Name as Name';
-        }else{
-            $lname = 'ur.Name1 as Name';
-        }
+		
+        $langId = $this->session->userdata('site_lang');
+        $lname = "ur.Name$langId as Name";
 	        
 			if (isset($postdata['getUser']) && $postdata['getUser']==1) {
 				$mobileNumber =  $postdata['mobileNumber'];
@@ -320,7 +318,7 @@ class Rest extends CI_Model{
 			if (isset($postdata['getAvailableRoles']) && $postdata['getAvailableRoles']==1) {
 			$userId =  $postdata['userId'];
 
-			$availableRoles = $this->db2->query("SELECT ur.RoleId, $lname FROM UserRoles ur WHERE  ur.Stat = 0 AND ur.RoleId NOT IN (SELECT RoleId FROM UserRolesAccess WHERE RUserId = $userId AND EID = $EID) Order by ur.Name")->result_array();
+			$availableRoles = $this->db2->query("SELECT ur.RoleId, $lname FROM UserRoles ur WHERE  ur.Stat = 0 AND ur.RoleId NOT IN (SELECT RoleId FROM UserRolesAccess WHERE RUserId = $userId AND EID = $EID) Order by ur.Name1")->result_array();
 			if (!empty($availableRoles)) {
 				$response = [
 					"status" => 1,
@@ -368,7 +366,7 @@ class Rest extends CI_Model{
 			$userId = $postdata['userId'];
 			// $getAssignedRoles = $userRolesAccessObj->exec("SELECT ura.URNo, ur.Name FROM `UserRolesAccess` ura, UserRoles ur WHERE ura.RoleId = ur.RoleId AND ur.Stat = 0 AND ura.EID = $EID AND ura.RUserId = $userId Order by ur.Name");
 
-			$getAssignedRoles = $this->db2->query("SELECT ura.URNo, $lname FROM `UserRolesAccess` ura, UserRoles ur WHERE ura.RoleId = ur.RoleId AND ur.Stat = 0 AND ura.EID = $EID AND ura.RUserId = $userId Order by ur.Name")->result_array();
+			$getAssignedRoles = $this->db2->query("SELECT ura.URNo, $lname FROM `UserRolesAccess` ura, UserRoles ur WHERE ura.RoleId = ur.RoleId AND ur.Stat = 0 AND ura.EID = $EID AND ura.RUserId = $userId Order by ur.Name1")->result_array();
 
 			if (!empty($getAssignedRoles)) {
 				$response = [
@@ -415,34 +413,17 @@ class Rest extends CI_Model{
 
 	public function getDispenseAccess(){
 		$RUserId = authuser()->RUserId;
-
-		$userRoleDailyDispence = $this->db2->query("SELECT DCd from UsersRoleDaily where RUserId = $RUserId ")->result_array();
-
-		$userRoleDailyKitchen = $this->db2->query("SELECT KitCd from UsersRoleDaily where RUserId = $RUserId ");
-
-		// $dispenseData = [];
-		// $kitchenData = [];
-
-		// if ($userRoleDailyDispence[0]['DCd'] != '') {
-		// 	$DCd = $userRoleDailyDispence[0]['DCd'];
-
-		// 	$dispenseData = $eatDispOutletsObj->exec("SELECT DCd, Name FROM Eat_DispOutlets where DCd in ($DCd)");
-		// }
-
-		// if ($userRoleDailyKitchen[0]['KitCd'] != '') {
-		// 	$KitCd = $userRoleDailyKitchen[0]['KitCd'];
-
-		// 	$kitchenData = $eatKitObj->exec("SELECT KitCd, KitName FROM Eat_Kit where KitCd in ($KitCd)");
-		// }
-
-
-
 		$EType = $this->session->userdata('EType');
 		$EID = authuser()->EID;
-		$GetDCD = $this->db2->query("SELECT DCd FROM `UsersRoleDaily` WHERE RUserId = $RUserId")->result_array();
-		$tempArray =explode(",",$GetDCD[0]['DCd']);
 
-		$SqlQueryVar = "SELECT DCd, Name, DCdType FROM Eat_DispOutlets Where EID = $EID AND Stat = 0";
+		$GetDCD = $this->db2->get_where('UsersRoleDaily', array('RUserId' => $RUserId))->result_array();
+		$tempArray = explode(",",$GetDCD[0]['DCd']);
+
+
+		$langId = $this->session->userdata('site_lang');
+        $dname = "Name$langId as Name";
+
+		$SqlQueryVar = "SELECT DCd, $dname, DCdType FROM Eat_DispOutlets Where EID = $EID AND Stat = 0";
 		if(count($tempArray) >=1 && $tempArray[0] != ''){
 		    $SqlQueryVar .=" AND (";
 		for ($i=0; $i <count($tempArray) ; $i++) { 
@@ -786,7 +767,11 @@ class Rest extends CI_Model{
 
 	public function getBillDetailsForSettle($custId, $MCNo, $mergeNo){
 			$EID = authuser()->EID;
-			return $this->db2->select("b.TableNo,b.MergeNo, b.BillId, b.BillNo, DATE_FORMAT(DATE(billTime),'%d/%m/%Y') as BillDate, b.TotAmt as BillValue, b.PaidAmt, bp.PaymtMode, bp.TotBillAmt, bp.PymtType,bp.PaidAmt as bpPaidAmt, b.CNo, u.CustId, (case when cp.Name != '' Then cp.Name ELSE 'Unpaid' end) as pymtName,b.payRest")
+
+			$langId = $this->session->userdata('site_lang');
+            $cpname = "cp.Name$langId";
+
+			return $this->db2->select("b.TableNo,b.MergeNo, b.BillId, b.BillNo, DATE_FORMAT(DATE(billTime),'%d/%m/%Y') as BillDate, b.TotAmt as BillValue, b.PaidAmt, bp.PaymtMode, bp.TotBillAmt, bp.PymtType, bp.PaidAmt as bpPaidAmt, b.CNo, u.CustId, (case when $cpname != '' Then $cpname ELSE 'Unpaid' end) as pymtName,b.payRest")
 						->order_by('BillId', 'ASC')
 						->group_by('BillId')
 						->join('Eat_tables et','b.EID = et.EID','inner')
@@ -808,7 +793,10 @@ class Rest extends CI_Model{
 			$to = date('Y-m-d', strtotime("+1 day", strtotime($to)));
 			$EID = authuser()->EID;
 
-			$billData = $this->db2->select('b.TableNo, b.BillId, b.BillNo, b.billTime as BillDate, b.CellNo,b.CustId,b.TotAmt,b.PaidAmt bPaidAmt, bp.MergeNo, bp.PaidAmt, bp.OrderRef, bp.PymtRef, bp.PaymtMode, bp.PymtType, bp.Stat, bp.PymtDate,cp.Name, cp.Company')
+			$langId = $this->session->userdata('site_lang');
+            $cpname = "cp.Name$langId as Name";
+
+			$billData = $this->db2->select("b.TableNo, b.BillId, b.BillNo, b.billTime as BillDate, b.CellNo,b.CustId,b.TotAmt,b.PaidAmt bPaidAmt, bp.MergeNo, bp.PaidAmt, bp.OrderRef, bp.PymtRef, bp.PaymtMode, bp.PymtType, bp.Stat, bp.PymtDate, $cpname, cp.Company")
 					->order_by('b.BillId', 'ASC')
 					->join('BillPayments bp','bp.BillId = b.BillId','left')
 					->join('ConfigPymt cp','cp.PymtMode = bp.PaymtMode','left')

@@ -70,88 +70,88 @@ hr{
                                     <!-- <div class="card-header bg-primary"><?php echo $title; ?></div> -->
                                     <div class="card-body">
                                             <div class="text-right p-2">
-                                                <button class="btn btn-warning btn-sm" onclick="return validate()" type = "Submit" name="apply_default" value="1">Set Default</button>
+                                                <button class="btn btn-warning btn-sm" onclick="return validate()" type = "Submit" name="apply_default" value="1"><?= $this->lang->line('setDefault'); ?></button>
                                             </div>
                                         <form method="post" enctype="multipart/form-data11">
                                             <div class="text-center">
-                                                <h5>Item Details - Sec 1</h5>
+                                                <h5><?= $this->lang->line('itemDetailsSection'); ?> 1</h5>
                                             </div>
                                             <div class="row">
                                                 <div class="form-group col-6">
-                                                    <label for="schnm">Background</label>
+                                                    <label for="schnm"><?= $this->lang->line('background'); ?></label>
                                                     <input type="color" id="Sec1Background" name="Sec1Background" class="form-control" placeholder="Enter Color" required="" value="<?php if(!empty($data11)){echo $data11['Sec1Background'];}?>" />
                                                 </div>
                                                 <div class="form-group col-6">
-                                                    <label for="schnm">Text Color</label>
+                                                    <label for="schnm"><?= $this->lang->line('textColor'); ?></label>
                                                     <input type="color" id="Sec1TextColor" name="Sec1TextColor" class="form-control" placeholder="Enter Color" required="" value="<?php if(!empty($data11)){echo $data11['Sec1TextColor'];}?>" />
                                                 </div>
                                             </div>
                                             <div class="text-center">
-                                                <h5>Item Details - Sec 2</h5>
+                                                <h5><?= $this->lang->line('itemDetailsSection'); ?> 2</h5>
                                             </div>
                                             <div class="row">
                                                 <div class="form-group col-6">
-                                                    <label for="schnm">Background</label>
+                                                    <label for="schnm"><?= $this->lang->line('background'); ?></label>
                                                     <input type="color" id="Sec2Background" name="Sec2Background" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Sec2Background']:'';?>" />
                                                 </div>
                                                 <div class="form-group col-6">
-                                                    <label for="schnm">Text Color</label>
+                                                    <label for="schnm"><?= $this->lang->line('textColor'); ?></label>
                                                     <input type="color" id="Sec2TextColor" name="Sec2TextColor" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Sec2TextColor']:'';?>" />
                                                 </div>
                                                 <div class="form-group col-6">
-                                                    <label for="schnm">Button Color</label>
+                                                    <label for="schnm"><?= $this->lang->line('buttonColor'); ?></label>
                                                     <input type="color" id="Sec2BtnColor" name="Sec2BtnColor" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Sec2BtnColor']:'';?>" />
                                                 </div>
                                                 <div class="form-group col-6">
-                                                    <label for="schnm">Button Text Color</label>
+                                                    <label for="schnm"><?= $this->lang->line('buttonTextColor'); ?></label>
                                                     <input type="color" id="Sec2BtnText" name="Sec2BtnText" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Sec2BtnText']:'';?>" />
                                                 </div>
                                             </div>
                                             <div class="text-center">
-                                                <h5>Item Details - Sec 3</h5>
+                                                <h5><?= $this->lang->line('itemDetailsSection'); ?> 3</h5>
                                             </div>
                                             <div class="row">
                                                 <div class="form-group col-6">
-                                                    <label for="schnm">Background</label>
+                                                    <label for="schnm"><?= $this->lang->line('background'); ?></label>
                                                     <input type="color" id="Sec3Background" name="Sec3Background" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Sec3Background']:'';?>" />
                                                 </div>
                                                 <div class="form-group col-6">
-                                                    <label for="schnm">Text Color</label>
+                                                    <label for="schnm"><?= $this->lang->line('textColor'); ?></label>
                                                     <input type="color" id="Sec3TextColor" name="Sec3TextColor" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Sec3TextColor']:'';?>" />
                                                 </div>
                                             </div>
                                             <div class="text-center">
-                                                <h5>Other Page</h5>
+                                                <h5><?= $this->lang->line('otherPage'); ?></h5>
                                             </div>
                                             <div class="row">
                                                 <div class="form-group col-3">
-                                                    <label for="schnm">Body Background</label>
+                                                    <label for="schnm"><?= $this->lang->line('bodyBackground'); ?></label>
                                                     <input type="color" id="BodyBackground" name="BodyBackground" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['BodyBackground']:'';?>" />
                                                 </div>
                                                 <div class="form-group col-3">
-                                                    <label for="schnm">Text Color</label>
+                                                    <label for="schnm"><?= $this->lang->line('textColor'); ?></label>
                                                     <input type="color" id="BodyTextColor" name="BodyTextColor" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['BodyTextColor']:'';?>" />
                                                 </div>
                                                 <div class="form-group col-3">
-                                                    <label for="schnm">Button 1 Background</label>
+                                                    <label for="schnm"><?= $this->lang->line('buttonBackground'); ?> 1 </label>
                                                     <input type="color" id="Button1Color" name="Button1Color" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Button1Color']:'';?>" />
                                                 </div>
                                                 <div class="form-group col-3">
-                                                    <label for="schnm">Button 1 Text</label>
+                                                    <label for="schnm"><?= $this->lang->line('buttonText'); ?> 1</label>
                                                     <input type="color" id="Button1TextColor" name="Button1TextColor" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Button1TextColor']:'';?>" />
                                                 </div>
                                                 <div class="form-group col-3">
-                                                    <label for="schnm">Button 2 Background</label>
+                                                    <label for="schnm"><?= $this->lang->line('buttonBackground'); ?> 2 </label>
                                                     <input type="color" id="Button2Color" name="Button2Color" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Button2Color']:'';?>" />
                                                 </div>
                                                 <div class="form-group col-3">
-                                                    <label for="schnm">Button 2 Text</label>
+                                                    <label for="schnm"><?= $this->lang->line('buttonText'); ?> 2</label>
                                                     <input type="color" id="Button2TextColor" name="Button2TextColor" class="form-control" placeholder="Enter Color" required="" value="<?php echo !empty($data11)?$data11['Button2TextColor']:'';?>" />
                                                 </div>
                                             </div>
                                             
-                                            <div class="text-center">Apply Theme 
-                                                <input type="checkbox" name="apply" value="1"> &nbsp;&nbsp;<button type="submit" class="btn btn-primary btn-sm btn-rounded" >Submit</button>
+                                            <div class="text-center"><?= $this->lang->line('applyTheme'); ?> &nbsp;
+                                                <input type="checkbox" name="apply" value="1"> &nbsp;&nbsp;<button type="submit" class="btn btn-primary btn-sm btn-rounded" ><?= $this->lang->line('submit'); ?></button>
                                             </div>
                                         </form>
                                     </div>

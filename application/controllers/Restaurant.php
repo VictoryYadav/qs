@@ -505,7 +505,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function offers_list(){
-		 $data['title'] = 'Offers List';
+		 $data['title'] = $this->lang->line('offerList');
 		 $data['offers'] = $this->rest->getOffersList();
 		 $this->load->view('rest/offer_lists',$data);
     }
@@ -513,12 +513,15 @@ class Restaurant extends CI_Controller {
     public function new_offer(){
         $EID = authuser()->EID;
         $data['EID'] = $EID;
-    	$data['title'] = 'Add New Offer';
+    	$data['title'] = $this->lang->line('newOffer');
         $data['sch_typ'] = array('1'=>'BillBased', '21'=>'CID based', '22'=>'MenuCatg based', '23'=>'ItmTyp Based', '24'=>'ItemID based', '25'=>'Itm_Portion based','26'=>'CID and Itm_Portion based', '27'=>'MenuCatg and Itm_Portion based', '28'=>'ItemTyp and Itm_Portion based','29'=>'ItemID and Itm_Portion based');
         $data['sch_cat'] = array('1'=>'Bill Discount', '2'=>'Free Item with BillAmt','3'=>'Discount on minBillAmt/month', '4'=>'First time use of QS (2% discount)', '5'=> 'Rating Discount', '21'=>'Gen. Discount', '22'=>'Buy x get y free (1+1) / (2+1) lowest rate', '23'=>'Buy x get y free (1+1) / (2+1) highest rate', '24'=>'Buy x get y discounted; 51-Discounts using promo codes');
         $data['days']=array(1=>'Sunday', 2=>'Monday', 3=>'Tuesday', 4=>'Wednesday', 5=>'Thursday', 6=>'Friday', 7=>'Saturday');
 
-        $data['cuisines'] = $this->db2->query("SELECT c.* from Cuisines as c, EatCuisine as ec where ec.EID = ".$EID." and ec.CID=c.CID and ec.stat = 0")->result_array();
+        $langId = $this->session->userdata('site_lang');
+        $lname = "c.Name$langId as Name";
+
+        $data['cuisines'] = $this->db2->query("SELECT c.*, $lname from Cuisines as c, EatCuisine as ec where ec.EID = ".$EID." and ec.CID=c.CID and ec.stat = 0")->result_array();
         $data['item_types'] = $this->db2->get('ItemTypes')->result_array();
 
 		$this->load->view('rest/add_new_offer',$data);	
@@ -538,7 +541,7 @@ class Restaurant extends CI_Controller {
 
         if (isset($_POST['addOffer'])) {
             extract($_POST);
-            echo "<pre>";
+            
             
             $CustOffers['SchNm'] = $SchNm;
             $CustOffers['EID'] = $EID;
@@ -693,7 +696,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function edit_offer($SchCd){
-        $data['title'] = 'Edit Offer';
+        $data['title'] = $this->lang->line('editOffer');
         $data['sch_typ'] = array('1'=>'BillBased', '21'=>'CID based', '22'=>'MenuCatg based', '23'=>'ItmTyp Based', '24'=>'ItemID based', '25'=>'Itm_Portion based','26'=>'CID and Itm_Portion based', '27'=>'MenuCatg and Itm_Portion based', '28'=>'ItemTyp and Itm_Portion based','29'=>'ItemID and Itm_Portion based');
         $data['sch_cat'] = array('1'=>'Bill Discount', '2'=>'Free Item with BillAmt','3'=>'Discount on minBillAmt/month', '4'=>'First time use of QS (2% discount)', '5'=> 'Rating Discount', '21'=>'Gen. Discount', '22'=>'Buy x get y free (1+1) / (2+1) lowest rate', '23'=>'Buy x get y free (1+1) / (2+1) highest rate', '24'=>'Buy x get y discounted; 51-Discounts using promo codes');
         $data['days']=array(1=>'Sunday', 2=>'Monday', 3=>'Tuesday', 4=>'Wednesday', 5=>'Thursday', 6=>'Friday', 7=>'Saturday');
@@ -701,10 +704,18 @@ class Restaurant extends CI_Controller {
         $EID = authuser()->EID;
         $data['EID'] = $EID;
         $data['SchCd'] = $SchCd;
-        $data['cuisines'] = $this->db2->query("SELECT c.* from Cuisines as c, EatCuisine as ec where ec.EID = ".$EID." and ec.CID=c.CID and ec.stat = 0")->result_array();
+
+        $langId = $this->session->userdata('site_lang');
+        $cname = "c.Name$langId as Name";
+
+        $data['cuisines'] = $this->db2->query("SELECT c.*, c.*, $cname from Cuisines as c, EatCuisine as ec where ec.EID = ".$EID." and ec.CID=c.CID and ec.stat = 0")->result_array();
         $data['item_types'] = $this->db2->get('ItemTypes')->result_array();
-        $data['scheme'] = $this->db2->get_where('CustOffers', array('SchCd' => $SchCd))->result_array();
-        $data['descriptions'] = $this->db2->get_where('CustOffersDet', array('SchCd' =>$SchCd,'Stat' => 0))->result_array();
+
+        $scName = "SchNm$langId as SchNm";
+        $data['scheme'] = $this->db2->select("$scName, SchCd, SchTyp ,SchCatg,FrmDt, ToDt, FrmDayNo, ToDayNo, ")->get_where('CustOffers', array('SchCd' => $SchCd))->result_array();
+
+        $scDesc = "SchDesc$langId as SchDesc";
+        $data['descriptions'] = $this->db2->select("*, $scDesc")->get_where('CustOffersDet', array('SchCd' =>$SchCd,'Stat' => 0))->result_array();
 
         // echo "<pre>";
         // print_r($data);
@@ -720,9 +731,17 @@ class Restaurant extends CI_Controller {
         $ChainId = authuser()->ChainId;
         $data['CID'] = '';
         $data['catid'] = '';
-        $data['cuisine'] = $this->db2->get('Cuisines')->result_array();
-        $data['menucat'] = $this->db2->get('MenuCatg')->result_array();
-        $q = "SELECT mi.ItemId, mi.ItemNm, ip.Name as Portions, md.ItemId as deactive FROM ItemPortions ip, MenuItem mi, MenuItemRates mr LEFT JOIN MenuItem_Disabled md ON (md.ItemId = mr.ItemId) and (mr.Itm_Portion = md.IPCd) Where mi.ItemId = mr.ItemId and ip.IPCd=mr.Itm_Portion and mr.EID = $EID and mr.ChainId = $ChainId and mi.Stat=0";
+        $langId = $this->session->userdata('site_lang');
+
+        $cname = "Name$langId as Name";
+        $data['cuisine'] = $this->db2->select("CID, $cname")->get('Cuisines')->result_array();
+        $mcname = "Name$langId as MCatgNm";
+        $data['menucat'] = $this->db2->select("MCatgId, $mcname")->get('MenuCatg')->result_array();
+
+        $lname = "mi.ItemNm$langId as ItemNm";
+        $ipName = "ip.Name$langId as Portions";
+
+        $q = "SELECT mi.ItemId, $lname, $ipName, md.ItemId as deactive FROM ItemPortions ip, MenuItem mi, MenuItemRates mr LEFT JOIN MenuItem_Disabled md ON (md.ItemId = mr.ItemId) and (mr.Itm_Portion = md.IPCd) Where mi.ItemId = mr.ItemId and ip.IPCd=mr.Itm_Portion and mr.EID = $EID and mr.ChainId = $ChainId and mi.Stat=0";
         if($this->input->method(true)=='POST'){
             if($_POST){
                 if(isset($_POST['cuisine']) && !empty($_POST['cuisine'])){
@@ -740,10 +759,10 @@ class Restaurant extends CI_Controller {
                 }
             }
         }
-        $q.=" GROUP by mi.ItemId, ip.Name, md.ItemId order by mi.MCatgId, mi.ItemId, ip.Name, mi.Rank";
+        $q.=" GROUP by mi.ItemId, ip.Name1, md.ItemId order by mi.MCatgId, mi.ItemId, ip.Name1, mi.Rank";
         $data['menuItemData'] = $this->db2->query($q)->result_array();
         
-    	$data['title'] = 'Item Details';
+    	$data['title'] = $this->lang->line('itemDetails');
         // echo "<pre>";
         // print_r($data);
         // die;
@@ -807,6 +826,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function order_dispense(){
+    	$data['title'] = $this->lang->line('orderDispense');
         $data['RestName'] = authuser()->RestName;
         $data['RUserId'] = authuser()->RUserId;
         $data['Cash'] = $this->session->userdata('Cash');
@@ -814,7 +834,6 @@ class Restaurant extends CI_Controller {
         $Fest = $this->session->userdata('Fest');
         $data['CheckOTP'] = $this->session->userdata('DeliveryOTP');
         $data['EID'] = authuser()->EID;
-    	$data['title'] = 'Order Dispense';
         $data['DispenseAccess'] = $this->rest->getDispenseAccess();
         $data['dispenseMode'] = $this->rest->getDispenseModes();
 
@@ -823,6 +842,7 @@ class Restaurant extends CI_Controller {
 
     public function order_delivery(){
         $Fest = $this->session->userdata('Fest');
+        $langId = $this->session->userdata('site_lang');
         // echo "<pre>";
         // print_r($_POST);
         // die;
@@ -833,14 +853,14 @@ class Restaurant extends CI_Controller {
             
             $EID = authuser()->EID;
             if (isset($_POST['getKtichenItem'])) {
-
+                $ItemNm = "i.ItemNm$langId as ItemNm";
                 if ($AutoDeliver == 1 && $AutoAllot == 1) {
                     // Auto auto Mode
-                    $kitchenData = $this->db2->query("SELECT k.ItemId, sum(k.Qty - k.AQty) as Qty, k.TA, k.CustRmks, i.ItemNm FROM `Kitchen` k, Eat_Kit ek, MenuItem i where i.ItemId = k.ItemId AND (k.Stat <= 3 AND k.Stat > 0) AND k.EID = $EID AND  ek.EID = k.EID AND k.KitCd = ek.KitCd AND (k.Qty - k.AQty) > 0 and (DateDiff(Now(),k.LstModDt) < 2)  Group by i.ItemId, k.TA, k.CustRmks Order by i.ItemNm")->result_array();
+                    $kitchenData = $this->db2->query("SELECT k.ItemId, sum(k.Qty - k.AQty) as Qty, k.TA, k.CustRmks, $ItemNm FROM `Kitchen` k, Eat_Kit ek, MenuItem i where i.ItemId = k.ItemId AND (k.Stat <= 3 AND k.Stat > 0) AND k.EID = $EID AND  ek.EID = k.EID AND k.KitCd = ek.KitCd AND (k.Qty - k.AQty) > 0 and (DateDiff(Now(),k.LstModDt) < 2)  Group by i.ItemId, k.TA, k.CustRmks Order by i.ItemNm1")->result_array();
                     //and (DateDiff(CurrDate(),k.LstModDt) < 2)
                 } elseif ($AutoDeliver == 0 && $AutoAllot == 1) {
                     // Auto Manual Mode
-                    $kitchenData = $this->db2->query("SELECT k.ItemId, sum(k.Qty - k.AQty) as Qty, k.TA, k.CustRmks, i.ItemNm FROM `Kitchen` k, Eat_Kit ek, MenuItem i where i.ItemId = k.ItemId AND (k.Stat <= 3 AND k.Stat > 0) AND k.EID = $EID AND  ek.EID = k.EID AND k.KitCd = ek.KitCd  AND (k.Qty - k.AQty) > 0 and (DateDiff(Now(),k.LstModDt) < 2) Group by i.ItemId, k.TA, k.CustRmks Order by i.ItemNm")->result_array();
+                    $kitchenData = $this->db2->query("SELECT k.ItemId, sum(k.Qty - k.AQty) as Qty, k.TA, k.CustRmks, $ItemNm FROM `Kitchen` k, Eat_Kit ek, MenuItem i where i.ItemId = k.ItemId AND (k.Stat <= 3 AND k.Stat > 0) AND k.EID = $EID AND  ek.EID = k.EID AND k.KitCd = ek.KitCd  AND (k.Qty - k.AQty) > 0 and (DateDiff(Now(),k.LstModDt) < 2) Group by i.ItemId, k.TA, k.CustRmks Order by i.ItemNm1")->result_array();
                     //and (DateDiff(CurrDate(),k.LstModDt) < 2)
                 }
 
@@ -1020,11 +1040,12 @@ class Restaurant extends CI_Controller {
                 } else {
                     $DCd = 0;
                 }
+                $ItemNm = "i.ItemNm$langId as ItemNm";
                 $CNo = $_POST['CNo'];
                 if ($Fest == 0) {
-                    $q = "SELECT i.ItemNm, sum(k.Qty) as Qty,if(k.TA = 0,'No','Yes') as TA,k.CustRmks, sum(k.AQty) as AQty, sum(k.Qty * k.ItmRate) as Amt from Kitchen k, MenuItem i where i.ItemId = k.ItemId AND k.CNo = ".$CNo." AND k.EID = $EID Group By i.ItemNm,k.Qty,k.TA,k.CustRmks";
+                    $q = "SELECT $ItemNm , sum(k.Qty) as Qty,if(k.TA = 0,'No','Yes') as TA,k.CustRmks, sum(k.AQty) as AQty, sum(k.Qty * k.ItmRate) as Amt from Kitchen k, MenuItem i where i.ItemId = k.ItemId AND k.CNo = ".$CNo." AND k.EID = $EID Group By i.ItemNm1, k.Qty,k.TA,k.CustRmks";
                 } else {
-                    $q = "SELECT i.ItemNm, sum(k.Qty) as Qty,if(k.TA = 0,'No','Yes') as TA,k.CustRmks, sum(k.AQty) as AQty, sum(k.Qty * k.ItmRate) as Amt from Kitchen k, MenuItem i, Eat_DispOutlets ed where i.ItemId = k.ItemId AND k.CNo = ".$CNo." AND ed.EID = k.EID AND ed.KitCd=k.KitCd AND ed.DCd = $DCd AND k.EID = $EID Group By i.ItemNm,k.Qty,k.TA,k.CustRmks";
+                    $q = "SELECT $ItemNm, sum(k.Qty) as Qty,if(k.TA = 0,'No','Yes') as TA,k.CustRmks, sum(k.AQty) as AQty, sum(k.Qty * k.ItmRate) as Amt from Kitchen k, MenuItem i, Eat_DispOutlets ed where i.ItemId = k.ItemId AND k.CNo = ".$CNo." AND ed.EID = k.EID AND ed.KitCd=k.KitCd AND ed.DCd = $DCd AND k.EID = $EID Group By i.ItemNm1, k.Qty,k.TA,k.CustRmks";
                     
                 }
                 // print_r($q);exit();
@@ -1290,7 +1311,7 @@ class Restaurant extends CI_Controller {
         // print_r($data['data11']);
         // die;
 
-        $data['title'] = 'Theme Setting';
+        $data['title'] = $this->lang->line('themeSetting');
         $this->load->view('rest/theme_setting',$data);   
     }
 
@@ -1306,7 +1327,7 @@ class Restaurant extends CI_Controller {
 
         $data['trans_type'] = array(1=>'Transfer To EID', 6=>'Purchase Return', 9=>'Issue to Kit', 11=>'Return From EID', 16 =>'Purchase', 19=>'Return from Kit', 25=>'Inward Adjust', 26=>'Outward Adjust', 27 => 'Stock Adjust');
         
-        $data['title'] = 'Stock List';
+        $data['title'] = $this->lang->line('stockList');
         $this->load->view('rest/stocks_list',$data);     
     }
 
@@ -1521,7 +1542,7 @@ class Restaurant extends CI_Controller {
         // print_r($data);
         // die;
 
-        $data['title'] = 'Bill View';
+        $data['title'] = $this->lang->line('billView');'Bill View';
         $this->load->view('rest/bill_view',$data);
     }
 
@@ -1767,7 +1788,7 @@ class Restaurant extends CI_Controller {
         $data['available_tables'] = $this->db2->query("SELECT * from Eat_tables where Stat = 0 and EID = ".$EID)->result_array();
         $data['selectMergeTable'] = $this->db2->query("SELECT TableNo , MergeNo FROM `Eat_tables` where EID = $EID")->result_array();
         // end when calling join unjoin table then load this query
-        $data['title'] = 'Table View';
+        $data['title'] = $this->lang->line('tableView');
         // echo "<pre>";
         // print_r($data);exit();
         $this->load->view('rest/table_sitting',$data);   
@@ -2816,18 +2837,6 @@ class Restaurant extends CI_Controller {
             if (!empty($items)) {
 
                 foreach ($items as $key => $data) {
-                    // if ($ChainId > 0) {
-                    //     $imgSrc = base_url()."uploads/c$ChainId/" . trim($data['imgSrc']) . ".jpg";
-                    // } else {
-                    //     $imgSrc = base_url()."uploads/e$EID/" . trim($data['imgSrc']) . ".jpg";
-                    // }
-                    // // print_r($imgSrc);
-                    // if (!file_exists($imgSrc)) {
-                    //     $imgSrc = base_url()."uploads/general/" . trim($data['imgSrc']) . ".jpg";
-                    // }
-
-                    // $items[$key]['imgSrc'] = $imgSrc;
-                    // $items[$key]['imgSrc'] = ltrim($imgSrc, "../");
 
                     if ($ChainId > 0) {
                         $imgSrc = "uploads/cChainId/" . trim($data['imgSrc']) . ".jpg";
@@ -3005,8 +3014,10 @@ class Restaurant extends CI_Controller {
             if ($data_type == 'bill') {
 
                 $MergeNo = $tableNo;
+                $lname = "m.ItemNm$langId";
+                $ipName = "ip.Name$langId as Portions";
 
-                $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotItemDisc,(SELECT sum(k1.PckCharge*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotPckCharge,   ip.Name as Portions,km.CNo,km.MergeNo, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.CustId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.MCNo AND km.MCNo IN (Select km1.MCNo from KitchenMain km1 where km1.MergeNo=$MergeNo group by km1.MergeNo) group by km.MCNo, k.ItemId, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by k.TaxType, m.ItemNm Asc")->result_array();
+                $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotItemDisc,(SELECT sum(k1.PckCharge*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotPckCharge, $ipName, km.CNo,km.MergeNo, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.CustId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.MCNo AND km.MCNo IN (Select km1.MCNo from KitchenMain km1 where km1.MergeNo=$MergeNo group by km1.MergeNo) group by km.MCNo, k.ItemId, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by k.TaxType, m.ItemNm1 Asc")->result_array();
 
                 $taxDataArray = array();
 
@@ -3110,9 +3121,11 @@ class Restaurant extends CI_Controller {
             die();
         }
         if(isset($_POST['get_table_order_items'])){
+            $langId = $this->session->userdata('site_lang');
+            $lname = "mi.ItemNm$langId as ItemNm";
 
             $tableno = $_POST['table_no'];
-            $data = $this->db2->select('k.CNo, k.TA, k.Qty, k.ItmRate, k.CustRmks,k.CellNo, km.BillStat kmBillStat, mi.ItemNm,mi.Value')
+            $data = $this->db2->select("k.CNo, k.TA, k.Qty, k.ItmRate, k.CustRmks,k.CellNo, km.BillStat kmBillStat, $lname, mi.Value")
                         ->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
                         ->join('MenuItem mi', 'mi.ItemId = k.ItemId', 'inner')
                         ->get_where('KitchenMain km', array(
@@ -3121,8 +3134,6 @@ class Restaurant extends CI_Controller {
                                             'km.BillStat' => 0)
                                     )
                         ->result_array();
-            // $q = "SELECT k.*,km.BillStat kmBillStat, i.ItemNm,i.Value from KitchenMain as km, Kitchen as k, MenuItem as i where km.CNo = k.CNo and km.MergeNo = '$tableno' and k.stat = 3 and i.Itemid = k.Itemid and km.BillStat = 0 ";
-            // $data = $this->db2->query($q)->result_array();
             
             echo json_encode($data);
         }
@@ -3442,7 +3453,10 @@ class Restaurant extends CI_Controller {
             }
                         // print_r($this->db2->last_query());die;
             $data['bills'] = $bill;
-            $data['payModes'] = $this->db2->get_where('PymtModes', array('Stat' => 0))->result_array();
+
+            $langId = $this->session->userdata('site_lang');
+            $pname = "Name$langId as Name";
+            $data['payModes'] = $this->db2->select("$pname, Name1, PMNo ")->get_where('PymtModes', array('Stat' => 0))->result_array();
             // echo "<pre>";
             // print_r($data);
             // die;
@@ -3490,7 +3504,7 @@ class Restaurant extends CI_Controller {
             }
 
             $status = 'success';
-            $response = 'Payment Collected';
+            $response = $this->lang->line('paymentCollected');
             
             if($this->session->userdata('AutoSettle') == 1){
                 autoSettlePayment($pay['BillId'], $pay['MergeNo']);
@@ -3555,7 +3569,11 @@ class Restaurant extends CI_Controller {
             $EID = authuser()->EID;
              // SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty),(k.ItmRate*k.Qty))) as OrdAmt,
 
-            $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT(m.ItemNm, ' - ' , k.CustItemDesc)),(m.ItemNm ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotItemDisc,(SELECT sum(k1.PckCharge*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotPckCharge,   ip.Name as Portions,km.CNo,km.MCNo, km.MergeNo, km.TableNo, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, km.CellNo, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.CustId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = 3) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.MCNo AND km.MCNo IN (Select km1.MCNo from KitchenMain km1 where km1.MergeNo=$MergeNo group by km1.MergeNo) group by km.MCNo, k.ItemId, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm, date(km.LstModDt), k.TaxType, ip.Name, c.ServChrg, c.Tips  order by k.TaxType, m.ItemNm Asc")->result_array();
+            $langId = $this->session->userdata('site_lang');
+            $lname = "m.ItemNm$langId";
+            $ipName = "ip.Name$langId  as Portions";
+
+            $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotItemDisc,(SELECT sum(k1.PckCharge*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotPckCharge, $ipName, km.CNo,km.MCNo, km.MergeNo, km.TableNo, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, km.CellNo, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.CustId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = 3) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.MCNo AND km.MCNo IN (Select km1.MCNo from KitchenMain km1 where km1.MergeNo=$MergeNo group by km1.MergeNo) group by km.MCNo, k.ItemId, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by k.TaxType, m.ItemNm1 Asc")->result_array();
 
             // remove string
             $MergeNo = str_replace("'","",$MergeNo);
@@ -3705,7 +3723,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function feedback(){
-        $data['title'] = 'Customer Feedback';
+        $data['title'] = $this->lang->line('customerFeedback');
         $data['list'] = $this->db2->order_by('created_at','DESC')->get('Feedback')->result_array();
         
         $this->load->view('rest/feedback_list', $data);
@@ -3764,7 +3782,7 @@ class Restaurant extends CI_Controller {
 
     public function link_generate(){
         include APPPATH.'third_party/phpqrcode/qrlib.php'; 
-        $data['title'] = 'Link Generate';
+        $data['title'] = $this->lang->line('qrColdeLink');
         $data['eid'] = '';
         $data['chain'] = '';
         $data['table'] = '';
@@ -4045,6 +4063,7 @@ class Restaurant extends CI_Controller {
 
     public function kot_print($MCNo, $mergeNo, $FKOTNo){
         $data['kotList'] = $this->rest->getKotList($MCNo, $mergeNo, $FKOTNo);
+        $data['title'] = $this->lang->line('kot');
         // echo "<pre>";
         // print_r($data);
         // die;
@@ -4111,7 +4130,7 @@ class Restaurant extends CI_Controller {
 
     public function bill_settle(){
         $status = 'error';
-        $response = 'Something went wrong please try again!';
+        $response = $this->lang->line('notSettled');
         if($this->input->method(true)=='POST'){
             // echo "<pre>";
             // print_r($_POST);
@@ -4121,7 +4140,7 @@ class Restaurant extends CI_Controller {
             autoSettlePayment($billId, $MergeNo);
 
             $status = 'success';
-            $response = 'Billing Settled.';
+            $response = $this->lang->line('billingSettled');
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
@@ -4234,7 +4253,10 @@ class Restaurant extends CI_Controller {
         $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
 
         $data['bills'] = $this->rest->getTAPendingBills();
-        $data['payModes'] = $this->db2->get_where('PymtModes', array('Stat' => 0))->result_array();
+
+        $langId = $this->session->userdata('site_lang');
+        $pname = "Name$langId as Name";
+        $data['payModes'] = $this->db2->select("$pname, Name1, PMNo ")->get_where('PymtModes', array('Stat' => 0))->result_array();
         // echo "<pre>";
         // print_r($data);
         // die;

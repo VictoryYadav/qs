@@ -5,7 +5,7 @@
 
   <meta charset="UTF-8">
   
-  <title>KOT Print | Eat-Out</title>
+  <title><?= $title; ?> | Eat-Out</title>
   <link href="<?= base_url(); ?>theme/images/Eat-Out-Icon.png" rel="shortcut icon">
   <style>
 @media print {
@@ -133,15 +133,15 @@
     <div>
       <table style="border-bottom: 2px solid black;border-top: 2px solid black;font-size: 18px;">
         <tr>
-          <td>KOT No: <?php 
-                        echo $kotList[0]['KitCd'].'-'.$kotList[0]['FKOTNo'];
+          <td><?= $this->lang->line('kotNo'); ?>: <?php 
+                        echo convertToUnicodeNumber($kotList[0]['KitCd']).'-'.convertToUnicodeNumber($kotList[0]['FKOTNo']);
                       ?><br>
             
           </td>
-          <td>Table: <?= $kotList[0]['TableNo']; ?></td>
+          <td><?= $this->lang->line('tableNo'); ?>: <?= convertToUnicodeNumber($kotList[0]['TableNo']); ?></td>
         </tr>
         <tr>
-          <td>Date: <?= date('d-M-Y H:i', strtotime($kotList[0]['LstModDt'])); ?></td>
+          <td><?= $this->lang->line('date'); ?>: <?= date('d-M-Y H:i', strtotime($kotList[0]['LstModDt'])); ?></td>
           <td><?php 
           if($kotList[0]['OType']== 101){
             echo "3rd Party";
@@ -160,7 +160,7 @@
           }else if($kotList[0]['OType']== 40){
             echo "Suite Service";
           }else{
-            echo "Sit In";
+            echo $this->lang->line('sitIn');
           } 
           ?></td>
         </tr>
@@ -172,10 +172,11 @@
         <div id="table" style="border-bottom: 2px solid black;font-size: 18px;">
             <table>
                 <tr class="tabletitle">
-                    <th class="item" style="text-align: left;">Menu Item</th>
-                    <th class="Hours" style="text-align: left;">Qty</th>
+                    <th class="item" style="text-align: left;"><?= $this->lang->line('menuItem'); ?></th>
+                    <th class="Hours" style="text-align: left;"><?= $this->lang->line('quantity'); ?></th>
                 </tr>
                 <?php
+                $delvery = $this->lang->line('del');
                 foreach($kotList as $key){
                 $portions = '';
                 $std = '';
@@ -195,9 +196,9 @@
                   $edt = '';
                   if($this->session->userdata('EDT') > 0 && $this->session->userdata('EType')== 5 && ($key['OType'] == 7 || $key['OType'] ==8)){
                       if(!empty($key['EDT'])){
-                        $ta = $ta.'  Del: '.date('H:i',strtotime($key['EDT']));
+                        $ta = $ta."  $delvery: ".convertToUnicodeNumber(date('H:i',strtotime($key['EDT'])));
                         if(empty($ta)){
-                          $ta = '<br>Del: '.date('H:i',strtotime($key['EDT']));
+                          $ta = "<br>$delvery: ".convertToUnicodeNumber(date('H:i',strtotime($key['EDT'])));
                         }
                       }
                   }
@@ -206,7 +207,7 @@
                     <td class="tableitem">
                       <?= $key['ItemNm'].$std.$portions; ?><br><?= $key['CustRmks']; ?><?= $ta ?>
                     </td>
-                    <td class="tableitem"><?= $key['Qty']; ?></td>
+                    <td class="tableitem"><?= convertToUnicodeNumber($key['Qty']); ?></td>
                 </tr>
                 <?php } ?>
             </table>

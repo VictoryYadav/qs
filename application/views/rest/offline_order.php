@@ -65,7 +65,8 @@
 
                                             <div class="col-md-3 form-group col-6">
                                                 <label><?= $this->lang->line('itemAmount'); ?></label>
-                                                <input type="text" id="total-value" readonly="" value="0" class="form-control form-control-sm">
+                                                <input type="hidden" id="total-value" readonly="" value="0" class="form-control form-control-sm">
+                                                <input type="text" id="total-valueView" readonly="" value="0" class="form-control form-control-sm">
                                             </div>
                                         </div>
 
@@ -132,13 +133,13 @@
                                                      ?>
                                                     <tr>
                                                         <td>
-                                                            <a href="<?php echo base_url('restaurant/bill/'.$key['BillId']); ?>" target="_blank"><?= $key['BillNo']; ?>
+                                                            <a href="<?php echo base_url('restaurant/bill/'.$key['BillId']); ?>" target="_blank"><?= convertToUnicodeNumber($key['BillNo']); ?>
                                                             </a>
                                                         </td>
                                                         <td><?= date('d-M-Y',strtotime($key['billTime'])); ?></td>
 
-                                                        <td><?= $key['PaidAmt']; ?></td>   
-                                                        <td ><?= $key['CellNo']; ?></td>
+                                                        <td><?= convertToUnicodeNumber($key['PaidAmt']); ?></td>   
+                                                        <td ><?= convertToUnicodeNumber($key['CellNo']); ?></td>
                                                         <td>
                                                             <a href="<?php echo base_url('restaurant/kot_print/'.$key['CNo'].'/'.$key['MergeNo'].'/'.$key['FKOTNo']); ?>" class='btn btn-primary btn-sm'>
                                                                 <i class="fas fa-print"></i>
@@ -210,7 +211,7 @@
         <div class="modal-dialog">
             <div class="modal-content" >
                 <div class="modal-header">
-                    <h6>Cash Collect</h6>
+                    <h6><?= $this->lang->line('cashCollect'); ?></h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
@@ -221,8 +222,8 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Mode</th>
-                                    <th>Amount</th>
+                                    <th><?= $this->lang->line('mode'); ?></th>
+                                    <th><?= $this->lang->line('amount'); ?></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -275,12 +276,13 @@
             $("#item-search-result").html('');
             $("#search-item").val('');
             $("#item-list-modal").modal('hide');
+            var qty = 1; // default quantity
             var template = `
             <tr class="item-id" data-id="${itemId}" kitcd-id="${itemKitCd}" pckcharge ="${PckCharge}" Itm_Portion ="${Itm_Portion}">
                 <td>${itemName}</td>
-                <td style="width:50px;"><input type="number" class="form-control form-control-sm item-qty" min="1" value="1" onblur="calculateValue(this)"style="width:50px;" ></td>
-                <td class="item-rate">${itemValue}</td>
-                <td class="item-value">${itemValue}</td>
+                <td style="width:50px;"><input type="text" class="form-control form-control-sm item-qty" min="1" value="${convertToUnicodeNo(qty)}" onblur="calculateValue(this)" style="width:50px;" ></td>
+                <td class="item-rate">${convertToUnicodeNo(itemValue)}</td>
+                <td class="item-value">${convertToUnicodeNo(itemValue)}</td>
                 <td><input type="checkbox" value="1" class="is_take_away" `+ch+`></td>
                 <td><input type="text" class="form-control form-control-sm item-remarks" style="width:100%;"></td>
                 <td style=" text-align: center; ">
@@ -304,18 +306,27 @@
 
         function calculateTotal() {
             var totalValue = 0;
-
+            var val = 0;
             $(".item-value").each(function(index, el) {
-                totalValue += parseInt($(this).text());
+                val = $(this).text();
+                val = convertDigitToEnglish(val);
+                totalValue += parseInt(val);
+                // totalValue += parseInt($(this).text());
             });
 
             $("#total-value").val(totalValue);
+            $("#total-valueView").val(convertToUnicodeNo(totalValue));
         }
 
         function calculateValue(input) {
+            var total = 0;
             var qty = $(input).val();
             var rate = $(input).parent('td').next('td').text();
-            $(input).parent('td').next('td').next('td').text(qty * rate);
+            qty = convertDigitToEnglish(qty);
+            rate = convertDigitToEnglish(rate);
+            total = qty * rate;
+            $(input).val(convertToUnicodeNo(qty));
+            $(input).parent('td').next('td').next('td').text(convertToUnicodeNo(total));
             calculateTotal();
         }
 
@@ -390,13 +401,7 @@
                 var thirdPartyRef = $("#3rd-party-refNo").val();
                 var customerAddress = $("#cust-address").val();
                 var customerPhone = $("#phone").val();
-                // var thirdParty = 0;
-
-                // var thirdPartyRef = 0;
-
-                // var customerAddress = 0;
-
-                // var customerPhone = 1111111111;
+                
                 var totalValue = $("#total-value").val();
                 var itemCount = $("tr").length;
                 var formFill = true;
@@ -461,7 +466,7 @@
                     });
 
                     $(".item-qty").each(function(index, el) {
-                        itemQty.push($(this).val());
+                        itemQty.push( convertDigitToEnglish($(this).val()) );
                     });
 
                     $(".taxtype").each(function(index, el) {
@@ -487,7 +492,7 @@
                     });
 
                     $(".item-rate").each(function(index, el) {
-                        item_value.push($(this).text());
+                        item_value.push( convertDigitToEnglish($(this).text()) );
                     });
 
                     var Uphone = $('#phone').val();
@@ -528,11 +533,11 @@
                             console.log(response);
                             if (response.status) {
                                 if (data_type == 'bill') {
-                                    alert("Order Billed Successfully");
+                                    alert("<?= $this->lang->line('orderBillledSuccessfully'); ?>");
                                     window.location = "<?= base_url('restaurant/bill/'); ?>"+response.data.billId;
                                     return false;
                                 }else{
-                                alert("Order Placed Successfully");
+                                alert("<?= $this->lang->line('orderPlacedSuccessfully'); ?>");
                                 
                                 var sitinKOTPrint = response.data.sitinKOTPrint;
                                 // alert(response.data.url)
@@ -588,7 +593,7 @@
                                 ch = 'checked';
                             }
                             b+='<tr>';
-                            b+='<td>'+a[i].ItemNm+'</td><td>'+a[i].Qty+'</td><td>'+a[i].ItmRate+'</td><td class="item-value">'+a[i].Value+'</td><td><input type="checkbox" value="'+a[i].TA+'" '+ch+' disabled /></td><td>'+a[i].CustRmks+'</td>';
+                            b+='<td>'+a[i].ItemNm+'</td><td>'+convertToUnicodeNo(a[i].Qty)+'</td><td>'+convertToUnicodeNo(a[i].ItmRate)+'</td><td class="item-value">'+convertToUnicodeNo(a[i].Value)+'</td><td><input type="checkbox" value="'+a[i].TA+'" '+ch+' disabled /></td><td>'+a[i].CustRmks+'</td><td></td>';
                             b+='</tr>';
                         }
 
@@ -608,7 +613,7 @@
         }
 
         function cashCollect(billId, oType, tableNo, mergeNo, cellNo, paidAmt, MCNo,EID){
-            var tbl = '<input type="hidden" name="BillId" value="'+billId+'"/><input type="hidden" name="oType" value="'+oType+'"/><input type="hidden" name="TableNo" value="'+tableNo+'"/><input type="hidden" name="MCNo" value="'+MCNo+'"/><input type="hidden" name="EID" value="'+EID+'"/><input type="hidden" name="MergeNo" value="'+mergeNo+'"/><input type="hidden" name="CellNo" value="'+cellNo+'"/><input type="hidden" name="TotBillAmt" value="'+paidAmt+'"/><input type="text" name="PaidAmt" value="'+paidAmt+'" required class="form-control form-control-sm" />'
+            var tbl = '<input type="hidden" name="BillId" value="'+billId+'"/><input type="hidden" name="oType" value="'+oType+'"/><input type="hidden" name="TableNo" value="'+tableNo+'"/><input type="hidden" name="MCNo" value="'+MCNo+'"/><input type="hidden" name="EID" value="'+EID+'"/><input type="hidden" name="MergeNo" value="'+mergeNo+'"/><input type="hidden" name="CellNo" value="'+cellNo+'"/><input type="hidden" name="TotBillAmt" value="'+paidAmt+'"/><input type="text" name="PaidAmt" value="'+convertToUnicodeNo(paidAmt)+'" required class="form-control form-control-sm" onblur="changeValue(this)" />'
 
             // var temp ='<tr>\
             //             <td>'+data.BillNo+'</td>\
@@ -623,8 +628,12 @@
         function cashCollectData(){
             var data = $('#cashForm').serializeArray();
           
-            var PaidAmt = data[8].value;
             var TotBillAmt = data[7].value;
+            var PaidAmt = data[8].value;
+
+            PaidAmt = convertDigitToEnglish(PaidAmt);
+            data[8].value = PaidAmt;
+
           // console.log(PaidAmt+' , '+TotBillAmt);
           if(parseFloat(PaidAmt) >= parseFloat(TotBillAmt)){
             $.post('<?= base_url('restaurant/collect_payment') ?>',data,function(res){
@@ -656,9 +665,9 @@
         }
 
         // settle payments
-        function setPaidAmount(id , CNo , MergeNo , CustId, billNo, billAmt) {
+        function setPaidAmount(billId , CNo , MergeNo , CustId, billNo, billAmt) {
 
-            $.post('<?= base_url('restaurant/bill_settle') ?>',{id:id,CNo:CNo,MergeNo:MergeNo,CustId:CustId,billNo:billNo,billAmt:billAmt},function(response){
+            $.post('<?= base_url('restaurant/bill_settle') ?>',{billId:billId,CNo:CNo,MergeNo:MergeNo,CustId:CustId,billNo:billNo,billAmt:billAmt},function(response){
 
                 if(response.status == 'success') {
                         alert("Successfully Settled");
@@ -668,4 +677,10 @@
                 location.reload();
             });
         }
+
+        function changeValue(input) {
+            var val = $(input).val();
+            $(input).val(convertToUnicodeNo(val));
+        }
+
     </script>

@@ -46,13 +46,13 @@
                                                 <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>Name</th>
-                                                    <th>Phone</th>
-                                                    <th>Email</th>
-                                                    <th>Subject</th>
-                                                    <th>Type</th>
-                                                    <th>Description</th>
-                                                    <th>Date</th>
+                                                    <th><?= $this->lang->line('username'); ?></th>
+                                                    <th><?= $this->lang->line('mobile'); ?></th>
+                                                    <th><?= $this->lang->line('email'); ?></th>
+                                                    <th><?= $this->lang->line('subject'); ?></th>
+                                                    <th><?= $this->lang->line('type'); ?></th>
+                                                    <th><?= $this->lang->line('description'); ?></th>
+                                                    <th><?= $this->lang->line('date'); ?></th>
                                                 </tr>
                                                 </thead>
             

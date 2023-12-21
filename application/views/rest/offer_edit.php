@@ -20,37 +20,22 @@
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <!-- start page title -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="page-title-box align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18 text-center"><?php echo $title; ?>
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end page title -->
-
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <div class="text-right p-2"><button class="btn btn-danger btn-sm" onclick="delete_offer(<?= $SchCd?>)" style="cursor: pointer;">Delete Scheme</button></div>
+                                        <div class="text-right p-2"><button class="btn btn-danger btn-sm" onclick="delete_offer(<?= $SchCd?>)" style="cursor: pointer;"><?= $this->lang->line('deleteScheme');?></button></div>
                                         <form method="post" action="<?php echo base_url('restaurant/offer_ajax'); ?>" enctype="multipart/form-data">
                                             <input type="hidden" name="updateOffer" value="1">
                                             
                                             <input type="hidden" name="SchCd" value="<?= $SchCd?>">
                                             <div class="row">
                                                 <div class="form-group col-md-4">
-                                                    <label for="schnm">Scheme Name</label>
+                                                    <label for="schnm"><?= $this->lang->line('schemeName');?></label>
                                                     <input type="text" id="schnm" name="SchNm" class="form-control" placeholder="Enter scheme name" required="" value="<?= $scheme[0]['SchNm']?>" />
                                                 </div>
-                                                <!-- <div class="form-group col-4">
-                                                    <label for="schdesc">Scheme Description</label>
-                                                    <textarea type="text" id="schdesc" name="SchDesc" class="form-control" placeholder="Enter scheme desription" required="" cols="10" ></textarea>
-                                                </div> -->
                                                 <div class="form-group col-md-4 col-6">
-                                                    <label for="sch_typ">Scheme Type</label>
+                                                    <label for="sch_typ"><?= $this->lang->line('schemeType');?></label>
                                                     <select class="form-control" id="sch_typ" name="SchTyp" required="">
                                                         <option value="">Select Scheme Type</option>
                                                         <?php 
@@ -62,7 +47,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-4 col-6">
-                                                    <label for="schcatg">Scheme Category</label>
+                                                    <label for="schcatg"><?= $this->lang->line('schemeCategory');?></label>
                                                     <select class="form-control" id="schcatg" name="SchCatg" required="">
                                                         <option value="">Select Scheme Category</option>
                                                         <?php 
@@ -75,16 +60,16 @@
                                                 </div>
 
                                                 <div class="form-group col-md-3 col-6">
-                                                    <label for="from_date">From Date</label>
+                                                    <label for="from_date"><?= $this->lang->line('fromDate');?></label>
                                                     <input type="date" name="FrmDt" class="form-control" id="from_date" <?php if(!empty($scheme[0]['FrmDt'])){?> value="<?= $scheme[0]['FrmDt']?>" <?php }?> />
                                                 </div>
                                                 <div class="form-group col-md-3 col-6">
-                                                    <label for="to_date">To Date</label>
+                                                    <label for="to_date"><?= $this->lang->line('toDate');?></label>
                                                     <input type="date" name="ToDt" class="form-control" id="to_date" <?php if(!empty($scheme[0]['ToDt'])){?> value="<?= $scheme[0]['ToDt']?>" <?php }?> />
                                                 </div>
                                                 
                                                 <div class="form-group col-md-3 col-6">
-                                                    <label for="from_day">From Day</label>
+                                                    <label for="from_day"><?= $this->lang->line('fromDay');?></label>
                                                     <select class="form-control" id="from_day" name="FromDayNo" required="">
                                                         <option value="">Select From Day</option>
                                                         <?php 
@@ -96,7 +81,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-3 col-6">
-                                                    <label for="to_day">To Day</label>
+                                                    <label for="to_day"><?= $this->lang->line('toDay');?></label>
                                                     <select class="form-control" id="to_day" name="ToDayNo" required="">
                                                         <option value="">Select To Day</option>
                                                         <?php 
@@ -108,19 +93,19 @@
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-3 col-6">
-                                                    <label for="from_time">From Time</label>
+                                                    <label for="from_time"><?= $this->lang->line('fromTime');?></label>
                                                     <input type="time" name="FrmTime" class="form-control" id="from_time" <?php if(!empty($scheme[0]['FrmTime'])){?> value="<?= $scheme[0]['FrmTime']?>" <?php }?> />
                                                 </div>
                                                 <div class="form-group col-md-3 col-6">
-                                                    <label for="to_time">To Time</label>
+                                                    <label for="to_time"><?= $this->lang->line('toTime');?></label>
                                                     <input type="time" name="ToTime" class="form-control" id="to_time" <?php if(!empty($scheme[0]['ToTime'])){?> value="<?= $scheme[0]['ToTime']?>" <?php }?> />
                                                 </div>
                                                 <div class="form-group col-md-3 col-6">
-                                                    <label for="alt_from_time">Alternate From Time</label>
+                                                    <label for="alt_from_time"><?= $this->lang->line('alternateFromTime');?></label>
                                                     <input type="time" name="AltFrmTime" class="form-control" id="alt_from_time" <?php if(!empty($scheme[0]['AltFrmTime'])){?> value="<?= $scheme[0]['AltFrmTime']?>" <?php }?> />
                                                 </div>
                                                 <div class="form-group col-md-3 col-6">
-                                                    <label for="alt_to_time">Alternate To Time</label>
+                                                    <label for="alt_to_time"><?= $this->lang->line('alternateToTime');?></label>
                                                     <input type="time" name="AltToTime" class="form-control" id="alt_to_time" <?php if(!empty($scheme[0]['ToTime'])){?> value="<?= $scheme[0]['ToTime']?>" <?php }?> />
                                                 </div>
                                             </div>
@@ -130,18 +115,18 @@
                                                     <div class="description1" id="description1" style="display: block;">
                                                         <hr>
                                                         <input type="hidden" name="SDetCd[]" value="<?= $key['SDetCd']?>">
-                                                        <div class="text-center"><h5>Offer Details - <?= $n?> <span  onclick="delete_offer_description(<?= $key['SDetCd']?>)" style="cursor: pointer;"><i class="fa fa-trash" style="color: red;"></i></span></h5></div>
+                                                        <div class="text-center"><h5><?= $this->lang->line('offerDetails');?> - <?= convertToUnicodeNumber($n); ?> <span  onclick="delete_offer_description(<?= $key['SDetCd']?>)" style="cursor: pointer;"><i class="fa fa-trash" style="color: red;"></i></span></h5></div>
                                                         <div class="row">
                                                             <div class="form-group col-md-4 col-6">
-                                                                <label for="description1_description">Description</label>
+                                                                <label for="description1_description"><?= $this->lang->line('description');?></label>
                                                                 <input type="text" name="description[]" class="form-control" id="description<?= $n?>_description" maxlength="100" placeholder="Enter Scheme Description" value="<?= $key['SchDesc']?>" />
                                                             </div>
                                                             <div class="form-group col-md-4 col-6">
-                                                                <label for="description1_image">Image</label>
+                                                                <label for="description1_image"><?= $this->lang->line('image');?></label>
                                                                 <input type="file" name="description_image[]" class="form-control" id="description<?= $n?>_image" />
                                                             </div>
                                                             <div class="form-group col-md-4 col-6">
-                                                                <label for="description1_cid">CID</label>
+                                                                <label for="description1_cid"><?= $this->lang->line('cuisine');?></label>
                                                                 <select class="form-control" id="description<?= $n?>_cid" name="description_cid[]" onchange="getCategory(<?= $n?>)">
                                                                     <option value="">Select Cuisine</option>
                                                                     <?php 
@@ -152,7 +137,7 @@
                                                                 </select>
                                                             </div>
                                                             <div class="form-group col-md-4 col-6" id="description<?= $n?>_mcatgid_div" style="display: block;">
-                                                                <label for="description<?= $n?>_mcatgid">Menu Category</label>
+                                                                <label for="description<?= $n?>_mcatgid"><?= $this->lang->line('menuCategory');?></label>
                                                                 <input type="hidden" name="" id="mcatgid<?= $n?>" value="<?= $key['MCatgId']?>">
                                                                 <select class="form-control" id="description<?= $n?>_mcatgid" name="description_mcatgid[]">
                                                                     <option value="">Select Menu Category</option>
@@ -160,7 +145,7 @@
                                                                 </select>
                                                             </div>
                                                             <div class="form-group col-md-4 col-6" id="description<?= $n?>_itemtyp_div" style="display: block;">
-                                                                <label for="description<?= $n?>_itemtyp">Item Type</label>
+                                                                <label for="description<?= $n?>_itemtyp"><?= $this->lang->line('itemType');?></label>
                                                                 <select class="form-control" id="description<?= $n?>_itemtyp" name="description_itemtyp[]" onchange="getItems(<?= $n?>)">
                                                                     <option value="">Select Item Type</option>
                                                                     <?php foreach($item_types as $it){?>
@@ -169,7 +154,7 @@
                                                                 </select>
                                                             </div>
                                                             <div class="form-group col-md-4 col-6" id="description<?= $n?>_item_div" style="display: block;">
-                                                                <label for="description<?= $n?>_item">Item</label>
+                                                                <label for="description<?= $n?>_item"><?= $this->lang->line('item');?></label>
                                                                 <input type="hidden" name="" id="item_id<?= $n?>" value="<?= $key['ItemId']?>">
                                                                 <select class="form-control" id="description<?= $n?>_item" name="description_item[]" onchange="getItemPortion(<?= $n?>)">
                                                                     <option value="">Select Item</option>
@@ -177,7 +162,7 @@
                                                                 </select>
                                                             </div>
                                                             <div class="form-group col-md-4 col-6" id="description<?= $n?>_itemportion_div" style="display: block;">
-                                                                <label for="description<?= $n?>_itemportion">Item Portion</label>
+                                                                <label for="description<?= $n?>_itemportion"><?= $this->lang->line('itemPortion');?></label>
                                                                 <input type="hidden" name="" id="ipcd<?= $n?>" value="<?= $key['IPCd']?>">
                                                                 <select class="form-control" id="description<?= $n?>_itemportion" name="description_itemportion[]">
                                                                     <option value="">Select Item Portion</option>
@@ -185,11 +170,11 @@
                                                                 </select>
                                                             </div>
                                                             <div class="form-group col-md-4 col-6" id="description<?= $n?>_quantity_div" style="display: block;">
-                                                                <label for="description<?= $n?>_quantity">Quantity</label>
+                                                                <label for="description<?= $n?>_quantity"><?= $this->lang->line('quantity');?></label>
                                                                 <input type="number" class="form-control" id="description<?= $n?>_quantity" name="description_quantity[]" value="<?= $key['Qty']?>">
                                                             </div>
                                                             <div class="form-group col-md-4 col-6" id="description<?= $n?>_discountitem_div" style="display: block;">
-                                                                <label for="description<?= $n?>_discountitem">Discount Item</label>
+                                                                <label for="description<?= $n?>_discountitem"><?= $this->lang->line('discountItem');?></label>
                                                                 <input type="hidden" name="" id="disc_item_id<?= $n?>" value="<?= $key['Disc_ItemId']?>">
                                                                 <select class="form-control" id="description<?= $n?>_discountitem" name="description_discountitem[]" onchange="getDiscItemPortion(<?= $n?>)">
                                                                     <option value="">Select Item</option>
@@ -198,7 +183,7 @@
                                                             </div>
                                                             
                                                             <div class="form-group col-md-4 col-6" id="description<?= $n?>_discountitemportion_div" style="display: block;">
-                                                                <label for="description<?= $n?>_discountitemportion">Discount Item Portion</label>
+                                                                <label for="description<?= $n?>_discountitemportion"><?= $this->lang->line('discountItemPortion');?></label>
                                                                 <input type="hidden" name="" id="disc_ipcd<?= $n?>" value="<?= $key['Disc_IPCd']?>">
                                                                 <select class="form-control" id="description<?= $n?>_discountitemportion" name="description_discountitemportion[]">
                                                                     <option value="">Select Discount Item Portion</option>
@@ -206,26 +191,26 @@
                                                                 </select>
                                                             </div>
                                                             <div class="form-group col-md-4 col-6" id="description<?= $n?>_discountquantity_div" style="display: block;">
-                                                                <label for="description<?= $n?>_discountquantity">Discount Item Quantity</label>
+                                                                <label for="description<?= $n?>_discountquantity"><?= $this->lang->line('discountItemQuantity');?></label>
                                                                 <input type="number" class="form-control" id="description<?= $n?>_discountquantity" name="description_discountquantity[]" value="<?= $key['Disc_Qty']?>">
                                                             </div>
                                                             <div class="form-group col-md-4 col-6" id="description<?= $n?>_minbillamount_div" style="display: block;">
-                                                                <label for="description<?= $n?>_minbillamount">Minimum Bill Amount</label>
+                                                                <label for="description<?= $n?>_minbillamount"><?= $this->lang->line('minimumBillAmount');?></label>
                                                                 <input type="number" class="form-control" id="description<?= $n?>_minbillamount" name="description_minbillamount[]" value="<?= $key['MinBillAmt']?>">
                                                             </div>
                                                             <div class="form-group col-md-4 col-6" id="description<?= $n?>_discountpercent_div" style="display: block;">
-                                                                <label for="description<?= $n?>_discountpercent">Discount Percentage</label>
+                                                                <label for="description<?= $n?>_discountpercent"><?= $this->lang->line('discountPercentage');?></label>
                                                                 <input type="number" class="form-control" id="description<?= $n?>_discountpercent" name="description_discountpercent[]" value="<?= $key['Disc_pcent']?>">
                                                             </div>
                                                             <div class="form-group col-md-4 col-6" id="description<?= $n?>_discountamount_div" style="display: block;">
-                                                                <label for="description<?= $n?>_discountamount">Discount Amount</label>
+                                                                <label for="description<?= $n?>_discountamount"><?= $this->lang->line('discountAmount');?> </label>
                                                                 <input type="number" class="form-control" id="description<?= $n?>_discountamount" name="description_discountamount[]" value="<?= $key['Disc_Amt']?>">
                                                             </div>
                                                         </div>
                                                     </div>
                                                 <?php $n++;}?>
                                             </div>
-                                            <div class="text-center"><button type="button" class="btn btn-primary btn-sm" onclick="add_more_description()" id="add_more" style="display: block;">Add Offer Details</button>&nbsp;&nbsp;<button type="submit" class="btn btn-primary btn-sm" >Submit</button></div>
+                                            <div class="text-center"><button type="button" class="btn btn-primary btn-sm" onclick="add_more_description()" id="add_more" style="display: block;"><?= $this->lang->line('addMoreOfferDetails');?></button>&nbsp;&nbsp;<button type="submit" class="btn btn-primary btn-sm" ><?= $this->lang->line('update');?></button></div>
                                         </form>
                                     </div>
                                 </div>

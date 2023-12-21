@@ -43,7 +43,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-md-3 col-2">
-                                                    <input type="submit" class="btn btn-info btn-sm" value="GET">
+                                                    <input type="submit" class="btn btn-info btn-sm" value="<?= $this->lang->line('search'); ?>">
                                                 </div>
                                             </div>
                                         </form>
@@ -56,9 +56,9 @@
                                                 <thead>
                                                 <tr style="background: #cbc6c6;">
                                                     <th>#</th>
-                                                    <th>Item Name</th>
-                                                    <th>Portion</th>
-                                                    <th>Available</th>
+                                                    <th><?= $this->lang->line('item'); ?></th>
+                                                    <th><?= $this->lang->line('portion'); ?></th>
+                                                    <th><?= $this->lang->line('available'); ?></th>
                                                 </tr>
                                                 </thead>
             
