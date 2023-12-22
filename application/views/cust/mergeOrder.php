@@ -240,7 +240,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <p class="modal-title offers-txt">Offers</p>
+                    <p class="modal-title offers-txt">Orders</p>
                     <button type="button" class="close" data-dismiss="modal">
                         <i class="fa fa-times text-danger" aria-hidden="true"></i>
                     </button>
@@ -251,9 +251,9 @@
                       <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Item</th>
-                                    <th>Qty</th>
-                                    <th>Value</th>
+                                    <th><?= $this->lang->line('item'); ?></th>
+                                    <th><?= $this->lang->line('quantity'); ?></th>
+                                    <th><?= $this->lang->line('value'); ?></th>
                                 </tr>
                             </thead>
                             <tbody id="orderBody">
@@ -367,7 +367,7 @@
                                     if(element['Included'] != 0 ){
 
                                         html += `<tr>`;
-                                        html += `<td>${element['ShortName']} ${element['TaxPcent']} % </td>`;
+                                        html += `<td>${element['ShortName']} ${convertToUnicodeNo(element['TaxPcent'])} % </td>`;
                                         html += `<td class="text-center"></td>`;
                                         html += `<td class="text-center"></td>`;
                                         html += `<td class="text-right">${convertToUnicodeNo(parseFloat(element['SubAmtTax']).toFixed(2))}</td>`;
@@ -424,7 +424,7 @@
                             if(element['Included'] != 0 ){
                                 totSGST = totSGST + parseFloat(element['TaxPcent']);
                                 html += `<tr>`;
-                                html += `<td>${element['ShortName']} ${element['TaxPcent']} % </td>`;
+                                html += `<td>${element['ShortName']} ${convertToUnicodeNo(element['TaxPcent'])} % </td>`;
                                 html += `<td class="text-center"></td>`;
                                 html += `<td class="text-center"></td>`;
                                 html += `<td class="text-right">${convertToUnicodeNo(parseFloat(element['SubAmtTax']).toFixed(2))}</td>`;
@@ -525,7 +525,8 @@
                         html_body +=`<table style="width:100%;">`;
                         html_body +=`<tr class="<?= ($Tips == 0 ? 'hideDiv' : ''); ?>">`;
                         html_body +=`   <th><?= $this->lang->line('tips'); ?></th>`;
-                        html_body +=`   <td><input type="hidden" name="MCNo" value="`+MCNo+`"><input id="tips" type="number" class="" value="0" onchange="change_tip()" name="tip"></td>`;
+                        html_body +=`   <td><input type="hidden" name="MCNo" value="`+MCNo+`"><input id="tips" type="text" class="" value="0" onchange="change_tip()">
+                        <input id="tipsVal" type="hidden" value="0" name="tip"></td>`;
                         html_body +=`</tr>`;
                         html_body +=`</table>`;
                         html_body +=`</div>`;
@@ -562,7 +563,9 @@
         var total =parseFloat( payableAmt ) + parseInt(tips);
 
         $("#payable").text(convertToUnicodeNo(total));
-        $("#payableAmount").val(convertToUnicodeNo(total));
+        $("#payableAmount").val(total);
+        $("#tipsVal").val(tips);
+        $("#tips").val(convertToUnicodeNo(tips));
     }
 
    function getOrderDetails(CNo){
@@ -571,16 +574,17 @@
             if(res.status == 'success'){
               // alert(res.response);
               var data = res.response;
-              console.log(data);
               var temp = '';
               var total = 0;
+              var totalText = "<?= $this->lang->line('total'); ?>";
               for (var i = 0; i < data.length; i++) {
                 total = parseInt(total) + parseInt(data[i].Qty * data[i].ItmRate);
-                  temp += '<tr><td>'+data[i].ItemNm+'</td><td>'+data[i].Qty+'</td><td>'+(data[i].Qty * data[i].ItmRate)+'</td></tr>';
+                  temp += '<tr><td>'+data[i].ItemNm+'</td><td>'+convertToUnicodeNo(data[i].Qty)+'</td><td>'+convertToUnicodeNo(data[i].Qty * data[i].ItmRate)+'</td></tr>';
               }
-              temp +='<tr><td></td><td>Total</td><td><b>'+total+'</b></td></tr>';
+              temp +='<tr><td></td><td>'+totalText+'</td><td><b>'+convertToUnicodeNo(total)+'</b></td></tr>';
               $('#orderBody').html(temp);
               $('#orderDetails').modal('show');
+              $('.offers-txt').html(data[0].CellNo);
             }else{
             }
         });

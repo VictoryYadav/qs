@@ -314,7 +314,7 @@ width: 100%;*/
                                                 <button class="btn btn-primary btn-sm" title="Bill Create" id="billCreatebtn" style="display: none;">
                                                     <i class="fas fa-file-invoice"></i>
                                                 </button>
-                                                 <?php
+                                                <?php
                                                 if (($EType == 5) && ($this->session->userdata('Move') > 0)) {
                                                     ?>
                                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#move_table_modal" title="Move Table">
@@ -670,7 +670,7 @@ width: 100%;*/
     <div class="modal-dialog">
         <div class="modal-content" >
             <div class="modal-header">
-                <h6>MOVE TABLE</h6>
+                <h6><?= $this->lang->line('moveTable'); ?></h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -681,11 +681,11 @@ width: 100%;*/
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>From</label>
+                                <label><?= $this->lang->line('from'); ?></label>
                                 <select class="form-control select2 custom-select" required="" name="from_table" id="from_table" onchange="get_phone_num()" style="width: 100%;">
-                                    <option value="">Table No</option>
+                                    <option value=""><?= $this->lang->line('tableNo'); ?></option>
                                     <?php foreach($captured_tables as $key){?>
-                                        <option value="<?= $key['TableNo']?>"><?= $key['TableNo']?></option>
+                                        <option value="<?= $key['TableNo']?>"><?= convertToUnicodeNumber($key['TableNo']); ?></option>
                                     <?php }?>
                                 </select>
                             </div>
@@ -693,23 +693,25 @@ width: 100%;*/
                         
                         <div class="col-md-6" >
                             <div class="form-group">
-                                <label>To</label>
+                                <label><?= $this->lang->line('to'); ?></label>
                                 <select class="form-control select2 custom-select" required="" name="to_table" style="width: 100%;" id="to_table">
-                                    <option value="">Table No</option>
+                                    <option value=""><?= $this->lang->line('tableNo'); ?></option>
                                     <?php foreach($available_tables as $key){?>
-                                        <option value="<?= $key['TableNo']?>"><?= $key['TableNo']?></option>
+                                        <option value="<?= $key['TableNo']?>"><?= convertToUnicodeNumber($key['TableNo']); ?></option>
                                     <?php }?>
                                 </select>
-
                             </div>
-
                         </div>
                         <br>
                         <div class="col-md-12 text-left" id="num_list">
                             
                         </div>
 
-                        <div class="text-right p-4 col-md-12"><button type="submit" class="btn btn-sm btn-primary">MOVE</button></div>
+                        <div class="text-right p-4 col-md-12">
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <?= $this->lang->line('move'); ?>
+                            </button>
+                        </div>
 
                     </div>
                 </form>

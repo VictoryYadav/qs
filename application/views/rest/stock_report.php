@@ -26,17 +26,6 @@ $RestName = authuser()->RestName;
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <!-- start page title -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="page-title-box align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18 text-center"><?php echo $title; ?>
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end page title -->
-
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -46,12 +35,12 @@ $RestName = authuser()->RestName;
                                             <table id="stock_report_table" class="table table-bordered">
                                                 <thead>
                                                 <!-- <th>Sl no</th> -->
-                                                <th>Item Cd</th>
-                                                <th>Item Name</th>
-                                                <th>Category</th>
+                                                <th><?= $this->lang->line('itemCd'); ?></th>
+                                                <th><?= $this->lang->line('item'); ?></th>
+                                                <th><?= $this->lang->line('category'); ?></th>
                                                 <!-- <th>Selled</th>
                                                 <th>Recieved</th> -->
-                                                <th>Diff (RCVD - ISSUED)</th>
+                                                <th><?= $this->lang->line('DifferenceRCVD_ISSUED'); ?></th>
                                                 </thead>
             
                                                 <tbody>

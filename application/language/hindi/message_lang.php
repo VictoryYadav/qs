@@ -251,4 +251,13 @@ $lang['report']				= 'रिपोर्ट';
 $lang['addStock']			= 'ऐड स्टॉक';
 $lang['from']				= 'से';
 $lang['to']					= 'तक';
+$lang['stockConsumption']	= 'स्टॉक उपभोग';
+$lang['DifferenceRCVD_ISSUED']= 'भिन्न(RCVD-ISSUED)';
+$lang['category']			= 'केटेगरी';
+$lang['itemCd']				= 'आइटम सी डी';
+$lang['stockReport']		= 'स्टॉक रिपोर्ट';
+$lang['mainStore']			= 'मुख्य स्टोर ';
+$lang['uom']				= 'उओम';
+$lang['moveTable']			= 'मूव टेबल';
+$lang['move']				= 'मूव';
 

@@ -1368,6 +1368,7 @@
                     if (response.status == 2) {
                         alert('Bill has been generated, please pay now');
                         window.location = `${response.redirectTo}`;
+                        return false;
                     }
                     // 
                     if (response.status == 100) {

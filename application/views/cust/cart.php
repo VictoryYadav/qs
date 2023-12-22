@@ -428,17 +428,17 @@ function billBaseOffer(){
               var temp = '';
               for(i=0; i<data.length; i++){
                 temp += '<tr><input type="hidden" name="TblTyp['+data[i].ItemId+'][]" value="'+data[i].TblTyp+'"><input type="hidden" name="itemKitCd['+data[i].ItemId+'][]" value="'+data[i].KitCd+'"><input type="hidden" name="tax_type['+data[i].ItemId+'][]" value="'+data[i].TaxType+'"><input type="hidden" name="prepration_time['+data[i].ItemId+'][]" value="'+data[i].PrepTime+'"><input type="hidden" name="Itm_Portions['+data[i].ItemId+'][]" value="'+data[i].Itm_Portions+'">\
-                            <td><input type="hidden" name="itemArray[]" value="'+data[i].ItemId+'">'+data[i].lname+'</td>\
+                            <td><input type="hidden" name="itemArray[]" value="'+data[i].ItemId+'">'+data[i].ItemNm+'</td>\
                             <td><div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;"><span class="input-group-btn">\
                                     <button type="button" id="minus-qty'+data[i].ItemId+'" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 25px;" disabled="" onclick="decQty('+data[i].ItemId+')">-\
                                     </button>\
                                 </span>\
-                                <input type="text" readonly="" id="qty-val'+data[i].ItemId+'" class="form-control input-number" value="0" min="1" max="10" style="text-align: center;" name="qty['+data[i].ItemId+'][]">\
+                                <input type="text" readonly="" id="qty-val'+data[i].ItemId+'" class="form-control input-number" value="'+convertToUnicodeNo(0)+'" min="1" max="10" style="text-align: center;" name="qty['+data[i].ItemId+'][]">\
                                 <span class="input-group-btn">\
                                     <button type="button" id="add-qty'+data[i].ItemId+'" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 25px;" onclick="incQty('+data[i].ItemId+')">+\
                                     </button>\
                                 </span></div></td>\
-                            <td><input type="hidden" name="rate['+data[i].ItemId+'][]" value="'+data[i].ItmRate+'">'+data[i].ItmRate+'</td>\
+                            <td><input type="hidden" name="rate['+data[i].ItemId+'][]" value="'+data[i].ItmRate+'">'+convertToUnicodeNo(data[i].ItmRate)+'</td>\
                         </tr>';
               }
               $('#item_name').html(itemName);

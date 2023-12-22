@@ -73,7 +73,7 @@ body{
                                 ?>
                             <tr>
                                 <td>
-                                    <input type="number" value="<?= $mobile[$i]; ?>" placeholder="Mobile" class="form-control" required name="mobile[]">
+                                    <input type="text" value="<?= $mobile[$i]; ?>" placeholder="Mobile" class="form-control" required name="mobile[]">
                                     <input type="hidden" value="<?= $cust_id[$i]; ?>" class="form-control" name="custid[]">
                                 </td>
                                 <!-- <td>
@@ -88,10 +88,10 @@ body{
                                     <input type="text" class="form-control grossAmtRow" name="totItemAmt[]" id="grossAmtRow_<?php echo $count; ?>" readonly>
                                 </td>
                                 <td>
-                                    <input type="number" placeholder="Percent" class="form-control percentRow" id="percentRow_<?php echo $count; ?>" onchange="calcPerAmt(<?php echo $count; ?>)" name="percent[]">
+                                    <input type="text" placeholder="Percent" class="form-control percentRow" id="percentRow_<?php echo $count; ?>" onchange="calcPerAmt(<?php echo $count; ?>)" name="percent[]">
                                 </td>
                                 <td>
-                                    <input type="number" placeholder="Amount" class="form-control amountRow" id="amountRow_<?php echo $count; ?>" onchange="calcAmt(<?php echo $count; ?>)" required name="amount[]">
+                                    <input type="text" placeholder="Amount" class="form-control amountRow" id="amountRow_<?php echo $count; ?>" onchange="calcAmt(<?php echo $count; ?>)" required name="amount[]">
                                 </td>
                                 <td>
                                     <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>
@@ -195,9 +195,9 @@ body{
                 $('.percentRow').attr("readonly", "");
                 $('.amountRow').attr("readonly", "");
 
-                $('.percentRow').val(per.toFixed(2));
-                $('.amountRow').val(amt.toFixed(2));
-                $('.grossAmtRow').val(grsAmt.toFixed(2));
+                $('.percentRow').val(convertToUnicodeNo(per.toFixed(2)));
+                $('.amountRow').val(convertToUnicodeNo(amt.toFixed(2)));
+                $('.grossAmtRow').val(convertToUnicodeNo(grsAmt.toFixed(2)));
             }else if(val == 3){
                 $('.percentRow').removeAttr("readonly");
                 $('.amountRow').attr("readonly", ""); 
@@ -229,10 +229,12 @@ body{
 
     itemVal = parseInt(grossAmt) + parseInt(tipAmt);
     var grossVal = (parseInt(itemVal) * parseInt(val)) / 100;
-    $('#grossAmtRow_'+rowCount).val(grossVal.toFixed(2));
+    $('#grossAmtRow_'+rowCount).val(convertToUnicodeNo(grossVal.toFixed(2)));
     // amountRow_1
     var amt = (parseInt(totalAmt) * parseInt(val)) / 100;
-    $('#amountRow_'+rowCount).val(amt.toFixed(2));
+    $('#amountRow_'+rowCount).val(convertToUnicodeNo(amt.toFixed(2)));
+
+    $('#percentRow_'+rowCount).val(convertToUnicodeNo(val));
    }
 
    function calcAmt(rowCount){
@@ -241,11 +243,13 @@ body{
     console.log(rowCount+' v '+val);
 
     var per =  parseFloat(val) / parseInt(totalAmt) * 100;
-    $('#percentRow_'+rowCount).val(per.toFixed(2));
+    $('#percentRow_'+rowCount).val(convertToUnicodeNo(per.toFixed(2)));
 
     itemVal = parseInt(grossAmt) + parseInt(tipAmt);
     var grossVal = (parseInt(itemVal) * parseInt(per.toFixed(2))) / 100;
-    $('#grossAmtRow_'+rowCount).val(grossVal.toFixed(2))
+    $('#grossAmtRow_'+rowCount).val(convertToUnicodeNo(grossVal.toFixed(2)));
+
+    $('#amountRow_'+rowCount).val(convertToUnicodeNo(val));
    }
 
 

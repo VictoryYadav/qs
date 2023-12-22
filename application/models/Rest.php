@@ -447,7 +447,11 @@ class Rest extends CI_Model{
 		$trans_type_id = NULL;
 		$from_date = NULL;
 		$to_date =NULL;
-		$stock = $this->db2->query("SELECT r.TransId, r.TransType,TransDt,  if(r.FrmEID>0, (Select e.Name from Eatary e where e.EID=r.FrmEID),NULL) as FromEID, if(r.FrmStoreId=1, 'MainStore',NULL) as FromMain, if(r.FrmSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.FrmSuppCd),NULL) as FromSupp, if(r.FrmKitCd>0, (Select ek.KitName from Eat_Kit ek where ek.KitCd=r.FrmKitCd),NULL) as FromKit, if(r.ToEID>0, (Select e.Name from Eatary e where e.EID=r.ToEID),NULL) as ToEID, if(r.ToSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.ToSuppCd),NULL) as ToSupp, if(r.ToKitCd>0, (Select ek.KitName from Eat_Kit ek where ek.KitCd=r.ToKitCd),NULL) as ToKit, if(r.ToStoreId=1, 'MainStore',NULL) as ToMain  FROM RMStock r where r.Stat=0 order by TransId desc limit 10")->result_array();
+
+		$langId = $this->session->userdata('site_lang');
+        $KitName = "ek.KitName$langId as KitName";
+
+		$stock = $this->db2->query("SELECT r.TransId, r.TransType,TransDt,  if(r.FrmEID>0, (Select e.Name from Eatary e where e.EID=r.FrmEID),NULL) as FromEID, if(r.FrmStoreId=1, 'MainStore',NULL) as FromMain, if(r.FrmSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.FrmSuppCd),NULL) as FromSupp, if(r.FrmKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.FrmKitCd),NULL) as FromKit, if(r.ToEID>0, (Select e.Name from Eatary e where e.EID=r.ToEID),NULL) as ToEID, if(r.ToSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.ToSuppCd),NULL) as ToSupp, if(r.ToKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.ToKitCd),NULL) as ToKit, if(r.ToStoreId=1, 'MainStore',NULL) as ToMain  FROM RMStock r where r.Stat=0 order by TransId desc limit 10")->result_array();
 		// echo "<pre>";
 		// print_r($stock);
 		// die;
@@ -456,7 +460,11 @@ class Rest extends CI_Model{
 			$trans_type_id = $postdata['trans_type'];
 			$from_date = $postdata['from_date'];
 			$to_date = $postdata['to_date'];
-			$q = "SELECT r.TransId, r.TransType,  if(r.FrmEID>0, (Select e.Name from Eatary e where e.EID=r.FrmEID),NULL) as FromEID, if(r.FrmStoreId=1, 'MainStore',NULL) as FromMain, if(r.FrmSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.FrmSuppCd),NULL) as FromSupp, if(r.FrmKitCd>0, (Select ek.KitName from Eat_Kit ek where ek.KitCd=r.FrmKitCd),NULL) as FromKit, if(r.ToEID>0, (Select e.Name from Eatary e where e.EID=r.ToEID),NULL) as ToEID, if(r.ToSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.ToSuppCd),NULL) as ToSupp, if(r.ToKitCd>0, (Select ek.KitName from Eat_Kit ek where ek.KitCd=r.ToKitCd),NULL) as ToKit, if(r.ToStoreId=1, 'MainStore',NULL) as ToMain  FROM RMStock r where r.Stat=0";
+
+			$langId = $this->session->userdata('site_lang');
+        	$KitName = "ek.KitName$langId as KitName";
+
+			$q = "SELECT r.TransId, r.TransType,  if(r.FrmEID>0, (Select e.Name from Eatary e where e.EID=r.FrmEID),NULL) as FromEID, if(r.FrmStoreId=1, 'MainStore',NULL) as FromMain, if(r.FrmSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.FrmSuppCd),NULL) as FromSupp, if(r.FrmKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.FrmKitCd),NULL) as FromKit, if(r.ToEID>0, (Select e.Name from Eatary e where e.EID=r.ToEID),NULL) as ToEID, if(r.ToSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.ToSuppCd),NULL) as ToSupp, if(r.ToKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.ToKitCd),NULL) as ToKit, if(r.ToStoreId=1, 'MainStore',NULL) as ToMain  FROM RMStock r where r.Stat=0";
 
 			// $q = "SELECT * from RMStock as rs join RMStockDet as rmd on rs.TransId = rmd.TransId join RMItems as rm on rmd.RMCd = rm.RMCd join RMCatg as rc on rm.RMCatg = rc.RMCatgCd join RMItemsUOM as riu on rm.RMCd = riu.RMCd join RMUOM as ru on ru.UOMCd = riu.UOMCd where Stat = 0";
 			if(!empty($trans_id)){
@@ -479,11 +487,16 @@ class Rest extends CI_Model{
 	}
 
 	public function getStockReport(){
-		return $this->db2->query("SELECT rsd.RMCd, rmi.RMName, rmi.ItemId, rmc.RMCatgName, sum(case when rs.TransType < 10 Then rsd.Qty ELSE 0 end) as sell, sum(case when rs.TransType > 10 Then rsd.Qty else 0 end) as rcvd FROM `RMStockDet` as rsd, RMStock as rs, RMItems as rmi, RMCatg as rmc where rsd.TransId = rs.TransId and rmi.RMCd = rsd.RMCd and rmi.RMCatg = rmc.RMCatgCd and rsd.Stat = 0 and rs.Stat = 0 group by rsd.RMCd order by rmc.RMCatgName, rmi.RMName")->result_array();
+		$langId = $this->session->userdata('site_lang');
+        $lname = "rmi.RMName$langId as RMName";
+
+		return $this->db2->query("SELECT rsd.RMCd, $lname, rmi.ItemId, rmc.RMCatgName, sum(case when rs.TransType < 10 Then rsd.Qty ELSE 0 end) as sell, sum(case when rs.TransType > 10 Then rsd.Qty else 0 end) as rcvd FROM `RMStockDet` as rsd, RMStock as rs, RMItems as rmi, RMCatg as rmc where rsd.TransId = rs.TransId and rmi.RMCd = rsd.RMCd and rmi.RMCatg = rmc.RMCatgCd and rsd.Stat = 0 and rs.Stat = 0 group by rsd.RMCd order by rmc.RMCatgName, rmi.RMName1")->result_array();
 	}
 
 	public function getStockConsumption(){
-		return $report = $this->db2->query("SELECT rsd.RMCd, rmi.RMName, rmi.ItemId, rmi.IPCd, rmc.RMCatgName,(select sum(rsd1.Qty)  from RMStockDet rsd1 where rsd1.TransId=rs.TransId and rs.TransType>10 and rsd1.Stat = 0 group by  rsd1.RMCd) as rcvd,(select sum(rsd1.Qty)  from RMStockDet rsd1 where rsd1.TransId=rs.TransId and rs.TransType<10 and rsd1.Stat = 0 group by  rsd1.RMCd) as issued,  sum(k.Qty) as Qty FROM RMStockDet as rsd, RMStock as rs, RMItems as rmi, RMCatg as rmc, Kitchen as k where rsd.TransId = rs.TransId and rmi.RMCd = rsd.RMCd and rmi.RMCatg = rmc.RMCatgCd and rmi.ItemId = k.ItemId and rmi.ItemId > 0 and rsd.Stat = 0 and rs.Stat = 0 group by rs.TransId, rsd.RMCd, rmi.IPCd order by rmc.RMCatgName, rmi.RMName")->result_array();
+		$langId = $this->session->userdata('site_lang');
+        $lname = "rmi.RMName$langId as RMName";
+		return $report = $this->db2->query("SELECT rsd.RMCd, $lname, rmi.ItemId, rmi.IPCd, rmc.RMCatgName,(select sum(rsd1.Qty)  from RMStockDet rsd1 where rsd1.TransId=rs.TransId and rs.TransType>10 and rsd1.Stat = 0 group by  rsd1.RMCd) as rcvd,(select sum(rsd1.Qty)  from RMStockDet rsd1 where rsd1.TransId=rs.TransId and rs.TransType<10 and rsd1.Stat = 0 group by  rsd1.RMCd) as issued,  sum(k.Qty) as Qty FROM RMStockDet as rsd, RMStock as rs, RMItems as rmi, RMCatg as rmc, Kitchen as k where rsd.TransId = rs.TransId and rmi.RMCd = rsd.RMCd and rmi.RMCatg = rmc.RMCatgCd and rmi.ItemId = k.ItemId and rmi.ItemId > 0 and rsd.Stat = 0 and rs.Stat = 0 group by rs.TransId, rsd.RMCd, rmi.IPCd order by rmc.RMCatgName, rmi.RMName1")->result_array();
 	}
 
 	public function getItemStockReportList($postdata){

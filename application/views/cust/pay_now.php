@@ -18,14 +18,15 @@ body{
         <div class="container" id="showBlock">
 
             <div class="row">
-                <div class="col-md-2 col-6">
-                    <label for=""><?php echo  $this->lang->line('payable'); ?>: </label>
+                <div class="col-md-4 col-10">
+                    <span><?php echo  $this->lang->line('bilNo'); ?> : <b><?= convertToUnicodeNumber($BillId); ?></b> &nbsp;<?php echo  $this->lang->line('billDate'); ?> : <b><?= date('d-M-Y'); ?></b> </span><span></span><?php echo  $this->lang->line('payable'); ?>: <b id="payable"><?= convertToUnicodeNumber(round($payable)); ?></b>
+                    </span>
+                    
                     <input type="hidden" id="payableAmt" value="<?= round($payable); ?>">
-                    <b id="payable"><?= convertToUnicodeNumber(round($payable)); ?></b>
                 </div>
                 
                 <?php if($this->session->userdata('MultiPayment') > 0){ ?>
-                <div class="col-md-2 col-6">
+                <div class="col-md-2 col-2">
                     <button class="btn btn btn-sm btn-success" id="addrow"><i class="fa fa-plus"></i></button>
                 </div>
             <?php } ?>
@@ -38,7 +39,7 @@ body{
                             <thead>
                                 <tr>
                                     <th style="width: 150px;"><?= $this->lang->line('amount'); ?></th>
-                                    <th>Pymt.Mode</th>
+                                    <th><?= $this->lang->line('mode'); ?></th>
                                     <th></th>
                                     <th></th>
                                     <th></th>
@@ -57,7 +58,7 @@ body{
                                  ?>
                                 <tr>
                                     <td>
-                                        <input type="number" class="form-control" name="amount" id="amount" readonly="" value="<?= $bill['PaidAmt']; ?>">
+                                        <input type="number" class="form-control item-value" name="amount" id="amount" readonly="" value="<?= convertToUnicodeNumber($bill['PaidAmt']); ?>">
                                     </td>
                                     <td>
                                         <select name="mode" id="mode" class="form-control" disabled="">
@@ -77,7 +78,7 @@ body{
                                         <span id="payStatus"><i class="fa fa-check" style="color:green;"></i></span>
                                     </td>
                                     <td>
-                                        <!-- <button class="btn btn btn-sm btn-danger deleteRow"><i class="fa fa-trash" id="delBtn1"></i></button> -->
+                                        
                                     </td>
                                 </tr>
                             <?php  } ?>
@@ -85,7 +86,7 @@ body{
                                 <?php } else{ ?>
                                 <tr>
                                     <td>
-                                        <input type="text" placeholder="Amount" class="form-control" required name="amount" id="amount1" value="<?= round($payable); ?>" <?php if($this->session->userdata('MultiPayment') == 0){ echo 'readonly'; } ?>>
+                                        <input type="text" placeholder="Amount" class="form-control item-value" required name="amount" id="amount1" value="<?= convertToUnicodeNumber(round($payable)); ?>" <?php if($this->session->userdata('MultiPayment') == 0){ echo 'readonly'; } ?> onblur="changeValue(this)">
                                     </td>
                                     <td>
                                         <select name="mode" id="mode1" class="form-control" required>
@@ -118,7 +119,7 @@ body{
                                     <?php echo  $this->lang->line('total'); ?>: <span id="grandtotal"><?= convertToUnicodeNumber(round($payable)); ?></span>
                                 </td>
                                 <td colspan="2">
-                                    <?php echo  $this->lang->line('balance'); ?>: <b><span id="balance">0</span></b>
+                                    <?php echo  $this->lang->line('balance'); ?>: <b><span id="balance"><?= convertToUnicodeNumber(0); ?></span></b>
                                 </td>
                             </tr>
                         </tfoot>
@@ -176,17 +177,18 @@ body{
     var totalPayable ='<?= round($payable); ?>';
 
     $(document).ready(function () {
-
+        calculateGrandTotal();
         goToBill();
 
     var counter = 1;
 
     $("#addrow").on("click", function () {
+        var balance = calculateGrandTotal();
         counter++;
 
         var newRow = '<tr>\
                         <td>\
-                            <input type="text" placeholder="Amount" class="form-control" required name="amount'+counter+'" id="amount'+counter+'">\
+                            <input type="text" placeholder="Amount" class="form-control item-value" required name="amount'+counter+'" id="amount'+counter+'" onblur="changeValue(this)" value="'+convertToUnicodeNo(balance)+'">\
                         </td>\
                         <td>\
                             <select name="mode'+counter+'" id="mode'+counter+'" class="form-control" required>\
@@ -199,7 +201,7 @@ body{
                             </select>\
                         </td>\
                         <td>\
-                            <button class="btn btn-sm btn-success btngo" id="go'+counter+'" onclick="goPay('+counter+')">Go</button>\
+                            <button class="btn btn-sm btn-success btngo" id="go'+counter+'" onclick="goPay('+counter+')"><?php echo  $this->lang->line('click'); ?></button>\
                         </td>\
                         <td>\
                             <span id="payStatus'+counter+'"><i class="fa fa-spinner" style="color:orange;"></i></span>\
@@ -210,44 +212,10 @@ body{
                     </tr>';
 
         $("table.order-list").append(newRow);
-    });
-
-    $("table.order-list").on("change", 'input[name^="amount"]', function (event) {
-        calculateRow($(this).closest("tr"));
-        calculateGrandTotal();
-    });
-
-    $("table.order-list").on("click", "button.deleteRow", function (event) {
-        $(this).closest("tr").remove();
         calculateGrandTotal();
     });
 });
 
-function calculateRow(row) {
-    var price = +row.find('input[name^="amount"]').val();
-    row.find('input[name^="amount"]').val(price);
-}
-
-function calculateGrandTotal() {
-    var payable = $('#payableAmt').val();
-    var balance = 0;
-    var grandTotal = 0;
-    var countRow = 0;
-    $("table.order-list").find('input[name^="amount"]').each(function () {
-        grandTotal += +$(this).val();
-    });
-    
-    if(grandTotal > payable){
-        Swal.fire({
-          text: 'Total amount has exceeded the payable amount.',
-          confirmButtonText: 'OK',
-          confirmButtonColor: "red",
-        });
-    }
-    $("#grandtotal").text(convertToUnicodeNo(grandTotal));
-    balance = parseFloat(payable) - parseFloat(grandTotal);
-    $("#balance").text(balance);
-}
 
 function goPay(val){
      $('.btngo').attr("disabled", "disabled");
@@ -355,6 +323,46 @@ function goToBill(){
 
     // setInterval(function(){ goToBill(); }, 3000);
 }
+
+function calculateGrandTotal() {
+
+    var payable = $('#payableAmt').val();
+    var balance = 0;
+    var grandTotal = 0;
+    var countRow = 0;
+
+    $(".item-value").each(function(index, el) {
+        val = $(this).val();
+        // console.log(' v  = '+val);
+        val = convertDigitToEnglish(val);
+        grandTotal += parseInt(val);
+        
+    });
+    
+    if(grandTotal > payable){
+        Swal.fire({
+          text: 'Total amount has exceeded the payable amount.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: "red",
+        });
+    }
+    $("#grandtotal").text(convertToUnicodeNo(grandTotal));
+    balance = parseFloat(payable) - parseFloat(grandTotal);
+    $("#balance").text(convertToUnicodeNo(balance));
+    
+    $('#addrow').prop("disabled", false);
+    if(balance < 1){
+        $('#addrow').attr("disabled", "disabled");
+    }
+    return balance;
+}
+
+function changeValue(input) {
+    var val = $(input).val();
+    $(input).val(convertToUnicodeNo(val));
+    calculateGrandTotal();
+}
+
 
 
 

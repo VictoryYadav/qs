@@ -26,17 +26,6 @@ $RestName = authuser()->RestName;
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <!-- start page title -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="page-title-box align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18 text-center"><?php echo $title; ?>
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end page title -->
-
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -45,7 +34,7 @@ $RestName = authuser()->RestName;
                                             <input type="hidden" name="add_stock" value="1">
                                             <div class="row">
                                                 <div class="col-6">
-                                                    <label>Transaction Type</label>
+                                                    <label><?= $this->lang->line('transactionType'); ?></label>
                                                     <select class="form-control" name="trans_type" onchange="trans_typee()" id="trans_type">
                                                         <?php foreach($trans_type as $key => $value){?>
                                                             <option value="<?= $key?>"><?= $value?></option>
@@ -53,21 +42,21 @@ $RestName = authuser()->RestName;
                                                     </select>
                                                 </div>
                                                 <div class="col-6">
-                                                    <label><span id="tr_date_label"></span>Transaction Date</label>
+                                                    <label><span id="tr_date_label"></span><?= $this->lang->line('transactionDate'); ?></label>
                                                     <input type="date" name="TransDt" class="form-control" value="<?php echo date('Y-m-d'); ?>">
                                                 </div>
                                                 <div class="transtype_details col-6" id="from_store_div" style="display: none;">
-                                                    <label>From <!-- Store --></label>
+                                                    <label><?= $this->lang->line('from'); ?></label>
                                                     <select class="form-control" id="from_store" name="from_store">
-                                                        <option value="">Select</option>
-                                                        <option value="1">Main Store</option>
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <option value="1"><?= $this->lang->line('mainStore'); ?></option>
                                                     </select>
                                                 </div>
                                                 <div class="transtype_details col-6" id="from_adjust_store_div" style="display: none;">
-                                                    <label>From <!-- Store --></label>
+                                                    <label><?= $this->lang->line('from'); ?></label>
                                                     <select class="form-control" id="from_adjust_store" name="from_store">
-                                                        <option value="">Select</option>
-                                                        <option value="1">Main Store</option>
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <option value="1"><?= $this->lang->line('mainStore'); ?></option>
                                                         <?php foreach($kit as $key){?>
                                                             <option value="<?= $key['KitCd']?>"><?= $key['KitName']?></option>
                                                         <?php }?>
@@ -76,7 +65,7 @@ $RestName = authuser()->RestName;
                                                 <div class=" transtype_details col-6" id="eatary_div" style="display: none;">
                                                     <label><span id="eid_label"></span><!-- Outlet --></label>
                                                     <select class="form-control" id="eatary" name="eatary">
-                                                        <option value="">Select</option>
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php foreach($eatary as $key){?>
                                                             <option value="<?= $key['EID']?>"><?= $key['Name']?></option>
                                                         <?php }?>
@@ -85,7 +74,7 @@ $RestName = authuser()->RestName;
                                                 <div class=" transtype_details col-6" id="kit_div" style="display: none;">
                                                     <label><span id="kit_label"></span><!-- KIT --></label>
                                                     <select class="form-control" id="kit" name="kit">
-                                                        <option value="">Select</option>
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php foreach($kit as $key){?>
                                                             <option value="<?= $key['KitCd']?>"><?= $key['KitName']?></option>
                                                         <?php }?>
@@ -94,17 +83,17 @@ $RestName = authuser()->RestName;
                                                 <div class=" transtype_details col-6" id="suppliers_div" style="display: none;">
                                                     <label><span id="supp_label"></span><!-- Supplier --></label>
                                                     <select class="form-control" id="suppliers" name="supplier">
-                                                        <option value="">Select</option>
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php foreach($suppliers as $key){?>
                                                             <option value="<?= $key['SuppCd']?>"><?= $key['SuppName']?></option>
                                                         <?php }?>
                                                     </select>
                                                 </div>
                                                 <div class="transtype_details col-6" id="to_store_div" style="display: none;">
-                                                    <label>To <!-- Store --></label>
+                                                    <label><?= $this->lang->line('to'); ?></label>
                                                     <select class="form-control" id="to_store" name="to_store">
-                                                        <option value="">Select</option>
-                                                        <option value="1">Main Store</option>
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <option value="1"><?= $this->lang->line('mainStore'); ?></option>
                                                     </select>
                                                 </div>
                                                 <!-- <div class="transtype_details col-6" id="to_adjust_store_div" style="display: none;">
@@ -121,11 +110,11 @@ $RestName = authuser()->RestName;
                                                     <table class="table table-bordered">
                                                         <thead>
                                                             <tr>
-                                                                <th>Item Name</th>
-                                                                <th>UOM</th>
-                                                                <th>Rate</th>
-                                                                <th>Qty</th>
-                                                                <th>Remarks</th>
+                                                                <th><?= $this->lang->line('item'); ?></th>
+                                                                <th><?= $this->lang->line('uom'); ?></th>
+                                                                <th><?= $this->lang->line('rate'); ?></th>
+                                                                <th><?= $this->lang->line('quantity'); ?></th>
+                                                                <th><?= $this->lang->line('remarks'); ?></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody class="stock_list" id="stock_list">
@@ -153,7 +142,7 @@ $RestName = authuser()->RestName;
                                                 </div>
                                                 <button type="button" class="btn btn-sm btn-rounded btn-primary" onclick="add_row()">+</button>
                                             </div>
-                                            <div class="text-center p-2"><button class="btn btn-primary btn-sm" type="submit">Submit</button></div>
+                                            <div class="text-center p-2"><button class="btn btn-primary btn-sm" type="submit"><?= $this->lang->line('submit'); ?></button></div>
                                         </form>
                                     </div>
                                 </div>

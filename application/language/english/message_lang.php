@@ -251,6 +251,15 @@ $lang['report']				= 'Report';
 $lang['addStock']			= 'Add Stock';
 $lang['from']				= 'From';
 $lang['to']					= 'To';
+$lang['stockConsumption']	= 'Stock Consumption';
+$lang['DifferenceRCVD_ISSUED']= 'Diff(RCVD-ISSUED)';
+$lang['category']			= 'Category';
+$lang['itemCd']				= 'Item Cd';
+$lang['stockReport']		= 'Stock Report';
+$lang['mainStore']			= 'Main Store';
+$lang['uom']				= 'UOM';
+$lang['moveTable']			= 'Move Table';
+$lang['move']				= 'Move';
 
 
 // $this->lang->line('transactions');

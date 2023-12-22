@@ -70,7 +70,6 @@
                     .val("<?= $_SESSION['razorpay_order_id']; ?>");
                 $(form).append($(input_1));
 
-
                 var input_2 = $("<input>")
                     .attr("type", "text")
                     .attr("name", "orderAmount")
@@ -80,7 +79,7 @@
                 var input_3 = $("<input>")
                     .attr("type", "text")
                     .attr("name", "referenceId")
-                    .val("");
+                    .val("<?= $_POST['razorpay_payment_id']; ?>");
                 $(form).append($(input_3));
 
                 var input_4 = $("<input>")
@@ -97,8 +96,8 @@
 
                 var input_6 = $("<input>")
                     .attr("type", "text")
-                    .attr("name", "txMsg")
-                    .val("");
+                    .attr("name", "billRef")
+                    .val("<?= $_POST['billRef']; ?>");
                 $(form).append($(input_6));
 
                 var input_7 = $("<input>")
@@ -118,6 +117,12 @@
                     .attr("name", "MCNo")
                     .val("<?= $_POST['MCNo']; ?>");
                 $(form).append($(input_9));
+
+                var input_10 = $("<input>")
+                    .attr("type", "text")
+                    .attr("name", "billId")
+                    .val("<?= $_POST['billId']; ?>");
+                $(form).append($(input_10));
 
                 form.appendTo(document.body);
                 $(form).submit();

@@ -425,6 +425,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
   }
 
+  function unicodeToEnglish($input) {
+    	$CI = & get_instance();
+    	$site_lang = $CI->session->userdata('site_lang');
+    
+    	$standard_numsets = array("0","1","2","3","4","5","6","7","8","9");
+    	$devanagari_numsets = array("०","१","२","३","४","५","६","७","८","९");
+
+    	$digits = 0;
+    	if($input){
+	    	switch ($site_lang) {
+	    		// 1=english, 2=hindi, 3=malay, 4=thai
+	    		case 1:
+	    			$digits = $input;
+	    			break;
+	    		case 2:
+	    			$digits = str_replace($devanagari_numsets, $standard_numsets, $input);
+	    			break;
+	    	}
+    	}
+
+    	return $digits;
+
+  }
+
 
 
 

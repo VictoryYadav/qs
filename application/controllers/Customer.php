@@ -49,9 +49,14 @@ class Customer extends CI_Controller {
     }
 
     public function index1(){
-        
 
         // print_r(base64_decode('ZT01MSZjPTAmdD0yMiZvPTA'));
+        // die;
+
+        // $input = '२३४';
+        // $dd = unicodeToEnglish($input);
+        // echo "<pre>";
+        // print_r($dd);
         // die;
         
 
@@ -391,7 +396,6 @@ class Customer extends CI_Controller {
 
         $CustId = $this->session->userdata('CustId');
         if ($CustId == '') {
-            // header('Location: index.php');
             redirect(base_url('customer'));
         }
 
@@ -417,16 +421,13 @@ class Customer extends CI_Controller {
             $status = 'success';
             $itemId = $_POST['itemId'];
 
-            $site_lang = $this->session->userdata('site_lang');
-            $lname = '';
+            $langId = $this->session->userdata('site_lang');
+            $lname = "mi.ItemNm$langId as ItemNm";
+            $iDesc = "mi.ItmDesc$langId as ItmDesc";
+            $ingeredients = "mi.Ingeredients$langId as Ingeredients";
+            $Rmks = "mi.Rmks$langId as Rmks";
 
-            if($site_lang == 'english'){
-                $lname = 'mi.ItemNm1 as lname';
-            }else{
-                $lname = 'mi.ItemNm2 as lname';
-            }
-
-            $select = "mc.TaxType, mc.KitCd, mi.ItemId, mi.ItemNm1, mi.ItemNm2, mi.ItemNm3, mi.ItemNm4, $lname, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, mi.ItmDesc, mi.ItmDesc2, mi.ItmDesc3, mi.ItmDesc4, mi.Ingeredients, mi.Ingeredients2, mi.Ingeredients3, mi.Ingeredients4, mi.Rmks, mi.Rmks2, mi.Rmks3, mi.Rmks4, mi.PrepTime, mi.AvgRtng, mi.FID,ItemNm as imgSrc, mi.UItmCd,mi.CID,mi.Itm_Portion,mi.Value,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
+            $select = "mc.TaxType, mc.KitCd, mi.ItemId, $lname, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, $iDesc, $ingeredients, $Rmks, mi.PrepTime, mi.AvgRtng, mi.FID, ItemNm1 as imgSrc, mi.UItmCd,mi.CID,mi.Itm_Portion,mi.Value,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
             $rec = $this->db2->select($select)
                             ->join('MenuItem mi','mi.ItemId = mr.RcItemId', 'inner')
                             ->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')
@@ -1656,7 +1657,11 @@ class Customer extends CI_Controller {
             $status = 'success';
             $TableNo = authuser()->TableNo;
             $CNo = $_POST['CNo'];
-            $res = $this->db2->select('m.ItemId,m.ItemNm1, k.Qty, k.ItmRate')
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "m.ItemNm$langId as ItemNm";
+
+            $res = $this->db2->select("m.ItemId, $lname, k.Qty, k.ItmRate, k.CellNo")
                         ->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
                         ->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
                         ->get_where('KitchenMain km', array('km.MergeNo' => $TableNo,'km.CNo' => $CNo))
@@ -1707,8 +1712,9 @@ class Customer extends CI_Controller {
                     }
                 }
                 // (km.CNo=$CNo or km.MCNo =$CNo)
+                $taxName = "t.ShortName$langId as ShortName";
                 foreach ($tax_type_array as $key => $value) {
-                    $q = "SELECT t.ShortName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included,k.ItmRate, k.Qty,k.ItemId, (sum(k.ItmRate*k.Qty)) as ItemAmt, (if (t.Included <5,((sum(k.ItmRate*k.Qty)) - ((sum(k.ItmRate*k.Qty)) / (1+t.TaxPcent/100))),((sum(k.ItmRate*k.Qty))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where (k.Stat = 3) and k.EID=km.EID and k.CNo=km.CNo and km.MergeNo = $MergeNo and t.TaxType = k.TaxType and t.TaxType = $value  and t.EID= $EID AND km.BillStat = 0 and k.BillStat = 0 group by t.ShortName,t.TNo,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.rank";
+                    $q = "SELECT $taxName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included,k.ItmRate, k.Qty,k.ItemId, (sum(k.ItmRate*k.Qty)) as ItemAmt, (if (t.Included <5,((sum(k.ItmRate*k.Qty)) - ((sum(k.ItmRate*k.Qty)) / (1+t.TaxPcent/100))),((sum(k.ItmRate*k.Qty))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where (k.Stat = 3) and k.EID=km.EID and k.CNo=km.CNo and km.MergeNo = $MergeNo and t.TaxType = k.TaxType and t.TaxType = $value  and t.EID= $EID AND km.BillStat = 0 and k.BillStat = 0 group by t.ShortName1, t.TNo,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.rank";
                     
                     $TaxData = $this->db2->query($q)->result_array();
                     $taxDataArray[$value] = $TaxData;
@@ -1773,6 +1779,7 @@ class Customer extends CI_Controller {
     public function splitBill(){
         // echo "<pre>";
         // print_r($_POST);
+        // die;
         $CNo = $_POST['MCNo'];
         $EID = authuser()->EID;
         $res = array();
@@ -1785,10 +1792,10 @@ class Customer extends CI_Controller {
             $pData['CellNo'] = $_POST['mobile'][$i];
             $pData['CustId'] = $_POST['custid'][$i];
             $pData['CNo'] = $_POST['MCNo'];
-            $pData['TotalGross'] = $_POST['totItemAmt'][$i];
-            $pData['orderAmount'] = $_POST['amount'][$i];
-            $pData['per_cent'] = $_POST['percent'][$i] / 100;
-            $pData['TipAmount'] = 0;
+            $pData['TotalGross'] = unicodeToEnglish($_POST['totItemAmt'][$i]);
+            $pData['orderAmount'] = unicodeToEnglish($_POST['amount'][$i]);
+            $pData['per_cent'] = unicodeToEnglish($_POST['percent'][$i]) / 100;
+            $pData['TipAmount'] = $_POST['tipAmount'];
             $pData['splitType'] = $_POST['splitType'];
             $pData['MergeNo'] = $_POST['MergeNo'];
             $pData['tot_sgst'] = $_POST['tot_sgst'];
@@ -2509,7 +2516,7 @@ class Customer extends CI_Controller {
     public function current_order(){
         $data['title'] = $this->lang->line('currentorder');
         $CustId = $this->session->userdata('CustId');
-        if($this->session->userdata('CNo') > 0){
+        if($this->session->userdata('CNo') == 0){
 
             $data['detail'] = $this->cust->getCurrenOrderBill($CustId);
             

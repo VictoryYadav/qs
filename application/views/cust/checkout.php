@@ -448,7 +448,7 @@
                     html_body +=`<table style="width:100%;">`;
                     html_body +=`<tr class="<?= ($Tips == 0 ? 'hideDiv' : ''); ?>">`;
                     html_body +=`   <th><?= $this->lang->line('tips'); ?></th>`;
-                    html_body +=`   <td><input id="tips" type="number" class="" value="0" onchange="change_tip()"></td>`;
+                    html_body +=`   <td><input id="tips" type="text" class="" value="0" onchange="change_tip()"></td>`;
                     html_body +=`</tr>`;
                     html_body +=`</table>`;
                     html_body +=`</div>`;
@@ -633,6 +633,7 @@ $("#tips").focusout(function() {
 
             $("#payable").text(convertToUnicodeNo(total));
             $("#payableAmt").val(total);
+            $("#tips").val(convertToUnicodeNo(tips));
         }
 
     $(document).ready(function() {
@@ -750,6 +751,7 @@ $("#tips").focusout(function() {
             var payable = parseFloat($('#payableAmt').val());
             var tip = $('#tips').val();
             var itemGrossAmt = $('#totalAmt').val();
+            tip = convertDigitToEnglish(tip);
 
             $.post('<?= base_url('customer/checkout_pay') ?>',{payable:payable,itemGrossAmt:itemGrossAmt,tip:tip},function(res){
                 if(res.status == 'success'){

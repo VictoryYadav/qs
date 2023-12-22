@@ -36,18 +36,12 @@ class Razorpay extends CI_Controller {
         $TableNo = $this->session->userdata('TableNo');
         
         $payable = base64_decode(rtrim($_GET['payable'], "="));
-        // $tips = base64_decode(rtrim($_GET['tips'], "="));
-        // $itemTotalGross = base64_decode(rtrim($_GET['totAmt'], "="));
         $billId = base64_decode(rtrim($_GET['billId'], "="));
         $MCNo = base64_decode(rtrim($_GET['MCNo'], "="));
 
         if (empty($billId)) {
             redirect(base_url('customer'));
         }
-
-        // $tips = !empty($tips)?$tips:0;
-        // $this->session->set_userdata('TipAmount', $tips);
-        // $this->session->set_userdata('itemTotalGross', $itemTotalGross);
 
         $totalAmount = round($payable, 2);
 
@@ -64,6 +58,7 @@ class Razorpay extends CI_Controller {
         ];
 
         $razorpayOrder = $api->order->create($orderData);
+
         $razorpayOrderId = $razorpayOrder['id'];
         $_SESSION['razorpay_order_id'] = $razorpayOrderId;
 
@@ -85,6 +80,8 @@ class Razorpay extends CI_Controller {
             "key"               => $keyId,
             "amount"            => $amount,
             "MCNo"              => $MCNo,
+            "billId"            => $billId,
+            "billRef"           => $orderId,
             "name"              => "Eat-Out",
             "description"       => "Eat-Out",
             "image"             => base_url('theme/')."images/Eat-Out-Icon.png",
@@ -107,9 +104,7 @@ class Razorpay extends CI_Controller {
             $data['display_currency']  = $displayCurrency;
             $data['display_amount']    = $displayAmount;
         }
-        // echo "<pre>";
-        // print_r($data);
-        // die;
+
         $json = json_encode($data);
         require_once APPPATH.'third_party/checkout/'.$checkout.'.php';
         // require("checkout/{$checkout}.php");
@@ -149,13 +144,13 @@ class Razorpay extends CI_Controller {
 
         if ($txStatus == "SUCCESS") {
 
-            $pay['BillId'] = $this->session->userdata('BillId');
+            $pay['BillId'] = $_POST['billId'];
             $pay['MCNo'] = $CNo;
             $pay['MergeNo'] = $this->session->userdata('TableNo');
-            $pay['TotBillAmt'] = $this->session->userdata('payable');
+            $pay['TotBillAmt'] = $totalAmount;
             $pay['CellNo'] = $this->session->userdata('CellNo');
             $pay['SplitTyp'] = 0;
-            $pay['SplitAmt'] = $this->session->userdata('payable');
+            $pay['SplitAmt'] = 0;
             $pay['PymtId'] = 0;
             $pay['PaidAmt'] = $totalAmount;
             $pay['OrderRef'] = $orderId;
@@ -164,6 +159,7 @@ class Razorpay extends CI_Controller {
             $pay['PymtRef'] = $referenceId;
             $pay['Stat'] = 1;
             $pay['EID'] = $EID;
+            $pay['billRef'] = $_POST['billRef'];
             // echo "<pre>";
             // print_r($pay);
             // die;
@@ -173,7 +169,6 @@ class Razorpay extends CI_Controller {
         } else {
             echo "Payment Fail";
         }
-
     }
 
 }

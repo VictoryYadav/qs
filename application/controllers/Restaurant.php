@@ -1414,27 +1414,32 @@ class Restaurant extends CI_Controller {
             }
 
         }
-        $data['title'] = 'Add Stock';
+        $data['title'] = $this->lang->line('addStock');
+
+        $langId = $this->session->userdata('site_lang');
+
         $data['trans_type'] = array(1=>'Transfer To EID', 6=>'Purchase Return', 9=>'Issue to Kit', 11=>'Return From EID', 16 =>'Purchase', 19=>'Return from Kit', 25=>'Inward Adjust', 26=>'Outward Adjust', 27 => 'Stock Adjust');
 
-        $q = "SELECT rm.* from RMItems as rm join RMCatg as rc on rm.RMCatg = rc.RMCatgCd join RMItemsUOM as riu on rm.RMCd = riu.RMCd join RMUOM as ru on ru.UOMCd = riu.UOMCd";
-        $data['items'] = $this->db2->query($q)->result_array();
+        $rmname = "rm.RMName$langId as RMName";
+        $data['items'] = $this->db2->query("SELECT rm.*, $rmname from RMItems as rm join RMCatg as rc on rm.RMCatg = rc.RMCatgCd join RMItemsUOM as riu on rm.RMCd = riu.RMCd join RMUOM as ru on ru.UOMCd = riu.UOMCd")->result_array();
 
         $data['eatary'] = $this->db2->query("SELECT EID, Name from Eatary")->result_array();
-        $data['kit'] = $this->db2->query("SELECT KitCd, KitName from Eat_Kit")->result_array();
+
+        $kitname = "KitName$langId as KitName";
+        $data['kit'] = $this->db2->query("SELECT KitCd, $kitname from Eat_Kit")->result_array();
         $data['suppliers'] = $this->db2->query("SELECT SuppCd, SuppName from RMSuppliers")->result_array();
 
         $this->load->view('rest/stock_add',$data);
     }
 
     public function stock_report(){
-        $data['title'] = 'Stock Report';
+        $data['title'] = $this->lang->line('stockReport');
         $data['report'] = $this->rest->getStockReport();
         $this->load->view('rest/stock_report',$data);
     }
 
     public function stock_consumption(){
-        $data['title'] = 'Stock Consumption';
+        $data['title'] = $this->lang->line('stockConsumption');
         $data['report'] = $this->rest->getStockConsumption();
         $this->load->view('rest/stock_consumptions',$data);   
     }
@@ -1480,8 +1485,9 @@ class Restaurant extends CI_Controller {
     public function rm_ajax(){
        if(isset($_POST['getUOM'])){
             $item_id = $_POST['RMCd'];
-
-            $uoms = $this->db2->select('riu.*, ru.Name')
+            $langId = $this->session->userdata('site_lang');
+            $lname = "ru.Name$langId as Name";
+            $uoms = $this->db2->select("riu.*, $lname")
                               ->join('RMUOM ru','riu.UOMCd = ru.UOMCd','inner')
                               ->get_where('RMItemsUOM riu', array('riu.RMCd' => $item_id))
                               ->result_array();
