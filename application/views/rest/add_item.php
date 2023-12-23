@@ -52,8 +52,8 @@
                                         <form id="add_item_form" method="post" enctype="multipart/form-data">
                                             <div class="col-md-6 col-sm-6 col-xs-12">
                                                 <div class="form-group">
-                                                    <label for="item_name">Item Name</label>
-                                                    <input type="text" class="form-control form-control-sm" placeholder="Enter item name" name="ItemNm" required="" id="item_name">
+                                                    <label for="item_name"><?= $this->lang->line('itemName'); ?></label>
+                                                    <input type="text" class="form-control form-control-sm" name="ItemNm" required="" id="item_name">
                                                     <div class="select_option"></div>
                                                 </div>
                                             </div>
@@ -61,7 +61,7 @@
                                             <div class="row add_item_div">
                                                 <div class="col-md-12" style="margin-top: 15px;">
                                                     <div class="form-group">
-                                                        <label for="">Upload Item Image</label>
+                                                        <label for=""><?= $this->lang->line('uploadImage'); ?></label>
                                                         <input type="file" class="form-control" id="item_file" name="item_file" required="" accept="image/jpg,image/jpeg">
                                                     </div>
                                                     <?php if($this->session->flashdata('error')): ?>
@@ -71,21 +71,21 @@
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="item_desc">Item Description</label>
+                                                        <label for="item_desc"><?= $this->lang->line('description'); ?></label>
                                                         <textarea class="form-control form-control-sm" required="" rows="3" name="ItmDesc">-</textarea>
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="item_ingredients">Item Ingredients</label>
+                                                        <label for="item_ingredients"><?= $this->lang->line('ingredients'); ?></label>
                                                         <textarea class="form-control form-control-sm" name="Ingeredients" rows="3">-</textarea>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <label for="menu_category">Menu Category</label>
+                                                        <label for="menu_category"><?= $this->lang->line('menuCategory'); ?></label>
                                                             <select class="form-control form-control-sm" required="" name="MCatgId">
                                                                 <?php
                                                                     foreach($MCatgIds as $row){
@@ -106,7 +106,7 @@
                                                                           '75' => 'Custom'
                                                                       ); 
                                                         ?>
-                                                        <label for="category_type">Cuisine</label>
+                                                        <label for="category_type"><?= $this->lang->line('cuisine'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="CTyp">
                                                             <?php
                                                             foreach ($ctyp as $key => $value) {
@@ -119,7 +119,7 @@
 
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <label for="cid_input">CID</label>
+                                                        <label for="cid_input"><?= $this->lang->line('cuisine'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="CID">
                                                             <?php
                                                                 foreach($CuisineList as $row){
@@ -132,7 +132,7 @@
 
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <label for="fid">FID</label>
+                                                        <label for="fid"><?= $this->lang->line('foodType'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="FID">
                                                             <?php
                                                                 foreach($FoodType as $row){
@@ -153,7 +153,7 @@
                                                                           '25' => '25 Min'
                                                                       ); 
                                                         ?>
-                                                        <label for="PrepTime">Prepration Time</label>
+                                                        <label for="PrepTime"><?= $this->lang->line('preparationTime'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="PrepTime">
                                                             <?php
                                                             foreach ($Prepration as $key => $value) {
@@ -177,7 +177,7 @@
                                                                           '7' => 'Saturday'
                                                                       ); 
                                                         ?>
-                                                        <label for="DayNo">Day No</label>
+                                                        <label for="DayNo"><?= $this->lang->line('day'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="DayNo">
                                                             <?php
                                                             foreach ($Dayno as $key => $value) {
@@ -190,28 +190,28 @@
                                             
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <label for="FrmTime">From Time</label>
+                                                        <label for="FrmTime"><?= $this->lang->line('fromTime'); ?></label>
                                                         <input type="time" class="form-control form-control-sm" required="" name="FrmTime" placeholder="Enter From Time" value="06:00">
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <label for="ToTime">To Time</label>
+                                                        <label for="ToTime"><?= $this->lang->line('toTime'); ?></label>
                                                         <input type="time" class="form-control form-control-sm item_form" required="" aria-describedby="itemHelp" placeholder="Enter To Time" name="ToTime" value="23:59">
                                                     </div>
                                                 </div>
                                             
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <label for="FrmTime1">From Time 1</label>
+                                                        <label for="FrmTime1"><?= $this->lang->line('alternateFromTime'); ?></label>
                                                         <input type="time" class="form-control form-control-sm" required="" placeholder="Enter From Time 1" name="AltFrmTime" value="06:00">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <label for="FrmTime2">To Time 2</label>
+                                                        <label for="FrmTime2"><?= $this->lang->line('alternateToTime'); ?></label>
                                                         <input type="time" class="form-control form-control-sm" required="" placeholder="Enter From Time 2" name="AltToTime" value="23:59">
                                                     </div>
                                                 </div>
@@ -226,7 +226,7 @@
                                                                           '4' => 'Hot'
                                                                       ); 
                                                         ?>
-                                                        <label for="item_attribute">Item Attribute</label>
+                                                        <label for="item_attribute"><?= $this->lang->line('itemAttribute'); ?></label>
                                                         <select class="form-control form-control-sm" name="ItemAttrib" required="">
                                                             <?php
                                                             foreach ($Attribute as $key => $value) {
@@ -247,7 +247,7 @@
                                                                           '4' => 'Item based customization'
                                                                       ); 
                                                         ?>
-                                                        <label for="item_type">Item Type</label>
+                                                        <label for="item_type"><?= $this->lang->line('type'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="ItemTyp">
                                                             <?php
                                                             foreach ($item_type as $key => $value) {
@@ -266,7 +266,7 @@
                                                                           '2' => 'Fast Selling'
                                                                       ); 
                                                         ?>
-                                                        <label for="item_sale">Item Sale</label>
+                                                        <label for="item_sale"><?= $this->lang->line('itemSale'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="ItemSale">
                                                             <?php
                                                             foreach ($item_sale as $key => $value) {
@@ -285,7 +285,7 @@
                                                                           '2' => 'Fast Selling'
                                                                       ); 
                                                         ?>
-                                                        <label for="item_tag">Item Tag</label>
+                                                        <label for="item_tag"><?= $this->lang->line('itemTag'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="ItemTag">
                                                             <?php
                                                             foreach ($item_tag as $key => $value) {
@@ -298,14 +298,14 @@
                                             
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <label for="packaging_charges">Packaging Charges</label>
+                                                        <label for="packaging_charges"><?= $this->lang->line('packingCharge'); ?></label>
                                                         <input type="number" class="form-control form-control-sm" required="" name="PckCharge" placeholder="Enter Packaging Charges" value="0">
                                                     </div>
                                                 </div>
 
                                                  <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <label for="kitcd">Kitchen</label>
+                                                        <label for="kitcd"><?= $this->lang->line('kitchen'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="KitCd">
                                                             <?php
                                                                 foreach($Eat_Kit as $row){
@@ -318,7 +318,7 @@
                                                 
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
-                                                        <label for="max_quantity">Max Quantity</label>
+                                                        <label for="max_quantity"><?= $this->lang->line('maxQuantity'); ?></label>
                                                         <input type="number" class="form-control form-control-sm"required="" placeholder="Enter Max Quantity" value = 0 name="MaxQty" >
                                                     </div>
                                                 </div>
@@ -338,7 +338,7 @@
                                                 
                                             </div>
                                             
-                                        <input type="Submit" class="btn btn-sm btn-success" value="Save">
+                                        <input type="Submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('submit'); ?>">
                                         
                                     </form>
 

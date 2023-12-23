@@ -820,7 +820,12 @@ class Restaurant extends CI_Controller {
     public function item_list_get_category(){
         if($_POST){
             $cuisine = $_POST['CID'];
-            $data = $this->db2->query("SELECT * from MenuCatg where CID = '$cuisine'")->result_array();
+
+            $langId = $this->session->userdata('site_lang');
+            $mname = "Name$langId as Name";
+
+            $data = $this->db2->select("MCatgId, $mname")->get_where("MenuCatg", array('CID' => $cuisine))->result_array();
+
             echo json_encode($data);
         }
     }
@@ -3239,31 +3244,38 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        $data['catList'] = getRecords('RMCatg', NULL);
+        
+        $langId = $this->session->userdata('site_lang');
+        $RMCatgName = "RMCatgName$langId as RMCatgName";
+
+        $data['catList'] = $this->db2->select("*, $RMCatgName")->get('RMCatg')->result_array();
         $data['title'] ='RMCategory';
         $this->load->view('rest/rm_category',$data);
     }
 
     public function rmitems_list(){
+        $langId = $this->session->userdata('site_lang');
+
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
-            
+            $RMName = "RMName$langId";
             $RMCd = 0;
             if(isset($_POST['RMCd']) && !empty($_POST['RMCd'])){
                 $RMCd = $_POST['RMCd'];
             }
 
             if(!empty($RMCd)){
-                updateRecord('RMItems', array('RMName' => $_POST['RMName']), array('RMCd' => $RMCd));
+                updateRecord('RMItems', array("$RMName" => $_POST['RMName']), array('RMCd' => $RMCd));
                 $status = 'success';
                 $response = 'RMItem Updated.';
             }else{
-                $check = getRecords('RMItems', array('RMName' => $_POST['RMName'], 'RMCatg' => $_POST['RMCatg']));
+                $check = getRecords('RMItems', array("$RMName" => $_POST['RMName'], 'RMCatg' => $_POST['RMCatg']));
+
                 if(!empty($check)){
                     $response = 'RMItem Already Exists';
                 }else{
-                    $cat['RMName'] = $_POST['RMName'];
+                    $cat["$RMName"] = $_POST['RMName'];
                     $cat['RMCatg'] = $_POST['RMCatg'];
                     $cat['Stat'] = 0;
                     insertRecord('RMItems', $cat);
@@ -3280,7 +3292,10 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        $data['catList'] = getRecords('RMCatg', NULL);
+        $RMCatgName = "RMCatgName$langId as RMCatgName";
+
+        $data['catList'] = $this->db2->select("*, $RMCatgName")->get('RMCatg')->result_array();
+        getRecords('RMCatg', NULL);
         $data['rm_items'] = $this->rest->getItemLists();
         $data['title'] ='RMItems List';
         // echo "<pre>";
@@ -3301,7 +3316,7 @@ class Restaurant extends CI_Controller {
                     $BOMNo = $_POST['BOMNo'][$i];
                 }
                 $bom['RMCd'] = $_POST['RMCd'][$i];
-                $bom['RMQty'] = $_POST['RMQty'][$i];
+                $bom['RMQty'] = unicodeToEnglish($_POST['RMQty'][$i]);
                 $bom['RMUOM'] = $_POST['RMUOM'][$i];
                 if(!empty($BOMNo)){
                     updateRecord('BOM_Dish', $bom, array('BOMNo' => $BOMNo) );
@@ -3322,10 +3337,13 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        $data['cuisine'] = $this->db2->get('Cuisines')->result_array();
+        $langId = $this->session->userdata('site_lang');
+        $cname = "Name$langId as Name";
+
+        $data['cuisine'] = $this->db2->select("$cname, CID")->get('Cuisines')->result_array();
         // $data['bom_dish'] = $this->rest->getBomDishLists();
         $data['rm_items'] = $this->rest->getItemLists();
-        $data['title'] ='Bill Of Material';
+        $data['title'] = $this->lang->line('billOfMaterial');
         // echo "<pre>";
         // print_r($data);
         // die;
@@ -3335,7 +3353,11 @@ class Restaurant extends CI_Controller {
     public function getMenuItemList(){
         if($_POST){
             $mcatid = $_POST['MCatgId'];
-            $data = $this->db2->select('ItemId, ItemNm')
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "ItemNm$langId as ItemNm";
+
+            $data = $this->db2->select("ItemId, $lname")
                               ->get_where('MenuItem', array('MCatgId' => $mcatid))
                               ->result_array();
             echo json_encode($data);
@@ -3704,7 +3726,7 @@ class Restaurant extends CI_Controller {
         // echo "<pre>";
         // print_r($_SESSION);
         // die;
-        $data['title'] = 'Customer Payments';
+        $data['title'] = $this->lang->line('customerPayments');
         $data['fdate'] = date('Y-m-d');
         $data['tdate'] = date('Y-m-d');
         $data['pmode'] = '';
@@ -3930,7 +3952,7 @@ class Restaurant extends CI_Controller {
             }
         }
         
-        $data['title'] = 'Add Item';
+        $data['title'] = $this->lang->line('addItem');
         $data['MCatgIds'] = $this->rest->get_MCatgId();
         $data['CuisineList'] = $this->rest->getCuisineList();
         $data['FoodType'] = $this->rest->get_foodType();
@@ -4158,18 +4180,21 @@ class Restaurant extends CI_Controller {
 
     public function kds(){
         $EID = authuser()->EID;
-        $data['title'] = 'Kitchen Display System';
+        $data['title'] = $this->lang->line('kitchenDisplaySystem');
         $minutes = 0;
         $kitcd = 0;
         if($this->input->method(true)=='POST'){
             $minutes = $_POST['minutes'];
+            $minutes = unicodeToEnglish($minutes);
             $kitcd = $_POST['kitchen'];
-            
         }
         $data['minutes'] = $minutes;
         $data['kitcd'] = $kitcd;
         $data['kds'] = $this->rest->getPendingKOTLIST($minutes, $kitcd);
-        $data['kitchen'] = $this->db2->select('KitCd, KitName')->get_where('Eat_Kit', array('Stat' => 0, 'EID' => $EID))->result_array();
+
+        $langId = $this->session->userdata('site_lang');
+        $kname = "KitName$langId as KitName";
+        $data['kitchen'] = $this->db2->select("KitCd, $kname")->get_where('Eat_Kit', array('Stat' => 0, 'EID' => $EID))->result_array();
         // echo "<pre>";
         // print_r($data);
         // die;
@@ -4198,7 +4223,7 @@ class Restaurant extends CI_Controller {
 
     public function kitchen_planner(){
         $EID = authuser()->EID;
-        $data['title'] = 'Kitchen Planner';
+        $data['title'] = $this->lang->line('kitchenPlanner');
         $data['kplanner'] = array();
         $kitcd = 0;
         if($this->input->method(true)=='POST'){
@@ -4207,7 +4232,9 @@ class Restaurant extends CI_Controller {
         }
         
         $data['kitcd'] = $kitcd;
-        $data['kitchen'] = $this->db2->select('KitCd, KitName')->get_where('Eat_Kit', array('Stat' => 0, 'EID' => $EID))->result_array();
+        $langId = $this->session->userdata('site_lang');
+        $kname = "KitName$langId as KitName";
+        $data['kitchen'] = $this->db2->select("KitCd, $kname")->get_where('Eat_Kit', array('Stat' => 0, 'EID' => $EID))->result_array();
         // echo "<pre>";
         // print_r($data);
         // die;

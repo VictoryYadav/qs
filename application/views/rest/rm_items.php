@@ -20,17 +20,6 @@
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <!-- start page title -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="page-title-box align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18 text-center"><?php echo $title; ?>
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end page title -->
-
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -41,7 +30,7 @@
                                                 <div class="col-md-3 col-4">
                                                     <div class="form-group">
                                                         <select name="RMCatg" id="RMCatg" class="form-control form-control-sm" required="">
-                                                            <option value="">Select</option>
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php
                                                     if(!empty($catList)){
                                                         foreach ($catList as $row) { ?>
@@ -52,11 +41,11 @@
                                                 </div>
                                                 <div class="col-md-3 col-5">
                                                     <div class="form-group">
-                                                        <input type="text" class="form-control form-control-sm" name="RMName" placeholder="Category Name" required="" id="RMName" autocomplete="off">
+                                                        <input type="text" class="form-control form-control-sm" name="RMName" placeholder="<?= $this->lang->line('category'); ?>" required="" id="RMName" autocomplete="off">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 col-3">
-                                                    <input type="submit" class="btn btn-success btn-sm" value="Submit">
+                                                    <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>">
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="text-success" id="msgText"></div>
@@ -72,9 +61,9 @@
                                                 <thead>
                                                 <tr >
                                                     <th>#</th>
-                                                    <th>RMName</th>
-                                                    <th>RMCat</th>
-                                                    <th>Action</th>
+                                                    <th><?= $this->lang->line('RMName'); ?></th>
+                                                    <th><?= $this->lang->line('RMCat'); ?></th>
+                                                    <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
                                                 </thead>
             

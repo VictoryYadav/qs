@@ -41,7 +41,7 @@
 
                 <div class="page-content">
                     <div class="container-fluid">
-                        <?php if($this->session->userdata('EDT') == 0){ ?>
+                        <?php if($this->session->userdata('EDT') == 1){ ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="card">
@@ -50,28 +50,26 @@
                                             <div class="row">
                                                 <div class="col-md-6 col-6">
                                                     <div class="form-group row">
-                                                        <label class="col-md-5">Due In</label>
-                                                        <input type="number" class="form-control form-control-sm col-md-7" placeholder="Minutes" name="minutes" value="<?= $minutes; ?>">
-
+                                                        <label class="col-md-5"><?= $this->lang->line('dueIn'); ?></label>
+                                                        <input type="text" class="form-control form-control-sm col-md-7" placeholder="Minutes" name="minutes" value="<?= $minutes; ?>" onblur="changeValue(this)">
                                                     </div>
                                                     
                                                 </div>
                                                 <div class="col-md-4 col-4">
                                                     <div class="form-group row">
                                                         <select name="kitchen" id="kitchen" class="form-control form-control-sm">
-                                                            <option value="">Select</option>
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php
                                                             foreach ($kitchen as $key) {
                                                             ?>
                                                             <option value="<?= $key['KitCd']; ?>" <?php if($kitcd ==$key['KitCd']){ echo 'selected'; } ?>><?= $key['KitName']; ?></option>
                                                             <?php } ?>
                                                         </select>
-
                                                     </div>
                                                     
                                                 </div>
                                                 <div class="col-md-2 col-2">
-                                                    <input type="submit" class="btn btn-sm btn-success" value="Go">
+                                                    <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('search'); ?>">
                                                 </div>
                                             </div>
                                         </form>
@@ -103,23 +101,23 @@
                                     <div class="card-body">
                                         <table width="100%;" style="border-bottom: 1px solid black;border-top: 1px solid black;">
                                             <tr>
-                                              <td>KOT No: <?= $fkot[0]['KitCd'].'-'.$fkot[0]['FKOTNo']; ?>
+                                              <td><?= $this->lang->line('kotNo'); ?>: <?= convertToUnicodeNumber($fkot[0]['KitCd']).'-'.convertToUnicodeNumber($fkot[0]['FKOTNo']); ?>
                                               </td>
-                                              <td>Table: <?= $fkot[0]['MergeNo']; ?></td>
+                                              <td><?= $this->lang->line('table'); ?>: <?= convertToUnicodeNumber($fkot[0]['MergeNo']); ?></td>
                                             </tr>
                                             <tr>
-                                                <td>Date: <?= date('d-M-Y',strtotime($fkot[0]['LstModDt']));?></td>
+                                                <td><?= $this->lang->line('date'); ?>: <?= date('d-M-Y',strtotime($fkot[0]['LstModDt']));?></td>
                                                 <?php 
                                                 if($this->session->userdata('EDT') > 0){
                                                 ?>
-                                                <td>EDT: <?= date('H ; i',strtotime($fkot[0]['EDT']));?></td>
+                                                <td><?= $this->lang->line('edt'); ?>: <?= date('H ; i',strtotime($fkot[0]['EDT']));?></td>
                                             <?php } ?>
                                             </tr>
                                         </table>
                                         <table style="border-bottom: 1px solid black;" width="100%;">
                                             <tr class="tabletitle">
-                                                <th class="item" style="text-align: left;">Menu Item</th>
-                                                <th class="Hours" style="text-align: left;">Qty</th>
+                                                <th class="item" style="text-align: left;"><?= $this->lang->line('menuItem'); ?></th>
+                                                <th class="Hours" style="text-align: left;"><?= $this->lang->line('quantity'); ?></th>
                                             </tr>
                                             <?php 
                                             $ordNoArr = [];
@@ -143,7 +141,7 @@
                                             ?>
                                             <tr class="service">
                                                 <td class="tableitem" style="color:<?= $clr; ?>"><?= $item['ItemNm'].$std.$portions; ?><br><i><?= $item['CustRmks']; ?></i></td>
-                                                <td class="tableitem"><?= $item['Qty']; ?></td>
+                                                <td class="tableitem"><?= convertToUnicodeNumber($item['Qty']); ?></td>
                                             </tr>
                                             <?php }
                                             $ordNoArr = implode(',',$ordNoArr);
@@ -151,7 +149,7 @@
                                             
                                         </table>
                                         <div class="text-center mt-2">
-                                            <button class="btn btn-sm btn-success" onclick="changeKOT(<?= $fkotno?>,'<?= $ordNoArr?>')">Close KOT</button>
+                                            <button class="btn btn-sm btn-success" onclick="changeKOT(<?= $fkotno?>,'<?= $ordNoArr?>')"><?= $this->lang->line('closeKOT'); ?></button>
                                             <!-- <select name="kotStat" id="kotStat<?= $fkotno?>" class="form-control form-control-sm" onchange="">
                                                 <option value="1">WIP</option>
                                                 <option value="5">Done</option>
@@ -199,4 +197,10 @@ function changeKOT(fkot,ordNo) {
         });
     }
 }
+
+changeValue = (input) =>{
+    var val = $(input).val();
+    $(input).val(convertToUnicodeNo(val));   
+}
+
 </script>

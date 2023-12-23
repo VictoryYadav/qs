@@ -661,14 +661,23 @@ class Rest extends CI_Model{
 	}
 
 	public function getItemLists(){
-		return $this->db2->select('i.*, c.RMCatgName')
+		$langId = $this->session->userdata('site_lang');
+        $rname = "i.RMName$langId as RMName";
+        $cname = "c.RMCatgName$langId as RMCatgName";
+
+		return $this->db2->select("i.*, $rname, $cname")
 						->join('RMCatg c','c.RMCatgCd = i.RMCatg', 'inner')
 						->get_where('RMItems i', array('i.Stat' => 0))
 						->result_array();
 	}
 
 	public function getBomDishLists(){
-		return 	$this->db2->select('b.*, rm.Name,r.RMName,m.ItemNm')
+		$langId = $this->session->userdata('site_lang');
+        $rname = "r.RMName$langId as RMName";
+        $mname = "m.ItemNm$langId as ItemNm";
+        $rmname = "rm.Name$langId as Name";
+
+		return 	$this->db2->select("b.*, $rmname, $rname ,$mname")
 						->join('MenuItem m','m.MCatgId = b.ItemId', 'inner')
 						->join('RMItems r','r.RMCd = b.RMCd', 'inner')
 						->join('RMUOM rm', 'rm.UOMCd= b.RMUOM', 'inner')
@@ -676,12 +685,11 @@ class Rest extends CI_Model{
 						->result_array();
 	}
 
-	// public function getRMUOMList(){
-	// 	return $this->db2->get_where('RMUOM', array('Stat' => 0))->result_array();
-	// }
-
 	public function getRmUOMlist($RMCd){
-		return $this->db2->select('r.*, rm.RMCd')
+		$langId = $this->session->userdata('site_lang');
+        $lname = "r.Name$langId as Name";
+
+		return $this->db2->select("r.*, $lname, rm.RMCd")
                             ->join('RMUOM r','r.UOMCd = rm.UOMCd', 'inner')
                               ->get_where('RMItemsUOM rm', array('rm.RMCd' => $RMCd))
                               ->result_array();
@@ -703,7 +711,7 @@ class Rest extends CI_Model{
 			$this->db2->where('PymtDate <= ', $tdate);
 		}
 		if(!empty($data['pmode'])){
-			$this->db2->where('PaymtMode',$data['pmode']);
+			$this->db2->where('bp.PaymtMode',$data['pmode']);
 		}	
 		return $this->db2->select('bp.*, b.BillNo, b.BillPrefix, b.BillSuffix')->order_by('bp.PymtNo', 'DESC')
 						->join('Billing b', 'b.BillId = bp.BillId', 'inner')
@@ -714,15 +722,22 @@ class Rest extends CI_Model{
 	}
 
 	public function getPaymentModes(){
-		return $this->db2->select('PymtMode,Name,Company, CodePage1')->get_where('ConfigPymt', array('Stat' => 1))->result_array();
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Name";
+		return $this->db2->select("PymtMode, $lname,Company, CodePage1")->get_where('ConfigPymt', array('Stat' => 1))->result_array();
 	}
 
 	public function get_MCatgId(){
-		return $this->db2->select('MCatgId, MCatgNm')->get_where('MenuCatg', array('EID' => authuser()->EID, 'Stat' => 0 ))->result_array();
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as MCatgNm";
+		return $this->db2->select("MCatgId, $lname")->get_where('MenuCatg', array('EID' => authuser()->EID, 'Stat' => 0 ))->result_array();
 	}
 	
 	public function getCuisineList(){
-		return $this->db2->select('c.CID, c.Name, c.Name2, c.Name3, c.Name4')
+		$langId = $this->session->userdata('site_lang');
+        $lname = "c.Name$langId as Name";
+
+		return $this->db2->select("c.CID, $lname")
 						->order_by('ec.Rank', 'ASC')
 						->join('Cuisines c', 'c.CID = ec.CID', 'inner')
 						->get_where('EatCuisine ec', array('ec.EID' => authuser()->EID,'ec.Stat' => 0))
@@ -730,11 +745,17 @@ class Rest extends CI_Model{
 	}
 
 	public function get_foodType(){
-		return $this->db2->select('FID, Opt')->order_by('CTyp, Rank','ASC')->get_where('FoodType', array('Stat' => 0, 'EID' => authuser()->EID))->result_array();	
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Opt";
+
+		return $this->db2->select("FID, $lname")->order_by('CTyp, Rank','ASC')->get_where('FoodType', array('Stat' => 0, 'EID' => authuser()->EID))->result_array();	
 	}
 
 	public function get_kitchen(){
-		return $this->db2->select('KitCd ,KitName')->get_where('Eat_Kit', array('Stat' => 0))->result_array();	
+		$langId = $this->session->userdata('site_lang');
+        $KitName = "KitName$langId as KitName";
+
+		return $this->db2->select("KitCd ,$KitName")->get_where('Eat_Kit', array('Stat' => 0))->result_array();	
 	}
 
 	public function get_eat_section(){
@@ -835,7 +856,11 @@ class Rest extends CI_Model{
 			$this->db2->where('k.KitCd', $kitcd);
 		}
 
-		$data = $this->db2->select('k.OrdNo,k.EDT,k.KitCd,k.KStat,k.KOTNo, k.FKOTNo, k.ItemId, k.Qty, k.CustItemDesc, k.Itm_Portion, k.TableNo,k.MergeNo,k.CustRmks,k.TA,k.LstModDt,k.OType,m.ItemNm,ip.Name as Portions')
+		$langId = $this->session->userdata('site_lang');
+        $iname = "m.ItemNm$langId as ItemNm";
+        $ipname = "ip.Name$langId as Portions";
+
+		$data = $this->db2->select("k.OrdNo,k.EDT,k.KitCd,k.KStat,k.KOTNo, k.FKOTNo, k.ItemId, k.Qty, k.CustItemDesc, k.Itm_Portion, k.TableNo,k.MergeNo,k.CustRmks,k.TA,k.LstModDt,k.OType, $iname, $ipname")
 						  ->order_by('k.FKOTNo', 'ASC')
 						  ->group_by('k.KitCd, k.FKOTNo, k.ItemId,k.CustItemDesc, k.Itm_Portion,k.CustRmks,k.TA')
 						  ->join('MenuItem m','m.ItemId = k.ItemId','inner')
@@ -875,8 +900,12 @@ class Rest extends CI_Model{
 			$this->db2->where('k.KitCd', $kitCd);
 		}
 
-		$data = $this->db2->select('k.ItemId, sum(k.Qty) as Qty, k.CustItemDesc, k.Itm_Portion, k.TableNo,k.MergeNo,k.CustRmks,k.TA,k.LstModDt,k.OType,m.ItemNm,ip.Name as Portions')
-						  ->order_by('m.ItemNm', 'ASC')
+		$langId = $this->session->userdata('site_lang');
+        $iname = "m.ItemNm$langId as ItemNm";
+        $ipname = "ip.Name$langId as Portions";
+
+		$data = $this->db2->select("k.ItemId, sum(k.Qty) as Qty, k.CustItemDesc, k.Itm_Portion, k.TableNo,k.MergeNo,k.CustRmks,k.TA,k.LstModDt,k.OType, $iname, $ipname")
+						  ->order_by('m.ItemNm1', 'ASC')
 						  ->group_by('k.KitCd,k.ItemId')
 						  ->join('MenuItem m','m.ItemId = k.ItemId','inner')
          				  ->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')

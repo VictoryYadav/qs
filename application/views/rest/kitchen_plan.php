@@ -49,7 +49,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <select name="kitchen" id="kitchen" class="form-control form-control-sm" required="">
-                                                            <option value="">Select</option>
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php
                                                             foreach ($kitchen as $key) {
                                                             ?>
@@ -58,7 +58,7 @@
                                                         </select>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <input type="Submit" class="btn btn-sm btn-success" value="Go">
+                                                    <input type="Submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('search'); ?>">
                                                 </div>
                                             </div>
                                         </form>
@@ -74,8 +74,8 @@
                                           <table class="table table-bordered" id="kitchenTbl">
                                             <thead>
                                             <tr>
-                                                <th>Item</th>
-                                                <th>Qty</th>
+                                                <th><?= $this->lang->line('item'); ?></th>
+                                                <th><?= $this->lang->line('quantity'); ?></th>
                                             </tr>
                                             </thead>
                                             <tbody>

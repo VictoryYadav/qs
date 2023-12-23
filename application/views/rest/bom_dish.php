@@ -20,17 +20,6 @@
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <!-- start page title -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="page-title-box align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18 text-center"><?php echo $title; ?>
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end page title -->
-
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -40,7 +29,7 @@
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
                                                         <select name="cuisine" id="cuisine" class="form-control form-control-sm" required="" onchange="getCategory()">
-                                                            <option value="">Select Cuisine</option>
+                                                            <option value=""><?= $this->lang->line('selectCuisine'); ?></option>
                                                             <?php foreach($cuisine as $key){?>
                                                         <option value="<?= $key['CID']?>"><?= $key['Name']?></option>
                                                         <?php }?>
@@ -50,14 +39,14 @@
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
                                                         <select name="menucat" id="menucat" class="form-control form-control-sm" required="" onchange="getItem()">
-                                                            <option value="">Select Category</option>
+                                                            <option value=""><?= $this->lang->line('selectCategory'); ?></option>
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
                                                         <select name="ItemId" id="ItemId" class="form-control form-control-sm" required="" onchange="showBlock()">
-                                                            <option value="">Select Dish</option>   
+                                                            <option value=""><?= $this->lang->line('selectDish'); ?></option>   
                                                         </select>
                                                     </div>
                                                 </div>
@@ -69,10 +58,10 @@
                                                   <table class="table table-bordered">
                                                     <thead>
                                                       <tr>
-                                                        <th>Item</th>
-                                                        <th>Quantiry</th>
-                                                        <th>UOM</th>
-                                                        <th>Action</th>
+                                                        <th><?= $this->lang->line('item'); ?></th>
+                                                        <th><?= $this->lang->line('quantity'); ?></th>
+                                                        <th><?= $this->lang->line('uom'); ?></th>
+                                                        <th><?= $this->lang->line('action'); ?></th>
                                                       </tr>
                                                     </thead>
                                                     <tbody id="box_body">
@@ -83,7 +72,7 @@
 
                                             </div>
                                             <div class="">
-                                                <input type="submit" class="btn btn-success btn-sm" value="Submit">
+                                                <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>">
                                             
                                                 <div class="text-success" id="msgText"></div>
                                             </div>
@@ -132,9 +121,10 @@
             success: function(data){
                 // alert(data);
                 data = JSON.parse(data);
-                var b = '<option value = "">ALL</option>';
+                var All = "<?= $this->lang->line('all'); ?>";
+                var b = '<option value = "">'+All+'</option>';
                 for(i = 0;i<data.length;i++){
-                    b = b+'<option value="'+data[i].MCatgId+'">'+data[i].MCatgNm+'</option>';
+                    b = b+'<option value="'+data[i].MCatgId+'">'+data[i].Name+'</option>';
                 }
                 // alert(b);
                 $('#menucat').html(b);
@@ -151,7 +141,8 @@
             success: function(data){
                 // alert(data);
                 data = JSON.parse(data);
-                var b = '<option value = "">Select Dish</option>';
+                var selectDish = "<?= $this->lang->line('selectDish'); ?>";
+                var b = '<option value = "">'+selectDish+'</option>';
                 for(i = 0;i<data.length;i++){
                     b = b+'<option value="'+data[i].ItemId+'">'+data[i].ItemNm+'</option>';
                 }
@@ -170,7 +161,8 @@
             success: function(data){
                 // alert(data);
                 data = JSON.parse(data);
-                var b = '<option value = "">Select UOM</option>';
+                var selectUOM = "<?= $this->lang->line('selectRUOM'); ?>";
+                var b = '<option value = "">'+selectUOM+'</option>';
                 for(i = 0;i<data.length;i++){
                     b = b+'<option value="'+data[i].UOMCd+'">'+data[i].Name+'</option>';
                 }
@@ -208,10 +200,13 @@
     function addRow(){
         count++;
         console.log(count);
+        var selectItem = "<?= $this->lang->line('selectItem'); ?>";
+        var selectUOM = "<?= $this->lang->line('selectRUOM'); ?>";
+
         var template = '<tr>\
                             <td>\
                             <select name="RMCd[]" id="RMCd_'+count+'" class="form-control form-control-sm" required="" onchange="getRMItemsUOM('+count+')">\
-                                <option value="">Select Item</option>\
+                                <option value="">'+selectItem+'</option>\
                                 <?php
                         if(!empty($rm_items)){
                             foreach ($rm_items as $row) { ?>
@@ -220,11 +215,11 @@
                             </select>\
                             </td>\
                             <td>\
-                            <input type="number" class="form-control form-control-sm" name="RMQty[]" placeholder="Quantity" required="" id="RMQty">\
+                            <input type="text" class="form-control form-control-sm" name="RMQty[]" required="" id="RMQty" onblur="changeValue(this)">\
                             </td>\
                             <td>\
                             <select name="RMUOM[]" id="RMUOM_'+count+'" class="form-control form-control-sm" required="">\
-                                <option value="">Select UOM</option>\
+                                <option value="">'+selectUOM+'</option>\
                             </select>\
                             </td>\
                             <td>\
@@ -258,6 +253,11 @@
         });
 
     });
+
+    changeValue = (input) => {
+            var val = $(input).val();
+            $(input).val(convertToUnicodeNo(val));
+        }
 
   
 </script>

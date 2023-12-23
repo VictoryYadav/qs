@@ -260,6 +260,36 @@ $lang['mainStore']			= 'Main Store';
 $lang['uom']				= 'UOM';
 $lang['moveTable']			= 'Move Table';
 $lang['move']				= 'Move';
+$lang['kitchenDisplaySystem']= 'Kitchen Display System';
+$lang['closeKOT']			= 'Close KOT';
+$lang['dueIn']				= 'Due In';
+$lang['kitchenPlanner']		= 'Kitchen Planner';
+$lang['billOfMaterial']		= 'Bill Of Material';
+$lang['selectCuisine']		= 'Select Cuisine';
+$lang['selectCategory']		= 'Select Category';
+$lang['selectDish']			= 'Select Dish';
+$lang['selectRMUOM']		= 'Select RMUOM';
+$lang['selectItem']			= 'Select Item';
+$lang['customerPayments']	= 'Customer Payments';
+$lang['billId']				= 'Bill Id';
+$lang['orderReference']		= 'Order Ref';
+$lang['paymentDate']		= 'Pymt Date';
+$lang['itemName']			= 'Item Name';
+$lang['uploadImage']		= 'Upload Image';
+$lang['ingredients']		= 'Ingredients';
+$lang['foodType']			= 'Food Type';
+$lang['preparationTime']	= 'Prepration Time';
+$lang['itemAttribute']		= 'Item Attribute';
+$lang['itemSale']			= 'Item Sale';
+$lang['itemTag']			= 'Item Tag';
+$lang['kitchen']			= 'Kitchen';
+$lang['maxQuantity']		= 'Max Quantity';
+$lang['day']				= 'Day';
+$lang['RMName']				= 'RMName';
+$lang['RMCat']				= 'RMCat';
+$lang['name']				= 'Name';
+
+
 
 
 // $this->lang->line('transactions');

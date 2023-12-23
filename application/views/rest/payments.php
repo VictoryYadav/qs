@@ -26,17 +26,6 @@
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <!-- start page title -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="page-title-box align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18 text-center"><?php echo $title; ?>
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end page title -->
-
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -45,21 +34,21 @@
                                             <div class="row">
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label for="">From Date</label>
+                                                        <label for=""><?= $this->lang->line('fromDate'); ?></label>
                                                         <input type="date" class="form-control form-control-sm" name="fdate" value="<?= $fdate; ?>">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label for="">To Date</label>
+                                                        <label for=""><?= $this->lang->line('toDate'); ?></label>
                                                         <input type="date" class="form-control form-control-sm" name="tdate" value="<?= $tdate; ?>">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label for="">PMode</label>
+                                                        <label for=""><?= $this->lang->line('mode'); ?></label>
                                                         <select name="pmode" id="" class="form-control form-control-sm">
-                                                            <option value="">Choose</option>
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php
                                                             foreach ($modes as $mode ) { ?>
                                                                 <option value="<?= $mode['PymtMode']; ?>" <?php if($mode['PymtMode'] == $pmode){ echo 'selected'; } ?> ><?= $mode['Name']; ?></option>
@@ -69,7 +58,7 @@
                                                 </div>
                                                 <div class="col-md-3 col-6">
                                                     <label for="">&nbsp;</label><br>
-                                                    <input type="submit" class="btn btn-sm btn-success" value="Search">
+                                                    <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('search'); ?>">
                                                 </div>
                                             </div>
                                         </form>
@@ -82,12 +71,12 @@
                                                 <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>BillId</th>
-                                                    <th>Bill No</th>
-                                                    <th>Paid Amt</th>
-                                                    <th>Ord Ref</th>
-                                                    <th>PMod</th>
-                                                    <th>PymtDate</th>
+                                                    <th><?= $this->lang->line('billId'); ?></th>
+                                                    <th><?= $this->lang->line('billNo'); ?></th>
+                                                    <th><?= $this->lang->line('paidAmount'); ?></th>
+                                                    <th><?= $this->lang->line('orderReference'); ?></th>
+                                                    <th><?= $this->lang->line('mode'); ?></th>
+                                                    <th><?= $this->lang->line('paymentDate'); ?></th>
                                                 </tr>
                                                 </thead>
             
