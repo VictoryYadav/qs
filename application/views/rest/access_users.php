@@ -62,7 +62,7 @@
                                                     <div class="card-header">  
                                                        <div class="row">
                                                            <div class="col-md-6">
-                                                            <input type="checkbox" v-on:click="selectAll" v-model="allSelected"> &nbsp;<?= $this->lang->line('availableRoles'); ?></div>
+                                                            <input type="checkbox" v-on:click="selectAll" v-model="allSelected"> &nbsp;<?= $this->lang->line('selectAllAvailableRoles'); ?></div>
                                                        </div>
                                                     </div>
                                                     <div class="card-body" style="padding: 0.25rem;">
@@ -87,7 +87,7 @@
                                                     <div class="card-header">  
                                                        <div class="row">
                                                            <div class="col-md-6">
-                                                            <input type="checkbox" v-on:click="selectAll_1" v-model="allSelected_1"> &nbsp;<?= $this->lang->line('assignedRoles'); ?></div>
+                                                            <input type="checkbox" v-on:click="selectAll_1" v-model="allSelected_1"> &nbsp;<?= $this->lang->line('selectAllAssignedRoles'); ?></div>
                                                        </div>
                                                     </div>
                                                     <div class="card-body" style="padding: 0.25rem;">   

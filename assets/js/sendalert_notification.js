@@ -134,3 +134,5 @@ function checkDigit(character) {
   }
 
 }
+
+

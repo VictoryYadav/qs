@@ -140,8 +140,8 @@ $lang['userDisabled'] 		= 'User Disabled';
 $lang['enabled'] 			= 'Enabled';
 $lang['disabled'] 			= 'Disabled';
 $lang['userAccess'] 		= 'User Access';
-$lang['availableRoles'] 	= 'Select All Available Roles';
-$lang['assignedRoles'] 		= 'Select All Assigned Roles';
+$lang['selectAllAvailableRoles'] = 'Select All Available Roles';
+$lang['selectAllAssignedRoles'] = 'Select All Assigned Roles';
 $lang['roleAssignment'] 	= 'Role Assignment';
 $lang['sitIn'] 				= 'Sit In';
 $lang['tableNo'] 			= 'Table No';
@@ -288,6 +288,17 @@ $lang['day']				= 'Day';
 $lang['RMName']				= 'RMName';
 $lang['RMCat']				= 'RMCat';
 $lang['name']				= 'Name';
+$lang['chef']				= 'Chef';
+$lang['dispense']			= 'Dispense';
+$lang['cashier']			= 'Cashier';
+$lang['role']				= 'Role';
+$lang['assignedRoles'] 		= 'Assigned Roles';
+$lang['tableWise'] 			= 'Table Wise';
+$lang['orderWise'] 			= 'Order Wise';
+$lang['seatNo'] 			= 'Seat No';
+$lang['tableAmount']		= 'Table Amount';
+$lang['CombineTheFollowingAmountsFromTable']	= 'Combine the following amounts from table';
+$lang['packs']				= 'Packs';
 
 
 

@@ -104,7 +104,7 @@
     function submitData(){
         
         var data = $('roleAssignForm').serializeArray();
-        $.post('<?= base_url('resaurant/role_assign1') ?>',data,function(res){
+        $.post('<?= base_url('resaurant/role_assign') ?>',data,function(res){
             if(res.status == 'success'){
               $('#msgText').html(res.response);
             }else{

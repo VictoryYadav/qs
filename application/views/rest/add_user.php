@@ -61,7 +61,11 @@
                                                 <div class="col-md-6 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('dob'); ?></label>
-                                                        <input type="date" name="DOB" class="form-control form-control-sm" value="<?php echo date('Y-m-d'); ?>" required>
+                                                        <?php 
+
+                                                        $dateP = date('Y-m-d', strtotime("-20 years", strtotime(date('Y-m-d'))));
+                                                        ?>
+                                                        <input type="date" name="DOB" class="form-control form-control-sm" value="<?php echo $dateP; ?>" required>
                                                     </div>
                                                 </div>
 

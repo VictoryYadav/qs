@@ -1,7 +1,7 @@
 <?php $this->load->view('layouts/admin/head'); ?>
 <style>            
     #table-view {
-        height: 500px;
+        /*height: 500px;*/
         overflow-y: auto;
         overflow-x: hidden;
     }
@@ -116,11 +116,12 @@
                                             </div>
                                             <div class="col-3">
                                                 <select class="form-control form-control-sm" id="dispMode" onchange="getTableView();">  
-                                                    <option value="0">Choose</option> 
-                                                    <option value="20">3rd Party</option>
-                                                    <option value="15">Take Away</option>
-                                                    <option value="17">Deliver</option>
+                                                    <option value="0"><?= $this->lang->line('select'); ?></option> 
+                                                    <option value="101"><?= $this->lang->line('thirdParty'); ?></option>
+                                                    <option value="105"><?= $this->lang->line('takeAway'); ?></option>
+                                                    <option value="110"><?= $this->lang->line('deliver'); ?></option>
                                                 </select>
+
                                             </div>
                                             <div class="col-6">
                                                 <div class="text-right" id="showActionBtn">
@@ -142,8 +143,7 @@
                                                     <thead>
                                                         <tr>
                                                             <th><?= $this->lang->line('billNo'); ?></th>
-                                                            <th><?= $this->lang->line('qqty'); ?></th>
-                                                            <th class="hidden-sm"><?= $this->lang->line('aqty'); ?></th>
+                                                            <th><?= $this->lang->line('packs'); ?></th>
                                                             <th><?= $this->lang->line('mobile'); ?></th>
                                                             <th><?= $this->lang->line('thirdParty'); ?></th>
                                                             <th><?= $this->lang->line('thirdPartyRefNo'); ?></th>
@@ -162,40 +162,16 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <div class="items-data" id="item-table-parent">
-                                                <table class="display" id="item-view-table" >
-                                                    <thead>
-                                                        <tr>
-                                                            <th><?= $this->lang->line('itemName'); ?></th>
-                                                            <th><?= $this->lang->line('pqty'); ?></th>
-                                                            <th><?= $this->lang->line('takeAway'); ?></th>
-                                                            <th><?= $this->lang->line('remarks'); ?></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="item-view-tbody1"></tbody>
-                                                </table>
-                                            </div>
-
-                                            <div id="mydiv" style="display: none;">
-                                                <div class="card" style="border:3px solid rgba(0,0,0,.125)">
-                                                    <div class="card-header" style="background-color: lightgreen; padding: 0px;">
-                                                        <h4 class="modal-title">Order Details</h4>
-                                                    </div>
-                                                    <div class="">
-                                                        <table class="table table-bordered">
-                                                            <thead class="table-header">
-                                                                <tr>
-                                                                    <th>Item Name</th>
-                                                                    <th>Qty</th>
-                                                                    <th>AMT</th>
-                                                                    <th>AQty</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody id="order-list"></tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <table class="table" >
+                                                <thead>
+                                                    <tr>
+                                                        <th><?= $this->lang->line('itemName'); ?></th>
+                                                        <th><?= $this->lang->line('quantity'); ?></th>
+                                                        <th><?= $this->lang->line('remarks'); ?></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="item-view-tbody1"></tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -363,6 +339,8 @@
             // Global Variables var kotNo = 0; var pQty = ''; var aQty = '';
 
             function getTableView() {
+                $('#item-view-tbody1').empty();
+                
                 var DispCd = $('#kitchen-code').val();
                 var dispMode = $('#dispMode').val();
                 if(DispCd > 0){
@@ -386,33 +364,17 @@
                                     .forEach(item => {
                                         
                                             template += `
-                                <tr id="${ (
-                                                start == 1
-                                                    ? 'start'+start
-                                                    : 'start'+start
-                                            )}" data-id="${item.KOTNO}" class="specific-order ${ (
-                                                item.Qty - item.AQty == 0
-                                                    ? 'success-table-status'
-                                                    : ''
-                                            )}" cno="${item.CNo}">
+                                <tr cno="${item.CNo}">
                                     <td><input type="radio" name="selectOption" onchange="showAction('${item.CNo}', ${item.CustId},${item.BillNo}, ${start})" /> &nbsp;${convertToUnicodeNo(item.BillNo)}</td>
                                     <td>${convertToUnicodeNo(item.Qty)}</td>
-                                    <td>${convertToUnicodeNo(item.AQty)}</td>
                                     <td>${convertToUnicodeNo(item.CellNo)}</td>
                                     <td>${convertToUnicodeNo(item.TPId)}</td>
                                     <td>${item.TPRefNo}</td>
-                                </tr>
-                            `;
-                                        //}
-
-                                        start++;
-                                    });
+                                </tr>`;
+                        });
                             }
-                            $('#order-view-table').remove();
-                            $('#order-view-parent').html(tableStructure);
                             $("#table-view").html(template);
                             $('#mydiv').hide();
-                            dataTableForOrder();
                         },
                         error: (xhr, status, error) => {
                             console.log(xhr);
@@ -424,8 +386,7 @@
             }
 
             function showAction(CNo, CustId, BillNo, start){
-                 // <a href="vtrend:billid=0&eid=<?= $EID; ?>&kotno='+UKOTNo+'" class="btn btn-sm btn-warning btn-rounded"><i class="fa fa-print" aria-hidden="true"></i></a>
-                console.log('kk '+CNo);
+                
                 var btn = '';
                 btn += '<button onclick="handleDelivery('+CNo+','+CustId+','+BillNo+','+start+')" class="btn btn-sm btn-primary btn-rounded"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>\
                     | <a onclick="sendNotification('+CustId+',0,'+BillNo+',1)" class="btn btn-sm btn-danger btn-rounded"><i class="fa fa-bullhorn"></i></a>\
@@ -520,11 +481,9 @@
                     `;
                                 });
                             $("#item-view-table").remove();
-                            $("#item-table-parent").html(tableStructureItem);
                             $("#item-view-tbody").html(itemView);
                         } else {
                             $("#item-view-table").remove();
-                            $("#item-table-parent").html(tableStructureItem);
                             $("#item-view-tbody").html('');
                             $('#mydiv').hide();
                         }
@@ -549,101 +508,8 @@
                 })
             }
 
-            function dataTableForOrder() {
-
-                var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-                    if (isMobile) {
-                        var orderTable = $('#order-view-table').DataTable({
-                            keys: true,
-                            searching: false, paging: false, info: false,
-                            "columnDefs": [
-                            {
-                                "targets": [ 2 ],
-                                "visible": false,
-                                "searchable":false
-                            },
-                            {
-                                "targets": [ 4 ],
-                                "visible": false,
-                                "searchable":false
-                            },
-                            {
-                                "targets": [ 5 ],
-                                "visible": false,
-                                "searchable":false
-                            }
-                        ]
-                            });
-                    } else {
-                        var orderTable = $('#order-view-table').DataTable({
-                        keys: true,searching: false, paging: false, info: false
-                        });
-                    }
-                
-                orderTable.on('key-focus', function (e, datatable, cell) {
-                    // $('tr').css('background-color', 'white'); $('#mydiv').show();
-                    $('table#order-view-table > tbody > tr').css('background-color', 'white');
-                    $('td.focus')
-                        .parent()
-                        .css('background-color', 'orange');
-                    var cno = $('td.focus')
-                        .parent()
-                        .attr('cno');
-                        
-                    handleDetails(cno);
-                });
-            }
 
             $(document).ready(function () {
-                // Make the DIV element draggable:
-                dragElement(document.getElementById("mydiv"));
-
-                function dragElement(elmnt) {
-                    var pos1 = 0,
-                        pos2 = 0,
-                        pos3 = 0,
-                        pos4 = 0;
-                    if (document.getElementById(elmnt.id + "header")) {
-                        // if present, the header is where you move the DIV from:
-                        document
-                            .getElementById(elmnt.id + "header")
-                            .onmousedown = dragMouseDown;
-                    } else {
-                        // otherwise, move the DIV from anywhere inside the DIV:
-                        elmnt.onmousedown = dragMouseDown;
-                    }
-
-                    function dragMouseDown(e) {
-                        e = e || window.event;
-                        e.preventDefault();
-                        // get the mouse cursor position at startup:
-                        pos3 = e.clientX;
-                        pos4 = e.clientY;
-                        document.onmouseup = closeDragElement;
-                        // call a function whenever the cursor moves:
-                        document.onmousemove = elementDrag;
-                    }
-
-                    function elementDrag(e) {
-                        e = e || window.event;
-                        e.preventDefault();
-                        // calculate the new cursor position:
-                        pos1 = pos3 - e.clientX;
-                        pos2 = pos4 - e.clientY;
-                        pos3 = e.clientX;
-                        pos4 = e.clientY;
-                        // set the element's new position:
-                        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-                    }
-
-                    function closeDragElement() {
-                        // stop moving when mouse button is released:
-                        document.onmouseup = null;
-                        document.onmousemove = null;
-                    }
-                }
 
                 getTableView();
                 itemView();
@@ -789,22 +655,26 @@
                                 response
                                     .orderList
                                     .forEach((item) => {
-                                        template += `
-                            <tr class="${ (
+                                        var item_name = '';
+                                        if(item.Itm_Portion > 4){
+                                            item_name = item.ItemNm+'-'+item.Portions;
+                                        }else{
+                                            item_name += item.ItemNm;
+                                        }
+
+                                        template += `<tr class="${ (
                                             item.Qty == item.AQty
                                                 ? 'h-deliver'
                                                 : ''
-                                        )}">
-                                <td>${item.ItemNm}</td>
-                                <td>${convertToUnicodeNo(item.Qty)}</td>
-                                <td>${item.TA}</td>
-                                <td>${item.CustRmks}</td>
-                            </tr>
-                        `;
+                                                        )}">
+                                                <td>${item_name}</td>
+                                                <td>${convertToUnicodeNo(item.Qty)}</td>
+                                                <td>${item.CustRmks}</td>
+                                            </tr>`;
                                     });
                             }
 
-                            $("#order-list").html(template);
+                            // $("#order-list").html(template);
                             $("#item-view-tbody1").html(template);
                         },
                         error: (xhr, status, error) => {
@@ -951,38 +821,5 @@
                 }
             }
 
-            var billNo = "<?= $this->lang->line('billNo'); ?>";
-            var qqty = "<?= $this->lang->line('qqty'); ?>";
-            var aqty = "<?= $this->lang->line('aqty'); ?>";
-            var mobile = "<?= $this->lang->line('mobile'); ?>";
-            var thirdp = "<?= $this->lang->line('thirdParty'); ?>";
-            var thiref = "<?= $this->lang->line('thirdPartyRefNo'); ?>";
-
-            var tableStructure = '<table class="table" id="order-view-table" class="display" ' + '> \ <thead>\ <tr>\
-                <th>'+billNo+'</th>\
-                <th>'+qqty+'</th>\
-                <th>'+aqty+'</th>\
-                <th>'+mobile+'</th>\
-                <th>'+thirdp+'</th>\
-                <th>'+thiref+'</th>\
-                </tr>\
-                </thead>\
-                <tbody id="table-' + 'view">\
-                </tbody>\
-                </table>';
-
-            var itemName = "<?= $this->lang->line('item'); ?>";
-            var pqty = "<?= $this->lang->line('pqty'); ?>";
-            var takeAway = "<?= $this->lang->line('takeAway'); ?>";
-            var remarks = "<?= $this->lang->line('remarks'); ?>";
-
-            var tableStructureItem = '<table class="table" id="item-view-table" class="display" >' + '\ <thead>\ <tr>\
-                <th>'+itemName+'</th>\
-                <th>'+pqty+'</t' +
-                        'h>\
-                <th>'+takeAway+'</th>\
-                <th>'+remarks+'</th>\
-                </tr>\ </thead>\ <tbody id=' + '"item-view-tbody1"></tbody>\ </table>'
-        
         </script>
 

@@ -46,7 +46,8 @@ class Rest extends CI_Model{
 	public function getRestaurantList($ChainId){
 		return $this->db2->select('EID, Name')
 						->order_by('EID DESC')
-						->get_where('Eatary', array('ChainId' => $ChainId))->result_array();
+						->get_where('Eatary', array('ChainId' => $ChainId))
+						->result_array();
 	}
 
 	public function addUser($data){
@@ -779,10 +780,11 @@ class Rest extends CI_Model{
 		$langId = $this->session->userdata('site_lang');
         $lname = "m.ItemNm$langId as ItemNm";
         $ipName = "ip.Name$langId as Portions";
+        $KitName = "ek.KitName$langId as KitName";
 
-         return $this->db2->select("k.ItemId, k.MCNo, $lname,k.CustItemDesc,k.CustRmks, $ipName, sum(k.Qty) Qty,k.TableNo,k.KOTNo, k.FKOTNo,k.KitCd, ek.KitName, k.UKOTNo,k.LstModDt,k.TA,k.EDT, k.OType")
-        					->order_by('k.FKOTNo, m.ItemNm1, ek.KitName, k.UKOTNo', 'ASC')
-        					->group_by('k.ItemId, ek.KitName,k.Itm_Portion')
+         return $this->db2->select("k.ItemId, k.MCNo, $lname,k.CustItemDesc,k.CustRmks, $ipName, sum(k.Qty) Qty,k.TableNo,k.KOTNo, k.FKOTNo,k.KitCd, $KitName, k.UKOTNo,k.LstModDt,k.TA,k.EDT, k.OType")
+        					->order_by('k.FKOTNo, m.ItemNm1, ek.KitName1, k.UKOTNo', 'ASC')
+        					->group_by('k.ItemId, ek.KitName1,k.Itm_Portion')
          					->join('MenuItem m','m.ItemId = k.ItemId','inner')
          					->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
          					->join('Eat_Kit ek', 'ek.KitCd=k.KitCd', 'inner')
@@ -938,6 +940,15 @@ class Rest extends CI_Model{
 	public function getUserList(){
 		return $this->db2->get_where('UsersRest', array('EID' => authuser()->EID,'Stat' => 0))
 		->result_array();
+	}
+
+	public function getCasherList(){
+		$langId = $this->session->userdata('site_lang');
+		$cashName = "Name$langId as Name";
+        return $this->db2->select("*, $cashName")
+        				->get_where('Eat_Casher', array('EID' => authuser()->EID, 'Stat' => 0))
+        				->result_array();
+		 
 	}
 
 	

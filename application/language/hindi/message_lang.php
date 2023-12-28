@@ -140,8 +140,8 @@ $lang['userDisabled'] 		= 'यूजर डिसेबल्ड';
 $lang['enabled'] 			= 'इनेबल्ड';
 $lang['disabled'] 			= 'डिसेबल्ड';
 $lang['userAccess'] 		= 'यूजर एक्सेस';
-$lang['availableRoles'] 	= 'सभी उपलब्ध भूमिकाएँ चुनें';
-$lang['assignedRoles'] 		= 'सभी निर्दिष्ट भूमिकाएँ चुनें';
+$lang['selectAllAvailableRoles'] = 'सभी उपलब्ध भूमिकाएँ चुनें';
+$lang['selectAllAssignedRoles'] = 'सभी निर्दिष्ट भूमिकाएँ चुनें';
 $lang['roleAssignment'] 	= 'रोल असाइनमेंट';
 $lang['sitIn'] 				= 'सीट इन';
 $lang['tableNo'] 			= 'टेबल न.';
@@ -288,5 +288,15 @@ $lang['day']				= 'दिन';
 $lang['RMName']				= 'RM नाम';
 $lang['RMCat']				= 'RM केटेगरी';
 $lang['name']				= 'नाम';
-
+$lang['chef']				= 'कूक';
+$lang['dispense']			= 'डिस्पेन्स';
+$lang['cashier']			= 'केसियर';
+$lang['role']				= 'भूमिकाएँ';
+$lang['assignedRoles'] 		= 'निर्दिष्ट भूमिकाएँ';
+$lang['tableWise'] 			= 'टेबल के अनुसार';
+$lang['orderWise'] 			= 'आर्डर के अनुसार';
+$lang['seatNo'] 			= 'सीट न.';
+$lang['tableAmount']		= 'टेबल देय';
+$lang['CombineTheFollowingAmountsFromTable']	= 'निम्नलिखित मात्राओं को आपस में मिला लें टेबल';
+$lang['packs']				= 'पैक्स';
 

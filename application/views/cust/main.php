@@ -1366,7 +1366,7 @@
                     $("#serve-val").val(5);
                     // 7-nov-23 for payment
                     if (response.status == 2) {
-                        alert('Bill has been generated, please pay now');
+                        alert('Bill has been generated for previous order, please pay first');
                         window.location = `${response.redirectTo}`;
                         return false;
                     }

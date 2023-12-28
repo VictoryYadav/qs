@@ -346,6 +346,20 @@ width: 100%;*/
                             <div class="col-md-7 col-7">
                                 <div class="card">
                                     <div class="card-body">
+                                        <ul class="nav nav-tabs nav-tabs-custom" id="myTab" role="tablist">
+                                          <li class="nav-item">
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#OrderList" role="tab" aria-controls="home" aria-selected="true" onclick="changeTableView('orderWise');">   <?= $this->lang->line('orderWise'); ?>
+                                            </a>
+                                          </li>
+                                          <li class="nav-item">
+                                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#TableList" role="tab" aria-controls="profile" aria-selected="false" onclick="changeTableView('tableWise');">
+                                                <?= $this->lang->line('tableWise'); ?>
+                                                </a>
+                                          </li>
+                                        </ul>
+
+                                <div class="tab-content">
+                                    <div class="tab-pane p-3 active" id="OrderList" role="tabpanel">
                                         <div class="table-responsive">
                                             <div class="items-data" id="order-view-parent">
                                                 <table class="table" id="order-view-table" class="display">
@@ -364,6 +378,31 @@ width: 100%;*/
                                                 </table>
                                             </div>
                                         </div>
+                                    </div>
+                                  
+                                    <div class="tab-pane fade p-3 " id="TableList" role="tabpanel">
+                                        <div class="table-responsive">
+                                            <div class="items-data1" id="order-view-parent1">
+                                                <table class="table" id="order-view-table1" class="display">
+                                                    <thead class="table-header">
+                                                        <tr>
+                                                            <th><?= $this->lang->line('tableNo');?></th>
+                                                            <th><?= $this->lang->line('orderAmount');?></th>
+                                                            <th><?= $this->lang->line('fromTime');?></th>
+                                                            <th><?= $this->lang->line('mobile');?></th>
+                                                            <th><?= $this->lang->line('visitNo');?></th>
+                                                            <!-- <th>Acc/Rej</th> -->
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="table-view1">
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -654,7 +693,7 @@ width: 100%;*/
                         </div>
 
                         <div class="col-md-12 text-center" id="no-tables" style="display: none;">
-                            <h1 style="margin-top: 30px;"><?= $this->lang->line('noTablesAreFree'); ?></h1>
+                            <!-- <h1 style="margin-top: 30px;"><?= $this->lang->line('noTablesAreFree'); ?></h1> -->
                         </div>
 
                     </form>
@@ -719,6 +758,44 @@ width: 100%;*/
         </div>
     </div>
 </div>
+
+<div class="modal" id="combine_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h6><?= $this->lang->line('tableAmount'); ?></h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 500px;overflow: auto;">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead>
+                            <tr style="background: #b5bbea;">
+                                <th>#</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="combine_list">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-1">
+                    <h5 class="card-title mb-4" id="combine_list_title"></h5>
+                    <input type="hidden" name="update_mergeNo" id="update_mergeNo">
+                    <input type="hidden" name="update_MCNo" id="update_MCNo">
+                    <input type="hidden" name="update_tableFilter" id="update_tableFilter">
+                    <input type="hidden" name="update_custId" id="update_custId">
+                    
+                    <button class="btn btn-sm btn-success" onclick="updateMCNo()">Yes</button>
+                    <button class="btn btn-sm btn-danger" data-dismiss="modal" aria-label="Close">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
     <div class="modal" id="help" style="width: 300px;height: 300px;position: absolute;left: 50%;top: 50%;margin-left: -150px; margin-top: -150px;">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -904,6 +981,7 @@ width: 100%;*/
                 <div class="modal-body" style="max-height: 500px;overflow: auto;">
                     <form method="post" id="billDiscForm">
                         <input type="hidden" name="billMergeNo" id="billMergeNo">
+                        <input type="hidden" name="tableFilter" id="tableFilter">
                         <div class="row">
                             <div class="col-md-6 col-6">
                                 <input type="number" name="billDiscPer" id="billDiscPer" class="form-control form-control-sm" required="" value="0" readonly="">
@@ -932,8 +1010,12 @@ width: 100%;*/
 
 <script>
 
+var tableFilter = 'orderWise';
+// var tableFilter = 'tableWise';
+
     $(document).ready(function () {
         $('#from_table, #to_table').select2();
+        getTableView(tableFilter);
     });
         var bill_data;
         if ($("#kitchen-code option:selected").attr("settle") == 0) {
@@ -958,31 +1040,63 @@ width: 100%;*/
             globalAQty = 0;
         }
 
-        function getTableView() {
+        function getTableView(tableFilter) {
             var STVCd = $('#kitchen-code').val();
             $.ajax({
                 url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                 type: "post",
                 data: {
                     getTableOrderDetails: 1,
-                    STVCd: STVCd
+                    STVCd: STVCd,
+                    filter:tableFilter
                 },
                 dataType: 'json',
                 success: response => {
                     var template = ``;
                     console.log(response);
                     if (response.status) {
-                        response.kitchenData.forEach(tableData);
+                        // response.kitchenData.forEach(tableData);
+                            var template = '';
+                            var bgcolor = '';
+                        response.kitchenData.forEach((item, index) =>{
+                            if(item.BillStat == 0 && item.OType == 8){
+                                bgcolor = '#d5d2d2'; // grey
+                            }else if(item.BillStat == 1 && item.custPymt == 0 && item.payRest == 0){
+                                // bill generated  by customer
+                                bgcolor = '#fff192'; // yellow
+                            }else if(item.BillStat == 5 && item.custPymt == 0 && item.payRest == 0){
+                                // bill generated  by restaurant
+                                bgcolor = '#B1F9A4';//green
+                            }else if(item.BillStat == 1 && item.custPymt == 1){
+                                // bill generated and paid by customer
+                                bgcolor = '#FBBF77'; // ORRANGE
+                            }else if(item.BillStat == 5 && (item.custPymt == 1 || item.payRest == 0 )){
+                                // bill generated rest and paid by customer
+                                bgcolor = '#B3E5FC'; // blue
+                            }
+
+                            template += `<tr  id="${item.TableNo}" mergeNo="'${item.MergeNo}'" custId="${item.CustId}" mCNo="${item.MCNo}" billStat="${item.BillStat}" oTyp="${item.OType}"   style="background-color: ${bgcolor};" class="" >
+                            <td><input type="radio" name="selectOption" onchange="handleKot('${item.MergeNo}',${item.CustId},${item.MCNo},${item.BillStat},${item.OType})"> &nbsp;${convertToUnicodeNo(item.MergeNo)}-${convertToUnicodeNo(item.SeatNo)}</td>
+                            <td>${convertToUnicodeNo(item.Amt)}</td>
+                            <td>${convertToUnicodeNo(item.StTime)}</td>
+                            <td>${convertToUnicodeNo(item.CellNo)}</td>
+                            <td>${convertToUnicodeNo(item.visitNo)}
+                            <input type="hidden" name="custId" value="${item.CustId}">
+                            <input type="hidden" name="MCNo" value="${item.MCNo}">
+                            <input type="hidden" name="MergeNo" value="'${item.MergeNo}'">
+                            <input type="hidden" name="billId" value="">
+                            </td>`;
+
+                            template += `</tr>`;
+                        });
+
+                            if(tableFilter == 'tableWise'){
+                                $("#table-view1").html(template);
+                            }else{
+                                $("#table-view").html(template);
+                            }
                     }
-                    // $('#order-view-table').remove();
-                    // $('#order-view-parent').html(tableStructure);
-                    // console.log(template);
-                    destroyDataTableForOrder();
-                    // getTableView();
                     
-                    // $('#mydiv').hide();
-                    dataTableForOrder();
-                    // resetGlobal();
                 },
                 error: (xhr, status, error) => {
                     console.log(xhr);
@@ -1000,214 +1114,11 @@ width: 100%;*/
                 $('#cashBill_settle').css('display', 'none');
             }
         }
-        function tableData(item, index){
-
-            console.log(item);
-            var template = '';
-            var bgcolor = '';
-            if(item.BillStat == 0 && item.OType == 8){
-                bgcolor = '#d5d2d2'; // grey
-            }else if(item.BillStat == 1 && item.custPymt == 0 && item.payRest == 0){
-                // bill generated  by customer
-                bgcolor = '#fff192'; // yellow
-            }else if(item.BillStat == 5 && item.custPymt == 0 && item.payRest == 0){
-                // bill generated  by restaurant
-                bgcolor = '#B1F9A4';//green
-            }else if(item.BillStat == 1 && item.custPymt == 1){
-                // bill generated and paid by customer
-                bgcolor = '#FBBF77'; // ORRANGE
-            }else if(item.BillStat == 5 && (item.custPymt == 1 || item.payRest == 0 )){
-                // bill generated rest and paid by customer
-                bgcolor = '#B3E5FC'; // blue
-            }
-
-            template += `<tr  id="${item.TableNo}" mergeNo="'${item.MergeNo}'" custId="${item.CustId}" mCNo="${item.MCNo}" billStat="${item.BillStat}" oTyp="${item.OType}"   style="background-color: ${bgcolor};" class="" >
-            <td><input type="radio" name="selectOption" onchange="handleKot('${item.MergeNo}',${item.CustId},${item.MCNo},${item.BillStat},${item.OType})"> &nbsp;${convertToUnicodeNo(item.MergeNo)}</td>
-            <td>${convertToUnicodeNo(item.Amt)}</td>
-            <td>${convertToUnicodeNo(item.StTime)}</td>
-            <td>${convertToUnicodeNo(item.CellNo)}</td>
-            <td>${convertToUnicodeNo(item.visitNo)}
-            <input type="hidden" name="custId" value="${item.CustId}">
-            <input type="hidden" name="MCNo" value="${item.MCNo}">
-            <input type="hidden" name="MergeNo" value="'${item.MergeNo}'">
-            <input type="hidden" name="billId" value="">
-            </td>`;
-
-            template += `</tr>`;
-            $("#table-view").append(template);
-            
-        }
-
-        function print_kots(){
-            var v = document.getElementsByName('ukots[]');
-            // alert(v.length);
-            for(i = 0;i<v.length;i++){
-                if(v[i].checked){
-                    a = 'vtrend:billid=0&eid=<?= $EID;?>&kotno='+v[i].value+'&s=<?= $_SESSION['DynamicDB'];?>';
-                    window.location.href=a;
-                }
-            }
-        }
-        
-        function destroyDataTableForOrder() {
-            var table = $('#order-view-table').DataTable();
-            table.destroy();
-        }
-
-        function dataTableForOrder() {
-            // tetsing me
-            console.log('test');
-            // destroy datatable
-            // $('#order-view-table').destroy();
-            var orderTable = $('#order-view-table').DataTable({
-                keys: true,
-                searching: false, paging: false, info: false
-            });
-
-            console.log('vvv'+orderTable);
-
-            orderTable
-                .on('key-focus', function(e, datatable, cell) {
-                    console.log('vvv');
-                    // $('table#order-view-table > tbody > tr').css('background-color', 'white');
-                    // $('table#order-view-table > tbody > tr.all-delivered').css('background-color', 'lightgreen');
-                    // $('table#order-view-table > tbody > tr.any-assigned').css('background-color', 'yellow');
-                    $('table#order-view-table > tbody > tr.new_order').css('background-color', '#FDCF76');
-                    $('table#order-view-table > tbody > tr.bill-paid').css('background-color', '#FB8E7E');
-                    $('table#order-view-table > tbody > tr.bill-paid').removeClass('active-row');
-                    $('table#order-view-table > tbody > tr.new_order').removeClass('active-row');
-                    // 
-                    
-                    // $('td.focus').parent().css('background-color', '#85ffb6');
-                    // $('td.focus').parent().css('background-color', '#85ffb6');
-                    $('td.focus').parent().addClass('active-row');
-                    var mergeNo = $('td.focus').parent().attr('mergeNo');
-                    var custId = $('td.focus').parent().attr('custId');
-                    var MCNo = $('td.focus').parent().attr('mCNo');
-                    var billStat = $('td.focus').parent().attr('billStat');
-                    var oTyp = $('td.focus').parent().attr('oTyp');
-                    
-                    handleKot(mergeNo, custId, MCNo, billStat, oTyp);
-                    getAllItems(mergeNo, custId, MCNo);
-                    resetGlobal();
-                });
-        }
-
-        // No need
-        function destroyDataTableForItem() {
-            // var table = $('#item-detail-table').DataTable();
-            // table.destroy();
-        }
-
-        function dataTableForItem() {
-            // $("#item-detail-table").DataTable();
-        }
-
-        $(document).ready(function() {
-
-            getTableView();
-            dataTableForItem();
-
-            $("#search-table").click(function(event) {
-                var tableNo = $("#search-table-value").val();
-
-                if (tableNo !== '') {
-                    console.log(tableNo);
-                } else {
-                    alert("specify table no before search");
-                }
-            });
-
-          
-        });
-    </script>
-
-    <!-- handle Casher Action -->
-    <script>
-        // not completed
-        function payCash(TableNo, custId, cNo, mergeNo) {
-
-            $.ajax({
-                url: "ajax/payCash_ajax.php",
-                type: "post",
-                data: {
-                    tableNo: TableNo,
-                    custId: custId,
-                    cNo: cNo,
-                    MergeNo:mergeNo
-                },
-                success: function(data) {
-                    if (window.payCash_settle == 1) {
-                        window.location = "rest_cash_bill.php";
-                    } else {
-                        refreshPage();
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log(xhr);
-                    console.log(status);
-                    console.log(error);
-                }
-            });
-        }
-
-        function acceptTable(tableNo, custId, cNo) {
-
-            if (confirm(`Orders from Table No ${tableNo} will be accepted`)) {
-                $.ajax({
-                    url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
-                    type: "post",
-                    data: {
-                        acceptTable: 1,
-                        tableNo: tableNo,
-                        custId: custId,
-                        cNo: cNo,
-                    },
-                    dataType: "json",
-                    success: (response) => {
-                        // console.log(response);
-                        if (response.status == 1) {
-                            destroyDataTableForOrder();
-                            getTableView();
-                        }
-                    },
-                    error: (xhr, status, error) => {
-                        console.log(xhr);
-                        console.log(status);
-                        console.log(error);
-                    }
-                });
-            }
-        }
-
-        function rejectTable(tableNo, custId, cNo) {
-            // console.log("Table Rejected");
-
-            if (confirm(`Table No ${tableNo} is Rejected`)) {
-                $.ajax({
-                    url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
-                    type: "post",
-                    data: {
-                        rejectTable: 1,
-                        tableNo: tableNo,
-                        custId: custId,
-                        cNo: cNo
-                    },
-                    dataType: "json",
-                    success: (response) => {
-                        console.log(response);
-                        if (response.status == 1) {
-                            destroyDataTableForOrder();
-                            getTableView();
-                        }
-                    },
-                    error: (xhr, status, error) => {
-                        console.log(xhr);
-                        console.log(status);
-                        console.log(error);
-                    }
-                });
-            }
+       
+        function changeTableView(val){
+            tableFilter = val;
+            $("#item-detail-body1").empty();
+            getTableView(tableFilter);
         }
 
         function handleKot(mergeNo, custId, MCNo, BillStat, oTyp) {
@@ -1229,7 +1140,13 @@ width: 100%;*/
                 $('#btnCash').show();
                 $('#billCreatebtn').hide();
             }else{
-                $('#billCreatebtn').attr('onclick', "billCreate('"+mergeNo+"',"+custId+")");
+                
+                if(tableFilter == 'tableWise'){
+                    // $('#billCreatebtn').attr('onclick', "billMerge('"+mergeNo+"',"+custId+", '"+tableFilter+"')");
+                    checkCNoForTable(mergeNo,tableFilter, MCNo, custId);
+                }else{
+                    $('#billCreatebtn').attr('onclick', "billCreate('"+mergeNo+"',"+custId+", '"+tableFilter+"')");    
+                }
                 $('#billCreatebtn').show();
             }
             $.ajax({
@@ -1239,7 +1156,8 @@ width: 100%;*/
                     getKot_data: 1,
                     mergeNo: mergeNo,
                     custId: custId,
-                    cNo: MCNo
+                    cNo: MCNo,
+                    tableFilter : tableFilter
                 },
                 dataType: "json",
                 success: (response) => {
@@ -1299,6 +1217,116 @@ width: 100%;*/
                     console.log(error);
                 }
             });
+        }
+
+        function checkCNoForTable(MergeNo, tableFilter, MCNo, custId){
+            // console.log(mergeNo)
+            var title = "<?= $this->lang->line('CombineTheFollowingAmountsFromTable'); ?>";
+            $.post('<?= base_url('restaurant/checkCNoForTable') ?>',{MergeNo:MergeNo},function(response){
+
+                if(response.status == 'success') {
+                    var data = response.response;
+                    var temp = '';
+                    var count = 0;
+                    for(i=0; i<data.length; i++){
+                        count++;
+                        temp += `<tr><td>${count}</td><td>${data[i].OrdAmt}</td></tr>`;
+                    }
+                    $('#combine_list').html(temp);
+                    title = title+' '+MergeNo;
+                    $('#combine_list_title').html(title);
+                    $('#update_mergeNo').val(MergeNo);
+                    $('#update_MCNo').val(MCNo);
+                    $('#update_tableFilter').val(tableFilter);
+                    $('#update_custId').val(custId);
+                    $('#combine_modal').modal('show');
+                }else {
+                    alert(response.status);
+                }
+            });
+        }
+
+        updateMCNo = () => {
+            var MergeNo = $('#update_mergeNo').val();
+            var MCNo = $('#update_MCNo').val();
+            var custId = $('#update_custId').val();
+            var tableFilter = $('#update_tableFilter').val();
+
+            $.post('<?= base_url('restaurant/updateMCNoForTable') ?>',{MergeNo:MergeNo,MCNo:MCNo},function(response){
+
+                if(response.status == 'success') {
+                    // alert(response.status);
+                    billCreate(MergeNo, custId, tableFilter);
+                }else {
+                    alert(response.status);
+                }
+                // location.reload();
+            });
+            
+        }
+
+    </script>
+
+    <!-- handle Casher Action -->
+    <script>
+
+        function acceptTable(tableNo, custId, cNo) {
+
+            if (confirm(`Orders from Table No ${tableNo} will be accepted`)) {
+                $.ajax({
+                    url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
+                    type: "post",
+                    data: {
+                        acceptTable: 1,
+                        tableNo: tableNo,
+                        custId: custId,
+                        cNo: cNo,
+                    },
+                    dataType: "json",
+                    success: (response) => {
+                        // console.log(response);
+                        if (response.status == 1) {
+                            destroyDataTableForOrder();
+                            getTableView(getTableView);
+                        }
+                    },
+                    error: (xhr, status, error) => {
+                        console.log(xhr);
+                        console.log(status);
+                        console.log(error);
+                    }
+                });
+            }
+        }
+
+        function rejectTable(tableNo, custId, cNo) {
+            // console.log("Table Rejected");
+
+            if (confirm(`Table No ${tableNo} is Rejected`)) {
+                $.ajax({
+                    url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
+                    type: "post",
+                    data: {
+                        rejectTable: 1,
+                        tableNo: tableNo,
+                        custId: custId,
+                        cNo: cNo
+                    },
+                    dataType: "json",
+                    success: (response) => {
+                        console.log(response);
+                        if (response.status == 1) {
+                            destroyDataTableForOrder();
+                            getTableView(getTableView);
+                        }
+                    },
+                    error: (xhr, status, error) => {
+                        console.log(xhr);
+                        console.log(status);
+                        console.log(error);
+                    }
+                });
+            }
         }
 
         function billOptions(custId, MCNo, mergeNo){
@@ -1382,9 +1410,8 @@ width: 100%;*/
                     } else {
                         console.log(response.msg);
                     }
-                    destroyDataTableForItem();
+                    
                     $("#item-detail-body").html(template);
-                    dataTableForItem();
                 },
                 error: (xhr, status, error) => {
                     console.log(xhr);
@@ -1408,12 +1435,7 @@ width: 100%;*/
         }
 
         function refreshPage() {
-            // $("#item-detail-body").html('');
-            // destroyDataTableForOrder();
-            $('#order-view-table').DataTable().destroy;
-            getTableView();
-
-            // var oTable = $('#order-view-table').DataTable( );
+            location.reload();
         }
 
         function handleDelivery() {
@@ -2245,7 +2267,7 @@ function get_phone_num(){
     });
 }
 
-function billCreate(mergeNo, custId){
+function billCreate(mergeNo, custId, tableFilter){
     var mergeNo = "'"+mergeNo+"'";
         // console.log(mergeNo);
     var disc = "<?php echo $this->session->userdata('Discount'); ?>";
@@ -2257,26 +2279,27 @@ function billCreate(mergeNo, custId){
                     if(data.Disc > 0){
                         $('#billDiscPer').val(data.Disc);
                         $('#billMergeNo').val(mergeNo);
+                        $('#tableFilter').val(tableFilter);
                         $('#billDiscountModel').modal('show');
                     }else{
                         // alert('Bill Create Without Discount');
-                    billCreateWitoutDisc(mergeNo);
+                    billCreateWitoutDisc(mergeNo, tableFilter);
                     }
                 }else{
                   alert(res.response);
                 }
             });
         }else{
-            billCreateWitoutDisc(mergeNo);    
+            billCreateWitoutDisc(mergeNo, tableFilter);    
         }
     }else{
-        billCreateWitoutDisc(mergeNo);
+        billCreateWitoutDisc(mergeNo, tableFilter);
     }
 }
 
-function billCreateWitoutDisc(mergeNo){
+function billCreateWitoutDisc(mergeNo, tableFilter){
     var custDiscPer = 0;
-    $.post('<?= base_url('restaurant/billCreateRest') ?>',{mergeNo:mergeNo,custDiscPer:custDiscPer},function(res){
+    $.post('<?= base_url('restaurant/billCreateRest') ?>',{mergeNo:mergeNo,custDiscPer:custDiscPer, tableFilter:tableFilter},function(res){
         if(res.status == 'success'){
             var billId = res.response;
           window.location = "<?php echo base_url('restaurant/bill/'); ?>"+billId;
@@ -2290,7 +2313,8 @@ function billCreateWitoutDisc(mergeNo){
 function billCreateA(){
     var mergeNo = $('#billMergeNo').val();
     var custDiscPer = $('#billDiscPer').val();
-    $.post('<?= base_url('restaurant/billCreateRest') ?>',{mergeNo:mergeNo, custDiscPer:custDiscPer},function(res){
+    var tableFilter = ('#tableFilter').val();
+    $.post('<?= base_url('restaurant/billCreateRest') ?>',{mergeNo:mergeNo, custDiscPer:custDiscPer, tableFilter:tableFilter},function(res){
         if(res.status == 'success'){
             var billId = res.response;
           window.location = "<?php echo base_url('restaurant/bill/'); ?>"+billId;

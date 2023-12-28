@@ -84,7 +84,8 @@ class User extends CI_Model{
         $itmName = "m.ItemNm$langId as ItemNm";
         $ipName = "ip.Name$langId as Portions";
 
-		$billData = $comDb->query("SELECT ((k.ItmRate)* sum(k.Qty) * b.splitPercent) as ItemAmt, $itmName, k.CustItemDesc, k.TA, k.ItmRate, sum(k.Qty) * b.splitPercent as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, e.BillName, b.BillPrefix, b.BillSuffix, b.TaxInclusive, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo,b.BillId, b.TotItemDisc, b.BillDiscAmt,b.custDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt,b.PaidAmt, b.SerCharge as bservecharge,b.SerChargeAmt, b.Tip,b.TableNo, b.billTime as BillDt, $ipName , k.Itm_Portion,b.CustId,b.CellNo  from Kitchen k, KitchenMain km, Billing b, MenuItem m, Eatary e , ItemPortions ip where k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and $qry and ((km.CNo = k.CNo) or (km.MCNo = k.MCNo)) and ( km.MergeNo = k.MergeNo) and ((km.CNo = b.CNo) or (km.MCNo = b.CNo)) and (km.MergeNo = b.MergeNo) and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID  and b.ChainId = km.ChainId and km.EID = $EID and b.BillId = $billId $custAnd Group By k.ItemId, k.CustItemDesc, k.TaxType ,k.Itm_Portion Order By k.TaxType, m.ItemNm1")->result_array();
+		$billData = $comDb->query("SELECT ((k.ItmRate)* k.Qty * b.splitPercent) as ItemAmt, $itmName, k.CustItemDesc, k.TA, k.ItmRate, (k.Qty * b.splitPercent) as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, e.BillName, b.BillPrefix, b.BillSuffix, b.TaxInclusive, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo,b.BillId, b.TotItemDisc, b.BillDiscAmt,b.custDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt,b.PaidAmt, b.SerCharge as bservecharge,b.SerChargeAmt, b.Tip,b.TableNo,b.MergeNo, b.billTime as BillDt, $ipName , k.Itm_Portion,b.CustId,b.CellNo  from Kitchen k, KitchenMain km, Billing b, MenuItem m, Eatary e , ItemPortions ip where k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and $qry and ((km.CNo = k.CNo) or (km.MCNo = k.MCNo)) and ( km.MergeNo = k.MergeNo) and ((km.CNo = b.CNo) or (km.MCNo = b.CNo)) and (km.MergeNo = b.MergeNo) and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID  and b.ChainId = km.ChainId and km.EID = $EID and km.EID=m.EID and b.BillId = $billId $custAnd Group By k.ItemId, km.MCNo, km.MergeNo, k.CustItemDesc, k.TaxType ,k.Itm_Portion Order By k.TaxType, m.ItemNm1")->result_array();
+
 // print_r($this->db2->last_query());die;
 		// echo "<pre>";
 		// print_r($billData);die;
@@ -134,7 +135,8 @@ class User extends CI_Model{
                         ->join('UserRolesAccess ura', 'ura.RoleId = ur.RoleId','inner')
                         ->get_where('UserRoles ur', 
                             array('ura.RUserId' => $RUserId,
-                                'EID' => $EID)
+                                'ura.EID' => $EID,
+                                'ur.Stat' => 0)
                                 )
                         ->result_array();
 	}
@@ -199,8 +201,8 @@ class User extends CI_Model{
 	}
 
 	public function generate_otp($mobile, $page){
-		// $otp = rand(9999,1000);
-		$otp = 1212;
+		$otp = rand(9999,1000);
+		// $otp = 1212;
         $this->session->set_userdata('cust_otp', $otp);
         // $this->session->set_userdata('cust_otp', '1212');
         $otpData['mobileNo'] = $mobile;
@@ -338,6 +340,12 @@ class User extends CI_Model{
 
 	private function calculatTotalTax($total_tax, $new_tax){
 		return $total_tax + $new_tax;
+	}
+
+	public function getSeatNoByCNo($CNo){
+		$EID = authuser()->EID;
+		$data =  $this->db2->select('SeatNo')->get_where('KitchenMain', array('CNo' => $CNo,'EID' => $EID, 'BillStat' => 0))->row_array();
+		return $data['SeatNo']; 
 	}
 
 	

@@ -28,12 +28,20 @@
                                             <div class="col-md-3 form-group col-6">
                                                 <label><?= $this->lang->line('tableNo'); ?></label>
                                                 <select class="form-control form-control-sm" id="table-id" onchange="get_table_order_items(this)">
-                                                    <option value="0"><?= $this->lang->line('select'); ?></option>
+                                                    <option value="0" capacity="0"><?= $this->lang->line('select'); ?></option>
                                                     <?php foreach ($tablesAlloted as $data) : ?>
-                                                        <option value="<?= $data['TableNo'] ?>"><?= convertToUnicodeNumber($data['MergeNo']); ?></option>
+                                                        <option value="<?= $data['MergeNo'] ?>" capacity="<?= $data['Capacity'] ?>"><?= convertToUnicodeNumber($data['MergeNo']); ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div>
+
+                                            <div class="col-md-3 form-group col-6">
+                                                <label><?= $this->lang->line('seatNo'); ?></label>
+                                                <select class="form-control form-control-sm" id="seatNo" name="seatNo" onchange="changeSeatNo()">
+                                                    <option value="1">1</option>
+                                                </select>
+                                            </div>
+
                                             <?php } ?>
                                             <?php if($OType == 101) { ?>
                                             <div class="col-md-3 form-group col-6">
@@ -54,6 +62,7 @@
                                             <div class="col-md-3 form-group col-6">
                                                 <label><?= $this->lang->line('mobile'); ?></label>
                                                 <input type="number" id="phone" class="form-control form-control-sm">
+                                                <input type="hidden" name="seatNoOld" id="seatNoOld" value="1">
                                             </div>
                                         </div>
 
@@ -266,7 +275,7 @@
             $(event).parent().parent().remove();
         }
 
-        function itemSlected(itemId, itemName, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime) {
+        function itemSlected(itemId, itemName, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime, DCd) {
             var orderType = $('#order-type').val();
             ch = '';
             if(orderType != 8){
@@ -291,6 +300,7 @@
                 </button>
                 <input type="hidden" value="${TaxType}" class="taxtype">
                 <input type="hidden" value="${PrepTime}" class="preptime">
+                <input type="hidden" value="${DCd}" class="DCd">
                 
                 </td>
             </tr>`;
@@ -360,7 +370,7 @@
                                     }
                                     
                                     template += `
-                                <li onclick="itemSlected(${item.ItemId}, '${item.LngName}', ${item.Value}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime});" style="cursor: pointer;">${printItemName}</li>
+                                <li onclick="itemSlected(${item.ItemId}, '${item.LngName}', ${item.Value}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd});" style="cursor: pointer;">${printItemName}</li>
                             `;
                                 });
                                 template += `</ul>`;
@@ -391,11 +401,15 @@
                 // alert(data_type);
                 var orderType = $("#order-type").val();
                 console.log('vv '+orderType);
+                var seatNo = 0;
+                var oldSeatNo = 0;
                 if (orderType != 8 ) {
                     // var tableNo = 'TA';
                     var tableNo = orderType;
                 } else {
                     var tableNo = $("#table-id").val();
+                    seatNo = $('#seatNo').val();
+                    oldSeatNo = $('#seatNoOld').val();
                 }
                 var thirdParty = $("#3rd-party").val();
                 var thirdPartyRef = $("#3rd-party-refNo").val();
@@ -415,6 +429,7 @@
                 var pckValue = [];
                 var take_away = [];
                 var prep_time = [];
+                var dcd_value = [];
                 var dataType = $(this).attr('data_type');
                 // Page Validation
                 if (orderType == 0) {
@@ -477,6 +492,9 @@
                         prep_time.push($(this).val());
                     });
 
+                    $(".DCd").each(function(index, el) {
+                        dcd_value.push($(this).val());
+                    });
 
                     $(".item-remarks").each(function(index, el) {
                         itemRemarks.push($(this).val());
@@ -525,7 +543,10 @@
                             CNo:cno,
                             taxtype:taxtype,
                             take_away:take_away,
-                            prep_time:prep_time
+                            prep_time:prep_time,
+                            seatNo:seatNo,
+                            oldSeatNo:oldSeatNo,
+                            DCd : dcd_value
                         },
 
                         dataType: "json",
@@ -570,46 +591,63 @@
 
         function get_table_order_items(el){
             $('#order-table-body').html('');
-            var table_no = el.value;
+            var mergeNo = el.value;
+            var capacity = $('option:selected', el).attr('capacity');
+
+            var seatOption = '';
+            for(i = 1;i<= capacity; i++){
+                seatOption+=`<option value="${i}">${i}</option>`;
+            }
+            $('#seatNo').html(seatOption);
+            changeSeatNo();
+        }
+
+        function changeSeatNo(){
+            var mergeNo = $('#table-id').val();
+            var seatNo = $('#seatNo').val();
+            ajaxCallData(mergeNo, seatNo);
+        }
+
+        function ajaxCallData(mergeNo, seatNo){
+            
             $.ajax({
               type:'post',
               url:"<?php echo base_url('restaurant/order_ajax_3p'); ?>",
-              data:{get_table_order_items:1, table_no:table_no},
+              data:{get_table_order_items:1, mergeNo:mergeNo, seatNo:seatNo},
               success:function(data){
                 $('#order-table-body').html('');
-                var a = JSON.parse(data);
-                // alert(a.length);
-                if(a.length > 0){
-                    var billStat = a[0].kmBillStat;
-                    var b = '';
-                    if(billStat > 0){
-                        alert('Cannot add more items, as bill has been generated for this table')
-                    }else{
-                        for(i = 0;i<a.length;i++){
-                            cno = a[i].CNo;
-                            var ch = '';
-                            // alert(a[i].TA);
-                            if(a[i].TA == 1){
-                                ch = 'checked';
+                    var a = JSON.parse(data);
+                    if(a.length > 0){
+                        var billStat = a[0].kmBillStat;
+                        var oldSeatNo = a[0].SeatNo;
+                        var b = '';
+                        if(billStat > 0){
+                            alert('Cannot add more items, as bill has been generated for this table')
+                        }else{
+                            for(i = 0;i<a.length;i++){
+                                cno = a[i].CNo;
+                                var ch = '';
+                                if(a[i].TA == 1){
+                                    ch = 'checked';
+                                }
+                                b+='<tr>';
+                                b+='<td>'+a[i].ItemNm+'</td><td>'+convertToUnicodeNo(a[i].Qty)+'</td><td>'+convertToUnicodeNo(a[i].ItmRate)+'</td><td class="item-value">'+convertToUnicodeNo(a[i].Value)+'</td><td><input type="checkbox" value="'+a[i].TA+'" '+ch+' disabled /></td><td>'+a[i].CustRmks+'</td><td></td>';
+                                b+='</tr>';
                             }
-                            b+='<tr>';
-                            b+='<td>'+a[i].ItemNm+'</td><td>'+convertToUnicodeNo(a[i].Qty)+'</td><td>'+convertToUnicodeNo(a[i].ItmRate)+'</td><td class="item-value">'+convertToUnicodeNo(a[i].Value)+'</td><td><input type="checkbox" value="'+a[i].TA+'" '+ch+' disabled /></td><td>'+a[i].CustRmks+'</td><td></td>';
-                            b+='</tr>';
+
+                            $('#phone').val(a[0].CellNo);
+                            $('#phone').prop('readonly', true);
+                            $('#seatNoOld').val(oldSeatNo);
+                            $('#order-table-body').append(b);
+                            calculateTotal();
                         }
-
-                        $('#phone').val(a[0].CellNo);
-                        $('#phone').prop('readonly', true);
-
-                        $('#order-table-body').append(b);
-                        calculateTotal();
+                    }else{
+                        $('#phone').val('');
+                        $('#phone').prop('readonly', false);
+                        $('#seatNoOld').val(1);
                     }
-                }else{
-                    $('#phone').val('');
-                    $('#phone').prop('readonly', false);
-                }
-              }
-          });
-
+                  }
+            });
         }
 
         function cashCollect(billId, oType, tableNo, mergeNo, cellNo, paidAmt, MCNo,EID){

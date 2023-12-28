@@ -397,12 +397,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	    return $CI->User->getTaxCalculation($kitcheData, $EID, $CNo, $MergeNo);	
 	}
 
+	function getSeatNo($CNo){
+		$CI = & get_instance();
+	    $CI->load->model('User');
+	    return $CI->User->getSeatNoByCNo($CNo);	
+	}
+
 	function convertToUnicodeNumber($input) {
     	$CI = & get_instance();
     	$site_lang = $CI->session->userdata('site_lang');
     
     	$standard_numsets = array("0","1","2","3","4","5","6","7","8","9");
     	$devanagari_numsets = array("०","१","२","३","४","५","६","७","८","९");
+    	$chinese_numsets = array('零','一','二','三','四','五','六','七','八','九');
 
     	$digits = 0;
     	switch ($site_lang) {
@@ -413,16 +420,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     		case 2:
     			$digits = str_replace($standard_numsets, $devanagari_numsets, $input);
     			break;
+    		case 3:
+    			$digits = str_replace($standard_numsets, $chinese_numsets, $input);
+    			break;
     	}
 
     	return $digits;
-
-        if($site_lang == 'english'){
-            return str_replace($devanagari_numsets,$standard_numsets, $input);
-        }else{
-			return str_replace($standard_numsets, $devanagari_numsets, $input);
-        }
-
   }
 
   function unicodeToEnglish($input) {
@@ -431,6 +434,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     
     	$standard_numsets = array("0","1","2","3","4","5","6","7","8","9");
     	$devanagari_numsets = array("०","१","२","३","४","५","६","७","८","९");
+    	$chinese_numsets = array('零','一','二','三','四','五','六','七','八','九');
 
     	$digits = 0;
     	if($input){
@@ -442,12 +446,45 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	    		case 2:
 	    			$digits = str_replace($devanagari_numsets, $standard_numsets, $input);
 	    			break;
+	    		case 3:
+    				$digits = str_replace($standard_numsets, $chinese_numsets, $input);
+    			break;
 	    	}
     	}
 
     	return $digits;
 
   }
+
+  function convertDigits($number, $sourceLanguage, $targetLanguage) {
+    // Define digit mappings for different languages
+    $digitMappings = [
+        'en' => ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], // English
+        'zh' => ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'], // Chinese
+        'hi' => ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'], // Hindi
+        // Add more languages and their digit mappings as needed
+    ];
+
+    // Check if the source and target languages are supported
+    if (!isset($digitMappings[$sourceLanguage]) || !isset($digitMappings[$targetLanguage])) {
+        return "Unsupported languages provided.";
+    }
+
+    // Get digit mapping arrays for source and target languages
+    $sourceDigits = $digitMappings[$sourceLanguage];
+    $targetDigits = $digitMappings[$targetLanguage];
+
+    // Perform conversion using str_replace
+    $convertedNumber = str_replace($sourceDigits, $targetDigits, $number);
+
+    return $convertedNumber;
+}
+
+// Test the function
+// $englishNumber = '12345';
+// $chineseNumber = convertDigits($englishNumber, 'en', 'zh');
+// $hindiNumber = convertDigits($englishNumber, 'en', 'hi');
+
 
 
 

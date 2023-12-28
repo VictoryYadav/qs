@@ -15,6 +15,7 @@
         $hotelName = $billData[0]['Name'];
         $BillName = $billData[0]['BillName'];
         $TableNo = $billData[0]['TableNo'];
+        $MergeNo = $billData[0]['MergeNo'];
         $phone = $billData[0]['PhoneNos'];
         $gstno = $billData[0]['GSTno'];
         $fssaino = $billData[0]['FSSAINo'];
@@ -339,7 +340,7 @@
                         </div>
                         <?php if($this->session->userdata('billPrintTableNo') > 0) { ?>
                         <div class="col-6" style="text-align: right;">
-                            <p style="margin-bottom: unset;font-weight: bold;font-size: 15px !important;">Table No: <?= $TableNo ?></p>
+                            <p style="margin-bottom: unset;font-weight: bold;font-size: 15px !important;">Table No: <?= $MergeNo ?></p>
                         </div>
                         <?php } ?>
                         

@@ -633,21 +633,45 @@ class Cust extends CI_Model{
 			// echo "<pre>";print_r($postData);exit();
 			if (isset($_SESSION['CustId'])) {
 
-				$checkKM = $this->db2->select('custPymt, BillStat, payRest')->get_where('KitchenMain', array('BillStat >' => 0, 'EID' => $EID, 'CustId' => $CustId))->row_array();
-				if(!empty($checkKM)){
-					if($checkKM['payRest'] == 1){
-						$CNo = 0;
-						$this->session->set_userdata('CNo' , $CNo);
-						$this->session->set_userdata('MergeNo' , $TableNo);
-					}else{
-						$response = [
-							"status" => 2,
-							"data" => $checkKM
-						];
-						$response["redirectTo"]  = base_url('customer/current_order');
-						echo json_encode($response);
-						die;
+				if($CNo == 0){
+					$checkKM = $this->db2->select('custPymt, BillStat, payRest')
+										->get_where('KitchenMain', array('BillStat >' => 0, 'EID' => $EID, 'CustId' => $CustId,'payRest' => 0))->row_array();
+					if(!empty($checkKM)){
+							$response = [
+								"status" => 2,
+								"data" => $checkKM
+							];
+							$response["redirectTo"]  = base_url('customer/current_order');
+							echo json_encode($response);
+							die;
 					}
+					$this->session->set_userdata('CNo' , $CNo);
+							$this->session->set_userdata('MergeNo' , $TableNo);
+				}
+				else{
+					$billData = $this->db2->select('b.BillId, b.Stat, b.CNo, b.PaidAmt, b.payRest')
+                                        ->order_by('b.Billid','DESC')
+                                        ->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
+                                        ->get_where('Billing b', array('b.EID' => $EID,
+                                            'km.CNo' => $CNo,
+                                            'km.CustId' => $CustId
+                                        )
+                                                    )->row_array();
+                    if(!empty($billData)){
+                    	$CNo = 0;
+                    	$this->session->set_userdata('KOTNo', 0);
+                		$this->session->set_userdata('CNo', $CNo);
+                		$this->session->set_userdata('itemTotalGross', 0);
+                		if($billData['payRest'] == 0){
+			                $response = [
+									"status" => 2,
+									"data" => $billData
+								];
+							$response["redirectTo"]  = base_url('customer/current_order');
+							echo json_encode($response);
+							die;
+                		}
+		            }
 				}
 
 				$CellNo = $_SESSION['signup']['MobileNo'];
@@ -1637,9 +1661,9 @@ class Cust extends CI_Model{
                     $genTblDb->insert('CustPymts', $custPymtObj);
                     
                     $kstat = ($EType == 5)?3:2;
-                    $this->db2->query("UPDATE Kitchen SET BillStat = $billingObjStat  WHERE EID = $EID and MCNo = $CNo and MergeNo = $strMergeNo AND BillStat = 0 and Stat = $kstat ");
+                    $this->db2->query("UPDATE Kitchen SET BillStat = $billingObjStat  WHERE EID = $EID and (MCNo = $CNo or MergeNo = $strMergeNo) AND BillStat = 0 and Stat = $kstat ");
 
-                    $this->db2->query("UPDATE KitchenMain SET BillStat = $billingObjStat WHERE MCNo = $CNo and MergeNo = $strMergeNo AND BillStat = 0 AND EID = $EID ");
+                    $this->db2->query("UPDATE KitchenMain SET BillStat = $billingObjStat WHERE (MCNo = $CNo or MergeNo = $strMergeNo) AND BillStat = 0 AND EID = $EID ");
 
                 $this->db2->trans_complete();
 
@@ -1737,17 +1761,17 @@ class Cust extends CI_Model{
 						->row_array();
 	}
 
-	public function getBillLinks($billId){
+	public function getBillLinks($billId, $MCNo){
 		
 		if($this->session->userdata('billSplit') > 1){
 			$CellNo = $this->session->userdata('CellNo');
 			$hours_2 = date('Y-m-d H:i:s', strtotime("-2 hours"));
 
-			$this->db2->where('created_by', $CellNo);
 			$this->db2->where('billDate >', $hours_2);
 		}else{
 			$this->db2->where('billId', $billId);
 		}
+		$this->db2->where('MCNo', $MCNo);
 
 		return $this->db2->get_where('BillingLinks', array(
 									'EID' => authuser()->EID

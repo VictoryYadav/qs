@@ -50,11 +50,16 @@ class Customer extends CI_Controller {
 
     public function index1(){
 
+        // $ll = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+        // print_r($ll);die;
+
         // print_r(base64_decode('ZT01MSZjPTAmdD0yMiZvPTA'));
         // die;
 
-        // $input = '२३४';
-        // $dd = unicodeToEnglish($input);
+        // $site_lang = $this->session->set_userdata('site_lang', 3);
+
+        // $input = '111';
+        // $dd = convertToUnicodeNumber($input);
         // echo "<pre>";
         // print_r($dd);
         // die;
@@ -1821,6 +1826,7 @@ class Customer extends CI_Controller {
                 $temp['billId'] = $billId;
                 $temp['EID'] = $EID;
                 $temp['created_by'] = $CellNo;
+                $temp['MCNo'] = $CNo;
                 $linkData[] = $temp;
                 $this->session->set_userdata('blink', $link);
             // link send with bill no, sms or email => pending status
@@ -2232,6 +2238,7 @@ class Customer extends CI_Controller {
                     $linkData['link'] = $link;
                     $linkData['EID'] = $EID;
                     $linkData['created_by'] = $CellNo;
+                    $linkData['MCNo'] = $CNo;
                     $this->session->set_userdata('billSplit', 1);
                     $this->db2->insert('BillingLinks', $linkData);
                 }
@@ -2254,7 +2261,7 @@ class Customer extends CI_Controller {
         $bills = getRecords('Billing', array('BillId' => $BillId, 'EID' => authuser()->EID));
         $data['payable'] = $bills['PaidAmt'];
         $data["splitBills"] = $this->cust->getSplitPayments($BillId);
-        $data["billLinks"] = $this->cust->getBillLinks($BillId);
+        $data["billLinks"] = $this->cust->getBillLinks($BillId, $MCNo);
         $this->load->view('cust/pay_now', $data);
     }
 
@@ -2516,7 +2523,8 @@ class Customer extends CI_Controller {
     public function current_order(){
         $data['title'] = $this->lang->line('currentorder');
         $CustId = $this->session->userdata('CustId');
-        if($this->session->userdata('CNo') == 0){
+        $CNo = $this->session->userdata('CNo');
+        if($CNo == 0){
 
             $data['detail'] = $this->cust->getCurrenOrderBill($CustId);
             
@@ -2541,7 +2549,26 @@ class Customer extends CI_Controller {
                     redirect(base_url('customer/checkout'));
                 }
         }else{
-            redirect(base_url('customer'));
+
+            $billData = $this->db2->select('b.BillId, b.Stat, b.CNo, b.PaidAmt, b.payRest')
+                                        ->order_by('b.Billid','DESC')
+                                        ->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
+                                        ->get_where('Billing b', array('b.EID' => authuser()->EID,
+                                            'km.CNo' => $CNo,
+                                            'km.CustId' => $CustId,
+                                            'b.payRest' => 0,
+                                        )
+                                                    )->row_array();
+            if(!empty($billData)){
+                $this->session->set_userdata('payable', $billData['PaidAmt']); 
+                $this->session->set_userdata('KOTNo', 0);
+                $this->session->set_userdata('CNo', 0);
+                $this->session->set_userdata('itemTotalGross', 0);
+
+                        redirect(base_url('customer/pay/'.$billData['BillId'].'/'.$billData['CNo']));
+            }else{
+                redirect(base_url('customer'));
+            }
         }
     }
 
