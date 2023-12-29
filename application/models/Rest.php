@@ -833,7 +833,7 @@ class Rest extends CI_Model{
             $cpname = "cp.Name$langId as Name";
 
 			$billData = $this->db2->select("b.TableNo, b.BillId, b.BillNo, b.billTime as BillDate, b.CellNo,b.CustId,b.TotAmt,b.PaidAmt bPaidAmt, bp.MergeNo, bp.PaidAmt, bp.OrderRef, bp.PymtRef, bp.PaymtMode, bp.PymtType, bp.Stat, bp.PymtDate, $cpname, cp.Company")
-					->order_by('b.BillId', 'ASC')
+					->order_by('b.BillId', 'DESC')
 					->join('BillPayments bp','bp.BillId = b.BillId','left')
 					->join('ConfigPymt cp','cp.PymtMode = bp.PaymtMode','left')
 					->get_where('Billing b', array('b.EID' => $EID,

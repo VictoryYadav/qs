@@ -84,12 +84,13 @@
             <!-- ============================================================== -->
             <!-- Start right Content here -->
             <!-- ============================================================== -->
-            <div class="Po_to_land" style="width:100%;height:100%;">
+            <!-- <div class="Po_to_land" style="width:100%;height:100%;">
                 <img src="<?= base_url();?>assets/img/ptl.gif" alt="" width:33px; style="padding-left:29px;">
                 <span style="padding: 2px;">Screen Available only Landscape mode on Mobile Devices.</span>
-            </div>
+            </div> -->
             
-            <div class="main-content Po_to_land1">
+            <div class="main-content">
+                <!-- <div class="main-content Po_to_land1"> -->
 
                 <div class="page-content">
                     <div class="container-fluid">
@@ -146,7 +147,7 @@
                                                             <th><?= $this->lang->line('packs'); ?></th>
                                                             <th><?= $this->lang->line('mobile'); ?></th>
                                                             <th><?= $this->lang->line('thirdParty'); ?></th>
-                                                            <th><?= $this->lang->line('thirdPartyRefNo'); ?></th>
+                                                            <th><?= $this->lang->line('refNo'); ?></th>
                                                             <!-- <th>Order</th> -->
                                                         </tr>
                                                     </thead>
@@ -197,131 +198,35 @@
         <!-- Right bar overlay-->
         <div class="rightbar-overlay"></div>
 
-<!-- The Modal -->
-    <div class="modal" id="allocate-item">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div
-                    class="modal-header text-center"
-                    style="background-color: rgb(243, 243, 103); padding: 5px; display: block;">
-                    <h4 class="modal-title">Item Auto-Assign</h4>
-                    <!-- <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    -->
-                </div>
-                <!-- Modal body -->
-                <div class="modal-body">
-                    <div class="row form-group">
-                        <div class="col-md-8">
-                            <input
-                                readonly=""
-                                type="text"
-                                name="itemName"
-                                class="form-control"
-                                id="item-name">
-                        </div>
-                        <div class="col-md-2">
-                            <input
-                                readonly=""
-                                type="text"
-                                name="itemPortion"
-                                class="form-control"
-                                id="item-portion">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="number" name="itemQty" class="form-control" id="item-qty" min="1">
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-md-12">
-                            <input
-                                type="text"
-                                name="customerRemarks"
-                                readonly=""
-                                id="customer-remarks"
-                                class="form-control">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 text-center">
-                            <button
-                                type="button"
-                                class="btn btn-primary"
-                                id="auto-item-prepare"
-                                data-dismiss="modal">Auto Assign</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- The Modal -->
-    <div class="modal" id="manual-item">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Item</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <!-- Modal body -->
-                <div class="modal-body">
-                    Modal Body
-                </div>
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Order Detail Modal -->
-    <div class="modal" id="order-detail-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Order Details</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <!-- Modal body -->
-                <div class="modal-body">
-                    <!-- <table class="table table-bordered"> <thead> <tr> <th>Item Name</th>
-                    <th>Qty</th> <th>AMT</th> <th>AQty</th> </tr> </thead> <tbody
-                    id="order-list"></tbody> </table> -->
-                </div>
-                <!-- Modal footer -->
-            </div>
-        </div>
-    </div>
-
     <!-- order_deliver_otp Modal -->
-    <div class="modal fade" id="order_deliver_otp" role="dialog">
+    <div class="modal fade" id="deliveryModal" role="dialog">
         <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-            <h4 class="modal-title order_deliver_header">OTP for </h4>
+            <h4 class="modal-title order_deliver_header"><?= $this->lang->line('deliveryOTP'); ?></h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding: 1.3rem;">
             <form class="form-inline" style="margin-bottom: 1px;place-content: center;">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="confirm_otp_field" placeholder="Please Enter OTP">
+                    <input type="number" class="form-control form-control-sm" id="delivery_otp" placeholder="Please Enter OTP">
                 </div>
+                <input type="hidden" name="del_cno" id="del_cno">
+                <input type="hidden" name="del_billid" id="del_billid">
+                <input type="hidden" name="del_mobile" id="del_mobile">
+                <input type="hidden" name="del_otype" id="del_otype">
+                <input type="hidden" name="del_dispcounter" id="del_dispcounter">
+                <input type="hidden" name="del_dcd" id="del_dcd">
             </form>
-            <p id="confirm_order_error" style=" position: absolute; display: none; color: red; font-weight: 600;">OTP is Incorret</p>
-            <p id="confirm_order_success" style=" position: absolute; display: none; color: green; font-weight: 600;">Order Delivered Successfully.</p>
+            <small class="text-danger del_msg"></small>
             </div>
             <div class="modal-footer">
-            <button id="order_verify_button" CNo="" custId="" billNo="" start="" type="button" class="btn btn-primary" style="width: 100%;" >Verify</button>
+            <button type="button" class="btn btn-primary btn-sm" style="width: 100%;" onclick="checkDelOTP()"><?= $this->lang->line('verifyOTP'); ?></button>
             </div>
         </div>
         </div>
     </div>
       
-
         
         <?php $this->load->view('layouts/admin/script'); ?>
 
@@ -331,495 +236,188 @@
         $('#order-view-table').DataTable();
         $('#order_details').DataTable();
     });
+            
+    getTableView();
 
+    function getTableView() {
+        $('#item-view-tbody1').empty();
+        
+        var DispCd = $('#kitchen-code').val();
+        var dispMode = $('#dispMode').val();
+        var dispText = $('#kitchen-code').find('option:selected').text();
+        dispText = "'"+dispText+"'";
+        if(DispCd > 0){
+            $.ajax({
+                url: "<?php echo base_url('restaurant/order_delivery'); ?>",
+                type: "post",
+                data: {
+                    getOrderDetails: 1,
+                    DispCd : DispCd,
+                    dispMode:dispMode
+                },
+                dataType: 'json',
+                success: response => {
+                    var template = ``;
+                    console.log(response);
+                    // alert(response.status);
+                    if (response.status) {                        
+                        response
+                            .kitchenData
+                            .forEach(item => {
+                                var CellNo = item.CellNo;
+                                if(CellNo ==''){
+                                    CellNo = 0;
+                                }
+                                
+                                    template += `
+                        <tr cno="${item.CNo}">
+                            <td><input type="radio" name="selectOption" onchange="showAction('${item.CNo}', ${item.CustId},${item.BillId}, ${CellNo}, ${item.OType}, ${dispText}, ${item.DCd})" /> &nbsp;${convertToUnicodeNo(item.BillNo)}</td>
+                            <td>${convertToUnicodeNo(item.Qty)}</td>
+                            <td>${convertToUnicodeNo(item.CellNo)}</td>
+                            <td>${convertToUnicodeNo(item.thirdPartyName)}</td>
+                            <td>${item.TPRefNo}</td>
+                        </tr>`;
+                });
+                    }
+                    $("#table-view").html(template);
+                    $('#mydiv').hide();
+                },
+                error: (xhr, status, error) => {
+                    console.log(xhr);
+                    console.log(status);
+                    console.log(error);
+                }
+            });
+        }
+    }
+
+    function showAction(CNo, CustId, BillId, mobile, oType, dispCounter, DCd){
+        dispCounter = "'"+dispCounter+"'";
+        var btn = '';
+        var url = "<?= base_url('restaurant/print/');?>"+BillId;
+        btn += '<button onclick="deliveryNotification('+CNo+','+BillId+','+mobile+','+oType+','+dispCounter+', '+DCd+')" class="btn btn-sm btn-primary btn-rounded"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>\
+            | <a onclick="dispenseNotification('+BillId+','+mobile+','+oType+','+dispCounter+')" class="btn btn-sm btn-danger btn-rounded"><i class="fa fa-bullhorn"></i></a>\
+            | <a href="'+url+'" class="btn btn-sm btn-warning btn-rounded"><i class="fa fa-print" aria-hidden="true"></i></a>                    ';
+
+        $('#showActionBtn').html(btn);
+        handleDetails(CNo);   
+    }
+
+    function dispenseNotification(billId, mobile, oType, dispCounter){
+        $.post('<?= base_url('restaurant/dispense_notification') ?>',{billId:billId, mobile:mobile, oType:oType, dispCounter:dispCounter},function(res){
+            if(res.status == 'success'){
+              alert(res.response);
+            }else{
+              alert(res.response);
+            }
+            // location.reload();
+        });
+    }
+
+    function deliveryNotification(CNo, billId, mobile, oType, dispCounter, DCd){
+        var del_otp = "<?php echo $this->session->userdata('Dispense_OTP'); ?>";
+        if(del_otp > 0){
+            $('#del_cno').val(CNo);
+            $('#del_billid').val(billId);
+            $('#del_mobile').val(mobile);
+            $('#del_otype').val(oType);
+            $('#del_dispcounter').val(dispCounter);
+            $('#del_dcd').val(DCd);
+            $('#deliveryModal').modal("show"); 
+        }else{
+            deliveryAjax(CNo, billId, mobile, oType, dispCounter, DCd);
+        }
+    }
+
+    function deliveryAjax(CNo, billId, mobile, oType, dispCounter, DCd){
+        $.post('<?= base_url('restaurant/delivery_notification') ?>',{CNo:CNo, billId:billId, mobile:mobile, oType:oType, dispCounter:dispCounter, DCd:DCd},function(res){
+            if(res.status == 'success'){
+              alert(res.response);
+            }else{
+              alert(res.response);
+            }
+            location.reload();
+        });
+    }
+
+    function checkDelOTP(){
+        var del_otp = $('#delivery_otp').val();
+        var CNo = $('#del_cno').val();
+        var billId = $('#del_billid').val();
+        var mobile = $('#del_mobile').val();
+        var oType = $('#del_otype').val();
+        var dispCounter = $('#del_dispcounter').val();
+        var DCd = $('#del_dcd').val();
+        if(del_otp.length >= 4 ){
+            $.post('<?= base_url('restaurant/verifyDelOTP') ?>',{otp:del_otp},function(res){
+                if(res.status == 'success'){
+                  // alert(res.response);
+                  $('#deliveryModal').modal("hide"); 
+                  deliveryAjax(CNo, billId, mobile, oType, dispCounter, DCd);
+                }else{
+                  $('.del_msg').html(res.response);
+                }
+            });
+        }else{
+            $('.del_msg').html('Enter OTP');
+        }
+    }         
+
+    function handleDetails(CNo) {
+        // alert(uKotNo);
+        var DispCd = $('#kitchen-code').val();
+        if (CNo !== 0) {
+            // console.log(uKotNo);
+            // $("#order-detail-modal").modal('show');
+            $.ajax({
+                url: "<?php echo base_url('restaurant/order_delivery'); ?>",
+                type: "post",
+                data: {
+                    getOrderList: 1,
+                    CNo: CNo,
+                    DispCd :DispCd
+                },
+                dataType: 'json',
+                success: (response) => {
+                    console.log(response);
+                    var template = ``;
+                    if (response.status) {
+
+                        response
+                            .orderList
+                            .forEach((item) => {
+                                var item_name = '';
+                                if(item.Itm_Portion > 4){
+                                    item_name = item.ItemNm+'-'+item.ipName;
+                                }else{
+                                    item_name += item.ItemNm;
+                                }
+
+                                template += `<tr class="${ (
+                                    item.Qty == item.AQty
+                                        ? 'h-deliver'
+                                        : ''
+                                                )}">
+                                        <td>${item_name}</td>
+                                        <td>${convertToUnicodeNo(item.Qty)}</td>
+                                        <td>${item.CustRmks}</td>
+                                    </tr>`;
+                            });
+                    }
+
+                    // $("#order-list").html(template);
+                    $("#item-view-tbody1").html(template);
+                },
+                error: (xhr, status, error) => {
+                    console.log(xhr);
+                    console.log(status);
+                    console.log(error);
+                }
+            });
+        } else {
+            alert("Please Select Order");
+        }
+    }
 
 </script>
-
-<script>
-            // Global Variables var kotNo = 0; var pQty = ''; var aQty = '';
-
-            function getTableView() {
-                $('#item-view-tbody1').empty();
-                
-                var DispCd = $('#kitchen-code').val();
-                var dispMode = $('#dispMode').val();
-                if(DispCd > 0){
-                    $.ajax({
-                        url: "<?php echo base_url('restaurant/order_delivery'); ?>",
-                        type: "post",
-                        data: {
-                            getOrderDetails: 1,
-                            DispCd : DispCd,
-                            dispMode:dispMode
-                        },
-                        dataType: 'json',
-                        success: response => {
-                            var template = ``;
-                            console.log(response);
-                            // alert(response.status);
-                            if (response.status) {
-                                var start = 1;
-                                response
-                                    .kitchenData
-                                    .forEach(item => {
-                                        
-                                            template += `
-                                <tr cno="${item.CNo}">
-                                    <td><input type="radio" name="selectOption" onchange="showAction('${item.CNo}', ${item.CustId},${item.BillNo}, ${start})" /> &nbsp;${convertToUnicodeNo(item.BillNo)}</td>
-                                    <td>${convertToUnicodeNo(item.Qty)}</td>
-                                    <td>${convertToUnicodeNo(item.CellNo)}</td>
-                                    <td>${convertToUnicodeNo(item.TPId)}</td>
-                                    <td>${item.TPRefNo}</td>
-                                </tr>`;
-                        });
-                            }
-                            $("#table-view").html(template);
-                            $('#mydiv').hide();
-                        },
-                        error: (xhr, status, error) => {
-                            console.log(xhr);
-                            console.log(status);
-                            console.log(error);
-                        }
-                    });
-                }
-            }
-
-            function showAction(CNo, CustId, BillNo, start){
-                
-                var btn = '';
-                btn += '<button onclick="handleDelivery('+CNo+','+CustId+','+BillNo+','+start+')" class="btn btn-sm btn-primary btn-rounded"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>\
-                    | <a onclick="sendNotification('+CustId+',0,'+BillNo+',1)" class="btn btn-sm btn-danger btn-rounded"><i class="fa fa-bullhorn"></i></a>\
-                    | <a href="#" class="btn btn-sm btn-warning btn-rounded"><i class="fa fa-print" aria-hidden="true"></i></a>                    ';
-
-                $('#showActionBtn').html(btn);
-                handleDetails(CNo);   
-            }
-
-            function sendNotification(CustId, otp, billNo,flag) {
-                if(confirm("Send Message For Bill No: "+billNo)){
-                    if (flag == 1) {
-                    <?php if($EType == 1 && $Fest == 1){ ?>
-                                var title = $('#kitchen-code').val();
-                                var message = 'Your order ' + billNo +
-                                ' is ready.\nPlease pick up from counter.';
-                            <?php }else{ ?>
-                                var title = '<?= $RestName;?>';
-                                var message = 'Your order ' + billNo +
-                                    ' is ready.\nPlease pick up from counter.';
-                        <?php }?>
-                    } else if(flag == 0) {
-                        <?php if($EType == 1 && $Fest == 1){ ?>
-                            var title = 'Order Delivery '+$('#kitchen-code').val();
-                            var message = 'Your order ' + billNo + ' has been delivered.';
-                        <?php }else{ ?>
-                            var title = 'Order Delivery <?= $RestName;?>';
-                            var message = 'Your order ' + billNo + ' has been delivered.';
-                        <?php }?>
-                    } else if(flag == 2){
-                        var title = "<?= $RestName;?> BillNo " +billNo;
-                        var message = "OTP : " +otp;
-                    }
-                    $.ajax({
-                        url: "<?php echo base_url('restaurant/sentNotification'); ?>",
-                        type: "get",
-                        data: {
-                            CustId: CustId,
-                            message: message,
-                            title: title,
-                            flag :flag,
-                            billno:billNo
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            console.log(response);
-                        },
-                        error: function (xhr, status, error) {
-                            console.log(xhr);
-                            console.log(status);
-                            console.log(error);
-                        }
-                    });
-                }
-            }
-
-            function itemView() {
-                // var DispCd = $('#kitchen-code').val();
-                $.ajax({
-                    url: "<?php echo base_url('restaurant/order_delivery'); ?>",
-                    type: "post",
-                    data: {
-                        getKtichenItem: 1
-                    },
-                    dataType: "json",
-                    success: function (response) {
-                        console.log(response);
-                        if (response.status) {
-                            var itemView = ``;
-
-                            response
-                                .kitchenData
-                                .forEach(function (item) {
-                                    itemView += `
-                        <tr class="item-row" item-id="` + item.ItemId +
-                                            `" item-portion="` + (
-                                        item.TA == 0
-                                            ? 'N'
-                                            : 'TA'
-                                    ) + `" remarks="` + item.CustRmks + `">
-                            <td>` + item.ItemNm +
-                                            `</td>
-                            <td>` + item.Qty + `</td>
-                            <td>` + (
-                                        item.TA == 0
-                                            ? 'N'
-                                            : 'TA'
-                                    ) + `</td>
-                            <td>` + item.CustRmks +
-                                            `</td>
-                        </tr>
-                    `;
-                                });
-                            $("#item-view-table").remove();
-                            $("#item-view-tbody").html(itemView);
-                        } else {
-                            $("#item-view-table").remove();
-                            $("#item-view-tbody").html('');
-                            $('#mydiv').hide();
-                        }
-                        dataTableForItem();
-                    },
-                    error: function (xhr, status, error) {
-                        console.log(xhr);
-                        console.log(status);
-                        console.log(error);
-                    }
-                });
-            }
-
-            function dataTableForItem() {
-                var kitchenTable = $('#item-view-table').DataTable({ keys: true,searching: false, paging: false, info: false});
-
-                kitchenTable.on('key-focus', function (e, datatable, cell) {
-                    $('table#item-view-table > tbody > tr').css('background-color', 'white');
-                    $('td.focus')
-                        .parent()
-                        .css('background-color', '#f3f367');
-                })
-            }
-
-
-            $(document).ready(function () {
-
-                getTableView();
-                itemView();
-
-                $("#search-table").click(function (event) {
-                    var tableNo = $("#search-table-value").val();
-
-                    if (tableNo !== '') {
-                        console.log(tableNo);
-                    } else {
-                        alert("specify table no before search");
-                    }
-                });
-            });
-        </script>
-
-        <!-- To handle Item View Double Click -->
-        <script>
-            // Global Variables
-            var itemQty = 0;
-            var itemId = 0;
-            $(document).on('dblclick', '.item-row', function (event) {
-                event.preventDefault();
-                var itemName = ($(this).children('td').eq(0).text());
-                var itemPortion = $(this).attr('item-portion');
-                itemQty = ($(this).children('td').eq(1).text());
-                var customerRemarks = $(this).attr('remarks');
-                itemId = $(this).attr('item-id');
-
-                $("#item-name").val(itemName);
-                $("#item-qty").val(itemQty);
-                $("#item-qty").attr('max', itemQty);
-                $("#item-portion").val(itemPortion);
-                $("#customer-remarks").val(customerRemarks);
-
-                $("#allocate-item").modal('toggle');
-            });
-
-            $("#item-qty").keyup(function (event) {
-                if (parseInt($(this).val()) > itemQty) {
-                    alert("Not Allowed");
-                    $(this).val(itemQty);
-                }
-
-                if ($(this).val() < 1) {
-                    alert("Not Allowed");
-                    $(this).val(1);
-                }
-            });
-
-            $("#assign-order").click(function () {
-                var assignToOrderId = $("#to-assign-table").val();
-                var assignQty = $("#from-reassign-qty").val();
-                console.log(orderId, assignToOrderId, assignQty);
-
-                if (assignToOrderId == 0) {
-                    alert("Please Select the Table Where You Want The Item Assigned");
-                } else {
-                    $.ajax({
-                        url: "<?php echo base_url('restaurant/order_delivery'); ?>",
-                        type: "post",
-                        data: {
-                            assignOrder: 1,
-                            assignToOrderId: assignToOrderId,
-                            orderId: orderId,
-                            assignQty: assignQty
-                        },
-                        dataType: 'json',
-                        success: (response) => {
-                            console.log(response);
-                            if (response.status) {
-                                $("#reassign-order-modal").modal('hide');
-                                getTableView();
-                                itemView();
-                            }
-                        },
-                        error: (xhr, status, error) => {
-                            console.log(xhr);
-                            console.log(status);
-                            console.log(error);
-                        }
-                    });
-                }
-            });
-        </script>
-
-        <!-- auto item complete -->
-        <script>
-            $("#auto-item-prepare").click(function (event) {
-                var itemQty = $("#item-qty").val();
-                var itemPortion = $("#item-portion").val();
-                var customerRemarks = $("#customer-remarks").val();
-
-                // console.log(itemId, itemPortion, itemQty, customerRemarks);
-
-                $.ajax({
-                    url: "<?php echo base_url('restaurant/order_delivery'); ?>",
-                    type: "post",
-                    data: {
-                        autoItemPrepare: 1,
-                        itemId: itemId,
-                        itemQty: itemQty,
-                        itemPortion: itemPortion,
-                        customerRemarks: customerRemarks
-                    },
-                    dataType: "text",
-                    success: function (response) {
-                        console.log(response);
-                        getTableView();
-                        itemView();
-                    },
-                    error: function (xhr, status, error) {
-                        console.log(xhr);
-                        console.log(status);
-                        console.log(error);
-                    }
-                });
-            });
-        </script>
-        <!-- handle Casher Action -->
-        <script>
-
-            function handleDetails(CNo) {
-                // alert(uKotNo);
-                var DispCd = $('#kitchen-code').val();
-                if (CNo !== 0) {
-                    // console.log(uKotNo);
-                    // $("#order-detail-modal").modal('show');
-                    $.ajax({
-                        url: "<?php echo base_url('restaurant/order_delivery'); ?>",
-                        type: "post",
-                        data: {
-                            getOrderList: 1,
-                            CNo: CNo,
-                            DispCd :DispCd
-                        },
-                        dataType: 'json',
-                        success: (response) => {
-                            console.log(response);
-                            var template = ``;
-                            if (response.status) {
-
-                                response
-                                    .orderList
-                                    .forEach((item) => {
-                                        var item_name = '';
-                                        if(item.Itm_Portion > 4){
-                                            item_name = item.ItemNm+'-'+item.Portions;
-                                        }else{
-                                            item_name += item.ItemNm;
-                                        }
-
-                                        template += `<tr class="${ (
-                                            item.Qty == item.AQty
-                                                ? 'h-deliver'
-                                                : ''
-                                                        )}">
-                                                <td>${item_name}</td>
-                                                <td>${convertToUnicodeNo(item.Qty)}</td>
-                                                <td>${item.CustRmks}</td>
-                                            </tr>`;
-                                    });
-                            }
-
-                            // $("#order-list").html(template);
-                            $("#item-view-tbody1").html(template);
-                        },
-                        error: (xhr, status, error) => {
-                            console.log(xhr);
-                            console.log(status);
-                            console.log(error);
-                        }
-                    });
-                } else {
-                    alert("Please Select Order");
-                }
-            }
-
-            function handleDelivery(CNo, custId, billNo, start) {
-               
-                var v = <?= $CheckOTP; ?>;
-                if (CNo !== 0 && v == 1) {
-                    $.ajax({
-                        url:"<?php echo base_url('restaurant/order_delivery'); ?>",
-                        type:'post',
-                        data:{
-                            otpUpdate:1,
-                            billNo:billNo
-                        },
-                        success:function(response){
-                            window.confirm_otp = response;
-                            sendNotification(custId, window.confirm_otp, billNo,2);
-                            $('.order_deliver_header').html('OTP for Bill No : '+ billNo);
-                            $('#order_verify_button').attr('CNo',CNo);
-                            // $('#order_verify_button').attr('orderType',orderType);
-                            $('#order_verify_button').attr('custId',custId);
-                            $('#order_verify_button').attr('billNo',billNo);
-                            $('#order_verify_button').attr('start',start);
-                            $('#confirm_otp_field').val('');
-                            $('#order_deliver_otp').modal('toggle');
-                        }
-                    })
-                } else {
-                    if(confirm("Confirm Delivery For Bill No: "+billNo)){
-                        if (CNo !== 0 && v == 0) {
-                            var CNo = CNo;
-                            var custId =custId;
-                            var billNo = billNo;
-                            var start = start;
-                            $.ajax({
-                                url: "<?php echo base_url('restaurant/order_delivery'); ?>",
-                                type: "post",
-                                data: {
-                                    deliverOrder: 1,
-                                    CNo: CNo
-                                },
-                                dataType: 'json',
-                                success: response => {
-                                    // alert(response.status);
-                                    if (response.status) {
-                                        // sendNotification(custId, 0, billNo,0);
-                                        // getTableView();
-                                        // itemView();
-                                        // if (orderType != 0) {
-                                        //     window.open(
-                                        //         `rest_bill_print.php?billId=${response.billId}`,
-                                        //         '_blank'
-                                        //     );
-                                        // }
-                                        
-                                        setTimeout(function(){
-                                            alert("Successfully Delivered");
-                                            $('#start'+start).remove();
-                                        },2000);
-                                    } else {
-                                        console.log(response);
-                                    }
-                                },
-                                error: (xhr, status, error) => {
-                                    console.log(xhr);
-                                    console.log(status);
-                                    console.log(error);
-                                }
-                            });
-                        }else{
-                            alert("Please Select Order");
-                        }
-                    }
-                }
-            }
-
-            $('#order_verify_button').on('click',function(){
-                if(window.confirm_otp == $('#confirm_otp_field').val()){
-                    var CNo = $(this).attr('CNo');
-                    var custId =$(this).attr('custId');
-                    var billNo = $(this).attr('billNo');
-                    var start = $(this).attr('start');
-                    $.ajax({
-                        url: "<?php echo base_url('restaurant/order_delivery'); ?>",
-                        type: "post",
-                        data: {
-                            deliverOrder: 1,
-                            CNo: CNo
-                        },
-                        dataType: 'json',
-                        success: response => {
-                            // alert(response.status);
-                            if (response.status) {
-                                // sendNotification(custId, 0, billNo,0);
-                                // getTableView();
-                                // itemView();
-                                // if (orderType != 0) {
-                                //     window.open(
-                                //         `rest_bill_print.php?billId=${response.billId}`,
-                                //         '_blank'
-                                //     );
-                                // }
-                                $('#confirm_order_success').fadeIn();
-                                
-                                setTimeout(function(){
-                                    $('#confirm_otp_field').val('');
-                                    $('#confirm_order_success').fadeOut();
-                                    $('#order_deliver_otp').modal('toggle');
-                                    $('#start'+start).remove();
-                                },2000);
-                            } else {
-                                console.log(response);
-                            }
-                        },
-                        error: (xhr, status, error) => {
-                            console.log(xhr);
-                            console.log(status);
-                            console.log(error);
-                        }
-                    });
-                }else{
-                    $('#confirm_order_error').fadeIn();
-                    setTimeout(function(){
-                        $('#confirm_order_error').fadeOut();
-                    },2000);
-                }
-            })
-
-            function handleDeliveryBill(kotNo) {
-                if (kotNo !== 0) {
-                    console.log(kotNo);
-                } else {
-                    alert("Please Select Order");
-                }
-            }
-
-        </script>
 

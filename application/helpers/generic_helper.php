@@ -319,7 +319,49 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	}
 
-	function sendSMS($mobileNO, $otp)
+
+	// function send_SMS($mobileNO, $msgText){
+	// 	$apikey = '7652383520739183947';//if you use apikey then userid and password is not required
+	// 	$userId = 'vtrend';
+	// 	$password = 'Sn197022';
+	// 	$sendMethod = 'simpleMsg'; //(simpleMsg|groupMsg|excelMsg)
+	// 	$messageType = 'text'; //(text|unicode|flash)
+	// 	$senderId = 'EATOUT';
+	// 	$mobile = $mobileNO;//comma separated
+	// 	$msg = $msgText;
+	// 	$scheduleTime = '';//mention time if you want to schedule else leave blank
+
+ //        $curl = curl_init();
+	// 	curl_setopt_array($curl, array(
+	// 	  CURLOPT_URL => "http://www.smsgateway.center/SMSApi/rest/send",
+	// 	  CURLOPT_RETURNTRANSFER => true,
+	// 	  CURLOPT_ENCODING => "",
+	// 	  CURLOPT_MAXREDIRS => 10,
+	// 	  CURLOPT_TIMEOUT => 30,
+	// 	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	// 	  CURLOPT_CUSTOMREQUEST => "POST",
+	// 	  CURLOPT_POSTFIELDS => "userId=$userId&password=$password&senderId=$senderId&sendMethod=$sendMethod&msgType=$messageType&mobile=$mobile&msg=$msg&duplicateCheck=true&format=json",
+	// 	  CURLOPT_HTTPHEADER => array(
+	// 	    "cache-control: no-cache",
+	// 	    "content-type: application/x-www-form-urlencoded"
+	// 	  ),
+	// 	));
+
+	// 	$response = curl_exec($curl);
+	// 	$err = curl_error($curl);
+
+	// 	curl_close($curl);
+	// 	$val = 0;
+	// 	if ($err) {
+	// 	  // echo "cURL Error #:" . $err;
+	// 	} else {
+	// 	  // echo $response;
+	// 		$val = 1;
+	// 	}
+	// 	return $val;
+	// }
+
+	function sendSMS($mobileNO, $msgText)
     {
 		$apikey = '7652383520739183947';//if you use apikey then userid and password is not required
 		$userId = 'vtrend';
@@ -328,7 +370,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$messageType = 'text'; //(text|unicode|flash)
 		$senderId = 'EATOUT';
 		$mobile = $mobileNO;//comma separated
-		$msg = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+		// $msg = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+		$msg = $msgText;
 		$scheduleTime = '';//mention time if you want to schedule else leave blank
 
         $curl = curl_init();
@@ -371,6 +414,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$CI = & get_instance();
 	    $CI->load->model('User');
 	    return $CI->User->generate_otp($mobile, $page);
+	}
+
+	function generateOnlyOTP(){
+		$CI = & get_instance();
+	    $CI->load->model('User');
+	    return $CI->User->generate_only_otp();
 	}
 
 	function autoSettlePayment($billId, $MergeNo){

@@ -211,12 +211,20 @@ class User extends CI_Model{
         $otpData['pageRequest'] = $page;
 
         if($mobile){
-            $smsRes = sendSMS($mobile, $otp);
+        	$msg = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+            $smsRes = sendSMS($mobile, $msg);
             if($smsRes){
                 $otpData['stat'] = 1;
             }
             insertRecord('OTP', $otpData);
         }
+        return $otp;
+	}
+
+	public function generate_only_otp(){
+		$otp = rand(9999,1000);
+		// $otp = 1212;
+        $this->session->set_userdata('cust_otp', $otp);
         return $otp;
 	}
 

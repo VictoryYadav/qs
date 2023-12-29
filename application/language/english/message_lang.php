@@ -148,6 +148,7 @@ $lang['tableNo'] 			= 'Table No';
 $lang['select'] 			= 'Select';
 $lang['thirdParty'] 		= '3rd Party';
 $lang['thirdPartyRefNo'] 	= '3rd Party Ref No';
+$lang['refNo'] 				= 'Ref No';
 $lang['customerAddress'] 	= 'Customer Address';
 $lang['itemAmount'] 		= 'Item Amt';
 $lang['kot'] 				= 'KOT';
@@ -299,6 +300,11 @@ $lang['seatNo'] 			= 'Seat No';
 $lang['tableAmount']		= 'Table Amount';
 $lang['CombineTheFollowingAmountsFromTable']	= 'Combine the following amounts from table';
 $lang['packs']				= 'Packs';
+$lang['deliveryOTP']		= 'Delivery OTP';
+$lang['OTPVerified']		= 'OTP Verified';
+$lang['OTPNotVerified']		= 'OTP Not Verified';
+$lang['messageSent']		= 'Message Sent';
+$lang['MCNoUpdated']		= 'MCNo Updated';
 
 
 

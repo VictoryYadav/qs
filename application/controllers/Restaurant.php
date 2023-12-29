@@ -858,34 +858,34 @@ class Restaurant extends CI_Controller {
             $EType = $this->session->userdata('EType');
             
             $EID = authuser()->EID;
-            if (isset($_POST['getKtichenItem'])) {
-                $ItemNm = "i.ItemNm$langId as ItemNm";
-                if ($AutoDeliver == 1 && $AutoAllot == 1) {
-                    // Auto auto Mode
-                    $kitchenData = $this->db2->query("SELECT k.ItemId, sum(k.Qty - k.AQty) as Qty, k.TA, k.CustRmks, $ItemNm FROM `Kitchen` k, Eat_Kit ek, MenuItem i where i.ItemId = k.ItemId AND (k.Stat <= 3 AND k.Stat > 0) AND k.EID = $EID AND  ek.EID = k.EID AND k.KitCd = ek.KitCd AND (k.Qty - k.AQty) > 0 and (DateDiff(Now(),k.LstModDt) < 2)  Group by i.ItemId, k.TA, k.CustRmks Order by i.ItemNm1")->result_array();
-                    //and (DateDiff(CurrDate(),k.LstModDt) < 2)
-                } elseif ($AutoDeliver == 0 && $AutoAllot == 1) {
-                    // Auto Manual Mode
-                    $kitchenData = $this->db2->query("SELECT k.ItemId, sum(k.Qty - k.AQty) as Qty, k.TA, k.CustRmks, $ItemNm FROM `Kitchen` k, Eat_Kit ek, MenuItem i where i.ItemId = k.ItemId AND (k.Stat <= 3 AND k.Stat > 0) AND k.EID = $EID AND  ek.EID = k.EID AND k.KitCd = ek.KitCd  AND (k.Qty - k.AQty) > 0 and (DateDiff(Now(),k.LstModDt) < 2) Group by i.ItemId, k.TA, k.CustRmks Order by i.ItemNm1")->result_array();
-                    //and (DateDiff(CurrDate(),k.LstModDt) < 2)
-                }
+            // if (isset($_POST['getKtichenItem'])) {
+            //     $ItemNm = "i.ItemNm$langId as ItemNm";
+            //     if ($AutoDeliver == 1 && $AutoAllot == 1) {
+            //         // Auto auto Mode
+            //         $kitchenData = $this->db2->query("SELECT k.ItemId, sum(k.Qty - k.AQty) as Qty, k.TA, k.CustRmks, $ItemNm FROM `Kitchen` k, Eat_Kit ek, MenuItem i where i.ItemId = k.ItemId AND (k.Stat <= 3 AND k.Stat > 0) AND k.EID = $EID AND  ek.EID = k.EID AND k.KitCd = ek.KitCd AND (k.Qty - k.AQty) > 0 and (DateDiff(Now(),k.LstModDt) < 2)  Group by i.ItemId, k.TA, k.CustRmks Order by i.ItemNm1")->result_array();
+            //         //and (DateDiff(CurrDate(),k.LstModDt) < 2)
+            //     } elseif ($AutoDeliver == 0 && $AutoAllot == 1) {
+            //         // Auto Manual Mode
+            //         $kitchenData = $this->db2->query("SELECT k.ItemId, sum(k.Qty - k.AQty) as Qty, k.TA, k.CustRmks, $ItemNm FROM `Kitchen` k, Eat_Kit ek, MenuItem i where i.ItemId = k.ItemId AND (k.Stat <= 3 AND k.Stat > 0) AND k.EID = $EID AND  ek.EID = k.EID AND k.KitCd = ek.KitCd  AND (k.Qty - k.AQty) > 0 and (DateDiff(Now(),k.LstModDt) < 2) Group by i.ItemId, k.TA, k.CustRmks Order by i.ItemNm1")->result_array();
+            //         //and (DateDiff(CurrDate(),k.LstModDt) < 2)
+            //     }
 
 
-                if (empty($kitchenData)) {
-                    $response = [
-                        "status" => 0,
-                        "msg" => "No Item Pending"
-                    ];
-                } else {
-                    $response = [
-                        "status" => 1,
-                        "kitchenData" => $kitchenData
-                    ];
-                }
+            //     if (empty($kitchenData)) {
+            //         $response = [
+            //             "status" => 0,
+            //             "msg" => "No Item Pending"
+            //         ];
+            //     } else {
+            //         $response = [
+            //             "status" => 1,
+            //             "kitchenData" => $kitchenData
+            //         ];
+            //     }
 
-                echo json_encode($response);
-                die();
-            }
+            //     echo json_encode($response);
+            //     die();
+            // }
 
             if (isset($_POST['autoItemPrepare'])) {
                 // print_r($_POST);
@@ -996,18 +996,34 @@ class Restaurant extends CI_Controller {
                 } else {
                     $DCd = 0;
                 }
-
-                $DCdType = $this->db2->query("SELECT * from Eat_DispOutlets where DCd = ".$DCd)->row_array();
-
                 // $dispMode = OType
                 $dispMode = (isset($_POST['dispMode']) && $_POST['dispMode'] > 0 )?$_POST['dispMode']:0;
-                $qry = '';
+                // $qry = '';
                 if($dispMode > 0){
-                    $qry = ' and km.OType = '.$dispMode;
+                    // $qry = ' and km.OType = '.$dispMode;
+                    $this->db2->where('km.OType', $dispMode);
                 }
 
-                $kitchenData = $this->db2->query("SELECT b.BillNo, sum(k.Qty) as Qty, k.OType, k.TPRefNo, k.TPId, km.CustId, k.CellNo, k.EID, km.DCd, km.CNo FROM `Kitchen` k, MenuItem i, Billing b , KitchenMain km where i.ItemId = k.ItemId AND k.OType > 100  AND k.Stat = 3 AND k.EID=b.EID and k.CNO=b.CNO and k.CNo = km.CNo and km.Delivered = 0 ".$qry." and k.EID = $EID AND km.DCd = $DCd Group by b.BillId  Order by b.BillId Asc")->result_array();  
-                // echo "<pre>";print_r($this->db2->last_query());exit();
+                $langId = $this->session->userdata('site_lang');
+                $partyName = "p.Name$langId as thirdPartyName";
+
+                $kitchenData = $this->db2->select("b.BillId, b.BillNo, sum(k.Qty) as Qty, k.OType, k.TPRefNo, k.TPId, km.CustId, k.CellNo, k.EID, k.DCd, km.CNo, $partyName")
+                                    ->order_by('b.BillId', 'Asc')
+                                    ->group_by('b.BillId, k.DCd')
+                                    ->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
+                                    ->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
+                                    ->join('MenuItem i', 'i.ItemId = k.ItemId', 'inner')
+                                    ->join('3POrders p', 'p.3PId = km.TPId', 'left')
+                                    ->get_where('Billing b', array(
+                                                'k.EID' => $EID,
+                                                'k.DCd' => $DCd,
+                                                'k.DStat' => 0,
+                                                'k.Stat' => 3,
+                                                'k.OType >' => 100,
+                                                )
+                                            )
+                                    ->result_array();
+
                 if (empty($kitchenData)) {
                     $response = [
                         "status" => 0,
@@ -1033,8 +1049,24 @@ class Restaurant extends CI_Controller {
                 $ipName = "ip.Name$langId as ipName";
                 $CNo = $_POST['CNo'];
                 
-                $orderList = $this->db2->query("SELECT $ItemNm, k.Qty, k.CustItemDesc, k.CustRmks, k.Itm_Portion, $ipName from Kitchen k, MenuItem i, KitchenMain km, ItemPortions ip where i.ItemId = k.ItemId AND k.CNo = $CNo and km.CNo = k.CNo AND km.DCd = $DCd AND km.EID = $EID and km.EID=k.EID and k.Itm_Portion = ip.IPCd Group By i.ItemId, k.CustItemDesc, k.CustRmks, k.Itm_Portion")->result_array();
-                // print_r($orderList);exit();
+                $orderList = $this->db2->select("$ItemNm, k.Qty, k.CustItemDesc, k.CustRmks, k.Itm_Portion, $ipName")
+                                    ->order_by('k.DCd', 'Asc')
+                                    ->group_by('k.DCd, i.ItemId, k.CustItemDesc, k.CustRmks, k.Itm_Portion')
+                                    ->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
+                                    ->join('MenuItem i', 'i.ItemId = k.ItemId', 'inner')
+                                    ->join('ItemPortions ip', 'ip.IPCd = k.Itm_Portion', 'inner')
+                                    ->get_where('KitchenMain km', array(
+                                                'km.EID' => $EID,
+                                                'k.EID' => $EID,
+                                                'i.EID' => $EID,
+                                                'km.CNo' => $CNo,
+                                                'k.DCd' => $DCd 
+                                                )
+                                            )
+                                    ->result_array();
+                // echo "<pre>";
+                // print_r($orderList);die;
+
                 if (count($orderList) > 0) {
                     $response = [
                         "status" => 1,
@@ -1079,74 +1111,6 @@ class Restaurant extends CI_Controller {
                 }
             }
         }
-    }
-
-    public function sentNotification(){
-        // echo "<pre>";
-        // print_r($_GET);
-        // die;
-        // this function is not completed
-
-        if ($_GET['CustId'] != null) {
-          $CustId = $_GET['CustId'];
-          $message = $_GET['message'];
-          $title = $_GET['title'];
-          $flag = $_GET['flag'];
-          $billno = $_GET['billno'];
-
-          $userToken = $this->db2->select('token')->get_where('Users', array('CustId' => $CustId))->result_array();
-
-          if (empty($userToken)) {
-            $response = [
-              "status" => 0,
-              "msg" => "Invalid User Token"
-            ];
-
-            echo json_encode($response);
-            die();
-          } else {
-            $token = $userToken[0]['token'];
-            
-            if (empty($token)) {
-                $response = [
-                  "status" => 0,
-                  "msg" => "Invalid User Token"
-                ];
-                echo json_encode($response);
-                die();
-            }
-            $fcmRegIds = $token;
-
-            if ($flag != 0) {
-
-              // insert notification to database
-              $sql = $this->db2->query("INSERT INTO `Notification` (`user_id`, `title`, `message`,`billno`)VALUES ($CustId, '$title', '$message',$billno)");
-            } else if ($flag == 0) {
-              // sql to delete a record
-              $sql = $this->db2->query("DELETE FROM `Notification` WHERE `user_id`=$CustId AND `billno` = $billno");
-            }
-
-            $msg = array(
-              'body'   => $message,
-              'title'   => $title,
-              // 'click_action'   => $request->input('notification_url'),
-              'vibrate' => 1,
-              'sound'   => 1
-              // 'icon' => $request['n_icon']
-            );
-            // notification
-            $response = firebaseNotification($fcmRegIds, $msg);
-          }
-        } else {
-          $response = [
-            "status" => 0,
-            "msg" => "Send User ID"
-          ];
-
-          echo json_encode($response);
-          die();
-        }
-
     }
 
     public function change_password(){
@@ -2898,17 +2862,19 @@ class Restaurant extends CI_Controller {
             $prep_time = !empty($_POST['prep_time'])?$_POST['prep_time']:0;
             $seatNo = !empty($_POST['seatNo'])?$_POST['seatNo']:0;
             $DCd = !empty($_POST['DCd'])?$_POST['DCd']:0;
+            $customerAddress = !empty($_POST['customerAddress'])?$_POST['customerAddress']:'';
             
             if ($CNo == 0) {
                 if(!empty($phone)){
                     $CustId = createCustUser($phone);
 
                     $this->db2->set('visit', 'visit+1', FALSE);
+                    $this->db2->set('DelAddress', $customerAddress);
                     $this->db2->where('CustId', $CustId);
                     $this->db2->update('Users');
                 }
 
-                $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo,$data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $DCd);
+                $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo,$data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef);
                 if($orderType == 8){
                     updateRecord('Eat_tables', array('Stat' => 1), array('TableNo' => $tableNo, 'EID' => $EID));
                 }
@@ -2916,7 +2882,7 @@ class Restaurant extends CI_Controller {
                 $oldSeatNo = getSeatNo($CNo);
                 if($oldSeatNo != $seatNo){
                     $CNo = 0;
-                    $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo,$data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $DCd);
+                    $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo,$data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef);
                 }    
             }
 
@@ -3007,7 +2973,7 @@ class Restaurant extends CI_Controller {
                 $kitchenObj['Itm_Portion'] = $Itm_Portion[$i];
                 $kitchenObj['TaxType'] = $taxtype[$i];
                 $kitchenObj['SeatNo'] = $seatNo;
-                $kitchenObj['DCd'] = $DCd;
+                $kitchenObj['DCd'] = $DCd[$i];
                 // edt
                 $date = date("Y-m-d H:i:s");
                 $date = strtotime($date);
@@ -3158,7 +3124,7 @@ class Restaurant extends CI_Controller {
     }
 
     // functions
-    private function insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $CellNo, $EID, $ChainId, $ONo, $TableNo,$data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $DCd)
+    private function insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $CellNo, $EID, $ChainId, $ONo, $TableNo,$data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef)
     {
         if ($CNo == 0) {
 
@@ -3172,7 +3138,6 @@ class Restaurant extends CI_Controller {
             $kitchenMainObj['ChainId'] = $ChainId;
             $kitchenMainObj['ONo'] = $ONo;
             $kitchenMainObj['OType'] = $orderType;
-            $kitchenMainObj['DCd'] = $DCd;
             $kitchenMainObj['TPId'] = $thirdParty;
             $kitchenMainObj['TPRefNo'] = $thirdPartyRef;
             $kitchenMainObj['TableNo'] = $TableNo;
@@ -4792,7 +4757,138 @@ class Restaurant extends CI_Controller {
             
             $this->db2->query("UPDATE Kitchen k, KitchenMain km set k.MCNo = $MCNo, km.MCNo = $MCNo where km.MergeNo = k.MergeNo and km.MergeNo = '$MergeNo' and km.EID = $EID and km.BillStat = 0 and k.BillStat = 0");
             $status = 'success';
-            $response = 'MCNo Updated.';
+            $response = $this->lang->line('MCNoUpdated');
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }   
+    }
+
+    public function dispense_notification(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            extract($_POST);
+
+            $RestName = authuser()->RestName;
+            $Dispense_OTP = $this->session->userdata('Dispense_OTP');
+
+            if($oType != 101){
+                $otpData['mobileNo'] = $mobile;
+                $otpData['otp'] = '';
+                $otpData['stat'] = 0;
+                $otpData['pageRequest'] = 'Dispense';
+
+                if($mobile){
+                    $msg = "Order of Bill No: $billId from $RestName is ready. Please pick up from $dispCounter.";
+
+                    if($Dispense_OTP > 0){
+                        $otp = generateOnlyOTP();
+                        $msg = "Order of Bill No: $billId from $RestName is ready. Your OTP is $otp. Please pick up from $dispCounter.";    
+                        $otpData['otp'] = $otp;
+                    }
+
+                    $smsRes = sendSMS($mobile, $msg);
+                    if($smsRes){
+                        $otpData['stat'] = 1;
+                        $status = 'success';
+                        $response = $this->lang->line('messageSent');
+                    }
+                    insertRecord('OTP', $otpData);
+                }
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }   
+    }
+
+    public function delivery_notification(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            extract($_POST);
+
+            $RestName = authuser()->RestName;
+            $Dispense_OTP = $this->session->userdata('Dispense_OTP');
+
+            if($oType != 101){
+
+                updateRecord('kitchen', array('DStat' => 1), array('CNo' => $CNo, 'DCd' => $DCd));
+
+                $otpData['mobileNo'] = $mobile;
+                $otpData['otp'] = '';
+                $otpData['stat'] = 0;
+                $otpData['pageRequest'] = 'Dispense';
+
+                if($mobile){
+                    $msg = "Order of Bill No : $billId, Counter : $dispCounter from $RestName has been delivered.";
+
+                    $smsRes = sendSMS($mobile, $msg);
+                    if($smsRes){
+                        $otpData['stat'] = 1;
+                        $status = 'success';
+                        $response = $this->lang->line('messageSent');
+                    }
+                    insertRecord('OTP', $otpData);
+                }
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }   
+    }
+
+    public function verifyDelOTP(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $response = $this->lang->line('OTPNotVerified');
+            
+            $cust_otp = $this->session->userdata('cust_otp');
+            if($cust_otp == $_POST['otp']){
+                $status = "success";
+                $response = $this->lang->line('OTPVerified');
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }      
+    }
+
+    public function get_cust_details(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $response = "Records Not Found!";
+            $data = $this->db2->select("FName, LName, DelAddress")->get_where('Users', array('MobileNo' => $_POST['phone']))->row_array();
+            if(!empty($data)){
+                $status = 'success';
+                $response = $data;
+            }
 
             header('Content-Type: application/json');
             echo json_encode(array(

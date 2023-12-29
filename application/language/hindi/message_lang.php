@@ -148,6 +148,7 @@ $lang['tableNo'] 			= 'टेबल न.';
 $lang['select'] 			= 'चुने';
 $lang['thirdParty'] 		= 'थर्ड पार्टी';
 $lang['thirdPartyRefNo'] 	= 'थर्ड पार्टी रेफ.न.';
+$lang['refNo'] 				= 'रेफ.न.';
 $lang['customerAddress'] 	= 'ग्राहक एड्रेस';
 $lang['itemAmount'] 		= 'आइटम रुपया';
 $lang['kot'] 				= 'केवोटी';
@@ -299,4 +300,9 @@ $lang['seatNo'] 			= 'सीट न.';
 $lang['tableAmount']		= 'टेबल देय';
 $lang['CombineTheFollowingAmountsFromTable']	= 'निम्नलिखित मात्राओं को आपस में मिला लें टेबल';
 $lang['packs']				= 'पैक्स';
+$lang['deliveryOTP']		= 'डिलीवरी ओटीपी';
+$lang['OTPVerified']		= 'ओटीपी सत्यापित';
+$lang['OTPNotVerified']		= 'ओटीपी सत्यापित नहीं है';
+$lang['messageSent']		= 'संदेश भेजा गया';
+$lang['MCNoUpdated']		= 'एम.सी न. अपडेटेड';
 

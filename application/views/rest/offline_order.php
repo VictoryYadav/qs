@@ -61,7 +61,8 @@
                                         <?php } ?>
                                             <div class="col-md-3 form-group col-6">
                                                 <label><?= $this->lang->line('mobile'); ?></label>
-                                                <input type="number" id="phone" class="form-control form-control-sm">
+                                                <input type="text" id="phone" class="form-control form-control-sm" minlength="10" maxlength="10" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" onchange="getCustDetails()">
+                                                <small class="text-danger msgPhone"></small>
                                                 <input type="hidden" name="seatNoOld" id="seatNoOld" value="1">
                                             </div>
                                         </div>
@@ -342,7 +343,6 @@
 
         $(document).ready(function() {
 
-
             $("#search-item").keyup(function(event) {
                 var itemName = $(this).val();
                 if (itemName != '') {
@@ -395,7 +395,6 @@
             });
 
             $(".send-to-kitchen").click(function(event) {
-                $('.send-to-kitchen').attr("disabled", "disabled");
 
                 var data_type = $(this).attr('data_type');
                 // alert(data_type);
@@ -438,7 +437,7 @@
                 } else if (itemCount < 2) {
                     formFill = false;
                     alert("Please Enter Atleast 1 Item");
-                } else if (orderType == 1) {
+                } else if (orderType == 101) {
                     if (thirdParty == 0) {
                         formFill = false;
                         alert("Please Select 3rd Party");
@@ -448,13 +447,17 @@
                         alert("Please Enter 3rd Party Ref Number");
                     }
 
-                } else if (orderType == 2) {
+                } else if (orderType == 105) {
+                    if (customerPhone == "") {
+                        formFill = false;
+                        alert("Enter Customer Phone Number");
+                    }
                     if (customerPhone == "") {
                         formFill = false;
                         alert("Enter Customer Phone Number");
                     }
 
-                } else if (orderType == 3) {
+                } else if (orderType == 110) {
                     if (customerAddress == "") {
                         formFill = false;
                         alert("Enter Customer Address");
@@ -470,9 +473,9 @@
                     }
                 }
 
-                console.log(orderType, thirdParty, thirdPartyRef, totalValue, itemCount, formFill);
-
                 if (formFill) {
+                    $('.send-to-kitchen').attr("disabled", "disabled");
+
                     $(".item-id").each(function(index, el) {
                         itemIds.push($(this).attr('data-id'));
                         Itm_Portion.push($(this).attr('Itm_Portion'));
@@ -546,7 +549,8 @@
                             prep_time:prep_time,
                             seatNo:seatNo,
                             oldSeatNo:oldSeatNo,
-                            DCd : dcd_value
+                            DCd : dcd_value,
+                            customerAddress:customerAddress
                         },
 
                         dataType: "json",
@@ -719,6 +723,26 @@
         function changeValue(input) {
             var val = $(input).val();
             $(input).val(convertToUnicodeNo(val));
+        }
+
+        function getCustDetails(){
+            
+            var phone = $('#phone').val();
+            if(phone.length == 10){
+                $.post('<?= base_url('restaurant/get_cust_details') ?>',{phone:phone},function(response){
+
+                if(response.status == 'success') {
+                        var data = response.response;
+                        $('#cust-address').val(data.DelAddress);
+                }else {
+                    $('.msgPhone').html(response.response);
+                }
+            });
+            }else{
+                $('.msgPhone').html('Enter Valid Phone');
+            }
+            // console.log(phone);
+            
         }
 
     </script>
