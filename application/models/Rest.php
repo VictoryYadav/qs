@@ -35,7 +35,10 @@ class Rest extends CI_Model{
 		$langId = $this->session->userdata('site_lang');
         $scName = "SchNm$langId as SchNm";
 
-		return $this->db2->select("$scName, SchCd, SchTyp ,SchCatg,FrmDt, ToDt, FrmDayNo, ToDayNo, ")->order_by('SchCd', 'desc')->get_where('CustOffers', array('Stat' => 0))->result_array();
+		return $this->db2->select("$scName, SchCd, SchTyp ,SchCatg,FrmDt, ToDt, FrmDayNo, ToDayNo, ")
+						->order_by('SchCd', 'desc')
+						->get_where('CustOffers', array('Stat' => 0))
+						->result_array();
 	}
 
 	public function passwordUpdate($password){
@@ -417,30 +420,19 @@ class Rest extends CI_Model{
 		$EType = $this->session->userdata('EType');
 		$EID = authuser()->EID;
 
-		$GetDCD = $this->db2->get_where('UsersRoleDaily', array('RUserId' => $RUserId))->result_array();
-		$tempArray = explode(",",$GetDCD[0]['DCd']);
+        $data = array();
 
-
-		$langId = $this->session->userdata('site_lang');
-        $dname = "Name$langId as Name";
-
-		$SqlQueryVar = "SELECT DCd, $dname, DCdType FROM Eat_DispOutlets Where EID = $EID AND Stat = 0";
-		if(count($tempArray) >=1 && $tempArray[0] != ''){
-		    $SqlQueryVar .=" AND (";
-		for ($i=0; $i <count($tempArray) ; $i++) { 
-		    if($i>=1){
-		        $SqlQueryVar .=" OR ";
-		    }
-		    $SqlQueryVar .= "DCd =".$tempArray[$i];
-		    
-		}
-		$SqlQueryVar .= ")";
-		}else{
-
+		$GetDCD = $this->db2->get_where('UsersRoleDaily', array('RUserId' => $RUserId))->row_array();
+		if(!empty($GetDCD)){
+			$langId = $this->session->userdata('site_lang');
+	        $dname = "Name$langId as Name";
+	        if(!empty($GetDCD['DCd'])){
+	        	$dcd = "(".$GetDCD['DCd'].")";
+				$data = $this->db2->query("SELECT DCd, $dname, DCdType FROM Eat_DispOutlets Where EID = $EID AND Stat = 0 and DCd in $dcd")->result_array();
+	        }
 		}
 
-		return $this->db2->query($SqlQueryVar)->result_array();
-
+        return $data;
 	}
 
 	public function getStockList($postdata=null){
@@ -745,11 +737,51 @@ class Rest extends CI_Model{
 						->result_array();
 	}
 
+	public function getItemTypeList(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Name";
+
+		return $this->db2->select("ItmTyp, $lname")
+						->get_where('ItemTypes', array('Stat' => 0,'EID' => authuser()->EID))
+						->result_array();
+	}
+
+	public function getOffersSchemeType(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Name";
+
+		return $this->db2->select("SchCatg, $lname")
+						->get_where('CustOfferTypes', array('Stat' => 0, 'SchTyp' => 1))
+						->result_array();
+	}
+
+	public function getOffersSchemeCategory(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Name";
+
+		return $this->db2->select("SchCatg, $lname")
+						->get_where('CustOfferTypes', array('Stat' => 0, 'SchTyp' => 2))
+						->result_array();
+	}
+
 	public function get_foodType(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId as Opt";
+        $Usedfor = "Usedfor$langId as Usedfor";
 
-		return $this->db2->select("FID, $lname")->order_by('CTyp, Rank','ASC')->get_where('FoodType', array('Stat' => 0, 'EID' => authuser()->EID))->result_array();	
+		return $this->db2->select("FID, CTyp ,$lname, $Usedfor")->order_by('CTyp, Rank','ASC')
+						->group_by('CTyp')
+						->get_where('FoodType', array('Stat' => 0, 'EID' => authuser()->EID))->result_array();	
+	}
+
+	public function getAllItemsList(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "ItemNm$langId as Name";
+
+		return $this->db2->select("ItemId, $lname")
+						->order_by('ItemNm1','ASC')
+						->group_by('ItemId')
+						->get_where('MenuItem', array('Stat' => 0, 'EID' => authuser()->EID))->result_array();		
 	}
 
 	public function get_kitchen(){
@@ -760,16 +792,26 @@ class Rest extends CI_Model{
 	}
 
 	public function get_eat_section(){
-		return $this->db2->select('SecId,Name')->get('Eat_Sections')->result_array();	
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Name";
+		return $this->db2->select("SecId, $lname")->get_where('Eat_Sections', array('Stat' => 0, 'EID' => authuser()->EID))->result_array();	
 	}
 
 	public function get_item_portion(){
-		return $this->db2->select('IPCd,Name')->get('ItemPortions')->result_array();	
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Name";
+		return $this->db2->select("IPCd, $lname")->get('ItemPortions')->result_array();	
 	}
 
 	public function get_item_name_list($name){
+		$EID = authuser()->EID;
+		$langId = $this->session->userdata('site_lang');
+        $lname = "ItemNm$langId as ItemNm";
+        $cname = "ItemNm$langId";
+
 		$item_name = $name.'%';
-		return $this->db2->query("SELECT ItemId,ItemNm FROM `MenuItem` WHERE LOWER(ItemNm) LIKE '$item_name'")->result_array();
+
+		return $this->db2->query("SELECT ItemId, $lname FROM `MenuItem` WHERE EID = $EID and  LOWER($cname) LIKE '$item_name'")->result_array();
 	}
 
 	public function getKotList($MCNo, $mergeNo, $FKOTNo){
@@ -854,9 +896,9 @@ class Rest extends CI_Model{
 			$this->db2->where($whr);
 		}
 
-		if(!empty($kitcd)){
-			$this->db2->where('k.KitCd', $kitcd);
-		}
+		// if(!empty($kitcd)){
+		// 	$this->db2->where('k.KitCd', $kitcd);
+		// }
 
 		$langId = $this->session->userdata('site_lang');
         $iname = "m.ItemNm$langId as ItemNm";
@@ -870,16 +912,13 @@ class Rest extends CI_Model{
          				  ->get_where('Kitchen k', array(
 						  						'k.EID' => $EID,
 						  						'k.KStat' => 0,
-						  						'k.Stat' => 3
+						  						'k.Stat' => 3,
+						  						'k.KitCd' => $kitcd
 						  							)
 									)
 						  ->result_array();
 // print_r($this->db2->last_query());die;
 						  return $data;
-		// echo "<pre>";
-		// // print_r($data);
-		// // die;
-
 
 		$group_arr = [];
 		foreach ($data as $key ) {
@@ -907,7 +946,7 @@ class Rest extends CI_Model{
         $ipname = "ip.Name$langId as Portions";
 
 		$data = $this->db2->select("k.ItemId, sum(k.Qty) as Qty, k.CustItemDesc, k.Itm_Portion, k.TableNo,k.MergeNo,k.CustRmks,k.TA,k.LstModDt,k.OType, $iname, $ipname")
-						  ->order_by('m.ItemNm1', 'ASC')
+						  ->order_by('Qty, m.ItemNm1', 'DESC')
 						  ->group_by('k.KitCd,k.ItemId')
 						  ->join('MenuItem m','m.ItemId = k.ItemId','inner')
          				  ->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
@@ -943,15 +982,82 @@ class Rest extends CI_Model{
 	}
 
 	public function getCasherList(){
-		$langId = $this->session->userdata('site_lang');
-		$cashName = "Name$langId as Name";
-        return $this->db2->select("*, $cashName")
-        				->get_where('Eat_Casher', array('EID' => authuser()->EID, 'Stat' => 0))
-        				->result_array();
-		 
+		
+		$RUserId = authuser()->RUserId;
+		$EID = authuser()->EID;
+
+        $data = array();
+
+		$GetCCD = $this->db2->get_where('UsersRoleDaily', array('RUserId' => $RUserId))->row_array();
+		if(!empty($GetCCD)){
+			$langId = $this->session->userdata('site_lang');
+			$cashName = "Name$langId as Name";
+	        if(!empty($GetCCD['CCd'])){
+	        	$ccd = "(".$GetCCD['CCd'].")";
+				$data = $this->db2->query("SELECT CCd, $cashName, PrinterName, Settle FROM Eat_Casher Where EID = $EID AND Stat = 0 and CCd in $ccd")->result_array();
+	        }
+		}
+
+        return $data;
 	}
 
+	public function getKitchenList(){
+		
+		$RUserId = authuser()->RUserId;
+		$EID = authuser()->EID;
+
+        $data = array();
+
+		$GetKitCd = $this->db2->get_where('UsersRoleDaily', array('RUserId' => $RUserId))->row_array();
+		if(!empty($GetKitCd)){
+			$langId = $this->session->userdata('site_lang');
+        	$kname = "KitName$langId as KitName";
+	        if(!empty($GetKitCd['KitCd'])){
+	        	$KitCd = "(".$GetKitCd['KitCd'].")";
+				$data = $this->db2->query("SELECT KitCd, $kname FROM Eat_Kit Where EID = $EID AND Stat = 0 and KitCd in $KitCd")->result_array();
+	        }
+		}
+
+        return $data;
+	}
+
+
+	public function getCTypeList(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Usedfor$langId as Usedfor";
+		return $this->db2->select("CTyp, $lname")
+					->order_by('Rank', 'ASC')
+					->group_by('Usedfor1')
+					->get_where('FoodType', array('Stat' => 0, 'EID' => authuser()->EID))
+					->result_array();
+	}
 	
+
+	public function getWeekDayList(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Name";
+		return $this->db2->select("DayNo, $lname")
+					->get('WeekDays')
+					->result_array();	
+	}
+
+	public function getMenuTagList(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "TDesc$langId as TDesc";
+		return $this->db2->select("TagId, $lname, TagTyp")
+					->get('MenuTags')
+					->result_array();	
+	}
+
+
+	public function getUOMlist(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Name";
+
+		return $this->db2->select("UOMCd, $lname")
+                              ->get_where('RMUOM', array('Stat' => 0))
+                              ->result_array();
+	}
 
 	
 }

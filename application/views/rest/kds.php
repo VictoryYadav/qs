@@ -48,15 +48,9 @@
                                     <div class="card-body">
                                         <form action="" method="post">
                                             <div class="row">
-                                                <div class="col-md-6 col-6">
-                                                    <div class="form-group row">
-                                                        <label class="col-md-5"><?= $this->lang->line('dueIn'); ?></label>
-                                                        <input type="text" class="form-control form-control-sm col-md-7" placeholder="Minutes" name="minutes" value="<?= $minutes; ?>" onblur="changeValue(this)">
-                                                    </div>
-                                                    
-                                                </div>
-                                                <div class="col-md-4 col-4">
-                                                    <div class="form-group row">
+                                                <div class="col-md-5 col-4">
+                                                    <div class="form-group">
+                                                        <label class="col-md-5"><?= $this->lang->line('kitchen'); ?></label>
                                                         <select name="kitchen" id="kitchen" class="form-control form-control-sm">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php
@@ -66,10 +60,20 @@
                                                             <?php } ?>
                                                         </select>
                                                     </div>
-                                                    
                                                 </div>
+
+                                                <div class="col-md-5 col-6">
+                                                    <div class="form-group">
+                                                        <label class="col-md-5"><?= $this->lang->line('dueIn'); ?></label>
+                                                        <input type="text" class="form-control form-control-sm col-md-7" placeholder="Minutes" name="minutes" value="<?= $minutes; ?>" onblur="changeValue(this)">
+                                                    </div>
+                                                </div>
+                                                
                                                 <div class="col-md-2 col-2">
+                                                    <div class="form-group">
+                                                        <label for="">&nbsp;</label><br>
                                                     <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('search'); ?>">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </form>

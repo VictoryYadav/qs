@@ -89,20 +89,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	}
 
-	function getDay($day_id){
-		$days=array(1=>'Sunday', 2=>'Monday', 3=>'Tuesday', 4=>'Wednesday', 5=>'Thursday', 6=>'Friday', 7=>'Saturday');
-		return $days[$day_id];
+	function getDay($dayno){
+		$CI = & get_instance();
+		$CI->load->model('User');
+		return $CI->User->getDayName($dayno);	
 	}
 
-	function getSchemeType($id){
-		$sch_typ = array('1'=>'BillBased', '21'=>'CID based', '22'=>'MenuCatg based', '23'=>'ItmTyp Based', '24'=>'ItemID based', '25'=>'Itm_Portion based','26'=>'CID and Itm_Portion based', '27'=>'MenuCatg and Itm_Portion based', '28'=>'ItemTyp and Itm_Portion based','29'=>'ItemID and Itm_Portion based');
-		return $sch_typ[$id];
+	function schemeType($id){
+		$CI = & get_instance();
+		$CI->load->model('User');
+		return $CI->User->getSchemeTypeCategory($id);
 	}
 
-	function getSchemeCat($id){
-		$sch_cat = array('1'=>'Bill Discount', '2'=>'Free Item with BillAmt','3'=>'Discount on minBillAmt/month', '4'=>'First time use of QS (2% discount)', '5'=> 'Rating Discount', '21'=>'Gen. Discount', '22'=>'Buy x get y free (1+1) / (2+1) lowest rate', '23'=>'Buy x get y free (1+1) / (2+1) highest rate', '24'=>'Buy x get y discounted; 51-Discounts using promo codes');
-		return $sch_cat[$id];
-	}
 
 	function payMode($id){
 		$pay = array('1'=>'Cash', '2'=>'Cashfree','3'=>'RazorPay', '4'=>'Stripe', '5'=> 'RazorPay TQ', '6'=>'Sodexo');
@@ -145,6 +143,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$CI = & get_instance();
 		$CI->load->model('Cust');
 		return $CI->Cust->billGenerated($EID, $CNo, $postData);
+	}
+
+	function getTableDetail($table){
+		$CI = & get_instance();
+		$CI->load->model('Cust');
+		return $CI->Cust->getTableDetails($table);
 	}
 
 	function firebaseNotification($fcmRegIds, $msg){
@@ -190,71 +194,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$CI = & get_instance();
 		$CI->load->model('User');
 		return $CI->User->getLangMenuList();
-	}
-
-	function languageArray(){
-		return array(
-		'about_us' => 'About Us',
-		'account' => 'Account',
-		'edit_profile' => 'Edit Profile',
-		'book_table' => 'Book Table',
-		'refer_outlet' => 'Refer Outlet',
-		'login' => 'Login',
-		'logout' => 'Logout',		
-		'transaction' => 'Transaction',		
-		'terms_and_conditions' => 'T & C',		
-		'testimonials' => 'Testimonials',		
-		'contact_us' => 'Contact Us',		
-		'order_list' =>  'Order List',		
-		'current_order' => 'Current Order',		
-		'offers' => 'Offers',		
-		'rate_us' => 'Rate Us',	
-		'back' => 'Back',
-		'add_item' => 'Add Item',
-		'take_away' => 'Order Type',
-		'portion' => 'Portion',
-		'delivery_time' => 'Deliver In (mts)',
-		'quantity' => 'Qty',
-		'menu' => 'Menu',
-		'item' => 'Item',
-		'continue' => 'Continue',
-		'order_detail' => 'Order Detail',
-		'rate' => 'Rate',
-		'delete' => 'Delete',
-		'bill_later' => 'Bill Later',
-		'bill_now' => 'Bill Now',
-		'bill_later_text' => '"Bill Later" to continue with Ordering',
-		'bill_later_text' => '"Bill Now" if meal is over',
-		'else' => 'Else',
-		'billing' => 'Billing',
-		'bill' => 'Bill',
-		'total_discount' => 'Total Discount',
-		'total' => 'Total',
-		'discount' => 'Discount',
-		'packing_charge' => 'Packing Charge',
-		'delivery_charge' => 'Delivery Charge',
-		'payable' => 'Payable',
-		'confirm' => 'Confirm',
-		'merge_orders' => 'Merge Orders',
-		'odrer' => 'Order',
-		'merge' => 'Merge',
-		'please_pay_to_cashier' => 'Please Pay To Cashier',
-		'merge_bills' => 'Merge Bills',
-		'pay_online' => 'Pay Online',
-		'item_total' => 'Item Total',
-		'sub_total' => 'Sub Total',
-		'service_charge' => 'Service Charge',
-		'savings' => 'Savings',
-		'tips' => 'Tips',
-		'pay_cash' => 'Pay Cash',
-		'item_total' => 'Item Total',
-		'item_total' => 'Item Total',
-		'bill_no' => "Bill No",
-		'order_no' => 'Order No',
-		'date' => 'Date',
-		'menu_item' => 'Menu Item',
-		'amount' => 'Amount'
-		);
 	}
 
 	function allOffers(){
@@ -318,48 +257,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         echo $response;
 
 	}
-
-
-	// function send_SMS($mobileNO, $msgText){
-	// 	$apikey = '7652383520739183947';//if you use apikey then userid and password is not required
-	// 	$userId = 'vtrend';
-	// 	$password = 'Sn197022';
-	// 	$sendMethod = 'simpleMsg'; //(simpleMsg|groupMsg|excelMsg)
-	// 	$messageType = 'text'; //(text|unicode|flash)
-	// 	$senderId = 'EATOUT';
-	// 	$mobile = $mobileNO;//comma separated
-	// 	$msg = $msgText;
-	// 	$scheduleTime = '';//mention time if you want to schedule else leave blank
-
- //        $curl = curl_init();
-	// 	curl_setopt_array($curl, array(
-	// 	  CURLOPT_URL => "http://www.smsgateway.center/SMSApi/rest/send",
-	// 	  CURLOPT_RETURNTRANSFER => true,
-	// 	  CURLOPT_ENCODING => "",
-	// 	  CURLOPT_MAXREDIRS => 10,
-	// 	  CURLOPT_TIMEOUT => 30,
-	// 	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-	// 	  CURLOPT_CUSTOMREQUEST => "POST",
-	// 	  CURLOPT_POSTFIELDS => "userId=$userId&password=$password&senderId=$senderId&sendMethod=$sendMethod&msgType=$messageType&mobile=$mobile&msg=$msg&duplicateCheck=true&format=json",
-	// 	  CURLOPT_HTTPHEADER => array(
-	// 	    "cache-control: no-cache",
-	// 	    "content-type: application/x-www-form-urlencoded"
-	// 	  ),
-	// 	));
-
-	// 	$response = curl_exec($curl);
-	// 	$err = curl_error($curl);
-
-	// 	curl_close($curl);
-	// 	$val = 0;
-	// 	if ($err) {
-	// 	  // echo "cURL Error #:" . $err;
-	// 	} else {
-	// 	  // echo $response;
-	// 		$val = 1;
-	// 	}
-	// 	return $val;
-	// }
 
 	function sendSMS($mobileNO, $msgText)
     {

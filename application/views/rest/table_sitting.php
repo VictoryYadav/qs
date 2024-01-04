@@ -294,16 +294,12 @@ width: 100%;*/
                                         <div class="row">
                                             <div class="col-md-6 col-6">
                                                 <select class="form-control form-control-sm" id="kitchen-code" onchange="getTableView();">
-                                                    <?php
-                                                    if (count($SettingTableViewAccess) == 1) { ?>
-                                                        <option value="<?= $SettingTableViewAccess[0]['CCd'] ?>" settle="<?= $SettingTableViewAccess[0]['Settle'] ?>"><?= $SettingTableViewAccess[0]['Name'] ?></option>
-                                                    <?php } else {
-                                                        ?>
-                                                        <option value="0" style='display:none;' settle="1">Select Cashier</option>
-                                                        <?php foreach ($SettingTableViewAccess as $key => $data) : ?>
+                                                        <option value="0" settle="1"><?= $this->lang->line('select'); ?></option>
+                                                        <?php 
+                                                        if(!empty($SettingTableViewAccess)){
+                                                        foreach ($SettingTableViewAccess as $key => $data) { ?>
                                                             <option value="<?= $data['CCd'] ?>" settle="<?= $data['Settle'] ?>"><?= $data['Name'] ?></option>
-                                                    <?php endforeach;
-                                                    } ?>
+                                                    <?php } } ?>
                                                 </select>
                                             </div>
                                             <div class="col-md-6 col-6 text-right">
@@ -1012,10 +1008,10 @@ width: 100%;*/
 
 var tableFilter = 'orderWise';
 // var tableFilter = 'tableWise';
+getTableView();
 
     $(document).ready(function () {
         $('#from_table, #to_table').select2();
-        getTableView(tableFilter);
     });
         var bill_data;
         if ($("#kitchen-code option:selected").attr("settle") == 0) {
@@ -1040,14 +1036,14 @@ var tableFilter = 'orderWise';
             globalAQty = 0;
         }
 
-        function getTableView(tableFilter) {
-            var STVCd = $('#kitchen-code').val();
+        function getTableView() {
+            var CCd = $('#kitchen-code').val();
             $.ajax({
                 url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                 type: "post",
                 data: {
                     getTableOrderDetails: 1,
-                    STVCd: STVCd,
+                    CCd: CCd,
                     filter:tableFilter
                 },
                 dataType: 'json',
@@ -1118,7 +1114,7 @@ var tableFilter = 'orderWise';
         function changeTableView(val){
             tableFilter = val;
             $("#item-detail-body1").empty();
-            getTableView(tableFilter);
+            getTableView();
         }
 
         function handleKot(mergeNo, custId, MCNo, BillStat, oTyp) {
@@ -1287,7 +1283,7 @@ var tableFilter = 'orderWise';
                         // console.log(response);
                         if (response.status == 1) {
                             destroyDataTableForOrder();
-                            getTableView(getTableView);
+                            getTableView();
                         }
                     },
                     error: (xhr, status, error) => {
@@ -1317,7 +1313,7 @@ var tableFilter = 'orderWise';
                         console.log(response);
                         if (response.status == 1) {
                             destroyDataTableForOrder();
-                            getTableView(getTableView);
+                            getTableView();
                         }
                     },
                     error: (xhr, status, error) => {

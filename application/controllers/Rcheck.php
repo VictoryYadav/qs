@@ -89,14 +89,6 @@ class Rcheck extends CI_Controller {
 
         $EID = $_REQUEST['e'];
 
-        // load  GenTableData db
-        // $genTblDb = $this->load->database('GenTableData', TRUE);
-
-        // $eidDetData = $genTblDb->select('PymtGateway, DBName')->get_where('EIDDet', array('EID' => $EID))->row_array();
-
-        // $this->session->set_userdata('paymentGateway', $eidDetData['PymtGateway']);
-        // $this->session->set_userdata('DynamicDB', $eidDetData['DBName']);
-        
         // load db
         $db2 = $this->load->database($my_db, TRUE);
 

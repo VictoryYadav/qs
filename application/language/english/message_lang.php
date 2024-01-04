@@ -214,14 +214,16 @@ $lang['alternateToTime']	= 'Alternate To Time';
 $lang['offerDetails']		= 'Offer Details';
 $lang['image']				= 'Image';
 $lang['cuisine']			= 'Cuisine';
+$lang['cuisineType']		= 'Cuisine Type';
 $lang['menuCategory']		= 'Menu Category';
 $lang['itemPortion']		= 'Item Portion';
 $lang['discountItem']		= 'Discount Item';
 $lang['discountItemPortion']= 'Discount Item Portion';
 $lang['discountItemQuantity']= 'Discount Item Quantity';
 $lang['minimumBillAmount']	= 'Minimum Bill Amount';
-$lang['discountPercentage']	= 'Discount Percentage';
-$lang['discountAmount']		= 'Discount Amount';
+$lang['discountPercentage']	= 'Bill Discount Percentage';
+$lang['discountItemPercentage']	= 'Discount Item Percentage';
+$lang['discountAmount']		= 'Bill Discount Amount';
 $lang['editOffer']			= 'Edit Offer';
 $lang['deleteScheme']		= 'Delete Scheme';
 $lang['addMoreOfferDetails']= 'Add More Offer Details';
@@ -305,6 +307,17 @@ $lang['OTPVerified']		= 'OTP Verified';
 $lang['OTPNotVerified']		= 'OTP Not Verified';
 $lang['messageSent']		= 'Message Sent';
 $lang['MCNoUpdated']		= 'MCNo Updated';
+$lang['counter']			= 'Counter';
+$lang['inMinutes']			= '(in mts)';
+$lang['section']			= 'Section';
+$lang['nutritionValue']		= 'NV';
+$lang['videoLink']			= 'Video Link';
+$lang['machineCode']		= 'Machine Code';
+$lang['live']				= 'Live';
+$lang['list']				= 'List';
+
+
+
 
 
 

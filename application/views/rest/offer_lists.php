@@ -74,8 +74,8 @@
                                                 <tr>
                                                     <td><?php echo $i++; ?></td>
                                                     <td><?php echo $key['SchNm']; ?></td>
-                                                    <td><?php echo !empty($key['SchTyp'])?getSchemeType($key['SchTyp']):'-'; ?></td>
-                                                    <td><?php echo !empty($key['SchCatg'])?getSchemeCat($key['SchCatg']):'-'; ?></td>
+                                                    <td><?php echo !empty($key['SchTyp'])?schemeType($key['SchTyp']):'-'; ?></td>
+                                                    <td><?php echo !empty($key['SchCatg'])?schemeType($key['SchCatg']):'-'; ?></td>
                                                     <td><?php echo date('d-M-Y',strtotime($key['FrmDt'])); ?></td>
                                                     <td><?php echo date('d-M-Y',strtotime($key['ToDt'])); ?></td>
                                                     <td><?php echo !empty($key['FrmDayNo'])?getDay($key['FrmDayNo']):'-'; ?></td>

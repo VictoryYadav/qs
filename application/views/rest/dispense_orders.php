@@ -103,15 +103,12 @@
                                             <div class="col-3">
                                                 <div class="form-group">
                                                     <select class="form-control form-control-sm" id="kitchen-code" onchange="getTableView();">  
-                                                        <?php
-                                                        if(count($DispenseAccess) == 1){?>
-                                                            <option value="<?= $DispenseAccess[0]['DCd']?>"><?= $DispenseAccess[0]['Name']?></option>
-                                                        <?php }else{
-                                                        ?>
-                                                        <option value="0" style='display:none;'>Select</option>
-                                                        <?php foreach($DispenseAccess as $key => $data):?>
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <?php 
+                                                        if(!empty($DispenseAccess)){
+                                                        foreach($DispenseAccess as $key => $data) { ?>
                                                         <option value="<?= $data['DCd']?>"><?= $data['Name']?></option>
-                                                        <?php endforeach;} ?>
+                                                        <?php } } ?>
                                                     </select>
                                                 </div>
                                             </div>

@@ -356,5 +356,24 @@ class User extends CI_Model{
 		return $data['SeatNo']; 
 	}
 
+	public function getSchemeTypeCategory($SchCatg){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Name";
+		$scheme =  $this->db2->select("$lname")
+					->get_where('CustOfferTypes', array(
+								'Stat' => 0,
+								'SchCatg' => $SchCatg))
+					->row_array();
+		return $scheme['Name'];
+	}
+
+	public function getDayName($DayNo){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Name";
+		$day =  $this->db2->select("$lname")
+					->get_where('WeekDays', array('DayNo' => $DayNo))
+					->row_array();	
+		return $day['Name'];
+	}
 	
 }

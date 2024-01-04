@@ -27,23 +27,58 @@
                                         <form method="post" action="<?php echo base_url('restaurant/item_list'); ?>">
                                             <div class="row">
                                                 <div class="col-md-3 col-5">
+                                                    <div class="form-group">
+                                                        <label for="">
+                                                            <?= $this->lang->line('cuisine'); ?>
+                                                        </label>
                                                     <select class="form-control form-control-sm" name="cuisine" id="cuisine" onchange="getCategory()">
-                                                        <option value="">All</option>
+                                                        <option value=""><?= $this->lang->line('all'); ?></option>
                                                         <?php foreach($cuisine as $key){?>
                                                         <option value="<?= $key['CID']?>" <?php if($key['CID'] == $CID){ echo 'selected';}?>><?= $key['Name']?></option>
                                                     <?php }?>
                                                     </select>
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-3 col-5">
+                                                    <div class="form-group">
+                                                        <label for="">
+                                                            <?= $this->lang->line('menuCategory'); ?>
+                                                        </label>
                                                     <select class="form-control select2 custom-select" name="menucat" id="menucat" style="width: 100%;">
-                                                        <option value="">ALL</option>
+                                                        <option value=""><?= $this->lang->line('all'); ?></option>
                                                         <?php foreach($menucat as $key){?>
                                                             <option value="<?= $key['MCatgId']?>" <?php if($key['MCatgId'] == $catid){ echo 'selected';}?>><?= $key['MCatgNm']?></option>
                                                         <?php }?>
                                                     </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-5">
+                                                    <div class="form-group">
+                                                        <label for="">
+                                                            <?= $this->lang->line('list'); ?>
+                                                        </label>
+                                                    <select class="form-control form-control-sm" name="filter" id="filter" style="width: 100%;">
+                                                        <option value=""><?= $this->lang->line('all'); ?></option>
+                                                        <option value="draft" <?php if($filter == 'draft'){ echo 'selected';}?>>Draft</option>
+                                                        <option value="enabled" <?php if($filter == 'enabled'){ echo 'selected';}?> >Enabled</option>
+                                                        <option value="disabled" <?php if($filter == 'disabled'){ echo 'selected';}?> >Disabled</option>
+                                                    </select>
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-3 col-2">
+                                                    <div class="form-group">
+                                                        <label for="">&nbsp;</label><br>
                                                     <input type="submit" class="btn btn-info btn-sm" value="<?= $this->lang->line('search'); ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-2">
+                                                    <input type="checkbox" name="selectAll" id="selectAll">
+                                                    <label for=""><?= $this->lang->line('all'); ?></label> |
+                                                    <button type="button" class="btn btn-success btn-sm btnc" onclick="updateData('live');"><?= $this->lang->line('live'); ?></button>
+                                                    <button type="button" class="btn btn-primary btn-sm btnc" onclick="updateData('enabled');"><?= $this->lang->line('enabled'); ?></button>
+                                                    <button type="button" class="btn btn-danger btn-sm btnc" onclick="updateData('disabled');"><?= $this->lang->line('disabled'); ?></button>
+                                                    <a href="<?= base_url('restaurant/add_item'); ?>" class="btn btn-sm btn-secondary">Add Item</a>
                                                 </div>
                                             </div>
                                         </form>
@@ -57,8 +92,9 @@
                                                 <tr style="background: #cbc6c6;">
                                                     <th>#</th>
                                                     <th><?= $this->lang->line('item'); ?></th>
+                                                    <th><?= $this->lang->line('section'); ?></th>
                                                     <th><?= $this->lang->line('portion'); ?></th>
-                                                    <th><?= $this->lang->line('available'); ?></th>
+                                                    <th><?= $this->lang->line('rate'); ?></th>
                                                 </tr>
                                                 </thead>
             
@@ -70,17 +106,17 @@
                                                      ?>
                                                     
                                                 <tr>
-                                                    <td><?php echo $i++; ?></td>
-                                                    <td><?php echo $key['ItemNm']; ?></td>
-                                                    <td><?php echo $key['Portions']; ?></td>
                                                     <td>
-                                                       <!--  <label class="switch">Disabled
-                                                <input type="checkbox" onchange="enableDisable(<?= $key['ItemId'];?>, this);" <?= ($key['deactive'] != '' ? '' : 'checked');?> >
-                                                <span class="slider round"></span>
-                                            </label> -->
-
-                                                    <input type="checkbox" id="switch3" switch="bool" onchange="enableDisable(<?= $key['ItemId'];?>, this);" <?= ($key['deactive'] != '' ? '' : 'checked');?>>
-                                                    <label for="switch3" data-on-label="Yes" data-off-label="No" style="margin-bottom: -11px;"></label>
+                                                        <input type="checkbox" name="itemId[]" class="selectItemId" value="<?= $key['ItemId']; ?>" irno="<?= $key['IRNo']; ?>">
+                                                    </td>
+                                                    <td>
+                                                        <a href="<?= base_url('restaurant/edit_item/'.$key['ItemId'])?>">
+                                                        <?php echo $key['ItemNm']; ?>
+                                                        </a>
+                                                    </td>
+                                                    <td><?php echo $key['Sections']; ?></td>
+                                                    <td><?php echo $key['Portions']; ?></td>
+                                                    <td><?php echo $key['OrigRate']; ?>
                                                     </td>
                                                 </tr>
                                                 <?php }
@@ -122,55 +158,7 @@
         $('#menucat').select2();
     });
 
-</script>
 
-<script>
-function enableDisable(id, input) {
-    console.log(id);
-    if ($(input).prop('checked') == false) {
-        console.log("Enter Data");
-        $.ajax({
-            url: "<?php echo base_url('restaurant/rest_item_list'); ?>",
-            type: "post",
-            data:{
-                insertMenuItemDisabled : 1,
-                id : id
-            },
-            dataType: "json",
-            success: response => {
-                console.log(response.msg);
-            },
-            error: (xhr, status, error) => {
-                console.log(xhr);
-                console.log(status);
-                console.log(error);
-            }
-        });
-    }else{
-        console.log("Delete Data");
-        $.ajax({
-            url: "<?php echo base_url('restaurant/rest_item_list'); ?>",
-            type: "post",
-            data:{
-                deleteMenuItemDisabled : 1,
-                id : id
-            },
-            dataType: "json",
-            success: response => {
-                console.log(response.msg);
-            },
-            error: (xhr, status, error) => {
-                console.log(xhr);
-                console.log(status);
-                console.log(error);
-            }
-        });
-    }
-}
-
-$(document).ready(function() {
-    $("#item-list").DataTable();
-});
 function validate(){
     var cui = $('#cuisine').val();
     var cat = $('#menucat').val();
@@ -180,6 +168,7 @@ function validate(){
     }
     return true;
 }
+
 function getCategory(){
     var cui = $('#cuisine').val();
     // alert(cui);
@@ -198,5 +187,55 @@ function getCategory(){
             $('#menucat').html(b);
         }
     });
+}
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#selectAll').on('click',function(){
+        if(this.checked){
+            $('.selectItemId').each(function(){
+                this.checked = true;
+            });
+        }else{
+             $('.selectItemId').each(function(){
+                this.checked = false;
+            });
+        }
+    });
+    
+    $('.selectItemId').on('click',function(){
+        if($('.selectItemId:checked').length == $('.selectItemId').length){
+            $('#selectAll').prop('checked',true);
+        }else{
+            $('#selectAll').prop('checked',false);
+            
+        }
+    });
+});
+
+function updateData(para){
+    var itemId = [];
+    var irno = [];
+
+    $(".selectItemId").each(function(index, el) {
+        if ($(this).prop('checked')==true){ 
+            itemId.push($(this).val());
+            irno.push($(this).attr("irno"));    
+        }    
+    });
+
+    if(itemId.length > 0){
+        $.post('<?= base_url('restaurant/updateDataItem') ?>',{type:para, itemId:itemId,irno:irno},function(res){
+            if(res.status == 'success'){
+              alert(res.response);
+            }else{
+              alert(res.response);
+            }
+              location.reload();
+        });
+    }else{
+        alert('Please select atleat one item!')
+    }
 }
 </script>

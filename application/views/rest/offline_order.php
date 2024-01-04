@@ -30,7 +30,7 @@
                                                 <select class="form-control form-control-sm" id="table-id" onchange="get_table_order_items(this)">
                                                     <option value="0" capacity="0"><?= $this->lang->line('select'); ?></option>
                                                     <?php foreach ($tablesAlloted as $data) : ?>
-                                                        <option value="<?= $data['MergeNo'] ?>" capacity="<?= $data['Capacity'] ?>"><?= convertToUnicodeNumber($data['MergeNo']); ?></option>
+                                                        <option value="<?= $data['MergeNo'] ?>" capacity="<?= $data['Capacity'] ?>" ccd="<?= $data['CCd'] ?>"><?= convertToUnicodeNumber($data['MergeNo']); ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div>
@@ -65,6 +65,14 @@
                                                 <small class="text-danger msgPhone"></small>
                                                 <input type="hidden" name="seatNoOld" id="seatNoOld" value="1">
                                             </div>
+                                            
+                                            <div class="col-md-3 form-group col-6">
+                                                <?php if($OType == 105) { ?>
+                                                <label><?= $this->lang->line('counter'); ?>: <?= $cashier[0]['Name']; ?></label>
+                                                <?php } ?>
+                                                <input type="hidden" id="ccd" name="ccd" class="form-control" value="<?= $cashier[0]['CCd']; ?>" />
+                                            </div>
+                                        
                                         </div>
 
                                         <div class="row">
@@ -414,7 +422,7 @@
                 var thirdPartyRef = $("#3rd-party-refNo").val();
                 var customerAddress = $("#cust-address").val();
                 var customerPhone = $("#phone").val();
-                
+                var CCd = 0;
                 var totalValue = $("#total-value").val();
                 var itemCount = $("tr").length;
                 var formFill = true;
@@ -448,6 +456,7 @@
                     }
 
                 } else if (orderType == 105) {
+                    CCd = $("#ccd").val();
                     if (customerPhone == "") {
                         formFill = false;
                         alert("Enter Customer Phone Number");
@@ -550,7 +559,8 @@
                             seatNo:seatNo,
                             oldSeatNo:oldSeatNo,
                             DCd : dcd_value,
-                            customerAddress:customerAddress
+                            customerAddress:customerAddress,
+                            CCd:CCd
                         },
 
                         dataType: "json",
@@ -597,12 +607,14 @@
             $('#order-table-body').html('');
             var mergeNo = el.value;
             var capacity = $('option:selected', el).attr('capacity');
+            var ccd = $('option:selected', el).attr('ccd');
 
             var seatOption = '';
             for(i = 1;i<= capacity; i++){
                 seatOption+=`<option value="${i}">${i}</option>`;
             }
             $('#seatNo').html(seatOption);
+            $('#ccd').val(ccd);
             changeSeatNo();
         }
 
