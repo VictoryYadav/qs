@@ -46,10 +46,10 @@ class Rest extends CI_Model{
 			 	
 	}
 
-	public function getRestaurantList($ChainId){
+	public function getRestaurantList(){
 		return $this->db2->select('EID, Name')
 						->order_by('EID DESC')
-						->get_where('Eatary', array('ChainId' => $ChainId))
+						->get_where('Eatary', array('Stat' => 0))
 						->result_array();
 	}
 
@@ -436,15 +436,16 @@ class Rest extends CI_Model{
 	}
 
 	public function getStockList($postdata=null){
-		$trans_id = NULL;
-		$trans_type_id = NULL;
-		$from_date = NULL;
-		$to_date =NULL;
+		$trans_id = 0;
+		$trans_type_id = 0;
+		$from_date = 0;
+		$to_date = 0;
 
 		$langId = $this->session->userdata('site_lang');
         $KitName = "ek.KitName$langId as KitName";
+        $suppName = "rs.SuppName$langId as SuppName";
 
-		$stock = $this->db2->query("SELECT r.TransId, r.TransType,TransDt,  if(r.FrmEID>0, (Select e.Name from Eatary e where e.EID=r.FrmEID),NULL) as FromEID, if(r.FrmStoreId=1, 'MainStore',NULL) as FromMain, if(r.FrmSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.FrmSuppCd),NULL) as FromSupp, if(r.FrmKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.FrmKitCd),NULL) as FromKit, if(r.ToEID>0, (Select e.Name from Eatary e where e.EID=r.ToEID),NULL) as ToEID, if(r.ToSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.ToSuppCd),NULL) as ToSupp, if(r.ToKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.ToKitCd),NULL) as ToKit, if(r.ToStoreId=1, 'MainStore',NULL) as ToMain  FROM RMStock r where r.Stat=0 order by TransId desc limit 10")->result_array();
+		$stock = $this->db2->query("SELECT r.TransId, r.TransType,TransDt,  if(r.FrmEID>0, (Select e.Name from Eatary e where e.EID=r.FrmEID),NULL) as FromEID, if(r.FrmStoreId=1, 'MainStore',NULL) as FromMain, if(r.FrmSuppCd>0, (Select $suppName from RMSuppliers rs where rs.SuppCd=r.FrmSuppCd),NULL) as FromSupp, if(r.FrmKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.FrmKitCd),NULL) as FromKit, if(r.ToEID>0, (Select e.Name from Eatary e where e.EID=r.ToEID),NULL) as ToEID, if(r.ToSuppCd>0, (Select $suppName from RMSuppliers rs where rs.SuppCd=r.ToSuppCd),NULL) as ToSupp, if(r.ToKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.ToKitCd),NULL) as ToKit, if(r.ToStoreId=1, 'MainStore',NULL) as ToMain  FROM RMStock r where r.Stat=0 order by TransId desc limit 10")->result_array();
 		// echo "<pre>";
 		// print_r($stock);
 		// die;
@@ -457,9 +458,8 @@ class Rest extends CI_Model{
 			$langId = $this->session->userdata('site_lang');
         	$KitName = "ek.KitName$langId as KitName";
 
-			$q = "SELECT r.TransId, r.TransType,  if(r.FrmEID>0, (Select e.Name from Eatary e where e.EID=r.FrmEID),NULL) as FromEID, if(r.FrmStoreId=1, 'MainStore',NULL) as FromMain, if(r.FrmSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.FrmSuppCd),NULL) as FromSupp, if(r.FrmKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.FrmKitCd),NULL) as FromKit, if(r.ToEID>0, (Select e.Name from Eatary e where e.EID=r.ToEID),NULL) as ToEID, if(r.ToSuppCd>0, (Select rs.SuppName from RMSuppliers rs where rs.SuppCd=r.ToSuppCd),NULL) as ToSupp, if(r.ToKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.ToKitCd),NULL) as ToKit, if(r.ToStoreId=1, 'MainStore',NULL) as ToMain  FROM RMStock r where r.Stat=0";
+			$q = "SELECT r.TransId, r.TransType,  if(r.FrmEID>0, (Select e.Name from Eatary e where e.EID=r.FrmEID),NULL) as FromEID, if(r.FrmStoreId=1, 'MainStore',NULL) as FromMain, if(r.FrmSuppCd>0, (Select $suppName from RMSuppliers rs where rs.SuppCd=r.FrmSuppCd),NULL) as FromSupp, if(r.FrmKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.FrmKitCd),NULL) as FromKit, if(r.ToEID>0, (Select e.Name from Eatary e where e.EID=r.ToEID),NULL) as ToEID, if(r.ToSuppCd>0, (Select $suppName from RMSuppliers rs where rs.SuppCd=r.ToSuppCd),NULL) as ToSupp, if(r.ToKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.ToKitCd),NULL) as ToKit, if(r.ToStoreId=1, 'MainStore',NULL) as ToMain  FROM RMStock r where r.Stat=0";
 
-			// $q = "SELECT * from RMStock as rs join RMStockDet as rmd on rs.TransId = rmd.TransId join RMItems as rm on rmd.RMCd = rm.RMCd join RMCatg as rc on rm.RMCatg = rc.RMCatgCd join RMItemsUOM as riu on rm.RMCd = riu.RMCd join RMUOM as ru on ru.UOMCd = riu.UOMCd where Stat = 0";
 			if(!empty($trans_id)){
 				$q.=" and r.TransId = ".$trans_id;
 			}
@@ -482,14 +482,17 @@ class Rest extends CI_Model{
 	public function getStockReport(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "rmi.RMName$langId as RMName";
+        $rmname = "rmc.RMCatgName$langId as RMCatgName";
 
-		return $this->db2->query("SELECT rsd.RMCd, $lname, rmi.ItemId, rmc.RMCatgName, sum(case when rs.TransType < 10 Then rsd.Qty ELSE 0 end) as sell, sum(case when rs.TransType > 10 Then rsd.Qty else 0 end) as rcvd FROM `RMStockDet` as rsd, RMStock as rs, RMItems as rmi, RMCatg as rmc where rsd.TransId = rs.TransId and rmi.RMCd = rsd.RMCd and rmi.RMCatg = rmc.RMCatgCd and rsd.Stat = 0 and rs.Stat = 0 group by rsd.RMCd order by rmc.RMCatgName, rmi.RMName1")->result_array();
+		return $this->db2->query("SELECT rsd.RMCd, $lname, rmi.ItemId, $rmname, sum(case when rs.TransType < 10 Then rsd.Qty ELSE 0 end) as sell, sum(case when rs.TransType >= 10 Then rsd.Qty else 0 end) as rcvd FROM `RMStockDet` as rsd, RMStock as rs, RMItems as rmi, RMCatg as rmc where rsd.TransId = rs.TransId and rmi.RMCd = rsd.RMCd and rmi.RMCatg = rmc.RMCatgCd and rsd.Stat = 0 and rs.Stat = 0 and rmi.ItemId = 0 group by rsd.RMCd order by rmc.RMCatgName1, rmi.RMName1")->result_array();
 	}
 
 	public function getStockConsumption(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "rmi.RMName$langId as RMName";
-		return $report = $this->db2->query("SELECT rsd.RMCd, $lname, rmi.ItemId, rmi.IPCd, rmc.RMCatgName,(select sum(rsd1.Qty)  from RMStockDet rsd1 where rsd1.TransId=rs.TransId and rs.TransType>10 and rsd1.Stat = 0 group by  rsd1.RMCd) as rcvd,(select sum(rsd1.Qty)  from RMStockDet rsd1 where rsd1.TransId=rs.TransId and rs.TransType<10 and rsd1.Stat = 0 group by  rsd1.RMCd) as issued,  sum(k.Qty) as Qty FROM RMStockDet as rsd, RMStock as rs, RMItems as rmi, RMCatg as rmc, Kitchen as k where rsd.TransId = rs.TransId and rmi.RMCd = rsd.RMCd and rmi.RMCatg = rmc.RMCatgCd and rmi.ItemId = k.ItemId and rmi.ItemId > 0 and rsd.Stat = 0 and rs.Stat = 0 group by rs.TransId, rsd.RMCd, rmi.IPCd order by rmc.RMCatgName, rmi.RMName1")->result_array();
+        $rmname = "rmc.RMCatgName$langId as RMCatgName";
+
+		return $report = $this->db2->query("SELECT rsd.RMCd, $lname, rmi.ItemId, rmi.IPCd, $rmname, ip.AQty, rs.TransDt, k.LstModDt, (select sum(rsd1.Qty * ip.AQty)  from RMStockDet rsd1 where rsd1.TransId=rs.TransId and rs.TransType >= 10 and rsd1.Stat = 0 group by  rsd1.RMCd) as rcvd,(select sum(rsd1.Qty * ip.AQty)  from RMStockDet rsd1 where rsd1.TransId=rs.TransId and rs.TransType<10 and rsd1.Stat = 0 group by  rsd1.RMCd) as issued,  sum(k.Qty) as Qty FROM RMStockDet as rsd, RMStock as rs, RMItems as rmi, RMCatg as rmc, Kitchen as k, ItemPortions as ip where rsd.TransId = rs.TransId and rmi.RMCd = rsd.RMCd and rmi.RMCatg = rmc.RMCatgCd and rmi.ItemId = k.ItemId and ip.IPCd = k.Itm_Portion and rmi.ItemId > 0 and rsd.Stat = 0 and rs.Stat = 0 and k.Stat=3 group by rs.TransId, rsd.RMCd, rs.TransDt, k.LstModDt, rmi.IPCd order by rmc.RMCatgName1, rmi.RMName1")->result_array();
 	}
 
 	public function getItemStockReportList($postdata){
@@ -776,19 +779,26 @@ class Rest extends CI_Model{
 
 	public function getAllItemsList(){
 		$langId = $this->session->userdata('site_lang');
-        $lname = "ItemNm$langId as Name";
+        $lname = "m.ItemNm$langId as Name";
 
-		return $this->db2->select("ItemId, $lname")
-						->order_by('ItemNm1','ASC')
-						->group_by('ItemId')
-						->get_where('MenuItem', array('Stat' => 0, 'EID' => authuser()->EID))->result_array();		
+		return $this->db2->select("m.ItemId, $lname")
+						->order_by('m.ItemNm1','ASC')
+						->group_by('m.ItemId')
+						->join('MenuItemRates mir', 'mir.ItemId = m.ItemId', 'inner')
+						->get_where('MenuItem m', array('m.Stat' => 0, 'm.EID' => authuser()->EID, 'mir.OrigRate >' => 0))->result_array();		
 	}
 
 	public function get_kitchen(){
 		$langId = $this->session->userdata('site_lang');
         $KitName = "KitName$langId as KitName";
 
-		return $this->db2->select("KitCd ,$KitName")->get_where('Eat_Kit', array('Stat' => 0))->result_array();	
+		return $this->db2->select("KitCd ,$KitName")
+						->get_where('Eat_Kit', array(
+												'Stat' => 0, 
+												'EID' => authuser()->EID
+												)
+									)
+						->result_array();	
 	}
 
 	public function get_eat_section(){
@@ -1049,6 +1059,13 @@ class Rest extends CI_Model{
 					->result_array();	
 	}
 
+	public function getTransactionType(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "TDesc$langId as TDesc";
+		return $this->db2->select("TagId, $lname, TagTyp")
+					->get_where('stockTrans', array('TagTyp' => 1))
+					->result_array();	
+	}
 
 	public function getUOMlist(){
 		$langId = $this->session->userdata('site_lang');
@@ -1057,6 +1074,36 @@ class Rest extends CI_Model{
 		return $this->db2->select("UOMCd, $lname")
                               ->get_where('RMUOM', array('Stat' => 0))
                               ->result_array();
+	}
+
+	public function getSupplierList(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "SuppName$langId as SuppName";
+
+		return $this->db2->select("SuppCd, CreditDays, $lname, Remarks")
+                              ->get_where('RMSuppliers', array('Stat' => 0))
+                              ->result_array();	
+	}
+
+	public function getRMItemUOM(){
+		$langId = $this->session->userdata('site_lang');
+        $rmname = "rm.RMName$langId as RMName";
+
+		return $this->db2->select("rm.*, $rmname")
+					->group_by('RMCd')
+					->join('RMCatg rc','rm.RMCatg = rc.RMCatgCd','inner')
+					->join('RMItemsUOM riu', 'rm.RMCd = riu.RMCd', 'inner')
+					->join('RMUOM ru', 'ru.UOMCd = riu.UOMCd', 'inner')
+					->get_where('RMItems rm', array(
+												'rm.Stat' => 0,
+												'rm.EID' => authuser()->EID
+												)
+								)
+					->result_array();
+	}
+
+	public function getRMStockDetList($TransId){
+		return $this->db2->get_where('RMStockDet', array('TransId' => $TransId, 'Stat' => 0))->result_array();
 	}
 
 	

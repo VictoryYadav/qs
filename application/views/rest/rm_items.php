@@ -27,8 +27,16 @@
                                         <form method="post" id="catForm">
                                             <input type="hidden" id="RMCd" name="RMCd">
                                             <div class="row">
+                                                <div class="col-md-3 col-5">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('name'); ?></label>
+                                                        <input type="text" class="form-control form-control-sm" name="RMName" placeholder="<?= $this->lang->line('name'); ?>" required="" id="RMName" autocomplete="off">
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-md-3 col-4">
                                                     <div class="form-group">
+                                                        <label><?= $this->lang->line('category'); ?></label>
                                                         <select name="RMCatg" id="RMCatg" class="form-control form-control-sm" required="">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php
@@ -39,14 +47,28 @@
                                                         </select>
                                                     </div>
                                                 </div>
+
                                                 <div class="col-md-3 col-5">
                                                     <div class="form-group">
-                                                        <input type="text" class="form-control form-control-sm" name="RMName" placeholder="<?= $this->lang->line('category'); ?>" required="" id="RMName" autocomplete="off">
+                                                        <label><?= $this->lang->line('item'); ?></label>
+                                                        <select name="ItemId" id="ItemId" class="form-control form-control-sm select2 custom-select">
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                            <?php
+                                                            foreach ($itemList as $key) {
+                                                             ?>
+                                                            <option value="<?= $key['ItemId']; ?>"><?= $key['Name']; ?></option>
+                                                        <?php } ?>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 col-3">
+                                                    <div class="form-group">
+                                                        <label for="">&nbsp;</label>
+                                                        <br>
                                                     <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>">
+                                                    </div>
                                                 </div>
+
                                                 <div class="col-md-3">
                                                     <div class="text-success" id="msgText"></div>
                                                 </div>
@@ -77,7 +99,7 @@
                                                         <td><?= $row['RMName']; ?></td>
                                                         <td><?= $row['RMCatgName']; ?></td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['RMCd'] ?>,<?= $row['RMCatg'] ?>, '<?= $row['RMName'] ?>')">
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['RMCd'] ?>,<?= $row['RMCatg'] ?>, '<?= $row['RMName'] ?>', <?= $row['ItemId'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
@@ -119,6 +141,7 @@
 
     $(document).ready(function () {
         $('#rm_cat_list').DataTable();
+        $('#ItemId').select2();
     });
 
     $('#catForm').on('submit', function(e){
@@ -136,10 +159,11 @@
 
     });
 
-    function editData(itemid,catid, rmname){
+    function editData(itemid,catid, rmname, ItemId){
         console.log(itemid+' '+catid+' '+rmname);
         $('#RMCd').val(itemid);
         $('#RMCatg').val(catid);
-        $('#RMName').val(rmname);
+        $('#RMName').val(rmname);   
+        $("#ItemId").val(ItemId).trigger('change');
     }
 </script>

@@ -38,8 +38,10 @@ $RestName = authuser()->RestName;
                                                     <th><?= $this->lang->line('itemCd'); ?></th>
                                                     <th><?= $this->lang->line('item'); ?></th>
                                                     <th><?= $this->lang->line('category'); ?></th>
-                                                    <!-- <th>Selled</th>
-                                                    <th>Recieved</th> -->
+                                                    <th>Date</th>
+                                                    <th>Opening Stock</th>
+                                                    <th>Sales</th>
+                                                    <th>Recieved</th>
                                                     <th><?= $this->lang->line('DifferenceRCVD_ISSUED'); ?></th>
                                                 </thead>
             
@@ -56,10 +58,14 @@ $RestName = authuser()->RestName;
                                                         <td>
                                                             <?= $key['RMCatgName']?>
                                                         </td>
-                                                        <!-- <td>
-                                                            <?= $key['sell']?>
+                                                        <td><?= date('d-M-Y', strtotime($key['TransDt'])) ?></td>
+                                                        <td>
+                                                            <!-- <?= $key['issued']?> -->
                                                         </td>
-                                                        <td><?= $key['rcvd']?></td> -->
+                                                        <td>
+                                                            <?= $key['issued']?>
+                                                        </td>
+                                                        <td><?= $key['rcvd']?></td>
                                                         <?php $key['rcvd'] = !empty($key['rcvd'])?$key['rcvd']:0;$key['issued'] = !empty($key['issued'])?$key['issued']:0;?>
                                                         <td><span onclick="report_form(<?= $key['RMCd']?>)" style="color: blue;cursor: pointer;"><?= $key['rcvd'] - $key['issued']?></span></td>
                                                     </tr>

@@ -33,30 +33,33 @@ $RestName = authuser()->RestName;
                                         <form method="post" action="<?php echo base_url('restaurant/add_stock'); ?>">
                                             <input type="hidden" name="add_stock" value="1">
                                             <div class="row">
-                                                <div class="col-6">
+                                                <div class="col-md-6 col-6">
                                                     <label><?= $this->lang->line('transactionType'); ?></label>
-                                                    <select class="form-control" name="trans_type" onchange="trans_typee()" id="trans_type">
-                                                        <?php foreach($trans_type as $key => $value){?>
-                                                            <option value="<?= $key?>"><?= $value?></option>
+                                                    <select class="form-control form-control-sm" name="trans_type" onchange="trans_typee()" id="trans_type" required="">
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <?php foreach($trans_type as $key){?>
+                                                            <option value="<?= $key['TagId']; ?>"><?= $key['TDesc']; ?></option>
                                                         <?php }?>
                                                     </select>
                                                 </div>
-                                                <div class="col-6">
+                                                <div class="col-md-6 col-6">
                                                     <label><span id="tr_date_label"></span><?= $this->lang->line('transactionDate'); ?></label>
-                                                    <input type="date" name="TransDt" class="form-control" value="<?php echo date('Y-m-d'); ?>">
+                                                    <input type="date" name="TransDt" class="form-control form-control-sm" value="<?php echo date('Y-m-d'); ?>" required="">
                                                 </div>
+
                                                 <div class="transtype_details col-6" id="from_store_div" style="display: none;">
                                                     <label><?= $this->lang->line('from'); ?></label>
-                                                    <select class="form-control" id="from_store" name="from_store">
+                                                    <select class="form-control form-control-sm" id="from_store" name="from_store">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
-                                                        <option value="1"><?= $this->lang->line('mainStore'); ?></option>
+                                                        <?php foreach($kit as $key){?>
+                                                            <option value="<?= $key['KitCd']?>"><?= $key['KitName']?></option>
+                                                        <?php }?>
                                                     </select>
                                                 </div>
                                                 <div class="transtype_details col-6" id="from_adjust_store_div" style="display: none;">
                                                     <label><?= $this->lang->line('from'); ?></label>
-                                                    <select class="form-control" id="from_adjust_store" name="from_store">
+                                                    <select class="form-control form-control-sm" id="from_adjust_store" name="store_adjust">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
-                                                        <option value="1"><?= $this->lang->line('mainStore'); ?></option>
                                                         <?php foreach($kit as $key){?>
                                                             <option value="<?= $key['KitCd']?>"><?= $key['KitName']?></option>
                                                         <?php }?>
@@ -64,7 +67,7 @@ $RestName = authuser()->RestName;
                                                 </div>
                                                 <div class=" transtype_details col-6" id="eatary_div" style="display: none;">
                                                     <label><span id="eid_label"></span><!-- Outlet --></label>
-                                                    <select class="form-control" id="eatary" name="eatary">
+                                                    <select class="form-control form-control-sm" id="eatary" name="eatary">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php foreach($eatary as $key){?>
                                                             <option value="<?= $key['EID']?>"><?= $key['Name']?></option>
@@ -72,8 +75,8 @@ $RestName = authuser()->RestName;
                                                     </select>
                                                 </div>
                                                 <div class=" transtype_details col-6" id="kit_div" style="display: none;">
-                                                    <label><span id="kit_label"></span><!-- KIT --></label>
-                                                    <select class="form-control" id="kit" name="kit">
+                                                    <label><span id="kit_label"></span></label>
+                                                    <select class="form-control form-control-sm" id="kit" name="kit">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php foreach($kit as $key){?>
                                                             <option value="<?= $key['KitCd']?>"><?= $key['KitName']?></option>
@@ -82,7 +85,7 @@ $RestName = authuser()->RestName;
                                                 </div>
                                                 <div class=" transtype_details col-6" id="suppliers_div" style="display: none;">
                                                     <label><span id="supp_label"></span><!-- Supplier --></label>
-                                                    <select class="form-control" id="suppliers" name="supplier">
+                                                    <select class="form-control form-control-sm" id="suppliers" name="supplier">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php foreach($suppliers as $key){?>
                                                             <option value="<?= $key['SuppCd']?>"><?= $key['SuppName']?></option>
@@ -91,21 +94,18 @@ $RestName = authuser()->RestName;
                                                 </div>
                                                 <div class="transtype_details col-6" id="to_store_div" style="display: none;">
                                                     <label><?= $this->lang->line('to'); ?></label>
-                                                    <select class="form-control" id="to_store" name="to_store">
+                                                    <select class="form-control form-control-sm" id="to_store" name="to_store">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
-                                                        <option value="1"><?= $this->lang->line('mainStore'); ?></option>
+                                                        <?php foreach($kit as $key){?>
+                                                            <option value="<?= $key['KitCd']?>"><?= $key['KitName']?></option>
+                                                        <?php }?>
                                                     </select>
                                                 </div>
-                                                <!-- <div class="transtype_details col-6" id="to_adjust_store_div" style="display: none;">
-                                                    <label>From</label>
-                                                    <select class="form-control" id="to_adjust_store" name="from_store">
-                                                        <option value="">Select</option>
-                                                        <option value="1">Main Store</option>
-                                                        <option value="1">Kitchen</option>
-                                                    </select>
-                                                </div> -->
                                             </div>
-                                            <div class="container pt-3">
+
+
+                                            <div class="row mt-2">
+                                                <div class="col-md-12">
                                                 <div class="table-responsive">
                                                     <table class="table table-bordered">
                                                         <thead>
@@ -120,7 +120,7 @@ $RestName = authuser()->RestName;
                                                         <tbody class="stock_list" id="stock_list">
                                                                 <tr>
                                                                     <td>
-                                                                        <select name="ItemId[]" class="items form-control" id="items1" onchange="getUOM(this, 1)" >
+                                                                        <select name="ItemId[]" class="items form-control form-control-sm" id="items1" onchange="getUOM(this, 1)" >
                                                                             <option value="">SELECT ITEM</option>
                                                                             <?php foreach($items as $key){?>
                                                                                 <option value="<?= $key['RMCd']?>"><?= $key['RMName']?></option>
@@ -128,19 +128,20 @@ $RestName = authuser()->RestName;
                                                                         </select>
                                                                     </td>
                                                                     <td>
-                                                                        <select name="UOM[]" class="uom form-control" id="uom1" >
+                                                                        <select name="UOM[]" class="uom form-control form-control-sm" id="uom1" >
                                                                             <option value="">SELECT UOM</option>
                                                                             
                                                                         </select>
                                                                     </td>
-                                                                    <td><input type="number" name="Rate[]" class="rate form-control" ></td>
-                                                                    <td><input type="number" name="Qty[]" class="form-control"></td>
-                                                                    <td><input type="text" name="Remarks[]" class="form-control"></td>
+                                                                    <td><input type="number" name="Rate[]" class="rate form-control form-control-sm" ></td>
+                                                                    <td><input type="number" name="Qty[]" class="form-control form-control-sm"></td>
+                                                                    <td><input type="text" name="Remarks[]" class="form-control form-control-sm"></td>
                                                                 </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>
                                                 <button type="button" class="btn btn-sm btn-rounded btn-primary" onclick="add_row()">+</button>
+                                                </div>
                                             </div>
                                             <div class="text-center p-2"><button class="btn btn-primary btn-sm" type="submit"><?= $this->lang->line('submit'); ?></button></div>
                                         </form>
@@ -203,10 +204,34 @@ function getUOM(el, n){
 }
 function add_row(){
     cntr++;
-    var b = '<tr><td><select name="ItemId[]" class="items form-control" id="items1" onchange="getUOM(this, '+cntr+')"><option value="">SELECT ITEM</option><?php foreach($items as $key){?><option value="<?= $key['RMCd']?>"><?= $key['RMName']?></option><?php }?></select></td><td><select name="UOM[]" class="uom form-control" id="uom'+cntr+'"><option value="">SELECT UOM</option></select></td><td><input class="rate form-control" type="number" name="Rate[]" ></td><td><input type="number" name="Qty[]" class="form-control"></td><td><input type="text" name="Remarks[]" class="form-control"></td></tr>';
+    var b = '<tr>\
+                <td>\
+                    <select name="ItemId[]" class="items form-control form-control-sm" id="items1" onchange="getUOM(this, '+cntr+')">\
+                        <option value=""><?= $this->lang->line('select'); ?></option>\
+                        <?php foreach($items as $key){?>
+                            <option value="<?= $key['RMCd']?>"><?= $key['RMName']?></option>\
+                            <?php }?>
+                    </select>\
+                </td>\
+                <td>\
+                    <select name="UOM[]" class="uom form-control form-control-sm" id="uom'+cntr+'">\
+                        <option value=""><?= $this->lang->line('select'); ?></option>\
+                    </select>\
+                </td>\
+                <td>\
+                    <input class="rate form-control form-control-sm" type="number" name="Rate[]" >\
+                </td>\
+                <td>\
+                    <input type="number" name="Qty[]" class="form-control form-control-sm">\
+                </td>\
+                <td>\
+                    <input type="text" name="Remarks[]" class="form-control form-control-sm">\
+                </td>\
+            </tr>';
+
     $('#stock_list').append(b);
     var v = $('#trans_type').val();
-    if(v == 27){
+    if(v == 20){
         // alert("sss");
         $('.rate').attr('readonly', "")
     }
@@ -217,35 +242,48 @@ function trans_typee(){
     var v = $('#trans_type').val();
     // alert(v);
     $('.transtype_details').hide();
-    if(v == 1){
+    if(v == 3){
+        // Transfer To EID
         $('#eatary_div').show();
         $('#eid_label').html('To');
         $('#from_store_div').show();
-    }else if(v == 6){
+        $('.rate').attr('readonly', "")
+    }else if(v == 1){
+        // Purchase Return
         $('#suppliers_div').show();
         $('#supp_label').html('To');
         $('#from_store_div').show();
-    }else if(v == 9){
+        $('.rate').attr('readonly', "")
+    }else if(v == 2){
+        // Issue to Kit
         $('#kit_div').show();
         $('#kit_label').html('To');
         $('#from_store_div').show();
+        $('.rate').attr('readonly', "")
     }else if(v == 11){
+        // Return From EID
         $('#eatary_div').show();
         $('#eid_label').html('From');
         $('#to_store_div').show();
-    }else if(v == 16){
+        $('.rate').attr('readonly', "")
+    }else if(v == 10){
+        // Purchase
         $('#suppliers_div').show();
         $('#supp_label').html('From');
         $('#to_store_div').show();
-    }else if(v == 19){
+        $('.rate').attr('readonly', false);
+    }else if(v == 12){
+        // Return from Kit
         $('#kit_div').show();
         $('#kit_label').html('From');
         $('#to_store_div').show();
-    }else if(v == 25){
+        $('.rate').attr('readonly', "")
+    }else if(v == 13){
+        // Inward Adjust
         // $('#eatary_div').show();
-    }else if(v == 26){
-        
-    }else if(v == 27){
+        $('.rate').attr('readonly', "")
+    }else if(v == 20){
+        // Stock Adjust
         // alert("sss");
         $('.rate').attr('readonly', "")
         $('#from_adjust_store_div').show();

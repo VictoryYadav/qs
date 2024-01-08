@@ -29,11 +29,15 @@
                                             <div class="row">
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
+                                                        <label><?= $this->lang->line('category'); ?></label>
                                                         <input type="text" class="form-control form-control-sm" name="RMCatgName" placeholder="<?= $this->lang->line('category'); ?>" required="" id="RMCatgName">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label>&nbsp;</label><br>
                                                     <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>">
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="text-success" id="msgText"></div>

@@ -69,7 +69,7 @@ class Restaurant extends CI_Controller {
 
 		$data['title'] = $this->lang->line('addUser');
         $data['EID'] = authuser()->EID;
-        $data['restaurant'] = $this->rest->getrestaurantList(authuser()->ChainId);
+        $data['restaurant'] = $this->rest->getrestaurantList();
         $data['users'] = $this->rest->getUserList();
 		$this->load->view('rest/add_user',$data);
     }
@@ -609,14 +609,6 @@ class Restaurant extends CI_Controller {
         $EID = authuser()->EID;
         $ChainId = authuser()->ChainId;
 
-        if (isset($_POST['getItem'])) {
-            extract($_POST);
-            // $MenuItem = $this->db2->query("SELECT ItemId , ItemNm,`Value` FROM `MenuItem` WHERE ItemNm LIKE '$item%' and EID=$EID")->result_array();
-            
-            // print_r(json_encode($MenuItem));
-            // exit;
-        }
-
         if (isset($_POST['updateOffer'])) {
             
             $SchCd = $_POST['SchCd'];
@@ -703,14 +695,7 @@ class Restaurant extends CI_Controller {
         }
 
         if(isset($_POST['getAllItemsList']) && $_POST['getAllItemsList']){
-
-            $langId = $this->session->userdata('site_lang');
-            $lname = "m.ItemNm$langId as ItemNm";
-
-            $items = $this->db2->select("m.ItemId, $lname")
-                        ->join('MenuItemRates mir', 'mir.ItemId = m.ItemId', 'inner')
-                        ->get_where('MenuItem m', array('m.Stat' => 0, 'm.EID' => authuser()->EID,
-                            'mir.OrigRate >' => 0))->result_array();
+            $items = $this->rest->getAllItemsList();
             echo json_encode($items);
         }
 
@@ -1287,18 +1272,17 @@ class Restaurant extends CI_Controller {
     }
 
     public function stock_list(){
-        $data['trans_id'] = NULL;
-        $data['trans_type_id'] = NULL;
+        $data['trans_id'] = 0;
+        $data['trans_type_id'] = 0;
         $data['from_date'] = date('Y-m-d');
         $data['to_date'] = date('Y-m-d');
         $data['stock'] = $this->rest->getStockList();
         if($this->input->method(true)=='POST'){
             $data['stock'] = $this->rest->getStockList($_POST);
         }
-
-        $data['trans_type'] = array(1=>'Transfer To EID', 6=>'Purchase Return', 9=>'Issue to Kit', 11=>'Return From EID', 16 =>'Purchase', 19=>'Return from Kit', 25=>'Inward Adjust', 26=>'Outward Adjust', 27 => 'Stock Adjust');
         
         $data['title'] = $this->lang->line('stockList');
+        $data['trans_type'] = $this->rest->getTransactionType();
         $this->load->view('rest/stocks_list',$data);     
     }
 
@@ -1309,6 +1293,7 @@ class Restaurant extends CI_Controller {
                 if($_POST){
                     // echo "<pre>";print_r($_POST);exit();
                     $RMStock['TransType'] = $_POST['trans_type'];
+
                     $RMStock['FrmSuppCd'] = !empty($_POST['to_store']) && !empty($_POST['supplier'])?$_POST['supplier']:0;
                     $RMStock['FrmEID'] = !empty($_POST['to_store']) && !empty($_POST['eatary'])?$_POST['eatary']:0;
                     $RMStock['FrmKitCd'] = !empty($_POST['to_store']) && $_POST['kit']?$_POST['kit']:0;
@@ -1320,8 +1305,13 @@ class Restaurant extends CI_Controller {
                     $RMStock['FrmStoreId'] = !empty($_POST['from_store'])?$_POST['from_store']:0;
                     
                     $RMStock['ToStoreId'] = !empty($_POST['to_store'])?$_POST['to_store']:0;
+
+                    if($_POST['trans_type'] == 21){
+                        $RMStock['FrmKitCd'] = !empty($_POST['store_adjust'])?$_POST['store_adjust']:0;
+                    }
+
                     $RMStock['Stat'] = 0;
-                    $RMStock['LoginId'] = 0;
+                    $RMStock['LoginId'] = authuser()->RUserId;
                     $RMStock['TransDt'] = !empty($_POST['TransDt'])?$_POST['TransDt']:date('Y-m-d');
                     $TransId = insertRecord('RMStock', $RMStock);
                     if($TransId){
@@ -1346,61 +1336,63 @@ class Restaurant extends CI_Controller {
                 }
 
             }
-            if(isset($_POST['edit_stock']) && $_POST['edit_stock'] == 1){
-                if($_POST){
-
-                    $TransId = $_POST['trans_id'];
-                    $num = sizeof($_POST['ItemId']);
-                    for($i = 0;$i<$num;$i++){
-                        $RMStockDet['TransId'] = $TransId;
-                        $detid = !empty($_POST['RMDetId'][$i])?$_POST['RMDetId'][$i]:NULL;
-                        $RMStockDet['RMCd'] = !empty($_POST['ItemId'][$i])?$_POST['ItemId'][$i]:0;
-                        $RMStockDet['UOMCd'] = !empty($_POST['UOM'][$i])?$_POST['UOM'][$i]:0;
-                        $RMStockDet['Qty'] = !empty($_POST['Qty'][$i])?$_POST['Qty'][$i]:0;
-                        $RMStockDet['Rate'] = !empty($_POST['Rate'][$i])?$_POST['Rate'][$i]:0;
-                        
-                        updateRecord('RMStockDet',array('Stat' => 1),array('TransId' =>$TransId));
-
-                        if(!empty($RMStockDet['RMCd']) && !empty($RMStockDet['Qty']) && !empty($RMStockDet['Rate']) && !empty($RMStockDet['UOMCd'])){
-                            
-                            insertRecord('RMStockDet',$RMStockDet);
-                        }else{
-                         $this->session->set_flashdata('error','All Fields Are Required!');
-                         redirect(base_url('restaurant/edit_stock?TransId='.$TransId));   
-                        }
-                    }
-                    redirect(base_url('restaurant/stock_list'));
-                }
-
-            }
+            
             if(isset($_POST['delete_details'])){
                 updateRecord('RMStockDet', array('Stat' => 9), array('RMDetId' => $_POST['RMDetId']) );
                 echo 1;
             }
             if(isset($_POST['delete_trans'])){
-                // print_r($_POST);exit();
                 updateRecord('RMStock', array('Stat' => 9), array('TransId' => $_POST['TransId']) );
-
                 echo 1;
             }
 
         }
         $data['title'] = $this->lang->line('addStock');
 
-        $langId = $this->session->userdata('site_lang');
-
-        $data['trans_type'] = array(1=>'Transfer To EID', 6=>'Purchase Return', 9=>'Issue to Kit', 11=>'Return From EID', 16 =>'Purchase', 19=>'Return from Kit', 25=>'Inward Adjust', 26=>'Outward Adjust', 27 => 'Stock Adjust');
-
-        $rmname = "rm.RMName$langId as RMName";
-        $data['items'] = $this->db2->query("SELECT rm.*, $rmname from RMItems as rm join RMCatg as rc on rm.RMCatg = rc.RMCatgCd join RMItemsUOM as riu on rm.RMCd = riu.RMCd join RMUOM as ru on ru.UOMCd = riu.UOMCd")->result_array();
-
-        $data['eatary'] = $this->db2->query("SELECT EID, Name from Eatary")->result_array();
-
-        $kitname = "KitName$langId as KitName";
-        $data['kit'] = $this->db2->query("SELECT KitCd, $kitname from Eat_Kit")->result_array();
-        $data['suppliers'] = $this->db2->query("SELECT SuppCd, SuppName from RMSuppliers")->result_array();
+        $data['items'] = $this->rest->getRMItemUOM();
+        $data['trans_type'] = $this->rest->getTransactionType();
+        $data['eatary'] = $this->rest->getRestaurantList();
+        $data['kit'] = $this->rest->get_kitchen();
+        $data['suppliers'] = $this->rest->getSupplierList();
 
         $this->load->view('rest/stock_add',$data);
+    }
+
+    public function edit_stock($TransId){
+
+        if($this->input->method(true)=='POST'){
+
+            $TransId = $_POST['trans_id'];
+            $num = sizeof($_POST['ItemId']);
+            for($i = 0;$i<$num;$i++){
+                $RMStockDet['TransId'] = $TransId;
+                $detid = !empty($_POST['RMDetId'][$i])?$_POST['RMDetId'][$i]:0;
+                $RMStockDet['RMCd'] = !empty($_POST['ItemId'][$i])?$_POST['ItemId'][$i]:0;
+                $RMStockDet['UOMCd'] = !empty($_POST['UOM'][$i])?$_POST['UOM'][$i]:0;
+                $RMStockDet['Qty'] = !empty($_POST['Qty'][$i])?$_POST['Qty'][$i]:0;
+                $RMStockDet['Rate'] = !empty($_POST['Rate'][$i])?$_POST['Rate'][$i]:0;
+                $RMStockDet['Rmks'] = !empty($_POST['Rate'][$i])?$_POST['Remarks'][$i]:'';
+                
+                updateRecord('RMStockDet', $RMStockDet, array('TransId' =>$TransId, 'RMDetId ' => $detid ));
+            }
+            redirect(base_url('restaurant/stock_list'));
+        }
+       
+        $data['TransId'] = $TransId;
+        $data['stock'] = getRecords('RMStock', array('TransId' => $TransId));
+        if(!empty($data['stock'])){
+            $data['items'] = $this->rest->getRMItemUOM();
+            $data['stock_details'] = $this->rest->getRMStockDetList($TransId);
+            $data['eatary'] = $this->rest->getRestaurantList();
+            $data['kit'] = $this->rest->get_kitchen();
+            $data['suppliers'] = $this->rest->getSupplierList();
+        }else{
+            $this->session->set_flashdata('error','No records found!');
+            redirect(base_url('restaurant/stock_list'));   
+        }
+
+        $data['title'] = $this->lang->line('editStock');
+        $this->load->view('rest/stock_edit',$data);    
     }
 
     public function stock_report(){
@@ -1430,27 +1422,6 @@ class Restaurant extends CI_Controller {
         }
         $data['title'] = 'Item Stock Report';
         $this->load->view('rest/itemstockreports',$data); 
-    }
-
-    public function edit_stock(){
-        if(isset($_GET['TransId'])){
-            $TransId = $_GET['TransId'];
-            $data['TransId'] = $TransId;
-            $q = "SELECT rm.* from RMItems as rm join RMCatg as rc on rm.RMCatg = rc.RMCatgCd join RMItemsUOM as riu on rm.RMCd = riu.RMCd join RMUOM as ru on ru.UOMCd = riu.UOMCd";
-            $data['items'] = $this->db2->query($q)->result_array();
-
-            $q = "SELECT * from RMStock where TransId=".$TransId;
-            $data['stock'] = $this->db2->query($q)->result_array();
-            $data['stock_details'] = $this->db2->get_where('RMStockDet', array('TransId' => $TransId, 'Stat' => 0))->result_array();
-
-            $data['eatary'] = $this->db2->query("SELECT EID, Name from Eatary")->result_array();
-            $data['kit'] = $this->db2->query("SELECT KitCd, KitName from Eat_Kit")->result_array();
-            $data['suppliers'] = $this->db2->query("SELECT SuppCd, SuppName from RMSuppliers")->result_array();
-        }
-        $data['title'] = 'Edit Stock';
-        // echo "<pre>";
-        // print_r($data);exit();
-        $this->load->view('rest/stock_edit',$data);    
     }
 
     public function rm_ajax(){
@@ -2795,7 +2766,7 @@ class Restaurant extends CI_Controller {
                 $order_by = " i.IMcCd";
             }
 
-            $items = $this->db2->query("SELECT i.ItemId, $itemName1, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId order by $order_by")->result_array();
+            $items = $this->db2->query("SELECT i.ItemId, $itemName1, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId and mr.OrigRate > 0 order by $order_by")->result_array();
             
             if (!empty($items)) {
                 $response = [
@@ -2815,10 +2786,13 @@ class Restaurant extends CI_Controller {
         if (isset($_POST['searchItemCust']) && $_POST['searchItemCust']) {
             $itemName = $_POST['itemName'];
 
+            $lname = "i.ItemNm$langId ItemNm";
+            $ItmDesc = "i.ItmDesc$langId ItmDesc";
+
             if ($ChainId == 0) {
-                $items = $this->db2->query("SELECT ItemId, ItemNm, Itm_Portion, i.Value, AvgRtng, ItmDesc, ItemNm as imgSrc, ItemTyp, KitCd, MCatgId, i.FID, i.CID, i.PrepTime, i.NV FROM MenuItem i where ItemNm like '$itemName%' AND Stat = 0 AND i.EID = $EID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.eid=$EID and md.Chainid=i.ChainId) order by Rank")->result_array();
+                $items = $this->db2->query("SELECT ItemId, $lname, Itm_Portion, i.Value, AvgRtng, $ItmDesc, ItemNm1 as imgSrc, ItemTyp, KitCd, MCatgId, i.FID, i.CID, i.PrepTime, i.NV FROM MenuItem i where ItemNm1 like '$itemName%' AND Stat = 0 AND i.EID = $EID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.eid=$EID and md.Chainid=i.ChainId) order by Rank")->result_array();
             } else {
-                $items = $this->db2->query("SELECT ItemId, ItemNm, Itm_Portion, Value, AvgRtng, ItmDesc, ItemNm as imgSrc, ItemTyp, KitCd, MCatgId, i.FID, i.CID, i.NV FROM MenuItem i where ItemNm like '$itemName%' AND Stat = 0 AND i.ChainId = $ChainId AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.eid=$EID and md.ChainId=i.ChainId) order by Rank")->result_array();
+                $items = $this->db2->query("SELECT ItemId, $lname, Itm_Portion, Value, AvgRtng, $ItmDesc, ItemNm1 as imgSrc, ItemTyp, KitCd, MCatgId, i.FID, i.CID, i.NV FROM MenuItem i where ItemNm like '$itemName%' AND Stat = 0 AND i.ChainId = $ChainId AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.eid=$EID and md.ChainId=i.ChainId) order by Rank")->result_array();
             }
 // echo "<pre>";print_r($items);die;
             if (!empty($items)) {
@@ -3279,6 +3253,7 @@ class Restaurant extends CI_Controller {
                 }else{
                     $cat["$RMName"] = $_POST['RMName'];
                     $cat['RMCatg'] = $_POST['RMCatg'];
+                    $cat['ItemId'] = $_POST['ItemId'];
                     $cat['Stat'] = 0;
                     insertRecord('RMItems', $cat);
                     $status = 'success';
@@ -3297,8 +3272,8 @@ class Restaurant extends CI_Controller {
         $RMCatgName = "RMCatgName$langId as RMCatgName";
 
         $data['catList'] = $this->db2->select("*, $RMCatgName")->get('RMCatg')->result_array();
-        getRecords('RMCatg', NULL);
         $data['rm_items'] = $this->rest->getItemLists();
+        $data['itemList'] = $this->rest->getAllItemsList();
         $data['title'] ='RMItems List';
         // echo "<pre>";
         // print_r($data);

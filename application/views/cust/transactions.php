@@ -41,7 +41,7 @@
                         </div>
                     </form>
                     <div class="table-responsive">
-                      <table class="table table-striped">
+                      <table class="table table-striped" id="tblData">
                         <thead style="font-size: 12px;">
                             <tr>
                                 <th>Date</th>
@@ -53,13 +53,15 @@
                         <tbody>
                             <?php
                             if(!empty($custPymt)){
-                            for ($i = 0; $i < count($custPymt); $i++) {
+                                foreach ($custPymt as $key ) {
                                 ?>
-                                <tr onclick="RedirectPage(<?php echo $custPymt[$i]['BillId'] ?> , <?php echo $custPymt[$i]['EID'] ?>,'<?php echo $custPymt[$i]['DBName'] ?>','<?php echo $custPymt[$i]['DBPasswd'] ?>')">
-                                    <td><?php echo date('M-y',strtotime($custPymt[$i]['billdt'])); ?></td>
-                                    <td><?php echo $custPymt[$i]['Name'] ?></td>
-                                    <td><?php echo $custPymt[$i]['PaidAmt'] ?></td>
-                                    <td>-</td>
+                                <tr onclick="RedirectPage(<?php echo $key['BillId'] ?> , <?php echo $key['EID'] ?>,'<?php echo $key['DBName'] ?>','<?php echo $key['DBPasswd'] ?>')">
+                                    <td><?php echo date('d-M-y',strtotime($key['billdt'])); ?></td>
+                                    <td><?php echo $key['Name'] ?></td>
+                                    <td><?php echo $key['PaidAmt'] ?></td>
+                                    <td><?php 
+                                    echo ($key['avgBillRtng'] > 0)? $key['avgBillRtng']: '-';
+                                     ?></td>
                                 </tr>
                             <?php
                             }
@@ -89,7 +91,13 @@
 
 </body>
 
+<link rel="stylesheet" href="//cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script>
+
+    $(document).ready(function () {
+        $('#tblData').DataTable();
+    });
     function RedirectPage(id, eid, dbname, dbpass) {
         window.location.href = "<?= base_url('customer/bill/')?>" + id + "?EID=" + eid + "&dbn=" + dbname + "&dbp=" + dbpass+"&ShowRatings=0";
 

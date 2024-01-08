@@ -102,7 +102,7 @@ $RestName = authuser()->RestName;
                 <div class="modal-content">
                     <!-- Modal Header -->
                     <div class="modal-header">
-                        <h4 class="modal-title" id="decline-title">Select Date</h4>
+                        <h4 class="modal-title" id="decline-title"><?= $this->lang->line('stockReport'); ?></h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <!-- Modal body -->
@@ -110,14 +110,14 @@ $RestName = authuser()->RestName;
                         <form method="post" action="<?php echo base_url('restaurant/itemstockreport'); ?>">
                             <input type="hidden" name="RMCd" id="RMCdReport">
                             <div class="form-group">
-                                <label>From Date</label>
+                                <label><?= $this->lang->line('fromDate'); ?></label>
                                 <input class="form-control" type="date" name="from_date" id="from_date" value="<?php echo date('Y-m-d'); ?>">
                             </div>
                             <div class="form-group">
-                                <label>To Date</label>
+                                <label><?= $this->lang->line('toDate'); ?></label>
                                 <input class="form-control" type="date" name="to_date" id="to_date" value="<?php echo date('Y-m-d'); ?>">
                             </div>
-                            <div class="text-center"><button class="btn btn-primary btn-sm" type="submit">Submit</button></div>
+                            <div class="text-center"><button class="btn btn-primary btn-sm" type="submit"><?= $this->lang->line('update'); ?></button></div>
                         </form>
                     </div>
                 </div>

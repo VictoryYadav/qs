@@ -851,7 +851,8 @@
             var itemName = $(this).val();
             if (itemName != '') {
                 $.ajax({
-                    url: '<?= base_url('restaurant/order_ajax_3p') ?>',
+                    url: '<?= base_url('customer/searchItemList') ?>',
+                    // url: '<?= base_url('restaurant/order_ajax_3p') ?>',
                     type: "post",
                     data: {
                         searchItemCust: 1,
@@ -865,13 +866,11 @@
                             response.items.forEach((item) => {
                                 var targetModal = "#itemModal";
                                 if (item.ItemTyp > 0) {
-                                    // targetModal = "#customizeModal";
                                     targetModal = "#itemModal";
                                 }
 
-                                // add cid and mcatgid to me
                                 template += `
-                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemName}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.ItmRate}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.itemDescr}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" item-NV="${item.NV}" style="cursor: pointer;" item-prepTime="${item.PrepTime}">${item.ItemNm}</li>
+                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.OrigRate}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" item-NV="${item.NV}" style="cursor: pointer;" item-prepTime="${item.PrepTime}">${item.ItemNm}</li>
                             `;
                             });
                             template += `</ul>`;

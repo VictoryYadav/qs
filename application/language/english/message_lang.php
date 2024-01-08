@@ -120,6 +120,7 @@ $lang['ordersByHour'] 						= 'Orders by Hour';
 $lang['billsAndRatings'] 					= 'Bills and Ratings';
 
 $lang['firstName'] 			= 'First Name';
+$lang['name']	 			= 'Name';
 $lang['lastName'] 			= 'Last Name';
 $lang['email'] 				= 'Email';
 $lang['dob'] 				= 'DOB';
@@ -252,6 +253,7 @@ $lang['transactionDate']	= 'Transction Date';
 $lang['consumption']		= 'Consumption';
 $lang['report']				= 'Report';
 $lang['addStock']			= 'Add Stock';
+$lang['editStock']			= 'Edit Stock';
 $lang['from']				= 'From';
 $lang['to']					= 'To';
 $lang['stockConsumption']	= 'Stock Consumption';

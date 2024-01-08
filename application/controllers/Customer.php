@@ -137,9 +137,7 @@ class Customer extends CI_Controller {
     }
 
     public function index(){
-        // $this->session->set_userdata('site_lang', 1);
-        // $this->session->set_userdata('site_langName', 'english');
-
+       
         $data['cuisinList'] = $this->cust->getCuisineList();
         // echo "<pre>";
         // print_r($data);
@@ -284,6 +282,47 @@ class Customer extends CI_Controller {
             // echo json_encode($res);
             // die;
         }   
+    }
+
+    public function searchItemList(){
+        $langId = $this->session->userdata('site_lang');
+        $EID  = authuser()->EID;
+
+        if (isset($_POST['searchItemCust']) && $_POST['searchItemCust']) {
+            $itemName = $_POST['itemName'];
+
+            $lname = "i.ItemNm$langId ItemNm";
+            $ItmDesc = "i.ItmDesc$langId ItmDesc";
+           
+            $items = $this->db2->query("SELECT i.ItemId, $lname, i.Itm_Portion, mir.OrigRate, AvgRtng, $ItmDesc, i.ItemNm1 as imgSrc, ItemTyp, KitCd, MCatgId, i.FID, i.CID, i.PrepTime, i.NV FROM MenuItem i, MenuItemRates mir where i.ItemNm1 like '$itemName%' AND i.Stat = 0 AND i.EID = $EID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId = mir.ItemId and mir.OrigRate > 0 and mir.EID = $EID group by i.ItemId order by Rank")->result_array();
+            
+// echo "<pre>";print_r($items);die;
+            if (!empty($items)) {
+
+                foreach ($items as $key => $data) {
+                    $imgSrc = "uploads/e$EID/" . trim($data['imgSrc']) . ".jpg";
+
+                    if (!file_exists($imgSrc)) {
+                        $imgSrc = "uploads/general/" . trim($data['imgSrc']) . ".jpg";
+                    }
+
+                    $items[$key]['imgSrc'] =  base_url().$imgSrc;
+                }
+
+                $response = [
+                    "status" => 1,
+                    "items" => $items
+                ];
+            } else {
+                $response = [
+                    "status" => 0,
+                    "msg" => "NO Item Found"
+                ];
+            }
+
+            echo json_encode($response);
+            die();
+        }
     }
 
     // cart details
@@ -1557,6 +1596,7 @@ class Customer extends CI_Controller {
             $data['billData'] = $res['billData'];
             $this->load->view('cust/billing', $data);
         }else{
+            $data['title'] = 'Bills';
             $this->load->view('cust/billing_not', $data);
         }
 
@@ -2067,34 +2107,31 @@ class Customer extends CI_Controller {
     public function transactions(){
 
         $data['title'] = $this->lang->line('transactions');
-        $data['country'] = 0;
+        $data['country'] = 91;
         $data['city'] = 0;
-        if($this->input->method(true)=='POST'){
-            // echo "<pre>";
-            // print_r($_POST);
-            // die;
+        if($this->input->method(true)=='POST'){            
             $data['country'] = $_POST['country'];
             $data['city'] = $_POST['city'];
         }
 
         $CustId = $this->session->userdata('CustId');
         $genTblDb = $this->load->database('GenTableData', TRUE);
-        // $data['custPymt'] = $genTblDb->query("SELECT date(cp.BillDt) as billdt , cp.BillId, cp.BillNo, cp.EID , cp.PaidAmt , cp.CustId , ed.Name , ed.DBName, ed.DBPasswd FROM `CustPymts` cp , `EIDDet` ed where cp.CustId = $CustId and ed.EID = cp.EID ORDER BY `BNo`  DESC")->result_array();
+        
         if(!empty($data['country'])){
          $genTblDb->where('ed.CountryCd',$data['country']);
         }
         if(!empty($data['city'])){
          $genTblDb->where('ed.city_id',$data['city']);
         }
-        $data['custPymt'] = $genTblDb->select('date(cp.BillDt) as billdt , cp.BillId, cp.BillNo, cp.EID , cp.PaidAmt , cp.CustId , ed.Name , ed.DBName, ed.DBPasswd')
-                            ->order_by('BNo', 'DESC')
+        $whr = "cp.BillId = rt.BillId";
+        $data['custPymt'] = $genTblDb->select('date(cp.BillDt) as billdt , cp.BillId, cp.BillNo, cp.EID , cp.PaidAmt , cp.CustId , ed.Name , ed.DBName, ed.DBPasswd, rt.avgBillRtng')
+                            ->order_by('cp.BillDt', 'DESC')
                             ->join('EIDDet ed', 'ed.EID = cp.EID', 'inner')
+                            ->join('Ratings rt', 'rt.EID = cp.EID', 'left')
+                            ->where($whr)
                             ->get_where('CustPymts cp', array('cp.CustId' => $CustId))
                             ->result_array();
         $data['countryList'] = $this->cust->getCountryList();
-        // echo "<pre>";
-        // print_r($data);
-        // die;
         $this->load->view('cust/transactions', $data);
     }
 
@@ -2286,9 +2323,6 @@ class Customer extends CI_Controller {
             $pay['Stat'] = 0;
             $pay['EID'] = authuser()->EID;
 
-            // echo "<pre>";
-            // print_r($pay);
-            // die;
             $payNo = insertRecord('BillPayments', $pay);
             updateRecord('KitchenMain', array('custPymt' => 1), array('MCNo' => $_POST['MCNo'],'EID' => authuser()->EID));
 
@@ -2310,9 +2344,7 @@ class Customer extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
-            // echo "<pre>";
-            // print_r($_POST);
-            // die;
+            
             $response = 'Pending';
             $res = $this->db2->get_where('BillPayments', array('BillId' => $_POST['billId'] ,'PymtNo' => $_POST['payNo'], 'Stat' => 1))->row_array();
             if(!empty($res)){
@@ -2593,46 +2625,5 @@ class Customer extends CI_Controller {
              die;
         }
     }
-
-    public function test(){
-
-        $pay['BillId'] = 1;
-            $pay['MCNo'] = 2;
-            $pay['MergeNo'] = 22;
-            $pay['TotBillAmt'] = 2;
-            $pay['CellNo'] = '9988766554';
-            $pay['SplitTyp'] = 0;
-            $pay['SplitAmt'] = 0;
-            $pay['PymtId'] = 0;
-            $pay['PaidAmt'] = 2;
-            $pay['OrderRef'] = '46-51-22-13-8-13-2';
-            $pay['PaymtMode'] = 1;
-            $pay['PymtType'] = 0;
-            $pay['PymtRef'] = 'T2311091329142129036638';
-            $pay['Stat'] = 1;
-            $pay['EID'] = 51;
-            echo "<pre>";
-            print_r($pay);
-            $this->db2->insert('BillPayments', $pay);
-            die;
-
-        $mi = $this->db2->select('ItemId,IMcCd')->order_by('ItemId','ASC')->get('MenuItem')->result_array();
-        echo "<pre>";
-        print_r($mi);
-        die;
-        
-        $count = 1;
-        // foreach ($mi as &$key) {
-        //     $key['index'] = $count++;
-        //     updateRecord('MenuItem', array('IMcCd' => $key['index']), array('ItemId' => $key['ItemId'], 'EID' => authuser()->EID));
-        // }
-        print_r($mi);
-            die;
-        $data['title'] = 'Item Details';
-        $data['Itm_Portion'] = 1;
-
-        $this->load->view('cust/testing', $data);
-    }
-
 
 }

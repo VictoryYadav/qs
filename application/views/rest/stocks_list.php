@@ -40,8 +40,8 @@ $RestName = authuser()->RestName;
                                                     <label><?= $this->lang->line('transactionType'); ?></label>
                                                     <select class="form-control form-control-sm" name="trans_type">
                                                         <option value="">Transaction Type</option>
-                                                        <?php foreach($trans_type as $key => $value){?>
-                                                            <option value="<?= $key?>" <?php if($key == $trans_type_id){echo 'checked';}?>><?= $value?></option>
+                                                        <?php foreach($trans_type as $key){?>
+                                                            <option value="<?= $key['TagId']; ?>" <?php if($key['TagId'] == $trans_type_id){echo 'checked';}?>><?= $key['TDesc']; ?></option>
                                                         <?php }?>
                                                     </select>
                                                 </div>
@@ -84,7 +84,6 @@ $RestName = authuser()->RestName;
                                             <table id="stock_list_table" class="table table-bordered table-hover">
                                                 <thead>
                                                 <tr>
-                                                    <th>#</th>
                                                     <th><?= $this->lang->line('transactionNo'); ?></th>
                                                     <th><?= $this->lang->line('transactionDate'); ?></th>
                                                     <th><?= $this->lang->line('transactionType'); ?></th>
@@ -96,11 +95,9 @@ $RestName = authuser()->RestName;
                                                 <tbody>
                                                   <?php 
                                                   if(!empty($stock)){
-                                                    $i=1;
                                                     foreach($stock as $key){
                                                   ?>
                                                   <tr onclick="edit(<?= $key['TransId']?>)" >
-                                                    <td><?= $i++; ?></td>
                                                     <td><?= convertToUnicodeNumber($key['TransId']); ?></td>
                                                     <td><?= date('d-M-Y',strtotime($key['TransDt']));?></td>
                                                    <td><?= getTransType($key['TransType']) ?></td>
@@ -177,6 +174,6 @@ $RestName = authuser()->RestName;
 
 <script type="text/javascript">
     function edit(id){
-        window.location.href="<?php echo base_url();?>restaurant/edit_stock?TransId="+id;
+        window.location.href="<?php echo base_url();?>restaurant/edit_stock/"+id;
     }
 </script>

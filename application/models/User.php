@@ -367,6 +367,15 @@ class User extends CI_Model{
 		return $scheme['Name'];
 	}
 
+	public function getTransactionName($TagId){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "TDesc$langId as TDesc";
+		$data =  $this->db2->select("$lname")
+					->get_where('stockTrans', array('TagId' => $TagId))
+					->row_array();		
+		return $data['TDesc'];
+	}
+
 	public function getDayName($DayNo){
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId as Name";
