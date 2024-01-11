@@ -525,7 +525,7 @@
 	}
 
    $(document).ready(function() {
-        // $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+        $("body").tooltip({ selector: '[data-toggle=tooltip]' });
 
         $('#qty-val').val(1);
         $('#qty-valView').val(convertToUnicodeNo(1));
@@ -673,7 +673,8 @@
               if(total > 0){
                   for (var i = 0; i< data.length; i++) {
                     var openModal = '#itemModal';
-                    var itemName = "'"+data[i].itemName+"'";
+                    // var itemName = "'"+data[i].itemName+"'";
+                    var itemName = data[i].itemName;
                     var ingrediant = "'"+data[i].Ingeredients+"'";
                     var imgUrl = "'<?= base_url(); ?>"+data[i].imgSrc+"'";
 
@@ -756,7 +757,7 @@
 									<?php } ?>
 									</div>\
 									<div class="card-body">\
-                                        <p data-toggle="tooltip" data-placement="top" title="'+data[i].ItemNm+'" class="strTruncate">'+data[i].itemName+'</p>\
+                                        <p data-toggle="tooltip" data-placement="top" title="'+data[i].itemName+'" class="strTruncate">'+data[i].itemName+'</p>\
                                         <ul class="list-inline product-meta">\
                                             <li class="list-inline-item">\
                                                 <i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+convertToUnicodeNo(data[i].AvgRtng)+'\
@@ -780,18 +781,18 @@
 					        <div class="col-lg-4 col-md-4 col-sm-4 col-4 align-self-center">\
 					        <?php if(!empty($this->session->userdata('CustId'))){ ?>
 					            <a data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+itemName+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].itemDescr+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'" item-NV="'+data[i].NV+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-pck="'+data[i].PckCharge+'">\
-					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
+					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+itemName+'">\
 					            </a>\
 					            <?php } else{ ?>
 					            	<a href="<?= base_url('customer/login') ?>" >\
-					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+data[i].ItemNm+'">\
+					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+itemName+'">\
 					            </a>\
 					            <?php } ?>
 					        </div>\
 					        <div class="col-lg-8 col-md-8 col-sm-8 col-8">\
 			                    <div class="ad-listing-content">\
 			                        <div>\
-			                            <a data-toggle="tooltip" data-placement="top" title="'+data[i].ItemNm+'" class="font-weight-bold">'+data[i].ItemNm+'</a>\
+			                            <a data-toggle="tooltip" data-placement="top" title="'+itemName+'" class="font-weight-bold">'+itemName+'</a>\
 			                        </div>\
 			                        <ul class="list-inline mt-2">\
 			                            <li class="list-inline-item">\

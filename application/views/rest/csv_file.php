@@ -238,7 +238,8 @@ function callAjax(formData){
            processData: false,  
            contentType: false,  
            success : function(data) {
-               
+               alert(data.response);
+               // location.reload();
            }
     }); 
 }

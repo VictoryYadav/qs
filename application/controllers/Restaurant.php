@@ -772,13 +772,6 @@ class Restaurant extends CI_Controller {
                         ->join('ItemPortions ip', 'ip.IPCd = mi.Itm_Portion', 'inner')
                         ->join('Eat_Sections es', 'es.SecId = mr.SecId', 'inner');
                         
-
-                        // echo "<pre>";
-                        // print_r($data);
-                        // die;
-
-
-        // $q = "SELECT mi.ItemId, $lname, $ipName, md.ItemId as deactive FROM ItemPortions ip, MenuItem mi, MenuItemRates mr LEFT JOIN MenuItem_Disabled md ON (md.ItemId = mr.ItemId) and (mr.Itm_Portion = md.IPCd) Where mi.ItemId = mr.ItemId and ip.IPCd=mr.Itm_Portion and mr.EID = $EID and mi.Stat=0";
         if($this->input->method(true)=='POST'){
             if($_POST){
                 if(isset($_POST['cuisine']) && !empty($_POST['cuisine'])){
@@ -816,13 +809,10 @@ class Restaurant extends CI_Controller {
                                         )
                                 )
                         ->result_array();
-// print_r($this->db2->last_query());die;
+
         $data['menuItemData'] = $menuItemData;
         
     	$data['title'] = $this->lang->line('itemDetails');
-        // echo "<pre>";
-        // print_r($data);
-        // die;
 		$this->load->view('rest/item_lists',$data);	
     }
 
@@ -2636,36 +2626,7 @@ class Restaurant extends CI_Controller {
             echo json_encode($response);
             die();
         }
-
-        if(isset($_POST['rejectBill'])) {
-            $id = $_POST['id'];
-            $cNo = $_POST['CNo'];
-            $tableNo = $_POST['TableNo'];
-            $custId = $_POST['CustId'];
-
-            $billData = $this->db2->query("UPDATE Billing SET Stat = 99 WHERE BillId = $id AND EID = $EID");
-
-            $kitchenUpdate = $this->db2->query("UPDATE Kitchen k, KitchenMain km SET  k.Stat = 99 WHERE km.BillStat = $id AND (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = $cNo OR km.MCNo = $cNo)");
-
-            // $kitchenUpdate = $kitchenObj->exec("UPDATE Kitchen SET Stat = 99 WHERE BillStat = $id AND EID = $EID");
-
-            $kitchenMainUpdate = $this->db2->query("UPDATE KitchenMain SET Stat = 99 WHERE BillStat = $id AND EID = $EID and (CNo = $cNo OR MCNo = $cNo)");
-
-            if($EType == 5) {
-                $deleteETO = $this->db2->query("DELETE from Eat_tables_Occ eto, KitchenMain km where eto.TableNo= km.TableNo and eto.CustId=km.CustId and eto.EID=km.EID AND km.BillStat = $id AND km.EID = $EID and km.CNo = $cNo");
-
-                //$updateEatTable = $eatTablesObj->exec("UPDATE Eat_tables SET Stat = 0 WHERE EID = $EID AND TableNo = '$TableNo'");
-                $updateEatTable = $this->db2->query("UPDATE Eat_tables et, KitchenMain km SET Stat = 0 WHERE et.TableNo= km.TableNo and et.EID=km.EID AND km.BillStat = $id AND km.EID = $EID");
-            }
-
-            $response = [
-                "status" => 1,
-                "msg" => "Billing Rejected"
-            ];
-
-            echo json_encode($response);
-            die();
-        }
+        
     }
 
     public function savemergedata_ajax(){
@@ -4366,6 +4327,8 @@ class Restaurant extends CI_Controller {
 
     public function csv_file(){
         $EID = authuser()->EID;
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
             // echo "<pre>";
             // print_r($_POST);
@@ -4407,6 +4370,7 @@ class Restaurant extends CI_Controller {
                         $_FILES['eatary_file']['size']= $files['size'];
                         $file = $files['name'];
 
+                        $eatary_id = 0;
                         if($flag == 0){
                             $res = do_upload('eatary_file',$file,$folderPath,'*');
                             if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
@@ -4414,68 +4378,51 @@ class Restaurant extends CI_Controller {
                                     // echo "<pre>";
                                     // print_r($csv_data);
                                     // die;
-                                    if($csv_data[0] !='EID'){
-                                        // echo "<pre>";
-                                    // print_r($csv_data);
-                                    // die;
-                                        $eat = $this->db2->select('Name')->like('Name', $csv_data[5])->get_where('Eatary', array('EID' => $EID))->row_array();
-                                        // print_r($this->db2->last_query());
-                                        // print_r($eat);
-                                        if(empty($eat)){
-                                            $eatObj['dbEID'] = $csv_data[1];
-                                            $eatObj['ChainId'] = $csv_data[2];
-                                            $eatObj['ONo'] = $csv_data[3];
-                                            $eatObj['Stall'] = $csv_data[4];
-                                            $eatObj['Name'] = $csv_data[5];
-                                            $eatObj['CatgID'] = $csv_data[6];
-                                            $eatObj['ECatg'] = $csv_data[7];
-                                            $eatObj['CountryCd'] = $csv_data[8];
-                                            $eatObj['CityCd'] = $csv_data[9];
-                                            $eatObj['Addr'] = $csv_data[10];
-                                            $eatObj['Suburb'] = $csv_data[11];
-                                            $eatObj['EWNS'] = $csv_data[12];
-                                            $eatObj['City'] = $csv_data[13];
-                                            $eatObj['Pincode'] = $csv_data[14];
-                                            $eatObj['Tagline'] = $csv_data[15];
-                                            $eatObj['Remarks'] = $csv_data[16];
-                                            $eatObj['GSTNo'] = $csv_data[17];
-                                            $eatObj['CINNo'] = $csv_data[18];
-                                            $eatObj['FSSAINo'] = $csv_data[19];
-                                            $eatObj['PhoneNos'] = $csv_data[20];
-                                            $eatObj['Email'] = $csv_data[21];
-                                            $eatObj['Website'] = $csv_data[22];
-                                            $eatObj['Logo'] = $csv_data[23];
-                                            $eatObj['ContactNos'] = $csv_data[24];
-                                            $eatObj['ContactAddr'] = $csv_data[25];
-                                            $eatObj['BillerName'] = $csv_data[26];
-                                            $eatObj['BillerLogo'] = $csv_data[27];
-                                            $eatObj['BillerGSTNo'] = $csv_data[28];
-                                            $eatObj['BTyp'] = $csv_data[29];
-                                            $eatObj['VFM'] = $csv_data[30];
-                                            $eatObj['Stat'] = $csv_data[31];
-                                            // $eatObj['LoginCd'] = $csv_data[32];
-                                            $eatObj['LoginCd'] = authuser()->RUserId;
-                                            // $eatObj['LstModDt'] = $csv_data[33];
-                                            $eatObj['TaxInBill'] = $csv_data[34];
-                                            $eatObj['QRLink'] = $csv_data[35];
-                                            $eatObj['BillName'] = $csv_data[36];
-                                            
-                                            // echo "<pre>";
-                                            // print_r($eatObj);
-                                            // die;
-                                            $id = insertRecord('Eatary', $eatObj);
-                                            if(!empty($id)){
-                                                $this->session->set_flashdata('success','Data Inserted.');   
-                                            }
-                                        }else{
-                                            $this->session->set_flashdata('success','Data Already Exist'); 
-                                        }
+                                    if($csv_data[0] !='ChainId'){
+
+                                        $eatObj['ChainId'] = $csv_data[0];
+                                        $eatObj['ONo'] = $csv_data[1];
+                                        $eatObj['Stall'] = $csv_data[2];
+                                        $eatObj['Name'] = $csv_data[3];
+                                        $eatObj['CatgID'] = $csv_data[4];
+                                        $eatObj['CountryCd'] = $csv_data[5];
+                                        $eatObj['CityCd'] = $csv_data[6];
+                                        $eatObj['Addr'] = $csv_data[7];
+                                        $eatObj['Suburb'] = $csv_data[8];
+                                        $eatObj['EWNS'] = $csv_data[9];
+                                        $eatObj['City'] = $csv_data[10];
+                                        $eatObj['Pincode'] = $csv_data[11];
+                                        $eatObj['Tagline'] = $csv_data[12];
+                                        $eatObj['Remarks'] = $csv_data[13];
+                                        $eatObj['GSTNo'] = $csv_data[14];
+                                        $eatObj['CINNo'] = $csv_data[15];
+                                        $eatObj['FSSAINo'] = $csv_data[16];
+                                        $eatObj['PhoneNos'] = $csv_data[17];
+                                        $eatObj['Email'] = $csv_data[18];
+                                        $eatObj['Website'] = $csv_data[19];
+                                        $eatObj['ContactNos'] = $csv_data[20];
+                                        $eatObj['ContactAddr'] = $csv_data[21];
+                                        $eatObj['BillerName'] = $csv_data[22];
+                                        $eatObj['BillerGSTNo'] = $csv_data[23];
+                                        $eatObj['BTyp'] = $csv_data[24];
+                                        $eatObj['VFM'] = $csv_data[25];
+                                        $eatObj['TaxInBill'] = $csv_data[26];
+                                        $eatObj['QRLink'] = $csv_data[27];
+                                        $eatObj['LstModDt'] = date('Y-m-d H:i:s');
+                                        $eatObj['Stat'] = 0;
+                                        $eatObj['LoginCd'] = authuser()->RUserId;
+                                        $eatary_id = insertRecord('Eatary', $eatObj);
+                                        
                                     }
-                                    
                                 }
-                             
                                 fclose($open);
                             }
+                        }
+
+                        if(!empty($eatary_id)){
+                            $status = 'success';
+                            $response = 'Data Inserted';
+                            $this->session->set_flashdata('success','Data Inserted.');
                         }
                       }
 
@@ -4506,47 +4453,65 @@ class Restaurant extends CI_Controller {
                         if($flag == 0){
                             $res = do_upload('mcatg_file',$file,$folderPath,'*');
                             if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
+                                $mcData = [];
+                                $mc = [];
+                                $count = 1;
+                                $checker = 0;
                                 while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
-                                    echo "<pre>";
-                                    print_r($csv_data);
-                                    die;
-                                    if($csv_data[0] !='Cuisine'){
-                                        // echo "<pre>";
+                                    // echo "<pre>";
                                     // print_r($csv_data);
                                     // die;
-                                        $eat = $this->db2->select('MCatgNm')->like('MCatgNm', $csv_data[1])->get_where('MenuCatg', array('EID' => $EID))->row_array();
-                                        // print_r($this->db2->last_query());
-                                        // print_r($eat);
-                                        if(empty($eat)){
-                                            $CTyp = 0;
-                                            if($csv_data[2] == 'Bar'){
-                                                $CTyp = 1;
-                                            }else if($csv_data[2] == 'Beverages'){
-                                                $CTyp = 2;
-                                            }else if($csv_data[2] == 'Desserts'){
-                                                $CTyp = 3;
-                                            }else if($csv_data[2] == 'Custom'){
-                                                $CTyp = 4;
+                                    if($csv_data[0] !='RestName'){
+                                            
+                                            $mc['EID'] = $this->checkEatary($csv_data[0]);
+
+                                            $mc['CID'] = $this->checkCuisine($csv_data[1]);
+                                            $mc['Name1'] = $csv_data[2];
+                                            $mc['CTyp'] = $this->checkCTyp($csv_data[3]);
+                                            $mc['Rank'] = $csv_data[4];
+                                            $mc['KitCd'] = $this->checkKitchen($csv_data[5], $mc['EID']);
+                                            $checker = 1;
+                                            
+                                            if($mc['EID'] == 0){
+                                              $response = $csv_data[0]. " Not Found in row no: $count";
+                                              $checker = 0;
+                                            }
+                                            if($mc['CID'] == 0){
+                                              $response = $csv_data[1]. " Not Found in row no: $count";
+                                              $checker = 0;
                                             }
 
-                                            $mc['CID'] = $this->checkCuisine($csv_data[0], $CTyp);
-                                            $mc['MCatgNm'] = $csv_data[1];
-                                            $mc['CTyp'] = $CTyp;
-                                            $mc['Rank'] = $csv_data[3];
-                                            $mc['KitCd'] = $csv_data[4];
-                                            $mc['EID'] = $EID;
-                                            // echo "<pre>";
-                                            // print_r($mc);
-                                            // die;
-                                            $id = insertRecord('MenuCatg', $mc);
-                                            if(!empty($id)){
-                                                $this->session->set_flashdata('success','Data Inserted.');
+                                            if($mc['CTyp'] == 0){
+                                              $response = $csv_data[3]. " Not Found in row no: $count";
+                                              $checker = 0;
                                             }
-                                        }else{
-                                            $this->session->set_flashdata('success','Data Already Exist'); 
-                                        }
+
+                                            if($mc['KitCd'] == 0){
+                                              $response = $csv_data[5]. " Not Found in row no: $count";
+                                              $checker = 0;
+                                            }
+
+                                            if($checker == 0){
+                                                $mcData = [];
+                                                header('Content-Type: application/json');
+                                                echo json_encode(array(
+                                                    'status' => $status,
+                                                    'response' => $response
+                                                  ));
+                                                 die; 
+                                            }
+
+                                            $mcData[] = $mc;
                                     }
+                                    $count++;
                                 }
+
+                                if(!empty($mcData)){
+                                    $this->db2->insert_batch('MenuCatg', $mcData);
+                                    $status = 'success';
+                                    $response = 'Data Inserted.';
+                                }
+                                
                                 fclose($open);
                             }
                         }
@@ -4578,51 +4543,132 @@ class Restaurant extends CI_Controller {
                         if($flag == 0){
                             $res = do_upload('mitem_file',$file,$folderPath,'*');
                             if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
+
+                                $mItemData = [];
+                                $mItem = [];
+                                $count = 1;
+                                $checker = 0;
+
                                 while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
-                                    echo "<pre>";
-                                    print_r($csv_data);
-                                    die;
-                                    if($csv_data[0] !='Cuisine'){
-                                        // echo "<pre>";
+                                    // echo "<pre>";
                                     // print_r($csv_data);
                                     // die;
-                                        $eat = $this->db2->select('ItemNm')->like('ItemNm', $csv_data[4])->get_where('MenuItem', array('EID' => $EID))->row_array();
-                                        // print_r($this->db2->last_query());
-                                        // print_r($eat);
-                                        if(empty($eat)){
-                                            $mItem['CID'] = $csv_data[0];
-                                            $mItem['MCatgId'] = $csv_data[1];
-                                            $mItem['CTyp'] = $csv_data[2];
-                                            $mItem['FID'] = $csv_data[3];
-                                            $mItem['ItemNm'] = $csv_data[4];
-                                            $mItem['PckCharge'] = $csv_data[5];
-                                            $mItem['ItemTyp'] = $csv_data[6];
-                                            $mItem['ItemTag'] = $csv_data[7];
-                                            $mItem['Rank'] = $csv_data[9];
-                                            $mItem['ItmDesc'] = $csv_data[10];
-                                            $mItem['Ingeredients'] = $csv_data[11];
-                                            $mItem['PrepTime'] = $csv_data[12];
-                                            $mItem['FrmTime'] = $csv_data[14];
-                                            $mItem['ToTime'] = $csv_data[15];
-                                            $mItem['AltFrmTime'] = $csv_data[16];
-                                            $mItem['AltToTime'] = $csv_data[17];
-                                            $mItem['DayNo'] = $csv_data[18];
-                                            $mItem['KitCd'] = $csv_data[19];
-                                            $mItem['EID'] = authuser()->EID;
-                                            $mItem['LoginCd'] = authuser()->RUserId;
-
-                                            echo "<pre>";
-                                            print_r($mItem);
-                                            die;
-                                            $id = insertRecord('MenuItem', $mItem);
-                                            if(!empty($id)){
-                                                $this->session->set_flashdata('success','Data Inserted.');   
-                                            }
-                                        }else{
-                                            $this->session->set_flashdata('success','Data Already Exist'); 
-                                        }
-                                    }
+                                    if($csv_data[0] !='RestName'){
                                     
+                                        $checker = 1;
+
+                                        $mItem['EID'] = $this->checkEatary($csv_data[0]);
+
+                                        if($mItem['EID'] == 0){
+                                          $response = $csv_data[0]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $mItem['CID'] = $this->checkCuisine($csv_data[1]);
+
+                                        if($mItem['CID'] == 0){
+                                          $response = $csv_data[1]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $mItem['MCatgId'] = $csv_data[2];
+                                        $mItem['CTyp'] = $this->checkCTyp($csv_data[3]);
+                                        if($mItem['CTyp'] == 0){
+                                          $response = $csv_data[3]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $mItem['FID'] = $this->checkFoodType($csv_data[4], $mItem['EID']);
+
+                                        if($mItem['FID'] == 0){
+                                          $response = $csv_data[4]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $mItem['ItemNm1'] = $csv_data[5];
+                                        $mItem['IMcCd'] = $csv_data[6];
+                                        $mItem['PckCharge'] = $csv_data[7];
+                                        $mItem['ItemTyp'] = $this->checkItemType($csv_data[8], $mItem['EID']);
+
+                                        if($mItem['ItemTyp'] == 0){
+                                          $response = $csv_data[8]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $mItem['ItemAttrib'] = $this->checkType($csv_data[9], $mItem['EID'], 1);
+
+                                        if($mItem['ItemAttrib'] == 0){
+                                          $response = $csv_data[9]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $mItem['ItemSale'] = $this->checkType($csv_data[10], $mItem['EID'], 3);
+
+                                        if($mItem['ItemSale'] == 0){
+                                          $response = $csv_data[10]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $mItem['ItemTag'] = $this->checkType($csv_data[11], $mItem['EID'], 2);
+
+                                        if($mItem['ItemTag'] == 0){
+                                          $response = $csv_data[11]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $mItem['NV'] = $csv_data[12];
+                                        $mItem['MaxDisc'] = $csv_data[13];
+                                        $mItem['StdDiscount'] = $csv_data[14];
+                                        $mItem['DiscRate'] = $csv_data[15];
+                                        $mItem['Rank'] = $csv_data[16];
+                                        $mItem['ItmDesc1'] = $csv_data[17];
+                                        $mItem['Ingeredients1'] = $csv_data[18];
+                                        $mItem['MaxQty'] = $csv_data[19];
+                                        $mItem['MTyp'] = $csv_data[20];
+                                        $mItem['Rmks1'] = $csv_data[21];
+                                        $mItem['PrepTime'] = $csv_data[22];
+                                        $mItem['FrmTime'] = date('H:i:s', strtotime($csv_data[23]));
+                                        $mItem['ToTime'] = date('H:i:s', strtotime($csv_data[24]));
+                                        $mItem['AltFrmTime'] = date('H:i:s', strtotime($csv_data[25]));
+                                        $mItem['AltToTime'] = date('H:i:s', strtotime($csv_data[26]));
+                                        $mItem['DayNo'] = getDayNo($csv_data[27]);
+
+                                        if($mItem['DayNo'] == 0){
+                                          $response = $csv_data[27]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $mItem['KitCd'] = $this->checkKitchen($csv_data[28], $mItem['EID']);
+
+                                        if($mItem['KitCd'] == 0){
+                                          $response = $csv_data[28]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $mItem['videoLink'] = $csv_data[29];
+                                        $mItem['Stat'] = 0;
+                                        $mItem['LoginCd'] = authuser()->RUserId;
+
+                                        if($checker == 0){
+                                            $mItemData = [];
+                                            header('Content-Type: application/json');
+                                            echo json_encode(array(
+                                                'status' => $status,
+                                                'response' => $response
+                                              ));
+                                             die; 
+                                        }
+
+                                        $mItemData[] = $mItem;
+                                    }
+                                    $count++;    
+                                }
+
+                                if(!empty($mItemData)){
+
+                                    $this->db2->insert_batch('MenuItem', $mItemData);
+                                    $status = 'success';
+                                    $response = 'Data Inserted.';
                                 }
                              
                                 fclose($open);
@@ -4760,33 +4806,80 @@ class Restaurant extends CI_Controller {
                 break;
             }
             
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;    
         }
         $data['title'] = 'Eatary';
         $this->load->view('rest/csv_file', $data);   
     }
 
-    private function checkCuisine($name, $ctyp){
-        $cuisine = $this->db2->select('CID, Name')->like('Name', $name)->get('Cuisines')->row_array();
-        if(empty($cuisine)){
-            $data['Name'] = $name;
-            $data['CTyp'] = $ctyp;
-            $cid = insertRecord('Cuisines', $data);
-        }else{
+    private function checkEatary($name){
+        $EID = 0;
+        $data = $this->db2->select('EID')->like('Name', $name)->get('Eatary')->row_array();
+        if(!empty($data)){
+            $EID = $data['EID'];
+        }
+        return $EID;
+    }
+
+    private function checkCuisine($name){
+        $cid = 0;
+        $cuisine = $this->db2->select('CID')->like('Name1', $name)->get('Cuisines')->row_array();
+        if(!empty($cuisine)){
             $cid = $cuisine['CID'];
         }
         return $cid;
     }
 
-    private function checkKitchen($name){
-        $cuisine = $this->db2->select('KitCd, KitName')->like('KitName', $name)->get('Eat_Kit')->row_array();
-        if(empty($cuisine)){
-            $data['KitName'] = $name;
-            $data['EID'] = authuser()->EID;
-            $KitCd = insertRecord('Eat_Kit', $data);
-        }else{
-            $KitCd = $cuisine['KitCd'];
+    private function checkCTyp($usedFor){
+        $CTyp = 0;
+        $data = $this->db2->select('CTyp')->like('Usedfor1', $usedFor)->get('FoodType')->row_array();
+        if(!empty($data)){
+            $CTyp = $data['CTyp'];
+        }
+        return $CTyp;
+    }
+
+    private function checkKitchen($name, $EID){
+        $KitCd = 0;
+        $data = $this->db2->select('KitCd')->like('KitName1', $name)->get_where('Eat_Kit', array('EID' => $EID))->row_array();
+        if(!empty($data)){
+            $KitCd = $data['KitCd'];
         }
         return $KitCd;
+    }
+
+    private function checkFoodType($name, $EID){
+        $FID = 0;
+        $data = $this->db2->select('FID')->like('Name1', $name)->get_where('FoodType', array('EID' => $EID))->row_array();
+        if(!empty($data)){
+            $FID = $data['FID'];
+        }
+        return $FID;
+    }
+
+    private function checkItemType($name, $EID){
+        $id = 0;
+        $data = $this->db2->select('ItmTyp')->like('Name1', $name)->get_where('ItemTypes', array('EID' => $EID))
+                    ->row_array();
+        if(!empty($data)){
+            $id = $data['ItmTyp'];
+        }
+        return $id;   
+    }
+
+    private function checkType($name, $EID, $type){
+        $id = 0;
+        $data = $this->db2->select('TagId')->like('TDesc1', $name)->get_where('MenuTags', array('EID' => $EID, 'TagTyp' => $type))
+                    ->row_array();
+        if(!empty($data)){
+            $id = $data['TagId'];
+        }
+        return $id;    
     }
 
     public function checkCNoForTable(){
@@ -5011,6 +5104,245 @@ class Restaurant extends CI_Controller {
               ));
              die;
         }   
+    }
+
+    public function splitBill($MCNo, $MergeNo, $tableFilter){
+
+        $data['MergeNo'] = $MergeNo;
+        $data['payable'] = 0;
+        $data['grossItemAmt'] = 0;
+        $data['tip'] = 0;
+        $data['MCNo'] = $MCNo;
+        $data['tableFilter'] = $tableFilter;
+
+        $EID = authuser()->EID;
+        $EType = $this->session->userdata('EType');
+
+        if($this->input->method(true)=='POST'){
+               // echo "<pre>";
+               // print_r($_POST);
+               // die;
+
+               $CNo = $_POST['MCNo'];
+               for ($i=0; $i < sizeof($_POST['mobile']) ; $i++) {
+                    $pData['paymentMode'] = 'RestSplitBill';
+                    $pData['CellNo'] = $_POST['mobile'][$i];
+                    $pData['CNo'] = $_POST['MCNo'];
+                    $pData['itemTotalGross'] = $_POST['totItemAmt'][$i];
+                    $pData['orderAmount'] = $_POST['amount'][$i];
+                    $pData['per_cent'] = $_POST['percent'][$i] / 100;
+                    $pData['splitType'] = $_POST['splitType'];
+                    $pData['MergeNo'] = $_POST['MergeNo'];
+                    $pData['cust_discount'] = 0;
+                    $pData['TableNo'] = 0;
+                    $pData['TipAmount'] = 0;
+                    $this->session->set_userdata('CellNo', $pData['CellNo']);
+                    $pData['CustId'] = createCustUser($pData['CellNo']);
+
+                    $res = billCreate($EID, $CNo, $pData);
+                    if($res['status'] == 1){
+                        $billId = $res['billId'];
+                        $my_db = $this->session->userdata('my_db');
+                        $url = $EID . "_b_" . $billId . "_" .$my_db. "_" . $CNo. "_" . $pData['CellNo']. "_" . $pData['MergeNo']. "_" . $pData['orderAmount'];
+
+                        $url = base64_encode($url);
+                        $url = rtrim($url, "=");
+                        $link = base_url('users?eatout='.$url);
+
+                        $temp['mobileNo'] = $pData['CellNo'];
+                        $temp['link'] = $link;
+                        $temp['billId'] = $billId;
+                        $temp['EID'] = $EID;
+                        $temp['created_by'] = authuser()->RUserId;
+                        $temp['MCNo'] = $CNo;
+                        $linkData[] = $temp;
+                        $this->session->set_userdata('blink', $link);
+                    // link send with bill no, sms or email => pending status
+                        // for send to pay now to current customer
+                    }
+               }
+
+               $kstat = ($EType == 5)?3:2;
+               $billingObjStat = 5;
+               $strMergeNo = "'".$MergeNo."'";
+               $this->db2->query("UPDATE Kitchen SET BillStat = $billingObjStat  WHERE EID = $EID and (MCNo = $CNo or MergeNo = $strMergeNo) AND BillStat = 0 and Stat = $kstat ");
+
+               $this->db2->query("UPDATE KitchenMain SET BillStat = $billingObjStat WHERE (MCNo = $CNo or MergeNo = $strMergeNo) AND BillStat = 0 AND EID = $EID ");
+                    
+               redirect(base_url('restaurant/sitting_table'));
+        }
+            
+            $langId = $this->session->userdata('site_lang');
+            $lname = "m.ItemNm$langId";
+            $ipName = "ip.Name$langId  as Portions";
+
+            $groupby = ' km.MCNo';
+            if($tableFilter == 'tableWise'){
+                $characterToFind = '~';
+                $count = substr_count($MergeNo, $characterToFind);
+                if ($count > 0) {
+                    $groupby = ' km.MergeNo';
+                }
+            }
+
+            // add merge no to string
+            $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate,k.ItmRate,  SUM(if (k.TA=1,((k.OrigRate)*k.Qty),(k.OrigRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where k1.MergeNo = km.MergeNo and k1.MergeNo = $MergeNo  and k1.EID=km.EID AND (k1.Stat = 3) and k1.BillStat = km.BillStat GROUP BY k1.EID) as TotPckCharge, $ipName, km.CNo,km.MergeNo, km.MCNo,sum(km.BillDiscAmt) as BillDiscAmt, sum(km.DelCharge) as DelCharge, sum(km.RtngDiscAmt) as totRtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType, k.TA, km.RtngDiscAmt,km.TableNo, km.CustId, c.ServChrg, c.Tips,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = 3) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND km.MergeNo = $MergeNo group by $groupby, k.TA,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by TaxType, m.ItemNm1 Asc")->result_array();
+
+            // remove string
+            $MergeNo = str_replace("'","",$MergeNo);
+            // echo "<pre>";
+            // print_r($MergeNo);
+            // print_r($kitcheData);
+            // print_r($MergeNo);
+            // print_r($this->db2->last_query());
+            // die;
+            
+                $taxDataArray = array();
+                if(!empty($kitcheData)){
+                    $initil_value = $kitcheData[0]['TaxType'];
+                    $orderAmt = 0;
+                    $discount = 0;
+                    $charge = 0;
+                    $total = 0;
+                    $MergeNo = $kitcheData[0]['MergeNo'];
+                    $CNo = $kitcheData[0]['MCNo'];
+
+                    $TaxRes = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo);
+                    $taxDataArray = $TaxRes['taxDataArray'];
+
+                    foreach ($kitcheData as $kit ) {
+                        $orderAmt = $orderAmt + $kit['OrdAmt'];
+                    }
+
+                    //tax calculate
+                    $SubAmtTax = 0;
+                    foreach ($taxDataArray as $tax) {
+                        foreach ($tax as $key) {
+                            if($key['Included'] >= 5){
+                                $SubAmtTax = $SubAmtTax + round($key['SubAmtTax'], 2);
+                            }
+                        }
+                    }
+                        
+                    $orderAmt = $orderAmt + $SubAmtTax;
+                    $data['grossItemAmt'] = $orderAmt;
+                    
+                    // $custDiscount = ($orderAmt * $_POST['custDiscPer']) / 100;
+                    $custDiscount = 0;
+
+                    $discount = $kitcheData[0]['TotItemDisc'] + $kitcheData[0]['RtngDiscAmt'] + $kitcheData[0]['BillDiscAmt']; 
+                    $charge = $kitcheData[0]['TotPckCharge'] + $kitcheData[0]['DelCharge'];
+                    // add 16-nov-23 end
+
+                    // grand total
+                    $srvCharg = ($orderAmt * $kitcheData[0]['ServChrg']) / 100;
+                    $total = $orderAmt + $srvCharg + $charge - $discount - $custDiscount;
+                    
+                    $data['payable'] = $total;
+                }
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        
+        $data['title'] = $this->lang->line('splitbill');
+        $this->load->view('rest/split_bill', $data); 
+    }
+
+    public function edit_eatary(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            switch ($_POST['type']) {
+                case 'search':
+                        $EID = $_POST['EID'];
+                        $response = getRecords('Eatary', array('EID' => $EID));
+                    break;
+
+                case 'update':
+                        $updateData = $_POST;
+                        updateRecord('Eatary', $updateData, array('EID' => $_POST['EID']));
+                        $response = 'Updated Records';
+                    break;
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('restaurant');
+        $data['eatary'] = $this->rest->getRestaurantList();
+        $this->load->view('rest/eatary_edit', $data);    
+    }
+
+
+    public function edit_cuisine(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData[$lname] = $_POST['cuisineName'];
+            updateRecord('Cuisines', $updateData, array('CID' => $_POST['CID']));
+            $response = 'Updated Records';                    
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('cuisine');
+        $data['cuisines'] = $this->rest->getCuisineList();
+        $this->load->view('rest/cuisine_edit', $data);    
+    }
+
+    public function edit_menu_category(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData[$lname] = $_POST['menuName'];
+            $updateData['EID'] = $_POST['EID'];
+            $updateData['CID'] = $_POST['CID'];
+            $updateData['KitCd'] = $_POST['KitCd'];
+            $updateData['Rank'] = $_POST['Rank'];
+
+            updateRecord('MenuCatg', $updateData, array('MCatgId' => $_POST['MCatgId']));
+            $response = 'Updated Records'; 
+
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('menuCategory');
+        // $data['eatary'] = $this->rest->getRestaurantList();
+        $data['cuisines'] = $this->rest->getCuisineList();
+        $data['kitchens'] = $this->rest->get_kitchen();
+        $data['menuCatList'] = $this->rest->getMenuCatList();
+        $this->load->view('rest/menu_category_edit', $data);    
     }
 
 

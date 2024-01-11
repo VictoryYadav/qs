@@ -310,6 +310,11 @@ width: 100%;*/
                                                 <button class="btn btn-primary btn-sm" title="Bill Create" id="billCreatebtn" style="display: none;">
                                                     <i class="fas fa-file-invoice"></i>
                                                 </button>
+
+                                                <a class="btn btn-secondary btn-sm" title="Bill Spilt" id="billSplit" target="_blank" style="display: none;">
+                                                    <i class="mdi mdi-file-table-box-multiple-outline"></i>
+                                                </a>
+
                                                 <?php
                                                 if (($EType == 5) && ($this->session->userdata('Move') > 0)) {
                                                     ?>
@@ -1000,10 +1005,6 @@ width: 100%;*/
 
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
-
 <script>
 
 var tableFilter = 'orderWise';
@@ -1135,6 +1136,7 @@ getTableView();
                 $('#btnCash').attr('onclick', "cashCollect("+custId+","+MCNo+",'"+mergeNo+"',"+oTyp+")");
                 $('#btnCash').show();
                 $('#billCreatebtn').hide();
+                $('#billSplit').hide();
             }else{
                 
                 if(tableFilter == 'tableWise'){
@@ -1144,6 +1146,10 @@ getTableView();
                     $('#billCreatebtn').attr('onclick', "billCreate('"+mergeNo+"',"+custId+", '"+tableFilter+"')");    
                 }
                 $('#billCreatebtn').show();
+
+                var url = "<?php echo base_url('restaurant/splitBill/'); ?>"+MCNo+'/'+mergeNo+'/'+tableFilter;
+                $('#billSplit').attr("href", url);
+                $('#billSplit').show();
             }
             $.ajax({
                 url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
@@ -1786,29 +1792,9 @@ getTableView();
         }
 
         function rejectBill(id, index, CNo, TableNo, CustId) {
-            if (confirm(`Confirm Reject For Bill No: ${this.billData[index].BillNo}`)) {
-                // console.log("reject");
-                // console.log("bill id "+ id);
-                formData = new FormData();
-                formData.append('rejectBill', 1);
-                formData.append('id', id);
-                formData.append('CNo', CNo);
-                formData.append('TableNo', TableNo);
-                formData.append('CustId', CustId);
-                axios.post("<?php echo base_url('restaurant/rest_cash_bill_ajax'); ?>", formData)
-                .then(response => {
-                    // console.log(response.data);
-                    if (response.data.status ==1) {
-                        this.getBill();
-                    }
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-            }else {
-                console.log("not Rejected");
-            }
+           
         }
+
         var help_table_id = '';
         var list_id = '';
         check_call_bell();

@@ -1599,8 +1599,6 @@ class Customer extends CI_Controller {
             $data['title'] = 'Bills';
             $this->load->view('cust/billing_not', $data);
         }
-
-        
     }
 
     public function print($billId){
@@ -1668,7 +1666,7 @@ class Customer extends CI_Controller {
         if($this->session->userdata('AutoSettle') > 0){
             autoSettlePayment($billId, $MergeNo);
         }else{
-            $this->db2->query("UPDATE KitchenMain km, Billing b SET km.custPymt = 1 WHERE b.BillId = $billId and km.EID=b.EID and km.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo) and km.MergeNo = b.MergeNo");
+            $this->db2->query("UPDATE KitchenMain km, Billing b SET km.custPymt = 1, km.payRest = 1 WHERE b.BillId = $billId and km.EID=b.EID and km.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo) and km.MergeNo = b.MergeNo");
         }
 
         // $this->session->set_userdata('CNo', 0);
@@ -1826,9 +1824,11 @@ class Customer extends CI_Controller {
         // print_r($_POST);
         // die;
         $CNo = $_POST['MCNo'];
+        $MergeNo = $_POST['MergeNo'];
         $EID = authuser()->EID;
         $res = array();
         $CellNo = $this->session->userdata('CellNo');
+        $EType = $this->session->userdata('EType');
         $pMCNo = 0;
         $pBillId = 0;
         $linkData = array();
@@ -1877,6 +1877,14 @@ class Customer extends CI_Controller {
                 }
             }
         }
+
+        $kstat = ($EType == 5)?3:2;
+        $billingObjStat = 1;
+        $strMergeNo = "'".$MergeNo."'";
+
+        $this->db2->query("UPDATE Kitchen SET BillStat = $billingObjStat  WHERE EID = $EID and (MCNo = $CNo or MergeNo = $strMergeNo) AND BillStat = 0 and Stat = $kstat ");
+
+       $this->db2->query("UPDATE KitchenMain SET BillStat = $billingObjStat WHERE (MCNo = $CNo or MergeNo = $strMergeNo) AND BillStat = 0 AND EID = $EID ");
 
         // echo "<pre>";
         // print_r($linkData);

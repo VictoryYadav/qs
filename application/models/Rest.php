@@ -728,6 +728,19 @@ class Rest extends CI_Model{
         $lname = "Name$langId as MCatgNm";
 		return $this->db2->select("MCatgId, $lname")->get_where('MenuCatg', array('EID' => authuser()->EID, 'Stat' => 0 ))->result_array();
 	}
+
+	public function getMenuCatList(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "mc.Name$langId as MCatgNm";
+        $cuisine = "c.Name$langId as cuisine";
+        $kitchen = "et.KitName$langId as kitchen";
+        $whr = "et.EID = mc.EID";
+		return $this->db2->select("mc.MCatgId, $lname, $cuisine, $kitchen, mc.CID, mc.EID, mc.Rank, mc.KitCd")
+						->join('Cuisines c', 'c.CID = mc.CID', 'inner')
+						->join('Eat_Kit et', 'et.KitCd = mc.KitCd', 'inner')
+						->where($whr)
+						->get_where('MenuCatg mc', array('mc.EID' => authuser()->EID, 'mc.Stat' => 0 ))->result_array();
+	}
 	
 	public function getCuisineList(){
 		$langId = $this->session->userdata('site_lang');

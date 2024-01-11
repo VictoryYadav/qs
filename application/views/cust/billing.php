@@ -3,256 +3,40 @@
     p{
         font-size: 12px !important;
     }
-        @font-face {
-            font-family: Montserrat Bold;
-            src: url(fonts/Montserrat-Bold.otf);
-        }
+    @font-face {
+        font-family: Montserrat Bold;
+        src: url(fonts/Montserrat-Bold.otf);
+    }
 
-        @font-face {
-            font-family: Montserrat Regular;
-            src: url(fonts/Montserrat-Regular.otf);
-        }
+    @font-face {
+        font-family: Montserrat Regular;
+        src: url(fonts/Montserrat-Regular.otf);
+    }
 
-        .single-category h3 {
-            font-family: Montserrat Bold;
-        }
+    .remove-margin {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
 
-        .offers-tab label {
-            font-family: Montserrat Regular;
-        }
+    h3 {
+        color: #fff;
+        font-weight: bold;
+    }
 
-        .remove-margin {
-            margin-left: 0px;
-            margin-right: 0px;
+    .billView{
+        /*margin-top: 25px;*/
+        /*overflow-y: scroll;
+        height: 78vh;*/
+        height: 400px;
+        overflow: auto; 
+    }
+    /*mobile screen only*/
+    @media only screen and (max-width: 480px) {
+        #billView{
+           height: 480px;
+           overflow: auto; 
         }
-
-        .img-category {
-            height: 95px;
-            width: 125px;
-        }
-
-        .single-category {
-            height: 125px;
-            display: flex;
-            align-items: center;
-            background-color: #0a88ff;
-        }
-
-        .single-category:nth-last-child(1) {
-            margin-bottom: 60px;
-        }
-
-        #body-row {
-            top: 44px;
-            height: 100%;
-            position: relative;
-        }
-
-        .header {
-            color: blue;
-        }
-
-        .main-header {
-            margin-left: 0px;
-            margin-right: 0px;
-            /*padding: 10px 20px;*/
-            position: fixed;
-            background: #fff;
-            z-index: 900;
-            width: 100%;
-        }
-
-        .top-header {
-            padding: 3px 20px;
-        }
-
-        .header-left,
-        .header-right {
-            display: inline-block;
-            width: 49%;
-
-        }
-
-        .header-right {
-            text-align: right;
-        }
-
-        .header-left p,
-        .header-right p {
-            margin: 0px;
-        }
-
-        .header-right,
-        .header-left {
-            font-weight: bold;
-        }
-
-        .header-left {
-            font: 20px;
-        }
-
-        h3 {
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .navbar {
-            text-align: center;
-            overflow: hidden;
-            background-color: #fff;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            padding: 0px;
-        }
-
-        .navbar a {
-            float: left;
-            display: block;
-            color: #000;
-            text-align: center;
-            padding: 14px 13px;
-            text-decoration: none;
-            font-size: 7px;
-            /* width: 20%; */
-        }
-
-        .navbar a:hover {
-            background: #f1f1f1;
-            color: black;
-        }
-
-        .navbar a.active {
-            background-color: #0a88ff;
-            color: #fff;
-        }
-
-        .main {
-            padding: 16px;
-            margin-bottom: 30px;
-        }
-
-        .navbar a img {
-            display: inherit;
-        }
-
-        .offers-tab {
-            background-color: #0a88ff;
-            top: 59px;
-            position: relative;
-            width: 100%;
-            padding: 10px 15px;
-            text-align: center;
-        }
-
-        .menu-radio {
-            border-radius: 25px 0 0 25px;
-        }
-
-        .offers-rdaio {
-            border-radius: 0 25px 25px 0;
-        }
-
-        #sidebar {
-            z-index: 1000;
-            width: 50%;
-        }
-
-        #sidebar .sidebar-header {
-            height: 150px;
-            background: url(assets/img/a.png);
-            background-size: cover;
-            background-repeat: no-repeat;
-            padding: 0px;
-        }
-
-        #sidebar ul li a {
-            border-radius: 50px;
-            border: 1px solid #fff;
-        }
-
-        #sidebar ul.components {
-            padding: 20px 15px 20px 20px;
-        }
-
-        #sidebar ul li a {
-            padding: 5px 10px;
-            font-size: 1rem;
-        }
-
-        #sidebar ul li {
-            margin-bottom: 10px;
-        }
-
-        .name-overlay {
-            background: rgba(0, 94, 222, 0.82);
-            overflow: hidden;
-            height: 100%;
-            z-index: 2;
-            width: 100%;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-        }
-
-        .menu-footer {
-            margin-bottom: 0px;
-        }
-
-        .close {
-            font-size: 15px !important;
-            font-weight: 300 !important;
-            padding-top: 21px !important;
-            padding-bottom: 0px !important;
-            border: none !important;
-            color: #fff;
-        }
-
-        .modal-header {
-            padding-top: 0px;
-            padding-bottom: 0px;
-        }
-
-        .offers-txt {
-            color: #fff;
-        }
-
-        .dropup .dropdown-toggle::after {
-            display: inline-block;
-            width: 0;
-            height: 0;
-            margin-left: .255em;
-            vertical-align: .255em;
-            content: "";
-            border-top: 0;
-            border-right: .3em solid transparent;
-            border-bottom: none !important;
-            border-left: .3em solid transparent;
-        }
-
-        #catg-list a {
-            color: white;
-            text-align: center;
-        }
-
-        .dropdown-menu a {
-            font-size: 15px !important;
-        }
-
-        .billView{
-            /*margin-top: 25px;*/
-            /*overflow-y: scroll;
-            height: 78vh;*/
-            height: 400px;
-            overflow: auto; 
-        }
-        /*mobile screen only*/
-        @media only screen and (max-width: 480px) {
-            #billView{
-               height: 480px;
-               overflow: auto; 
-            }
-        }
+    }
 
 .payment-btns 
 {
@@ -370,9 +154,6 @@
                     <!-- bill body here -->
 
                     <?php
-                        // get repository  : billing/bill_print_body.repo.php
-                        // include('repository/billing/bill_print_body.repo.php');
-
                     foreach ( $billData as $key => $value ) {
                         $TaxType = $value['TaxType'];
                         if( $key != 0 ){
@@ -566,8 +347,6 @@
                             <sub>* Value For Money</sub>
                         <?php }
                         ?>
-
-
                         
                     <?php }?>
             </div>
@@ -576,11 +355,11 @@
                 
             <div class="row remove-margin payment-btns fixed-bottom" style=" width: 100%; margin-left: 1px;bottom: 60px !important;">
                 <?php if(isset($_GET['EID'])) { ?>
-                <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="border-radius: 50px;width: 100%;">Menu</a>
+                <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="border-radius: 50px;width: 100%;"><?= $this->lang->line('menu'); ?></a>
             <?php }else{ ?>
-                <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="width: 50%;">Menu</a>
+                <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="width: 50%;"><?= $this->lang->line('menu'); ?></a>
 
-                <a href="<?= base_url('customer/rating/'.$billId);?>" class="btn btn-sm paybtn" style="width: 50%;">Rating</a>
+                <a href="<?= base_url('customer/rating/'.$billId);?>" class="btn btn-sm paybtn" style="width: 50%;"><?= $this->lang->line('rating'); ?></a>
             <?php } ?>
 
             </div>

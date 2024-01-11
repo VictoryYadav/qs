@@ -179,6 +179,7 @@ $lang['cashCollect'] 		= 'Cash Collect';
 $lang['paymentType'] 		= 'P.Type';
 $lang['paymentCollected'] 	= 'Payment Collected';
 $lang['paymentReceived'] 	= 'Payment Received';
+$lang['received'] 			= 'Received';
 $lang['billOptions'] 		= 'Bill Options';
 $lang['mode']		 		= 'Mode';
 $lang['billingSettled']		= 'Billing Settled';
@@ -317,6 +318,34 @@ $lang['videoLink']			= 'Video Link';
 $lang['machineCode']		= 'Machine Code';
 $lang['live']				= 'Live';
 $lang['list']				= 'List';
+$lang['country']			= 'Country';
+$lang['city']				= 'City';
+$lang['noDataFound']		= 'No Data Found!';
+$lang['changePassword']		= 'Change Password';
+$lang['chainNo']			= 'Chain No';
+$lang['ONo']				= 'ONo';
+$lang['stall']				= 'Stall';
+$lang['address']			= 'Address';
+$lang['suburb']				= 'Suburb';
+$lang['EWNS']				= 'EWNS';
+$lang['pincode']			= 'Pincode';
+$lang['tagline']			= 'Tagline';
+$lang['GSTNo']				= 'GSTNo';
+$lang['CINNo']				= 'CINNo';
+$lang['FSSAINo']			= 'FSSAINo';
+$lang['Website']			= 'Website';
+$lang['ContactNos']			= 'ContactNos';
+$lang['contactAddress']		= 'Contact Address';
+$lang['billerName']			= 'Biller Name';
+$lang['billerGSTNo']		= 'Biller GSTNo';
+$lang['BTyp']				= 'BTyp';
+$lang['VFM']				= 'VFM';
+$lang['TaxInBill']			= 'TaxInBill';
+$lang['QRLink']				= 'QRLink';
+$lang['code']				= 'Code';
+$lang['rank']				= 'Rank';
+
+
 
 
 

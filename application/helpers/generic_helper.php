@@ -95,6 +95,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $CI->User->getDayName($dayno);	
 	}
 
+	function getDayNo($name){
+		$CI = & get_instance();
+		$CI->load->model('User');
+		return $CI->User->getDayNumber($name);
+	}
+
 	function schemeType($id){
 		$CI = & get_instance();
 		$CI->load->model('User');
@@ -424,6 +430,38 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     $convertedNumber = str_replace($sourceDigits, $targetDigits, $number);
 
     return $convertedNumber;
+}
+
+function get_lat_long($address)
+{
+	die;
+    $address = str_replace(" ", "+", $address);
+
+    $json = file_get_contents_curl("https://maps.google.com/maps/api/geocode/json?address=$address&sensor=false&key=AIzaSyBKO945pSEA3BoRajAB0ZlY8PpQRfo0abw");
+    $json = json_decode($json);
+    if ($json->status != 'ZERO_RESULTS') {
+
+        $lat = $json->{'results'}[0]->{'geometry'}->{'location'}->{'lat'};
+        $long = $json->{'results'}[0]->{'geometry'}->{'location'}->{'lng'};
+
+        return $lat . ',' . $long;
+    }
+    return false;
+}
+
+function file_get_contents_curl($url)
+{
+    $curl_handle = curl_init();
+    curl_setopt($curl_handle, CURLOPT_URL, $url);
+    curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
+    curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
+    $buffer = curl_exec($curl_handle);
+    curl_close($curl_handle);
+    if (empty($buffer)) {
+        return 0;
+    } else {
+        return $buffer;
+    }
 }
 
 // Test the function

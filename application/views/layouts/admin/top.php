@@ -108,9 +108,9 @@ body[data-topbar=dark] .header-item {
 
                                 <?php } ?>
 
-                                <a class="dropdown-item" href="<?php echo base_url('restaurant/change_password'); ?>"><i class="dripicons-lock d-inlne-block text-muted mr-2"></i> Change Password</a>
+                                <a class="dropdown-item" href="<?php echo base_url('restaurant/change_password'); ?>"><i class="dripicons-lock d-inlne-block text-muted mr-2"></i><?= $this->lang->line('changePassword');?></a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="<?php echo base_url('logout'); ?>"><i class="dripicons-exit d-inlne-block text-muted mr-2"></i> Logout</a>
+                                <a class="dropdown-item" href="<?php echo base_url('logout'); ?>"><i class="dripicons-exit d-inlne-block text-muted mr-2"></i> <?= $this->lang->line('logout');?></a>
                             </div>
                         </div>
 

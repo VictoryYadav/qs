@@ -16,7 +16,3 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
 <!-- for common unicode change -->
       <script src="<?= base_url(); ?>assets/js/sendalert_notification.js"></script>
 <!--end for common unicode change -->
-
-<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>

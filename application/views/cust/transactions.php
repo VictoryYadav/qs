@@ -18,8 +18,9 @@
                         <div class="row">
                             <div class="col-md-4 col-5">
                                 <div class="form-group">
+                                    <label for=""><?= $this->lang->line('country');?></label>
                                     <select name="country" id="country" class="form-control" onchange="getCity()">
-                                        <option value="">Country</option>
+                                        <option value=""><?= $this->lang->line('select');?></option>
                                         <?php  
                                         foreach ($countryList as $key) {
                                         ?>
@@ -30,13 +31,17 @@
                             </div>
                             <div class="col-md-4 col-5">
                                 <div class="form-group">
+                                    <label for=""><?= $this->lang->line('city');?></label>
                                     <select name="city" id="city" class="form-control">
-                                        <option value="">City</option>
+                                        <option value=""><?= $this->lang->line('select');?></option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-4 col-2">
-                                <input type="Submit" class="btn btn-sm btn-success" value="Search">
+                                <div class="form-group">
+                                    <label for="">&nbsp;</label><br>
+                                <input type="Submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('search');?>">
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -44,10 +49,10 @@
                       <table class="table table-striped" id="tblData">
                         <thead style="font-size: 12px;">
                             <tr>
-                                <th>Date</th>
-                                <th>Name</th>
-                                <th>Amt</th>
-                                <th>Rated</th>
+                                <th><?= $this->lang->line('date');?></th>
+                                <th><?= $this->lang->line('name');?></th>
+                                <th><?= $this->lang->line('amount');?></th>
+                                <th><?= $this->lang->line('rating');?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,7 +73,7 @@
                              }else{
                             ?>
                             <tr>
-                                <td colspan="3">No Data Found!</td>
+                                <td colspan="3"><?= $this->lang->line('noDataFound');?></td>
                             </tr>
                         <?php } ?>
 

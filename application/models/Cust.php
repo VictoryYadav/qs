@@ -1196,7 +1196,7 @@ class Cust extends CI_Model{
         $EDTs = $this->session->userdata('EDT');
 
         $per_cent = 1;
-        if($paymentMode == 'Due'){
+        if($paymentMode == 'Due' || $paymentMode == 'RestSplitBill'){
         	$CellNo = $postData['CellNo'];
         	$per_cent = $postData['per_cent'];
         }else{
@@ -1206,7 +1206,7 @@ class Cust extends CI_Model{
         $cust_discount = 0;
         // by customer
         $billingObjStat = 1;
-        if($paymentMode == 'RCash'){
+        if($paymentMode == 'RCash' || $paymentMode == 'RestSplitBill'){
         	$MergeNo = $postData['MergeNo'];
         	$TableNo = $postData['TableNo'];
         	// by rest
@@ -1219,7 +1219,7 @@ class Cust extends CI_Model{
 
         $strMergeNo = "'".$MergeNo."'";
         // Due => split type, RCash => Restorent side(offline), multiPayment
-        if($paymentMode == 'cash' || $paymentMode == 'RCash' || $paymentMode == 'Due' || $paymentMode == 'multiPayment'){
+        if($paymentMode == 'cash' || $paymentMode == 'RCash' || $paymentMode == 'Due' || $paymentMode == 'multiPayment' || $paymentMode == 'RestSplitBill'){
         	$orderId = 'NA';
         }else{
         	$orderId = $postData["orderId"];
@@ -1268,7 +1268,7 @@ class Cust extends CI_Model{
                 
                 $splitTyp = 0; 
                 $splitPercent = 1;
-                if($paymentMode == 'Due'){
+                if($paymentMode == 'Due' || $paymentMode == 'RestSplitBill'){
                 	$TipAmount = $postData['TipAmount'];
                 	$itemTotalGross = $postData['itemTotalGross'];
                 	$splitTyp = $postData['splitType']; 
@@ -1291,7 +1291,8 @@ class Cust extends CI_Model{
                 $billingObj['TableNo'] = $kitcheData[0]['TableNo'];
                 $billingObj['MergeNo'] = $kitcheData[0]['MergeNo'];
                 $billingObj['ChainId'] = $ChainId;
-                $billingObj['ONo'] = $ONo;
+                // $billingObj['ONo'] = $ONo;
+                $billingObj['ONo'] = 0;
                 $billingObj['CNo'] = $CNo;
                 $billingObj['BillNo'] = $newBillNo;
                 $billingObj['COrgId'] = $COrgId;
@@ -1310,7 +1311,7 @@ class Cust extends CI_Model{
                 $billingObj['DelCharge'] = $DelCharge;
                 $billingObj['PymtType'] = 0;
                 $billingObj['Stat'] = $billingObjStat;
-                if($paymentMode == 'Due'){
+                if($paymentMode == 'Due' || $paymentMode == 'RestSplitBill'){
 		        	$billingObj['CellNo'] = $postData['CellNo'];
 		        	$billingObj['CustId'] = $postData['CustId'];
 		        }else{
@@ -1370,9 +1371,13 @@ class Cust extends CI_Model{
                     $genTblDb->insert('CustPymts', $custPymtObj);
                     
                     $kstat = ($EType == 5)?3:2;
-                    $this->db2->query("UPDATE Kitchen SET BillStat = $billingObjStat  WHERE EID = $EID and (MCNo = $CNo or MergeNo = $strMergeNo) AND BillStat = 0 and Stat = $kstat ");
+                    // check for customer split bill 9-jan-24
+                    if($splitTyp == 0){
 
-                    $this->db2->query("UPDATE KitchenMain SET BillStat = $billingObjStat WHERE (MCNo = $CNo or MergeNo = $strMergeNo) AND BillStat = 0 AND EID = $EID ");
+                    	$this->db2->query("UPDATE Kitchen SET BillStat = $billingObjStat  WHERE EID = $EID and (MCNo = $CNo or MergeNo = $strMergeNo) AND BillStat = 0 and Stat = $kstat ");
+
+                    	$this->db2->query("UPDATE KitchenMain SET BillStat = $billingObjStat WHERE (MCNo = $CNo or MergeNo = $strMergeNo) AND BillStat = 0 AND EID = $EID ");
+                    }
 
                 $this->db2->trans_complete();
 

@@ -3,7 +3,7 @@
 <div id="sidebar-menu">
     <!-- Left Menu Start -->
     <ul class="metismenu list-unstyled" id="side-menu">
-        <li class="menu-title">Menu</li>
+        <li class="menu-title"><?= $this->lang->line('menu');?></li>
 
         <?php
         $menuList = menuList();
