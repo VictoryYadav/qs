@@ -124,7 +124,7 @@
                 var All = "<?= $this->lang->line('all'); ?>";
                 var b = '<option value = "">'+All+'</option>';
                 for(i = 0;i<data.length;i++){
-                    b = b+'<option value="'+data[i].MCatgId+'">'+data[i].Name+'</option>';
+                    b = b+'<option value="'+data[i].MCatgId+'">'+data[i].MCatgNm+'</option>';
                 }
                 // alert(b);
                 $('#menucat').html(b);

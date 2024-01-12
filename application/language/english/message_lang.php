@@ -344,6 +344,8 @@ $lang['TaxInBill']			= 'TaxInBill';
 $lang['QRLink']				= 'QRLink';
 $lang['code']				= 'Code';
 $lang['rank']				= 'Rank';
+$lang['active']				= 'Active';
+$lang['inactive']			= 'inActive';
 
 
 

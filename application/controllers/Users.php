@@ -397,6 +397,41 @@ class Users extends CI_Controller {
         die;
     }
 
+    public function createRestUser(){
+
+        if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            $user = $_POST;
+
+            $genTblDb = $this->load->database('GenTableData', TRUE);
+            $check = $genTblDb->select("EID")
+                                ->get_where('EIDDet', 
+                                        array('Email' => $user['PEmail'],
+                                             'CellNo' => $user['MobileNo'])
+                                        )
+                                ->row_array();
+            if(!empty($check)){
+                $my_db = $check['EID'].'e';
+                
+                $db3 = $this->load->database($my_db, TRUE);
+
+                $user['Passwd'] = md5($user['Passwd']);
+                $user['DOB'] = date('Y-m-d', strtotime($user['DOB']));
+                $user['Stat'] = 0;
+                $user['EID'] = $check['EID'];
+                $db3->insert('UsersRest', $user);
+                $this->session->set_flashdata('success','Please login through the link and upload your restaurant data.');
+                redirect(base_url('users/createRestUser'));
+            }else{
+                $this->session->set_flashdata('error','Please speak to support team.');
+            }
+        }
+
+        $data['title'] = 'Create User';
+        $this->load->view('create_rest_user', $data);
+    }
   
 
 }

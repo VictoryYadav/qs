@@ -177,13 +177,11 @@ function getCategory(){
         type: "post",
         data:{'CID': cui},
         success: function(data){
-            // alert(data);
             data = JSON.parse(data);
             var b = '<option value = "">ALL</option>';
             for(i = 0;i<data.length;i++){
                 b = b+'<option value="'+data[i].MCatgId+'">'+data[i].MCatgNm+'</option>';
             }
-            // alert(b);
             $('#menucat').html(b);
         }
     });

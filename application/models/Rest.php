@@ -729,6 +729,12 @@ class Rest extends CI_Model{
 		return $this->db2->select("MCatgId, $lname")->get_where('MenuCatg', array('EID' => authuser()->EID, 'Stat' => 0 ))->result_array();
 	}
 
+	public function getMenuCatListByCID($EID, $CID){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as MCatgNm";
+		return $this->db2->select("MCatgId, $lname")->get_where('MenuCatg', array('EID' => $EID, 'Stat' => 0, 'CID' => $CID))->result_array();
+	}
+
 	public function getMenuCatList(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "mc.Name$langId as MCatgNm";
@@ -805,7 +811,7 @@ class Rest extends CI_Model{
 		$langId = $this->session->userdata('site_lang');
         $KitName = "KitName$langId as KitName";
 
-		return $this->db2->select("KitCd ,$KitName")
+		return $this->db2->select("KitCd ,$KitName, Stat")
 						->get_where('Eat_Kit', array(
 												'Stat' => 0, 
 												'EID' => authuser()->EID
