@@ -24,16 +24,15 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                    <form method="post" id="menuCatForm" >
+                                    <form method="post" id="cuisineForm" >
                                        <div class="row">
                                            <div class="col-md-4 col-6">
                                                 <div class="form-group">
                                                     <label for=""><?= $this->lang->line('restaurant'); ?></label>
-                                                    <input  type="text" value="<?php echo authuser()->RestName; ?>" class="form-control form-control-sm" readonly>
-                                                    <input  type="hidden" name="EID" id="EID" value="<?= authuser()->EID; ?>">
+                                                    <input  type="text" value="<?php echo $eatCuisine[0]['restName']; ?>" class="form-control form-control-sm" readonly>
+                                                    <input  type="hidden" name="EID" id="EID" value="<?= $eatCuisine[0]['EID']; ?>">
 
-                                                    <input  type="hidden" name="MCatgId" id="MCatgId" >
-
+                                                    <input  type="hidden" name="ECID" id="ECID" >
                                                 </div>
                                            </div>
 
@@ -57,8 +56,8 @@
 
                                            <div class="col-md-4 col-6">
                                                 <div class="form-group">
-                                                    <label for=""><?= $this->lang->line('menuCategory'); ?></label>
-                                                    <input type="text" name="menuName" class="form-control form-control-sm" id="menuName" required="">
+                                                    <label for=""><?= $this->lang->line('cuisine'); ?> <?= $this->lang->line('name'); ?></label>
+                                                    <input type="text" name="cuisineName" class="form-control form-control-sm" id="cuisineName" required="">
                                                 </div>
                                            </div>
 
@@ -116,7 +115,7 @@
                                                 <thead>
                                                 <tr >
                                                     <th>#</th>
-                                                    <th><?= $this->lang->line('menuCategory'); ?></th>
+                                                    <th><?= $this->lang->line('cuisine'); ?> <?= $this->lang->line('name'); ?></th>
                                                     <th><?= $this->lang->line('cuisine'); ?></th>
                                                     <th><?= $this->lang->line('kitchen'); ?></th>
                                                     <th><?= $this->lang->line('rank'); ?></th>
@@ -126,17 +125,17 @@
             
                                                 <tbody>
                                                     <?php
-                                                    if(!empty($menuCatList)){
+                                                    if(!empty($eatCuisine)){
                                                         $i = 1;
-                                                        foreach ($menuCatList as $row) { ?>
+                                                        foreach ($eatCuisine as $row) { ?>
                                                     <tr>
                                                         <td><?= $i++; ?></td>
-                                                        <td><?= $row['MCatgNm']; ?></td>
-                                                        <td><?= $row['cuisine']; ?></td>
-                                                        <td><?= $row['kitchen']; ?></td>
+                                                        <td><?= $row['ecuisineName']; ?></td>
+                                                        <td><?= $row['cuisineName']; ?></td>
+                                                        <td><?= $row['kitchenName']; ?></td>
                                                         <td><?= $row['Rank']; ?></td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['EID'] ?>,<?= $row['CID'] ?>,<?= $row['KitCd'] ?>, <?= $row['Rank'] ?>,<?= $row['MCatgId'] ?>,'<?= $row['MCatgNm'] ?>',<?= $row['Stat'] ?>)">
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['EID'] ?>,<?= $row['CID'] ?>,<?= $row['KitCd'] ?>, <?= $row['Rank'] ?>,<?= $row['ECID'] ?>,'<?= $row['ecuisineName'] ?>',<?= $row['Stat'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
@@ -181,14 +180,14 @@ $(document).ready(function () {
     $('#CID').select2();
 });
 
-editData = (eid, cid, kitcd, rank, MCatgId, name, Stat) => {
+editData = (eid, cid, kitcd, rank, ECID, name, Stat) => {
     
-    $('#menuName').val(name);
+    $('#cuisineName').val(name);
     $('#Rank').val(rank);
     $('#KitCd').val(kitcd);
 
     $("#EID").val(eid);
-    $("#MCatgId").val(MCatgId);
+    $("#ECID").val(ECID);
     $("#CID").val(cid).trigger('change');
     $("#Stat").val(Stat);
 
@@ -196,17 +195,17 @@ editData = (eid, cid, kitcd, rank, MCatgId, name, Stat) => {
     $('#updateBtn').show();
 }
 
-$('#menuCatForm').on('submit', function(e){
+$('#cuisineForm').on('submit', function(e){
     e.preventDefault();
 
     var data = $(this).serializeArray();
-    $.post('<?= base_url('restaurant/menu_category') ?>',data,function(res){
+    $.post('<?= base_url('restaurant/eat_cuisine') ?>',data,function(res){
         if(res.status == 'success'){
           alert(res.response);
         }else{
           alert(res.response);
         }
-          // location.reload();
+          location.reload();
     });
 });
 

@@ -741,7 +741,7 @@ class Rest extends CI_Model{
         $cuisine = "c.Name$langId as cuisine";
         $kitchen = "et.KitName$langId as kitchen";
         $whr = "et.EID = mc.EID";
-		return $this->db2->select("mc.MCatgId, $lname, $cuisine, $kitchen, mc.CID, mc.EID, mc.Rank, mc.KitCd")
+		return $this->db2->select("mc.MCatgId, $lname, $cuisine, $kitchen, mc.CID, mc.EID, mc.Rank, mc.KitCd, mc.Stat")
 						->join('Cuisines c', 'c.CID = mc.CID', 'inner')
 						->join('Eat_Kit et', 'et.KitCd = mc.KitCd', 'inner')
 						->where($whr)
@@ -752,9 +752,24 @@ class Rest extends CI_Model{
 		$langId = $this->session->userdata('site_lang');
         $lname = "c.Name$langId as Name";
 
-		return $this->db2->select("c.CID, $lname")
+		return $this->db2->select("c.CID, $lname, c.Stat")
 						->order_by('ec.Rank', 'ASC')
 						->join('Cuisines c', 'c.CID = ec.CID', 'inner')
+						->get_where('EatCuisine ec', array('ec.EID' => authuser()->EID,'ec.Stat' => 0))
+						->result_array();
+	}
+
+	public function getEatCuisineList(){
+		$langId = $this->session->userdata('site_lang');
+        $cuisineName = "c.Name$langId as cuisineName";
+        $ecuisineName = "ec.Name$langId as ecuisineName";
+        $kitchenName = "ek.KitName$langId as kitchenName";
+
+		return $this->db2->select("ec.ECID, $ecuisineName, ec.EID, e.Name as restName, $cuisineName, c.CID, $kitchenName, ec.KitCd, ec.Rank , ec.Stat")
+						->order_by('ec.Rank', 'ASC')
+						->join('Eatary e', 'e.EID = ec.EID', 'inner')
+						->join('Cuisines c', 'c.CID = ec.CID', 'inner')
+						->join('Eat_Kit ek', 'ek.KitCd = ec.KitCd', 'inner')
 						->get_where('EatCuisine ec', array('ec.EID' => authuser()->EID,'ec.Stat' => 0))
 						->result_array();
 	}
@@ -823,7 +838,7 @@ class Rest extends CI_Model{
 	public function get_eat_section(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId as Name";
-		return $this->db2->select("SecId, $lname")->get_where('Eat_Sections', array('Stat' => 0, 'EID' => authuser()->EID))->result_array();	
+		return $this->db2->select("SecId, $lname, Stat")->get_where('Eat_Sections', array('Stat' => 0, 'EID' => authuser()->EID))->result_array();	
 	}
 
 	public function get_item_portion(){
@@ -1123,6 +1138,38 @@ class Rest extends CI_Model{
 
 	public function getRMStockDetList($TransId){
 		return $this->db2->get_where('RMStockDet', array('TransId' => $TransId, 'Stat' => 0))->result_array();
+	}
+
+	public function getDispenseOutletList(){
+		$EID = authuser()->EID;
+		$langId = $this->session->userdata('site_lang');
+        $dispName = "Name$langId as Name";
+
+        return $this->db2->select("DCd, $dispName, Stat")->get_where('Eat_DispOutlets', array('EID' => $EID))->result_array();
+	}
+
+	public function getCashier(){
+		$langId = $this->session->userdata('site_lang');
+        $name = "Name$langId as Name";
+
+        return $this->db2->select("CCd, $name, Stat")->get_where('Eat_Casher', array('EID' => authuser()->EID))
+                    ->result_array();
+    }
+
+	public function getAllTables(){
+		$EID = authuser()->EID;
+		$langId = $this->session->userdata('site_lang');
+		$section = "es.Name$langId as sectionName";
+		$cashier = "ec.Name$langId as cashierName";
+
+		$whr = "et.EID = es.EID and et.EID = ec.EID";
+		return $this->db2->select("et.*, $section, $cashier")
+					// ->order_by()
+					->join('Eat_Sections es', 'es.SecId = et.SecId', 'inner')
+					->join('Eat_Casher ec', 'ec.CCd = et.CCd', 'inner')
+					->where($whr)
+					->get_where('Eat_tables et', array('et.EID' => $EID))
+					->result_array();
 	}
 
 	

@@ -47,6 +47,29 @@
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
+                                    <h5 class="card-title mb-3">Cuisine</h5>
+                                        <form method="post" enctype="multipart/form-data" id="cuisine_form">
+                                            <input type="hidden" name="type" value="cuisine">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label>File Upload</label>
+                                                        <input type="file" name="cuisine_file" class="form-control" required="" accept=".csv" id="file">
+                                                        <small class="text-danger">File upload only CSV file</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="text-center">
+                                                <input type="submit" class="btn btn-sm btn-success" value="Upload">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
                                     <h5 class="card-title mb-3">Menu Categories</h5>
                                         <form method="post" enctype="multipart/form-data" id="menucatg_form">
                                             <input type="hidden" name="type" value="menucatg">
@@ -295,6 +318,13 @@ $('#table_form').on('submit', function(e){
     callAjax(formData);
     
 });
+
+$('#cuisine_form').on('submit', function(e){
+    e.preventDefault();
+    var formData = new FormData(document.getElementById("cuisine_form"));
+    callAjax(formData);
+});
+
 
 function callAjax(formData){
    $.ajax({

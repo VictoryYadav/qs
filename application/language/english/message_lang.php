@@ -346,6 +346,10 @@ $lang['code']				= 'Code';
 $lang['rank']				= 'Rank';
 $lang['active']				= 'Active';
 $lang['inactive']			= 'inActive';
+$lang['mergeNo']			= 'MergeNo';
+$lang['tableType']			= 'Table Type';
+$lang['capacity']			= 'Capacity';
+
 
 
 

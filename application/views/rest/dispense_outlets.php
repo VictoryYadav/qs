@@ -24,17 +24,16 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form method="post" id="cuisineForm">
+                                        <form method="post" id="dispForm">
+                                            <input type="hidden" id="DCd" name="DCd" value="0">
                                             <div class="row">
-                                                <div class="col-md-4 col-6">
+                                                <div class="col-md-3 col-5">
                                                     <div class="form-group">
-                                                        <label for="">
-                                                            <?= $this->lang->line('cuisine');?>
-                                                        </label>
-                                                        <input type="text" class="form-control form-control-sm" name="cuisineName" id="cuisineName" required="">
-                                                        <input type="hidden" name="CID" id="CID">
+                                                        <label><?= $this->lang->line('name'); ?></label>
+                                                        <input type="text" class="form-control form-control-sm" name="dispense" placeholder="<?= $this->lang->line('name'); ?>" required="" id="dispense" autocomplete="off">
                                                     </div>
                                                 </div>
+
                                                 <div class="col-md-3 col-4">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('mode'); ?></label>
@@ -46,41 +45,45 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3 col-6">
+
+                                                <div class="col-md-3 col-3">
                                                     <div class="form-group">
-                                                        <label for="">&nbsp;
-                                                        </label><br>
-                                                        <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>" id="saveBtn">
+                                                        <label for="">&nbsp;</label>
+                                                        <br>
+                                                    <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>" id="saveBtn">
                                                     <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('update'); ?>" id="updateBtn" style="display: none;">
                                                     </div>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <div class="text-success" id="msgText"></div>
                                                 </div>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
-
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table id="cuisineListTbl" class="table table-bordered">
+                                            <table id="dispTbl" class="table table-bordered">
                                                 <thead>
                                                 <tr >
                                                     <th>#</th>
-                                                    <th><?= $this->lang->line('name'); ?></th>
+                                                    <th><?= $this->lang->line('kitchen'); ?></th>
                                                     <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
                                                 </thead>
             
                                                 <tbody>
                                                     <?php
-                                                    if(!empty($cuisines)){
+                                                    if(!empty($outlets)){
                                                         $i = 1;
-                                                        foreach ($cuisines as $row) { ?>
+                                                        foreach ($outlets as $row) { ?>
                                                     <tr>
                                                         <td><?= $i++; ?></td>
                                                         <td><?= $row['Name']; ?></td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['CID'] ?>, '<?= $row['Name'] ?>', <?= $row['Stat'] ?>)">
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['DCd'] ?>, '<?= $row['Name'] ?>', <?= $row['Stat'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
@@ -95,6 +98,7 @@
                                 </div>
                             </div>
                         </div>
+
                         
                     </div> <!-- container-fluid -->
                 </div>
@@ -118,33 +122,33 @@
 
 
 <script type="text/javascript">
-$(document).ready(function () {
-    $('#cuisineListTbl').DataTable();
-});
 
-
-editData = (cid, name, Stat) => {
-    
-    $('#cuisineName').val(name);
-    $('#CID').val(cid);
-    $('#Stat').val(Stat);
-
-    $('#saveBtn').hide();
-    $('#updateBtn').show();
-}
-
-$('#cuisineForm').on('submit', function(e){
-    e.preventDefault();
-
-    var data = $(this).serializeArray();
-    $.post('<?= base_url('restaurant/cuisine') ?>',data,function(res){
-        if(res.status == 'success'){
-          alert(res.response);
-        }else{
-          alert(res.response);
-        }
-          // location.reload();
+    $(document).ready(function () {
+        $('#dispTbl').DataTable();
     });
-});
 
+    $('#dispForm').on('submit', function(e){
+        e.preventDefault();
+
+        var data = $(this).serializeArray();
+        $.post('<?= base_url('restaurant/dispense_outlet') ?>',data,function(res){
+            if(res.status == 'success'){
+              $('#msgText').html(res.response);
+            }else{
+              $('#msgText').html(res.response);
+            }
+            location.reload();
+        });
+
+    });
+
+    function editData(DCd,name, stat){
+        
+        $('#DCd').val(DCd);
+        $('#dispense').val(name);
+        $('#Stat').val(stat);
+
+        $('#saveBtn').hide();
+        $('#updateBtn').show();
+    }
 </script>

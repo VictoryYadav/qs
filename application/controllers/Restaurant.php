@@ -187,8 +187,7 @@ class Restaurant extends CI_Controller {
                 </div>';
             }
 
-            $dispName = "Name$langId as Name";
-            $disData = $this->db2->select("DCd, $dispName")->get_where('Eat_DispOutlets', array('EID' => $EID, 'Stat' => 0))->result_array();
+            $disData = $this->rest->getDispenseOutletList();
             $dispense = '';
             foreach ($disData as $kit) {
                 $checked_dis = '';
@@ -4327,10 +4326,10 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
-            echo "<pre>";
-            print_r($_POST);
-            print_r($_FILES);
-            die;
+            // echo "<pre>";
+            // print_r($_POST);
+            // print_r($_FILES);
+            // die;
             $folderPath = 'uploads/e'.$EID.'/csv';
             // remove all files inside this folder uploads/qrcode/
             $filesPath = glob($folderPath.'/*'); // get all file names
@@ -4425,6 +4424,98 @@ class Restaurant extends CI_Controller {
 
                 break;
 
+                case 'cuisine':
+                    if(isset($_FILES['cuisine_file']['name']) && !empty($_FILES['cuisine_file']['name'])){ 
+                        $files = $_FILES['cuisine_file'];
+                        $allowed = array('csv');
+                        $filename_c = $_FILES['cuisine_file']['name'];
+                        $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                        if (!in_array($ext, $allowed)) {
+                            $flag = 1;
+                            $this->session->set_flashdata('error','Support only CSV format!');
+                        }
+                        // less than 1mb size upload
+                        if($files['size'] > 1048576){
+                            $flag = 1;
+                            $this->session->set_flashdata('error','File upload less than 1MB!');   
+                        }
+                        $_FILES['cuisine_file']['name']= $files['name'];
+                        $_FILES['cuisine_file']['type']= $files['type'];
+                        $_FILES['cuisine_file']['tmp_name']= $files['tmp_name'];
+                        $_FILES['cuisine_file']['error']= $files['error'];
+                        $_FILES['cuisine_file']['size']= $files['size'];
+                        $file = $files['name'];
+
+                        if($flag == 0){
+                            $res = do_upload('cuisine_file',$file,$folderPath,'*');
+                            if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
+
+                                $cuisineData = [];
+                                $temp = [];
+                                $count = 1;
+                                $checker = 0;
+
+                                while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
+                                    // echo "<pre>";
+                                    // print_r($csv_data);
+                                    // die;
+                                    if($csv_data[0] !='RestName'){
+                                        $checker = 1;
+                                        $temp['EID'] = $this->checkEatary($csv_data[0]);
+
+                                        if($temp['EID'] == 0){
+                                          $response = $csv_data[0]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $temp['Name1'] =  $csv_data[1];
+
+                                        if(empty($temp['Name1'])){
+                                          $response = $csv_data[1]. " Field Required in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $temp['CID'] =  $this->checkCuisine($csv_data[2]);
+                                        if($temp['CID'] == 0){
+                                          $response = $csv_data[2]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $temp['KitCd'] =  $this->checkKitchen($csv_data[3], $temp['EID']);
+                                        if($temp['KitCd'] == 0){
+                                          $response = $csv_data[3]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $temp['Rank'] = $csv_data[4];
+                                        $temp['Stat'] = 0;
+                                        $temp['LoginId'] = authuser()->RUserId;
+
+                                        if($checker == 0){
+                                            $cuisineData = [];
+                                            header('Content-Type: application/json');
+                                            echo json_encode(array(
+                                                'status' => $status,
+                                                'response' => $response
+                                              ));
+                                             die; 
+                                        }
+                                        $cuisineData[] = $temp;
+                                    }
+                                }
+
+                                if(!empty($cuisineData)){
+                                    $this->db2->insert_batch('EatCuisine', $cuisineData);
+                                    $status = 'success';
+                                    $response = 'Data Inserted.';
+                                }
+
+                                fclose($open);
+                            }
+                        }
+                      }
+                break;
+
                 case 'menucatg':
                     if(isset($_FILES['mcatg_file']['name']) && !empty($_FILES['mcatg_file']['name'])){ 
                         $files = $_FILES['mcatg_file'];
@@ -4473,8 +4564,14 @@ class Restaurant extends CI_Controller {
                                               $response = $csv_data[0]. " Not Found in row no: $count";
                                               $checker = 0;
                                             }
+
                                             if($mc['CID'] == 0){
                                               $response = $csv_data[1]. " Not Found in row no: $count";
+                                              $checker = 0;
+                                            }
+
+                                            if(empty($mc['Name1'])){
+                                              $response = $csv_data[2]. " Field Required in row no: $count";
                                               $checker = 0;
                                             }
 
@@ -4903,7 +5000,7 @@ class Restaurant extends CI_Controller {
 
                                         $kd['KitName1'] =  $csv_data[1];
 
-                                        if($kd['KitName1'] == 0){
+                                        if(empty($kd['KitName1'])){
                                           $response = $csv_data[1]. " Field Required in row no: $count";
                                           $checker = 0;
                                         }
@@ -4981,9 +5078,9 @@ class Restaurant extends CI_Controller {
                                           $checker = 0;
                                         }
 
-                                        $temp['KitName1'] =  $csv_data[1];
+                                        $temp['Name1'] =  $csv_data[1];
 
-                                        if($temp['KitName1'] == 0){
+                                        if(empty($temp['Name1'])){
                                           $response = $csv_data[1]. " Field Required in row no: $count";
                                           $checker = 0;
                                         }
@@ -5060,20 +5157,20 @@ class Restaurant extends CI_Controller {
 
                                         $temp['TableNo'] =  $csv_data[1];
 
-                                        if($temp['TableNo'] == 0){
+                                        if(empty($temp['TableNo'])){
                                           $response = $csv_data[1]. " Field Required in row no: $count";
                                           $checker = 0;
                                         }
 
                                         $temp['MergeNo'] = $temp['TableNo'];
                                         $temp['TblTyp'] =  $csv_data[2];
-                                        if($temp['TblTyp'] == 0){
+                                        if(empty($temp['TblTyp'])){
                                           $response = $csv_data[2]. " Field Required in row no: $count";
                                           $checker = 0;
                                         }
 
                                         $temp['Capacity'] =  $csv_data[3];
-                                        if($temp['Capacity'] == 0){
+                                        if(empty($temp['Capacity'])){
                                           $response = $csv_data[3]. " Field Required in row no: $count";
                                           $checker = 0;
                                         }
@@ -5607,7 +5704,8 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
-
+// echo "<pre>";
+// print_r($_POST);die;
             switch ($_POST['type']) {
                 case 'search':
                         $EID = $_POST['EID'];
@@ -5635,8 +5733,7 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/eatary_edit', $data);    
     }
 
-
-    public function edit_cuisine(){
+    public function cuisine(){
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -5646,8 +5743,16 @@ class Restaurant extends CI_Controller {
             $lname = "Name$langId";
 
             $updateData[$lname] = $_POST['cuisineName'];
-            updateRecord('Cuisines', $updateData, array('CID' => $_POST['CID']));
-            $response = 'Updated Records';                    
+            $updateData['Stat'] = $_POST['Stat'];
+
+            if($_POST['CID'] > 0){
+                updateRecord('Cuisines', $updateData, array('CID' => $_POST['CID']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['CID']);
+                insertRecord('Cuisines', $updateData);
+                $response = 'Insert Records'; 
+            }                    
 
             $status = 'success';
             header('Content-Type: application/json');
@@ -5663,7 +5768,50 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/cuisine_edit', $data);    
     }
 
-    public function edit_menu_category(){
+    public function eat_cuisine(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData[$lname] = $_POST['cuisineName'];
+            $updateData['EID'] = $_POST['EID'];
+            $updateData['CID'] = $_POST['CID'];
+            $updateData['KitCd'] = $_POST['KitCd'];
+            $updateData['Rank'] = $_POST['Rank'];
+            $updateData['Stat'] = $_POST['Stat'];
+
+            if($_POST['ECID'] > 0){
+                updateRecord('EatCuisine', $updateData, array('ECID' => $_POST['MCatgId']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['ECID']);
+                $updateData['EID'] = authuser()->EID;
+                insertRecord('EatCuisine', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('cuisine');
+        $data['eatCuisine'] = $this->rest->getEatCuisineList();
+        $data['cuisines'] = $this->rest->getCuisineList();
+        $data['kitchens'] = $this->rest->get_kitchen();
+        // echo "<pre>";print_r($data);die;
+        $this->load->view('rest/eat_cuisine', $data);    
+    }
+
+    public function menu_category(){
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -5677,10 +5825,17 @@ class Restaurant extends CI_Controller {
             $updateData['CID'] = $_POST['CID'];
             $updateData['KitCd'] = $_POST['KitCd'];
             $updateData['Rank'] = $_POST['Rank'];
+            $updateData['Stat'] = $_POST['Stat'];
 
-            updateRecord('MenuCatg', $updateData, array('MCatgId' => $_POST['MCatgId']));
-            $response = 'Updated Records'; 
-
+            if($_POST['MCatgId'] > 0){
+                updateRecord('MenuCatg', $updateData, array('MCatgId' => $_POST['MCatgId']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['MCatgId']);
+                $updateData['EID'] = authuser()->EID;
+                insertRecord('MenuCatg', $updateData);
+                $response = 'Insert Records'; 
+            }
 
             $status = 'success';
             header('Content-Type: application/json');
@@ -5699,23 +5854,28 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/menu_category_edit', $data);    
     }
 
-    public function edit_kitchen(){
+    public function kitchen(){
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
 
             $langId = $this->session->userdata('site_lang');
-            $lname = "Name$langId";
+            $lname = "KitName$langId";
 
-            $updateData[$lname] = $_POST['menuName'];
-            $updateData['EID'] = $_POST['EID'];
-            $updateData['CID'] = $_POST['CID'];
-            $updateData['KitCd'] = $_POST['KitCd'];
-            $updateData['Rank'] = $_POST['Rank'];
+            $updateData[$lname] = $_POST['kitchen'];
+            $updateData['Stat'] = $_POST['Stat'];
 
-            updateRecord('MenuCatg', $updateData, array('MCatgId' => $_POST['MCatgId']));
-            $response = 'Updated Records'; 
+            if($_POST['KitCd'] > 0){
+                updateRecord('Eat_Kit', $updateData, array('KitCd' => $_POST['KitCd']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['KitCd']);
+                $updateData['EID'] = authuser()->EID;
+                insertRecord('Eat_Kit', $updateData);
+                $response = 'Insert Records'; 
+            }
+
             $status = 'success';
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -5728,6 +5888,147 @@ class Restaurant extends CI_Controller {
         $data['title'] = $this->lang->line('kitchen');
         $data['kitchens'] = $this->rest->get_kitchen();
         $this->load->view('rest/kitchen_edit', $data);    
+    }
+
+    public function dispense_outlet(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData[$lname] = $_POST['dispense'];
+            $updateData['Stat'] = $_POST['Stat'];
+
+            if($_POST['DCd'] > 0){
+                updateRecord('Eat_DispOutlets', $updateData, array('DCd' => $_POST['DCd']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['DCd']);
+                $updateData['EID'] = authuser()->EID;
+                insertRecord('Eat_DispOutlets', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = 'Dispense Outlet';
+        $data['outlets'] = $this->rest->getDispenseOutletList();
+        $this->load->view('rest/dispense_outlets', $data);    
+    }
+
+    public function table_list(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            
+            $updateData = $_POST;
+            $updateData['MergeNo'] = $updateData['TableNo'];
+            if($_POST['TId'] > 0){
+                updateRecord('Eat_tables', $updateData, array('TId' => $_POST['TId']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['TId']);
+                $updateData['EID'] = authuser()->EID;
+                $updateData['LoginCd'] = authuser()->RUserId;
+                insertRecord('Eat_tables', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = 'Table List';
+        $data['tables'] = $this->rest->getAllTables();
+        $data['sections'] = $this->rest->get_eat_section();
+        $data['casherList'] = $this->rest->getCashier();
+        
+        $this->load->view('rest/table_list', $data);    
+    }
+
+    public function db_create(){
+        $destDB = "2e";
+        // $servername = "localhost";
+        // $username = "root";
+        // $password = "";
+        $servername11 = "139.59.28.122";
+        // $username = "root";
+        // $password = "sn9750";
+
+        $username = "developer";
+        $password = "pqowie321";
+
+        // Create connection
+        $conn = new mysqli('139.59.28.122', 'developer', 'pqowie321');
+        // $conn = new mysqli($servername11, $username, $password);
+
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        // Source and destination database names
+        $sourceDatabase = "51e";
+        $destinationDatabase = $destDB;
+
+        // SQL query to create a new database if it doesn't exist
+        $sqlCreateDestinationDB = "CREATE DATABASE IF NOT EXISTS $destinationDatabase";
+        if ($conn->query($sqlCreateDestinationDB) === TRUE) {
+            echo "Destination database created successfully<br>";
+        } else {
+            echo "Error creating destination database: " . $conn->error . "<br>";
+        }
+
+        // Select source and destination databases
+        $conn->select_db($sourceDatabase);
+
+        // Get a list of tables in the source database
+        $tables = $conn->query("SHOW TABLES");
+        if ($tables) {
+            while ($row = $tables->fetch_row()) {
+                $table = $row[0];
+
+                // Select the source table
+                $conn->select_db($sourceDatabase);
+                $result = $conn->query("SELECT * FROM $table");
+
+                if ($result) {
+                    // Select the destination database
+                    $conn->select_db($destinationDatabase);
+
+                    // Create the table in the destination database if it doesn't exist
+                    $conn->query("CREATE TABLE IF NOT EXISTS $table LIKE $sourceDatabase.$table");
+
+                    // Copy data from source table to destination table
+                    // $conn->query("INSERT INTO $destinationDatabase.$table SELECT * FROM $sourceDatabase.$table");
+
+                    // echo "Table $table copied successfully<br>";
+                } else {
+                    echo "Error selecting data from table $table: " . $conn->error . "<br>";
+                }
+            }
+        } else {
+            echo "Error getting list of tables: " . $conn->error . "<br>";
+        }
+
+        // Close connection
+        $conn->close();
     }
 
 

@@ -414,10 +414,10 @@ class Users extends CI_Controller {
                                 ->row_array();
             if(!empty($check)){
                 $my_db = $check['EID'].'e';
-                
+
                 $db3 = $this->load->database($my_db, TRUE);
 
-                $user['Passwd'] = md5($user['Passwd']);
+                $user['Passwd'] = $user['Passwd'];
                 $user['DOB'] = date('Y-m-d', strtotime($user['DOB']));
                 $user['Stat'] = 0;
                 $user['EID'] = $check['EID'];

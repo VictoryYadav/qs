@@ -24,20 +24,22 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form method="post" id="catForm">
-                                            <input type="hidden" id="RMCd" name="RMCd">
+                                        <form method="post" id="kitchenForm">
+                                            <input type="hidden" id="KitCd" name="KitCd" value="0">
                                             <div class="row">
                                                 <div class="col-md-3 col-5">
                                                     <div class="form-group">
-                                                        <label><?= $this->lang->line('name'); ?></label>
-                                                        <input type="text" class="form-control form-control-sm" name="kitchen" placeholder="<?= $this->lang->line('name'); ?>" required="" id="RMName" autocomplete="off">
+                                                        <label><?= $this->lang->line('kitchen'); ?></label>
+                                                        <input type="text" class="form-control form-control-sm" name="kitchen" placeholder="<?= $this->lang->line('name'); ?>" required="" id="kitchen" autocomplete="off">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-4">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('mode'); ?></label>
-                                                        <select name="RMCatg" id="RMCatg" class="form-control form-control-sm" required="">
+                                                        <select name="Stat" id="Stat" class="form-control form-control-sm" required="">
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+
                                                             <option value="0"><?= $this->lang->line('active'); ?></option>
                                                             <option value="1"><?= $this->lang->line('inactive'); ?></option>
                                                         </select>
@@ -48,7 +50,8 @@
                                                     <div class="form-group">
                                                         <label for="">&nbsp;</label>
                                                         <br>
-                                                    <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('update'); ?>">
+                                                    <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>" id="saveBtn">
+                                                    <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('update'); ?>" id="updateBtn" style="display: none;">
                                                     </div>
                                                 </div>
 
@@ -62,7 +65,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table id="rm_cat_list" class="table table-bordered">
+                                            <table id="kitchenTbl" class="table table-bordered">
                                                 <thead>
                                                 <tr >
                                                     <th>#</th>
@@ -121,30 +124,31 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#rm_cat_list').DataTable();
-        $('#ItemId').select2();
+        $('#kitchenTbl').DataTable();
     });
 
-    $('#catForm').on('submit', function(e){
+    $('#kitchenForm').on('submit', function(e){
         e.preventDefault();
 
         var data = $(this).serializeArray();
-        $.post('<?= base_url('restaurant/rmitems_list') ?>',data,function(res){
+        $.post('<?= base_url('restaurant/edit_kitchen') ?>',data,function(res){
             if(res.status == 'success'){
               $('#msgText').html(res.response);
-            location.reload();
             }else{
               $('#msgText').html(res.response);
             }
+            location.reload();
         });
 
     });
 
     function editData(kitcd,name, stat){
-        console.log(itemid+' '+catid+' '+rmname);
-        $('#RMCd').val(itemid);
-        $('#RMCatg').val(catid);
-        $('#RMName').val(rmname);   
-        $("#ItemId").val(ItemId).trigger('change');
+        
+        $('#KitCd').val(kitcd);
+        $('#kitchen').val(name);
+        $('#Stat').val(stat);   
+
+        $('#saveBtn').hide();
+        $('#updateBtn').show();
     }
 </script>

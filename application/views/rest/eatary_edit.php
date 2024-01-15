@@ -92,7 +92,8 @@ getEataryData = () =>{
     $.post('<?= base_url('restaurant/edit_eatary') ?>',{EID:EID, type:type},function(res){
         if(res.status == 'success'){
           var data = res.response;
-          var temp = `<div class="col-md-3 col-6">
+          var temp = `<input type="hidden" name="EID" value="${data.EID}">
+                        <div class="col-md-3 col-6">
                         <div class="form-group">
                             <label><?= $this->lang->line('chainNo'); ?></label>
                             <input type="text" name="ChainId" class="form-control form-control-sm" required="" value="${data.ChainId}">

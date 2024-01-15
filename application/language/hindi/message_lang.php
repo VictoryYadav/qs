@@ -346,3 +346,6 @@ $lang['code']				= 'कोड';
 $lang['rank']				= 'रैंक';
 $lang['active']				= 'एक्टिव';
 $lang['inactive']			= 'इनएक्टिव';
+$lang['mergeNo']			= 'मर्ज न';
+$lang['tableType']			= 'टेबल टाइप';
+$lang['capacity']			= 'कैपेसिटी';
