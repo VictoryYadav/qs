@@ -1045,6 +1045,14 @@ class Rest extends CI_Model{
         return $data;
 	}
 
+	public function getCashierList(){
+		
+		$langId = $this->session->userdata('site_lang');
+		$cashName = "Name$langId as Name";
+
+        return $this->db2->select("CCd, $cashName, PrinterName, Settle")->get_where('Eat_Casher', array('EID' => $EID, 'Stat' => 0))->result_array();
+	}
+
 	public function getKitchenList(){
 		
 		$RUserId = authuser()->RUserId;

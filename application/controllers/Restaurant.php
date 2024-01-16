@@ -172,7 +172,7 @@ class Restaurant extends CI_Controller {
             $langId = $this->session->userdata('site_lang');
             $KitName = "KitName$langId as KitName";
 
-            $kitData = $this->db2->select("KitCd, $KitName")->get_where('Eat_Kit', array('EID' => $EID, 'Stat' => 0))->result_array();
+            $kitData = $this->rest->get_kitchen();
             $kitchen = '';
             foreach ($kitData as $kit) {
                 $checked_kit = '';
@@ -203,7 +203,7 @@ class Restaurant extends CI_Controller {
                 </div>';
             }
 
-            $casherData = $this->rest->getCasherList();
+            $casherData = $this->rest->getCashierList();
 
             $cashier = '';
             foreach ($casherData as $kit) {
@@ -6203,7 +6203,7 @@ class Restaurant extends CI_Controller {
             $updateData['pageUrl'] = $_POST['pageUrl'];
             $updateData['Rank'] = $_POST['Rank'];
             $updateData['Stat'] = $_POST['Stat'];
-            
+
             if($_POST['RoleId'] > 0){
                 updateRecord('UserRoles', $updateData, array('RoleId' => $_POST['RoleId']));
                 $response = 'Updated Records'; 

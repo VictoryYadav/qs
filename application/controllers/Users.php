@@ -421,6 +421,7 @@ class Users extends CI_Controller {
                 $user['DOB'] = date('Y-m-d', strtotime($user['DOB']));
                 $user['Stat'] = 0;
                 $user['EID'] = $check['EID'];
+                $user['DeputedEID'] = $check['EID'];
                 $db3->insert('UsersRest', $user);
                 $this->session->set_flashdata('success','Please login through the link and upload your restaurant data.');
                 redirect(base_url('users/createRestUser'));
