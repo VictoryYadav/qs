@@ -62,7 +62,11 @@ class Restaurant extends CI_Controller {
             // echo "<pre>";
             // print_r($_POST);
             // die;
-            $res = $this->rest->addUser($_POST);
+            if($_POST['RUserId'] > 0){
+                $res = 'Records Updated';
+            }else{
+                $res = $this->rest->addUser($_POST);
+            }
             $this->session->set_flashdata('success',$res); 
             redirect(base_url('restaurant/add_user'));
         }

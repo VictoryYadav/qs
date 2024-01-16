@@ -1046,7 +1046,7 @@ class Rest extends CI_Model{
 	}
 
 	public function getCashierList(){
-		
+		$EID = authuser()->EID;
 		$langId = $this->session->userdata('site_lang');
 		$cashName = "Name$langId as Name";
 
