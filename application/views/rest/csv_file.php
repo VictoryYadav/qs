@@ -24,20 +24,20 @@
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
-                                    <h5 class="card-title mb-3">Restaurant</h5>
+                                    <h5 class="card-title mb-3"><?= $this->lang->line('restaurant'); ?></h5>
                                         <form method="post" enctype="multipart/form-data" id="eatary_form">
                                             <input type="hidden" name="type" value="eatary">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label>File Upload</label>
+                                                        <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
                                                         <input type="file" name="eatary_file" class="form-control" required="" accept=".csv" id="file">
-                                                        <small class="text-danger">File upload only CSV file</small>
+                                                        <small class="text-danger"><?= $this->lang->line('uploadOnlyCSVFile'); ?> </small>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="text-center">
-                                                <input type="submit" class="btn btn-sm btn-success" value="Upload">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
                                             </div>
                                         </form>
                                     </div>
@@ -47,20 +47,20 @@
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
-                                    <h5 class="card-title mb-3">Cuisine</h5>
+                                    <h5 class="card-title mb-3"><?= $this->lang->line('cuisine'); ?></h5>
                                         <form method="post" enctype="multipart/form-data" id="cuisine_form">
                                             <input type="hidden" name="type" value="cuisine">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label>File Upload</label>
+                                                        <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
                                                         <input type="file" name="cuisine_file" class="form-control" required="" accept=".csv" id="file">
-                                                        <small class="text-danger">File upload only CSV file</small>
+                                                        <small class="text-danger"><?= $this->lang->line('uploadOnlyCSVFile'); ?></small>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="text-center">
-                                                <input type="submit" class="btn btn-sm btn-success" value="Upload">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
                                             </div>
                                         </form>
                                     </div>
@@ -70,20 +70,20 @@
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
-                                    <h5 class="card-title mb-3">Menu Categories</h5>
+                                    <h5 class="card-title mb-3"><?= $this->lang->line('menuCategory'); ?></h5>
                                         <form method="post" enctype="multipart/form-data" id="menucatg_form">
                                             <input type="hidden" name="type" value="menucatg">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label>File Upload</label>
+                                                        <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
                                                         <input type="file" name="mcatg_file" class="form-control" required="" accept=".csv">
-                                                        <small class="text-danger">File upload only CSV file</small>
+                                                        <small class="text-danger"><?= $this->lang->line('uploadOnlyCSVFile'); ?></small>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="text-center">
-                                                <input type="submit" class="btn btn-sm btn-success" value="Upload">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
                                             </div>
                                         </form>
                                     </div>
@@ -93,20 +93,43 @@
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
-                                    <h5 class="card-title mb-3">Item Details</h5>
+                                    <h5 class="card-title mb-3"><?= $this->lang->line('item'); ?> <?= $this->lang->line('type'); ?></h5>
+                                        <form method="post" enctype="multipart/form-data" id="item_types_form">
+                                            <input type="hidden" name="type" value="itemType">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
+                                                        <input type="file" name="itemtype_file" class="form-control" required="" accept=".csv">
+                                                        <small class="text-danger"><?= $this->lang->line('uploadOnlyCSVFile'); ?></small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="text-center">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                    <h5 class="card-title mb-3"><?= $this->lang->line('itemDetails'); ?></h5>
                                         <form method="post" enctype="multipart/form-data" id="menuitem_form">
                                             <input type="hidden" name="type" value="menuitem">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label>File Upload</label>
+                                                        <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
                                                         <input type="file" name="mitem_file" class="form-control" required="" accept=".csv">
-                                                        <small class="text-danger">File upload only CSV file</small>
+                                                        <small class="text-danger"><?= $this->lang->line('uploadOnlyCSVFile'); ?></small>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="text-center">
-                                                <input type="submit" class="btn btn-sm btn-success" value="Upload">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
                                             </div>
                                         </form>
                                     </div>
@@ -116,21 +139,21 @@
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
-                                    <h5 class="card-title mb-3">Item Pricing</h5>
+                                    <h5 class="card-title mb-3"><?= $this->lang->line('item'); ?> <?= $this->lang->line('price'); ?></h5>
                                         <form method="post" enctype="multipart/form-data" id="itemRates_form">
                                             <input type="hidden" name="type" value="itemrates">
                                             <div class="row">
                                                 
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label>File Upload</label>
+                                                        <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
                                                         <input type="file" name="mitem_rates" class="form-control" required="" accept=".csv">
-                                                        <small class="text-danger">File upload only CSV file</small>
+                                                        <small class="text-danger"><?= $this->lang->line('uploadOnlyCSVFile'); ?></small>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="text-center">
-                                                <input type="submit" class="btn btn-sm btn-success" value="Upload">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
                                             </div>
                                         </form>
                                     </div>
@@ -140,20 +163,20 @@
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
-                                    <h5 class="card-title mb-3">Item Recommendations</h5>
+                                    <h5 class="card-title mb-3"><?= $this->lang->line('item'); ?> <?= $this->lang->line('recommendation'); ?></h5>
                                         <form method="post" enctype="multipart/form-data" id="itemRecos_form">
                                             <input type="hidden" name="type" value="itemRecom">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label>File Upload</label>
+                                                        <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
                                                         <input type="file" name="mitem_recos" class="form-control" required="" accept=".csv">
-                                                        <small class="text-danger">File upload only CSV file</small>
+                                                        <small class="text-danger"><?= $this->lang->line('uploadOnlyCSVFile'); ?></small>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="text-center">
-                                                <input type="submit" class="btn btn-sm btn-success" value="Upload">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
                                             </div>
                                         </form>
                                     </div>
@@ -163,21 +186,21 @@
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
-                                    <h5 class="card-title mb-3">Kitchen</h5>
+                                    <h5 class="card-title mb-3"><?= $this->lang->line('kitchen'); ?></h5>
                                         
                                         <form method="post" enctype="multipart/form-data" id="kitchen_form">
                                             <input type="hidden" name="type" value="kitchen">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label>File Upload</label>
+                                                        <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
                                                         <input type="file" name="kitchen_file" class="form-control" required="" accept=".csv">
-                                                        <small class="text-danger">File upload only CSV file</small>
+                                                        <small class="text-danger"><?= $this->lang->line('uploadOnlyCSVFile'); ?></small>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="text-center">
-                                                <input type="submit" class="btn btn-sm btn-success" value="Upload">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
                                             </div>
                                         </form>
                                     </div>
@@ -187,21 +210,21 @@
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
-                                    <h5 class="card-title mb-3">Dispense Outlet</h5>
+                                    <h5 class="card-title mb-3"><?= $this->lang->line('dispense'); ?> <?= $this->lang->line('outlet'); ?></h5>
                                         
                                         <form method="post" enctype="multipart/form-data" id="dispenseOutlet_form">
                                             <input type="hidden" name="type" value="dispenseOutlet">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label>File Upload</label>
+                                                        <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
                                                         <input type="file" name="dispense_file" class="form-control" required="" accept=".csv">
-                                                        <small class="text-danger">File upload only CSV file</small>
+                                                        <small class="text-danger"><?= $this->lang->line('uploadOnlyCSVFile'); ?></small>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="text-center">
-                                                <input type="submit" class="btn btn-sm btn-success" value="Upload">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
                                             </div>
                                         </form>
                                     </div>
@@ -211,21 +234,45 @@
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
-                                    <h5 class="card-title mb-3">Table</h5>
+                                    <h5 class="card-title mb-3"><?= $this->lang->line('table'); ?></h5>
                                         
                                         <form method="post" enctype="multipart/form-data" id="table_form">
                                             <input type="hidden" name="type" value="table">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label>File Upload</label>
+                                                        <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
                                                         <input type="file" name="table_file" class="form-control" required="" accept=".csv">
-                                                        <small class="text-danger">File upload only CSV file</small>
+                                                        <small class="text-danger"><?= $this->lang->line('uploadOnlyCSVFile'); ?></small>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="text-center">
-                                                <input type="submit" class="btn btn-sm btn-success" value="Upload">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                    <h5 class="card-title mb-3"><?= $this->lang->line('cashier'); ?></h5>
+                                        
+                                        <form method="post" enctype="multipart/form-data" id="cashier_form">
+                                            <input type="hidden" name="type" value="cashier">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
+                                                        <input type="file" name="cashier_file" class="form-control" required="" accept=".csv">
+                                                        <small class="text-danger"><?= $this->lang->line('uploadOnlyCSVFile'); ?></small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="text-center">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
                                             </div>
                                         </form>
                                     </div>
@@ -325,6 +372,17 @@ $('#cuisine_form').on('submit', function(e){
     callAjax(formData);
 });
 
+$('#item_types_form').on('submit', function(e){
+    e.preventDefault();
+    var formData = new FormData(document.getElementById("item_types_form"));
+    callAjax(formData);
+});
+
+$('#cashier_form').on('submit', function(e){
+    e.preventDefault();
+    var formData = new FormData(document.getElementById("cashier_form"));
+    callAjax(formData);
+});
 
 function callAjax(formData){
    $.ajax({

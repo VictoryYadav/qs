@@ -4321,8 +4321,9 @@ class Restaurant extends CI_Controller {
 
     // csv file upload
 
-    public function csv_file(){
-        $EID = authuser()->EID;
+    public function csv_file_upload(){
+        $EID = $this->session->userdata('EID');
+        
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -4408,7 +4409,6 @@ class Restaurant extends CI_Controller {
                                         $eatObj['Stat'] = 0;
                                         $eatObj['LoginCd'] = authuser()->RUserId;
                                         $eatary_id = insertRecord('Eatary', $eatObj);
-                                        
                                     }
                                 }
                                 fclose($open);
@@ -4463,7 +4463,7 @@ class Restaurant extends CI_Controller {
                                         $checker = 1;
                                         $temp['EID'] = $this->checkEatary($csv_data[0]);
 
-                                        if($temp['EID'] == 0){
+                                        if($temp['EID'] < 1){
                                           $response = $csv_data[0]. " Not Found in row no: $count";
                                           $checker = 0;
                                         }
@@ -4612,6 +4612,85 @@ class Restaurant extends CI_Controller {
                       }
                 break;
 
+                case 'itemType':
+                    if(isset($_FILES['itemtype_file']['name']) && !empty($_FILES['itemtype_file']['name'])){ 
+                        $files = $_FILES['itemtype_file'];
+                        $allowed = array('csv');
+                        $filename_c = $_FILES['itemtype_file']['name'];
+                        $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                        if (!in_array($ext, $allowed)) {
+                            $flag = 1;
+                            $this->session->set_flashdata('error','Support only CSV format!');
+                        }
+                        // less than 1mb size upload
+                        if($files['size'] > 1048576){
+                            $flag = 1;
+                            $this->session->set_flashdata('error','File upload less than 1MB!');   
+                        }
+                        $_FILES['itemtype_file']['name']= $files['name'];
+                        $_FILES['itemtype_file']['type']= $files['type'];
+                        $_FILES['itemtype_file']['tmp_name']= $files['tmp_name'];
+                        $_FILES['itemtype_file']['error']= $files['error'];
+                        $_FILES['itemtype_file']['size']= $files['size'];
+                        $file = $files['name'];
+
+                        if($flag == 0){
+                            $res = do_upload('itemtype_file',$file,$folderPath,'*');
+                            if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
+                                $typeData = [];
+                                $temp = [];
+                                $count = 1;
+                                $checker = 0;
+                                while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
+                                    // echo "<pre>";
+                                    // print_r($csv_data);
+                                    // die;
+                                    if($csv_data[0] !='RestName'){
+                                            
+                                            $temp['EID'] = $this->checkEatary($csv_data[0]);
+
+                                            $temp['Name1'] = $csv_data[1];
+                                            $checker = 1;
+                                            
+                                            if($temp['EID'] < 1){
+                                              $response = $csv_data[0]. " Not Found in row no: $count";
+                                              $checker = 0;
+                                            }
+
+                                            if(empty($temp['Name1'])){
+                                              $response = $csv_data[1]. " Field Required in row no: $count";
+                                              $checker = 0;
+                                            }
+
+                                            $temp['Stat'] = 0;
+
+                                            if($checker == 0){
+                                                $typeData = [];
+                                                header('Content-Type: application/json');
+                                                echo json_encode(array(
+                                                    'status' => $status,
+                                                    'response' => $response
+                                                  ));
+                                                 die; 
+                                            }
+
+                                            $typeData[] = $temp;
+                                    }
+                                    $count++;
+                                }
+
+                                if(!empty($typeData)){
+                                    $this->db2->insert_batch('ItemTypes', $typeData);
+                                    $status = 'success';
+                                    $response = 'Data Inserted.';
+                                }
+                                
+                                fclose($open);
+                            }
+                        }
+                      }
+                break;
+
                 case 'menuitem':
                     if(isset($_FILES['mitem_file']['name']) && !empty($_FILES['mitem_file']['name'])){ 
                         $files = $_FILES['mitem_file'];
@@ -4653,95 +4732,89 @@ class Restaurant extends CI_Controller {
 
                                         $mItem['EID'] = $this->checkEatary($csv_data[0]);
 
-                                        if($mItem['EID'] == 0){
+                                        if($mItem['EID'] < 1){
                                           $response = $csv_data[0]. " Not Found in row no: $count";
                                           $checker = 0;
                                         }
+                                            $mItem['CID'] = $this->checkCuisine($csv_data[1]);
 
-                                        $mItem['CID'] = $this->checkCuisine($csv_data[1]);
+                                            if($mItem['CID'] == 0){
+                                              $response = $csv_data[1]. " Not Found in row no: $count";
+                                              $checker = 0;
+                                            }
 
-                                        if($mItem['CID'] == 0){
-                                          $response = $csv_data[1]. " Not Found in row no: $count";
-                                          $checker = 0;
-                                        }
+                                            $mItem['MCatgId'] = $csv_data[2];
+                                            $mItem['CTyp'] = $this->checkCTyp($csv_data[3]);
+                                            if($mItem['CTyp'] == 0){
+                                              $response = $csv_data[3]. " Not Found in row no: $count";
+                                              $checker = 0;
+                                            }
 
-                                        $mItem['MCatgId'] = $csv_data[2];
-                                        $mItem['CTyp'] = $this->checkCTyp($csv_data[3]);
-                                        if($mItem['CTyp'] == 0){
-                                          $response = $csv_data[3]. " Not Found in row no: $count";
-                                          $checker = 0;
-                                        }
+                                            $mItem['FID'] = $this->checkFoodType($csv_data[4], $mItem['EID']);
 
-                                        $mItem['FID'] = $this->checkFoodType($csv_data[4], $mItem['EID']);
+                                            if($mItem['FID'] == 0){
+                                              $response = $csv_data[4]. " Not Found in row no: $count";
+                                              $checker = 0;
+                                            }
+                                            $mItem['ItemNm1'] = $csv_data[5];
+                                            $mItem['IMcCd'] = $csv_data[6];
+                                            $mItem['PckCharge'] = $csv_data[7];
+                                            $mItem['ItemTyp'] = $this->checkItemType($csv_data[8], $mItem['EID']);
+                                            if($mItem['ItemTyp'] == 0){
+                                              $response = $csv_data[8]. " Not Found in row no: $count";
+                                              $checker = 0;
+                                            }
 
-                                        if($mItem['FID'] == 0){
-                                          $response = $csv_data[4]. " Not Found in row no: $count";
-                                          $checker = 0;
-                                        }
+                                            $mItem['ItemAttrib'] = $this->checkType($csv_data[9], $mItem['EID'], 1);
 
-                                        $mItem['ItemNm1'] = $csv_data[5];
-                                        $mItem['IMcCd'] = $csv_data[6];
-                                        $mItem['PckCharge'] = $csv_data[7];
-                                        $mItem['ItemTyp'] = $this->checkItemType($csv_data[8], $mItem['EID']);
+                                            if($mItem['ItemAttrib'] == 0){
+                                              $response = $csv_data[9]. " Not Found in row no: $count";
+                                              $checker = 0;
+                                            }
+                                            $mItem['ItemSale'] = $this->checkType($csv_data[10], $mItem['EID'], 3);
 
-                                        if($mItem['ItemTyp'] == 0){
-                                          $response = $csv_data[8]. " Not Found in row no: $count";
-                                          $checker = 0;
-                                        }
+                                            if($mItem['ItemSale'] == 0){
+                                              $response = $csv_data[10]. " Not Found in row no: $count";
+                                              $checker = 0;
+                                            }
 
-                                        $mItem['ItemAttrib'] = $this->checkType($csv_data[9], $mItem['EID'], 1);
+                                            $mItem['ItemTag'] = $this->checkType($csv_data[11], $mItem['EID'], 2);
 
-                                        if($mItem['ItemAttrib'] == 0){
-                                          $response = $csv_data[9]. " Not Found in row no: $count";
-                                          $checker = 0;
-                                        }
+                                            if($mItem['ItemTag'] == 0){
+                                              $response = $csv_data[11]. " Not Found in row no: $count";
+                                              $checker = 0;
+                                            }
+                                            $mItem['NV'] = $csv_data[12];
+                                            $mItem['MaxDisc'] = $csv_data[13];
+                                            $mItem['StdDiscount'] = $csv_data[14];
+                                            $mItem['DiscRate'] = $csv_data[15];
+                                            $mItem['Rank'] = $csv_data[16];
+                                            $mItem['ItmDesc1'] = $csv_data[17];
+                                            $mItem['Ingeredients1'] = $csv_data[18];
+                                            $mItem['MaxQty'] = $csv_data[19];
+                                            $mItem['MTyp'] = $csv_data[20];
+                                            $mItem['Rmks1'] = $csv_data[21];
+                                            $mItem['PrepTime'] = $csv_data[22];
+                                            $mItem['FrmTime'] = date('H:i:s', strtotime($csv_data[23]));
+                                            $mItem['ToTime'] = date('H:i:s', strtotime($csv_data[24]));
+                                            $mItem['AltFrmTime'] = date('H:i:s', strtotime($csv_data[25]));
+                                            $mItem['AltToTime'] = date('H:i:s', strtotime($csv_data[26]));
+                                            $mItem['DayNo'] = getDayNo($csv_data[27]);
 
-                                        $mItem['ItemSale'] = $this->checkType($csv_data[10], $mItem['EID'], 3);
+                                            if($mItem['DayNo'] == 0){
+                                              $response = $csv_data[27]. " Not Found in row no: $count";
+                                              $checker = 0;
+                                            }
+                                            $mItem['KitCd'] = $this->checkKitchen($csv_data[28], $mItem['EID']);
 
-                                        if($mItem['ItemSale'] == 0){
-                                          $response = $csv_data[10]. " Not Found in row no: $count";
-                                          $checker = 0;
-                                        }
-
-                                        $mItem['ItemTag'] = $this->checkType($csv_data[11], $mItem['EID'], 2);
-
-                                        if($mItem['ItemTag'] == 0){
-                                          $response = $csv_data[11]. " Not Found in row no: $count";
-                                          $checker = 0;
-                                        }
-
-                                        $mItem['NV'] = $csv_data[12];
-                                        $mItem['MaxDisc'] = $csv_data[13];
-                                        $mItem['StdDiscount'] = $csv_data[14];
-                                        $mItem['DiscRate'] = $csv_data[15];
-                                        $mItem['Rank'] = $csv_data[16];
-                                        $mItem['ItmDesc1'] = $csv_data[17];
-                                        $mItem['Ingeredients1'] = $csv_data[18];
-                                        $mItem['MaxQty'] = $csv_data[19];
-                                        $mItem['MTyp'] = $csv_data[20];
-                                        $mItem['Rmks1'] = $csv_data[21];
-                                        $mItem['PrepTime'] = $csv_data[22];
-                                        $mItem['FrmTime'] = date('H:i:s', strtotime($csv_data[23]));
-                                        $mItem['ToTime'] = date('H:i:s', strtotime($csv_data[24]));
-                                        $mItem['AltFrmTime'] = date('H:i:s', strtotime($csv_data[25]));
-                                        $mItem['AltToTime'] = date('H:i:s', strtotime($csv_data[26]));
-                                        $mItem['DayNo'] = getDayNo($csv_data[27]);
-
-                                        if($mItem['DayNo'] == 0){
-                                          $response = $csv_data[27]. " Not Found in row no: $count";
-                                          $checker = 0;
-                                        }
-
-                                        $mItem['KitCd'] = $this->checkKitchen($csv_data[28], $mItem['EID']);
-
-                                        if($mItem['KitCd'] == 0){
-                                          $response = $csv_data[28]. " Not Found in row no: $count";
-                                          $checker = 0;
-                                        }
-
-                                        $mItem['videoLink'] = $csv_data[29];
-                                        $mItem['Stat'] = 0;
-                                        $mItem['LoginCd'] = authuser()->RUserId;
+                                            if($mItem['KitCd'] == 0){
+                                              $response = $csv_data[28]. " Not Found in row no: $count";
+                                              $checker = 0;
+                                            }
+                                            $mItem['videoLink'] = $csv_data[29];
+                                            $mItem['Stat'] = 0;
+                                            $mItem['LoginCd'] = authuser()->RUserId;
+                                        
 
                                         if($checker == 0){
                                             $mItemData = [];
@@ -5034,6 +5107,86 @@ class Restaurant extends CI_Controller {
                       }
                 break;
 
+                case 'cashier':
+                    if(isset($_FILES['cashier_file']['name']) && !empty($_FILES['cashier_file']['name'])){ 
+                        $files = $_FILES['cashier_file'];
+                        $allowed = array('csv');
+                        $filename_c = $_FILES['cashier_file']['name'];
+                        $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                        if (!in_array($ext, $allowed)) {
+                            $flag = 1;
+                            $this->session->set_flashdata('error','Support only CSV format!');
+                        }
+                        // less than 1mb size upload
+                        if($files['size'] > 1048576){
+                            $flag = 1;
+                            $this->session->set_flashdata('error','File upload less than 1MB!');   
+                        }
+                        $_FILES['cashier_file']['name']= $files['name'];
+                        $_FILES['cashier_file']['type']= $files['type'];
+                        $_FILES['cashier_file']['tmp_name']= $files['tmp_name'];
+                        $_FILES['cashier_file']['error']= $files['error'];
+                        $_FILES['cashier_file']['size']= $files['size'];
+                        $file = $files['name'];
+
+                        if($flag == 0){
+                            $res = do_upload('cashier_file',$file,$folderPath,'*');
+                            if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
+
+                                $cashierData = [];
+                                $kd = [];
+                                $count = 1;
+                                $checker = 0;
+
+                                while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
+                                    // echo "<pre>";
+                                    // print_r($csv_data);
+                                    // die;
+                                    if($csv_data[0] !='RestName'){
+                                        $checker = 1;
+                                        $kd['EID'] = $this->checkEatary($csv_data[0]);
+
+                                        if($kd['EID'] < 1){
+                                          $response = $csv_data[0]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $kd['Name1'] =  $csv_data[1];
+
+                                        if(empty($kd['Name1'])){
+                                          $response = $csv_data[1]. " Field Required in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $kd['PrinterName'] =  $csv_data[2];
+                                        $kd['Stat'] = 0;
+
+                                        if($checker == 0){
+                                            $cashierData = [];
+                                            header('Content-Type: application/json');
+                                            echo json_encode(array(
+                                                'status' => $status,
+                                                'response' => $response
+                                              ));
+                                             die; 
+                                        }
+
+                                        $cashierData[] = $kd;
+                                    }
+                                }
+
+                                if(!empty($cashierData)){
+                                    $this->db2->insert_batch('Eat_Casher', $cashierData);
+                                    $status = 'success';
+                                    $response = 'Data Inserted.';
+                                }
+
+                                fclose($open);
+                            }
+                        }
+                      }
+                break;
+
                 case 'dispenseOutlet':
                     if(isset($_FILES['dispense_file']['name']) && !empty($_FILES['dispense_file']['name'])){ 
                         $files = $_FILES['dispense_file'];
@@ -5223,7 +5376,7 @@ class Restaurant extends CI_Controller {
               ));
              die;    
         }
-        $data['title'] = 'CSV File Upload';
+        $data['title'] = $this->lang->line('file').' '.$this->lang->line('upload');
         $data['cuisine'] = $this->rest->getCuisineList();
         $this->load->view('rest/csv_file', $data);   
     }
@@ -5298,7 +5451,7 @@ class Restaurant extends CI_Controller {
         $data = $this->db2->select('ItemId')->like('ItemNm1', $itemName)->get_where('MenuItem', array('EID' => $EID))
                     ->row_array();
         if(!empty($data)){
-            $itemId = $data['itemId'];
+            $itemId = $data['ItemId'];
         }
         return $itemId;
     }
@@ -5890,6 +6043,80 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/kitchen_edit', $data);    
     }
 
+    public function cashier(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData[$lname] = $_POST['cashier'];
+            $updateData['Stat'] = $_POST['Stat'];
+
+            if($_POST['CCd'] > 0){
+                updateRecord('Eat_Casher', $updateData, array('CCd' => $_POST['CCd']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['CCd']);
+                $updateData['EID'] = authuser()->EID;
+                insertRecord('Eat_Casher', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('cashier');
+        $data['casherList'] = $this->rest->getCashier();
+
+        $this->load->view('rest/cashier', $data);    
+    }
+
+    public function itemType(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData[$lname] = $_POST['item'];
+            $updateData['Stat'] = $_POST['Stat'];
+
+            if($_POST['ItmTyp'] > 0){
+                updateRecord('ItemTypes', $updateData, array('ItmTyp' => $_POST['ItmTyp']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['ItmTyp']);
+                $updateData['EID'] = authuser()->EID;
+                insertRecord('ItemTypes', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('itemType');
+        $data['itemTyp'] = $this->rest->getItemTypeList();
+
+        $this->load->view('rest/itemType', $data);    
+    }
+
     public function dispense_outlet(){
 
         $status = "error";
@@ -5921,7 +6148,7 @@ class Restaurant extends CI_Controller {
              die;
         }
         
-        $data['title'] = 'Dispense Outlet';
+        $data['title'] = $this->lang->line('dispense').' '.$this->lang->line('outlet');
         $data['outlets'] = $this->rest->getDispenseOutletList();
         $this->load->view('rest/dispense_outlets', $data);    
     }
@@ -5954,12 +6181,51 @@ class Restaurant extends CI_Controller {
              die;
         }
         
-        $data['title'] = 'Table List';
+        $data['title'] = $this->lang->line('table').' '.$this->lang->line('list');
         $data['tables'] = $this->rest->getAllTables();
         $data['sections'] = $this->rest->get_eat_section();
         $data['casherList'] = $this->rest->getCashier();
         
         $this->load->view('rest/table_list', $data);    
+    }
+
+    public function menu_list(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData[$lname] = $_POST['menu'];
+
+            $updateData['pageUrl'] = $_POST['pageUrl'];
+            $updateData['Rank'] = $_POST['Rank'];
+            $updateData['Stat'] = $_POST['Stat'];
+            
+            if($_POST['RoleId'] > 0){
+                updateRecord('UserRoles', $updateData, array('RoleId' => $_POST['RoleId']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['RoleId']);
+                insertRecord('UserRoles', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('menu').' '.$this->lang->line('list');
+        $data['menus'] = $this->rest->getAllMenuList();
+
+        $this->load->view('rest/menuList', $data);
     }
 
     public function db_create(){

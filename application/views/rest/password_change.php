@@ -125,18 +125,19 @@
 
         var data = $(this).serializeArray();
         $.post('<?= base_url('restaurant/change_password') ?>',data,function(res){
-                if(res.status == 'success'){
-                  alert(res.response);
-                  $('#sendOtp').show();
-                  $('#changePassword').hide();
-                  // location.reload();
-                }else{
-                  alert(res.response);
-                  $('#changePassword').show();
-                  $('#sendOtp').hide();
-                }
-            });
-
+            if(res.status == 'success'){
+              alert(res.response);
+              $('#sendOtp').show();
+              $('#changePassword').hide();
+              window.location = "<?php echo base_url('restaurant'); ?>";
+              return false;
+              // location.reload();
+            }else{
+              alert(res.response);
+              $('#changePassword').show();
+              $('#sendOtp').hide();
+            }
+        });
     });
 
     $('#sendOtp').on('submit', function(e){

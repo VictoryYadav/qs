@@ -778,7 +778,7 @@ class Rest extends CI_Model{
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId as Name";
 
-		return $this->db2->select("ItmTyp, $lname")
+		return $this->db2->select("ItmTyp, $lname, Stat")
 						->get_where('ItemTypes', array('Stat' => 0,'EID' => authuser()->EID))
 						->result_array();
 	}
@@ -1170,6 +1170,17 @@ class Rest extends CI_Model{
 					->where($whr)
 					->get_where('Eat_tables et', array('et.EID' => $EID))
 					->result_array();
+	}
+
+	public function getAllMenuList(){
+
+        $langId = $this->session->userdata('site_lang');
+        $lname = "ur.Name$langId as LngName";
+
+		return $this->db2->select("ur.RoleId, $lname, ur.RoleTyp, ur.pageUrl, ur.Rank, ur.PhpPage, ur.Stat, ur.Title")
+                        ->order_by('ur.Rank', 'ASC')
+                        ->get('UserRoles ur')
+                        ->result_array();
 	}
 
 	

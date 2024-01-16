@@ -349,6 +349,13 @@ $lang['inactive']			= 'inActive';
 $lang['mergeNo']			= 'MergeNo';
 $lang['tableType']			= 'Table Type';
 $lang['capacity']			= 'Capacity';
+$lang['upload']				= 'Upload';
+$lang['file']				= 'File';
+$lang['uploadOnlyCSVFile']	= 'Upload only CSV file';
+$lang['price']				= 'Price';
+$lang['url']				= 'Url';
+
+
 
 
 
