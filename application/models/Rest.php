@@ -323,6 +323,7 @@ class Rest extends CI_Model{
 			$userId =  $postdata['userId'];
 
 			$availableRoles = $this->db2->query("SELECT ur.RoleId, $lname FROM UserRoles ur WHERE  ur.Stat = 0 AND ur.RoleId NOT IN (SELECT RoleId FROM UserRolesAccess WHERE RUserId = $userId AND EID = $EID) Order by ur.Name1")->result_array();
+			return $availableRoles;
 			if (!empty($availableRoles)) {
 				$response = [
 					"status" => 1,
@@ -366,11 +367,33 @@ class Rest extends CI_Model{
 
 		}
 
+		if (isset($postdata['setRestRoles']) && $postdata['setRestRoles']==1) {
+			$userId = $postdata['userId'];
+			$roles = $postdata['roles'];
+
+			$response = "Roles are assigned";
+
+			$userRolesAccessObj = [];
+			$temp = [];
+			foreach ($roles as $role) {
+				$temp['EID'] = $EID;
+				$temp['RUserId'] = $userId;
+				$temp['RoleId'] = $role;
+				$userRolesAccessObj[] = $temp;
+			}
+			if(!empty($userRolesAccessObj)){
+				$this->db2->insert_batch('UserRolesAccess', $userRolesAccessObj); 
+			}else{
+				$response = "Failed to insert in UserRolesAccess table";
+			}
+			return $response;
+		}
+
 		if (isset($postdata['getAssignedRoles']) && $postdata['getAssignedRoles']==1) {
 			$userId = $postdata['userId'];
-			// $getAssignedRoles = $userRolesAccessObj->exec("SELECT ura.URNo, ur.Name FROM `UserRolesAccess` ura, UserRoles ur WHERE ura.RoleId = ur.RoleId AND ur.Stat = 0 AND ura.EID = $EID AND ura.RUserId = $userId Order by ur.Name");
 
 			$getAssignedRoles = $this->db2->query("SELECT ura.URNo, $lname FROM `UserRolesAccess` ura, UserRoles ur WHERE ura.RoleId = ur.RoleId AND ur.Stat = 0 AND ura.EID = $EID AND ura.RUserId = $userId Order by ur.Name1")->result_array();
+			return $getAssignedRoles;
 
 			if (!empty($getAssignedRoles)) {
 				$response = [
@@ -410,6 +433,21 @@ class Rest extends CI_Model{
 			}
 			// echo json_encode($response);
 			// die();
+			return $response;
+		}
+
+		if (isset($postdata['removeRestRoles']) && $postdata['removeRestRoles']==1) {
+			
+			$URNo = implode(",",$postdata['URNo']);
+			$userId = $postdata['userId'];
+
+			$deleteRoles = $this->db2->query("DELETE FROM UserRolesAccess WHERE EID = $EID AND RUserId = $userId and URNo IN ($URNo)");
+
+			if ($deleteRoles) {
+				$response = "Roles are Removed";
+			}else {
+				$response = "Failed to delete in UserRolesAccess table";
+			}
 			return $response;
 		}
 
@@ -1023,6 +1061,11 @@ class Rest extends CI_Model{
 	public function getUserList(){
 		return $this->db2->get_where('UsersRest', array('EID' => authuser()->EID,'Stat' => 0))
 		->result_array();
+	}
+
+	public function getusersRestData(){
+		$EID = authuser()->EID;
+		return $this->db2->select('RUserId, FName, LName, MobileNo')->get_where('UsersRest', array('DeputedEID' => $EID, 'Stat' => 0 ))->result_array();  	
 	}
 
 	public function getCasherList(){

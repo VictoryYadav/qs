@@ -63,6 +63,9 @@ class Restaurant extends CI_Controller {
             // print_r($_POST);
             // die;
             if($_POST['RUserId'] > 0){
+                $udata = $_POST;
+                $udata['DOB'] = date('Y-m-d', strtotime($udata['DOB'])); 
+                updateRecord('UsersRest', $udata, array('RUserId' => $_POST['RUserId']));
                 $res = 'Records Updated';
             }else{
                 $res = $this->rest->addUser($_POST);
@@ -100,7 +103,7 @@ class Restaurant extends CI_Controller {
 		 $this->load->view('rest/disable_user',$data);
     }
 
-    public function user_access(){
+    public function user_access1(){
         if($this->input->method(true)=='POST'){
             // echo "<pre>";
             // print_r($_POST);
@@ -109,10 +112,29 @@ class Restaurant extends CI_Controller {
             echo json_encode($res);
             die;
         }
-        $EID = authuser()->EID;
-        $data['usersRestData'] = $this->db2->select('RUserId, FName, LName, MobileNo')->get_where('UsersRest', array('DeputedEID' => $EID, 'Stat' => 0 ))->result_array(); 
+        
+        $data['usersRestData'] = $this->rest->getusersRestData(); 
     	$data['title'] = $this->lang->line('userAccess');
-		$this->load->view('rest/access_users',$data);
+		$this->load->view('rest/access_users_old',$data);
+    }
+
+    public function user_access(){
+        if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            $res = $this->rest->getUserAccessRole($_POST);
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => 'success',
+                'response' => $res
+              ));
+             die;
+        }
+        
+        $data['usersRestData'] = $this->rest->getusersRestData(); 
+        $data['title'] = $this->lang->line('userAccess');
+        $this->load->view('rest/access_users',$data);
     }
 
     public function role_assign(){
@@ -148,8 +170,8 @@ class Restaurant extends CI_Controller {
              die;
             
         }
-        $EID = authuser()->EID;
-        $data['usersRestData'] = $this->db2->select('RUserId, FName, LName, MobileNo')->get_where('UsersRest', array('DeputedEID' => $EID, 'Stat' => 0 ))->result_array();        
+        
+        $data['usersRestData'] = $this->rest->getusersRestData();        
 
         $data['title'] = $this->lang->line('roleAssignment');
         $this->load->view('rest/assign_role',$data);   
