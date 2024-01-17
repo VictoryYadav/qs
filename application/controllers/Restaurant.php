@@ -622,7 +622,7 @@ class Restaurant extends CI_Controller {
     	$data['title'] = $this->lang->line('newOffer');
 
         $data['sch_typ'] = $this->rest->getOffersSchemeType();
-        $data['sch_cat'] = $this->rest->getOffersSchemeCategory();
+        $data['sch_cat'] = $this->rest->getOffersSchemeCategory(1);
         $data['weekDay'] = $this->rest->getWeekDayList();
         $data['cuisines'] = $this->rest->getCuisineList();
         $data['foodType'] = $this->rest->get_foodType();
@@ -749,7 +749,7 @@ class Restaurant extends CI_Controller {
         $data['title'] = $this->lang->line('editOffer');
         
         $data['sch_typ'] = $this->rest->getOffersSchemeType();
-        $data['sch_cat'] = $this->rest->getOffersSchemeCategory();
+        $data['sch_cat'] = $this->rest->getOffersSchemeCategory(1);
         $data['weekDay'] = $this->rest->getWeekDayList();
         $data['cuisines'] = $this->rest->getCuisineList();
         $data['foodType'] = $this->rest->get_foodType();
@@ -789,7 +789,7 @@ class Restaurant extends CI_Controller {
         $data['menucat'] = $this->rest->get_MCatgId();
 
 
-        $menuItemData = $this->db2->select("mi.ItemId, $lname, $ipName, mr.OrigRate, mr.IRNo, $esName")
+        $menuItemData = $this->db2->select("mi.ItemId, $lname, $ipName, mr.OrigRate, mr.ItmRate, mr.IRNo, $esName")
                         ->order_by('mi.CID,mi.MCatgId, mi.ItemNm1', 'ASC')
                         // ->group_by('mi.ItemId')
                         ->join('MenuItemRates mr', 'mr.ItemId = mi.ItemId', 'inner')
@@ -2749,7 +2749,9 @@ class Restaurant extends CI_Controller {
                 $order_by = " i.IMcCd";
             }
 
-            $items = $this->db2->query("SELECT i.ItemId, $itemName1, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId and mr.OrigRate > 0 order by $order_by")->result_array();
+            $items = $this->db2->query("SELECT i.ItemId, $itemName1,mr.OrigRate, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and mr.ItemId=i.ItemId and mr.OrigRate > 0 order by $order_by")->result_array();
+
+            // $items = $this->db2->query("SELECT i.ItemId, $itemName1, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId and mr.OrigRate > 0 order by $order_by")->result_array();
             
             if (!empty($items)) {
                 $response = [
@@ -6252,6 +6254,43 @@ class Restaurant extends CI_Controller {
         $data['menus'] = $this->rest->getAllMenuList();
 
         $this->load->view('rest/menuList', $data);
+    }
+
+    public function scheme_category(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData[$lname] = $_POST['category'];
+            $updateData['SchTyp'] = 2;
+            $updateData['Stat'] = $_POST['Stat'];
+
+            if($_POST['SchCatg'] > 0){
+                updateRecord('CustOfferTypes', $updateData, array('SchCatg' => $_POST['SchCatg']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['SchCatg']);
+                insertRecord('CustOfferTypes', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('schemeCategory');
+        $data['sch_cat'] = $this->rest->getOffersSchemeCategory(0);
+
+        $this->load->view('rest/schemeCategory', $data);
     }
 
     public function db_create(){

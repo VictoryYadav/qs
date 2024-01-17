@@ -237,6 +237,7 @@ setRoles = () => {
         $.post('<?= base_url('restaurant/user_access') ?>',{setRestRoles:1, userId:RUserId, roles:roleIds},function(res){
             if(res.status == 'success'){
                 alert(res.response);
+                getUser();
               // location.reload();
             }else{
               alert(res.response);
@@ -262,6 +263,7 @@ removeRoles = () => {
             if(res.status == 'success'){
                 alert(res.response);
               // location.reload();
+              getUser();
             }else{
               alert(res.response);
             }

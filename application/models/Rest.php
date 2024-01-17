@@ -830,12 +830,16 @@ class Rest extends CI_Model{
 						->result_array();
 	}
 
-	public function getOffersSchemeCategory(){
+	public function getOffersSchemeCategory($stat = null){
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId as Name";
 
-		return $this->db2->select("SchCatg, $lname")
-						->get_where('CustOfferTypes', array('Stat' => 0, 'SchTyp' => 2))
+        if(!empty($stat)){
+        	$this->db2->where('Stat', 0);
+        }
+
+		return $this->db2->select("SchCatg, $lname, Stat")
+						->get_where('CustOfferTypes', array('SchTyp' => 2))
 						->result_array();
 	}
 

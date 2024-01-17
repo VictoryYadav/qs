@@ -378,7 +378,7 @@
                                     }
                                     
                                     template += `
-                                <li onclick="itemSlected(${item.ItemId}, '${item.LngName}', ${item.Value}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd});" style="cursor: pointer;">${printItemName}</li>
+                                <li onclick="itemSlected(${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd});" style="cursor: pointer;">${printItemName}</li>
                             `;
                                 });
                                 template += `</ul>`;
