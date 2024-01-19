@@ -444,7 +444,7 @@
                         if(item1 == res[i].ItemId){
                             ch1 = 'selected';
                         }
-                        b1 += '<option value="'+res[i].ItemId+'" '+ch1+'>'+res[i].ItemNm+'</option>';
+                        b1 += '<option value="'+res[i].ItemId+'" '+ch1+'>'+res[i].Name+'</option>';
                     }
                     
                     $('#description'+n+'_discountitem').html(b1);
@@ -565,7 +565,7 @@
                 
                 var b1 = '<option value="0"><?= $this->lang->line('select'); ?></option>';
                 for(i= 0;i<res.length;i++){
-                    b1 += '<option value="'+res[i].ItemId+'">'+res[i].ItemNm+'</option>';
+                    b1 += '<option value="'+res[i].ItemId+'">'+res[i].Name+'</option>';
                 }
                 
                 $('#description'+n+'_discountitem').html(b1);

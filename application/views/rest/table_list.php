@@ -30,21 +30,21 @@
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('tableNo'); ?></label>
-                                                        <input type="text" class="form-control form-control-sm" name="TableNo" required="" id="TableNo" autocomplete="off">
+                                                        <input type="number" class="form-control form-control-sm" name="TableNo" required="" id="TableNo" autocomplete="off">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('tableType'); ?></label>
-                                                        <input type="text" class="form-control form-control-sm" name="TblTyp" required="" id="TblTyp" autocomplete="off">
+                                                        <input type="text" class="form-control form-control-sm" name="TblTyp" required="" id="TblTyp" autocomplete="off" value="7" readonly="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('capacity'); ?></label>
-                                                        <input type="text" class="form-control form-control-sm" name="Capacity" required="" id="Capacity" autocomplete="off">
+                                                        <input type="number" class="form-control form-control-sm" name="Capacity" required="" id="Capacity" autocomplete="off">
                                                     </div>
                                                 </div>
 

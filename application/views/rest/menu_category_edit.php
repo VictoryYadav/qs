@@ -83,7 +83,7 @@
                                            <div class="col-md-4 col-6">
                                                 <div class="form-group">
                                                     <label for=""><?= $this->lang->line('rank'); ?></label>
-                                                    <input type="text" name="Rank" class="form-control form-control-sm" id="Rank" required="">
+                                                    <input type="number" name="Rank" class="form-control form-control-sm" id="Rank" required="">
                                                 </div>
                                            </div>
 

@@ -598,7 +598,7 @@
               
               var mcat = '';
               if(mCatList.length > 0){
-                $('#mcatgBlock').show();
+                // $('#mcatgBlock').show();
                 for (var i = 0; i < mCatList.length; i++) {
                     var sts = '';
                     if(MCatgId == mCatList[i].MCatgId){
@@ -608,7 +608,7 @@
                     mcat +='<li class="list-inline-item '+sts+'" data-filter="*" onclick="clickMcat('+mCatList[i].MCatgId+')" style="font-size:14px;">'+mCatList[i].LngName+'</li>';
                 }
             }else{
-                $('#mcatgBlock').hide();
+                // $('#mcatgBlock').hide();
             }
                 $('#mCategory').html(mcat);
                 // call grid view
@@ -853,7 +853,6 @@
             if (itemName != '') {
                 $.ajax({
                     url: '<?= base_url('customer/searchItemList') ?>',
-                    // url: '<?= base_url('restaurant/order_ajax_3p') ?>',
                     type: "post",
                     data: {
                         searchItemCust: 1,
@@ -930,7 +929,6 @@
             $('#confirm-order').attr('tbltyp',$(item).attr('tbltyp'));
             $('#confirm-order').attr('pck',$(item).attr('item-pck'));
 
-            // for common 7 sep 2023
             $("#item-name-modal").text($(item).attr('item-nm'));
             $("#item-prepare-time").text(PrepTime + ' min to prepare');
             $("#item-prepare-time").attr('time', PrepTime);

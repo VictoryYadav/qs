@@ -33,31 +33,14 @@
                                                     <input  type="hidden" name="EID" id="EID" value="<?= $eatCuisine[0]['EID']; ?>">
 
                                                     <input  type="hidden" name="ECID" id="ECID" >
-                                                </div>
-                                           </div>
-
-                                           <div class="col-md-4 col-6">
-                                                <div class="form-group">
-                                                    <label for=""><?= $this->lang->line('cuisine'); ?></label>
-                                                    <select name="CID" id="CID" class="form-control form-control-sm select2 custom-select" required="">
-                                                        <option value="">
-                                                            <?= $this->lang->line('select'); ?>
-                                                        </option>
-                                                        <?php
-                                                            foreach ($cuisines as $key) {
-                                                         ?>
-                                                         <option value="<?= $key['CID']; ?>">
-                                                            <?= $key['Name']; ?>
-                                                        </option>
-                                                     <?php } ?>
-                                                    </select>   
+                                                    <input  type="hidden" name="CID" id="CID" >
                                                 </div>
                                            </div>
 
                                            <div class="col-md-4 col-6">
                                                 <div class="form-group">
                                                     <label for=""><?= $this->lang->line('cuisine'); ?> <?= $this->lang->line('name'); ?></label>
-                                                    <input type="text" name="cuisineName" class="form-control form-control-sm" id="cuisineName" required="">
+                                                    <input type="text" name="cuisineName" class="form-control form-control-sm" id="cuisineName" required="" autocomplete="off">
                                                 </div>
                                            </div>
 
@@ -82,7 +65,7 @@
                                            <div class="col-md-4 col-6">
                                                 <div class="form-group">
                                                     <label for=""><?= $this->lang->line('rank'); ?></label>
-                                                    <input type="text" name="Rank" class="form-control form-control-sm" id="Rank" required="">
+                                                    <input type="number" name="Rank" class="form-control form-control-sm" id="Rank" required="">
                                                 </div>
                                            </div>
 

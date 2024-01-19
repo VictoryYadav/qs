@@ -13,7 +13,7 @@
         $taxDataArray = $res['taxDataArray'];
 
         $hotelName = $billData[0]['Name'];
-        $BillName = $billData[0]['BillName'];
+        $BillName = $billData[0]['BillerName'];
         $TableNo = $billData[0]['TableNo'];
         $MergeNo = $billData[0]['MergeNo'];
         $phone = $billData[0]['PhoneNos'];

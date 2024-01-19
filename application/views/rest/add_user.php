@@ -21,7 +21,7 @@
                     <div class="container-fluid">
 
                         <div class="row">
-                            <div class="col-md-8 mx-auto">
+                            <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
                                         <?php if($this->session->flashdata('success')): ?>
@@ -31,35 +31,35 @@
                                         <form method="post" action="<?php echo base_url('restaurant/add_user'); ?>">
                                             <input type="hidden" name="RUserId" id="RUserId" value="0">
                                             <div class="row">
-                                                <div class="col-md-6 col-6">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('firstName'); ?></label>
                                                         <input type="text" name="FName" class="form-control form-control-sm" placeholder="<?= $this->lang->line('firstName'); ?>" required="" id="FName">
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6 col-6">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('lastName'); ?></label>
                                                         <input type="text" name="LName" class="form-control form-control-sm" placeholder="<?= $this->lang->line('lastName'); ?>" required="" id="LName">
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6 col-6">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('mobile'); ?></label>
                                                         <input type="tel" name="MobileNo" class="form-control form-control-sm" placeholder="<?= $this->lang->line('mobile'); ?>" required="" pattern="[6789][0-9]{9}" maxlength="10" minlength="10" id="MobileNo">
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6 col-6">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('email'); ?></label>
                                                         <input type="email" name="PEmail" class="form-control form-control-sm" required="" placeholder="<?= $this->lang->line('email'); ?>" id="PEmail">
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6 col-6">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('dob'); ?></label>
                                                         <?php 
@@ -70,19 +70,19 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6 ">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('gender'); ?></label>
-
                                                         <select class="form-control form-control-sm" required="" name="Gender" id="Gender">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <option value="0"><?= $this->lang->line('male'); ?></option>
                                                             <option value="1"><?= $this->lang->line('female'); ?></option>
+                                                            <option value="3"><?= $this->lang->line('transgender'); ?></option>
                                                         </select>
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6 col-6">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('userType'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="UTyp" id="UTyp">
@@ -94,7 +94,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6 col-6">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('mode'); ?></label>
                                                         <select name="Stat" id="Stat" class="form-control form-control-sm" required="">
@@ -106,9 +106,8 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6 col-6">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
-
                                                         <label><?= $this->lang->line('outletName'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="EID" id="EID">
                                                             <option value="">Choose</option>

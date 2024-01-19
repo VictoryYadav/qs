@@ -117,7 +117,7 @@
                                                     <td><?php echo $key['Sections']; ?></td>
                                                     <td><?php echo $key['Portions']; ?></td>
                                                     <td>
-                                                        <span class="badge badge-boxed  badge-success"><?php echo $key['OrigRate']; ?></span>
+                                                        <span class="badge badge-boxed  badge-success" style="font-size: 90%;"><?php echo $key['OrigRate']; ?></span>
                                                         <?php echo $key['ItmRate']; ?>
                                                     </td>
                                                 </tr>

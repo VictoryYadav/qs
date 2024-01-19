@@ -69,7 +69,7 @@
                                                 <thead>
                                                 <tr >
                                                     <th>#</th>
-                                                    <th><?= $this->lang->line('kitchen'); ?></th>
+                                                    <th><?= $this->lang->line('dispense'); ?></th>
                                                     <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
                                                 </thead>

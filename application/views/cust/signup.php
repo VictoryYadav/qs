@@ -1,6 +1,73 @@
 <?php $this->load->view('layouts/customer/head'); ?>
 <style>
+ body{
+      margin: 0;
+      padding: 0;
+      height: 100%;
 
+    }
+    .user_card {
+      height: 410px;
+      width: 350px;
+      margin-top: 60px;
+      margin-bottom: auto;
+      background: #f39c12;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      padding: 10px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      border-radius: 5px;
+
+    }
+    .brand_logo_container {
+      position: absolute;
+      height: 110px;
+      width: 110px;
+      top: -60px;
+      border-radius: 50%;
+      background: #fff;
+      padding: 10px;
+      text-align: center;
+    }
+    .brand_logo {
+      height: 90px;
+      width: 90px;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+    .form_container {
+      margin-top: 40px;
+    }
+    .login_btn {
+      /*width: 100%;*/
+      background: #c0392b !important;
+      color: white !important;
+    }
+    .login_btn:focus {
+      box-shadow: none !important;
+      outline: 0px !important;
+    }
+    .login_container {
+      padding: 0 2rem;
+    }
+    .input-group-text {
+      background: #c0392b !important;
+      color: white !important;
+      border: 0 !important;
+      border-radius: 0.25rem 0 0 0.25rem !important;
+    }
+    .input_user,
+    .input_pass:focus {
+      box-shadow: none !important;
+      outline: 0px !important;
+    }
+    .custom-checkbox .custom-control-input:checked~.custom-control-label::before {
+      background-color: #c0392b !important;
+    }
 </style>
 </head>
 
@@ -11,66 +78,101 @@
     <!-- Header Section End -->
 
     <section class="common-section p-2">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6 mx-auto">
-              <form method="post" id="signupForm">
-                  <div class="row">
-                      <div class="col-md-6">
-                          <div class="form-group">
-                              <input type="text" name="MobileNo" class="form-control" placeholder="<?= $this->lang->line('enterMobile'); ?>" required="" autocomplete="off" minlength="10" maxlength="10" pattern="[6-9]{1}[0-9]{9}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
-                              <small id="signupMsg" class="text-danger" style="font-size: 10px;"></small>
-                          </div>
-                      </div>
-                      <div class="col-md-6">
-                          <div class="form-group">
-                              <input type="email" name="email" class="form-control" placeholder="Enter Email (Bills will be sent on this Email)" autocomplete="off">
-                          </div>
-                      </div>
-                      <div class="col-md-6">
-                          <div class="form-group">
-                              <input type="text" name="FName" class="form-control" placeholder="Enter Firstname">
-                          </div>
-                      </div>
-                      <div class="col-md-6">
-                          <div class="form-group">
-                              <input type="text" name="LName" class="form-control" placeholder="Enter Lastname">
-                          </div>
-                      </div>
-                      <div class="col-md-6">
-                          <div class="form-group">
-                              <select name="Gender" class="form-control">
-                                  <option value="">Select Gender</option>
-                                  <option value="0">Male</option>
-                                  <option value="1">Female</option>
-                              </select>
-                          </div>
-                      </div>
-                      <div class="col-md-6">
-                          <div class="form-group">
-                              <input type="date" name="DOB" class="form-control" placeholder="Enter DOB">
-                          </div>
-                      </div>
-                  </div>
-                  <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('submit'); ?>">
-                  <a href="<?= base_url('customer/login');?>"><span style="font-size: 12px;"><?= $this->lang->line('log_in'); ?></span></a>
-              </form>
 
-              <form method="post" id="otpForm" style="display: none;">
+        <div class="container h-100" id="signupBlock">
+          <div class="d-flex justify-content-center h-100">
+            <div class="user_card">
+              <div class="d-flex justify-content-center">
+                <div class="brand_logo_container">
+                  <img src="<?= base_url(); ?>theme/images/Eat-Out-Icon.png" class="brand_logo" alt="Logo">
+                </div>
+              </div>
+              <div class="d-flex justify-content-center form_container">
+                <form method="post" id="signupForm">
+                  <div class="input-group mb-3">
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                    </div>
+                    <input type="text" name="MobileNo" class="form-control" placeholder="<?= $this->lang->line('enterMobile'); ?>" required="" autocomplete="off" minlength="10" maxlength="10" pattern="[6-9]{1}[0-9]{9}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                    <small id="signupMsg" class="text-danger" style="font-size: 10px;"></small>
+                  </div>
+
+                  <div class="input-group mb-3">
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                    </div>
+                    <input type="email" name="email" class="form-control" placeholder="Enter Email (Bills will be sent on this Email)" autocomplete="off">
+                  </div>
+
+                  <div class="input-group mb-3">
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fa fa-user"></i></span>
+                    </div>
+                    <input type="text" name="FName" class="form-control" placeholder="Enter Firstname">
+                  </div>
+
+                  <div class="input-group mb-3">
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fa fa-user"></i></span>
+                    </div>
+                    <input type="text" name="LName" class="form-control" placeholder="Enter Lastname">
+                  </div>
+
+                  <div class="input-group mb-3">
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fa fa-user"></i></span>
+                    </div>
+                    <select name="Gender" class="form-control">
+                        <option value=""><?= $this->lang->line('select'); ?></option>
+                        <option value="0"><?= $this->lang->line('male'); ?></option>
+                        <option value="1"><?= $this->lang->line('female'); ?></option>
+                        <option value="3"><?= $this->lang->line('transgender'); ?></option>                    
+                    </select>
+                  </div>
+
+                  <div class="input-group mb-3">
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fa fa-birthday-cake"></i></span>
+                    </div>
+                    <?php $date = date('Y-m-d', strtotime("-20 years")); ?>
+                    <input type="date" name="DOB" class="form-control" placeholder="Enter DOB" value="<?= $date; ?>">
+                  </div>
+
+                  <div class="d-flex justify-content-center mt-3 login_container">
+                      <input type="submit" class="btn btn-sm login_btn form-control" value="<?= $this->lang->line('signup'); ?>">
+                  </div>
+                </form>
+              </div>
+          
+              <div class="mt-4">
+                <div class="d-flex justify-content-center links">
+                  You have an account?&nbsp;&nbsp;<a href="<?= base_url('customer/login');?>"><span style="font-size: 12px;color: #fff;"><?= $this->lang->line('log_in'); ?></span></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="container h-100" id="otpBlock" style="display: none;">
+          <div class="d-flex justify-content-center h-100">
+            <div class="user_card">
+              <form method="post" id="otpForm">
                   <div class="row">
-                      <div class="col-md-12">
+                      <div class="col-md-9 mx-auto">
                           <div class="form-group">
+                            <label for=""><?= $this->lang->line('enterOTP'); ?></label>
                               <input type="number" name="otp" class="form-control" placeholder="<?= $this->lang->line('enterOTP'); ?>" autocomplete="off" required="">
                               <span class="text-danger" id="errorMsg" style="font-size: 9px;"></span>
                           </div>
+                          <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('verifyOTP'); ?>">
+                          <button class="btn btn-sm btn-danger login_btn" type="button" onclick="resendOTP()"><?= $this->lang->line('resendOTP'); ?></button>
                       </div>
                   </div>
-                  <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('verifyOTP'); ?>">
-                  <button class="btn btn-sm btn-warning" type="button" onclick="resendOTP()"><?= $this->lang->line('resendOTP'); ?></button>
               </form>
             </div>
           </div>
         </div>
+
     </section>
 
     <!-- footer section -->
@@ -95,12 +197,12 @@
         
         $.post('<?= base_url('customer/signup') ?>',data,function(res){
             if(res.status == 'success'){
-              $('#otpForm').show();
-              $('#signupForm').hide();
+              $('#otpBlock').show();
+              $('#signupBlock').hide();
             }else{
               $('#signupMsg').html(res.response);
-              $('#signupForm').show();
-              $('#otpForm').hide();
+              $('#signupBlock').show();
+              $('#otpBlock').hide();
             }
         });
     });

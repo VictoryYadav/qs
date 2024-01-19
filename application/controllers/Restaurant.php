@@ -793,7 +793,7 @@ class Restaurant extends CI_Controller {
                         ->order_by('mi.CID,mi.MCatgId, mi.ItemNm1', 'ASC')
                         // ->group_by('mi.ItemId')
                         ->join('MenuItemRates mr', 'mr.ItemId = mi.ItemId', 'inner')
-                        ->join('ItemPortions ip', 'ip.IPCd = mi.Itm_Portion', 'inner')
+                        ->join('ItemPortions ip', 'ip.IPCd = mr.Itm_Portion', 'inner')
                         ->join('Eat_Sections es', 'es.SecId = mr.SecId', 'inner');
                         
         if($this->input->method(true)=='POST'){
@@ -1324,6 +1324,7 @@ class Restaurant extends CI_Controller {
 
                     $RMStock['Stat'] = 0;
                     $RMStock['LoginId'] = authuser()->RUserId;
+                    $RMStock['EID'] = authuser()->EID;
                     $RMStock['TransDt'] = !empty($_POST['TransDt'])?$_POST['TransDt']:date('Y-m-d');
                     $TransId = insertRecord('RMStock', $RMStock);
                     if($TransId){
@@ -1759,6 +1760,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function sittin_table_view_ajax(){
+        // echo "<pre>";print_r($_POST);die;
         $EID = authuser()->EID;
         $ChainId = authuser()->ChainId;
         if (isset($_POST['getTableOrderDetails']) && $_POST['getTableOrderDetails']) {
@@ -1777,8 +1779,8 @@ class Restaurant extends CI_Controller {
             if($_POST['filter'] == 'tableWise'){
                 $groupby = ' GROUP BY km.MergeNo';
             }
-
-            $kitchenData = $this->db2->query("SELECT (SUM(k.Qty) - SUM(k.DQty)) as AllDelivered, SUM(k.AQty) as AnyAssigned,km.CNo, km.CustId,  SUM(k.OrigRate * k.Qty) as Amt, TIME_FORMAT(km.LstModDt,'%H:%i') as StTime,   km.MergeNo, km.MCNo, km.BillStat,  km.EID, km.CNo, km.CellNo, IF(km.CellNo > 0,(select count(km2.CellNo) from KitchenMain km2 where km2.CellNo=km.CellNo and km2.EID = km.EID group by km2.CellNo),0) as visitNo, km.TableNo,km.SeatNo, km.OType, km.payRest, km.custPymt, km.CnfSettle FROM Kitchen k, KitchenMain km, Eat_tables et WHERE km.payRest=0 and km.CnfSettle=0 AND (k.Stat = 3) AND (k.OType = 7 OR k.OType = 8) and (km.CNo = k.CNo) AND k.EID = km.EID AND k.MergeNo = km.MergeNo AND km.EID = $EID $ccd_qry $groupby order by km.MergeNo ASC")->result_array();
+            // SUM(k.AQty) as AnyAssigned
+            $kitchenData = $this->db2->query("SELECT (SUM(k.Qty) - SUM(k.DQty)) as AllDelivered, km.CNo, km.CustId,  SUM(k.OrigRate * k.Qty) as Amt, TIME_FORMAT(km.LstModDt,'%H:%i') as StTime,   km.MergeNo, km.MCNo, km.BillStat,  km.EID, km.CNo, km.CellNo, IF(km.CellNo > 0,(select count(km2.CellNo) from KitchenMain km2 where km2.CellNo=km.CellNo and km2.EID = km.EID group by km2.CellNo),0) as visitNo, km.TableNo,km.SeatNo, km.OType, km.payRest, km.custPymt, km.CnfSettle FROM Kitchen k, KitchenMain km, Eat_tables et WHERE km.payRest=0 and km.CnfSettle=0 AND (k.Stat = 3) AND (k.OType = 7 OR k.OType = 8) and (km.CNo = k.CNo) AND k.EID = km.EID AND k.MergeNo = km.MergeNo AND km.EID = $EID $ccd_qry $groupby order by km.MergeNo ASC")->result_array();
 
             // echo "<pre>";
             // print_r($kitchenData);exit();
@@ -1891,8 +1893,8 @@ class Restaurant extends CI_Controller {
 
             $langId = $this->session->userdata('site_lang');
             $lname = "i.ItemNm$langId as ItemNm";
-
-            $kots = $this->db2->query("SELECT k.MergeNo,k.TableNo, k.FKOTNo, k.KOTNo, k.KitCd, SUM(k.Qty) as Qty , k.KOTPrintNo, k.ItemId, $lname, SUM(k.Qty) as Qty, SUM(k.AQty) as AQty, SUM(k.DQty) as DQty,TIME_FORMAT(ADDTIME(k.OrdTime,k.EDT), '%H:%i') as EDT, k.CellNo, k.CNo,k.MCNo FROM Kitchen k, MenuItem i WHERE k.ItemId = i.ItemId AND ( k.Stat = $stat ) AND k.EID = $EID $where and k.MergeNo = '$mergeNo' and k.payRest = 0  GROUP BY k.FKOTNo, k.KOTNo, k.KitCd, k.ItemId, k.EDT, k.MergeNo $groupby order by k.KOTNo, k.FKOTNo, i.ItemNm1 DESC")->result_array();
+            // SUM(k.AQty) as AQty
+            $kots = $this->db2->query("SELECT k.MergeNo,k.TableNo, k.FKOTNo, k.KOTNo, k.KitCd, SUM(k.Qty) as Qty , k.KOTPrintNo, k.ItemId, $lname, SUM(k.Qty) as Qty, SUM(k.DQty) as DQty,TIME_FORMAT(ADDTIME(k.OrdTime,k.EDT), '%H:%i') as EDT, k.CellNo, k.CNo,k.MCNo FROM Kitchen k, MenuItem i WHERE k.ItemId = i.ItemId AND ( k.Stat = $stat ) AND k.EID = $EID $where and k.MergeNo = '$mergeNo' and k.payRest = 0  GROUP BY k.FKOTNo, k.KOTNo, k.KitCd, k.ItemId, k.EDT, k.MergeNo $groupby order by k.KOTNo, k.FKOTNo, i.ItemNm1 DESC")->result_array();
             
             if (empty($kots)) {
                 $response = [
@@ -2103,29 +2105,7 @@ class Restaurant extends CI_Controller {
             die();
         }
 
-        if (isset($_POST['disableFromMenu'])) {
-            $itemId = $_POST['itemId'];
-
-            // Insert MenuItem_Disabled to disabled item
-            $menuItemDisabledObj['ItemId'] = $itemId;
-            $menuItemDisabledObj['EID'] = $EID;
-            $menuItemDisabledObj['ChainId'] = $ChainId;
-            $idd = insertRecord('MenuItem_Disabled', $menuItemDisabledObj);
-            if ($idd) {
-                $response = [
-                    "status" => 1,
-                    "msg" => "Item Disabled Successfully"
-                ];
-            } else {
-                $response = [
-                    "status" => 0,
-                    "msg" => "Failed to Disable Item"
-                ];
-            }
-
-            echo json_encode($response);
-            die();
-        }
+        
         if(!empty($_POST['getBill'])){
 
             $STVcd = $_POST['STVCd'];
@@ -2444,37 +2424,37 @@ class Restaurant extends CI_Controller {
             die();
         }
 
-        if (isset($_POST['getMenuCat'])) {
+        // if (isset($_POST['getMenuCat'])) {
 
-            $cId = $_POST['cId'];
+        //     $cId = $_POST['cId'];
 
-            $menuCatgData = $this->db2->query("SELECT mc.MCatgId, mc.MCatgNm, mc.CTyp, mc.TaxType, f.FID, f.fIdA, f.Opt, f.AltOpt from MenuCatg mc, MenuItem i, Food f where  i.MCatgId=mc.MCatgId AND i.Stat = 0 and (DAYOFWEEK(CURDATE()) = i.DayNo OR i.DayNo = 0) AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) AND mc.CID = :cId AND mc.EID=i.EID AND mc.Stat = 0 AND mc.CTyp = f.CTyp and f.LId = 1 and i.ItemId Not in (Select md.ItemId from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) group by mc.MCatgId, mc.MCatgNm, mc.CTyp, f.FID, f.fIdA, f.Opt, f.AltOpt order by mc.Rank " , ["cId" => $cId])->result_array();
+        //     $menuCatgData = $this->db2->query("SELECT mc.MCatgId, mc.MCatgNm, mc.CTyp, mc.TaxType, f.FID, f.fIdA, f.Opt, f.AltOpt from MenuCatg mc, MenuItem i, Food f where  i.MCatgId=mc.MCatgId AND i.Stat = 0 and (DAYOFWEEK(CURDATE()) = i.DayNo OR i.DayNo = 0) AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) AND mc.CID = :cId AND mc.EID=i.EID AND mc.Stat = 0 AND mc.CTyp = f.CTyp and f.LId = 1 and i.ItemId Not in (Select md.ItemId from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) group by mc.MCatgId, mc.MCatgNm, mc.CTyp, f.FID, f.fIdA, f.Opt, f.AltOpt order by mc.Rank " , ["cId" => $cId])->result_array();
 
-            if ($ChainId > 0) {
-                $imgSrc = "uploads/c" . $ChainId . "/" . $cId . ".jpg";
-            } else {
-                $imgSrc = "uploads/e" . $EID . "/" . $cId . ".jpg";
-            }
-            if (!file_exists("../$imgSrc")) {
-                $imgSrc = "uploads/general/" . $cId . ".jpg";
-            }
+        //     if ($ChainId > 0) {
+        //         $imgSrc = "uploads/c" . $ChainId . "/" . $cId . ".jpg";
+        //     } else {
+        //         $imgSrc = "uploads/e" . $EID . "/" . $cId . ".jpg";
+        //     }
+        //     if (!file_exists("../$imgSrc")) {
+        //         $imgSrc = "uploads/general/" . $cId . ".jpg";
+        //     }
 
-            if (empty($menuCatgData)) {
-                $response = [
-                    "status" => 0,
-                    "msg" => "No Menu Category Available At This Time"
-                ];
-            } else {
-                $response = [
-                    "status" => 1,
-                    "imgSrc" => $imgSrc,
-                    "menuCatgData" => $menuCatgData
-                ];
-            }
+        //     if (empty($menuCatgData)) {
+        //         $response = [
+        //             "status" => 0,
+        //             "msg" => "No Menu Category Available At This Time"
+        //         ];
+        //     } else {
+        //         $response = [
+        //             "status" => 1,
+        //             "imgSrc" => $imgSrc,
+        //             "menuCatgData" => $menuCatgData
+        //         ];
+        //     }
 
-            echo json_encode($response);
-            die();
-        }
+        //     echo json_encode($response);
+        //     die();
+        // }
         if(isset($_POST['call_help'])){
             // $insert_help = $menuCatgModel->call_help();
             $dd['table_no'] = $_SESSION['TableNo'];
@@ -2749,9 +2729,7 @@ class Restaurant extends CI_Controller {
                 $order_by = " i.IMcCd";
             }
 
-            $items = $this->db2->query("SELECT i.ItemId, $itemName1,mr.OrigRate, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and mr.ItemId=i.ItemId and mr.OrigRate > 0 order by $order_by")->result_array();
-
-            // $items = $this->db2->query("SELECT i.ItemId, $itemName1, i.Value, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) and mr.ItemId=i.ItemId and mr.OrigRate > 0 order by $order_by")->result_array();
+            $items = $this->db2->query("SELECT i.ItemId, $itemName1, mr.OrigRate, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and mr.ItemId=i.ItemId and mr.OrigRate > 0 order by $order_by")->result_array();
             
             if (!empty($items)) {
                 $response = [
@@ -2764,50 +2742,6 @@ class Restaurant extends CI_Controller {
                     "msg" => "NO Item Found"
                 ];
             }
-            echo json_encode($response);
-            die();
-        }
-
-        if (isset($_POST['searchItemCust']) && $_POST['searchItemCust']) {
-            $itemName = $_POST['itemName'];
-
-            $lname = "i.ItemNm$langId ItemNm";
-            $ItmDesc = "i.ItmDesc$langId ItmDesc";
-
-            if ($ChainId == 0) {
-                $items = $this->db2->query("SELECT ItemId, $lname, Itm_Portion, i.Value, AvgRtng, $ItmDesc, ItemNm1 as imgSrc, ItemTyp, KitCd, MCatgId, i.FID, i.CID, i.PrepTime, i.NV FROM MenuItem i where ItemNm1 like '$itemName%' AND Stat = 0 AND i.EID = $EID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.eid=$EID and md.Chainid=i.ChainId) order by Rank")->result_array();
-            } else {
-                $items = $this->db2->query("SELECT ItemId, $lname, Itm_Portion, Value, AvgRtng, $ItmDesc, ItemNm1 as imgSrc, ItemTyp, KitCd, MCatgId, i.FID, i.CID, i.NV FROM MenuItem i where ItemNm like '$itemName%' AND Stat = 0 AND i.ChainId = $ChainId AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.Itemid from MenuItem_Disabled md where md.ItemId=i.ItemId and md.eid=$EID and md.ChainId=i.ChainId) order by Rank")->result_array();
-            }
-// echo "<pre>";print_r($items);die;
-            if (!empty($items)) {
-
-                foreach ($items as $key => $data) {
-
-                    if ($ChainId > 0) {
-                        $imgSrc = "uploads/cChainId/" . trim($data['imgSrc']) . ".jpg";
-                    } else {
-                        $imgSrc = "uploads/e$EID/" . trim($data['imgSrc']) . ".jpg";
-                    }
-
-                    if (!file_exists($imgSrc)) {
-                        $imgSrc = "uploads/general/" . trim($data['imgSrc']) . ".jpg";
-                    }
-
-                    $items[$key]['imgSrc'] =  base_url().$imgSrc;
-                }
-
-                $response = [
-                    "status" => 1,
-                    "items" => $items
-                ];
-            } else {
-                $response = [
-                    "status" => 0,
-                    "msg" => "NO Item Found"
-                ];
-            }
-
             echo json_encode($response);
             die();
         }
@@ -3088,14 +3022,16 @@ class Restaurant extends CI_Controller {
 
             $mergeNo = $_POST['mergeNo'];
             $seatNo = $_POST['seatNo'];
-            $data = $this->db2->select("k.CNo, k.TA, k.Qty, k.ItmRate, k.CustRmks,k.CellNo, km.BillStat kmBillStat, $lname, mi.Value, k.SeatNo")
+            $data = $this->db2->select("k.CNo, k.TA, k.Qty, k.ItmRate, k.CustRmks,k.CellNo, km.BillStat kmBillStat, $lname, mir.OrigRate, k.SeatNo")
                         ->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
                         ->join('MenuItem mi', 'mi.ItemId = k.ItemId', 'inner')
+                        ->join('MenuItemRates mir', 'mir.ItemId = mi.ItemId', 'inner')
                         ->get_where('KitchenMain km', array(
                                             'km.MergeNo' => $mergeNo,
                                             'k.Stat' => 3,
                                             'km.BillStat' => 0,
-                                            'k.SeatNo' => $seatNo 
+                                            'k.SeatNo' => $seatNo ,
+                                            'mir.OrigRate >' => 0
                                         )
                                     )
                         ->result_array();
@@ -3129,7 +3065,6 @@ class Restaurant extends CI_Controller {
             $kitchenMainObj['TPRefNo'] = '';
             $kitchenMainObj['MngtRmks'] = '';
             $kitchenMainObj['BillStat'] = 0;
-            $kitchenMainObj['BillRefNo'] = 0;
             $kitchenMainObj['payRest'] = 0;
             $kitchenMainObj['SeatNo'] = $seatNo;
             $kitchenMainObj['CCd'] = $CCd;
@@ -3171,6 +3106,7 @@ class Restaurant extends CI_Controller {
 
 
     public function rmcat(){
+        $EID = authuser()->EID;
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -3191,6 +3127,7 @@ class Restaurant extends CI_Controller {
                 }else{
                     $cat['RMCatgName'] = $_POST['RMCatgName'];
                     $cat['Stat'] = 0;
+                    $cat['EID'] = $EID;
                     insertRecord('RMCatg', $cat);
                     $status = 'success';
                     $response = 'Category Inserted';
@@ -3209,7 +3146,7 @@ class Restaurant extends CI_Controller {
         $langId = $this->session->userdata('site_lang');
         $RMCatgName = "RMCatgName$langId as RMCatgName";
 
-        $data['catList'] = $this->db2->select("*, $RMCatgName")->get('RMCatg')->result_array();
+        $data['catList'] = $this->db2->select("*, $RMCatgName")->get_where('RMCatg', array('EID' => $EID))->result_array();
         $data['title'] ='RMCategory';
         $this->load->view('rest/rm_category',$data);
     }
@@ -3443,10 +3380,7 @@ class Restaurant extends CI_Controller {
             }
                         // print_r($this->db2->last_query());die;
             $data['bills'] = $bill;
-
-            $langId = $this->session->userdata('site_lang');
-            $pname = "Name$langId as Name";
-            $data['payModes'] = $this->db2->select("$pname, Name1, PMNo ")->get_where('PymtModes', array('Stat' => 0))->result_array();
+            $data['payModes'] = $this->rest->getPaymentType();
             // echo "<pre>";
             // print_r($data);
             // die;
@@ -3698,7 +3632,7 @@ class Restaurant extends CI_Controller {
 
     public function feedback(){
         $data['title'] = $this->lang->line('customerFeedback');
-        $data['list'] = $this->db2->order_by('created_at','DESC')->get('Feedback')->result_array();
+        $data['list'] = $this->db2->order_by('created_at','DESC')->get_where('Feedback', array('EID' => authuser()->EID))->result_array();
         
         $this->load->view('rest/feedback_list', $data);
     }
@@ -4045,6 +3979,7 @@ class Restaurant extends CI_Controller {
         $data['uomList'] = $this->rest->getUOMlist();
         $data['EatSections'] = $this->rest->get_eat_section();
         $data['ItemPortions'] = $this->rest->get_item_portion();
+        $data['itemType'] = $this->rest->getItemTypeList();
         $langId = $this->session->userdata('site_lang');
         $lname = "ItemNm$langId as ItemNm";
         $Descname = "ItmDesc$langId as ItmDesc";
@@ -4303,12 +4238,8 @@ class Restaurant extends CI_Controller {
         $data['EID'] = $EID;
         $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
         $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
-
         $data['bills'] = $this->rest->getTAPendingBills();
-
-        $langId = $this->session->userdata('site_lang');
-        $pname = "Name$langId as Name";
-        $data['payModes'] = $this->db2->select("$pname, Name1, PMNo ")->get_where('PymtModes', array('Stat' => 0))->result_array();
+        // $data['payModes'] = $this->rest->getPaymentType();
         $data['cashier'] = $this->rest->getCasherList();
         // echo "<pre>";
         // print_r($data);
@@ -5880,7 +5811,7 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/split_bill', $data); 
     }
 
-    public function edit_eatary(){
+    public function eatary(){
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -5986,7 +5917,6 @@ class Restaurant extends CI_Controller {
         
         $data['title'] = $this->lang->line('cuisine');
         $data['eatCuisine'] = $this->rest->getEatCuisineList();
-        $data['cuisines'] = $this->rest->getCuisineList();
         $data['kitchens'] = $this->rest->get_kitchen();
         // echo "<pre>";print_r($data);die;
         $this->load->view('rest/eat_cuisine', $data);    
@@ -6293,7 +6223,74 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/schemeCategory', $data);
     }
 
-    public function db_create(){
+    public function recommendation(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $updateData = $_POST;
+
+            if($updateData['RecNo'] > 0){
+                updateRecord('MenuItem_Recos', $updateData, array('RecNo' => $_POST['RecNo']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['RecNo']);
+                $updateData['EID'] = authuser()->EID;
+                insertRecord('MenuItem_Recos', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('recommendation');
+        $data['itemList'] = $this->rest->getAllItemsList();
+        $data['recList'] = $this->rest->getRecommendationList();
+        // echo "<pre>";print_r($data);die;
+        $this->load->view('rest/recommendation', $data);    
+    }
+
+    public function paymentMode(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $updateData = $_POST;
+
+            if($updateData['PMNo'] > 0){
+                updateRecord('PymtModes', $updateData, array('PMNo' => $_POST['PMNo']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['PMNo']);
+                $updateData['EID'] = authuser()->EID;
+                insertRecord('PymtModes', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('payment').' '.$this->lang->line('mode');
+        $data['payList'] = $this->rest->getPaymentType();
+        // echo "<pre>";print_r($data);die;
+        $this->load->view('rest/pay_modes', $data);    
+    }
+
+    public function db_create_old(){
         $destDB = "2e";
         // $servername = "localhost";
         // $username = "root";
@@ -6361,6 +6358,35 @@ class Restaurant extends CI_Controller {
         // Close connection
         $conn->close();
     }
+
+    public function duplicateDatabase() {
+        // Connect to the source database
+
+        $sourceDB = $this->load->database('1e', TRUE);
+
+        // Create the destination database
+        $destinationDBName = '2e';
+        // $this->db2->query("CREATE DATABASE IF NOT EXISTS $destinationDBName");
+
+        // Connect to the destination database
+        $destinationDB = $this->load->database('2e', TRUE);
+
+        // Get list of tables in the source database
+        $tables = $sourceDB->list_tables();
+
+        // Copy tables to the destination database
+        foreach ($tables as $table) {
+            $tableStructure = $sourceDB->query("SHOW CREATE TABLE $table")->row_array();
+            // echo "<pre>";
+            // print_r($tableStructure);
+            // die;
+            $destinationDB->query($tableStructure['Create Table']);
+            $destinationDB->query("INSERT INTO $table SELECT * FROM $table");
+        }
+
+        echo "Database duplicated successfully";
+    }
+
 
 
 }

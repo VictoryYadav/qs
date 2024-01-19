@@ -1,6 +1,73 @@
 <?php $this->load->view('layouts/customer/head'); ?>
 <style>
+    body{
+      margin: 0;
+      padding: 0;
+      height: 100%;
 
+    }
+    .user_card {
+      height: 350px;
+      width: 350px;
+      margin-top: 75px;
+      margin-bottom: auto;
+      background: #f39c12;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      padding: 10px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      border-radius: 5px;
+
+    }
+    .brand_logo_container {
+      position: absolute;
+      height: 110px;
+      width: 110px;
+      top: -60px;
+      border-radius: 50%;
+      background: #fff;
+      padding: 10px;
+      text-align: center;
+    }
+    .brand_logo {
+      height: 90px;
+      width: 90px;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+    .form_container {
+      margin-top: 40px;
+    }
+    .login_btn {
+      /*width: 100%;*/
+      background: #c0392b !important;
+      color: white !important;
+    }
+    .login_btn:focus {
+      box-shadow: none !important;
+      outline: 0px !important;
+    }
+    .login_container {
+      padding: 0 2rem;
+    }
+    .input-group-text {
+      background: #c0392b !important;
+      color: white !important;
+      border: 0 !important;
+      border-radius: 0.25rem 0 0 0.25rem !important;
+    }
+    .input_user,
+    .input_pass:focus {
+      box-shadow: none !important;
+      outline: 0px !important;
+    }
+    .custom-checkbox .custom-control-input:checked~.custom-control-label::before {
+      background-color: #c0392b !important;
+    }
 </style>
 </head>
 
@@ -11,34 +78,62 @@
     <!-- Header Section End -->
 
     <section class="common-section p-2">
-        <div class="container">
-            <form method="post" id="loginForm">
-                <div class="row">
-                    <div class="col-md-6 mx-auto">
-                        <div class="form-group">
-                            <input type="number" name="emailMobile" class="form-control" placeholder="<?= $this->lang->line('enterMobile'); ?>" required="" autocomplete="off" maxlength="10">
-                            <small id="loginMsg" class="text-danger" style="font-size: 10px;"></small>
-                        </div>
 
-                        <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('log_in'); ?>">
-                        <a href="<?= base_url('customer/signup');?>"><span style="font-size: 12px;"><?= $this->lang->line('signup'); ?></span></a>
-                    </div>
-                    
+        <div class="container h-100" id="loginBlock">
+          <div class="d-flex justify-content-center h-100">
+            <div class="user_card">
+              <div class="d-flex justify-content-center">
+                <div class="brand_logo_container">
+                  <img src="<?= base_url(); ?>theme/images/Eat-Out-Icon.png" class="brand_logo" alt="Logo">
                 </div>
-            </form>
+              </div>
+              <div class="d-flex justify-content-center form_container">
+                <form method="post" id="loginForm">
+                  <div class="input-group mb-3">
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fa fa-user"></i></span>
+                    </div>
+                    <input type="number" name="emailMobile" class="form-control input_user" placeholder="<?= $this->lang->line('enterMobile'); ?>" required="" autocomplete="off" maxlength="10">
+                    <small id="loginMsg" class="text-danger" style="font-size: 10px;"></small>
+                  </div>
+                  
+                  <div class="d-flex justify-content-center mt-3 login_container">
+                      <!-- <button type="button" name="button" class="btn btn-sm login_btn">Login</button> -->
+                      <input type="submit" class="btn btn-sm login_btn form-control" value="<?= $this->lang->line('log_in'); ?>">
+                  </div>
+                </form>
+              </div>
+          
+              <div class="mt-4">
+                <div class="d-flex justify-content-center links">
+                  Don't have an account?&nbsp;&nbsp;<a href="<?= base_url('customer/signup');?>"><span style="font-size: 12px;color: #fff;"><?= $this->lang->line('signup'); ?></span></a>
+                </div>
+                <!-- <div class="d-flex justify-content-center links">
+                  <a href="#">Forgot your password?</a>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
 
-            <form method="post" id="otpForm" style="display: none;">
-                <div class="row">
-                    <div class="col-md-6 mx-auto">
-                        <div class="form-group">
-                            <input type="number" name="otp" class="form-control" placeholder="<?= $this->lang->line('enterOTP'); ?>" autocomplete="off" required="">
-                            <span class="text-danger" id="errorMsg" style="font-size: 9px;"></span>
-                        </div>
-                        <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('verifyOTP'); ?>">
-                        <button class="btn btn-sm btn-warning" type="button" onclick="resendOTP()"><?= $this->lang->line('resendOTP'); ?></button>
-                    </div>
-                </div>
-            </form>
+        <div class="container h-100" id="otpBlock" style="display: none;">
+          <div class="d-flex justify-content-center h-100">
+            <div class="user_card">
+              <form method="post" id="otpForm">
+                  <div class="row">
+                      <div class="col-md-9 mx-auto">
+                          <div class="form-group">
+                            <label for=""><?= $this->lang->line('enterOTP'); ?></label>
+                              <input type="number" name="otp" class="form-control" placeholder="<?= $this->lang->line('enterOTP'); ?>" autocomplete="off" required="">
+                              <span class="text-danger" id="errorMsg" style="font-size: 9px;"></span>
+                          </div>
+                          <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('verifyOTP'); ?>">
+                          <button class="btn btn-sm btn-danger login_btn" type="button" onclick="resendOTP()"><?= $this->lang->line('resendOTP'); ?></button>
+                      </div>
+                  </div>
+              </form>
+            </div>
+          </div>
         </div>
     </section>
 
@@ -84,12 +179,12 @@
 
         $.post('<?= base_url('customer/login') ?>',data,function(res){
             if(res.status == 'success'){
-              $('#otpForm').show();
-              $('#loginForm').hide();
+              $('#otpBlock').show();
+              $('#loginBlock').hide();
             }else{
               $('#loginMsg').html(res.response);
-              $('#loginForm').show();
-              $('#otpForm').hide();
+              $('#loginBlock').show();
+              $('#otpBlock').hide();
             }
         });
     });

@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $lang['main'] = 'Item Details';
 $lang['cart'] = 'Cart';
 $lang['log_in'] = 'Log In';
-$lang['signup'] = 'Signup';
+$lang['signup'] = 'Sign Up';
 $lang['checkout'] = 'Checkout';
 $lang['bill'] = 'Billing';
 $lang['print'] = 'Print';
@@ -127,6 +127,7 @@ $lang['dob'] 				= 'DOB';
 $lang['gender'] 			= 'Gender';
 $lang['male'] 				= 'Male';
 $lang['female'] 			= 'Female';
+$lang['transgender']		= 'Transgender';
 $lang['userType'] 			= 'User Type';
 $lang['chooseUser'] 		= 'Choose User';
 $lang['outletName'] 		= 'Outlet Name';
@@ -354,6 +355,7 @@ $lang['file']				= 'File';
 $lang['uploadOnlyCSVFile']	= 'Upload only CSV file';
 $lang['price']				= 'Price';
 $lang['url']				= 'Url';
+$lang['payment']			= 'Payment';
 
 
 

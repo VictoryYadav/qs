@@ -335,7 +335,7 @@
                 
                 var b1 = '<option value="0"><?= $this->lang->line('select'); ?></option>';
                 for(i= 0;i<res.length;i++){
-                    b1 += '<option value="'+res[i].ItemId+'">'+res[i].ItemNm+'</option>';
+                    b1 += '<option value="'+res[i].ItemId+'">'+res[i].Name+'</option>';
                 }
 
                 $('#description'+n+'_discountitem').html(b1);

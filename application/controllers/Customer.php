@@ -277,7 +277,6 @@ class Customer extends CI_Controller {
 
     public function item_details_ajax(){
         if($this->input->method(true)=='POST'){
-
             $this->cust->getItem_details_ajax($_POST);
             // echo json_encode($res);
             // die;
@@ -294,9 +293,8 @@ class Customer extends CI_Controller {
             $lname = "i.ItemNm$langId ItemNm";
             $ItmDesc = "i.ItmDesc$langId ItmDesc";
            
-            $items = $this->db2->query("SELECT i.ItemId, $lname, i.Itm_Portion, mir.OrigRate, AvgRtng, $ItmDesc, i.ItemNm1 as imgSrc, ItemTyp, KitCd, MCatgId, i.FID, i.CID, i.PrepTime, i.NV FROM MenuItem i, MenuItemRates mir where i.ItemNm1 like '$itemName%' AND i.Stat = 0 AND i.EID = $EID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId = mir.ItemId and mir.OrigRate > 0 and mir.EID = $EID group by i.ItemId order by Rank")->result_array();
+            $items = $this->db2->query("SELECT i.ItemId, $lname, mir.Itm_Portion, mir.OrigRate, AvgRtng, $ItmDesc, i.ItemNm1 as imgSrc, ItemTyp, KitCd, MCatgId, i.FID, i.CID, i.PrepTime, i.NV FROM MenuItem i, MenuItemRates mir where i.ItemNm1 like '$itemName%' AND i.Stat = 0 AND i.EID = $EID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId = mir.ItemId and mir.OrigRate > 0 and mir.EID = $EID group by i.ItemId order by Rank")->result_array();
             
-// echo "<pre>";print_r($items);die;
             if (!empty($items)) {
 
                 foreach ($items as $key => $data) {
@@ -319,7 +317,6 @@ class Customer extends CI_Controller {
                     "msg" => "NO Item Found"
                 ];
             }
-
             echo json_encode($response);
             die();
         }
@@ -696,7 +693,7 @@ class Customer extends CI_Controller {
         $response = 'Something went wrong plz try again!';
         if($this->input->method(true)=='POST'){
             $emailMobile = $_POST['emailMobile'];
-            $check = $this->db2->select('token')
+            $check = $this->db2->select('MobileNo')
                             ->where('MobileNo', $emailMobile)
                             ->get('Users')
                             ->row_array();
@@ -842,7 +839,7 @@ class Customer extends CI_Controller {
             // echo "<pre>";
             // print_r($_SESSION);
             // die;
-            $checkUser = $this->db2->select('token')
+            $checkUser = $this->db2->select('MobileNo')
                             ->where('MobileNo', $_POST['MobileNo'])
                             ->get('Users')
                             ->row_array();
@@ -889,13 +886,6 @@ class Customer extends CI_Controller {
                                         ->get('AllUsers')
                                         ->row_array();
 
-                // $genTblDb->select('*')
-                //                         ->group_start() 
-                //                             ->where('MobileNo',  $ses_data['MobileNo'])
-                //                             ->or_where('email', $ses_data['email'])
-                //                         ->group_end()
-                //                         ->get('AllUsers')
-                //                         ->row_array();
                 if(!empty($gen_check)){
                     $this->session->set_userdata('CustId', $gen_check['CustId']);
 
@@ -908,7 +898,6 @@ class Customer extends CI_Controller {
                     $data1['MobileNo']  = $gen_check['MobileNo'];
                     $data1['DOB']       = $gen_check['DOB'];
                     $data1['Gender']    = $gen_check['Gender'];
-                    $data1['otp']    = $otp;
                     insertRecord('Users',$data1);    
                 }else{
                     $data = $ses_data;
@@ -920,7 +909,6 @@ class Customer extends CI_Controller {
                     $CustId = $genTblDb->insert_id();
                     $this->session->set_userdata('CustId', $CustId);
                     $data['CustId'] = $CustId;
-                    $data['otp']    = $otp;
                     insertRecord('Users',$data);
                 }
                 
@@ -1566,7 +1554,7 @@ class Customer extends CI_Controller {
             $data['taxDataArray'] = $res['taxDataArray'];
 
             $data['hotelName'] = $billData[0]['Name'];
-            $data['BillName'] = $billData[0]['BillName'];
+            $data['BillName'] = $billData[0]['BillerName'];
             $data['Fullname'] = getName($billData[0]['CustId']);
             $data['phone'] = $billData[0]['PhoneNos'];
             $data['gstno'] = $billData[0]['GSTno'];
@@ -2218,6 +2206,7 @@ class Customer extends CI_Controller {
         $data['title'] = $this->lang->line('contact');
         if($this->input->method(true)=='POST'){
             $feedback = $_POST;
+            $feedback['EID'] = authuser()->EID;
             $id = insertRecord('Feedback', $feedback);
             if(!empty($id)){
                 $this->session->set_flashdata('success','Record Inserted.');

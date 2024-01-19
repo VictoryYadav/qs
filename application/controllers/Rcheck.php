@@ -92,7 +92,7 @@ class Rcheck extends CI_Controller {
         // load db
         $db2 = $this->load->database($my_db, TRUE);
 
-        $orgCheck = $db2->query("SELECT e.CatgID,e.ChainId, e.ONo, c.StTime, c.CloseTime, c.EType, c.CustOrgs, c.MultiKitchen, c.MultiScan, c.Kitchen, c.AutoAllot, c.AutoDeliver, c.SchPop, c.SchType, c.ServChrg, c.Tips, c.EDT, c.TableReservation, c.Fest, c.Hostel,c.Deliver, c.CustAssist, c.TableAcceptReqd,c.OrderWithoutTable,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge, c.Charity, c.Ing_Cals, c.NV,c.WelcomeMsg,c.Ent,c.MultiLingual,c.MultiPayment,c.pymtENV FROM Config c, Eatary e where e.EID = $EID and e.EID = c.EID")->row_array();
+        $orgCheck = $db2->query("SELECT e.CatgID,e.ChainId, e.ONo, c.StTime, c.CloseTime, c.EType, c.CustOrgs, c.MultiKitchen, c.MultiScan, c.Kitchen, c.AutoAllot, c.AutoDeliver, c.SchPop, c.SchType, c.ServChrg, c.Tips, c.EDT, c.TableReservation ,c.Deliver, c.CustAssist, c.TableAcceptReqd, c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge, c.Charity, c.Ing_Cals, c.NV,c.WelcomeMsg,c.Ent,c.MultiLingual,c.MultiPayment,c.pymtENV FROM Config c, Eatary e where e.EID = $EID and e.EID = c.EID")->row_array();
 
         $session_data = array(
             'EID' => $_REQUEST['e'],
@@ -116,7 +116,6 @@ class Rcheck extends CI_Controller {
         $this->session->set_userdata('SchPop', $orgCheck['SchPop']);
         $this->session->set_userdata('SchType', $orgCheck['SchType']);
         $this->session->set_userdata('EDT', $orgCheck['EDT']);
-        $this->session->set_userdata('Fest', $orgCheck['Fest']);
         $this->session->set_userdata('Deliver', $orgCheck['Deliver']);
         
         $this->session->set_userdata('Tips', $orgCheck['Tips']);
@@ -126,7 +125,6 @@ class Rcheck extends CI_Controller {
         $this->session->set_userdata('AutoSettle', $orgCheck['AutoSettle']);
         $this->session->set_userdata('Dispense_OTP', $orgCheck['Dispense_OTP']);
         $this->session->set_userdata('DelCharge', $orgCheck['DelCharge']);
-        $this->session->set_userdata('OrderWithoutTable', $orgCheck['OrderWithoutTable']);
 
         $this->session->set_userdata('Charity', $orgCheck['Charity']);
         $this->session->set_userdata('Ing_cals', $orgCheck['Ing_Cals']);

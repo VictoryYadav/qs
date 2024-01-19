@@ -36,7 +36,7 @@ class AuthController extends CI_Controller {
 
                 if (!empty($login_check)) {
 
-                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, c.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,c.Fest ,e.Name, c.CustAssist, c.TableAcceptReqd,c.OrderWithoutTable,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT, c.new_order,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint,c.JoinTable')
+                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, c.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint,c.JoinTable')
                             ->join('Eatary e',' u.EID = e.EID', 'inner')
                             ->join('Config c','u.EID = c.EID','inner')
                             // u.ChainId = c.ChainId 
@@ -56,7 +56,7 @@ class AuthController extends CI_Controller {
                         $this->session->set_userdata('AutoDeliver', $checkNumber['AutoDeliver']);
                         $this->session->set_userdata('MultiKitchen', $checkNumber['MultiKitchen']);
                         $this->session->set_userdata('Kitchen', $checkNumber['Kitchen']);
-                        $this->session->set_userdata('Fest', $checkNumber['Fest']);
+                        
                         // $this->session->set_userdata('Cash', $checkNumber['ECash']);
 
                         // $this->session->set_userdata('Accept', $checkNumber['Accept']);
@@ -75,12 +75,9 @@ class AuthController extends CI_Controller {
                         $this->session->set_userdata('AutoSettle', $checkNumber['AutoSettle']);
                         $this->session->set_userdata('Dispense_OTP', $checkNumber['Dispense_OTP']);
                         $this->session->set_userdata('DelCharge', $checkNumber['DelCharge']);
-                        $this->session->set_userdata('OrderWithoutTable', $checkNumber['OrderWithoutTable']);
                         $this->session->set_userdata('DeliveryOTP', $checkNumber['DeliveryOTP']);
                         $this->session->set_userdata('EDT', $checkNumber['EDT']);
                         $this->session->set_userdata('billFlag',0);
-                        $this->session->set_userdata('new_order',$checkNumber['new_order']);
-
                         $this->session->set_userdata('Discount',$checkNumber['Discount']);
                         $this->session->set_userdata('IMcCdOpt',$checkNumber['IMcCdOpt']); 
                         $this->session->set_userdata('billPrintTableNo',$checkNumber['billPrintTableNo']); 

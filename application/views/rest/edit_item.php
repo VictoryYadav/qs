@@ -199,11 +199,10 @@
                                                         <select class="form-control form-control-sm" required="" name="ItemTyp">
                                                             <option value="0"><?= $this->lang->line('select'); ?></option>
                                                             <?php
-                                                            foreach ($menuTags as $key) {
-                                                                if($key['TagTyp'] == 2){
+                                                            foreach ($itemType as $key) {
                                                              ?>
-                                                            <option value="<?= $key['TagId']; ?>" <?php if($key['TagId'] == $detail['ItemTyp']){ echo 'selected'; } ?>><?= $key['TDesc']; ?></option>
-                                                            <?php } } ?>
+                                                            <option value="<?= $key['ItmTyp']; ?>" <?php if($key['ItmTyp'] == $detail['ItemTyp']){ echo 'selected'; } ?>><?= $key['Name']; ?></option>
+                                                            <?php } ?>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -230,7 +229,7 @@
                                                             <option value="0"><?= $this->lang->line('select'); ?></option>
                                                             <?php
                                                             foreach ($menuTags as $key) {
-                                                                if($key['TagTyp'] == 4){
+                                                                if($key['TagTyp'] == 2){
                                                              ?>
                                                             <option value="<?= $key['TagId']; ?>" <?php if($key['TagId'] == $detail['ItemTag']){ echo 'selected'; } ?>><?= $key['TDesc']; ?></option>
                                                             <?php } } ?>

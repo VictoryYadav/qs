@@ -70,7 +70,7 @@ class Cust extends CI_Model{
 
 		$where = "mi.Stat = 0 and (DAYOFWEEK(CURDATE()) = mi.DayNo OR mi.DayNo = 0)  AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime)))";
 // et.TblTyp
-        $select_sql = "mc.TaxType, mc.KitCd,mc.CTyp, mi.ItemId, mi.ItemTyp, mi.NV, mi.PckCharge, $lname, $iDesc, $ingeredients, $Rmks, mi.PrepTime, mi.AvgRtng, mi.FID,mi.ItemAttrib, mi.ItemSale, mi.ItemTag, mi.ItemNm1 as imgSrc, mi.UItmCd,mi.CID,mi.Itm_Portion ,mi.MCatgId,mi.videoLink,  (select mir.OrigRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = '$tableNo' AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId and mi.Stat = 0 ORDER BY mir.OrigRate ASC LIMIT 1) as ItmRate, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$this->EID' and et1.TableNo = '$tableNo') as TblTyp";
+        $select_sql = "mc.TaxType, mc.KitCd,mc.CTyp, mi.ItemId, mi.ItemTyp, mi.NV, mi.PckCharge, $lname, $iDesc, $ingeredients, $Rmks, mi.PrepTime, mi.AvgRtng, mi.FID,mi.ItemAttrib, mi.ItemSale, mi.ItemTag, mi.ItemNm1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,mi.videoLink,  (select mir.OrigRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = '$tableNo' AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId and mi.Stat = 0 ORDER BY mir.OrigRate ASC LIMIT 1) as ItmRate, (select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = '$tableNo' AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId and mi.Stat = 0 ORDER BY mir.OrigRate ASC LIMIT 1) as Itm_Portion, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$this->EID' and et1.TableNo = '$tableNo') as TblTyp";
         if(!empty($mcat)){
         	$this->session->set_userdata('f_mcat', $mcat);
             $this->db2->where('mc.MCatgId', $mcat);
@@ -82,7 +82,6 @@ class Cust extends CI_Model{
         $data =  $this->db2->select($select_sql)
         				->order_by('mi.Rank', 'ASC')
                         ->join('MenuItem mi', 'mi.MCatgId = mc.MCatgId')
-                        // ->join('MenuItem_Disabled mid', 'mid.ItemId = mi.ItemId', 'inner')
                         ->where($where)
                         ->get_where('MenuCatg mc', array(
                             'mc.CID' => $CID,
@@ -1126,11 +1125,15 @@ class Cust extends CI_Model{
 	}
 
 	public function getEntertainmentList(){
-		return $this->db2->select('ee.Dayno, DAYNAME(ee.Dayno) as DayName, e.Name, ee.performBy,ee.PerImg')
+		$langId = $this->session->userdata('site_lang');
+        $lname = "e.Name$langId as Name";
+
+		return $this->db2->select("ee.Dayno, DAYNAME(ee.Dayno) as DayName, $lname, ee.performBy,ee.PerImg")
 						->order_by('ee.Dayno', 'ASC')
                         ->join('Entertainment e', 'e.EntId = ee.EntId', 'inner')
                         ->get_where('Eat_Ent ee', array('ee.Stat' => 0,
                         				 'ee.EID' => authuser()->EID,
+                        				 'e.EID' => authuser()->EID,
                         				 'ee.Dayno >=' => date('Y-m-d')
                         				))
                         ->result_array();
@@ -1302,14 +1305,14 @@ class Cust extends CI_Model{
                 $billingObj['SerCharge'] = $kitcheData[0]['ServChrg'];
                 $billingObj['SerChargeAmt'] = round(($itemTotalGross * $kitcheData[0]['ServChrg']) /100 ,2);
                 $billingObj['Tip'] = $TipAmount;
-                $billingObj['PaymtMode'] = $paymentMode;
-                $billingObj['PymtRef'] = $orderId;
+                // $billingObj['PaymtMode'] = $paymentMode;
+                // $billingObj['PymtRef'] = $orderId;
+                // $billingObj['PymtType'] = 0;
                 $billingObj['TotItemDisc'] = $TotItemDisc;
                 $billingObj['BillDiscAmt'] = $BillDiscAmt;
                 $billingObj['custDiscAmt'] = $cust_discount;
                 $billingObj['TotPckCharge'] = $TotPckCharge;
                 $billingObj['DelCharge'] = $DelCharge;
-                $billingObj['PymtType'] = 0;
                 $billingObj['Stat'] = $billingObjStat;
                 if($paymentMode == 'Due' || $paymentMode == 'RestSplitBill'){
 		        	$billingObj['CellNo'] = $postData['CellNo'];

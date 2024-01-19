@@ -24,13 +24,13 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form method="post" id="kitchenForm">
-                                            <input type="hidden" id="KitCd" name="KitCd" value="0">
+                                        <form method="post" id="paymentForm">
+                                            <input type="hidden" id="PMNo" name="PMNo" value="0">
                                             <div class="row">
                                                 <div class="col-md-3 col-5">
                                                     <div class="form-group">
-                                                        <label><?= $this->lang->line('kitchen'); ?></label>
-                                                        <input type="text" class="form-control form-control-sm" name="kitchen" placeholder="<?= $this->lang->line('name'); ?>" required="" id="kitchen" autocomplete="off">
+                                                        <label><?= $this->lang->line('payment'); ?> <?= $this->lang->line('mode'); ?></label>
+                                                        <input type="text" class="form-control form-control-sm" name="payment" placeholder="<?= $this->lang->line('name'); ?>" required="" id="payment" autocomplete="off">
                                                     </div>
                                                 </div>
 
@@ -65,32 +65,39 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table id="kitchenTbl" class="table table-bordered">
+                                            <table id="paymentTbl" class="table table-bordered">
                                                 <thead>
                                                 <tr >
                                                     <th>#</th>
-                                                    <th><?= $this->lang->line('kitchen'); ?></th>
+                                                    <th><?= $this->lang->line('name'); ?></th>
+                                                    <th><?= $this->lang->line('mode'); ?></th>
                                                     <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
                                                 </thead>
             
                                                 <tbody>
                                                     <?php
-                                                    if(!empty($kitchens)){
+                                                    if(!empty($payList)){
                                                         $i = 1;
-                                                        foreach ($kitchens as $row) {
-                                                            if($row['KitCd'] > 1){
+                                                        foreach ($payList as $row) {
+
+                                                            $sts = ($row['Stat'] == 0)? $this->lang->line('active'):$this->lang->line('inactive');
+
+                                                            $clr = ($row['Stat'] == 0)?'success':'danger';
                                                          ?>
                                                     <tr>
                                                         <td><?= $i++; ?></td>
-                                                        <td><?= $row['KitName']; ?></td>
+                                                        <td><?= $row['Name']; ?></td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['KitCd'] ?>, '<?= $row['KitName'] ?>', <?= $row['Stat'] ?>)">
+                                                            <span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['PMNo'] ?>, '<?= $row['Name'] ?>', <?= $row['Stat'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
                                                     </tr>
-                                                    <?php  }  }
+                                                    <?php  }
                                                     } 
                                                     ?>
                                                 </tbody>
@@ -126,14 +133,14 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#kitchenTbl').DataTable();
+        $('#paymentTbl').DataTable();
     });
 
-    $('#kitchenForm').on('submit', function(e){
+    $('#paymentForm').on('submit', function(e){
         e.preventDefault();
 
         var data = $(this).serializeArray();
-        $.post('<?= base_url('restaurant/edit_kitchen') ?>',data,function(res){
+        $.post('<?= base_url('restaurant/paymentMode') ?>',data,function(res){
             if(res.status == 'success'){
               $('#msgText').html(res.response);
             }else{
@@ -144,10 +151,10 @@
 
     });
 
-    function editData(kitcd,name, stat){
+    function editData(PMNo,name, stat){
         
-        $('#KitCd').val(kitcd);
-        $('#kitchen').val(name);
+        $('#PMNo').val(PMNo);
+        $('#payment').val(name);
         $('#Stat').val(stat);   
 
         $('#saveBtn').hide();

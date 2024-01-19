@@ -298,7 +298,7 @@ width: 100%;*/
                                                         <?php 
                                                         if(!empty($SettingTableViewAccess)){
                                                         foreach ($SettingTableViewAccess as $key => $data) { ?>
-                                                            <option value="<?= $data['CCd'] ?>" settle="<?= $data['Settle'] ?>"><?= $data['Name'] ?></option>
+                                                            <option value="<?= $data['CCd'] ?>" settle="0"><?= $data['Name'] ?></option>
                                                     <?php } } ?>
                                                 </select>
                                             </div>

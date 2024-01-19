@@ -58,13 +58,10 @@ class Rest extends CI_Model{
 		$check = $this->db2->get_where('UsersRest', array('MobileNo' => $data['MobileNo'], 'Stat' => 0))->row_array();
 		if(empty($check)){
 			$createrData = $this->db2->get_where('UsersRest', array('RUserId' => authuser()->RUserId))->row_array();
-			$data['CatgID'] = $createrData['CatgID'];
 			$data['DeputedEID'] = $data['EID'];
 			$data['ChainId'] = $createrData['ChainId'];
-			$data['ONo'] = $createrData['ONo'];
 			$data['Stat'] = $createrData['Stat'];
 			$data['LoginCd'] = authuser()->RUserId;
-			// $data['token'] = $this->generateToken();
 			 $newRUserId = insertRecord('UsersRest', $data);
 
 			 // GenTableData loaded
@@ -474,6 +471,7 @@ class Rest extends CI_Model{
 	}
 
 	public function getStockList($postdata=null){
+		$EID = authuser()->EID;
 		$trans_id = 0;
 		$trans_type_id = 0;
 		$from_date = 0;
@@ -483,7 +481,7 @@ class Rest extends CI_Model{
         $KitName = "ek.KitName$langId as KitName";
         $suppName = "rs.SuppName$langId as SuppName";
 
-		$stock = $this->db2->query("SELECT r.TransId, r.TransType,TransDt,  if(r.FrmEID>0, (Select e.Name from Eatary e where e.EID=r.FrmEID),NULL) as FromEID, if(r.FrmStoreId=1, 'MainStore',NULL) as FromMain, if(r.FrmSuppCd>0, (Select $suppName from RMSuppliers rs where rs.SuppCd=r.FrmSuppCd),NULL) as FromSupp, if(r.FrmKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.FrmKitCd),NULL) as FromKit, if(r.ToEID>0, (Select e.Name from Eatary e where e.EID=r.ToEID),NULL) as ToEID, if(r.ToSuppCd>0, (Select $suppName from RMSuppliers rs where rs.SuppCd=r.ToSuppCd),NULL) as ToSupp, if(r.ToKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.ToKitCd),NULL) as ToKit, if(r.ToStoreId=1, 'MainStore',NULL) as ToMain  FROM RMStock r where r.Stat=0 order by TransId desc limit 10")->result_array();
+		$stock = $this->db2->query("SELECT r.TransId, r.TransType,TransDt,  if(r.FrmEID>0, (Select e.Name from Eatary e where e.EID=r.FrmEID),NULL) as FromEID, if(r.FrmStoreId=1, 'MainStore',NULL) as FromMain, if(r.FrmSuppCd>0, (Select $suppName from RMSuppliers rs where rs.SuppCd=r.FrmSuppCd),NULL) as FromSupp, if(r.FrmKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.FrmKitCd),NULL) as FromKit, if(r.ToEID>0, (Select e.Name from Eatary e where e.EID=r.ToEID),NULL) as ToEID, if(r.ToSuppCd>0, (Select $suppName from RMSuppliers rs where rs.SuppCd=r.ToSuppCd),NULL) as ToSupp, if(r.ToKitCd>0, (Select $KitName from Eat_Kit ek where ek.KitCd=r.ToKitCd),NULL) as ToKit, if(r.ToStoreId=1, 'MainStore',NULL) as ToMain  FROM RMStock r where r.Stat=0 and r.EID = $EID order by TransId desc limit 10")->result_array();
 		// echo "<pre>";
 		// print_r($stock);
 		// die;
@@ -1063,7 +1061,7 @@ class Rest extends CI_Model{
 	}
 
 	public function getUserList(){
-		return $this->db2->get_where('UsersRest', array('EID' => authuser()->EID,'Stat' => 0))
+		return $this->db2->get_where('UsersRest', array('EID' => authuser()->EID))
 		->result_array();
 	}
 
@@ -1085,7 +1083,7 @@ class Rest extends CI_Model{
 			$cashName = "Name$langId as Name";
 	        if(!empty($GetCCD['CCd'])){
 	        	$ccd = "(".$GetCCD['CCd'].")";
-				$data = $this->db2->query("SELECT CCd, $cashName, PrinterName, Settle FROM Eat_Casher Where EID = $EID AND Stat = 0 and CCd in $ccd")->result_array();
+				$data = $this->db2->query("SELECT CCd, $cashName, PrinterName FROM Eat_Casher Where EID = $EID AND Stat = 0 and CCd in $ccd")->result_array();
 	        }
 		}
 
@@ -1097,7 +1095,7 @@ class Rest extends CI_Model{
 		$langId = $this->session->userdata('site_lang');
 		$cashName = "Name$langId as Name";
 
-        return $this->db2->select("CCd, $cashName, PrinterName, Settle")->get_where('Eat_Casher', array('EID' => $EID, 'Stat' => 0))->result_array();
+        return $this->db2->select("CCd, $cashName, PrinterName")->get_where('Eat_Casher', array('EID' => $EID, 'Stat' => 0))->result_array();
 	}
 
 	public function getKitchenList(){
@@ -1170,7 +1168,7 @@ class Rest extends CI_Model{
         $lname = "SuppName$langId as SuppName";
 
 		return $this->db2->select("SuppCd, CreditDays, $lname, Remarks")
-                              ->get_where('RMSuppliers', array('Stat' => 0))
+                              ->get_where('RMSuppliers', array('Stat' => 0, 'EID' => authuser()->EID))
                               ->result_array();	
 	}
 
@@ -1238,5 +1236,28 @@ class Rest extends CI_Model{
                         ->result_array();
 	}
 
+	public function getRecommendationList(){
+
+        $langId = $this->session->userdata('site_lang');
+        $item = "mi.ItemNm$langId as ItemNm";
+        $recName = "mii.ItemNm$langId as recName";
+
+		return $this->db2->select("mr.RecNo, mr.ItemId, $item, mr.RcItemId, $recName, mr.Stat")
+                        ->join('MenuItem mi', 'mi.ItemId = mr.ItemId','inner')
+                        ->join('MenuItem mii', 'mii.ItemId = mr.RcItemId','inner')
+                        ->get_where('MenuItem_Recos mr', array('mr.EID' => authuser()->EID))
+                        ->result_array();
+	}
+
+	public function getPaymentType(){
+
+		$langId = $this->session->userdata('site_lang');
+        $pname = "Name$langId as Name";
+        return $this->db2->select("PMNo, $pname, Rank, Stat")
+        				->order_by('Rank', 'ASC')
+        				->get_where('PymtModes', array('EID' => authuser()->EID))
+        				->result_array();
+
+	}
 	
 }

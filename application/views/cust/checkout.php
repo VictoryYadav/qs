@@ -150,23 +150,6 @@
             <div class="bill-body" style="font-size: 12px;">
                 <div class="bill_box">
                 </div>
-                <!-- <div class="main-ammount discount_and_other_charges_section" style="display:none">
-                    <div style="border-bottom: 1px solid;margin-top: 5px;margin-bottom: 5px;color: #fff;"></div>
-                    <table style="width:100%;" style="display:none">
-                        <tr class="TotItemDisc_sec">
-                            <th style="font-weight: normal;" id="cgst-h"> Total Discount </th>
-                            <td class="text-right" id="TotItemDisc"></td>
-                        </tr>
-                        <tr class="TotPckCharge_sec" style="display:none">
-                            <th style="font-weight: normal;" id="sgst-h"> Packing Charge </th>
-                            <td class="text-right" id="TotPckCharge"></td>
-                        </tr>
-                        <tr class="DelCharge_sec" style="display:none">
-                            <th style="font-weight: normal;" id="sgst-h"> Delivery Charge </th>
-                            <td class="text-right" id="DelCharge"></td>
-                        </tr>
-                    </table>
-                </div> -->
 
                 <div style="border-bottom: 1px solid;margin-top: 5px;margin-bottom: 5px;color: #fff;">
                 </div>
