@@ -169,11 +169,17 @@
 
                 <div class="row" style="margin: 0px;">
                     <div class="col-12 text-center" width="100%;">
-                        <a href="<?= base_url('customer'); ?>" class="btn btn-sm backbtn"><?php echo  $this->lang->line('menu'); ?></a>
+                        $width = ""
+                        <?php 
+                        $width = "49%";
+                        if($this->session->userdata('BillMergeOpt') > 0 && ($EType == 5)){ 
+                        } ?>
+
+                        <a href="<?= base_url('customer'); ?>" class="btn btn-sm backbtn" width="<?= $width; ?>"><?php echo  $this->lang->line('menu'); ?></a>
                         <?php if($this->session->userdata('BillMergeOpt') > 0 && ($EType == 5)){ ?>
                         <a href="<?= base_url('customer/merge_order/'.$MergeNo); ?>" class="btn orderbtn btn-sm"><?php echo  $this->lang->line('mergeorder'); ?></a>
                         <?php } ?>
-                        <button class="btn btn-sm paybtn" onclick="payNow()"><?php echo  $this->lang->line('payNow'); ?></button>
+                        <button class="btn btn-sm paybtn" onclick="payNow()" width="<?= $width; ?>"><?php echo  $this->lang->line('payNow'); ?></button>
                         
                         <?php if($this->session->flashdata('error')): ?>
                             <div class="">

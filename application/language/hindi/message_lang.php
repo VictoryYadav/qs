@@ -310,6 +310,7 @@ $lang['deliveryOTP']		= 'डिलीवरी ओटीपी';
 $lang['OTPVerified']		= 'ओटीपी सत्यापित';
 $lang['OTPNotVerified']		= 'ओटीपी सत्यापित नहीं है';
 $lang['messageSent']		= 'संदेश भेजा गया';
+$lang['deliveredSuccessfully']= 'सफलतापूर्वक वितरित किया गया';
 $lang['MCNoUpdated']		= 'एम.सी न. अपडेटेड';
 $lang['counter']			= 'काउंटर';
 $lang['inMinutes']			= '(मिनट में)';

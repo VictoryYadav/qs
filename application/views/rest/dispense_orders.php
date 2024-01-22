@@ -102,7 +102,7 @@
                                         <div class="row" style="margin-bottom: -16px;">
                                             <div class="col-3">
                                                 <div class="form-group">
-                                                    <select class="form-control form-control-sm" id="kitchen-code" onchange="getTableView();">  
+                                                    <select class="form-control form-control-sm" id="kitchen-code" onchange="getTableView1();">  
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php 
                                                         if(!empty($DispenseAccess)){
@@ -233,8 +233,15 @@
         $('#order-view-table').DataTable();
         $('#order_details').DataTable();
     });
+
+
             
     getTableView();
+
+    function getTableView1(){
+        $('#dispMode').val(0);
+        getTableView();        
+    }
 
     function getTableView() {
         $('#item-view-tbody1').empty();
@@ -292,9 +299,9 @@
         dispCounter = "'"+dispCounter+"'";
         var btn = '';
         var url = "<?= base_url('restaurant/print/');?>"+BillId;
-        btn += '<button onclick="deliveryNotification('+CNo+','+BillId+','+mobile+','+oType+','+dispCounter+', '+DCd+')" class="btn btn-sm btn-primary btn-rounded"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>\
-            | <a onclick="dispenseNotification('+BillId+','+mobile+','+oType+','+dispCounter+')" class="btn btn-sm btn-danger btn-rounded"><i class="fa fa-bullhorn"></i></a>\
-            | <a href="'+url+'" class="btn btn-sm btn-warning btn-rounded"><i class="fa fa-print" aria-hidden="true"></i></a>                    ';
+        btn += '<a onclick="dispenseNotification('+BillId+','+mobile+','+oType+','+dispCounter+')" class="btn btn-sm btn-danger btn-rounded" title="Send Message"><i class="fa fa-bullhorn"></i></a>\
+            | <button onclick="deliveryNotification('+CNo+','+BillId+','+mobile+','+oType+','+dispCounter+', '+DCd+')" class="btn btn-sm btn-primary btn-rounded" title="Deliver"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>\
+            | <a href="'+url+'" class="btn btn-sm btn-warning btn-rounded" title="Print"><i class="fa fa-print" aria-hidden="true"></i></a>                    ';
 
         $('#showActionBtn').html(btn);
         handleDetails(CNo);   

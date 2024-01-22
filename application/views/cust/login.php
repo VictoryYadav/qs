@@ -11,7 +11,7 @@
       width: 350px;
       margin-top: 75px;
       margin-bottom: auto;
-      background: #f39c12;
+      background: #efcfab;
       position: relative;
       display: flex;
       justify-content: center;
@@ -44,7 +44,7 @@
     }
     .login_btn {
       /*width: 100%;*/
-      background: #c0392b !important;
+      background: #dd3b2a !important;
       color: white !important;
     }
     .login_btn:focus {
@@ -55,7 +55,7 @@
       padding: 0 2rem;
     }
     .input-group-text {
-      background: #c0392b !important;
+      background: #ef3926 !important;
       color: white !important;
       border: 0 !important;
       border-radius: 0.25rem 0 0 0.25rem !important;
@@ -106,7 +106,7 @@
           
               <div class="mt-4">
                 <div class="d-flex justify-content-center links">
-                  Don't have an account?&nbsp;&nbsp;<a href="<?= base_url('customer/signup');?>"><span style="font-size: 12px;color: #fff;"><?= $this->lang->line('signup'); ?></span></a>
+                  Don't have an account?&nbsp;&nbsp;<a href="<?= base_url('customer/signup');?>"><span style="font-size: 12px;color: #dd3b2a;"><?= $this->lang->line('signup'); ?></span></a>
                 </div>
                 <!-- <div class="d-flex justify-content-center links">
                   <a href="#">Forgot your password?</a>

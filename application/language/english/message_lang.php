@@ -310,6 +310,7 @@ $lang['deliveryOTP']		= 'Delivery OTP';
 $lang['OTPVerified']		= 'OTP Verified';
 $lang['OTPNotVerified']		= 'OTP Not Verified';
 $lang['messageSent']		= 'Message Sent';
+$lang['deliveredSuccessfully']= 'Delivered Successfully';
 $lang['MCNoUpdated']		= 'MCNo Updated';
 $lang['counter']			= 'Counter';
 $lang['inMinutes']			= '(in mts)';

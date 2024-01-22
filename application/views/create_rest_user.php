@@ -85,7 +85,10 @@
 			<div>
 				<?php if($this->session->flashdata('success')): ?>
 						<div class="alert alert-success" role="alert"><?= $this->session->flashdata('success') ?></div>
-					<?php endif; ?>
+					<div class="text-center">
+						<a href="<?= base_url(); ?>login?o=<?= $EID; ?>&c=0">Log In</a>
+					</div>
+				<?php endif; ?>
 				<?php if($this->session->flashdata('error')): ?>
 						<div class="alert alert-danger" role="alert"><?= $this->session->flashdata('error') ?></div>
 					<?php endif; ?>

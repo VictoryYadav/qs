@@ -1016,11 +1016,10 @@ class Restaurant extends CI_Controller {
                 } else {
                     $DCd = 0;
                 }
-                // $dispMode = OType
+                
                 $dispMode = (isset($_POST['dispMode']) && $_POST['dispMode'] > 0 )?$_POST['dispMode']:0;
-                // $qry = '';
+                
                 if($dispMode > 0){
-                    // $qry = ' and km.OType = '.$dispMode;
                     $this->db2->where('km.OType', $dispMode);
                 }
 
@@ -4225,6 +4224,7 @@ class Restaurant extends CI_Controller {
         $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
         $data['bills'] = $this->rest->getTAPendingBills();
         $data['cashier'] = $this->rest->getCasherList();
+        $data['payModes'] = $this->rest->getPaymentType();
         // echo "<pre>";
         // print_r($data);
         // die;
@@ -4239,7 +4239,7 @@ class Restaurant extends CI_Controller {
         $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
         $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
         $data['bills'] = $this->rest->getTAPendingBills();
-        // $data['payModes'] = $this->rest->getPaymentType();
+        $data['payModes'] = $this->rest->getPaymentType();
         $data['cashier'] = $this->rest->getCasherList();
         // echo "<pre>";
         // print_r($data);
@@ -4256,6 +4256,7 @@ class Restaurant extends CI_Controller {
         $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
         $data['bills'] = $this->rest->getTAPendingBills();
         $data['cashier'] = $this->rest->getCasherList();
+        $data['payModes'] = $this->rest->getPaymentType();
         // echo "<pre>";
         // print_r($data);
         // die;
@@ -5573,7 +5574,7 @@ class Restaurant extends CI_Controller {
                     if($smsRes){
                         $otpData['stat'] = 1;
                         $status = 'success';
-                        $response = $this->lang->line('messageSent');
+                        $response = $this->lang->line('deliveredSuccessfully');
                     }
                     insertRecord('OTP', $otpData);
                 }

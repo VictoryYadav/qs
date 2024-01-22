@@ -25,6 +25,7 @@ class AuthController extends CI_Controller {
 
                 $my_db = $this->session->userdata('my_db');
                 $db2 = $this->load->database($my_db, TRUE);
+                $EID = $this->session->userdata('EID');
 
                 $login_check = $db2->select('*')
                         ->group_start() 
@@ -32,7 +33,8 @@ class AuthController extends CI_Controller {
                             ->or_where('MobileNo',$data['phone'])
                         ->group_end()
                         ->where('Passwd', $data['password'])
-                        ->get('UsersRest')->row_array();
+                        ->get_where('UsersRest', array('Stat' => 0, 'EID' => $EID))
+                        ->row_array();
 
                 if (!empty($login_check)) {
 
@@ -47,8 +49,6 @@ class AuthController extends CI_Controller {
                         $this->session->set_userdata('COrgId', 0);
                         $this->session->set_userdata('CustNo', 0);
                         $this->session->set_userdata('CustId', 0);
-                        // $this->session->set_userdata('EID', $checkNumber['EID']);
-                        // $this->session->set_userdata('ChainId', $checkNumber['ChainId']);
                         $this->session->set_userdata('UTyp', $checkNumber['UTyp']);
                         $this->session->set_userdata('Ops', $checkNumber['Ops']);
                         $this->session->set_userdata('EType', $checkNumber['EType']);
@@ -56,12 +56,6 @@ class AuthController extends CI_Controller {
                         $this->session->set_userdata('AutoDeliver', $checkNumber['AutoDeliver']);
                         $this->session->set_userdata('MultiKitchen', $checkNumber['MultiKitchen']);
                         $this->session->set_userdata('Kitchen', $checkNumber['Kitchen']);
-                        
-                        // $this->session->set_userdata('Cash', $checkNumber['ECash']);
-
-                        // $this->session->set_userdata('Accept', $checkNumber['Accept']);
-
-                        // $this->session->set_userdata('Reject', $checkNumber['Reject']);
                         $this->session->set_userdata('Decline', $checkNumber['Decline']);
                         $this->session->set_userdata('Reassign', '');
                         $this->session->set_userdata('Move', $checkNumber['Move']);

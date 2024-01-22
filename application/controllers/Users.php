@@ -398,7 +398,7 @@ class Users extends CI_Controller {
     }
 
     public function createRestUser(){
-
+        $data['EID'] = 0;
         if($this->input->method(true)=='POST'){
             // echo "<pre>";
             // print_r($_POST);
@@ -422,7 +422,24 @@ class Users extends CI_Controller {
                 $user['Stat'] = 0;
                 $user['EID'] = $check['EID'];
                 $user['DeputedEID'] = $check['EID'];
-                $db3->insert('UsersRest', $user);
+                $userId = $db3->insert('UsersRest', $user);
+
+                $roles = $db3->get_where('UserRoles', array('Stat' => 0))->result_array();
+                $temp = [];
+                $userRolesAccessObj = [];
+                foreach ($roles as $role) {
+                    $temp['EID'] = $check['EID'];
+                    $temp['RUserId'] = $userId;
+                    $temp['RoleId'] = $role;
+                    $temp['Stat'] = 0;
+                    $temp['LoginCd'] =$userId;
+                    $userRolesAccessObj[] = $temp;
+                }
+
+                $data['EID'] = $check['EID'];
+
+                $db3->insert_batch('UserRolesAccess', $userRolesAccessObj); 
+
                 $this->session->set_flashdata('success','Please login through the link and upload your restaurant data.');
                 redirect(base_url('users/createRestUser'));
             }else{
