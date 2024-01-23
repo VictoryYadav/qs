@@ -43,13 +43,6 @@ class Cust extends CI_Model{
 								->get_where('MenuCatg', array('CID' => $cid))
 								->result_array();
 		
-		// $data['filter'] = $this->db2->select('FID, Opt, Rank')
-		// 					->order_by('Rank', 'ASC')
-		// 					->get_where('FoodType', array('CTyp' => $data['mcat'][0]['CTyp'], 'Stat' => 0))
-		// 					->result_array();
-		// echo "<pre>";
-		// print_r($data);
-		// die;
 		$this->session->set_userdata('f_fid', 0);
 		$this->session->set_userdata('f_cid', $cid);
 		$this->session->set_userdata('f_mcat', $data['mcat'][0]['MCatgId']);

@@ -30,6 +30,8 @@
                                             
                                         <form method="post" action="<?php echo base_url('restaurant/add_user'); ?>">
                                             <input type="hidden" name="RUserId" id="RUserId" value="0">
+                                            <input type="hidden" name="RUserId" id="EID" value="<?= $EID; ?>">
+                                                Note: <span class="text-danger">Mobile and Email Can't be changed later.</span>
                                             <div class="row">
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
@@ -48,7 +50,7 @@
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('mobile'); ?></label>
-                                                        <input type="tel" name="MobileNo" class="form-control form-control-sm" placeholder="<?= $this->lang->line('mobile'); ?>" required="" pattern="[6789][0-9]{9}" maxlength="10" minlength="10" id="MobileNo">
+                                                        <input type="text" name="MobileNo" class="form-control form-control-sm" placeholder="<?= $this->lang->line('mobile'); ?>" required="" maxlength="10" minlength="10" id="MobileNo" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
                                                     </div>
                                                 </div>
 
@@ -106,7 +108,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-3 col-6">
+                                                <!-- <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('outletName'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="EID" id="EID">
@@ -118,7 +120,7 @@
                                                             <?php } ?>
                                                         </select>
                                                     </div>
-                                                </div>
+                                                </div> -->
 
                                             </div>
                                             <div class="text-center">
@@ -168,7 +170,10 @@
                                                     
                                                 <tr>
                                                     <td><?php echo $i++; ?></td>
-                                                    <td><?php echo $key['FName'].' '.$key['LName']; ?></td>
+                                                    <td><?php echo $key['FName'].' '.$key['LName']; ?>
+                                                        <br>
+                                                        <small><?php echo date('d-M-Y',strtotime($key['DOB'])); ?></small>
+                                                    </td>
                                                     <td>
                                                         <?php echo $key['MobileNo']; ?><br>
                                                            <small><?php echo $key['PEmail']; ?></small> 
@@ -217,6 +222,8 @@
 <script type="text/javascript">
 $(document).ready(function () {
     $('#usersTBL').DataTable();
+    $('#MobileNo').prop('readonly', false);
+    $('#PEmail').prop('readonly', false); 
 });
 
 function editData(RUserId, FName, LName, MobileNo, PEmail, DOB, Gender, UTyp, Stat, EID){
@@ -230,7 +237,10 @@ function editData(RUserId, FName, LName, MobileNo, PEmail, DOB, Gender, UTyp, St
     $('#Gender').val(Gender);
     $('#UTyp').val(UTyp);
     $('#EID').val(EID);
-    $('#Stat').val(Stat);   
+    $('#Stat').val(Stat);  
+
+    $('#MobileNo').prop('readonly', true);
+    $('#PEmail').prop('readonly', true); 
 
     $('#saveBtn').hide();
     $('#updateBtn').show();

@@ -31,7 +31,7 @@
 				<div class="col-md-6">
 					<div class="form-group">
 						<label for="">Mobile</label>
-						<input type="tel" class="form-control form-control-sm" name="MobileNo" required="">
+						<input type="number" class="form-control form-control-sm" name="MobileNo" required="">
 					</div>
 				</div>
 
@@ -63,8 +63,11 @@
 
 				<div class="col-md-6">
 					<div class="form-group">
+						<?php
+						$dateP = date('Y-m-d', strtotime("-20 years", strtotime(date('Y-m-d'))));
+						 ?>
 						<label for="">DOB</label>
-						<input type="date" class="form-control form-control-sm" name="DOB" required="">
+						<input type="date" class="form-control form-control-sm" name="DOB" required="" value="<?= $dateP; ?>">
 					</div>
 				</div>
 

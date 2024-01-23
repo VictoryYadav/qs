@@ -76,7 +76,7 @@ class Restaurant extends CI_Controller {
 
 		$data['title'] = $this->lang->line('addUser');
         $data['EID'] = authuser()->EID;
-        $data['restaurant'] = $this->rest->getrestaurantList();
+        // $data['restaurant'] = $this->rest->getrestaurantList();
         $data['users'] = $this->rest->getUserList();
 		$this->load->view('rest/add_user',$data);
     }
@@ -4710,7 +4710,7 @@ class Restaurant extends CI_Controller {
                                               $checker = 0;
                                             }
 
-                                            $mItem['FID'] = $this->checkFoodType($csv_data[4], $mItem['EID']);
+                                            $mItem['FID'] = $this->checkFoodType($csv_data[4]);
 
                                             if($mItem['FID'] == 0){
                                               $response = $csv_data[4]. " Not Found in row no: $count";
@@ -4725,20 +4725,20 @@ class Restaurant extends CI_Controller {
                                               $checker = 0;
                                             }
 
-                                            $mItem['ItemAttrib'] = $this->checkType($csv_data[9], $mItem['EID'], 1);
+                                            $mItem['ItemAttrib'] = $this->checkType($csv_data[9], 1);
 
                                             if($mItem['ItemAttrib'] == 0){
                                               $response = $csv_data[9]. " Not Found in row no: $count";
                                               $checker = 0;
                                             }
-                                            $mItem['ItemSale'] = $this->checkType($csv_data[10], $mItem['EID'], 3);
+                                            $mItem['ItemSale'] = $this->checkType($csv_data[10], 3);
 
                                             if($mItem['ItemSale'] == 0){
                                               $response = $csv_data[10]. " Not Found in row no: $count";
                                               $checker = 0;
                                             }
 
-                                            $mItem['ItemTag'] = $this->checkType($csv_data[11], $mItem['EID'], 2);
+                                            $mItem['ItemTag'] = $this->checkType($csv_data[11], 2);
 
                                             if($mItem['ItemTag'] == 0){
                                               $response = $csv_data[11]. " Not Found in row no: $count";
@@ -4853,7 +4853,7 @@ class Restaurant extends CI_Controller {
                                           $checker = 0;
                                         }
 
-                                        $mc['SecId'] = $this->checkSection($mc['EID'], $csv_data[2]);
+                                        $mc['SecId'] = $this->checkSection($csv_data[2]);
 
                                         if($mc['SecId'] == 0){
                                           $response = $csv_data[2]. " Not Found in row no: $count";
@@ -5288,7 +5288,7 @@ class Restaurant extends CI_Controller {
                                           $checker = 0;
                                         }
 
-                                        $temp['SecId'] =  $this->checkSection($temp['EID'], $csv_data[4]);
+                                        $temp['SecId'] =  $this->checkSection($csv_data[4]);
                                         if($temp['SecId'] == 0){
                                           $response = $csv_data[4]. " Not Found in row no: $count";
                                           $checker = 0;
@@ -5377,9 +5377,11 @@ class Restaurant extends CI_Controller {
         return $KitCd;
     }
 
-    private function checkFoodType($name, $EID){
+    private function checkFoodType($name){
         $FID = 0;
-        $data = $this->db2->select('FID')->like('Name1', $name)->get_where('FoodType', array('EID' => $EID))->row_array();
+        $data = $this->db2->select('FID')->like('Name1', $name)
+                        ->get('FoodType')
+                        ->row_array();
         if(!empty($data)){
             $FID = $data['FID'];
         }
@@ -5396,9 +5398,9 @@ class Restaurant extends CI_Controller {
         return $id;   
     }
 
-    private function checkType($name, $EID, $type){
+    private function checkType($name, $type){
         $id = 0;
-        $data = $this->db2->select('TagId')->like('TDesc1', $name)->get_where('MenuTags', array('EID' => $EID, 'TagTyp' => $type))
+        $data = $this->db2->select('TagId')->like('TDesc1', $name)->get_where('MenuTags', array('TagTyp' => $type))
                     ->row_array();
         if(!empty($data)){
             $id = $data['TagId'];
@@ -5416,10 +5418,12 @@ class Restaurant extends CI_Controller {
         return $itemId;
     }
 
-    private function checkSection($EID, $sectionName){
+    private function checkSection($sectionName){
         $SecId = 0;
-        $data = $this->db2->select('SecId')->like('Name1', $sectionName)->get_where('Eat_Sections', array('EID' => $EID))
-                    ->row_array();
+        $data = $this->db2->select('SecId')
+                        ->like('Name1', $sectionName)
+                        ->get('Eat_Sections')
+                        ->row_array();
         if(!empty($data)){
             $SecId = $data['SecId'];
         }
@@ -6039,43 +6043,6 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/cashier', $data);    
     }
 
-    public function itemType(){
-
-        $status = "error";
-        $response = "Something went wrong! Try again later.";
-        if($this->input->method(true)=='POST'){
-
-            $langId = $this->session->userdata('site_lang');
-            $lname = "Name$langId";
-
-            $updateData[$lname] = $_POST['item'];
-            $updateData['Stat'] = $_POST['Stat'];
-
-            if($_POST['ItmTyp'] > 0){
-                updateRecord('ItemTypes', $updateData, array('ItmTyp' => $_POST['ItmTyp']));
-                $response = 'Updated Records'; 
-            }else{
-                unset($updateData['ItmTyp']);
-                $updateData['EID'] = authuser()->EID;
-                insertRecord('ItemTypes', $updateData);
-                $response = 'Insert Records'; 
-            }
-
-            $status = 'success';
-            header('Content-Type: application/json');
-            echo json_encode(array(
-                'status' => $status,
-                'response' => $response
-              ));
-             die;
-        }
-        
-        $data['title'] = $this->lang->line('itemType');
-        $data['itemTyp'] = $this->rest->getItemTypeList();
-
-        $this->load->view('rest/itemType', $data);    
-    }
-
     public function dispense_outlet(){
 
         $status = "error";
@@ -6289,6 +6256,293 @@ class Restaurant extends CI_Controller {
         $data['payList'] = $this->rest->getPaymentType();
         // echo "<pre>";print_r($data);die;
         $this->load->view('rest/pay_modes', $data);    
+    }
+
+    public function third_party_list(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData[$lname] = $_POST['name'];
+            $updateData['Stat'] = $_POST['Stat'];
+
+            if($_POST['PId'] > 0){
+                updateRecord('3POrders', $updateData, array('3PId' => $_POST['PId']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['PId']);
+                insertRecord('3POrders', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('thirdParty');
+        $data['lists'] = $this->rest->getThirdOrderData();
+        $this->load->view('rest/third_party', $data);    
+    }
+
+    public function config_payment(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData[$lname] = $_POST['name'];
+            $updateData['Stat'] = $_POST['Stat'];
+
+            if($_POST['PymtMode'] > 0){
+                updateRecord('ConfigPymt', $updateData, array('PymtMode' => $_POST['PymtMode']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['PymtMode']);
+                insertRecord('ConfigPymt', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('payment');
+        $data['lists'] = $this->rest->getConfigPayment();
+        $this->load->view('rest/config_payment', $data);    
+    }
+
+    public function sections(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData[$lname] = $_POST['name'];
+            $updateData['Stat'] = $_POST['Stat'];
+
+            if($_POST['SecId'] > 0){
+                updateRecord('Eat_Sections', $updateData, array('SecId' => $_POST['SecId']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['SecId']);
+                insertRecord('Eat_Sections', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('section');
+        $data['lists'] = $this->rest->getSectionList();
+        $this->load->view('rest/section', $data);    
+    }
+
+    public function entertainment(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData[$lname] = $_POST['name'];
+            $updateData['Stat'] = $_POST['Stat'];
+
+            if($_POST['EntId'] > 0){
+                updateRecord('Entertainment', $updateData, array('EntId' => $_POST['EntId']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['EntId']);
+                insertRecord('Entertainment', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('entertainment');
+        $data['lists'] = $this->rest->getEntertainment();
+        $this->load->view('rest/entertainment', $data);    
+    }
+
+    public function suppliers(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "SuppName$langId";
+
+            $updateData[$lname]         = $_POST['name'];
+            $updateData['CreditDays']   = $_POST['CreditDays'];
+            $updateData['Remarks']      = $_POST['Remarks'];
+            $updateData['Stat']         = $_POST['Stat'];
+
+            if($_POST['SuppCd'] > 0){
+                updateRecord('RMSuppliers', $updateData, array('SuppCd' => $_POST['SuppCd']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['SuppCd']);
+                insertRecord('RMSuppliers', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('supplier');
+        $data['lists'] = $this->rest->getSuppliers();
+        $this->load->view('rest/suppliers', $data);    
+    }
+
+    public function itemType(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData[$lname] = $_POST['item'];
+            $updateData['Stat'] = $_POST['Stat'];
+
+            if($_POST['ItmTyp'] > 0){
+                updateRecord('ItemTypes', $updateData, array('ItmTyp' => $_POST['ItmTyp']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['ItmTyp']);
+                $updateData['EID'] = authuser()->EID;
+                insertRecord('ItemTypes', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('itemType');
+        $data['itemTyp'] = $this->rest->getItemTypeList();
+
+        $this->load->view('rest/itemType', $data);    
+    }
+
+    public function item_type_group(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData = $_POST;
+            $updateData[$lname]         = $updateData['name'];
+
+            unset($updateData['name']);
+            if($_POST['ItemGrpCd'] > 0){
+                updateRecord('ItemTypesGroup', $updateData, array('ItemGrpCd' => $_POST['ItemGrpCd']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['ItemGrpCd']);
+                $updateData['EID'] = authuser()->EID;
+                insertRecord('ItemTypesGroup', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('item').' '.$this->lang->line('group');
+        $data['itemTyp'] = $this->rest->getItemTypeList();
+        $data['itemList'] = $this->rest->getAllItemsList();
+        $data['lists'] = $this->rest->getItemTypesGroupList();
+        $this->load->view('rest/itemtypegroup', $data);    
+    }
+
+    public function item_type_det(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $updateData = $_POST;
+
+            if($_POST['ItemOptCd'] > 0){
+                updateRecord('ItemTypesDet', $updateData, array('ItemOptCd' => $_POST['ItemOptCd']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['ItemOptCd']);
+                $updateData['EID'] = authuser()->EID;
+                insertRecord('ItemTypesDet', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('item').' '.$this->lang->line('type');
+        $data['itemList'] = $this->rest->getAllItemsList();
+        $data['itemGroup'] = $this->rest->getItemTypesGroup();
+        $data['lists'] = $this->rest->getItemTypesDet();
+        $this->load->view('rest/itemtypedet', $data);    
     }
 
     public function db_create_old(){

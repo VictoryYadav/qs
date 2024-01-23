@@ -398,7 +398,7 @@ class Users extends CI_Controller {
     }
 
     public function createRestUser(){
-        $data['EID'] = 0;
+        $EID = 0;
         if($this->input->method(true)=='POST'){
             // echo "<pre>";
             // print_r($_POST);
@@ -421,8 +421,12 @@ class Users extends CI_Controller {
                 $user['DOB'] = date('Y-m-d', strtotime($user['DOB']));
                 $user['Stat'] = 0;
                 $user['EID'] = $check['EID'];
-                $user['DeputedEID'] = $check['EID'];
-                $userId = $db3->insert('UsersRest', $user);
+                $EID = $check['EID'];
+
+                $genTblDb->insert('UsersRest', $user);
+
+                $db3->insert('UsersRest', $user);
+                $userId = $db3->insert_id();
 
                 $roles = $db3->get_where('UserRoles', array('Stat' => 0))->result_array();
                 $temp = [];
@@ -430,15 +434,15 @@ class Users extends CI_Controller {
                 foreach ($roles as $role) {
                     $temp['EID'] = $check['EID'];
                     $temp['RUserId'] = $userId;
-                    $temp['RoleId'] = $role;
+                    $temp['RoleId'] = $role['RoleId'];
                     $temp['Stat'] = 0;
                     $temp['LoginCd'] =$userId;
                     $userRolesAccessObj[] = $temp;
                 }
 
-                $data['EID'] = $check['EID'];
-
-                $db3->insert_batch('UserRolesAccess', $userRolesAccessObj); 
+                if(!empty($userRolesAccessObj)){
+                    $db3->insert_batch('UserRolesAccess', $userRolesAccessObj); 
+                }
 
                 $this->session->set_flashdata('success','Please login through the link and upload your restaurant data.');
                 redirect(base_url('users/createRestUser'));
@@ -448,6 +452,7 @@ class Users extends CI_Controller {
         }
 
         $data['title'] = 'Create User';
+        $data['EID'] = $EID;
         $this->load->view('create_rest_user', $data);
     }
   

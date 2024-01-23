@@ -357,7 +357,20 @@ $lang['uploadOnlyCSVFile']	= 'Upload only CSV file';
 $lang['price']				= 'Price';
 $lang['url']				= 'Url';
 $lang['payment']			= 'Payment';
-
+$lang['test']				= 'Test';
+$lang['company']			= 'Company';
+$lang['key']				= 'Key';
+$lang['secret']				= 'Secret';
+$lang['supplier']			= 'Supplier';
+$lang['credit']				= 'Credit';
+$lang['group']				= 'Group';
+$lang['required']			= 'Required';
+$lang['calculation']		= 'Calculation';
+$lang['single']				= 'Single';
+$lang['multiple']			= 'Multiple';
+$lang['selection']			= 'Selection';
+$lang['increment']			= 'Increment';
+$lang['ReplaceOriginalPriceWithItemPrice']			= 'Replace Original price with item price';
 
 
 

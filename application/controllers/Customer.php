@@ -1442,7 +1442,7 @@ class Customer extends CI_Controller {
             }
             if(isset($_POST['getTax']) && $_POST['getTax']){
                 $tax_type = $_POST['tax_type'];
-                $TaxData = $this->db2->query("SELECT t.ShortName,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included, sum(k.ItmRate) as ItemAmt, (sum(k.ItmRate)*t.TaxPcent/100) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where k.EID = km.EID and k.CNo = km.CNo and (km.CNo = $CNo or km.MCNo = $CNo) and t.TaxType = k.TaxType and k.TaxType = $value and t.EID = $EID group by t.ShortName,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.Rank")->result_array();   // and CurDate() between FrmDt and EndDt
+                $TaxData = $this->db2->query("SELECT t.ShortName,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included, sum(k.ItmRate) as ItemAmt, (sum(k.ItmRate)*t.TaxPcent/100) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where k.EID = km.EID and k.CNo = km.CNo and (km.CNo = $CNo or km.MCNo = $CNo) and t.TaxType = k.TaxType and k.TaxType = $value group by t.ShortName,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.Rank")->result_array();   // and CurDate() between FrmDt and EndDt
 
                 $response = [
                         "status" => 1,
@@ -1745,7 +1745,7 @@ class Customer extends CI_Controller {
                 // (km.CNo=$CNo or km.MCNo =$CNo)
                 $taxName = "t.ShortName$langId as ShortName";
                 foreach ($tax_type_array as $key => $value) {
-                    $q = "SELECT $taxName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included,k.ItmRate, k.Qty,k.ItemId, (sum(k.ItmRate*k.Qty)) as ItemAmt, (if (t.Included <5,((sum(k.ItmRate*k.Qty)) - ((sum(k.ItmRate*k.Qty)) / (1+t.TaxPcent/100))),((sum(k.ItmRate*k.Qty))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where (k.Stat = 3) and k.EID=km.EID and k.CNo=km.CNo and km.MergeNo = $MergeNo and t.TaxType = k.TaxType and t.TaxType = $value  and t.EID= $EID AND km.BillStat = 0 and k.BillStat = 0 group by t.ShortName1, t.TNo,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.rank";
+                    $q = "SELECT $taxName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included,k.ItmRate, k.Qty,k.ItemId, (sum(k.ItmRate*k.Qty)) as ItemAmt, (if (t.Included <5,((sum(k.ItmRate*k.Qty)) - ((sum(k.ItmRate*k.Qty)) / (1+t.TaxPcent/100))),((sum(k.ItmRate*k.Qty))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where (k.Stat = 3) and k.EID=km.EID and k.CNo=km.CNo and km.MergeNo = $MergeNo and t.TaxType = k.TaxType and t.TaxType = $value AND km.BillStat = 0 and k.BillStat = 0 group by t.ShortName1, t.TNo,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.rank";
                     
                     $TaxData = $this->db2->query($q)->result_array();
                     $taxDataArray[$value] = $TaxData;

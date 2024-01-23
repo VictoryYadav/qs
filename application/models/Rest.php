@@ -55,39 +55,24 @@ class Rest extends CI_Model{
 
 	public function addUser($data){
 
+		$GUsersRest['FName'] = $data['FName'];
+		$GUsersRest['LName'] = $data['LName'];
+		$GUsersRest['MobileNo'] = $data['MobileNo'];
+		$GUsersRest['PEmail'] = $data['PEmail'];
+		$GUsersRest['DOB'] = $data['DOB'];
+		$GUsersRest['Gender'] = $data['Gender'];
+
+		$genDB = $this->load->database('GenTableData', TRUE);
+		$genDB->insert('UsersRest', $GUsersRest);
+		$genDB->insert('UsersRestDet', $GenUsersRestDet);
+
 		$check = $this->db2->get_where('UsersRest', array('MobileNo' => $data['MobileNo'], 'Stat' => 0))->row_array();
 		if(empty($check)){
 			$createrData = $this->db2->get_where('UsersRest', array('RUserId' => authuser()->RUserId))->row_array();
-			$data['DeputedEID'] = $data['EID'];
 			$data['ChainId'] = $createrData['ChainId'];
 			$data['Stat'] = $createrData['Stat'];
 			$data['LoginCd'] = authuser()->RUserId;
-			 $newRUserId = insertRecord('UsersRest', $data);
-
-			 // GenTableData loaded
-			$genDB = $this->load->database('GenTableData', TRUE);
-			$checkGen = $genDB->where('MobileNo' , $data['MobileNo'])
-							  ->or_where('PEmail' , $data['PEmail'])
-							  ->get('UsersRest')
-							  ->row_array();
-			
-			$GenUsersRestDet['RUserId'] = $newRUserId;
-			$GenUsersRestDet['EID'] = $data['EID'];
-			$GenUsersRestDet['UTyp'] = $data['UTyp'];
-			$GenUsersRestDet['ChainId'] = authuser()->ChainId;
-			// $GenUsersRestDet['OffEmail'] = $data['PEmail'];
-			if(!empty($checkGen)){
-				$genDB->insert('UsersRestDet', $GenUsersRestDet);
-			}else{
-				$GUsersRest['FName'] = $data['FName'];
-				$GUsersRest['LName'] = $data['LName'];
-				$GUsersRest['MobileNo'] = $data['MobileNo'];
-				$GUsersRest['PEmail'] = $data['PEmail'];
-				$GUsersRest['DOB'] = $data['DOB'];
-				$GUsersRest['Gender'] = $data['Gender'];
-				$genDB->insert('UsersRest', $GUsersRest);
-				$genDB->insert('UsersRestDet', $GenUsersRestDet);
-			}
+			$newRUserId = insertRecord('UsersRest', $data);			
 
 			if(!empty($newRUserId)){
 				$this->sendUserLoginMsg();
@@ -101,20 +86,12 @@ class Rest extends CI_Model{
 
 					$userRolesAccessObj['EID'] = $createrData['EID'];
 					$userRolesAccessObj['RUserId'] = $newRUserId;
-					$userRolesAccessObj['RoleId']= 22;
-					insertRecord('UserRolesAccess', $userRolesAccessObj);
-
-					$userRolesAccessObj['EID'] = $createrData['EID'];
-					$userRolesAccessObj['RUserId'] = $newRUserId;
 					$userRolesAccessObj['RoleId']= 26;
 					insertRecord('UserRolesAccess', $userRolesAccessObj);
 				}
 			}else{
 				$res = "Failed to Create ".$data['FName'].' '.$data['LName'];
 			}
-			// echo "<pre>";
-			// print_r($data);
-			// die;
 
 		}else{
 			$res = "Mobile No Already Exists";
@@ -563,7 +540,7 @@ class Rest extends CI_Model{
 
 		$taxDataArray = array();
 		foreach ($tax_type_array as $key => $value) {
-			$q = "SELECT t.ShortName, t.TaxPcent, t.TaxType, t.Included, Sum(bt.TaxAmt) as SubAmtTax, t.rank from Tax t, BillingTax bt where bt.EID=t.EID and bt.TNo=t.TNo and bt.EID=$EID and bt.BillId = $billId and bt.TNo=t.TNo and t.TaxType = $value group by t.ShortName,t.TaxPcent, t.TaxType, t.Included ,t.rank order by t.rank";
+			$q = "SELECT t.ShortName, t.TaxPcent, t.TaxType, t.Included, Sum(bt.TaxAmt) as SubAmtTax, t.rank from Tax t, BillingTax bt where bt.TNo=t.TNo and bt.EID=$EID and bt.BillId = $billId and bt.TNo=t.TNo and t.TaxType = $value group by t.ShortName,t.TaxPcent, t.TaxType, t.Included ,t.rank order by t.rank";
 			// print_r($q);exit();
 		    $TaxData = $this->db2->query($q)->result_array();   
 		    $taxDataArray[$value] = $TaxData;
@@ -685,7 +662,9 @@ class Rest extends CI_Model{
 	public function getThirdOrderData(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId as LngName";
-		return $this->db2->select("3PId, $lname")->get_where('3POrders', array("Stat" => 0))->result_array();
+		return $this->db2->select("3PId, $lname, Stat")
+						->get('3POrders')
+						->result_array();
 	}
 
 	public function getTablesAllotedData($EID){
@@ -756,7 +735,15 @@ class Rest extends CI_Model{
 	public function getPaymentModes(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId as Name";
-		return $this->db2->select("PymtMode, $lname,Company, CodePage1")->get_where('ConfigPymt', array('Stat' => 1))->result_array();
+		return $this->db2->select("PymtMode, $lname,Company, CodePage1")->get_where('ConfigPymt', array('Stat' => 0, 'EID' => authuser()->EID))->result_array();
+	}
+
+	public function getConfigPayment(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Name";
+		return $this->db2->select("*, $lname")
+						->get_where('ConfigPymt', array('EID' => authuser()->EID))
+						->result_array();
 	}
 
 	public function get_MCatgId(){
@@ -848,7 +835,7 @@ class Rest extends CI_Model{
 
 		return $this->db2->select("FID, CTyp ,$lname, $Usedfor")->order_by('CTyp, Rank','ASC')
 						->group_by('CTyp')
-						->get_where('FoodType', array('Stat' => 0, 'EID' => authuser()->EID))->result_array();	
+						->get_where('FoodType', array('Stat' => 0))->result_array();	
 	}
 
 	public function getAllItemsList(){
@@ -878,7 +865,15 @@ class Rest extends CI_Model{
 	public function get_eat_section(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId as Name";
-		return $this->db2->select("SecId, $lname, Stat")->get_where('Eat_Sections', array('Stat' => 0, 'EID' => authuser()->EID))->result_array();	
+		return $this->db2->select("SecId, $lname, Stat")->get_where('Eat_Sections', array('Stat' => 0))->result_array();	
+	}
+
+	public function getSectionList(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Name";
+		return $this->db2->select("SecId, $lname, Stat")
+						->get_where('Eat_Sections')
+						->result_array();	
 	}
 
 	public function get_item_portion(){
@@ -1125,7 +1120,7 @@ class Rest extends CI_Model{
 		return $this->db2->select("CTyp, $lname")
 					->order_by('Rank', 'ASC')
 					->group_by('Usedfor1')
-					->get_where('FoodType', array('Stat' => 0, 'EID' => authuser()->EID))
+					->get_where('FoodType', array('Stat' => 0))
 					->result_array();
 	}
 	
@@ -1169,6 +1164,15 @@ class Rest extends CI_Model{
 
 		return $this->db2->select("SuppCd, CreditDays, $lname, Remarks")
                               ->get_where('RMSuppliers', array('Stat' => 0, 'EID' => authuser()->EID))
+                              ->result_array();	
+	}
+
+	public function getSuppliers(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "SuppName$langId as Name";
+
+		return $this->db2->select("SuppCd, CreditDays, $lname, Remarks, Stat")
+                              ->get('RMSuppliers')
                               ->result_array();	
 	}
 
@@ -1255,9 +1259,56 @@ class Rest extends CI_Model{
         $pname = "Name$langId as Name";
         return $this->db2->select("PMNo, $pname, Rank, Stat")
         				->order_by('Rank', 'ASC')
-        				->get_where('PymtModes', array('EID' => authuser()->EID))
+        				->get('PymtModes')
         				->result_array();
 
 	}
+
+	public function getEntertainment(){
+
+		$langId = $this->session->userdata('site_lang');
+        $pname = "Name$langId as Name";
+        return $this->db2->select("EntId, $pname, Stat")
+        				->get('Entertainment')
+        				->result_array();
+
+	}
+
+	public function getItemTypesGroupList(){
+
+		$langId = $this->session->userdata('site_lang');
+        $iname = "itp.Name$langId as Name";
+        $itname = "it.Name$langId as itemTypeName";
+        $miname = "mi.ItemNm$langId as ItemNm";
+        return $this->db2->select("itp.*, $iname, $itname, $miname")
+        				->join('ItemTypes it', 'it.ItmTyp = itp.ItemTyp', 'inner')
+        				->join('MenuItem mi', 'mi.ItemId = itp.ItemId', 'inner')
+        				->get('ItemTypesGroup itp' , array('itp.EID' => authuser()->EID))
+        				->result_array();
+
+	}
+
+	public function getItemTypesGroup(){
+
+		$langId = $this->session->userdata('site_lang');
+        $iname = "itp.Name$langId as Name";
+        return $this->db2->select("itp.*, $iname")
+        				->get_where('ItemTypesGroup itp', array('itp.Stat' => 0, 'itp.EID' => authuser()->EID))
+        				->result_array();
+
+	}
+
+	public function getItemTypesDet(){
+		
+		$langId = $this->session->userdata('site_lang');
+        $groupName = "itp.Name$langId as groupName";
+        $menuName = "mi.ItemNm$langId as menuName";
+        return $this->db2->select("itd.*, $groupName, $menuName")
+        			->join('ItemTypesGroup itp', 'itp.ItemGrpCd = itd.ItemGrpCd', 'inner')
+        			->join('MenuItem mi', 'mi.ItemId = itd.ItemId', 'inner')
+        			->get_where('ItemTypesDet itd' , array('itd.EID' => authuser()->EID))
+        			->result_array();		
+	}
+
 	
 }
