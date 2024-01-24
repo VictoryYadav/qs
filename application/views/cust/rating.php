@@ -50,131 +50,8 @@
         font-weight: 500;
     }
 
-    .main-ammount {
-        padding: 5px 37px;
-        color: #fff;
-    }
-
-    .main-ammount th {
-        font-weight: 500;
-        font-size: 15px;
-    }
-
-    .navbar {
-        overflow: hidden;
-        background-color: #fff;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        padding: 0px;
-        text-align: center;
-    }
-
-    .navbar a {
-        float: left;
-        display: block;
-        color: #000;
-        text-align: center;
-        padding: 8px 13px;
-        text-decoration: none;
-        font-size: 7px;
-        /* width: 20%; */
-    }
-
-    .navbar a:hover {
-        background: #f1f1f1;
-        color: black;
-    }
-
-    .navbar a.active {
-        background-color: #0a88ff;
-        color: #fff;
-    }
-
-    .navbar a img {
-        display: inherit;
-    }
-
-    .dropdown-menu a {
-        font-size: 15px !important;
-    }
-
 </style>
 <style media="screen">
-
-    .dropup .dropdown-toggle::after {
-
-        display: inline-block;
-
-        width: 0;
-
-        height: 0;
-
-        margin-left: .255em;
-
-        vertical-align: .255em;
-
-        content: "";
-
-        border-top: 0;
-
-        border-right: .3em solid transparent;
-
-        border-bottom: none !important;
-
-        border-left: .3em solid transparent;
-
-    }
-
-
-
-
-
-    input[type="checkbox"] {
-
-        display: none;
-
-    }
-
-
-
-    input[type="checkbox"]+label {
-
-        color: #f2f2f2;
-
-    }
-
-
-
-    input[type="checkbox"]+label span {
-
-        display: inline-block;
-
-        width: 15px;
-
-        height: 15px;
-
-        vertical-align: middle;
-
-        background: url(<?php echo base_url(); ?>assets/img/star_white.png) center no-repeat;
-
-        background-size: cover;
-
-        cursor: pointer;
-
-    }
-
-
-
-    input[type="checkbox"]:checked+label span {
-
-        background: url(<?php echo base_url(); ?>assets/img/star_gold.png) center no-repeat;
-
-        background-size: cover;
-
-    }
-
-
 
     .TextRating {
 
@@ -205,9 +82,6 @@
         text-align: center;
 
     }
-
-
-
     .icona {
 
         width: 60px;

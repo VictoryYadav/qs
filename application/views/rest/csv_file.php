@@ -386,14 +386,14 @@ $('#cashier_form').on('submit', function(e){
 
 function callAjax(formData){
    $.ajax({
-           url : '<?= base_url('restaurant/csv_file') ?>',
+           url : '<?= base_url('restaurant/csv_file_upload') ?>',
            type : 'POST',
            data : formData,
            processData: false,  
            contentType: false,  
            success : function(data) {
                alert(data.response);
-               // location.reload();
+               location.reload();
            }
     }); 
 }

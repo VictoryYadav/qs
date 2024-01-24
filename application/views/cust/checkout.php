@@ -96,7 +96,7 @@
         border-radius: 1.5rem 0 0 1.5rem;
         background-color: #bfbcbc;
         color:#fff;
-        width: 30%;
+        /*width: 30%;*/
     }
 
     .backbtn:hover
@@ -110,7 +110,7 @@
         background: #f76004;
         color: #fff;
         margin-left: 0px !important;
-        width: 33%;
+        /*width: 33%;*/
     }
 
     .orderbtn:hover
@@ -126,7 +126,7 @@
         color: #fff;
         margin-left: -5px !important;
         border-radius: 0 1.5rem 1.5rem 0;
-        width: 32%;
+        /*width: 32%;*/
     }
 
     .paybtn:hover
@@ -169,17 +169,18 @@
 
                 <div class="row" style="margin: 0px;">
                     <div class="col-12 text-center" width="100%;">
-                        $width = ""
                         <?php 
-                        $width = "49%";
+                            $width = "49%";
                         if($this->session->userdata('BillMergeOpt') > 0 && ($EType == 5)){ 
-                        } ?>
+                            $width = "33%";
+                        }
+                         ?>
 
-                        <a href="<?= base_url('customer'); ?>" class="btn btn-sm backbtn" width="<?= $width; ?>"><?php echo  $this->lang->line('menu'); ?></a>
-                        <?php if($this->session->userdata('BillMergeOpt') > 0 && ($EType == 5)){ ?>
-                        <a href="<?= base_url('customer/merge_order/'.$MergeNo); ?>" class="btn orderbtn btn-sm"><?php echo  $this->lang->line('mergeorder'); ?></a>
+                        <a href="<?= base_url('customer'); ?>" class="btn btn-sm backbtn" style="width:<?= $width; ?>"><?php echo  $this->lang->line('menu'); ?></a>
+                         <?php if($this->session->userdata('BillMergeOpt') > 0 && ($EType == 5)){ ?>
+                        <a href="<?= base_url('customer/merge_order/'.$MergeNo); ?>" class="btn orderbtn btn-sm" style="width:<?= $width; ?>"><?><?php echo  $this->lang->line('mergeorder'); ?></a>
                         <?php } ?>
-                        <button class="btn btn-sm paybtn" onclick="payNow()" width="<?= $width; ?>"><?php echo  $this->lang->line('payNow'); ?></button>
+                        <button class="btn btn-sm paybtn" onclick="payNow()" style="width:<?= $width; ?>"><?php echo  $this->lang->line('payNow'); ?></button>
                         
                         <?php if($this->session->flashdata('error')): ?>
                             <div class="">

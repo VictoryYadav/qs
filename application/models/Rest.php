@@ -55,24 +55,24 @@ class Rest extends CI_Model{
 
 	public function addUser($data){
 
-		$GUsersRest['FName'] = $data['FName'];
-		$GUsersRest['LName'] = $data['LName'];
-		$GUsersRest['MobileNo'] = $data['MobileNo'];
-		$GUsersRest['PEmail'] = $data['PEmail'];
-		$GUsersRest['DOB'] = $data['DOB'];
-		$GUsersRest['Gender'] = $data['Gender'];
-
-		$genDB = $this->load->database('GenTableData', TRUE);
-		$genDB->insert('UsersRest', $GUsersRest);
-		$genDB->insert('UsersRestDet', $GenUsersRestDet);
-
 		$check = $this->db2->get_where('UsersRest', array('MobileNo' => $data['MobileNo'], 'Stat' => 0))->row_array();
 		if(empty($check)){
 			$createrData = $this->db2->get_where('UsersRest', array('RUserId' => authuser()->RUserId))->row_array();
 			$data['ChainId'] = $createrData['ChainId'];
 			$data['Stat'] = $createrData['Stat'];
 			$data['LoginCd'] = authuser()->RUserId;
-			$newRUserId = insertRecord('UsersRest', $data);			
+			$newRUserId = insertRecord('UsersRest', $data);	
+
+			$GUsersRest['FName'] = $data['FName'];
+			$GUsersRest['LName'] = $data['LName'];
+			$GUsersRest['MobileNo'] = $data['MobileNo'];
+			$GUsersRest['PEmail'] = $data['PEmail'];
+			$GUsersRest['DOB'] = $data['DOB'];
+			$GUsersRest['Gender'] = $data['Gender'];
+			$GUsersRest['RUserId'] = $newRUserId;
+
+			$genDB = $this->load->database('GenTableData', TRUE);
+			$genDB->insert('UsersRest', $GUsersRest);		
 
 			if(!empty($newRUserId)){
 				$this->sendUserLoginMsg();
@@ -1062,7 +1062,7 @@ class Rest extends CI_Model{
 
 	public function getusersRestData(){
 		$EID = authuser()->EID;
-		return $this->db2->select('RUserId, FName, LName, MobileNo')->get_where('UsersRest', array('DeputedEID' => $EID, 'Stat' => 0 ))->result_array();  	
+		return $this->db2->select('RUserId, FName, LName, MobileNo')->get_where('UsersRest', array('EID' => $EID, 'Stat' => 0 ))->result_array();  	
 	}
 
 	public function getCasherList(){

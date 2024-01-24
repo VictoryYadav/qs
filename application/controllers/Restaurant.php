@@ -63,9 +63,23 @@ class Restaurant extends CI_Controller {
             // print_r($_POST);
             // die;
             if($_POST['RUserId'] > 0){
+                $res = getRecords('UsersRest', array('RUserId' => $_POST['RUserId']));
                 $udata = $_POST;
                 $udata['DOB'] = date('Y-m-d', strtotime($udata['DOB'])); 
-                updateRecord('UsersRest', $udata, array('RUserId' => $_POST['RUserId']));
+                updateRecord('UsersRest', $udata, array('RUserId' => $_POST['RUserId'], 'EID' => authuser()->EID));
+                $genInsert = 0;
+                if($res['Stat'] != $udata['Stat']){
+                    $genInsert = 1;
+                }
+                if($res['UTyp'] != $udata['UTyp']){
+                    $genInsert = 1;
+                }
+
+                if($genInsert == 1){
+                    $genDB = $this->load->database('GenTableData', TRUE);
+                    $genDB->insert('UsersRest', $udata);
+                }
+
                 $res = 'Records Updated';
             }else{
                 $res = $this->rest->addUser($_POST);
@@ -828,8 +842,7 @@ class Restaurant extends CI_Controller {
 
         $menuItemData = $menuItemData->get_where('MenuItem mi', array(
                                         'mi.EID' => $EID,
-                                        'mr.EID' => $EID,
-                                        'es.EID' => $EID
+                                        'mr.EID' => $EID
                                         )
                                 )
                         ->result_array();
@@ -2729,7 +2742,7 @@ class Restaurant extends CI_Controller {
             }
 
             $items = $this->db2->query("SELECT i.ItemId, $itemName1, mr.OrigRate, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and mr.ItemId=i.ItemId and mr.OrigRate > 0 order by $order_by")->result_array();
-            
+            // echo "<pre>";print_r($this->db2->last_query());die;
             if (!empty($items)) {
                 $response = [
                     "status" => 1,
@@ -3460,10 +3473,55 @@ class Restaurant extends CI_Controller {
 
     public function test(){
 
-
         echo "<pre>";
         print_r($_SESSION);
         die;
+
+        // menu item rates
+        $dd = $this->db2->select("e.Name as RestName, mi.ItemNm, es.Name as Section, ip.Name as Item Portion, mir.ItmRate")
+                ->group_by('mi.ItemId')
+                ->join('MenuItem mi', 'mi.ItemId = mir.ItemId', 'inner')
+                ->join('Eatary e', 'e.EID = mi.EID', 'inner')
+                ->join('Eat_Sections es', 'es.SecId = mir.SecId', 'inner')
+                ->join('ItemPortions ip', 'ip.IPCd = mir.Itm_Portion', 'inner')
+                ->get('MenuItemRates mir')
+                ->result_array();
+
+        echo "<pre>";
+            print_r($this->db2->last_query());
+            print_r($dd);
+            die;
+
+        // menu item
+        $dd = $this->db2->select('e.Name as RestName, c.Name as Cuisine, mc.MCatgNm,fdd.Usedfor as CatgType, fd.Opt FoodType, mi.ItemNm, mi.IMcCd, mi.PckCharge, it.Name as ItemType, mi.ItemAttrib, mi.ItemSale, mi.ItemTag, mi.NV, mi.MaxDisc, mi.StdDiscount, mi.DiscRate, mi.Rank, mi.ItmDesc, mi.Ingeredients, mi.MaxQty, mi.MTyp, mi.Rmks as Remarks, mi.PrepTime,  mi.FrmTime, mi.ToTime, mi.AltFrmTime, mi.AltToTime, mi.DayNo, mi.KitCd, mi.videoLink')
+            ->group_by('mi.ItemId')
+                        ->join('Eatary e', 'e.EID = mi.EID', 'inner')
+                        ->join('Cuisines c', 'c.CID = mi.CID', 'inner')
+                        ->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')
+                        ->join('FoodType fd', 'fd.FID = mi.FID', 'inner')
+                        ->join('FoodType fdd', 'fdd.CTyp = mi.CTyp', 'inner')
+                        ->join('ItemTypes it', 'it.ItmTyp = mi.ItemTyp')
+                        ->get('MenuItem mi')
+                        ->result_array();
+
+                        echo "<pre>";
+            print_r($this->db2->last_query());
+            print_r($dd);
+            die;
+        // menuCategory
+            $dd = $this->db2->select('e.Name as RestName, c.Name as Cuisine, mc.MCatgNm, fd.Usedfor CategoryType')
+            ->group_by('mc.MCatgId')
+                        ->join('Eatary e', 'e.EID = mc.EID', 'inner')
+                        ->join('Cuisines c', 'c.CID = mc.CID', 'inner')
+                        ->join('FoodType fd', 'fd.CTyp = mc.CTyp', 'inner')
+                        ->get('MenuCatg mc')
+                        ->result_array();
+            echo "<pre>";
+            print_r($this->db2->last_query());
+            print_r($dd);
+            die;
+
+
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -3471,7 +3529,8 @@ class Restaurant extends CI_Controller {
             print_r($_POST);
             die;
             $status = 'success';
-            
+
+
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
@@ -3505,8 +3564,6 @@ class Restaurant extends CI_Controller {
                     $groupby = ' km.MergeNo';
                 }
             }
-
-            // $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotItemDisc,(SELECT sum(k1.PckCharge*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotPckCharge, $ipName, km.CNo,km.MCNo, km.MergeNo, km.TableNo, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, km.CellNo, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.CustId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = 3) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.MCNo AND km.MCNo IN (Select km1.MCNo from KitchenMain km1 where km1.MergeNo=$MergeNo group by km1.MergeNo) group by $groupby, k.ItemId, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by k.TaxType, m.ItemNm1 Asc")->result_array();
 
             $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate,k.ItmRate,  SUM(if (k.TA=1,((k.OrigRate)*k.Qty),(k.OrigRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where k1.MergeNo = km.MergeNo and k1.MergeNo = $MergeNo  and k1.EID=km.EID AND (k1.Stat = 3) and k1.BillStat = km.BillStat GROUP BY k1.EID) as TotPckCharge, $ipName, km.CNo,km.MergeNo, km.MCNo,sum(km.BillDiscAmt) as BillDiscAmt, sum(km.DelCharge) as DelCharge, sum(km.RtngDiscAmt) as totRtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType, k.TA, km.RtngDiscAmt,km.TableNo, km.CustId, c.ServChrg, c.Tips,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = 3) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND km.MergeNo = $MergeNo group by $groupby, k.TA,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by TaxType, m.ItemNm1 Asc")->result_array();
 
@@ -4535,10 +4592,10 @@ class Restaurant extends CI_Controller {
                                               $checker = 0;
                                             }
 
-                                            if($mc['CTyp'] == 0){
-                                              $response = $csv_data[3]. " Not Found in row no: $count";
-                                              $checker = 0;
-                                            }
+                                            // if($mc['CTyp'] == 0){
+                                            //   $response = $csv_data[3]. " Not Found in row no: $count";
+                                            //   $checker = 0;
+                                            // }
 
                                             if($mc['KitCd'] == 0){
                                               $response = $csv_data[5]. " Not Found in row no: $count";
@@ -4703,12 +4760,18 @@ class Restaurant extends CI_Controller {
                                               $checker = 0;
                                             }
 
-                                            $mItem['MCatgId'] = $csv_data[2];
-                                            $mItem['CTyp'] = $this->checkCTyp($csv_data[3]);
-                                            if($mItem['CTyp'] == 0){
-                                              $response = $csv_data[3]. " Not Found in row no: $count";
+                                            $mItem['MCatgId'] = $this->checkMenuCatg($mItem['EID'], $csv_data[2]);
+
+                                            if($mItem['MCatgId'] == 0){
+                                              $response = $csv_data[2]. " Not Found in row no: $count";
                                               $checker = 0;
                                             }
+
+                                            $mItem['CTyp'] = $this->checkCTyp($csv_data[3]);
+                                            // if($mItem['CTyp'] == 0){
+                                            //   $response = $csv_data[3]. " Not Found in row no: $count";
+                                            //   $checker = 0;
+                                            // }
 
                                             $mItem['FID'] = $this->checkFoodType($csv_data[4]);
 
@@ -4755,10 +4818,10 @@ class Restaurant extends CI_Controller {
                                             $mItem['MTyp'] = $csv_data[20];
                                             $mItem['Rmks1'] = $csv_data[21];
                                             $mItem['PrepTime'] = $csv_data[22];
-                                            $mItem['FrmTime'] = date('H:i:s', strtotime($csv_data[23]));
-                                            $mItem['ToTime'] = date('H:i:s', strtotime($csv_data[24]));
-                                            $mItem['AltFrmTime'] = date('H:i:s', strtotime($csv_data[25]));
-                                            $mItem['AltToTime'] = date('H:i:s', strtotime($csv_data[26]));
+                                            $mItem['FrmTime'] = $csv_data[23];
+                                            $mItem['ToTime'] = $csv_data[24];
+                                            $mItem['AltFrmTime'] = $csv_data[25];
+                                            $mItem['AltToTime'] = $csv_data[26];
                                             $mItem['DayNo'] = getDayNo($csv_data[27]);
 
                                             if($mItem['DayNo'] == 0){
@@ -5348,6 +5411,15 @@ class Restaurant extends CI_Controller {
             $EID = $data['EID'];
         }
         return $EID;
+    }
+
+    private function checkMenuCatg($EID, $name){
+        $MCatgId = 0;
+        $data = $this->db2->select('MCatgId')->like('Name1', $name)->get_where('MenuCatg', array('EID' => $EID))->row_array();
+        if(!empty($data)){
+            $MCatgId = $data['MCatgId'];
+        }
+        return $MCatgId;
     }
 
     private function checkCuisine($name){

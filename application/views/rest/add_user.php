@@ -30,8 +30,8 @@
                                             
                                         <form method="post" action="<?php echo base_url('restaurant/add_user'); ?>">
                                             <input type="hidden" name="RUserId" id="RUserId" value="0">
-                                            <input type="hidden" name="RUserId" id="EID" value="<?= $EID; ?>">
-                                                Note: <span class="text-danger">Mobile and Email Can't be changed later.</span>
+                                            <input type="hidden" name="EID" id="EID" value="<?= $EID; ?>">
+                                                Note: <span class="text-danger">Mobile and Email Can't be changed later. Users can not reactivated.</span>
                                             <div class="row">
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
@@ -182,9 +182,13 @@
                                                         <span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span>
                                                     </td>
                                                     <td>
+                                                        <?php 
+                                                        if($key['Stat'] != 1){
+                                                        ?>
                                                         <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $key['RUserId'] ?>,'<?= $key['FName'] ?>','<?= $key['LName'] ?>', '<?= $key['MobileNo'] ?>','<?= $key['PEmail'] ?>', '<?= $key['DOB'] ?>', <?= $key['Gender'] ?>, <?= $key['UTyp'] ?>, <?= $key['Stat'] ?>, <?= $key['EID'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
+                                                        <?php } ?>
                                                     </td>
                                                 </tr>
                                                 <?php }

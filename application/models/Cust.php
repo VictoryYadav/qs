@@ -1335,6 +1335,41 @@ class Cust extends CI_Model{
                     $lastInsertBillId = insertRecord('Billing', $billingObj);
 
                     if(!empty($lastInsertBillId)){
+                    	// gen db
+                    	$kitchenSale = $this->db2->select("b.BillId, k.ItemId, k.Qty, k.Itm_Portion, k.OType, k.TA, k.EID")
+                    				->join('KitchenMain km', '(km.CNo = b.CNo or km.MCNo = b.CNo)', 'inner')
+                    				->join('Kitchen k', 'k.MCNo = km.MCNo', 'inner')
+                    				->where_in('k.Stat', array(2,3))
+                    				->get_where('Billing b', array(
+                    							'b.EID' => $EID,
+                    							'km.EID' => $EID,
+                    							'k.EID' => $EID,
+                    							'b.BillId' => $lastInsertBillId)
+                    							)
+                    				->result_array();
+	                    if(!empty($kitchenSale)){
+	                    	$kitchenSaleObj = [];
+	                    	$temp = [];
+	                    	foreach ($$kitchenSale as $key) {
+	                    		$temp['ItemId'] = $key['ItemId'];
+	                    		$temp['BillId'] = $key['BillId'];
+	                    		$temp['IPCd'] = $key['Itm_Portion'];
+	                    		$temp['Quantity'] = $key['Qty'];
+	                    		$temp['EID'] = $key['EID'];
+	                    		$temp['OType'] = $key['OType'];
+	                    		$temp['TakeAway'] = $key['Ta'];
+	                    		$temp['Created_at'] = date('Y-m-d H:i:s');
+
+	                    		$kitchenSaleObj[] = $temp;
+	                    	}
+
+	                    	if(!empty($kitchenSaleObj)){
+	                    		$genTblDb = $this->load->database('GenTableData', TRUE);
+	                    		$genTblDb->insert_batch('KitchenSale', $kitchenSaleObj); 
+	                    	}
+	                    }
+	                    // end of gen db
+
                     	if($EType == 5){
 	                    	$this->db2->where_in('Stat', array(1,2));
 	                    	$this->db2->update('Kitchen',array('Stat' => 7),array('EID' => $EID, 'MCNo' => $CNo));
@@ -1356,15 +1391,15 @@ class Cust extends CI_Model{
                         }
                     }
 
-                    $genTblDb = $this->load->database('GenTableData', TRUE);
+                    
                     // store to gen db
-                    $custPymtObj['BillId'] = $lastInsertBillId;
-                    $custPymtObj['CustId'] = $CustId;
-                    $custPymtObj['BillNo'] = $newBillNo;
-                    $custPymtObj['EID'] = $EID;
-                    $custPymtObj['PaidAmt'] = $totalAmount;
-                    $custPymtObj['PaymtMode'] = $paymentMode;
-                    $genTblDb->insert('CustPymts', $custPymtObj);
+                    // $custPymtObj['BillId'] = $lastInsertBillId;
+                    // $custPymtObj['CustId'] = $CustId;
+                    // $custPymtObj['BillNo'] = $newBillNo;
+                    // $custPymtObj['EID'] = $EID;
+                    // $custPymtObj['PaidAmt'] = $totalAmount;
+                    // $custPymtObj['PaymtMode'] = $paymentMode;
+                    // $genTblDb->insert('CustPymts', $custPymtObj);
                     
                     $kstat = ($EType == 5)?3:2;
                     // check for customer split bill 9-jan-24
