@@ -1336,14 +1336,16 @@ class Cust extends CI_Model{
 
                     if(!empty($lastInsertBillId)){
                     	// gen db
-                    	$kitchenSale = $this->db2->select("b.BillId, k.ItemId, k.Qty, k.Itm_Portion, k.OType, k.TA, k.EID")
+                    	$kitchenSale = $this->db2->select("b.BillId, k.ItemId, k.Qty, k.Itm_Portion, k.OType, k.TA, k.EID, m.UItmCd")
                     				->join('KitchenMain km', '(km.CNo = b.CNo or km.MCNo = b.CNo)', 'inner')
                     				->join('Kitchen k', 'k.MCNo = km.MCNo', 'inner')
+                    				->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
                     				->where_in('k.Stat', array(2,3))
                     				->get_where('Billing b', array(
                     							'b.EID' => $EID,
                     							'km.EID' => $EID,
                     							'k.EID' => $EID,
+                    							'm.EID' => $EID,
                     							'b.BillId' => $lastInsertBillId)
                     							)
                     				->result_array();
@@ -1358,6 +1360,7 @@ class Cust extends CI_Model{
 	                    		$temp['EID'] = $key['EID'];
 	                    		$temp['OType'] = $key['OType'];
 	                    		$temp['TakeAway'] = $key['Ta'];
+	                    		$temp['UItmCd'] = $key['UItmCd'];
 	                    		$temp['Created_at'] = date('Y-m-d H:i:s');
 
 	                    		$kitchenSaleObj[] = $temp;

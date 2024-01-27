@@ -156,7 +156,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#item_lists').DataTable();
+        $('#item_lists').DataTable(
+                        {"lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
+                        });
         $('#menucat').select2();
     });
 

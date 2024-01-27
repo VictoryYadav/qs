@@ -5400,7 +5400,7 @@ class Restaurant extends CI_Controller {
              die;    
         }
         $data['title'] = $this->lang->line('file').' '.$this->lang->line('upload');
-        $data['cuisine'] = $this->rest->getCuisineList();
+        
         $this->load->view('rest/csv_file', $data);   
     }
 
