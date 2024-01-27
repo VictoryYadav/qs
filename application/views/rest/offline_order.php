@@ -34,14 +34,16 @@
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div>
-
+                                            <?php 
+                                            if($this->session->userdata('tableSharing') > 0){
+                                            ?>
                                             <div class="col-md-3 form-group col-6">
                                                 <label><?= $this->lang->line('seatNo'); ?></label>
                                                 <select class="form-control form-control-sm" id="seatNo" name="seatNo" onchange="changeSeatNo()">
                                                     <option value="1">1</option>
                                                 </select>
                                             </div>
-
+                                            <?php  } ?>
                                             <?php } ?>
                                             <?php if($OType == 101) { ?>
                                             <div class="col-md-3 form-group col-6">

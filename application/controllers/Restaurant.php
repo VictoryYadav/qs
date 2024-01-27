@@ -2786,7 +2786,7 @@ class Restaurant extends CI_Controller {
             $taxtype = !empty($_POST['taxtype'])?$_POST['taxtype']:0;
             $take_away = !empty($_POST['take_away'])?$_POST['take_away']:0;
             $prep_time = !empty($_POST['prep_time'])?$_POST['prep_time']:0;
-            $seatNo = !empty($_POST['seatNo'])?$_POST['seatNo']:0;
+            $seatNo = !empty($_POST['seatNo'])?$_POST['seatNo']:1;
             $DCd = !empty($_POST['DCd'])?$_POST['DCd']:0;
             $customerAddress = !empty($_POST['customerAddress'])?$_POST['customerAddress']:'';
             $CCd = !empty($_POST['CCd'])?$_POST['CCd']:0;

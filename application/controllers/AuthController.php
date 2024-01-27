@@ -38,7 +38,7 @@ class AuthController extends CI_Controller {
 
                 if (!empty($login_check)) {
 
-                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, c.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint,c.JoinTable')
+                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, c.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint,c.JoinTable, c.tableSharing')
                             ->join('Eatary e',' u.EID = e.EID', 'inner')
                             ->join('Config c','u.EID = c.EID','inner')
                             // u.ChainId = c.ChainId 
@@ -77,7 +77,10 @@ class AuthController extends CI_Controller {
                         $this->session->set_userdata('billPrintTableNo',$checkNumber['billPrintTableNo']); 
                         $this->session->set_userdata('sitinKOTPrint',$checkNumber['sitinKOTPrint']);      
 
-                        $this->session->set_userdata('multiCustTable',$checkNumber['multiCustTable']);                  
+                        $this->session->set_userdata('multiCustTable',$checkNumber['multiCustTable']); 
+                        $this->session->set_userdata('tableSharing',$checkNumber['tableSharing']);                  
+
+                        
                         $session_data = array(
                         'EID' => $checkNumber['EID'],
                         'RestName' => $checkNumber['Name'],
