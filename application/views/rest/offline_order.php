@@ -43,7 +43,9 @@
                                                     <option value="1">1</option>
                                                 </select>
                                             </div>
-                                            <?php  } ?>
+                                            <?php  }else{ ?>
+                                                <input type="hidden" id="seatNo" name="seatNo" value="1">
+                                                <?php } ?>
                                             <?php } ?>
                                             <?php if($OType == 101) { ?>
                                             <div class="col-md-3 form-group col-6">

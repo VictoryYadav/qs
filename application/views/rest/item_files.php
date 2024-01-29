@@ -21,18 +21,18 @@
                     <div class="container-fluid">
 
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-body">
-                                    <h5 class="card-title mb-3">UItem Code</h5>
-                                        <form method="post" enctype="multipart/form-data" id="uItemCode_form">
-                                            <input type="hidden" name="type" value="uitemcd">
+                                        <p>Note : <span class="text-danger">ddd</span></p>
+                                    <h5 class="card-title mb-3"><?= $this->lang->line('menu'); ?> <?= $this->lang->line('item'); ?></h5>
+                                        <form method="post" enctype="multipart/form-data" id="menu_form">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
-                                                        <input type="file" name="uitemcd_file" class="form-control" required="" accept=".csv" id="file">
-                                                        <small class="text-danger"><?= $this->lang->line('uploadOnlyCSVFile'); ?> </small>
+                                                        <input type="file" name="menu_file[]" class="form-control" required="" accept="image/jpg, image/jpeg" id="file" multiple>
+                                                        <small class="text-danger"><?= $this->lang->line('uploadOnlyJPGFile'); ?> </small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -67,23 +67,23 @@
 
 <script type="text/javascript">
 
-$('#uItemCode_form').on('submit', function(e){
+$('#menu_form').on('submit', function(e){
     e.preventDefault();
 
-    var formData = new FormData(document.getElementById("uItemCode_form"));
+    var formData = new FormData(document.getElementById("menu_form"));
     callAjax(formData);
 });
 
 function callAjax(formData){
    $.ajax({
-           url : '<?= base_url('support/csv_file_upload') ?>',
+           url : '<?= base_url('restaurant/item_files_upload') ?>',
            type : 'POST',
            data : formData,
            processData: false,  
            contentType: false,  
            success : function(data) {
                alert(data.response);
-               location.reload();
+               // location.reload();
            }
     }); 
 }

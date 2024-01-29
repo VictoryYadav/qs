@@ -1352,14 +1352,14 @@ class Cust extends CI_Model{
 	                    if(!empty($kitchenSale)){
 	                    	$kitchenSaleObj = [];
 	                    	$temp = [];
-	                    	foreach ($$kitchenSale as $key) {
+	                    	foreach ($kitchenSale as $key) {
 	                    		$temp['ItemId'] = $key['ItemId'];
 	                    		$temp['BillId'] = $key['BillId'];
 	                    		$temp['IPCd'] = $key['Itm_Portion'];
 	                    		$temp['Quantity'] = $key['Qty'];
 	                    		$temp['EID'] = $key['EID'];
 	                    		$temp['OType'] = $key['OType'];
-	                    		$temp['TakeAway'] = $key['Ta'];
+	                    		$temp['TakeAway'] = $key['TA'];
 	                    		$temp['UItmCd'] = $key['UItmCd'];
 	                    		$temp['Created_at'] = date('Y-m-d H:i:s');
 

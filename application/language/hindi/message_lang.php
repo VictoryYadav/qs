@@ -354,6 +354,7 @@ $lang['capacity']			= 'कैपेसिटी';
 $lang['upload']				= 'अपलोड';
 $lang['file']				= 'फ़ाइल';
 $lang['uploadOnlyCSVFile']	= 'केवल CSV फ़ाइल अपलोड करें';
+$lang['uploadOnlyJPGFile']	= 'केवल JPG फ़ाइल अपलोड करें';
 $lang['price']				= 'कीमत';
 $lang['url']				= 'यूआरएल';
 $lang['payment']			= 'भुगतान';

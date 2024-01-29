@@ -789,8 +789,8 @@ width: 100%;*/
                     <input type="hidden" name="update_tableFilter" id="update_tableFilter">
                     <input type="hidden" name="update_custId" id="update_custId">
                     
-                    <button class="btn btn-sm btn-success" onclick="updateMCNo()">Yes</button>
-                    <button class="btn btn-sm btn-danger" data-dismiss="modal" aria-label="Close">No</button>
+                    <button class="btn btn-sm btn-success" onclick="updateMCNo()"><?= $this->lang->line('yes'); ?></button>
+                    <button class="btn btn-sm btn-danger" data-dismiss="modal" aria-label="Close"><?= $this->lang->line('no'); ?></button>
                 </div>
             </div>
         </div>
@@ -1073,7 +1073,11 @@ getTableView();
                             }
 
                             template += `<tr  id="${item.TableNo}" mergeNo="'${item.MergeNo}'" custId="${item.CustId}" mCNo="${item.MCNo}" billStat="${item.BillStat}" oTyp="${item.OType}"   style="background-color: ${bgcolor};" class="" >
-                            <td><input type="radio" name="selectOption" onchange="handleKot('${item.MergeNo}',${item.CustId},${item.MCNo},${item.BillStat},${item.OType})"> &nbsp;${convertToUnicodeNo(item.MergeNo)}-${convertToUnicodeNo(item.SeatNo)}</td>
+                            <td><input type="radio" name="selectOption" onchange="handleKot('${item.MergeNo}',${item.CustId},${item.MCNo},${item.BillStat},${item.OType})"> &nbsp;${convertToUnicodeNo(item.MergeNo)}
+                            <?php if($this->session->userdata('tableSharing') > 0){ ?>
+                            -${convertToUnicodeNo(item.SeatNo)}
+                        <?php } ?>
+                            </td>
                             <td>${convertToUnicodeNo(item.Amt)}</td>
                             <td>${convertToUnicodeNo(item.StTime)}</td>
                             <td>${convertToUnicodeNo(item.CellNo)}</td>
@@ -1436,8 +1440,11 @@ getTableView();
             $(input).css('background-color', '#d4d4d4');
         }
 
-        function refreshPage() {
-            location.reload();
+        refreshPage = () => {
+            getTableView();
+            <?php if($this->session->userdata('CustAssist') > 0){ ?>
+                check_call_bell();
+            <?php } ?>
         }
 
         function handleDelivery() {
@@ -1981,7 +1988,6 @@ getTableView();
             });
         }
         
-        setInterval(function(){ check_call_bell(); }, 3000);
         // setInterval(function(){ check_call_bell(); }, 3000);
         // setInterval(function(){ check_new_orders(); }, 5000);
         // setInterval(function(){ check_settled_table(); }, 7000);
@@ -2285,6 +2291,7 @@ function billCreateWitoutDisc(mergeNo, tableFilter){
         if(res.status == 'success'){
             var billId = res.response;
           window.location = "<?php echo base_url('restaurant/bill/'); ?>"+billId;
+          return false;
         }else{
           alert(res.response);
           
@@ -2335,7 +2342,7 @@ function cashCollect(custId, MCNo, mergeNo, oType){
 
                 temp +='<tr>\
                             <td>'+convertToUnicodeNo(data.BillNo)+'</td>\
-                            <td>'+convertToUnicodeNo(data.TableNo)+'</td>\
+                            <td>'+convertToUnicodeNo(data.MergeNo)+'</td>\
                             <td>'+convertToUnicodeNo(data.PaidAmt)+'</td>\
                             <td>'+pm+'</td>\
                             <td>\

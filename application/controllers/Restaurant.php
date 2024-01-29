@@ -6617,6 +6617,60 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/itemtypedet', $data);    
     }
 
+    public function item_files_upload(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            echo "<pre>";
+            print_r($_POST);
+            print_r($_FILES);
+            die;
+            $temp = [];
+            $notUpload = [];
+            for($i = 0; $i<sizeof($_POST['menu_file']); $i++){
+                if(isset($_FILES['menu_file']['name']) && !empty($_FILES['menu_file']['name'])){ 
+                    $files = $_FILES['menu_file'];
+                    $allowed = array('jpg');
+                    $filename_c = $_FILES['menu_file']['name'][$i];
+                    $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                    if (!in_array($ext, $allowed)) {
+                        $flag = 1;
+                        $this->session->set_flashdata('error','Support only CSV format!');
+                    }
+                    // less than 1mb size upload
+                    if($files['size'][$i] < 1048576){ 
+                    }
+                    else{
+                        $temp[] = $files['name'][$i];
+                        $notUpload['files'] = $temp;  
+                    }
+                    $_FILES['menu_file']['name']= $files['name'][$i];
+                    $_FILES['menu_file']['type']= $files['type'][$i];
+                    $_FILES['menu_file']['tmp_name']= $files['tmp_name'][$i];
+                    $_FILES['menu_file']['error']= $files['error'][$i];
+                    $_FILES['menu_file']['size']= $files['size'][$i];
+                    $file = $files['name'][$i];
+
+                    if($flag == 0){
+                        $res = do_upload('menu_file',$file,$folderPath,'*');
+                        
+                    }
+                }
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        $data['title'] = $this->lang->line('item');
+        $this->load->view('rest/item_files', $data);    
+    }
+
     public function db_create_old(){
         $destDB = "2e";
         // $servername = "localhost";
