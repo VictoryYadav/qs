@@ -903,7 +903,7 @@ class Rest extends CI_Model{
         $ipName = "ip.Name$langId as Portions";
         $KitName = "ek.KitName$langId as KitName";
 
-         return $this->db2->select("k.ItemId, k.MCNo, $lname,k.CustItemDesc,k.CustRmks, $ipName, sum(k.Qty) Qty,k.TableNo,k.KOTNo, k.FKOTNo,k.KitCd, $KitName, k.UKOTNo,k.LstModDt,k.TA,k.EDT, k.OType")
+         return $this->db2->select("k.ItemId, k.MCNo, $lname,k.CustItemDesc,k.CustRmks, $ipName, sum(k.Qty) Qty, k.TableNo,k.MergeNo, k.KOTNo, k.FKOTNo,k.KitCd, $KitName, k.UKOTNo,k.LstModDt,k.TA,k.EDT, k.OType")
         					->order_by('k.FKOTNo, m.ItemNm1, ek.KitName1, k.UKOTNo', 'ASC')
         					->group_by('k.ItemId, ek.KitName1,k.Itm_Portion')
          					->join('MenuItem m','m.ItemId = k.ItemId','inner')

@@ -1382,7 +1382,12 @@ getTableView();
         }
 
         function getKitchenData(MCNo, MergeNo, FKOTNo){
-            window.location.href="<?= base_url('restaurant/kot_print/'); ?>"+MCNo+'/'+MergeNo+'/'+FKOTNo;
+            // window.location.href="<?= base_url('restaurant/kot_print/'); ?>"+MCNo+'/'+MergeNo+'/'+FKOTNo;
+
+            window.open(
+              "<?= base_url('restaurant/kot_print/'); ?>"+MCNo+'/'+MergeNo+'/'+FKOTNo,
+              '_blank' 
+            );
         }
 
         

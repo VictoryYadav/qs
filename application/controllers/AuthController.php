@@ -88,7 +88,7 @@ class AuthController extends CI_Controller {
                         'mobile' => $data['phone'],
                         'ChainId' => $checkNumber['ChainId'],
                         'UTyp' => $checkNumber['UTyp'],
-                        'cur_password' => $checkNumber['Passwd'],
+                        // 'cur_password' => $checkNumber['Passwd'],
                     );
                     $this->session->set_userdata('logged_in', $session_data);
                     // set site_lang = 1 => english
@@ -130,7 +130,7 @@ class AuthController extends CI_Controller {
 		}
 
 		$this->session->set_userdata('EID', $_GET['o']);
-		$this->session->set_userdata('ChainId', $_GET['c']);
+		$this->session->set_userdata('CatgID', $_GET['c']);
 
 		$my_db = $_GET['o'].'e';
         $this->session->set_userdata('my_db', $my_db);
@@ -143,7 +143,7 @@ class AuthController extends CI_Controller {
 
 	public function logout(){
 		// $this->session->unset_userdata('logged_in');
-        $url = 'login?o='.$this->session->userdata('EID').'&c='.$this->session->userdata('ChainId');
+        $url = 'login?o='.$this->session->userdata('EID').'&c='.$this->session->userdata('CatgID');
 		$this->session->sess_destroy();
 		redirect(base_url() . $url, 'refresh');
 	}

@@ -138,7 +138,7 @@
                       ?><br>
             
           </td>
-          <td><?= $this->lang->line('tableNo'); ?>: <?= convertToUnicodeNumber($kotList[0]['TableNo']); ?></td>
+          <td><?= $this->lang->line('tableNo'); ?>: <?= convertToUnicodeNumber($kotList[0]['MergeNo']); ?></td>
         </tr>
         <tr>
           <td><?= $this->lang->line('date'); ?>: <?= date('d-M-Y H:i', strtotime($kotList[0]['LstModDt'])); ?></td>
