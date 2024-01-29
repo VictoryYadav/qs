@@ -325,10 +325,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	    return $CI->User->generate_only_otp();
 	}
 
-	function autoSettlePayment($billId, $MergeNo){
+	function autoSettlePayment($billId, $MergeNo, $MCNo){
 		$CI = & get_instance();
 	    $CI->load->model('User');
-	    return $CI->User->SettlePayment($billId, $MergeNo);	
+	    return $CI->User->SettlePayment($billId, $MergeNo, $MCNo);	
 	}
 
 	function getName($custId){

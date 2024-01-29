@@ -3413,9 +3413,9 @@ class Restaurant extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
 
-            // echo "<pre>";
-            // print_r($_POST);
-            // die;
+            echo "<pre>";
+            print_r($_POST);
+            die;
 
             $pay = $_POST;
             $pay['PaymtMode'] = 1;
@@ -3443,7 +3443,7 @@ class Restaurant extends CI_Controller {
             $response = $this->lang->line('paymentCollected');
             
             if($this->session->userdata('AutoSettle') == 1){
-                autoSettlePayment($pay['BillId'], $pay['MergeNo']);
+                autoSettlePayment($pay['BillId'], $pay['MergeNo'], $_POST['MCNo']);
             }else{
                 $billId = $pay['BillId'];
                 $EID = $pay['EID'];
@@ -4180,7 +4180,7 @@ class Restaurant extends CI_Controller {
             // die;
             extract($_POST);
             
-            autoSettlePayment($billId, $MergeNo);
+            autoSettlePayment($billId, $MergeNo, $CNo);
 
             $status = 'success';
             $response = $this->lang->line('billingSettled');

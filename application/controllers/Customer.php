@@ -1649,10 +1649,12 @@ class Customer extends CI_Controller {
         // $CNo = $this->session->userdata('CNo');
         $EID  = authuser()->EID;
         $billId = $_POST['BillId'];
+        $MCNo = $_POST['MCNo'];
+        $MergeNo = $this->session->userdata('MergeNo');
         $MergeNo = $this->session->userdata('MergeNo');
 
         if($this->session->userdata('AutoSettle') > 0){
-            autoSettlePayment($billId, $MergeNo);
+            autoSettlePayment($billId, $MergeNo, $MCNo);
         }else{
             $this->db2->query("UPDATE KitchenMain km, Billing b SET km.custPymt = 1, km.payRest = 1 WHERE b.BillId = $billId and km.EID=b.EID and km.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo) and km.MergeNo = b.MergeNo");
         }

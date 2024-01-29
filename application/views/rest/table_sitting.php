@@ -2395,11 +2395,11 @@ function cashCollectData(){
     $.post('<?= base_url('restaurant/collect_payment') ?>',data,function(res){
         if(res.status == 'success'){
           alert(res.response);
+            // getTableView();
         }else{
           alert(res.response);
         }
         // location.reload();
-        getTableView();
     });
   }else{
     alert('Amount has to be greater than or equal to Bill Amount.');

@@ -228,7 +228,7 @@ class User extends CI_Model{
         return $otp;
 	}
 
-	public function SettlePayment($billId, $MergeNo){
+	public function SettlePayment($billId, $MergeNo, $MCNo){
 
 		$EID = authuser()->EID;
         $EType = $this->session->userdata('EType');
@@ -248,7 +248,7 @@ class User extends CI_Model{
 	        	$this->db2->query("UPDATE Kitchen k, KitchenMain km, Billing b SET k.payRest=1, km.payRest=1, km.CnfSettle = 1, km.custPymt = 1 WHERE b.BillId = $billId and (k.Stat = 3) AND k.CNo=km.CNo and km.EID=k.EID and k.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo)");
         	}else{
 
-        		$splitbilDT = $this->db2->query("SELECT sum(bp.PaidAmt) as rcvdamt, (SELECT sum(b1.PaidAmt) from Billing b1 where b1.CNo=b.CNo and b1.EID= $EID) as totpayable from Billing b,BillPayments bp     where bp.MCNo=b.CNo and b.BillId=bp.BillId and b.BillId= $billId and b.EID = bp.EID and b.EID = $EID")->row_array();
+        		$splitbilDT = $this->db2->query("SELECT sum(bp.PaidAmt) as rcvdamt, (SELECT sum(b1.PaidAmt) from Billing b1 where b1.CNo=b.CNo and b1.EID= $EID) as totpayable from Billing b,BillPayments bp     where bp.MCNo=b.CNo and b.BillId=bp.BillId and b.CNo= $MCNo and b.EID = bp.EID and b.EID = $EID")->row_array();
         		if(!empty($splitbilDT)){
         			if($splitbilDT['rcvdamt'] == $splitbilDT['totpayable']){
         				$this->db2->query("UPDATE Eat_tables SET MergeNo = TableNo, Stat = 0 where EID = $EID and MergeNo = '$MergeNo'");

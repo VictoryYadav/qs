@@ -313,7 +313,7 @@ function goToBill(){
 
     if(payable == total){
 
-        $.post('<?= base_url('customer/updateCustPayment') ?>',{BillId:BillId},function(res){
+        $.post('<?= base_url('customer/updateCustPayment') ?>',{BillId:BillId, MCNo:MCNo},function(res){
         
             window.location = '<?= base_url();?>customer/bill/'+BillId;   
             return false;
