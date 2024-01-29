@@ -1793,7 +1793,8 @@ getTableView();
                 }else {
                     alert(response.response);
                 }
-                location.reload();
+                // location.reload();
+                getTableView();
             });
         }
 
@@ -2333,7 +2334,6 @@ function cashCollect(custId, MCNo, mergeNo, oType){
             // alert(oType)
             $('#cashAmtR').prop('readonly', true);
           }
-          console.log(data.length);
 
           if(sts > 0){
 
@@ -2345,28 +2345,31 @@ function cashCollect(custId, MCNo, mergeNo, oType){
                 }
                 pm +='</option>';
 
-                temp +='<tr>\
-                            <td>'+convertToUnicodeNo(data.BillNo)+'</td>\
-                            <td>'+convertToUnicodeNo(data.MergeNo)+'</td>\
-                            <td>'+convertToUnicodeNo(data.PaidAmt)+'</td>\
-                            <td>'+pm+'</td>\
-                            <td>\
-                            <input type="hidden" name="oType" value="'+oType+'"/>\
-                            <input type="hidden" name="TableNo" value="'+data.TableNo+'"/>\
-                                <input type="hidden" name="BillId" value="'+data.BillId+'"/>\
-                                <input type="hidden" name="MCNo" value="'+data.CNo+'"/>\
-                                <input type="hidden" name="EID" value="'+data.EID+'"/>\
-                                <input type="hidden" name="MergeNo" value="'+data.MergeNo+'"/>\
-                                <input type="hidden" name="CellNo" value="'+data.CellNo+'"/>\
-                                <input type="hidden" name="TotBillAmt" value="'+data.PaidAmt+'"/>\
-                                <input type="text" name="PaidAmt" style="width:70px;" required id="cashAmtR" value="'+convertToUnicodeNo(data.PaidAmt)+'" onblur="changeValue(this)" />\
-                                </td>\
-                            <td>\
-                                <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success">\
-                                    <i class="fas fa-save"></i>\
-                                </button>\
-                                </td>\
-                        </tr>';
+                for(let j = 0; j < data.length; j++){
+                    temp +='<tr>\
+                                <td>'+convertToUnicodeNo(data[j].BillNo)+'</td>\
+                                <td>'+convertToUnicodeNo(data[j].MergeNo)+'</td>\
+                                <td>'+convertToUnicodeNo(data[j].PaidAmt)+'</td>\
+                                <td>'+pm+'</td>\
+                                <td>\
+                                <input type="hidden" name="oType" value="'+oType+'"/>\
+                                <input type="hidden" name="TableNo" value="'+data[j].TableNo+'"/>\
+                                    <input type="hidden" name="BillId" value="'+data[j].BillId+'"/>\
+                                    <input type="hidden" name="MCNo" value="'+data[j].CNo+'"/>\
+                                    <input type="hidden" name="EID" value="'+data[j].EID+'"/>\
+                                    <input type="hidden" name="MergeNo" value="'+data[j].MergeNo+'"/>\
+                                    <input type="hidden" name="CellNo" value="'+data[j].CellNo+'"/>\
+                                    <input type="hidden" name="TotBillAmt" value="'+data[j].PaidAmt+'"/>\
+                                    <input type="text" name="PaidAmt" style="width:70px;" required id="cashAmtR" value="'+convertToUnicodeNo(data[j].PaidAmt)+'" onblur="changeValue(this)" />\
+                                    </td>\
+                                <td>\
+                                    <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success">\
+                                        <i class="fas fa-save"></i>\
+                                    </button>\
+                                    </td>\
+                            </tr>';
+                }
+
             }else{
                 temp = '<tr><td colspan="6" class="text-center">'+paymentReceived+'</td></tr>';
             } 
@@ -2395,7 +2398,8 @@ function cashCollectData(){
         }else{
           alert(res.response);
         }
-        location.reload();
+        // location.reload();
+        getTableView();
     });
   }else{
     alert('Amount has to be greater than or equal to Bill Amount.');

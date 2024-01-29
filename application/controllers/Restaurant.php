@@ -3384,7 +3384,7 @@ class Restaurant extends CI_Controller {
             
             $bill = array();
             $EID = authuser()->EID;
-             $bills = $this->db2->query("SELECT b.TableNo,b.MergeNo, b.BillId, b.BillNo, b.CNo, b.TotAmt, b.PaidAmt, b.CustId, b.EID, b.MergeNo,b.CellNo from Billing b where b.EID = $EID and b.MergeNo = '$mergeNo' and b.CNo = $MCNo $whr and b.payRest = 0")->row_array();
+             $bills = $this->db2->query("SELECT b.TableNo,b.MergeNo, b.BillId, b.BillNo, b.CNo, b.TotAmt, b.PaidAmt, b.CustId, b.EID, b.MergeNo,b.CellNo from Billing b where b.EID = $EID and b.MergeNo = '$mergeNo' and b.CNo = $MCNo $whr and b.payRest = 0")->result_array();
             $data['sts'] = 0;
             if(!empty($bills)){
                 $bill = $bills;
