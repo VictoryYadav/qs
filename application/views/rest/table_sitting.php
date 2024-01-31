@@ -2399,7 +2399,7 @@ function cashCollectData(){
         }else{
           alert(res.response);
         }
-        // location.reload();
+        location.reload();
     });
   }else{
     alert('Amount has to be greater than or equal to Bill Amount.');

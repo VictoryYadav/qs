@@ -179,6 +179,7 @@ class User extends CI_Model{
 		            $data1['DOB']       = $gen_check['DOB'];
 		            $data1['Gender']    = $gen_check['Gender'];
 		            $data1['visit'] = 1;
+		            $data['PWDHash'] = md5('eatout246');
 		            insertRecord('Users',$data1);    
 		        }else{
 		        	$data['MobileNo'] = $mobile;
@@ -191,6 +192,7 @@ class User extends CI_Model{
 		            
 		            $data['CustId'] = $CustId;
 		            $data['visit'] = 1;
+		            $data['PWDHash'] = md5('eatout246');
 		            insertRecord('Users',$data);
 		        }
 			}else{

@@ -135,7 +135,7 @@ class Cust extends CI_Model{
 		$langId = $this->session->userdata('site_lang');
         $ipName = "ip.Name$langId as Name";
 
-		return $this->db2->select("ip.IPCd as IPCode, mir.ItmRate, $ipName")
+		return $this->db2->select("ip.IPCd as IPCode, mir.OrigRate as ItmRate, $ipName")
 						->order_by('ItmRate', 'ASC')
 						->join('MenuItemRates mir', 'mir.ItemId = mi.ItemId', 'inner')
 						->join('ItemPortions ip', 'ip.IPCd = mir.Itm_Portion', 'inner')

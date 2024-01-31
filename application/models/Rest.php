@@ -55,12 +55,16 @@ class Rest extends CI_Model{
 
 	public function addUser($data){
 
+		unset($data['RUserId']);
+
 		$check = $this->db2->get_where('UsersRest', array('MobileNo' => $data['MobileNo'], 'Stat' => 0))->row_array();
 		if(empty($check)){
 			$createrData = $this->db2->get_where('UsersRest', array('RUserId' => authuser()->RUserId))->row_array();
 			$data['ChainId'] = $createrData['ChainId'];
 			$data['Stat'] = $createrData['Stat'];
 			$data['LoginCd'] = authuser()->RUserId;
+			$data['PWDHash'] = md5('QS1234');
+
 			$newRUserId = insertRecord('UsersRest', $data);	
 
 			$GUsersRest['FName'] = $data['FName'];
@@ -1308,6 +1312,24 @@ class Rest extends CI_Model{
         			->join('MenuItem mi', 'mi.ItemId = itd.ItemId', 'inner')
         			->get_where('ItemTypesDet itd' , array('itd.EID' => authuser()->EID))
         			->result_array();		
+	}
+
+	public function getMenuItemRates($data){
+		$EID = authuser()->EID;
+		$langId = $this->session->userdata('site_lang');
+        $ipName = "ip.Name$langId as Name";
+
+		return $this->db2->select("ip.IPCd, mir.OrigRate, $ipName")
+						->order_by('ItmRate', 'ASC')
+						->join('MenuItemRates mir', 'mir.ItemId = mi.ItemId', 'inner')
+						->join('ItemPortions ip', 'ip.IPCd = mir.Itm_Portion', 'inner')
+						->join('Eat_tables et', 'et.SecId = mir.SecId', 'inner')
+						->get_where('MenuItem mi', array(
+							'mi.ItemId' => $data['itemId'],
+							'mir.EID' => $EID,
+							'et.MergeNo' => $data['mergeNo'])
+								)
+						->result_array();
 	}
 
 	

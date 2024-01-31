@@ -1775,6 +1775,8 @@ class Restaurant extends CI_Controller {
         // echo "<pre>";print_r($_POST);die;
         $EID = authuser()->EID;
         $ChainId = authuser()->ChainId;
+        $EType = $this->session->userdata('EType');
+
         if (isset($_POST['getTableOrderDetails']) && $_POST['getTableOrderDetails']) {
             // print_r($_POST);
             // exit;
@@ -1784,7 +1786,6 @@ class Restaurant extends CI_Controller {
                 $ccd_qry = " and et.CCd = $CCd and et.MergeNo = km.MergeNo and et.EID = km.EID";
             }
 
-            $EType = $this->session->userdata('EType');
             $stat = ($EType == 5)?3:2;
 
             $groupby = ' GROUP BY km.MCNo';    
@@ -1792,7 +1793,7 @@ class Restaurant extends CI_Controller {
                 $groupby = ' GROUP BY km.MergeNo';
             }
             // SUM(k.AQty) as AnyAssigned
-            $kitchenData = $this->db2->query("SELECT (SUM(k.Qty) - SUM(k.DQty)) as AllDelivered, km.CNo, km.CustId,  SUM(k.OrigRate * k.Qty) as Amt, TIME_FORMAT(km.LstModDt,'%H:%i') as StTime,   km.MergeNo, km.MCNo, km.BillStat,  km.EID, km.CNo, km.CellNo, IF(km.CellNo > 0,(select count(km2.CellNo) from KitchenMain km2 where km2.CellNo=km.CellNo and km2.EID = km.EID group by km2.CellNo),0) as visitNo, km.TableNo,km.SeatNo, km.OType, km.payRest, km.custPymt, km.CnfSettle FROM Kitchen k, KitchenMain km, Eat_tables et WHERE km.payRest=0 and km.CnfSettle=0 AND (k.Stat = 3) AND (k.OType = 7 OR k.OType = 8) and (km.CNo = k.CNo) AND k.EID = km.EID AND k.MergeNo = km.MergeNo AND km.EID = $EID $ccd_qry $groupby order by km.MergeNo ASC")->result_array();
+            $kitchenData = $this->db2->query("SELECT (SUM(k.Qty) - SUM(k.DQty)) as AllDelivered, km.CNo, km.CustId,  SUM(k.OrigRate * k.Qty) as Amt, TIME_FORMAT(km.LstModDt,'%H:%i') as StTime,   km.MergeNo, km.MCNo, km.BillStat,  km.EID, km.CNo, km.CellNo, IF(km.CellNo > 0,(select count(km2.CellNo) from KitchenMain km2 where km2.CellNo=km.CellNo and km2.EID = km.EID group by km2.CellNo),0) as visitNo, km.TableNo,km.SeatNo, km.OType, km.payRest, km.custPymt, km.CnfSettle FROM Kitchen k, KitchenMain km, Eat_tables et WHERE km.payRest=0 and km.CnfSettle=0 AND (k.Stat = $stat) AND (k.OType = 7 OR k.OType = 8) and (km.CNo = k.CNo) AND k.EID = km.EID AND k.MergeNo = km.MergeNo AND km.EID = $EID $ccd_qry $groupby order by km.MergeNo ASC")->result_array();
 
             // echo "<pre>";
             // print_r($kitchenData);exit();
@@ -3029,21 +3030,26 @@ class Restaurant extends CI_Controller {
             die();
         }
         if(isset($_POST['get_table_order_items'])){
+            $stat = ($EType == 5)?3:2;
             $langId = $this->session->userdata('site_lang');
             $lname = "mi.ItemNm$langId as ItemNm";
 
             $mergeNo = $_POST['mergeNo'];
             $seatNo = $_POST['seatNo'];
-            $data = $this->db2->select("k.CNo, k.TA, k.Qty, k.ItmRate, k.CustRmks,k.CellNo, km.BillStat kmBillStat, $lname, mir.OrigRate, k.SeatNo")
+            $whr = "mir.Itm_Portion = k.Itm_Portion and mir.SecId = (SELECT et.SecId from Eat_tables et where et.EID = k.EID and et.TableNo = k.TableNo )";
+            $data = $this->db2->select("k.CNo, k.TA, k.Qty, k.ItmRate, k.CustRmks,k.CellNo, km.BillStat, $lname, mir.OrigRate, k.SeatNo, k.Itm_Portion, k.ItemId")
                         ->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
                         ->join('MenuItem mi', 'mi.ItemId = k.ItemId', 'inner')
                         ->join('MenuItemRates mir', 'mir.ItemId = mi.ItemId', 'inner')
+                        ->where($whr)
                         ->get_where('KitchenMain km', array(
                                             'km.MergeNo' => $mergeNo,
-                                            'k.Stat' => 3,
+                                            'k.Stat' => $stat,
                                             'km.BillStat' => 0,
                                             'k.SeatNo' => $seatNo ,
-                                            'mir.OrigRate >' => 0
+                                            'mir.OrigRate >' => 0,
+                                            'k.EID' => $EID,
+                                            'km.EID' => $EID
                                         )
                                     )
                         ->result_array();
@@ -3413,9 +3419,9 @@ class Restaurant extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
 
-            echo "<pre>";
-            print_r($_POST);
-            die;
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
 
             $pay = $_POST;
             $pay['PaymtMode'] = 1;
@@ -4334,6 +4340,23 @@ class Restaurant extends CI_Controller {
         $data['title'] = $this->lang->line('sitIn');
         $data['OType'] = 8;
         $this->load->view('rest/offline_order', $data);
+    }
+
+    public function get_portions(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $status = "success";
+            $response = $this->rest->getMenuItemRates($_POST);
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
     }
 
     // csv file upload
@@ -6618,48 +6641,62 @@ class Restaurant extends CI_Controller {
     }
 
     public function item_files_upload(){
+        $EID = authuser()->EID;
         $status = "error";
         $response = "Something went wrong! Try again later.";
+        $data['notUpload'] = [];
         if($this->input->method(true)=='POST'){
 
-            echo "<pre>";
-            print_r($_POST);
-            print_r($_FILES);
-            die;
+            // echo "<pre>";
+            // print_r($_POST);
+            // print_r($_FILES);
+            // die;
             $temp = [];
             $notUpload = [];
-            for($i = 0; $i<sizeof($_POST['menu_file']); $i++){
-                if(isset($_FILES['menu_file']['name']) && !empty($_FILES['menu_file']['name'])){ 
-                    $files = $_FILES['menu_file'];
-                    $allowed = array('jpg');
-                    $filename_c = $_FILES['menu_file']['name'][$i];
-                    $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
-                    if (!in_array($ext, $allowed)) {
-                        $flag = 1;
-                        $this->session->set_flashdata('error','Support only CSV format!');
-                    }
-                    // less than 1mb size upload
-                    if($files['size'][$i] < 1048576){ 
-                    }
-                    else{
-                        $temp[] = $files['name'][$i];
-                        $notUpload['files'] = $temp;  
-                    }
-                    $_FILES['menu_file']['name']= $files['name'][$i];
-                    $_FILES['menu_file']['type']= $files['type'][$i];
-                    $_FILES['menu_file']['tmp_name']= $files['tmp_name'][$i];
-                    $_FILES['menu_file']['error']= $files['error'][$i];
-                    $_FILES['menu_file']['size']= $files['size'][$i];
+            
+            // If files are selected to upload 
+            if(!empty($_FILES['files']['name']) && count(array_filter($_FILES['files']['name'])) > 0){ 
+                $filesCount = count($_FILES['files']['name']); 
+                $flag = 0;
+                // $allowed = array('jpg');
+                $files = $_FILES['files'];
+                for($i = 0; $i < $filesCount; $i++){ 
+                    $_FILES['files']['name']     = $files['name'][$i]; 
+                    $_FILES['files']['type']     = $files['type'][$i]; 
+                    $_FILES['files']['tmp_name'] = $files['tmp_name'][$i]; 
+                    $_FILES['files']['error']     = $files['error'][$i]; 
+                    $_FILES['files']['size']     = $files['size'][$i]; 
                     $file = $files['name'][$i];
 
-                    if($flag == 0){
-                        $res = do_upload('menu_file',$file,$folderPath,'*');
-                        
-                    }
-                }
+                    // $filename_c = $_FILES['files']['name'][$i];
+                    // $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                    // if (!in_array($ext, $allowed)) {
+                    //     $flag = 1;
+                    //     $this->session->set_flashdata('error','Support only JPG format!');
+                    // }
+                    
+                    $folderPath = 'uploads/e'.$EID.'/'; 
+
+                    if($_FILES['files']['size'] < 1048576){
+                         $res = do_upload('files',$file,$folderPath,'*');
+                         $status = 'success';
+                         $response = 'File Uploaded';
+                    }else{
+                        $temp = $file;
+                        $notUpload[] = $temp;
+                    }                     
+                } 
             }
 
-            $status = 'success';
+            if(!empty($notUpload)){
+                $status = 'pending';
+                $response = $notUpload;
+                $fd['files'] = implode(",",$notUpload);
+                $fd['EID'] = $EID;
+                $fd['created_at'] = date('Y-m-d H:i:s'); 
+                insertRecord('fileNotUploaded', $fd);
+            }
+
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
@@ -6668,6 +6705,7 @@ class Restaurant extends CI_Controller {
              die;
         }
         $data['title'] = $this->lang->line('item');
+
         $this->load->view('rest/item_files', $data);    
     }
 

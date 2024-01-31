@@ -24,14 +24,14 @@
                             <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-body">
-                                        <p>Note : <span class="text-danger">ddd</span></p>
+                                        <p>Note : <span class="text-danger">Only JPG files allowed (Each file less than 1MB)</span></p>
                                     <h5 class="card-title mb-3"><?= $this->lang->line('menu'); ?> <?= $this->lang->line('item'); ?></h5>
                                         <form method="post" enctype="multipart/form-data" id="menu_form">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
-                                                        <input type="file" name="menu_file[]" class="form-control" required="" accept="image/jpg, image/jpeg" id="file" multiple>
+                                                        <input type="file" name="files[]" class="form-control" required="" accept="image/jpg" id="file" multiple>
                                                         <small class="text-danger"><?= $this->lang->line('uploadOnlyJPGFile'); ?> </small>
                                                     </div>
                                                 </div>
@@ -40,6 +40,17 @@
                                                 <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
                                             </div>
                                         </form>
+                                        <div>
+                                            <p>Files are Not uploaded in (more than 1
+                                            MB).</p>
+                                           <table class="table ">
+                                               <tr>
+                                                   <td>#</td>
+                                                   <td>Name</td>
+                                               </tr>
+                                               <tbody id="notUpload"></tbody>
+                                           </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -82,7 +93,20 @@ function callAjax(formData){
            processData: false,  
            contentType: false,  
            success : function(data) {
-               alert(data.response);
+               // alert(data.response);
+               if(data.status == 'pending'){
+                    var data = data.response;
+                    var temp = ``;
+                    var count = 0;
+                    data.forEach((item, index) => {
+                        count++;
+                        temp += `<tr>
+                                    <td>${count}</td>
+                                    <td>${item}</td>
+                                 </tr>`;
+                    });
+                    $('#notUpload').html(temp);
+               }
                // location.reload();
            }
     }); 

@@ -116,6 +116,7 @@
                                                         <tr>
                                                             <th><?= $this->lang->line('item'); ?></th>
                                                             <th><?= $this->lang->line('quantity'); ?></th>
+                                                            <th><?= $this->lang->line('portion'); ?></th>
                                                             <th><?= $this->lang->line('rate'); ?></th>
                                                             <th><?= $this->lang->line('value'); ?></th>
                                                             <th><?= $this->lang->line('takeAway'); ?></th>
@@ -294,7 +295,11 @@
             if(orderType != 8){
                 ch = 'checked disabled';
             }
-            console.log(itemId, itemName, itemValue, itemKitCd);
+            
+            if(Itm_Portion > 4){
+                getPortionLists(itemId, Itm_Portion);
+            }
+            // console.log(itemId, itemName, itemValue, itemKitCd);
             $("#item-search-result").html('');
             $("#search-item").val('');
             $("#item-list-modal").modal('hide');
@@ -303,8 +308,9 @@
             <tr class="item-id" data-id="${itemId}" kitcd-id="${itemKitCd}" pckcharge ="${PckCharge}" Itm_Portion ="${Itm_Portion}">
                 <td>${itemName}</td>
                 <td style="width:50px;"><input type="text" class="form-control form-control-sm item-qty" min="1" value="${convertToUnicodeNo(qty)}" onblur="calculateValue(this)" style="width:50px;" ></td>
-                <td class="item-rate">${convertToUnicodeNo(itemValue)}</td>
-                <td class="item-value">${convertToUnicodeNo(itemValue)}</td>
+                <td><select class="form-control form-control-sm item-portion" id="select_${itemId}" onchange="changePortion(${itemId})"><option></option></select></td>
+                <td class="item-rate" id="rate_${itemId}">${convertToUnicodeNo(itemValue)}</td>
+                <td class="item-value" id="value_${itemId}">${convertToUnicodeNo(itemValue)}</td>
                 <td><input type="checkbox" value="1" class="is_take_away" `+ch+`></td>
                 <td><input type="text" class="form-control form-control-sm item-remarks" style="width:100%;"></td>
                 <td style=" text-align: center; ">
@@ -323,6 +329,39 @@
             }else{
                 $("#order-table-body").find('tr:first').before(template);
             }
+
+            calculateTotal();
+        }
+
+        function getPortionLists(itemId, Itm_Portion){
+            
+            var mergeNo = $('#table-id').val();
+            $.post('<?= base_url('restaurant/get_portions') ?>',{itemId:itemId, mergeNo:mergeNo},function(res){
+                if(res.status == 'success'){
+                  // alert(res.response);
+                  var temp = ``;
+                  res.response.forEach((item, index) => {
+                    var select = '';
+                    if(Itm_Portion == item.IPCd)
+                        {
+                            select = 'selected';
+                        }
+                        temp += `<option value="${item.IPCd}" ${select} rate="${item.OrigRate}">${item.Name}</option>`;
+                    });
+                  
+                  $('#select_'+itemId).html(temp);
+                }else{
+                  alert(res.response);
+                }
+            });
+        }
+
+        changePortion =(itemId) => {
+            var portion = $('#select_'+itemId).val();
+            var rate = $('option:selected','#select_'+itemId).attr('rate');
+
+            $('#rate_'+itemId).text(rate);
+            $('#value_'+itemId).text(rate);
 
             calculateTotal();
         }
@@ -491,7 +530,7 @@
 
                     $(".item-id").each(function(index, el) {
                         itemIds.push($(this).attr('data-id'));
-                        Itm_Portion.push($(this).attr('Itm_Portion'));
+                        // Itm_Portion.push($(this).attr('Itm_Portion'));
                         itemKitCds.push($(this).attr('kitcd-id'));
                         pckValue.push($(this).attr('pckcharge'));
                     });
@@ -527,6 +566,10 @@
 
                     $(".item-rate").each(function(index, el) {
                         item_value.push( convertDigitToEnglish($(this).text()) );
+                    });
+
+                    $(".item-portion").each(function(index, el) {
+                        Itm_Portion.push( $(this).val() );
                     });
 
                     var Uphone = $('#phone').val();
@@ -650,8 +693,13 @@
                                 if(a[i].TA == 1){
                                     ch = 'checked';
                                 }
+
+                                if(a[i].Itm_Portion > 4){
+                                    getPortionLists(a[i].ItemId, a[i].Itm_Portion);
+                                }
+
                                 b+='<tr>';
-                                b+='<td>'+a[i].ItemNm+'</td><td>'+convertToUnicodeNo(a[i].Qty)+'</td><td>'+convertToUnicodeNo(a[i].ItmRate)+'</td><td class="item-value">'+convertToUnicodeNo(a[i].OrigRate)+'</td><td><input type="checkbox" value="'+a[i].TA+'" '+ch+' disabled /></td><td>'+a[i].CustRmks+'</td><td></td>';
+                                b+='<td>'+a[i].ItemNm+'</td><td>'+convertToUnicodeNo(a[i].Qty)+'</td><td><select class="form-control form-control-sm item-select" id="select_'+a[i].ItemId+'" onchange="changePortion('+a[i].ItemId+')" disabled><option></option></select></td><td>'+convertToUnicodeNo(a[i].ItmRate)+'</td><td class="item-value">'+convertToUnicodeNo(a[i].OrigRate)+'</td><td><input type="checkbox" value="'+a[i].TA+'" '+ch+' disabled /></td><td>'+a[i].CustRmks+'</td><td></td>';
                                 b+='</tr>';
                             }
 
