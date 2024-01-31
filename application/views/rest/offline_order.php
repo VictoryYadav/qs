@@ -415,9 +415,9 @@
                                     if(IMcCd == 0){
                                         printItemName = item.LngName;
                                     }else if(IMcCd == 1){
-                                        printItemName = item.ItemId+' - '+item.LngName;
+                                        printItemName = item.ItemId+' - '+item.LngName+'-'+item.portionName;
                                     }else if(IMcCd == 2){
-                                        printItemName = item.IMcCd+' - '+item.LngName;
+                                        printItemName = item.IMcCd+' - '+item.LngName+'-'+item.portionName;
                                     }
                                     
                                     template += `

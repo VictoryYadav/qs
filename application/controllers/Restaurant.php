@@ -2730,6 +2730,7 @@ class Restaurant extends CI_Controller {
         $langId = $this->session->userdata('site_lang');
         $itemName1 = "i.ItemNm$langId as LngName";
         $lname = "i.ItemNm$langId";
+        $ipname = "ip.Name$langId as portionName";
 
         if (isset($_POST['searchItem']) && $_POST['searchItem']) {
             $itemName = $_POST['itemName'];
@@ -2742,7 +2743,7 @@ class Restaurant extends CI_Controller {
                 $order_by = " i.IMcCd";
             }
 
-            $items = $this->db2->query("SELECT i.ItemId, $itemName1, mr.OrigRate, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc where mc.MCatgId = i.MCatgId and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and mr.ItemId=i.ItemId and mr.OrigRate > 0 order by $order_by")->result_array();
+            $items = $this->db2->query("SELECT i.ItemId, $itemName1, $ipname, mr.OrigRate, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc, ItemPortions ip where mc.MCatgId = i.MCatgId and ip.IPCd = mr.Itm_Portion and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and mr.ItemId=i.ItemId and mr.OrigRate > 0 order by $order_by")->result_array();
             // echo "<pre>";print_r($this->db2->last_query());die;
             if (!empty($items)) {
                 $response = [
