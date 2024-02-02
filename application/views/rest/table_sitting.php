@@ -1798,12 +1798,6 @@ getTableView();
             });
         }
 
-        function PrintBill(id,index,eid){
-            console.log("ashu");
-            // window.location.href = 'print/print_rest.php?billId='+id;
-            window.location.href = "vtrend:billid="+id+"&eid="+eid+"&s=<?= $_SESSION['DynamicDB'];?>";
-        }
-
         function rejectBill(id, index, CNo, TableNo, CustId) {
            
         }

@@ -51,7 +51,7 @@
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('item'); ?> <?= $this->lang->line('list'); ?></label>
-                                                        <select name="ItemId" id="ItemId" class="form-control form-control-sm select2 custom-select" required="">
+                                                        <select name="ItemId" id="ItemId" class="form-control form-control-sm select2 custom-select" >
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php
                                                             foreach ($itemList as $item) {
@@ -68,8 +68,8 @@
                                                         <select name="GrpType" id="GrpType" class="form-control form-control-sm" required="">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
 
-                                                            <option value="0"><?= $this->lang->line('single').' '.$this->lang->line('selection'); ?></option>
-                                                            <option value="1"><?= $this->lang->line('multiple').' '.$this->lang->line('selection'); ?></option>
+                                                            <option value="1"><?= $this->lang->line('single').' '.$this->lang->line('selection'); ?></option>
+                                                            <option value="2"><?= $this->lang->line('multiple').' '.$this->lang->line('selection'); ?></option>
                                                         </select>
                                                     </div>
                                                 </div>

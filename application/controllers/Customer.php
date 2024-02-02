@@ -2398,7 +2398,7 @@ class Customer extends CI_Controller {
                     $EID = authuser()->EID;
                     $ChainId = authuser()->ChainId;
 
-                    $disRates = $this->db2->query("select mi.ItmRate from MenuItemRates as mi where mi.EID = $EID and mi.ChainId = $ChainId and mi.ItemId = $Disc_ItemId and mi.Itm_Portion = $Disc_IPCd and mi.SecId = (select et.SecId from Eat_tables et where et.TableNo = $TableNo and et.EID = $EID)")->row_array(); 
+                    $disRates = $this->db2->query("select mi.ItmRate from MenuItemRates as mi where mi.EID = $EID and mi.ItemId = $Disc_ItemId and mi.Itm_Portion = $Disc_IPCd and mi.SecId = (select et.SecId from Eat_tables et where et.TableNo = $TableNo and et.EID = $EID)")->row_array(); 
                     
                     if(!empty($disRates)){
                         $bill_based_saving = $data['Disc_Qty'] * $disRates['ItmRate'];

@@ -196,11 +196,11 @@
                                         $sameTaxType .= ' <tr class="service"> ';
                                         if($data['Itm_Portion'] > 4 ){
                                             
-                                            $sameTaxType .= ' <td class="tableitem">'.$data['ItemNm'].$std.$portions.$ta.'</td> ';
+                                            $sameTaxType .= ' <td class="tableitem">'.$data['ItemNm'].$portions.$ta.$std.'</td> ';
 
                                         }else{
 
-                                            $sameTaxType .= ' <td>'.$data['ItemNm'].$std.$portions.$ta.'</td> ';
+                                            $sameTaxType .= ' <td>'.$data['ItemNm'].$portions.$ta.$std.'</td> ';
 
                                         }
                                         

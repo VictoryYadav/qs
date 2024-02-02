@@ -156,7 +156,11 @@ class Cust extends CI_Model{
 		    $MCatgId = $postData['MCatgId'];
 		    // print_r($itemId);exit();
 
-			$GetOffer = $this->db2->query("SELECT c.SchNm, c.SchCd, cod.SDetCd, cod.SchDesc, c.PromoCode, c.SchTyp, c.Rank, cod.Qty as FreeQty, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId from CustOffersDet as cod join CustOffers as c on c.SchCd=cod.SchCd and  (cod.CID = $cid or cod.MCatgId = $MCatgId or cod.ItemTyp = $itemTyp or cod.ItemId = $itemId) left outer join Cuisines as c1 on cod.CID=c1.CID   left outer join MenuCatg as m on cod.MCatgId = m.MCatgId  left outer join ItemTypes as i on cod.ItemTyp = i.ItmTyp  left outer join MenuItem as mi on mi.ItemId = cod.ItemId where c.EID=".$this->EID." and c.ChainId =".$this->ChainId."  and c.Stat=0 and c.Stat=0 and c.Stat=0 and (time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)  group by c.schcd, cod.sDetCd order by c.Rank, cod.Rank")->result_array();
+		    $langId = $this->session->userdata('site_lang');
+    		$scName = "c.SchNm$langId as SchNm";
+    		$scDesc = "cod.SchDesc$langId as SchDesc";
+
+			$GetOffer = $this->db2->query("SELECT $scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank, cod.Qty as FreeQty, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId from CustOffersDet as cod join CustOffers as c on c.SchCd=cod.SchCd and  (cod.CID = $cid or cod.MCatgId = $MCatgId or cod.ItemTyp = $itemTyp or cod.ItemId = $itemId) left outer join Cuisines as c1 on cod.CID=c1.CID   left outer join MenuCatg as m on cod.MCatgId = m.MCatgId  left outer join ItemTypes as i on cod.ItemTyp = i.ItmTyp  left outer join MenuItem as mi on mi.ItemId = cod.ItemId where c.EID=".$this->EID." and c.ChainId =".$this->ChainId."  and c.Stat=0 and c.Stat=0 and c.Stat=0 and (time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)  group by c.schcd, cod.sDetCd order by c.Rank, cod.Rank")->result_array();
 
 			// echo "<pre>";
 			// print_r($this->db2->last_query());
@@ -647,7 +651,7 @@ class Cust extends CI_Model{
 						$Disc_IPCd = $Offers['Disc_IPCd'];
 						$offerRate = $itmrate - ($itmrate * $Offers['Disc_pcent'] / 100);
 						if($Disc_ItemId != $postData['itemId']){
-							$offerRates = $this->db2->query("select mi.ItmRate from MenuItemRates as mi where mi.EID = $this->EID, mi.ChainId = $this->ChainId and mi.ItemId = $Disc_ItemId and mi.Itm_Portion = $Disc_IPCd and mi.SecId = (select SecId from Eat_tables where TableNo = $TableNo and EID = $this->EID")->row_array();
+							$offerRates = $this->db2->query("select mi.ItmRate from MenuItemRates as mi where mi.EID = $this->EID and mi.ItemId = $Disc_ItemId and mi.Itm_Portion = $Disc_IPCd and mi.SecId = (select SecId from Eat_tables where TableNo = $TableNo and EID = $this->EID)")->row_array();
 							$offerRate = $offerRates['ItmRate'] -  ($offerRates['ItmRate'] * $Offers['Disc_pcent'] / 100);
 						}
 
@@ -1022,7 +1026,12 @@ class Cust extends CI_Model{
 	}
 
 	private function getSchemeOfferList($schcd, $sdetcd){
-		return $this->db2->select('c.SchNm, c.SchCd, cod.SDetCd, cod.SchDesc, c.PromoCode, c.SchTyp, c.Rank,cod.Disc_ItemId, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId')
+
+		$langId = $this->session->userdata('site_lang');
+    	$scName = "c.SchNm$langId as SchNm";
+    	$scDesc = "cod.SchDesc$langId as SchDesc";
+
+		return $this->db2->select("$scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank,cod.Disc_ItemId, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId")
 						->join('CustOffers c', 'c.SchCd = cod.SchCd', 'inner')
 						->get_where('CustOffersDet cod', array('c.SchCd' => $schcd,
 						 'cod.SDetCd' => $sdetcd,
@@ -1033,11 +1042,7 @@ class Cust extends CI_Model{
 						->row_array();
 	}
 
-	// private function getItemQuery($TableNo,$EID,$varCID)
- //    {
- //        return $this->db2->query("SELECT i.ItemId, i.ItemNm1".$_SESSION['item_name']." as ItemNm,i.NV, mc.TaxType, i.MCatgId, (Select ip.Name1 from MenuItemRates m , ItemPortions ip, Eat_tables et  where m.ItemId = i.ItemId and m.SecId = et.SecId and et.TableNo = '$TableNo' and m.EID = et.EID and et.EID = $EID and ip.IPCd = m.Itm_Portion order by m.ItmRate ASC LIMIT 1 ) as Itm_Portion, (Select ip.IpCd from MenuItemRates m , ItemPortions ip, Eat_tables et  where m.ItemId = i.ItemId and m.SecId = et.SecId and et.TableNo = '$TableNo' and m.EID = et.EID and et.EID = $EID and ip.IPCd = m.Itm_Portion order by m.ItmRate ASC LIMIT 1 ) as Itm_Portion_Code, (Select m.ItmRate from MenuItemRates m , ItemPortions ip, Eat_tables et where m.ItemId = i.ItemId AND  m.SecId = et.SecId  and et.TableNo = '$TableNo' and m.EID = et.EID and et.EID = $EID order by m.ItmRate ASC LIMIT 1) as Value, AvgRtng, ItmDesc".$_SESSION['item_desc']." as ItmDesc, ItemNm as imgSrc, ItemTyp, i.KitCd, UItmCd, FID, ItemAttrib, PckCharge, MTyp, Ingeredients, MaxQty, PrepTime, ItemSale,ItemTag from MenuItem i, MenuCatg mc where mc.MCatgId = i.MCatgId   AND i.Stat = 0 and (DAYOFWEEK(CURDATE()) = i.DayNo OR i.DayNo = 0) $varCID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.ItemId from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID = $EID and md.Chainid=i.ChainId) order by i.Rank")->result_array();
- //    }
-
+	
     private function getMenuCatgData($EID, $cId)
     {
         return $this->db2->query("SELECT mc.MCatgId, mc.Name1, mc.CTyp, mc.TaxType, f.FID, f.fIdA, f.Opt, f.AltOpt from MenuCatg mc, MenuItem i, Food f where  i.MCatgId=mc.MCatgId AND i.Stat = 0 and (DAYOFWEEK(CURDATE()) = i.DayNo OR i.DayNo = 0) AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) AND mc.CID = :cId AND mc.EID=i.EID AND mc.Stat = 0 AND mc.CTyp = f.CTyp and f.LId = 1 and i.ItemId Not in (Select md.ItemId from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID=$EID and md.Chainid=i.ChainId) group by mc.MCatgId, mc.Name1, mc.CTyp, f.FID, f.fIdA, f.Opt, f.AltOpt order by mc.Rank " , ["cId" => $cId])->result_array();
@@ -1045,28 +1050,59 @@ class Cust extends CI_Model{
 
     public function getCustomDetails($itemTyp, $ItemId, $itemPortionCode, $FID)
     {
-    	$sql = '';
+    	$whr = '';
     	if($FID == 1){
-    		$sql = " and itd.FID = $FID";
+    		$whr = "mii.FID = $FID";
     	}else if($FID == 2){
-    		$sql = " and (itd.FID = 1 or itd.FID = 2)";
+    		$whr = "(mii.FID = 1 or mii.FID = 2)";
     	}
 
-        if($itemTyp == 125){
-            return $this->db2->query("SELECT itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, itg.ItemGrpName, itd.Name, itd.Rate, itg.Reqd From ItemTypesGroup itg join ItemTypesDet itd on itg.ItemGrpCd = itd.ItemGrpCd AND itg.ItemTyp = $itemTyp and itg.ItemId = $itemId and itd.Itm_Portion= $itemPortionCode $sql order by itg.Rank, itd.Rank")->result_array();
+    	$EID = authuser()->EID;
+    	$langId = $this->session->userdata('site_lang');
+        $ItemGrpName = "mi.ItemNm$langId as ItemGrpName";
+        $ItemNm = "mii.ItemNm$langId as Name";
+
+        if($itemTyp == 1){
+
+        	$ItemGrpName = "mi.ItemNm$langId as ItemGrpName";
+        	$ItemNm = "mii.ItemNm$langId as Name";
+
+            return $this->db2->select("itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, $ItemGrpName, itd.ItemId, $ItemNm, mir.OrigRate as Rate, itg.Reqd")
+            		->order_by('itg.Rank, itd.Rank', 'ASC')
+            		->join('ItemTypesDet itd', 'itg.ItemGrpCd = itd.ItemGrpCd', 'inner')
+            		->join('MenuItem mi', 'mi.ItemId = itg.ItemId', 'inner')
+            		->join('MenuItem mii', 'mii.ItemId = itd.ItemId', 'inner')
+            		->join('MenuItemRates mir', 'mir.ItemId = mii.ItemId', 'inner')
+            		->where($whr)
+            		->get_where('ItemTypesGroup itg', array(
+            							'itg.EID' => $EID,
+            							'itg.Stat' => 0,
+            							'itg.ItemId' => $ItemId,
+            							'mir.Itm_Portion' => $itemPortionCode,
+            							'itg.ItemTyp' => 1
+            									)
+            					)
+            		->result_array();
         }else{
-            return $this->db2->query("SELECT itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, itg.ItemGrpName, itd.Name, itd.Rate, itg.Reqd From ItemTypesGroup itg join ItemTypesDet itd on itg.ItemGrpCd = itd.ItemGrpCd AND itg.ItemTyp = $itemTyp and itd.Itm_Portion= $itemPortionCode $sql order by itg.Rank, itd.Rank")->result_array();
-
-            // $this->db2->query("SELECT itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, itg.ItemGrpName, itd.Name, itd.Rate, itg.Reqd From ItemTypesGroup itg join ItemTypesDet itd on itg.ItemGrpCd = itd.ItemGrpCd AND itg.ItemTyp = $itemTyp and itd.Itm_Portion= $itemPortionCode $sql order by itg.Rank, itd.Rank")->result_array();
+            $ItemGrpName = "itg.Name$langId as ItemGrpName";
+            return $this->db2->select("itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, $ItemGrpName, itd.ItemId, $ItemNm, mir.OrigRate as Rate, itg.Reqd")
+            		->order_by('itg.Rank, itd.Rank', 'ASC')
+            		->join('ItemTypesDet itd', 'itg.ItemGrpCd = itd.ItemGrpCd', 'inner')
+            		->join('MenuItem mi', 'mi.ItemId = itg.ItemId', 'left')
+            		->join('MenuItem mii', 'mii.ItemId = itd.ItemId', 'inner')
+            		->join('MenuItemRates mir', 'mir.ItemId = mii.ItemId', 'inner')
+            		->where($whr)
+            		->get_where('ItemTypesGroup itg', array(
+            							'itg.EID' => $EID,
+            							'itg.Stat' => 0,
+            							'mir.Itm_Portion' => $itemPortionCode,
+            							'itg.ItemTyp' => $itemTyp
+            									)
+            					)
+            		->result_array();
         }
-            // print_r($this->db2->last_query());
-            // die;
+            
     }
-
-	// public function ItemQuery($TableNo,$EID,$varCID)
-	// {
-	// 	return $this->db2->query("SELECT i.ItemId, i.ItemNm1".$_SESSION['item_name'].", mc.TaxType, i.MCatgId, et.TblTyp, (Select ip.Name1 from MenuItemRates m , ItemPortions ip, Eat_tables et  where m.ItemId = i.ItemId and m.SecId = et.SecId and et.TableNo = '$TableNo' and m.EID = et.EID and et.EID = $EID and ip.IPCd = m.Itm_Portion order by m.ItmRate ASC LIMIT 1 ) as Itm_Portion, (Select m.ItmRate from MenuItemRates m , ItemPortions ip, Eat_tables et where m.ItemId = i.ItemId AND  m.SecId = et.SecId  and et.TableNo = '$TableNo' and m.EID = et.EID and et.EID = $EID order by m.ItmRate ASC LIMIT 1) as Value, AvgRtng, ItmDesc".$_SESSION['item_desc'].", ItemNm as imgSrc, ItemTyp, i.KitCd, UItmCd, FID, ItemAttrib, PckCharge, MTyp, Ingeredients,  PrepTime, ItemSale,ItemTag from MenuItem i, MenuCatg mc where mc.MCatgId = i.MCatgId   AND i.Stat = 0 and (DAYOFWEEK(CURDATE()) = i.DayNo OR i.DayNo = 0) $varCID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId Not in (Select md.ItemId from MenuItem_Disabled md where md.ItemId=i.ItemId and md.EID = $EID and md.Chainid=i.ChainId) order by i.Rank")->result_array();
-	// }
 
 	public function insertKitchenMain()
 	{

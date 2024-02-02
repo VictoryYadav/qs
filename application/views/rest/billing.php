@@ -346,16 +346,12 @@
                         
                         <div class="col-12">
                             <p style="margin-bottom: unset;font-size: 15px !important;">Date: <?= $dateOfBill ?></p>
-                            <!-- <p><?= $dateOfBill ?></p> -->
                         </div>
                     </div>
                     
                     <div style="border-bottom: 1px solid;"></div>
-                    <!-- bill body here -->
 
                     <?php
-                        // get repository  : billing/bill_print_body.repo.php
-                        // include('repository/billing/bill_print_body.repo.php');
 
                     foreach ( $billData as $key => $value ) {
                         $TaxType = $value['TaxType'];
@@ -370,14 +366,15 @@
                             foreach ($billData as $keyData => $data) {
                                 if($data['TaxType'] == $value['TaxType']){
                                         $ta = ($data['TA'] != 0)?'[TA]':'';
+                                        $CustItemDesc = ($data['CustItemDesc'] !='Std')?'-'.$data['CustItemDesc']:'';
                                         $sameTaxType .= ' <tr> ';
                                         if($data['Itm_Portion'] > 4 ){
                                             
-                                            $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].' ( '.$data['Portions'].$ta.' ) </td> ';
+                                            $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].' ('.$data['Portions'].')'.$ta.$CustItemDesc.' </td> ';
 
                                         }else{
 
-                                            $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].$ta.'</td> ';
+                                            $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].$ta.$CustItemDesc.'</td> ';
 
                                         }
                                         

@@ -64,7 +64,6 @@ class Rest extends CI_Model{
 			$data['Stat'] = $createrData['Stat'];
 			$data['LoginCd'] = authuser()->RUserId;
 			$data['PWDHash'] = md5('QS1234');
-
 			$newRUserId = insertRecord('UsersRest', $data);	
 
 			$GUsersRest['FName'] = $data['FName'];
@@ -1281,13 +1280,13 @@ class Rest extends CI_Model{
 	public function getItemTypesGroupList(){
 
 		$langId = $this->session->userdata('site_lang');
-        $iname = "itp.Name$langId as Name";
+        $iname = "itg.Name$langId as Name";
         $itname = "it.Name$langId as itemTypeName";
         $miname = "mi.ItemNm$langId as ItemNm";
-        return $this->db2->select("itp.*, $iname, $itname, $miname")
-        				->join('ItemTypes it', 'it.ItmTyp = itp.ItemTyp', 'inner')
-        				->join('MenuItem mi', 'mi.ItemId = itp.ItemId', 'inner')
-        				->get('ItemTypesGroup itp' , array('itp.EID' => authuser()->EID))
+        return $this->db2->select("itg.*, $iname, $itname, $miname")
+        				->join('ItemTypes it', 'it.ItmTyp = itg.ItemTyp', 'inner')
+        				->join('MenuItem mi', 'mi.ItemId = itg.ItemId', 'left')
+        				->get_where('ItemTypesGroup itg' , array('itg.EID' => authuser()->EID))
         				->result_array();
 
 	}
@@ -1327,10 +1326,111 @@ class Rest extends CI_Model{
 						->get_where('MenuItem mi', array(
 							'mi.ItemId' => $data['itemId'],
 							'mir.EID' => $EID,
-							'et.MergeNo' => $data['mergeNo'])
+							'et.TableNo' => $data['TableNo'])
 								)
 						->result_array();
 	}
+
+	public function getItemOfferList($postData){
+		$EID = authuser()->EID;
+	    $itemId = $postData['ItemId'];
+	    $cid = $postData['CID'];
+	    $itemTyp = $postData['ItemTyp'];
+	    $MCatgId = $postData['MCatgId'];
+	    
+	    $langId = $this->session->userdata('site_lang');
+    	$scName = "c.SchNm$langId as SchNm";
+    	$scDesc = "cod.SchDesc$langId as SchDesc";
+    	$mname = "mi.ItemNm$langId as menuName";
+    	$dis_name = "mii.ItemNm$langId as discName";
+
+		// return $this->db2->query("SELECT $scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank,cod.Disc_ItemId, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId from CustOffersDet as cod join CustOffers as c on c.SchCd=cod.SchCd and  (cod.CID = $cid or cod.MCatgId = $MCatgId or cod.ItemTyp = $itemTyp or cod.ItemId = $itemId) left outer join Cuisines as c1 on cod.CID=c1.CID   left outer join MenuCatg as m on cod.MCatgId = m.MCatgId  left outer join ItemTypes as i on cod.ItemTyp = i.ItmTyp  left outer join MenuItem as mi on mi.ItemId = cod.ItemId where c.SchCd=cod.SchCd  and c.EID=$EID   and c.Stat=0 and (time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)  group by c.schcd, cod.sDetCd order by c.Rank, cod.Rank")->result_array();
+
+		$whr = "(cod.CID = $cid or cod.MCatgId = $MCatgId or cod.ItemTyp = $itemTyp or cod.ItemId = $itemId) and (time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)";
+
+		return $this->db2->select("$scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank,cod.Disc_ItemId, $dis_name, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, $mname, mii.KitCd, mii.PckCharge, m.TaxType, mii.PrepTime, m.DCd, mii.FID ")
+				->order_by('c.Rank, cod.Rank')
+				->group_by('c.schcd, cod.sDetCd')
+				->join('CustOffersDet cod','c.SchCd= cod.SchCd', 'inner')
+				->join('Cuisines c1','c1.CID = cod.CID', 'left')
+				->join('MenuCatg m','m.MCatgId = cod.MCatgId', 'left')
+				->join('ItemTypes i','i.ItmTyp = cod.ItemTyp', 'left')
+				->join('MenuItem mi','mi.ItemId = cod.ItemId', 'inner')
+				->join('MenuItem mii','mii.ItemId = cod.Disc_ItemId', 'left')
+				->where($whr)
+				->get_where('CustOffers c', array(
+										'c.EID' => $EID,
+										'c.Stat' => 0
+										)
+							)
+				->result_array();
+	}
+
+	public function getCustomItemsList($postData){
+		$EID = authuser()->EID;
+		$FID = $postData['FID'];
+		$ItemId = $postData['ItemId'];
+		$ItemTyp = $postData['ItemTyp'];
+		$Itm_Portion =$postData['Itm_Portion'];
+
+	    $whr = '';
+    	if($FID == 1){
+    		$whr = "mii.FID = $FID";
+    	}else if($FID == 2){
+    		$whr = "(mii.FID = 1 or mii.FID = 2)";
+    	}
+
+    	$langId = $this->session->userdata('site_lang');
+    	$ItemGrpName = "mi.ItemNm$langId as ItemGrpName";
+        $ItemNm = "mii.ItemNm$langId as Name";
+
+        if($ItemTyp == 1){
+
+        	$ItemGrpName = "mi.ItemNm$langId as ItemGrpName";
+        	$ItemNm = "mii.ItemNm$langId as Name";
+
+        // $ItemGrpName = "itg.Name$langId as ItemGrpName";
+        	// itd.Name , $ItemGrpName
+            return $this->db2->select("itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, $ItemGrpName, itd.ItemId, $ItemNm, mir.OrigRate as Rate, itg.Reqd")
+            		->order_by('itg.Rank, itd.Rank', 'ASC')
+            		->join('ItemTypesDet itd', 'itg.ItemGrpCd = itd.ItemGrpCd', 'inner')
+            		->join('MenuItem mi', 'mi.ItemId = itg.ItemId', 'inner')
+            		->join('MenuItem mii', 'mii.ItemId = itd.ItemId', 'inner')
+            		->join('MenuItemRates mir', 'mir.ItemId = mii.ItemId', 'inner')
+            		->where($whr)
+            		->get_where('ItemTypesGroup itg', array(
+            							'itg.EID' => $EID,
+            							'itg.Stat' => 0,
+            							'itg.ItemId' => $ItemId,
+            							'mir.Itm_Portion' => $Itm_Portion,
+            							'itg.ItemTyp' => 1
+            									)
+            					)
+            		->result_array();
+            
+        }else{
+        	$ItemGrpName = "itg.Name$langId as ItemGrpName";
+            return $this->db2->select("itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, $ItemGrpName, itd.ItemId, $ItemNm, mir.OrigRate as Rate, itg.Reqd")
+            		->order_by('itg.Rank, itd.Rank', 'ASC')
+            		->join('ItemTypesDet itd', 'itg.ItemGrpCd = itd.ItemGrpCd', 'inner')
+            		->join('MenuItem mi', 'mi.ItemId = itg.ItemId', 'left')
+            		->join('MenuItem mii', 'mii.ItemId = itd.ItemId', 'inner')
+            		->join('MenuItemRates mir', 'mir.ItemId = mii.ItemId', 'inner')
+            		->where($whr)
+            		->get_where('ItemTypesGroup itg', array(
+            							'itg.EID' => $EID,
+            							'itg.Stat' => 0,
+            							'mir.Itm_Portion' => $Itm_Portion,
+            							'itg.ItemTyp' => $ItemTyp
+            									)
+            					)
+            		->result_array();
+					// echo "string";print_r($dd);
+     //        		print_r($this->db2->last_query());die;
+
+            // $this->db2->query("SELECT itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, $ItemGrpName, itd.Name, itd.Rate, itg.Reqd From ItemTypesGroup itg join ItemTypesDet itd on itg.ItemGrpCd = itd.ItemGrpCd AND itg.EID = $EID and itg.ItemTyp = $ItemTyp and itd.Itm_Portion= $Itm_Portion $sql order by itg.Rank, itd.Rank")->result_array();
+        }
+}
 
 	
 }

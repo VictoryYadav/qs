@@ -1749,26 +1749,31 @@ class Restaurant extends CI_Controller {
     }
 
     public function sitting_table(){
-        $_SESSION['DynamicDB'] = $this->session->userdata('my_db');
-        $data['TableAcceptReqd'] = $this->session->userdata('TableAcceptReqd');
-        $EID = authuser()->EID;
-        $data['EID'] = $EID;
-        $data['EType'] = $this->session->userdata('EType');
-        $data['Kitchen'] = $this->session->userdata('Kitchen');
-
-        $langId = $this->session->userdata('site_lang');
-        $cashName = "Name$langId as Name";
-
-        $data['SettingTableViewAccess'] = $this->rest->getCasherList();
-        // when calling join unjoin table then load this query
-        $data['captured_tables'] = $this->db2->query("SELECT * from Eat_tables where Stat = 1 and EID = ".$EID)->result_array();
-        $data['available_tables'] = $this->db2->query("SELECT * from Eat_tables where Stat = 0 and EID = ".$EID)->result_array();
-        $data['selectMergeTable'] = $this->db2->query("SELECT TableNo , MergeNo FROM `Eat_tables` where EID = $EID")->result_array();
-        // end when calling join unjoin table then load this query
         $data['title'] = $this->lang->line('tableView');
-        // echo "<pre>";
-        // print_r($data);exit();
-        $this->load->view('rest/table_sitting',$data);   
+        $data['EType'] = $this->session->userdata('EType');
+        if($data['EType'] == 5){
+
+            $data['TableAcceptReqd'] = $this->session->userdata('TableAcceptReqd');
+            $EID = authuser()->EID;
+            $data['EID'] = $EID;
+            $data['Kitchen'] = $this->session->userdata('Kitchen');
+
+            $langId = $this->session->userdata('site_lang');
+            $cashName = "Name$langId as Name";
+
+            $data['SettingTableViewAccess'] = $this->rest->getCasherList();
+            // when calling join unjoin table then load this query
+            $data['captured_tables'] = $this->db2->query("SELECT * from Eat_tables where Stat = 1 and EID = ".$EID)->result_array();
+            $data['available_tables'] = $this->db2->query("SELECT * from Eat_tables where Stat = 0 and EID = ".$EID)->result_array();
+            $data['selectMergeTable'] = $this->db2->query("SELECT TableNo , MergeNo FROM `Eat_tables` where EID = $EID")->result_array();
+            // end when calling join unjoin table then load this query
+            // echo "<pre>";
+            // print_r($data);exit();
+            $this->load->view('rest/table_sitting',$data);   
+        }else{
+            $this->load->view('page403', $data);
+        }
+        
     }
 
     public function sittin_table_view_ajax(){
@@ -2743,7 +2748,7 @@ class Restaurant extends CI_Controller {
                 $order_by = " i.IMcCd";
             }
 
-            $items = $this->db2->query("SELECT i.ItemId, $itemName1, $ipname, mr.OrigRate, i.KitCd, i.PckCharge,mr.Itm_Portion, mc.TaxType,i.IMcCd,i.PrepTime, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc, ItemPortions ip where mc.MCatgId = i.MCatgId and ip.IPCd = mr.Itm_Portion and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and mr.ItemId=i.ItemId and mr.OrigRate > 0 order by $order_by")->result_array();
+            $items = $this->db2->query("SELECT i.ItemId, $itemName1, $ipname, mr.OrigRate, i.KitCd, i.PckCharge, i.ItemTyp, i.CID, i.MCatgId, i.IMcCd,i.PrepTime, i.FID, mr.Itm_Portion, mc.TaxType, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc, ItemPortions ip where mc.MCatgId = i.MCatgId and ip.IPCd = mr.Itm_Portion and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and mr.ItemId=i.ItemId and mr.OrigRate > 0 order by $order_by")->result_array();
             // echo "<pre>";print_r($this->db2->last_query());die;
             if (!empty($items)) {
                 $response = [
@@ -2792,6 +2797,12 @@ class Restaurant extends CI_Controller {
             $DCd = !empty($_POST['DCd'])?$_POST['DCd']:0;
             $customerAddress = !empty($_POST['customerAddress'])?$_POST['customerAddress']:'';
             $CCd = !empty($_POST['CCd'])?$_POST['CCd']:0;
+
+            $SchCd = !empty($_POST['SchCd'])?$_POST['SchCd']:0;
+            $SDetCd = !empty($_POST['SDetCd'])?$_POST['SDetCd']:0;
+
+            $CustItem = !empty($_POST['CustItem'])?$_POST['CustItem']:0;
+            $CustItemDesc = !empty($_POST['CustItemDesc'])?$_POST['CustItemDesc']:'Std';
             
             if ($CNo == 0) {
                 if(!empty($phone)){
@@ -2903,6 +2914,11 @@ class Restaurant extends CI_Controller {
                 $kitchenObj['TaxType'] = $taxtype[$i];
                 $kitchenObj['SeatNo'] = $seatNo;
                 $kitchenObj['DCd'] = $DCd[$i];
+                $kitchenObj['SchCd'] = $SchCd[$i];
+                $kitchenObj['SDetCd'] = $SDetCd[$i];
+                $kitchenObj['CustItem'] = $CustItem[$i];
+                $kitchenObj['CustItemDesc'] = $CustItemDesc[$i];
+
                 // edt
                 $date = date("Y-m-d H:i:s");
                 $date = strtotime($date);
@@ -3553,6 +3569,8 @@ class Restaurant extends CI_Controller {
     public function billCreateRest(){
         $status = "error";
         $response = "Something went wrong! Try again later.";
+
+        $EType = $this->session->userdata('EType');
         if($this->input->method(true)=='POST'){
             
             $MergeNo = $_POST['mergeNo'];
@@ -4330,17 +4348,22 @@ class Restaurant extends CI_Controller {
     }
 
     public function sitIn(){
-        $EID = authuser()->EID;
-        $data['EID'] = $EID;
-        $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
-        $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
-        $data['cashier'] = $this->rest->getCasherList();
-        // echo "<pre>";
-        // print_r($data);
-        // die;
+        $EType = $this->session->userdata('EType');
         $data['title'] = $this->lang->line('sitIn');
-        $data['OType'] = 8;
-        $this->load->view('rest/offline_order', $data);
+        if($EType == 5){
+            $EID = authuser()->EID;
+            $data['EID'] = $EID;
+            $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
+            $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
+            $data['cashier'] = $this->rest->getCasherList();
+            // echo "<pre>";
+            // print_r($data);
+            // die;
+            $data['OType'] = 8;
+            $this->load->view('rest/offline_order', $data);
+        }else{
+            $this->load->view('page403', $data);
+        }
     }
 
     public function get_portions(){
@@ -4350,6 +4373,87 @@ class Restaurant extends CI_Controller {
 
             $status = "success";
             $response = $this->rest->getMenuItemRates($_POST);
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function get_item_offer(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $status = "success";
+            $response = $this->rest->getItemOfferList($_POST);
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+    
+    public function get_custom_items(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $customDetails = $this->rest->getCustomItemsList($_POST);
+
+            if(!empty($customDetails)){
+                $status = "success";
+
+                $grpType = $customDetails[0]['GrpType'];
+                $itemGroupCd = $customDetails[0]['ItemGrpCd'];
+                $itemGroup = $customDetails[0]['ItemGrpName'];
+                $itemReq = $customDetails[0]['Reqd'];
+
+                $returnData = [];
+
+                $temp['GrpType'] = $grpType;
+                $temp['ItemGrpCd'] = $itemGroupCd;
+                $temp['ItemGrpName'] = $itemGroup;
+                $temp['Reqd'] = $itemReq;
+                $temp['Details'] = [];
+
+                foreach ($customDetails as $key => $value) {
+                    if ($value['ItemGrpName'] == $itemGroup) {
+                        $temp['Details'][] = [
+                            "Name" => $value['Name'],
+                            "Rate" => $value['Rate'],
+                            "ItemOptCd" => $value['ItemOptCd'],
+                        ];
+                    } else {
+                        $returnData[] = $temp;
+                        $grpType = $value['GrpType'];
+                        $itemGroupCd = $value['ItemGrpCd'];
+                        $itemGroup = $value['ItemGrpName'];
+                        $itemReq = $value['Reqd'];
+                        $temp['GrpType'] = $grpType;
+                        $temp['ItemGrpCd'] = $itemGroupCd;
+                        $temp['ItemGrpName'] = $itemGroup;
+                        $temp['Reqd'] = $itemReq;
+                        $temp['Details'] = [];
+                        $temp['Details'][] = [
+                            "Name" => $value['Name'],
+                            "Rate" => $value['Rate'],
+                            "ItemOptCd" => $value['ItemOptCd'],
+                        ];
+                    }
+                }
+
+                $returnData[] = $temp;
+                $response =  $returnData;
+            }else{
+              $response =  'No customization available!!';  
+            }
 
             header('Content-Type: application/json');
             echo json_encode(array(

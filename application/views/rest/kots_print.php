@@ -134,7 +134,11 @@
       <table style="border-bottom: 2px solid black;border-top: 2px solid black;font-size: 18px;">
         <tr>
           <td><?= $this->lang->line('kotNo'); ?>: <?php 
-                        echo convertToUnicodeNumber($kotList[0]['KitCd']).'-'.convertToUnicodeNumber($kotList[0]['FKOTNo']);
+                      if ($this->session->userdata('MultiKitchen') > 0) {
+                        echo convertToUnicodeNumber($kotList[0]['KOTNo']).'-'.convertToUnicodeNumber($kotList[0]['FKOTNo']);
+                      }else{
+                        echo convertToUnicodeNumber($kotList[0]['KOTNo']);
+                      }
                       ?><br>
             
           </td>

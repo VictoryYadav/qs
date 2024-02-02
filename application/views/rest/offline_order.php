@@ -30,7 +30,7 @@
                                                 <select class="form-control form-control-sm" id="table-id" onchange="get_table_order_items(this)">
                                                     <option value="0" capacity="0"><?= $this->lang->line('select'); ?></option>
                                                     <?php foreach ($tablesAlloted as $data) : ?>
-                                                        <option value="<?= $data['MergeNo'] ?>" capacity="<?= $data['Capacity'] ?>" ccd="<?= $data['CCd'] ?>"><?= convertToUnicodeNumber($data['MergeNo']); ?></option>
+                                                        <option value="<?= $data['MergeNo'] ?>" capacity="<?= $data['Capacity'] ?>" ccd="<?= $data['CCd'] ?>" tableNo="<?= $data['TableNo']; ?>"><?= convertToUnicodeNumber($data['MergeNo']); ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div>
@@ -115,8 +115,8 @@
                                                     <thead>
                                                         <tr>
                                                             <th><?= $this->lang->line('item'); ?></th>
-                                                            <th><?= $this->lang->line('quantity'); ?></th>
                                                             <th><?= $this->lang->line('portion'); ?></th>
+                                                            <th><?= $this->lang->line('quantity'); ?></th>
                                                             <th><?= $this->lang->line('rate'); ?></th>
                                                             <th><?= $this->lang->line('value'); ?></th>
                                                             <th><?= $this->lang->line('takeAway'); ?></th>
@@ -278,51 +278,148 @@
         </div>
     </div>
 
+    <!-- offers modal -->
+    <div class="modal fade bs-example-modal-center offersModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title align-self-center mt-0" id="exampleModalLabel"><?= $this->lang->line('offers'); ?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="offerForm">
+                        <div class="form-group">
+                            <label for=""><?= $this->lang->line('select'); ?> <?= $this->lang->line('offers'); ?></label>
+                            <div id="offerBody"></div>
+                        </div>
+                        <input type="submit" class="btn btn-sm btn-success" value="Submit">
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- customOfferModal -->
+    <div class="modal fade bs-example-modal-center customOfferModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title align-self-center mt-0" id="exampleModalLabel">Custom <?= $this->lang->line('offers'); ?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="customOfferForm">
+                        <input type="hidden" id="custom_trow">
+                        <input type="hidden" id="custom_itemId">
+                        <div class="widget category" style="width: 100%;display: none;" id="radioOption">
+                        </div>
+
+                        <div class="widget category" style="width: 100%;display: none;" id="checkboxOption">
+                            <h5 class="widget-header" id="chkHeader"></h5>
+                            <ul class="category-list" id="chkList"></ul>
+                        </div>
+                        <input type="hidden" id="custOfferAmount" value="0">
+                        <div id="custOfferAmountView" class="text-danger text-center">0</div>
+
+                        <input type="submit" class="btn btn-sm btn-success" value="Submit">
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
         <?php $this->load->view('layouts/admin/script'); ?>
 
 
 <script type="text/javascript">
-
+    var OType = $('#order-type').val();
         var cno = 0;
         // Delete item from table
-        function deleteItem(event) {
-            $(event).parent().parent().remove();
+        function deleteItem(event,trow, itemId) {
+            // $(event).parent().parent().remove();
+            var SchCd = $(`#SchCd_${trow}_${itemId}`).val();
+            
+            if(SchCd > 0){
+                if (confirm("Any offers related to this item will also get deleted.")) {
+                    $("#tableData .trow_"+trow).remove();
+                }
+                return false;
+            }else{
+                $("#tableData .trow_"+trow).remove();
+            }
         }
 
-        function itemSlected(itemId, itemName, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime, DCd) {
+        var trow = 0;
+
+        function itemSlected(itemId, itemName, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, Qty, tableRow, FID) {
+
+            if(tableRow > 0){
+                trow  = tableRow;
+            }else{
+                trow  = trow + 1;
+            }
+            
             var orderType = $('#order-type').val();
             ch = '';
             if(orderType != 8){
                 ch = 'checked disabled';
             }
             
-            if(Itm_Portion > 4){
-                getPortionLists(itemId, Itm_Portion);
+            getPortionLists(itemId, trow, Itm_Portion);
+            
+            if(SchCd < 1){
+                checkItemOffers(itemId, ItemTyp, CID, MCatgId, trow);
             }
-            // console.log(itemId, itemName, itemValue, itemKitCd);
+
+            var customOfferBtn = ``;
+            if(ItemTyp > 0){
+                customOfferBtn = `<button type="button" onclick="getCustomItems(${trow}, ${itemId}, ${ItemTyp}, ${Itm_Portion}, ${FID})" class="btn btn-sm btn-success btn-rounded">
+                    <i class="fas fa-gift" aria-hidden="true"></i>
+                </button>`;
+            }
+
+            var readonly = '';
+            var disabled = '';
+            if(SchCd > 0){
+                readonly = 'readonly';
+                disabled = 'disabled';
+            }
+            
             $("#item-search-result").html('');
             $("#search-item").val('');
             $("#item-list-modal").modal('hide');
-            var qty = 1; // default quantity
+            var qty = (Qty > 0)?Qty:1;
+            
             var template = `
-            <tr class="item-id" data-id="${itemId}" kitcd-id="${itemKitCd}" pckcharge ="${PckCharge}" Itm_Portion ="${Itm_Portion}">
-                <td>${itemName}</td>
-                <td style="width:50px;"><input type="text" class="form-control form-control-sm item-qty" min="1" value="${convertToUnicodeNo(qty)}" onblur="calculateValue(this)" style="width:50px;" ></td>
-                <td><select class="form-control form-control-sm item-portion" id="select_${itemId}" onchange="changePortion(${itemId})"><option></option></select></td>
-                <td class="item-rate" id="rate_${itemId}">${convertToUnicodeNo(itemValue)}</td>
-                <td class="item-value" id="value_${itemId}">${convertToUnicodeNo(itemValue)}</td>
+            <tr class="item-id trow_${trow}" data-id="${itemId}" kitcd-id="${itemKitCd}" pckcharge ="${PckCharge}" Itm_Portion ="${Itm_Portion}" trow="${trow}">
+                <td><a id="offerAnchor_${itemId}""><span id="itemName_${trow}_${itemId}">${itemName}</span></a></td>
+                <td><select class="form-control form-control-sm item-portion" id="select_${trow}_${itemId}" onchange="changePortion(${trow}, ${itemId})" ${disabled}><option></option></select></td>
+                <td style="width:50px;"><input type="text" class="form-control form-control-sm item-qty" min="1" value="${convertToUnicodeNo(qty)}" onblur="calculateValue(this)" style="width:50px;" id="qty_${trow}_${itemId}" ${readonly}></td>
+                <td class="item-rate" id="rate_${trow}_${itemId}">${convertToUnicodeNo(itemValue)}</td>
+                <td class="item-value" id="value_${trow}_${itemId}">${convertToUnicodeNo(itemValue)}</td>
                 <td><input type="checkbox" value="1" class="is_take_away" `+ch+`></td>
                 <td><input type="text" class="form-control form-control-sm item-remarks" style="width:100%;"></td>
                 <td style=" text-align: center; ">
-                <button type="button" onclick="deleteItem(this)" class="btn btn-sm btn-danger btn-rounded">
+                ${customOfferBtn}
+                <button type="button" onclick="deleteItem(this, ${trow}, ${itemId})" class="btn btn-sm btn-danger btn-rounded">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                 </button>
                 <input type="hidden" value="${TaxType}" class="taxtype">
                 <input type="hidden" value="${PrepTime}" class="preptime">
                 <input type="hidden" value="${DCd}" class="DCd">
+                <input type="hidden" value="${SchCd}" class="SchCd" id="SchCd_${trow}_${itemId}">
+                <input type="hidden" value="${SDetCd}" class="SDetCd" id="SDetCd_${trow}_${itemId}">
+
+                <input type="hidden" value="0" class="CustItem" id="CustItem_${trow}_${itemId}">
+                <input type="hidden" value="" class="CustItemDesc" id="CustItemDesc_${trow}_${itemId}">
                 
                 </td>
             </tr>`;
+
                 // check if table is empty 
             if (document.querySelectorAll('#tableData tbody tr').length == 0) {
                 $("#order-table-body").append(template);
@@ -333,10 +430,13 @@
             calculateTotal();
         }
 
-        function getPortionLists(itemId, Itm_Portion){
-            
-            var mergeNo = $('#table-id').val();
-            $.post('<?= base_url('restaurant/get_portions') ?>',{itemId:itemId, mergeNo:mergeNo},function(res){
+        function getPortionLists(itemId, trow, Itm_Portion){
+            var TableNo = OType;
+            if(OType == 8){
+                var TableNo = $('option:selected', $('#table-id')).attr('tableNo');
+            } 
+
+            $.post('<?= base_url('restaurant/get_portions') ?>',{itemId:itemId, TableNo:TableNo},function(res){
                 if(res.status == 'success'){
                   // alert(res.response);
                   var temp = ``;
@@ -349,22 +449,260 @@
                         temp += `<option value="${item.IPCd}" ${select} rate="${item.OrigRate}">${item.Name}</option>`;
                     });
                   
-                  $('#select_'+itemId).html(temp);
+                  $(`#select_${trow}_${itemId}`).html(temp);
                 }else{
                   alert(res.response);
                 }
             });
         }
 
-        changePortion =(itemId) => {
-            var portion = $('#select_'+itemId).val();
-            var rate = $('option:selected','#select_'+itemId).attr('rate');
+        checkItemOffers = (ItemId, ItemTyp, CID, MCatgId, trow) =>{
+            $.post('<?= base_url('restaurant/get_item_offer') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, CID:CID, MCatgId:MCatgId},function(res){
+                if(res.status == 'success'){
+                  var data = res.response;
+                  if(data.length> 0){
+                    
+                    // $('#offerAnchor').attr('data-toggle', "modal");
+                    // $('#offerAnchor').attr('data-animation', "bounce");
+                    // $('#offerAnchor').attr('data-target', ".bs-example-modal-center");
+                    $('#offerAnchor_'+ItemId).attr('onclick', "showOfferModal("+ItemId+","+ItemTyp+","+CID+", "+MCatgId+", "+trow+")");
+                    $('#offerAnchor_'+ItemId).css({"background-color": "yellow", "cursor": "pointer"});
 
-            $('#rate_'+itemId).text(rate);
-            $('#value_'+itemId).text(rate);
+                  }
+                }else{
+                  alert(res.response);
+                }
+            });
+        }
+
+        showOfferModal = (ItemId, ItemTyp, CID, MCatgId, trow) =>{
+            $.post('<?= base_url('restaurant/get_item_offer') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, CID:CID, MCatgId:MCatgId},function(res){
+                if(res.status == 'success'){
+                  var data = res.response;
+                  if(data.length> 0){
+                    var temp = `<select class="form-control" id="schemeOffer">`;
+
+                    data.forEach((item, index) => {
+                        temp += `<option value="${item.SchCd}" itemid="${item.Disc_ItemId}" itemname="${item.discName}" itemvalue="${item.CID}" itemkitcd="${item.KitCd}" pckcharge="${item.PckCharge}" itm_portion="${item.Disc_IPCd}"  taxtype="${item.TaxType}"  preptime="${item.PrepTime}"  dcd="${item.DCd}"  itemtyp="${ItemTyp}" cid="${item.CID}"  mcatgid="${item.MCatgId}" qty="${item.Disc_Qty}" sdetcd="${item.SDetCd}" rowid="${ItemId}" trow="${trow}" fid="${item.FID}">${item.SchNm} - ${item.SchDesc} </option>`;
+                    });
+                    temp += `</select>`;
+
+                  }
+                  $('#offerBody').html(temp);
+                  $('.offersModal').modal('show');
+                  
+                }else{
+                  alert(res.response);
+                }
+            });
+        }
+
+        $('#offerForm').on('submit', function(e){
+            e.preventDefault();
+            var SchCd = $('#schemeOffer').val();
+            var Qty = $('option:selected', $('#schemeOffer')).attr('qty');
+            var SDetCd = $('option:selected', $('#schemeOffer')).attr('sdetcd');
+
+            var itemId = $('option:selected', $('#schemeOffer')).attr('itemid');
+            var itemName = $('option:selected', $('#schemeOffer')).attr('itemname');
+            var itemValue = $('option:selected', $('#schemeOffer')).attr('itemvalue');
+            var itemKitCd = $('option:selected', $('#schemeOffer')).attr('itemkitcd');
+            var PckCharge = $('option:selected', $('#schemeOffer')).attr('pckcharge');
+            var Itm_Portion = $('option:selected', $('#schemeOffer')).attr('itm_portion');
+            var TaxType = $('option:selected', $('#schemeOffer')).attr('taxtype');
+            var PrepTime = $('option:selected', $('#schemeOffer')).attr('preptime');
+            var DCd = $('option:selected', $('#schemeOffer')).attr('dcd');
+            var ItemTyp = $('option:selected', $('#schemeOffer')).attr('itemtyp');
+            var CID = $('option:selected', $('#schemeOffer')).attr('cid');
+            var MCatgId = $('option:selected', $('#schemeOffer')).attr('mcatgid');
+            var FID = $('option:selected', $('#schemeOffer')).attr('fid');
+
+            var rowid = $('option:selected', $('#schemeOffer')).attr('rowid');
+            var trow = $('option:selected', $('#schemeOffer')).attr('trow');
+
+            $(`#SchCd_${trow}_${rowid}`).val(SchCd);
+            $(`#SDetCd_${trow}_${rowid}`).val(SDetCd);
+
+            $(`#qty_${trow}_${rowid}`).attr('readonly', 'true');
+            $(`#select_${trow}_${rowid}`).attr('disabled', 'true');
+            
+            $('#offerAnchor_'+rowid).removeAttr('onclick');
+            $('#offerAnchor_'+rowid).css({"background-color": "white"});
+
+            $('.offersModal').modal('hide');
+
+            itemSlected(itemId, itemName, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, Qty, trow, FID);
+
+        })
+
+        changePortion =(trow, itemId) => {
+            var portion = $(`#select_${trow}_${itemId}`).val();
+            var rate = $('option:selected','#select_'+trow+'_'+itemId).attr('rate');
+
+            $(`#rate_${trow}_${itemId}`).text(rate);
+            $(`#value_${trow}_${itemId}`).text(rate);
 
             calculateTotal();
         }
+
+        var groupNameList = [];
+        getCustomItems = (trow, ItemId, ItemTyp, Itm_Portion, FID) =>{
+            $.post('<?= base_url('restaurant/get_custom_items') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, Itm_Portion:Itm_Portion, FID:FID},function(res){
+                if(res.status == 'success'){
+
+                  var customItem = res.response;
+                        radioList = customItem;
+                        
+                        for(i=0; i< customItem.length; i++){
+                            // alert(customItem[i].ItemGrpName);
+                            if(customItem[i].GrpType == 1){
+                                groupNameList.push(customItem[i].ItemGrpName);
+                                
+                                var tempRadio = '<h5 class="widget-header" id="radioHeader">'+customItem[i].ItemGrpName+'</h5>\
+                                        <ul class="category-list">';
+                                var details = customItem[i].Details;
+                                
+                                for(var r=0; r < details.length; r++){
+                                    var name = "'"+details[r].Name+"'";
+                                    tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+details[r].Rate+')</span></li>';
+                                }
+                                tempRadio += '</ul>';
+                                $('#radioOption').html(tempRadio);
+                                $('#radioOption').show();
+                            }else if(customItem[i].GrpType == 2){
+                                
+                                var tempCHK = '<h5 class="widget-header" id="radioHeader">'+customItem[i].ItemGrpName+'</h5>\
+                                        <ul class="category-list">';
+
+                                var details = customItem[i].Details;
+                                
+                                for(var c=0; c < details.length; c++){
+                                    var name = "'"+details[c].Name+"'";
+                                    tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+details[c].Rate+')</span></li>';
+                                }
+                                tempCHK += '</ul>';
+                                $('#checkboxOption').html(tempCHK);
+                                $('#checkboxOption').show();
+                            }
+                        }
+                        
+                $("#custom_trow").val(trow);
+                $("#custom_itemId").val(ItemId);
+
+                $('#custOfferAmount').val($(`#rate_${trow}_${ItemId}`).text());
+                $('#custOfferAmountView').text($(`#rate_${trow}_${ItemId}`).text());
+                $('.customOfferModal').modal('show');
+                  
+                }else{
+                  alert(res.response);
+                }
+            });
+        }
+
+        var radioRate = [];
+        var raidoGrpCd= [];
+        var radioName= [];
+        var checkboxVal= [];
+        var checkboxRate= [];
+        var checkboxItemCd= [];
+        var checkboxGrpCd= "";
+        var checkboxName= [];
+        var custOfferTotal = 0;
+        var custOfferName = [];
+
+        function calculateTotalc(itemGrpCd, index, itemName, event) {
+
+            element = event.currentTarget;
+            var rate = element.getAttribute('rate');
+            // console.log('calc '+index, event.target.type, rate, itemName);
+            if (event.target.type == "radio") {
+                this.radioRate[index] = parseInt(rate);
+                this.raidoGrpCd[index] = itemGrpCd;
+                this.radioName[index] = itemName;
+            } else {
+                // console.log(event.target.checked);
+                if (event.target.checked) {
+                    this.checkboxRate[index] = parseInt(rate);
+                    this.checkboxName[index] = itemName;
+                } else {
+                    this.checkboxRate[index] = 0;
+                    this.checkboxName[index] = 0;
+                }
+            }
+
+            getTotalc();
+        }
+
+        getTotalc = () =>{
+            
+            var itemAmount =  $('#custOfferAmount').val();
+            var radioTotal = 0;
+            this.radioRate.forEach(item => {
+                radioTotal += parseInt(item);
+            });
+
+            var checkTotal = 0;
+            this.checkboxRate.forEach(item => {
+                checkTotal += parseInt(item);
+            });
+
+            this.custOfferTotal = parseInt(itemAmount) + parseInt(radioTotal) + parseInt(checkTotal);
+            
+            $('#custOfferAmountView').text(this.custOfferTotal);
+        }
+
+        $('#customOfferForm').on('submit', function(e){
+            e.preventDefault();
+            // mandatory radio options
+            if(groupNameList.length > 0){
+                var mandatory = false;
+                //groupNameList
+                for(var g=0; g<groupNameList.length;g++){ 
+                    //comment on and check this code mandatory = false;
+                    var groupName = document.getElementsByName(groupNameList[g]); 
+                      for(var i=0; i<groupName.length;i++){ 
+                          if(groupName[i].checked == true){ 
+                              mandatory = true;     
+                          } 
+                      } 
+                  }
+                   
+                  if(!mandatory){ 
+                      alert("Please Choose the Required Field!!"); 
+                      return false; 
+                  } 
+            }
+
+            var trow = $("#custom_trow").val();
+            var ItemId = $("#custom_itemId").val();
+
+            $(`#select_${trow}_${ItemId}`).attr('disabled', 'true');
+            $(`#rate_${trow}_${ItemId}`).text($('#custOfferAmountView').text());
+
+            if(radioName.length > 0){
+                radioName.forEach(item =>{
+                    custOfferName.push(item);
+                });
+            }
+
+            if(checkboxName.length > 0){
+                checkboxName.forEach(item =>{
+                    custOfferName.push(item);
+                });
+            }
+            var itemName = $(`#itemName_${trow}_${ItemId}`).text();
+            // convert array to string
+            itemName = itemName+' - '+custOfferName.join(", ");
+            $(`#itemName_${trow}_${ItemId}`).text(itemName);
+
+            $(`#CustItem_${trow}_${ItemId}`).val(1);
+            $(`#CustItemDesc_${trow}_${ItemId}`).val(custOfferName.join(", "));
+            
+            customCalculateValue(trow, ItemId);
+            $('.customOfferModal').modal('hide');
+
+
+        });
 
         function calculateTotal() {
             var totalValue = 0;
@@ -389,6 +727,20 @@
             total = qty * rate;
             $(input).val(convertToUnicodeNo(qty));
             $(input).parent('td').next('td').next('td').text(convertToUnicodeNo(total));
+            calculateTotal();
+        }
+
+        function customCalculateValue(trow, ItemId) {
+            var total = 0;
+            var qty = $(`#qty_${trow}_${ItemId}`).val();
+            var rate = $(`#rate_${trow}_${ItemId}`).text();
+            qty = convertDigitToEnglish(qty);
+            rate = convertDigitToEnglish(rate);
+            total = parseInt(qty) * parseInt(rate);
+
+            $(`#qty_${trow}_${ItemId}`).val(convertToUnicodeNo(qty));
+            $(`#rate_${trow}_${ItemId}`).text(convertToUnicodeNo(total));
+            $(`#value_${trow}_${ItemId}`).text(convertToUnicodeNo(total));
             calculateTotal();
         }
 
@@ -421,7 +773,7 @@
                                     }
                                     
                                     template += `
-                                <li onclick="itemSlected(${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd});" style="cursor: pointer;">${printItemName}</li>
+                                <li onclick="itemSlected(${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd}, ${item.ItemTyp}, ${item.CID}, ${item.MCatgId}, 0, 0, 0, 0, ${item.FID});" style="cursor: pointer;">${printItemName}</li>
                             `;
                                 });
                                 template += `</ul>`;
@@ -480,6 +832,9 @@
                 var take_away = [];
                 var prep_time = [];
                 var dcd_value = [];
+                var SchCd = []; var SDetCd = [];
+                var CustItem = []; var CustItemDesc =[];
+
                 var dataType = $(this).attr('data_type');
                 // Page Validation
                 if (orderType == 0) {
@@ -572,6 +927,22 @@
                         Itm_Portion.push( $(this).val() );
                     });
 
+                    $(".SchCd").each(function(index, el) {
+                        SchCd.push( $(this).val() );
+                    });
+
+                    $(".SDetCd").each(function(index, el) {
+                        SDetCd.push( $(this).val() );
+                    });
+
+                    $(".SDetCd").each(function(index, el) {
+                        CustItem.push( $(this).val() );
+                    });
+                    $(".CustItemDesc").each(function(index, el) {
+                        CustItemDesc.push( $(this).val() );
+                    });
+
+
                     var Uphone = $('#phone').val();
                     
                     <?php if($OType != 101){ ?>
@@ -607,7 +978,11 @@
                             oldSeatNo:oldSeatNo,
                             DCd : dcd_value,
                             customerAddress:customerAddress,
-                            CCd:CCd
+                            CCd:CCd,
+                            SchCd : SchCd,
+                            SDetCd : SDetCd,
+                            CustItem : CustItem,
+                            CustItemDesc : CustItemDesc
                         },
 
                         dataType: "json",
@@ -687,19 +1062,19 @@
                         if(billStat > 0){
                             alert('Cannot add more items, as bill has been generated for this table')
                         }else{
+                            var trow = 0;
                             for(i = 0;i<a.length;i++){
+                                trow++;
                                 cno = a[i].CNo;
                                 var ch = '';
                                 if(a[i].TA == 1){
                                     ch = 'checked';
                                 }
 
-                                if(a[i].Itm_Portion > 4){
-                                    getPortionLists(a[i].ItemId, a[i].Itm_Portion);
-                                }
+                                getPortionLists(a[i].ItemId, trow,  a[i].Itm_Portion);
 
                                 b+='<tr>';
-                                b+='<td>'+a[i].ItemNm+'</td><td>'+convertToUnicodeNo(a[i].Qty)+'</td><td><select class="form-control form-control-sm item-select" id="select_'+a[i].ItemId+'" onchange="changePortion('+a[i].ItemId+')" disabled><option></option></select></td><td>'+convertToUnicodeNo(a[i].ItmRate)+'</td><td class="item-value">'+convertToUnicodeNo(a[i].OrigRate)+'</td><td><input type="checkbox" value="'+a[i].TA+'" '+ch+' disabled /></td><td>'+a[i].CustRmks+'</td><td></td>';
+                                b+='<td>'+a[i].ItemNm+'</td><td><select class="form-control form-control-sm item-select" id="select_'+trow+'_'+a[i].ItemId+'" onchange="changePortion('+a[i].ItemId+', '+trow+')" disabled><option></option></select></td><td>'+convertToUnicodeNo(a[i].Qty)+'</td><td>'+convertToUnicodeNo(a[i].ItmRate)+'</td><td class="item-value">'+convertToUnicodeNo(a[i].OrigRate)+'</td><td><input type="checkbox" value="'+a[i].TA+'" '+ch+' disabled /></td><td>'+a[i].CustRmks+'</td><td></td>';
                                 b+='</tr>';
                             }
 
