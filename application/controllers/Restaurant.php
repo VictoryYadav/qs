@@ -74,6 +74,9 @@ class Restaurant extends CI_Controller {
                 if($res['UTyp'] != $udata['UTyp']){
                     $genInsert = 1;
                 }
+                if($res['RestRole'] != $udata['RestRole']){
+                    $genInsert = 1;
+                }
 
                 if($genInsert == 1){
                     $genDB = $this->load->database('GenTableData', TRUE);
@@ -90,53 +93,14 @@ class Restaurant extends CI_Controller {
 
 		$data['title'] = $this->lang->line('addUser');
         $data['EID'] = authuser()->EID;
-        // $data['restaurant'] = $this->rest->getrestaurantList();
         $data['users'] = $this->rest->getUserList();
+        $data['restRole'] = $this->rest->getUserRestRole();
+        $data['userType'] = $this->rest->getUserTypeList();
 		$this->load->view('rest/add_user',$data);
-    }
-
-    public function user_disable(){
-    	$status = "error";
-        $response = "Something went wrong! Try again later.";
-        if($this->input->method(true)=='POST'){
-        	$status = 'success';
-        	$response = $this->rest->userDisableEnable($_POST);
-            header('Content-Type: application/json');
-            echo json_encode(array(
-                'status' => $status,
-                'response' => $response
-              ));
-             die;
-        }
-
-		 $data['title'] = $this->lang->line('userDisabled');
-		 $data['users'] = $this->rest->getDisableUserList(authuser()->ChainId, authuser()->EID);
-		 // echo "<pre>";
-		 // print_r($data);
-		 // die;
-		 $this->load->view('rest/disable_user',$data);
-    }
-
-    public function user_access1(){
-        if($this->input->method(true)=='POST'){
-            // echo "<pre>";
-            // print_r($_POST);
-            // die;
-            $res = $this->rest->getUserAccessRole($_POST);
-            echo json_encode($res);
-            die;
-        }
-        
-        $data['usersRestData'] = $this->rest->getusersRestData(); 
-    	$data['title'] = $this->lang->line('userAccess');
-		$this->load->view('rest/access_users_old',$data);
     }
 
     public function user_access(){
         if($this->input->method(true)=='POST'){
-            // echo "<pre>";
-            // print_r($_POST);
-            // die;
             $res = $this->rest->getUserAccessRole($_POST);
             header('Content-Type: application/json');
             echo json_encode(array(

@@ -42,7 +42,7 @@
                                                         <?php
                                                         foreach ($usersRestData as $key) {
                                                          ?>
-                                                        <option value="<?php echo $key['RUserId']; ?>"><?php echo $key['MobileNo'].' ('.$key['FName'].' '.$key['LName'].')'; ?></option>
+                                                        <option value="<?php echo $key['RUserId']; ?>"><?php echo $key['MobileNo'].' ('.$key['FName'].' '.$key['LName'].'-'.$key['UTypName'].')'; ?></option>
                                                     <?php } ?>
                                                     </select>
                                                 </div>

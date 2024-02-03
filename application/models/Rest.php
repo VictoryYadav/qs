@@ -12,23 +12,12 @@ class Rest extends CI_Model{
         $this->db2 = $this->load->database($my_db, TRUE);
 	}
 
-	public function getDisableUserList($ChainId, $EID){
-		return $this->db2->select('RUserId, FName, LName, MobileNo, Stat')
-					->order_by('FName','LName')
-					->get_where('UsersRest', array('ChainId' => $ChainId,'EID' => $EID))
-					->result_array();
+	public function getUserRestRole(){
+		return $this->db2->get_where('UserType', array('UTyp >' => 20))->result_array();
 	}
 
-	public function userDisableEnable($data){
-		$res = '';
-		if($data['type'] == 'disable'){
-			$this->db2->update('UsersRest', array('Stat' => 3 ), array('RUserId' => $data['id']));
-			$res = "User Disabled";
-		}else{
-			$this->db2->update('UsersRest', array('Stat' => 0 ), array('RUserId' => $data['id']));
-			$res = "User Enabled";
-		}
-		return $res;
+	public function getUserTypeList(){
+		return $this->db2->get_where('UserType', array('UTyp <' => 10))->result_array();
 	}
 
 	public function getOffersList(){
@@ -72,6 +61,8 @@ class Rest extends CI_Model{
 			$GUsersRest['PEmail'] = $data['PEmail'];
 			$GUsersRest['DOB'] = $data['DOB'];
 			$GUsersRest['Gender'] = $data['Gender'];
+			$GUsersRest['UTyp'] = $data['UTyp'];
+			$GUsersRest['RestRole'] = $data['RestRole'];
 			$GUsersRest['RUserId'] = $newRUserId;
 
 			$genDB = $this->load->database('GenTableData', TRUE);
@@ -1059,13 +1050,21 @@ class Rest extends CI_Model{
 	}
 
 	public function getUserList(){
-		return $this->db2->get_where('UsersRest', array('EID' => authuser()->EID))
-		->result_array();
+		return $this->db2->select("ur.*, ut.UTypName, rt.UTypName as designation")
+						->join('UserType ut', 'ut.UTyp = ur.UTyp', 'inner')
+						->join('UserType rt', 'rt.UTyp = ur.RestRole', 'inner')
+						->get_where('UsersRest ur', 
+							array('ur.EID' => authuser()->EID))
+						->result_array();
 	}
 
 	public function getusersRestData(){
 		$EID = authuser()->EID;
-		return $this->db2->select('RUserId, FName, LName, MobileNo')->get_where('UsersRest', array('EID' => $EID, 'Stat' => 0 ))->result_array();  	
+		return $this->db2->select('ur.RUserId, ur.FName, ur.LName, ur.MobileNo, ut.UTypName')
+						->join('UserType ut', 'ut.UTyp = ur.RestRole', 'inner')
+						->get_where('UsersRest ur', 
+							array('ur.EID' => $EID, 'ur.Stat' => 0 ))
+						->result_array();  	
 	}
 
 	public function getCasherList(){

@@ -77,8 +77,8 @@
                                                         <label><?= $this->lang->line('gender'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="Gender" id="Gender">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <option value="0"><?= $this->lang->line('male'); ?></option>
-                                                            <option value="1"><?= $this->lang->line('female'); ?></option>
+                                                            <option value="1"><?= $this->lang->line('male'); ?></option>
+                                                            <option value="2"><?= $this->lang->line('female'); ?></option>
                                                             <option value="3"><?= $this->lang->line('transgender'); ?></option>
                                                         </select>
                                                     </div>
@@ -89,9 +89,23 @@
                                                         <label><?= $this->lang->line('userType'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="UTyp" id="UTyp">
                                                             <option value=""><?= $this->lang->line('chooseUser'); ?></option>
-                                                            <option value="1"><?= $this->lang->line('normal'); ?></option>
-                                                            <option value="5"><?= $this->lang->line('manager'); ?></option>
-                                                            <option value="9"><?= $this->lang->line('admin'); ?></option>
+                                                            <?php
+                                                            foreach ($userType as $key) { ?>
+                                                            <option value="<?= $key['UTyp']; ?>"><?= $key['UTypName']; ?></option>
+                                                        <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('restaurant'); ?> <?= $this->lang->line('role'); ?></label>
+                                                        <select class="form-control form-control-sm" required="" name="RestRole" id="RestRole">
+                                                            <option value=""><?= $this->lang->line('chooseUser'); ?></option>
+                                                            <?php
+                                                            foreach ($restRole as $key) { ?>
+                                                            <option value="<?= $key['UTyp']; ?>"><?= $key['UTypName']; ?></option>
+                                                        <?php } ?>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -155,13 +169,6 @@
                                                     if(!empty($users)){
                                                         $i=1;
                                                         foreach ($users as $key) {
-                                                            if($key['UTyp'] == 1){
-                                                                $type = $this->lang->line('normal');
-                                                            }else if($key['UTyp'] == 5){
-                                                                $type = $this->lang->line('manager');
-                                                            }if($key['UTyp'] == 9){
-                                                                $type = $this->lang->line('admin');
-                                                            }
 
                                                             $sts = ($key['Stat'] == 0)? $this->lang->line('active'):$this->lang->line('inactive');
 
@@ -178,14 +185,14 @@
                                                         <?php echo $key['MobileNo']; ?><br>
                                                            <small><?php echo $key['PEmail']; ?></small> 
                                                         </td>
-                                                    <td><?php echo $type; ?><br>
+                                                    <td><?php echo $key['UTypName'].' ['.$key['designation'].']'; ?><br>
                                                         <span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span>
                                                     </td>
                                                     <td>
                                                         <?php 
                                                         if($key['Stat'] != 1){
                                                         ?>
-                                                        <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $key['RUserId'] ?>,'<?= $key['FName'] ?>','<?= $key['LName'] ?>', '<?= $key['MobileNo'] ?>','<?= $key['PEmail'] ?>', '<?= $key['DOB'] ?>', <?= $key['Gender'] ?>, <?= $key['UTyp'] ?>, <?= $key['Stat'] ?>, <?= $key['EID'] ?>)">
+                                                        <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $key['RUserId'] ?>,'<?= $key['FName'] ?>','<?= $key['LName'] ?>', '<?= $key['MobileNo'] ?>','<?= $key['PEmail'] ?>', '<?= $key['DOB'] ?>', <?= $key['Gender'] ?>, <?= $key['UTyp'] ?>,<?= $key['RestRole'] ?>, <?= $key['Stat'] ?>, <?= $key['EID'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         <?php } ?>
@@ -230,7 +237,7 @@ $(document).ready(function () {
     $('#PEmail').prop('readonly', false); 
 });
 
-function editData(RUserId, FName, LName, MobileNo, PEmail, DOB, Gender, UTyp, Stat, EID){
+function editData(RUserId, FName, LName, MobileNo, PEmail, DOB, Gender, UTyp, RestRole, Stat, EID){
         
     $('#RUserId').val(RUserId);
     $('#FName').val(FName);
@@ -240,6 +247,7 @@ function editData(RUserId, FName, LName, MobileNo, PEmail, DOB, Gender, UTyp, St
     $('#DOB').val(DOB);
     $('#Gender').val(Gender);
     $('#UTyp').val(UTyp);
+    $('#RestRole').val(RestRole);
     $('#EID').val(EID);
     $('#Stat').val(Stat);  
 
