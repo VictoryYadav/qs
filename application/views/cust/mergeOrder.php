@@ -75,14 +75,14 @@
     {
         margin-right: -5px !important;
         border-radius: 1.5rem 0 0 1.5rem;
-        background-color: #f76004;
+        background-color: #efc492;
         color:#fff;
         width: 30%;
     }
 
     .backbtn:hover
     {
-        background-color: #e97832;
+        background-color: #efd4b3;
         color:#fff;   
     }
     .paybtn 

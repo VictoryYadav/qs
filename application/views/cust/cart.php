@@ -51,7 +51,7 @@
 {
     margin-right: -2px !important;
     border-radius: 1.5rem 0 0 1.5rem;
-    background-color: #bfbcbc;
+    background-color: #efc492;
     color:#fff;
     height: 35px;
     /*background-color:#000 !important;*/
@@ -60,7 +60,7 @@
 
 .backbtn:hover
 {
-    background-color: #9d9696;
+    background-color: #efd4b3;
     color:#fff;   
 }
 

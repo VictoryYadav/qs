@@ -153,7 +153,7 @@
         }
         .modal-confirm {
             width: 50%;
-            background: #dfaf4d;
+            background: #2bbb1b;
             color: #fff;
             margin-left: 0px !important;
             border-radius: 0 1.5rem 1.5rem 0;
@@ -161,7 +161,7 @@
         }
 
         .modal-confirm:hover {
-            background: #ffc245;
+            background: #5ab950;
             color: #fff;
         }
 
@@ -169,11 +169,11 @@
             width: 50%;
             margin-right: 0px !important;
             border-radius: 1.5rem 0 0 1.5rem;
-            background-color: #bfbcbc;
+            background-color: #efc492;
         }
 
         .modal-back:hover {
-            background-color: #dedee2;
+            background-color: #efd4b3;
         }
 
         .modal-item-img {
@@ -465,7 +465,7 @@
                 <input type="hidden" value="0" id="totalAmount">
                 <b id="totalAmountView">0</b>
             </label>
-            <button type="button" class="btn col-5 modal-confirm" data-dismiss="modal" id="confirm-order" tax_type="" tbltyp="" pck="" style="background: #ffc245;padding: 5px 5px 5px; font-size: 12px;"><?php echo  $this->lang->line('addItem'); ?></button>
+            <button type="button" class="btn col-5 modal-confirm" data-dismiss="modal" id="confirm-order" tax_type="" tbltyp="" pck="" style="padding: 5px 5px 5px; font-size: 12px;"><?php echo  $this->lang->line('addItem'); ?></button>
         </div>
     </div>
 

@@ -94,14 +94,14 @@
     {
         margin-right: -5px !important;
         border-radius: 1.5rem 0 0 1.5rem;
-        background-color: #bfbcbc;
+        background-color: #efc492;
         color:#fff;
         /*width: 30%;*/
     }
 
     .backbtn:hover
     {
-        background-color: #9d9696;
+        background-color: #efd4b3;
         color:#fff;   
     }
 
@@ -220,6 +220,10 @@
     // objDiv.animate({
     //  scrollTop: h
     // });
+
+    window.onload = function() {
+        document.getElementById("tips").focus();
+      }
 
     function getBillAmount() {
         $.ajax({

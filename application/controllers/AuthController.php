@@ -125,18 +125,23 @@ class AuthController extends CI_Controller {
             }
         }
 
-		if (!isset($_GET['o']) && !isset($_GET['c'])) {
-			redirect(base_url('page_not_found'));
-		}
+        if ($this->session->userdata('logged_in')) {
+            redirect(base_url('restaurant'));
+        } else {
+    		if (!isset($_GET['o']) && !isset($_GET['c'])) {
+    			redirect(base_url('page_not_found'));
+    		}
 
-		$this->session->set_userdata('EID', $_GET['o']);
-		$this->session->set_userdata('CatgID', $_GET['c']);
+    		$this->session->set_userdata('EID', $_GET['o']);
+    		$this->session->set_userdata('CatgID', $_GET['c']);
 
-		$my_db = $_GET['o'].'e';
-        $this->session->set_userdata('my_db', $my_db);
-        $data['o'] = $_GET['o'];
-        $data['c'] = $_GET['c'];
-		$this->load->view('login',$data);
+    		$my_db = $_GET['o'].'e';
+            $this->session->set_userdata('my_db', $my_db);
+            $data['o'] = $_GET['o'];
+            $data['c'] = $_GET['c'];
+    		$this->load->view('login',$data);
+        }
+
 	}
 
 

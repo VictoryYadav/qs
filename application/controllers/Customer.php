@@ -639,34 +639,40 @@ class Customer extends CI_Controller {
     }
 
     public function login(){
-        $status = 'error';
-        $response = 'Something went wrong plz try again!';
-        if($this->input->method(true)=='POST'){
-            $emailMobile = $_POST['emailMobile'];
-            $check = $this->db2->select('MobileNo')
-                            ->where('MobileNo', $emailMobile)
-                            ->get('Users')
-                            ->row_array();
-            if(!empty($check)){
-                // $otp = 1;
-                $otp = generateOTP($emailMobile, 'login');
-                $status = 'success';
-                $response = "Your otp is ";
-                $this->session->set_userdata('emailMobile', $emailMobile);
-            }else{
-                $response = "Username is not found!";
+
+        if ($this->session->userdata('logged_in')) {
+            redirect(base_url('customer'));
+        } else {
+            $status = 'error';
+            $response = 'Something went wrong plz try again!';
+            if($this->input->method(true)=='POST'){
+                $emailMobile = $_POST['emailMobile'];
+                $check = $this->db2->select('MobileNo')
+                                ->where('MobileNo', $emailMobile)
+                                ->get('Users')
+                                ->row_array();
+                if(!empty($check)){
+                    // $otp = 1;
+                    $otp = generateOTP($emailMobile, 'login');
+                    $status = 'success';
+                    $response = "Your otp is ";
+                    $this->session->set_userdata('emailMobile', $emailMobile);
+                }else{
+                    $response = "Username is not found!";
+                }
+
+                header('Content-Type: application/json');
+                echo json_encode(array(
+                    'status' => $status,
+                    'response' => $response
+                  ));
+                 die;
             }
 
-            header('Content-Type: application/json');
-            echo json_encode(array(
-                'status' => $status,
-                'response' => $response
-              ));
-             die;
+            $data['title'] = $this->lang->line('log_in');
+            $this->load->view('cust/login', $data);
         }
 
-        $data['title'] = $this->lang->line('log_in');
-        $this->load->view('cust/login', $data);
     }
 
     public function loginVerify(){
@@ -782,35 +788,40 @@ class Customer extends CI_Controller {
     }
 
     public function signup(){
-        $status = 'error';
-        $response = 'Something went wrong plz try again!';
-        if($this->input->method(true)=='POST'){
-            $this->session->set_userdata('signup', $_POST);
-            // echo "<pre>";
-            // print_r($_SESSION);
-            // die;
-            $checkUser = $this->db2->select('MobileNo')
-                            ->where('MobileNo', $_POST['MobileNo'])
-                            ->get('Users')
-                            ->row_array();
-            if(!empty($checkUser)){
-                $response = "User Already Exists!";
-            }else{
-                $otp = generateOTP($_POST['MobileNo'], 'signup');
-                $status = 'success';
-                $response = "Your otp is ";
+
+        if ($this->session->userdata('logged_in')) {
+            redirect(base_url('customer'));
+        }else{
+            $status = 'error';
+            $response = 'Something went wrong plz try again!';
+            if($this->input->method(true)=='POST'){
+                $this->session->set_userdata('signup', $_POST);
+                // echo "<pre>";
+                // print_r($_SESSION);
+                // die;
+                $checkUser = $this->db2->select('MobileNo')
+                                ->where('MobileNo', $_POST['MobileNo'])
+                                ->get('Users')
+                                ->row_array();
+                if(!empty($checkUser)){
+                    $response = "User Already Exists!";
+                }else{
+                    $otp = generateOTP($_POST['MobileNo'], 'signup');
+                    $status = 'success';
+                    $response = "Your otp is ";
+                }
+
+                header('Content-Type: application/json');
+                echo json_encode(array(
+                    'status' => $status,
+                    'response' => $response
+                  ));
+                 die;
             }
 
-            header('Content-Type: application/json');
-            echo json_encode(array(
-                'status' => $status,
-                'response' => $response
-              ));
-             die;
+            $data['title'] = $this->lang->line('signup');
+            $this->load->view('cust/signup', $data);
         }
-
-        $data['title'] = $this->lang->line('signup');
-        $this->load->view('cust/signup', $data);
     }
 
     public function verifyOTP(){

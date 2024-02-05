@@ -242,7 +242,7 @@ class Users extends CI_Controller {
         $EID = $this->session->userdata('EID');
         
         $data['title'] = $this->lang->line('payNow');
-        $data["modes"] = $this->db2->select('PymtMode,Name,Company, CodePage1')->get_where('ConfigPymt', array('Stat' => 1))->result_array();
+        $data["modes"] = $this->db2->select('PymtMode, Company, CodePage1')->get_where('ConfigPymt', array('Stat' => 1))->result_array();
         $data['payable'] = $this->session->userdata('payable');
         $data['BillId'] = $BillId;
         $data['MCNo'] = $MCNo;
