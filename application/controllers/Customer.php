@@ -640,7 +640,7 @@ class Customer extends CI_Controller {
 
     public function login(){
 
-        if ($this->session->userdata('logged_in')) {
+        if ($this->session->userdata('CustId') > 0) {
             redirect(base_url('customer'));
         } else {
             $status = 'error';
@@ -789,7 +789,7 @@ class Customer extends CI_Controller {
 
     public function signup(){
 
-        if ($this->session->userdata('logged_in')) {
+        if ($this->session->userdata('CustId') > 0) {
             redirect(base_url('customer'));
         }else{
             $status = 'error';

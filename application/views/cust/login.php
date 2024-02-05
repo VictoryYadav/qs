@@ -78,7 +78,7 @@
     <!-- Header Section End -->
 
     <section class="common-section p-2">
-
+<button onclick="demo()">dddd</button>
         <div class="container h-100" id="loginBlock">
           <div class="d-flex justify-content-center h-100">
             <div class="user_card">
@@ -152,8 +152,8 @@
 <div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h6 class="modal-title" id="labelName">Name</h6>
+      <div class="modal-header" style="background: #e1af75;">
+        <h6 class="modal-title text-white" id="labelName">Name</h6>
         <button type="button" class="close" onclick="goHome()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -162,8 +162,8 @@
         <p>Your earlier visits to this outlet : <b><span id="lableVisit">0</span></b></p>
         <p>Your average rating for this outlet  : <b><span id="lableRating">-</span></b></p>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary btn-sm" onclick="goHome()"><?= $this->lang->line('ok'); ?></button>
+      <div class="modal-footer" style="background: #efebeb;">
+        <button type="button" class="btn btn-success btn-sm" onclick="goHome()" style="font-size: 12px;border-radius: 50px;"><?= $this->lang->line('ok'); ?></button>
       </div>
     </div>
   </div>
@@ -232,6 +232,10 @@
               $('#errorMsg').html(res.response);
             }
       });
+   }
+
+   function demo(){
+    $('#welcomeModal').modal('show');
    }
 </script>
 
