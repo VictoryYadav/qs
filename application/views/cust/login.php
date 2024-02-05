@@ -78,7 +78,7 @@
     <!-- Header Section End -->
 
     <section class="common-section p-2">
-<button onclick="demo()">dddd</button>
+
         <div class="container h-100" id="loginBlock">
           <div class="d-flex justify-content-center h-100">
             <div class="user_card">
@@ -234,9 +234,6 @@
       });
    }
 
-   function demo(){
-    $('#welcomeModal').modal('show');
-   }
 </script>
 
 </html>
