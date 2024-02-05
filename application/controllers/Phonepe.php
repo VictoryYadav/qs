@@ -35,7 +35,95 @@ class Phonepe extends CI_Controller {
         $this->saltIndex = 1;
     }
 
+    public function pay_old(){
+
+
+$merchantId = 'PGTESTPAYUAT'; // sandbox or test merchantId
+$apiKey="099eb0cd-02cf-4e2a-8aca-3e6c6aff0399"; // sandbox or test APIKEY
+$redirectUrl = base_url('test/pay_success');
+
+// Set transaction details
+$order_id = uniqid(); 
+$name="Tutorials Website";
+$email="info@tutorialswebsite.com";
+$mobile=9999999999;
+$amount = 10; // amount in INR
+$description = 'Payment for Product/Service';
+
+
+$paymentData = array(
+    'merchantId' => $merchantId,
+    'merchantTransactionId' => "MT7850590068188104", // test transactionID
+    "merchantUserId"=>"MUID123",
+    'amount' => $amount*100,
+    'redirectUrl'=>$redirectUrl,
+    'redirectMode'=>"POST",
+    'callbackUrl'=>$redirectUrl,
+    "merchantOrderId"=>$order_id,
+   "mobileNumber"=>$mobile,
+   "message"=>$description,
+   "email"=>$email,
+   "shortName"=>$name,
+   "paymentInstrument"=> array(    
+    "type"=> "PAY_PAGE",
+  )
+);
+
+
+ $jsonencode = json_encode($paymentData);
+ $payloadMain = base64_encode($jsonencode);
+ $salt_index = 1; //key index 1
+ $payload = $payloadMain . "/pg/v1/pay" . $apiKey;
+ $sha256 = hash("sha256", $payload);
+ $final_x_header = $sha256 . '###' . $salt_index;
+ $request = json_encode(array('request'=>$payloadMain));
+                
+$curl = curl_init();
+curl_setopt_array($curl, [
+  CURLOPT_URL => "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "POST",
+   CURLOPT_POSTFIELDS => $request,
+  CURLOPT_HTTPHEADER => [
+    "Content-Type: application/json",
+     "X-VERIFY: " . $final_x_header,
+     "accept: application/json"
+  ],
+]);
+
+$response = curl_exec($curl);
+
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+   $res = json_decode($response);
+ 
+if(isset($res->success) && $res->success=='1'){
+$paymentCode=$res->code;
+$paymentMsg=$res->message;
+$payUrl=$res->data->instrumentResponse->redirectInfo->url;
+
+header('Location:'.$payUrl) ;
+
+
+}
+}
+
+    }
+
     public function pay(){
+
+        $merchantId = 'PGTESTPAYUAT140';
+        $saltKey = '775765ff-824f-4cc4-9053-c3926e493514';
+        $saltIndex = 1;   
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -55,14 +143,18 @@ class Phonepe extends CI_Controller {
             $orderRef = "$mode-$EID-$TableNo-$MCNo-$CustId-$billId-$totalAmount";
 
             $data = array(
-              "merchantId" => $this->merchantId,
-              "merchantTransactionId" => $orderRef,
+              "merchantId" => $merchantId,
+              "merchantTransactionId" => 'MT7850590068188104',
+              // "merchantTransactionId" => $orderRef,
               "merchantUserId" => "MUID123",
+              
               "amount" => $totalAmount * 100,
-              "redirectUrl" => $rUrl.'/pay_success',
+              "redirectUrl" => base_url().'test/pay_success',
               "redirectMode" => "POST",
               "callbackUrl" => $rUrl.'/pay_failed',
+              "merchantOrderId"=>$orderRef,
               "mobileNumber" => "7869068343",
+              "shortName"=>'Eat-out',
               "paymentInstrument" => array(
                 "type" => "PAY_PAGE"
                 )
@@ -71,9 +163,9 @@ class Phonepe extends CI_Controller {
             $encode = json_encode($data);
             $encoded = base64_encode($encode);
 
-            $string = $encoded."/pg/v1/pay".$this->saltKey;
+            $string = $encoded."/pg/v1/pay".$saltKey;
             $sha256 = hash('sha256', $string);
-            $finalHeader = $sha256."###".$this->saltIndex;
+            $finalHeader = $sha256."###".$saltIndex;
             // echo "<pre>";
             // print_r($encode);
         
@@ -83,10 +175,10 @@ class Phonepe extends CI_Controller {
             // curl
             $curl = curl_init();
             // test
-            // curl_setopt($curl, CURLOPT_URL, "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay");
+            curl_setopt($curl, CURLOPT_URL, "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay");
 
             // live
-            curl_setopt($curl, CURLOPT_URL, "https://api.phonepe.com/apis/hermes/pg/v1/pay");
+            // curl_setopt($curl, CURLOPT_URL, "https://api.phonepe.com/apis/hermes/pg/v1/pay");
             curl_setopt($curl, CURLOPT_HTTPHEADER, array(
                 "Content-Type: application/json",
                 "accept: application/json",
@@ -133,39 +225,42 @@ class Phonepe extends CI_Controller {
         // print_r($resp);
         // die;
 
-        $this->payment_status($resp['merchantId'], $resp['transactionId']);
+        // $this->payment_status($resp['merchantId'], $resp['transactionId']);
         // print_r($resp['transactionId']);
         // print_r($SESSION);
         // print_r($this->session->userdata('CellNo'));
         // die;
         // $_POST['amount']
         $d = explode('-', $resp['transactionId']);
+        echo "<pre>";
+        print_r($d);
+        die;
 
         $TableNo = $d[2];
         $MCNo = $d[3];
         $billId = $d[5];
         $TotBillAmt = $d[6];
 
-        $pay['BillId'] = $billId;
-        $pay['MCNo'] = $MCNo;
-        $pay['MergeNo'] = $TableNo;
-        $pay['TotBillAmt'] = $TotBillAmt / 100;
-        $pay['CellNo'] = $this->session->userdata('CellNo');
-        $pay['SplitTyp'] = 0;
-        $pay['SplitAmt'] = 0;
-        $pay['PymtId'] = 0;
-        $pay['PaidAmt'] = $TotBillAmt;
-        $pay['OrderRef'] = $resp['transactionId'];
-        $pay['PaymtMode'] = 'phonepe';
-        $pay['PymtType'] = 0;
-        $pay['PymtRef'] = $resp['providerReferenceId'];
-        $pay['Stat'] = 1;
-        $pay['EID'] = authuser()->EID;
+        // $pay['BillId'] = $billId;
+        // $pay['MCNo'] = $MCNo;
+        // $pay['MergeNo'] = $TableNo;
+        // $pay['TotBillAmt'] = $TotBillAmt / 100;
+        // $pay['CellNo'] = $this->session->userdata('CellNo');
+        // $pay['SplitTyp'] = 0;
+        // $pay['SplitAmt'] = 0;
+        // $pay['PymtId'] = 0;
+        // $pay['PaidAmt'] = $TotBillAmt;
+        // $pay['OrderRef'] = $resp['transactionId'];
+        // $pay['PaymtMode'] = 'phonepe';
+        // $pay['PymtType'] = 0;
+        // $pay['PymtRef'] = $resp['providerReferenceId'];
+        // $pay['Stat'] = 1;
+        // $pay['EID'] = authuser()->EID;
 
         // echo "<pre>";
         // print_r($pay);
         // die;
-        $payNo = insertRecord('BillPayments', $pay);
+        // $payNo = insertRecord('BillPayments', $pay);
 
         redirect(base_url('customer/pay/'.$billId.'/'.$MCNo));
 
@@ -185,10 +280,10 @@ class Phonepe extends CI_Controller {
         // curl
         $curl = curl_init();
         // test
-        // curl_setopt($curl, CURLOPT_URL, "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/".$merchantId."/".$transactionId);
+        curl_setopt($curl, CURLOPT_URL, "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/".$merchantId."/".$transactionId);
 
         // live
-        curl_setopt($curl, CURLOPT_URL, "https://api.phonepe.com/apis/hermes/pg/v1/status/".$merchantId."/".$transactionId);
+        // curl_setopt($curl, CURLOPT_URL, "https://api.phonepe.com/apis/hermes/pg/v1/status/".$merchantId."/".$transactionId);
 
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
             "Content-Type: application/json",

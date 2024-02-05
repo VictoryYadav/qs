@@ -662,7 +662,9 @@ class Rest extends CI_Model{
 	}
 
 	public function getTablesAllotedData($EID){
-		return $this->db2->get_where('Eat_tables', array("EID" => $EID))->result_array();
+		return $this->db2->where_not_in('TableNo', array(101,105,110))
+				->get_where('Eat_tables', array("EID" => $EID))
+				->result_array();
 	}
 
 	public function getItemLists(){

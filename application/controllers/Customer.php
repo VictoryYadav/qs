@@ -68,57 +68,7 @@ class Customer extends CI_Controller {
         echo "<pre>";
         print_r($_SESSION);
         die;
-        $CustId = 10;
-         $hours_3 = date('Y-m-d H:i:s', strtotime("-3 hours"));
-                // if ($EType == 5) {
-                //     updateRecord('Kitchen', array('Stat' => 99), array('EID' => $EID,
-                //             'CustId' => $CustId,
-                //             'TableNo' => $TableNo, 
-                //             'Stat' => 10 ,
-                //             'Stat' => 0 , 
-                //             'BillStat' => 0, 
-                //             'LstModDt <' => $hours_3
-                //             )
-                //         );
-
-        $res = $this->db2->get_where('KitchenMain', array('CustId' => $CustId,'BillStat' => 0,'TableNo' => 22,'LstModDt <' => $hours_3))->row_array();
-        // $this->db2->query("SELECT * from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = '22' AND timediff(time(Now()),time(LstModDt))  < time('03:00:00') order by CNo desc limit 1")->row_array();
-        print_r($this->db2->last_query());die;
-        print_r($res);
-
-        die;
         
-        $data['cuisinList'] = $this->cust->getCuisineList();
-        $this->session->set_userdata('cuisine', $data['cuisinList'][0]['CID']);
-        $cid = $data['cuisinList'][0]['CID'];
-        $data['cid'] = $cid;
-        
-        $status = "error";
-        $response = "Something went wrong! Try again later.";
-        if($this->input->method(true)=='POST'){
-            $status = 'success';
-            
-            
-            if(isset($_POST['cid']) && !empty($_POST['cid'])){
-                $cid = $_POST['cid'];
-            }
-            $res['list'] = $this->cust->getMcatandCtypList($cid);
-           
-            header('Content-Type: application/json');
-            echo json_encode(array(
-                'status' => $status,
-                'response' => $res
-              ));
-             die;
-        }
-
-        $data['title'] = 'Item Details';
-        $data['EType'] = $this->session->userdata('EType');
-        $data['Charity'] = $this->session->userdata('Charity');
-        $data['Itm_Portion'] = 1;
-        $data['offers'] = $this->cust->getOffers();
-        
-        $this->load->view('cust/index', $data);
     }
 
     public function outlets(){
