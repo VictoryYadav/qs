@@ -83,9 +83,11 @@
 
                         <div class="row">
                             <div class="col-md-12">
+                                <div class="text-center mb-2">
+                                    <a href="<?= base_url('restaurant/print/'.$billId); ?>" class="'btn btn-sm btn-success">Print</a>
+                                </div>
                                 <div class="card">
                                     <div class="card-body">
-                                        <a href="<?= base_url('restaurant/print/'.$billId); ?>" class="'btn btn-sm btn-primary">Print</a>
                                         <div id="download-to-pdf" class="container billView">
                                                 <div class="text-center">
                                                     <p style="font-weight: bold;font-size: 18px !important;margin-bottom: 1px;"><?php

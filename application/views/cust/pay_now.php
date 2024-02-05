@@ -23,6 +23,8 @@ body{
                     </span>
                     
                     <input type="hidden" id="payableAmt" value="<?= round($payable); ?>">
+                    <input type="hidden" id="MCNo" value="<?= $MCNo; ?>">
+                    <input type="hidden" id="BillId" value="<?= $BillId; ?>">
                 </div>
                 
                 <?php if($this->session->userdata('MultiPayment') > 0){ ?>
@@ -173,7 +175,8 @@ body{
 
 <script type="text/javascript">
 
-    var BillId = '<?= $BillId; ?>';
+    var BillId = $('#BillId').val();
+    var MCNo = $('#MCNo').val();
     var totalPayable ='<?= round($payable); ?>';
 
     $(document).ready(function () {
@@ -224,9 +227,6 @@ function goPay(val){
 
     var element = $('#mode'+val).find('option:selected'); 
     var payUrl  = element.attr("data-mode"); 
-
-    var BillId = '<?= $BillId; ?>';
-    var MCNo = '<?= $MCNo; ?>';
     var payable = $('#payableAmt').val();
     console.log('val ='+val+' ,am = '+amount+' ,mode '+mode+' ,pble '+payable);
 
@@ -306,8 +306,6 @@ function checkStatus(billId,payNo, serialNo){
 
 // goto bill page
 function goToBill(){
-    console.log('hi');
-    var BillId = '<?= $BillId; ?>';
     var payable = $('#payableAmt').val();
     var total = $('#sum').val();
 
@@ -362,8 +360,6 @@ function changeValue(input) {
     $(input).val(convertToUnicodeNo(val));
     calculateGrandTotal();
 }
-
-
 
 
 </script>

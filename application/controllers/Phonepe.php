@@ -28,10 +28,10 @@ class Phonepe extends CI_Controller {
         $this->saltKey = '775765ff-824f-4cc4-9053-c3926e493514';
 
         // live
-        if($this->session->userdata('pymtENV') > 0){
-            $this->merchantId = 'VTRENDONLINE';
-            $this->saltKey = '95d084d8-38f0-4d64-91ff-24449f8e911e';
-        }
+        // if($this->session->userdata('pymtENV') > 0){
+        //     $this->merchantId = 'VTRENDONLINE';
+        //     $this->saltKey = '95d084d8-38f0-4d64-91ff-24449f8e911e';
+        // }
         $this->saltIndex = 1;
     }
 
@@ -121,10 +121,6 @@ header('Location:'.$payUrl) ;
 
     public function pay(){
 
-        $merchantId = 'PGTESTPAYUAT140';
-        $saltKey = '775765ff-824f-4cc4-9053-c3926e493514';
-        $saltIndex = 1;   
-
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -143,18 +139,14 @@ header('Location:'.$payUrl) ;
             $orderRef = "$mode-$EID-$TableNo-$MCNo-$CustId-$billId-$totalAmount";
 
             $data = array(
-              "merchantId" => $merchantId,
-              "merchantTransactionId" => 'MT7850590068188104',
-              // "merchantTransactionId" => $orderRef,
+              "merchantId" => $this->merchantId,
+              "merchantTransactionId" => $orderRef,
               "merchantUserId" => "MUID123",
-              
               "amount" => $totalAmount * 100,
-              "redirectUrl" => base_url().'test/pay_success',
+              "redirectUrl" => $rUrl.'/pay_success',
               "redirectMode" => "POST",
               "callbackUrl" => $rUrl.'/pay_failed',
-              "merchantOrderId"=>$orderRef,
               "mobileNumber" => "7869068343",
-              "shortName"=>'Eat-out',
               "paymentInstrument" => array(
                 "type" => "PAY_PAGE"
                 )
@@ -163,9 +155,9 @@ header('Location:'.$payUrl) ;
             $encode = json_encode($data);
             $encoded = base64_encode($encode);
 
-            $string = $encoded."/pg/v1/pay".$saltKey;
+            $string = $encoded."/pg/v1/pay".$this->saltKey;
             $sha256 = hash('sha256', $string);
-            $finalHeader = $sha256."###".$saltIndex;
+            $finalHeader = $sha256."###".$this->saltIndex;
             // echo "<pre>";
             // print_r($encode);
         

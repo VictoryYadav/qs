@@ -139,6 +139,7 @@ class Rcheck extends CI_Controller {
         $this->session->set_userdata('site_lang', 1);
         $this->session->set_userdata('site_langName', 'english');
 
+        redirect(base_url('customer'));
         if($_REQUEST['c'] > 10){
             redirect(base_url('customer'));
         }else{
