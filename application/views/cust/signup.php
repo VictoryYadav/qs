@@ -93,7 +93,7 @@
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-phone"></i></span>
                     </div>
-                    <input type="text" name="MobileNo" class="form-control" placeholder="<?= $this->lang->line('enterMobile'); ?>" required="" autocomplete="off" minlength="10" maxlength="10" pattern="[6-9]{1}[0-9]{9}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                    <input type="text" name="MobileNo" class="form-control" placeholder="<?= $this->lang->line('enterMobile'); ?>" required="" autocomplete="off" minlength="10" maxlength="10" pattern="[6-9]{1}[0-9]{9}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" id="MobileNo">
                     <small id="signupMsg" class="text-danger" style="font-size: 10px;"></small>
                   </div>
 
@@ -187,6 +187,11 @@
 </body>
 
 <script type="text/javascript">
+
+  window.onload = function() {
+    document.getElementById("MobileNo").focus();
+  }
+
   var mobile = ''; 
    $('#signupForm').on('submit', function(e){
         e.preventDefault();

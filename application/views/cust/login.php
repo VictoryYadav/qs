@@ -93,7 +93,9 @@
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-user"></i></span>
                     </div>
-                    <input type="number" name="emailMobile" class="form-control input_user" placeholder="<?= $this->lang->line('enterMobile'); ?>" required="" autocomplete="off" maxlength="10">
+                    <input type="number" name="emailMobile" class="form-control input_user" placeholder="<?= $this->lang->line('enterMobile'); ?>" required="" maxlength="10" id="emailMobile">
+                  </div>
+                  <div>
                     <small id="loginMsg" class="text-danger" style="font-size: 10px;"></small>
                   </div>
                   
@@ -124,7 +126,7 @@
                       <div class="col-md-9 mx-auto">
                           <div class="form-group">
                             <label for=""><?= $this->lang->line('enterOTP'); ?></label>
-                              <input type="number" name="otp" class="form-control" placeholder="<?= $this->lang->line('enterOTP'); ?>" autocomplete="off" required="">
+                              <input type="number" name="otp" class="form-control" placeholder="<?= $this->lang->line('enterOTP'); ?>" autocomplete="off" required="" id="otp">
                               <span class="text-danger" id="errorMsg" style="font-size: 9px;"></span>
                           </div>
                           <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('verifyOTP'); ?>">
@@ -170,6 +172,11 @@
 </body>
 
 <script type="text/javascript">
+  window.onload = function() {
+    document.getElementById("emailMobile").focus();
+    // document.getElementById("otp").focus();
+  }
+  
   var mobile = ''; 
     $('#loginForm').on('submit', function(e){
         e.preventDefault();
@@ -179,6 +186,7 @@
 
         $.post('<?= base_url('customer/login') ?>',data,function(res){
             if(res.status == 'success'){
+              document.getElementById("otp").focus();
               $('#otpBlock').show();
               $('#loginBlock').hide();
             }else{
