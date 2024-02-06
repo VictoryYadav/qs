@@ -74,11 +74,15 @@ class Customer extends CI_Controller {
     public function outlets(){
 
         $data['title'] = $this->lang->line('multiOutlets');
-        $dbEID = $this->session->userdata('oldEID');
+        $dbEID = $this->session->userdata('aggEID');
 
         $data['outlets'] = $this->db2->select('EID, Name, Stall, QRLink')
                                     ->order_by('e.Stall', 'ASC')
-                                    ->get_where('Eatary e', array('e.CatgId >' => 10, 'Stat' => 0,'dbEID' => $dbEID))
+                                    ->get_where('Eatary e', 
+                                        array('e.CatgId' => 2, 
+                                            'Stat' => 0,
+                                            'dbEID' => $dbEID)
+                                        )
                                     ->result_array();
         // echo "<pre>";
         // print_r($data);
