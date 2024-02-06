@@ -1,6 +1,7 @@
 <?php $this->load->view('layouts/customer/head');
 
-  $folder = 'e'.authuser()->EID; 
+  $EID = authuser()->EID; 
+  $folder = 'e'.$EID; 
  
  ?>
 <style>
@@ -50,7 +51,7 @@
                           <span id="red_bell" style="display: none;">
                               <img src="<?= base_url() ?>assets/img/red_bell1.png" style="height: 30px;">
                           </span>
-                          <img src="<?= base_url('uploads/'.$folder.'/logo.jpg') ?>" width="auto" height="28px;">
+                          <img src="<?= base_url('uploads/'.$folder.'/'.$EID.'_logo.jpg') ?>" width="auto" height="28px;">
                       </li>
                   </ul>
               </div>
