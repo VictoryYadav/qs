@@ -77,9 +77,9 @@ class Customer extends CI_Controller {
         $dbEID = $this->session->userdata('aggEID');
 
         $data['outlets'] = $this->db2->select('EID, Name, Stall, QRLink')
-                                    ->order_by('e.Stall', 'ASC')
-                                    ->get_where('Eatary e', 
-                                        array('e.CatgId' => 2, 
+                                    ->order_by('Stall', 'ASC')
+                                    ->get_where('Eatary', 
+                                        array('CatgId' => 2, 
                                             'Stat' => 0,
                                             'dbEID' => $dbEID)
                                         )

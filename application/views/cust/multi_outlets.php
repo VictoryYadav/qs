@@ -51,7 +51,7 @@
                           <span id="red_bell" style="display: none;">
                               <img src="<?= base_url() ?>assets/img/red_bell1.png" style="height: 30px;">
                           </span>
-                          <img src="<?= base_url('uploads/'.$folder.'/'.$EID.'_logo.jpg') ?>" width="auto" height="28px;">
+                          <img src="<?= base_url('uploads/e'.$folder.'/'.$EID.'_logo.jpg') ?>" width="auto" height="28px;">
                       </li>
                   </ul>
               </div>
@@ -74,7 +74,7 @@
                           <div class="card">
                             <a href="<?= $out['QRLink'] ?>">
                               <div class="thumb-content">
-                                  <img class="card-img-top img-fluid" src="<?= base_url('uploads/'.$folder.'/'.$out['EID'].'.jpg') ?>" alt="<?= $out['Name'] ?>" style="height: 200px;">
+                                  <img class="card-img-top img-fluid" src="<?= base_url('uploads/e'.$out['EID'].'/'.$out['EID'].'_logo.jpg') ?>" alt="<?= $out['Name'] ?>" style="height: 200px;">
                               </div>
                               <div class="card-body">
                                   <h4 class="card-title text-center"><?= $out['Name'] ?></h4>
