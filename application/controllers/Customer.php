@@ -45,7 +45,6 @@ class Customer extends CI_Controller {
              die;
         }
         
-        
     }
 
     public function index1(){
@@ -88,6 +87,23 @@ class Customer extends CI_Controller {
         // print_r($data);
         // die;
         $this->load->view('cust/multi_outlets', $data);
+    }
+
+    public function gotoOutlet(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+            $qr_code = $this->session->userdata('qr_code');
+            $response = base_url('qr?qr_data='.$qr_code);
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
     }
 
     public function index(){

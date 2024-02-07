@@ -41,6 +41,7 @@ $lang['no'] = 'नहीं';
 $lang['done'] = 'हो गया';
 $lang['go'] = 'जाना';
 $lang['click'] = 'क्लिक';
+$lang['pay'] = 'भुगतान करें';
 $lang['submit'] = 'सुरक्षित करे';
 $lang['verifyOTP'] = 'ओटीपी सत्यापित करें';
 $lang['resendOTP'] = 'ओटीपी पुनः भेजें';

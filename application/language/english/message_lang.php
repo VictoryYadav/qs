@@ -41,6 +41,7 @@ $lang['no'] = 'No';
 $lang['done'] = 'Done';
 $lang['go'] = 'Go';
 $lang['click'] = 'Click';
+$lang['pay'] = 'Pay';
 $lang['submit'] = 'Submit';
 $lang['verifyOTP'] = 'Verify OTP';
 $lang['resendOTP'] = 'Resend OTP';

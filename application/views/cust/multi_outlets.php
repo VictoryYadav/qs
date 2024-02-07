@@ -6,13 +6,26 @@
  ?>
 <style>
 .product-item{
-        transition: all linear 0.3s;
-        box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);
-       }
+  transition: all linear 0.3s;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);
+ }
 
-       .product-item:hover{
-        transform: translateY(-10px);
-       }
+ .product-item:hover{
+  transform: translateY(-10px);
+ }
+
+ .card-img-top{
+    width: 200px;
+    /*height: 200;*/
+   }
+
+ /*mobile screen only*/
+@media only screen and (max-width: 480px) {
+   .card-img-top{
+    width: 200px;
+    height: 150px;
+   }
+}
 </style>
 </head>
 
@@ -51,7 +64,7 @@
                           <span id="red_bell" style="display: none;">
                               <img src="<?= base_url() ?>assets/img/red_bell1.png" style="height: 30px;">
                           </span>
-                          <img src="<?= base_url('uploads/e'.$folder.'/'.$EID.'_logo.jpg') ?>" width="auto" height="28px;">
+                          <img src="<?= base_url('uploads/'.$folder.'/'.$EID.'_logo.jpg') ?>" width="auto" height="28px;">
                       </li>
                   </ul>
               </div>
@@ -68,13 +81,17 @@
                     <?php 
                     if(!empty($outlets)){
                       foreach ($outlets as $out ) {
+                        $imgSrc = "uploads/$folder/" . $out['EID'] . "_logo.jpg";
+                        if (!file_exists($imgSrc)) {
+                          $imgSrc = "uploads/$folder/Eat-Out-Icon.png";
+                        }
                      ?>
                     <div class="col-lg-3 col-6">
                         <div class="product-item bg-light">
                           <div class="card">
                             <a href="<?= $out['QRLink'] ?>">
-                              <div class="thumb-content">
-                                  <img class="card-img-top img-fluid" src="<?= base_url('uploads/e'.$out['EID'].'/'.$out['EID'].'_logo.jpg') ?>" alt="<?= $out['Name'] ?>" style="height: 200px;">
+                              <div class="thumb-content" style="text-align: center;padding:5px;height: 185px;">
+                                  <img class="card-img-top img-fluid" src="<?= base_url($imgSrc) ?>" alt="<?= $out['Name'] ?>" >
                               </div>
                               <div class="card-body">
                                   <h4 class="card-title text-center"><?= $out['Name'] ?></h4>

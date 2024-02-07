@@ -25,7 +25,7 @@ $folder = 'e'.$EID;
             <div class="col-md-8 col-sm-8 col-8 text-right">
                 <ul class="list-inline product-meta">
                     <li class="list-inline-item">
-                        <a href="<?= base_url('customer/outlets'); ?>">
+                        <a href="#" onclick="goOutlet()">
                             <i class="fa fa-home" aria-hidden="true" style="color:blue;font-size: 19px;"></i>
                         </a>
                     </li>
@@ -80,6 +80,18 @@ $folder = 'e'.$EID;
               alert(res.response);
             }
               location.reload();
+        });
+    }
+
+    goOutlet = () => {
+        console.log('outlets');
+        $.post('<?= base_url('customer/gotoOutlet') ?>',function(res){
+            if(res.status == 'success'){
+                window.location = res.response;
+                return false;
+            }else{
+              alert(res.response);
+            }
         });
     }
 </script>

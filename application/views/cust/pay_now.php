@@ -4,6 +4,14 @@ body{
     font-size: 13px;
 }
 
+.selectMode{
+    width: 100px;
+}
+
+.item-value{
+    width: 60px;
+}
+
 </style>
 
 </head>
@@ -63,7 +71,7 @@ body{
                                         <input type="number" class="form-control item-value" name="amount" id="amount" readonly="" value="<?= convertToUnicodeNumber($bill['PaidAmt']); ?>">
                                     </td>
                                     <td>
-                                        <select name="mode" id="mode" class="form-control" disabled="">
+                                        <select name="mode" id="mode" class="form-control selectMode" disabled="">
                                             <option value=""><?= $this->lang->line('chooseMode'); ?></option>
                                             <?php
                                             foreach ($modes as $key) {
@@ -74,7 +82,7 @@ body{
                                     </td>
                                     
                                     <td>
-                                        <button class="btn btn-sm btn-success" id="go" onclick="goPay(0)" disabled="true"><?php echo  $this->lang->line('click'); ?></button>
+                                        <button class="btn btn-sm btn-success" id="go" onclick="goPay(0)" disabled="true"><?php echo  $this->lang->line('pay'); ?></button>
                                     </td>
                                     <td>
                                         <span id="payStatus"><i class="fa fa-check" style="color:green;"></i></span>
@@ -91,7 +99,7 @@ body{
                                         <input type="text" placeholder="Amount" class="form-control item-value" required name="amount" id="amount1" value="<?= convertToUnicodeNumber(round($payable)); ?>" <?php if($this->session->userdata('MultiPayment') == 0){ echo 'readonly'; } ?> onblur="changeValue(this)">
                                     </td>
                                     <td>
-                                        <select name="mode" id="mode1" class="form-control" required>
+                                        <select name="mode" id="mode1" class="form-control selectMode" required>
                                             <option value=""><?= $this->lang->line('chooseMode'); ?></option>
                                             <?php
                                             foreach ($modes as $key) {
@@ -102,7 +110,7 @@ body{
                                     </td>
                                     
                                     <td>
-                                        <button class="btn btn-sm btn-success btngo" id="go1" onclick="goPay(1)"><?php echo  $this->lang->line('click'); ?></button>
+                                        <button class="btn btn-sm btn-success btngo" id="go1" onclick="goPay(1)"><?php echo  $this->lang->line('pay'); ?></button>
                                     </td>
                                     <td>
                                         <span id="payStatus1"><i class="fa fa-spinner" style="color:orange;"></i></span>
@@ -194,7 +202,7 @@ body{
                             <input type="text" placeholder="Amount" class="form-control item-value" required name="amount'+counter+'" id="amount'+counter+'" onblur="changeValue(this)" value="'+convertToUnicodeNo(balance)+'">\
                         </td>\
                         <td>\
-                            <select name="mode'+counter+'" id="mode'+counter+'" class="form-control" required>\
+                            <select name="mode'+counter+'" id="mode'+counter+'" class="form-control selectMode" required>\
                                 <option value=""><?= $this->lang->line('chooseMode'); ?></option>\
                                 <?php
                                     foreach ($modes as $key) {
@@ -204,7 +212,7 @@ body{
                             </select>\
                         </td>\
                         <td>\
-                            <button class="btn btn-sm btn-success btngo" id="go'+counter+'" onclick="goPay('+counter+')"><?php echo  $this->lang->line('click'); ?></button>\
+                            <button class="btn btn-sm btn-success btngo" id="go'+counter+'" onclick="goPay('+counter+')"><?php echo  $this->lang->line('pay'); ?></button>\
                         </td>\
                         <td>\
                             <span id="payStatus'+counter+'"><i class="fa fa-spinner" style="color:orange;"></i></span>\
