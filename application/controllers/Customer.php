@@ -662,7 +662,28 @@ class Customer extends CI_Controller {
                     $response = "Your otp is ";
                     $this->session->set_userdata('emailMobile', $emailMobile);
                 }else{
-                    $response = "Username is not found!";
+                    
+                    $genData = $this->cust->checkUserFromGenDb($emailMobile);
+                    if(!empty($genData)){
+                        $otp = generateOTP($emailMobile, 'login');
+                        $status = 'success';
+                        $response = "Your otp is ";
+                        $this->session->set_userdata('emailMobile', $emailMobile);
+
+                        $CustId = $genData['CustId'];
+                    
+                        $data1['CustId']    = $CustId;
+                        $data1['FName']     = $genData['FName'];
+                        $data1['LName']     = $genData['LName'];
+                        // $data1['email']     = $genData['email'];
+                        $data1['MobileNo']  = $genData['MobileNo'];
+                        $data1['DOB']       = $genData['DOB'];
+                        $data1['Gender']    = $genData['Gender'];
+                        $data1['PWDHash']   = md5('eatout246');
+                        insertRecord('Users',$data1);
+                    }else{
+                        $response = "Username is not found!";
+                    }
                 }
 
                 header('Content-Type: application/json');
@@ -844,12 +865,8 @@ class Customer extends CI_Controller {
                 $EID = authuser()->EID;
                 $TableNo = authuser()->TableNo;
                 $CustId = 0;
-                $genTblDb = $this->load->database('GenTableData', TRUE);
 
-                $gen_check = $genTblDb->select('*')
-                                        ->where('MobileNo',  $ses_data['MobileNo'])
-                                        ->get('AllUsers')
-                                        ->row_array();
+                $gen_check = $this->cust->checkUserFromGenDb($ses_data['MobileNo']);
 
                 if(!empty($gen_check)){
                     $this->session->set_userdata('CustId', $gen_check['CustId']);
@@ -865,6 +882,7 @@ class Customer extends CI_Controller {
                     $data1['Gender']    = $gen_check['Gender'];
                     insertRecord('Users',$data1);    
                 }else{
+                    $genTblDb = $this->load->database('GenTableData', TRUE);
                     $data = $ses_data;
 
                     $Adata = $data;
@@ -2034,12 +2052,8 @@ class Customer extends CI_Controller {
             $otp = $this->session->userdata('ratOTP');
             if($_POST['otp'] == $otp){
                 $status = 'success';
-                
-                $genTblDb = $this->load->database('GenTableData', TRUE);
 
-                $check = $genTblDb->select('CustId, FName, LName')
-                                    ->get_where('AllUsers', array('MobileNo' => $_POST['mobile']))
-                                    ->row_array();
+                $check = $this->cust->checkUserFromGenDb($_POST['mobile']);
                 $resp['msg'] = "not";
                 if(!empty($check)){
                     $resp['msg'] = "data";

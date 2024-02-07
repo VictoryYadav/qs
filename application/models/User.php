@@ -164,9 +164,7 @@ class User extends CI_Model{
 
 				$genTblDb = $this->load->database('GenTableData', TRUE);
 
-		        $gen_check = $genTblDb->select('*')
-		                            ->get_where('AllUsers', array('MobileNo' => $mobile))
-		                            ->row_array();
+		        $gen_check = $this->checkUserFromGenDb($mobile);
 		        if(!empty($gen_check)){
 
 		            $CustId = $gen_check['CustId'];
@@ -179,7 +177,7 @@ class User extends CI_Model{
 		            $data1['DOB']       = $gen_check['DOB'];
 		            $data1['Gender']    = $gen_check['Gender'];
 		            $data1['visit'] = 1;
-		            $data['PWDHash'] = md5('eatout246');
+		            $data1['PWDHash'] = md5('eatout246');
 		            insertRecord('Users',$data1);    
 		        }else{
 		        	$data['MobileNo'] = $mobile;
@@ -200,6 +198,14 @@ class User extends CI_Model{
 			}
 		}
 		return $CustId;
+	}
+
+	public function checkUserFromGenDb($mobile){
+		$genTblDb = $this->load->database('GenTableData', TRUE);
+
+		return $genTblDb->select('*')
+		                ->get_where('AllUsers', array('MobileNo' => $mobile))
+		                ->row_array();
 	}
 
 	public function generate_otp($mobile, $page){

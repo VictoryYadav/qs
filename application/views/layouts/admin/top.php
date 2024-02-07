@@ -1,5 +1,8 @@
 <?php 
-$folderName = 'e'.$this->session->userdata('EID');
+
+$EID = $this->session->userdata('EID');
+$folderName = 'e'.$EID;
+
 ?>
 
 <style type="text/css">
@@ -84,7 +87,7 @@ body[data-topbar=dark] .header-item {
                         <div class="dropdown d-inline-block">
                             <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="rounded-circle header-profile-user" src="<?= base_url('uploads/'.$folderName.'/logo.jpg') ?>"
+                                <img class="rounded-circle header-profile-user" src="<?= base_url('uploads/'.$folderName.'/'.$EID.'_logo.jpg') ?>"
                                     alt="<?php echo authuser()->RestName; ?>" style="width: auto;">
                                 <!-- <span class="d-none d-xl-inline-block ml-1"><?php echo authuser()->RestName; ?></span> -->
                                 <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>

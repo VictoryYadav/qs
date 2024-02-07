@@ -38,8 +38,8 @@ class Phonepe extends CI_Controller {
     public function pay_old(){
 
 
-$merchantId = 'PGTESTPAYUAT'; // sandbox or test merchantId
-$apiKey="099eb0cd-02cf-4e2a-8aca-3e6c6aff0399"; // sandbox or test APIKEY
+$merchantId = 'PGTESTPAYUAT140'; // sandbox or test merchantId
+$apiKey="775765ff-824f-4cc4-9053-c3926e493514"; // sandbox or test APIKEY
 $redirectUrl = base_url('test/pay_success');
 
 // Set transaction details
@@ -96,6 +96,9 @@ curl_setopt_array($curl, [
 ]);
 
 $response = curl_exec($curl);
+echo "<pre>";
+print_r($response);
+die;
 
 $err = curl_error($curl);
 

@@ -132,14 +132,19 @@ class AuthController extends CI_Controller {
     			redirect(base_url('page_not_found'));
     		}
 
-    		$this->session->set_userdata('EID', $_GET['o']);
-    		$this->session->set_userdata('CatgID', $_GET['c']);
+            if($_GET['o'] > 0){
+        		$this->session->set_userdata('EID', $_GET['o']);
+        		$this->session->set_userdata('CatgID', $_GET['c']);
 
-    		$my_db = $_GET['o'].'e';
-            $this->session->set_userdata('my_db', $my_db);
-            $data['o'] = $_GET['o'];
-            $data['c'] = $_GET['c'];
-    		$this->load->view('login',$data);
+        		$my_db = $_GET['o'].'e';
+                $this->session->set_userdata('my_db', $my_db);
+                $data['o'] = $_GET['o'];
+                $data['c'] = $_GET['c'];
+        		$this->load->view('login',$data);
+            }else{
+                redirect(base_url('page_not_found'));
+            }
+
         }
 
 	}

@@ -30,6 +30,7 @@ class Cust extends CI_Model{
 	}
 
 	public function getMcatandCtypList($cid){
+
 		$data['mcat'] = array();
 		$data['filter'] = array();
 
@@ -40,7 +41,10 @@ class Cust extends CI_Model{
 
 		$data['mcat'] = $this->db2->select($select_sql)
 								->order_by('Rank', 'ASC')
-								->get_where('MenuCatg', array('CID' => $cid))
+								->get_where('MenuCatg', 
+									array('CID' => $cid, 
+										'EID' => $this->EID)
+								    )
 								->result_array();
 		
 		$this->session->set_userdata('f_fid', 0);
@@ -78,7 +82,8 @@ class Cust extends CI_Model{
                         ->where($where)
                         ->get_where('MenuCatg mc', array(
                             'mc.CID' => $CID,
-                            'mc.EID' => $this->EID
+                            'mc.EID' => $this->EID,
+                            'mi.EID' => $this->EID
                         ))
                         ->result_array();
          // echo "<pre>";
@@ -1565,6 +1570,14 @@ class Cust extends CI_Model{
 
 	public function getTableDetails($table){
 		return $this->db2->select('TblTyp, Capacity, SecId, CCd')->get_where('Eat_tables', array('EID' => authuser()->EID, 'TableNo' => $table))->row_array();
+	}
+
+	public function checkUserFromGenDb($mobile){
+		$genTblDb = $this->load->database('GenTableData', TRUE);
+
+		return $genTblDb->select('*')
+		                ->get_where('AllUsers', array('MobileNo' => $mobile))
+		                ->row_array();
 	}
 
 

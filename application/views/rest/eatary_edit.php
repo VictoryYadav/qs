@@ -89,7 +89,7 @@ getEataryData = () =>{
     var EID = $('#EID').val();
     var type = 'search';
 
-    $.post('<?= base_url('restaurant/edit_eatary') ?>',{EID:EID, type:type},function(res){
+    $.post('<?= base_url('restaurant/eatary') ?>',{EID:EID, type:type},function(res){
         if(res.status == 'success'){
           var data = res.response;
           var temp = `<input type="hidden" name="EID" value="${data.EID}">
