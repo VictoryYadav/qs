@@ -5687,15 +5687,16 @@ class Restaurant extends CI_Controller {
                 $otpData['pageRequest'] = 'Dispense';
 
                 if($mobile){
-                    $msg = "Order of Bill No: $billId from $RestName is ready. Please pick up from $dispCounter.";
+                    $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Please pick up from $dispCounter";
 
                     if($Dispense_OTP > 0){
                         $otp = generateOnlyOTP();
-                        $msg = "Order of Bill No: $billId from $RestName is ready. Your OTP is $otp. Please pick up from $dispCounter.";    
+                        $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Your OTP is $otp. Please pick up from $dispCounter";
                         $otpData['otp'] = $otp;
                     }
 
                     $smsRes = sendSMS($mobile, $msg);
+                    print_r($smsRes);print_r($mobile);
                     if($smsRes){
                         $otpData['stat'] = 1;
                         $status = 'success';

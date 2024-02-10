@@ -8,7 +8,6 @@ class Rcheck extends CI_Controller {
         // $db2 = $this->load->database('51e', TRUE);
 
         if(isset($_GET['qr_data']) && !empty($_GET['qr_data'])){
-            $this->session->set_userdata('qr_code', $_REQUEST['qr_data']);
             $qr_data = rtrim(base64_decode($_REQUEST['qr_data']), "=");
             // echo "<pre>";
             // print_r($_REQUEST['qr_data']);echo "<br>";
@@ -32,6 +31,7 @@ class Rcheck extends CI_Controller {
                                 $my_db = $e_data[1].'e';
                                 $this->session->set_userdata('my_db', $my_db);
                                 $this->session->set_userdata('aggEID', $e_data[1]);
+                                $this->session->set_userdata('qr_code', $_REQUEST['qr_data']);
                             }
                         }
                     }

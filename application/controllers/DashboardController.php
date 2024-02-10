@@ -104,11 +104,10 @@ class DashboardController extends CI_Controller
 	            'footfalls_dinner_array_value' => $footfalls_dinner_array_value,
 	            'status' => 1
 	        ];
+
 	        echo json_encode($response);
 	        exit;
 	    }
-
-
 
 	    if (isset($_POST['type']) && $_POST['type'] == 'orderValue') {
 
@@ -200,30 +199,28 @@ class DashboardController extends CI_Controller
 
 	    if (isset($_POST['type']) && $_POST['type'] == 'paymentMode') {
 
-	        $q1 = "SELECT PaymtMode, COUNT(BillId), date(billTime) FROM Billing where PaymtMode != ''";
+	        $q1 = "SELECT bp.PaymtMode, COUNT(b.BillId) as BillId, date(b.billTime) as billTime FROM Billing b, BillPayments bp where b.BillId = bp.BillId and b.EID = $EID and bp.EID = $EID and bp.PaymtMode != ''";
 
 	        if(isset($_POST['date'])){
 	            $range = explode("-", $_POST['date']);
 	            $from_date = date('Y-m-d', strtotime(trim($range[0])));
 	            $to_date = date('Y-m-d', strtotime(trim($range[1])));
-	            // echo $from_date.'    '.$to_date;exit();
-	            $q1.=" and billTime >='$from_date' and billTime <= '$to_date'";
-	            // $q2.=" and billTime >='$from_date' and billTime <= '$to_date'";
+	            
+	            $q1.=" and b.billTime >='$from_date' and b.billTime <= '$to_date'";
 	        }
-	        $q1.=" group by PaymtMode,date(billTime) ORDER BY date(billTime) DESC";
-	        // $q2.=" group by PaymtMode,date(billTime) ORDER BY date(billTime) DESC";
+	        $q1.=" group by bp.PaymtMode,date(b.billTime) ORDER BY date(b.billTime) DESC";
+	        
 	        $order_value_lunch = $this->db2->query($q1)->result_array();
-	        // $order_value_dinner=$billingObj->exec($q2);
-	        // print_r($q1);exit();
-	        // echo '   ';print_r($q2);exit();
+	        // echo "<pre>";print_r($order_value_lunch);die;
 	        $order_value_lunch_array_labal = [];
 	        $order_value_lunch_array_value = [];
 	        $order_value_dinner_array_value = [];
 	        $payment_mode_lunch_array_labal = [];
 
 	        foreach ($order_value_lunch as $key => $value) {
-	            array_push($order_value_lunch_array_labal,$value['date(billTime)'] );
-	            array_push($order_value_lunch_array_value,$value['COUNT(BillId)'] );
+	            // array_push($order_value_lunch_array_labal,$value['date(billTime)'] );
+	            array_push($order_value_lunch_array_labal,$value['billTime'] );
+	            array_push($order_value_lunch_array_value,$value['BillId'] );
 	            array_push($payment_mode_lunch_array_labal,$value['PaymtMode'] );
 	        }
 
@@ -411,36 +408,24 @@ class DashboardController extends CI_Controller
 	        }
 	        $q.=" and PERIOD_DIFF(curDate(), date(b.billTime))<=$period";
 	        $q.=" GROUP BY day(b.billTime), date(b.billTime)";
-	        // print_r($q);exit();
+	        
 	        $trends = $this->db2->query($q)->result_array();
 
 	        $trends_array_labal = [];
-
 	        $trends_totitemdisc_array_value = [];
-
 	        $trends_totamt_array_value = [];
 
-	        // echo "<pre>";print_r($trends);exit();
 	        $data = [];
 	        foreach($trends as $key) {
-	            // print_r($key);exit();
 	            $d = date('d/m', strtotime($key['date(b.billTime)']));
 	            $a = [];
 	            array_push($a, $d);
 	            array_push($a, (double)$key['SUM(b.TotAmt)']);
-	            // print_r($a);exit();
 	            array_push($data, $a);
-
 	        }
-
-
-	        // print_r($data);exit();
+	        // echo "<pre>";print_r($data);die;
 	        echo json_encode($data);
-
 	        exit;
-
-
-
 	    }
 	    if(isset($_POST) && $_POST['type'] == "tableWiseOccupencyLunch"){
 	        $q = "SELECT b.TableNo, COUNT(b.CNo) as tot, SUM(b.TotAmt), SUM(b.TotAmt)/200 totnos, sum(b.TotItemDisc), TIME_FORMAT(sum(TIMEDIFF(b.billTime,km.LstModDt)),  '%H %i %s') as totTime FROM Billing b, KitchenMain km where (km.CNo=b.CNo OR km.MCNo=b.CNo) and time(km.LstModDt)<'15:00:00'";
@@ -595,34 +580,29 @@ class DashboardController extends CI_Controller
 	        exit;
 	    }
 	    if(isset($_POST) && $_POST['type'] == "RatingsTrend"){
-	        $q = "SELECT r.LstModDt, COUNT(r.BillId), AVG(r.ServRtng), AVG(r.AmbRtng), AVG(r.VFMRtng), AVG(rd.ItemRtng) FROM Ratings r, RatingDet rd where r.RCd=rd.RCd";
+	    	$today = date('Y-m-d');
+	    	$yesterday = date('Y-m-d', strtotime("-1 day", strtotime($today)));
+	    	$last_7_days = date('Y-m-d', strtotime("-7 day", strtotime($today)));
 
-	        $period = 14;
-	        if(isset($_POST['period'])){
-	            $period = $_POST['period'];
-	        }
-	        $q.=" and DATEDIFF(curDate(), date(r.LstModDt))<=$period";
-	        $q.=" GROUP by r.LstModDt ORDER by r.LstModDt DESC";
-	        // print_r($q);exit();
-	        $takeaways = $this->db2->query($q)->result_array();
-
-	        // echo "<pre>";print_r($trends);exit();
-	        $data = [['No of Orders', 'Serv Rating', 'Amb Rating', 'VFM Rating', 'Item Rating']];
+	        $takeaways = $this->db2->query("SELECT r.LstModDt, COUNT(r.BillId), AVG(r.ServRtng), AVG(r.AmbRtng), AVG(r.VFMRtng), r.avgBillRtng, DAYNAME(r.LstModDt), date(r.LstModDt) as date1 FROM Ratings r where r.LstModDt >= '$last_7_days' and r.LstModDt <= '$today' group by date(r.LstModDt)")->result_array();
+// 	        print_r($this->db2->last_query());
+// echo "<pre>";print_r($takeaways);die;
+	        // $data = [['No of Orders', 'Serv Rating', 'Amb Rating', 'VFM Rating', 'Item Rating']];
+	        $data = [];
 	        foreach($takeaways as $key) {
 	            // print_r($key);exit();
 	            $d = $key['COUNT(r.BillId)'];
 	            $a = [];
-	            array_push($a, $d);
+	            // array_push($a, $d);
+	            array_push($a, $key['date1']);
 	            array_push($a, (double)$key['AVG(r.ServRtng)']);
 	            array_push($a, (double)$key['AVG(r.AmbRtng)']);
 	            array_push($a, (double)$key['AVG(r.VFMRtng)']);
-	            array_push($a, (double)$key['AVG(rd.ItemRtng)']);
+	            array_push($a, (double)$key['avgBillRtng']);
 	            // print_r($a);exit();
 	            array_push($data, $a);
 
 	        }
-
-
 	        // print_r($data);exit();
 	        echo json_encode($data);
 

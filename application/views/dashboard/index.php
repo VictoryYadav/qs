@@ -111,37 +111,33 @@
                                             </div>
                                             <div class="col-lg-6 col-md-6 col-6 graph-div" data-toggle="modal" data-target="#rest03_popup"
                                                 style="cursor: pointer;" >
-                                                <div id="rest03" width="400" height="300" style="background: white; padding: 25px;"></div>
+                                                <div id="rest03" width="400" height="300" style="background: white; padding: 5px;"></div>
                                             </div>
                                             <div class="col-lg-6 col-md-6 col-6 graph-div" data-toggle="modal" data-target="#rest04_popup"
                                                 style="cursor: pointer;" >
-                                                <div id="rest04" width="400 col-6" height="300" style="background: white; padding: 25px;"></div>
+                                                <div id="rest04" width="400 col-6" height="300" style="background: white; padding: 5px;"></div>
                                             </div>
                                             <div class="col-lg-6 col-md-6 col-6 graph-div" data-toggle="modal" data-target="#rest05_popup"
                                                 style="cursor: pointer;" >
-                                                <div id="rest05" width="400" height="300" style="background: white; padding: 25px;"></div>
+                                                <div id="rest05" width="400" height="300" style="background: white; padding: 5px;"></div>
                                             </div>
                                             <div class="col-lg-6 col-md-6 col-6 graph-div" data-toggle="modal" data-target="#rest06_popup"
                                                 style="cursor: pointer;" >
-                                                <div id="rest06" width="400" height="300" style="background: white; padding: 25px;"></div>
+                                                <div id="rest06" width="400" height="300" style="background: white; padding: 5px;"></div>
                                             </div>
                                             <div class="col-lg-6 col-md-6 col-6 graph-div" data-toggle="modal" data-target="#rest07_popup"
                                                 style="cursor: pointer;" >
-                                                <div id="rest07" width="400" height="300" style="background: white; padding: 25px;"></div>
+                                                <div id="rest07" width="400" height="300" style="background: white; padding: 0px !important;"></div>
                                             </div>
                                             <div class="col-lg-6 col-md-6 col-6 graph-div" data-toggle="modal" data-target="#rest08_popup"
                                                 style="cursor: pointer;" >
-                                                <div id="rest08" width="400" height="300" style="background: white; padding: 25px;"></div>
+                                                <div id="rest08" width="400" height="300" style="background: white; padding: 5px;"></div>
                                             </div>
-                                            <div class="col-lg-6 col-md-6 col-6 graph-div" data-toggle="modal" data-target="#rest09_popup"
+                                            <div class="col-lg-12 col-md-12 col-12 graph-div" data-toggle="modal" data-target="#rest09_popup"
                                                 style="cursor: pointer;" >
-                                                <div id="rest09" width="400" height="300" style="background: white; padding: 25px;"></div>
+                                                <div id="rest09" width="800" height="350" style="background: white; padding: 1px;"></div>
                                             </div>
-                                            <!-- <div class="col-lg-6 col-md-6 graph-div">
-
-                                                <canvas id="rest03" width="400" height="300" style="background: white; padding: 25px;"></canvas>
-
-                                            </div> -->
+                                            
                                         </div>
                                     </div>
                             </div>       
@@ -166,8 +162,3 @@
         
         <?php $this->load->view('layouts/admin/script'); ?>
 
-
-<script type="text/javascript">
-
-
-</script>

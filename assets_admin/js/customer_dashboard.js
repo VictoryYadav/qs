@@ -6,7 +6,6 @@ var customerFootfalls = '';
 var customerOrder = '';
 var paymentModes = '';
 
-
 $(document).ready(function () {
   base_url = $('#base_url').val();
   
@@ -19,9 +18,7 @@ $(document).ready(function () {
   $("#customer").click(function (e) {
 
     $("#restaurant-parent-div").css("display", "none");
-
     $("#food-parent-div").css("display", "none");
-
     $("#customer-parent-div").css("display", "block");
 
   });
@@ -29,9 +26,7 @@ $(document).ready(function () {
   $("#food").click(function (e) {
 
     $("#restaurant-parent-div").css("display", "none");
-
     $("#food-parent-div").css("display", "block");
-
     $("#customer-parent-div").css("display", "none");
 
   });
@@ -39,128 +34,76 @@ $(document).ready(function () {
   $("#restaurant").click(function (e) {
 
     $("#restaurant-parent-div").css("display", "block");
-
     $("#food-parent-div").css("display", "none");
-
     $("#customer-parent-div").css("display", "none");
 
   });
 
-
-
   // call customer function
-
   customersFootfalls();
-
   customersFootfallsModel();
 
   customersOrderValue();
-
   customersOrderValueModel();
+
   paymentMode();
   paymentModeModel();
 
-
 });
-
-
 
 function customersFootfalls() {
 
   $.ajax({
 
     url: base_url+'DashboardController/customer_graph',
-
     type: "POST",
-
     dataType: "json",
-
     data: {
-
       type: "footfall",
-
     },
 
     success: function (data) {
-
       var ctx = document.getElementById("cust01").getContext("2d");
-
       var myChart = new Chart(ctx, {
-
         type: "bar",
-
         data: {
-
           labels: data.footfalls_lunch_array_labal,
-
           datasets: [
-
             {
-
               label: lunch,
-
               backgroundColor: "#1091e8",
-
               data: data.footfalls_lunch_array_value,
-
             },
 
             {
-
               label: dinner,
-
               backgroundColor: "orange",
-
               data: data.footfalls_dinner_array_value,
-
             },
-
           ],
-
         },
-
         options: {
-
           title: {
-
             display: true,
-
             text: customerFootfalls,
-
           },
-
           scales: {
-
             yAxes: [
-
               {
-
                 ticks: {
-
                   beginAtZero: true,
-
                 },
-
               },
-
             ],
-
           },
-
         },
-
       });
-
     },
 
     error: function (error) {
-
       console.log(`Error ${error}`);
-
     },
-
   });
-
 }
 
 

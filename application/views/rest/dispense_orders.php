@@ -102,6 +102,7 @@
                                         <div class="row" style="margin-bottom: -16px;">
                                             <div class="col-3">
                                                 <div class="form-group">
+                                                    <label>Counter</label>
                                                     <select class="form-control form-control-sm" id="kitchen-code" onchange="getTableView1();">  
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php 
@@ -113,6 +114,9 @@
                                                 </div>
                                             </div>
                                             <div class="col-3">
+                                                <label>
+                                                    Type
+                                                </label>
                                                 <select class="form-control form-control-sm" id="dispMode" onchange="getTableView();">  
                                                     <option value="0"><?= $this->lang->line('select'); ?></option> 
                                                     <option value="101"><?= $this->lang->line('thirdParty'); ?></option>

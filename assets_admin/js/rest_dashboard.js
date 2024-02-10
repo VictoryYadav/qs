@@ -13,18 +13,20 @@ base_url = $('#base_url').val();
   takeAway = $('#takeAway').val();
 
   TakeAways();
-
-  TakeAwaysModel();
+  // TakeAwaysModel();
 
   Offers();
+  // OffersModel();
 
-  OffersModel();
   trends();
-  trends_model();
+  // trends_model();
+
   tableWiseOccupencyLunch();
   tableWiseOccupencyDinner();
+
   TakeWays();
   TrendKitchenOrders();
+
   TrendByWeek();
   RatingsTrend();
 
@@ -368,8 +370,9 @@ function trends() {
 
         // Set chart options
         var options = {'title':'Trends 90 Days',
-                       'width':500,
-                       'height':350};
+                       'width':400,
+                       'height':350
+                      };
 
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.LineChart(document.getElementById('rest03'));
@@ -387,6 +390,7 @@ function trends() {
   });
 
 }
+
 function trends_model() {
   var range = $('#trends_range').val();
   $.ajax({
@@ -424,7 +428,6 @@ function trends_model() {
         // Set chart options
         var options = {'title':'Trends 90 Days','width':700,
                        'height':350};
-
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.LineChart(document.getElementById('rest03_model'));
         chart.draw(data, options);
@@ -441,8 +444,6 @@ function trends_model() {
   });
 
 }
-
-
 
 function OffersModel() {
 var range = $('#offer_range').val();
@@ -577,8 +578,10 @@ function tableWiseOccupencyLunch() {
         data.addRows(dataa);
 
         // Set chart options
-        var options = {'title':'Table Wise Occupency for Lunch','width':700,
-                       'height':350};
+        var options = {'title':'Table Wise Occupency for Lunch',
+                       'width':400,
+                       'height':350
+                      };
 
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.LineChart(document.getElementById('rest04'));
@@ -628,8 +631,10 @@ function tableWiseOccupencyDinner() {
         data.addRows(dataa);
 
         // Set chart options
-        var options = {'title':'Table Wise Occupency for Dinner','width':700,
-                       'height':350};
+        var options = {'title':'Table Wise Occupency for Dinner',
+                       'width':400,
+                       'height':350
+                      };
 
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.LineChart(document.getElementById('rest05'));
@@ -679,8 +684,10 @@ function TakeWays() {
         data.addRows(dataa);
 
         // Set chart options
-        var options = {'title':'Takeways','width':700,
-                       'height':350};
+        var options = {'title':'Takeways',
+                       'width':400,
+                       'height':350
+                      };
 
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.LineChart(document.getElementById('rest06'));
@@ -730,8 +737,10 @@ function TrendKitchenOrders() {
         data.addRows(dataa);
 
         // Set chart options
-        var options = {'title':'TrendKitchenOrders','width':700,
-                       'height':350};
+        var options = {'title':'TrendKitchenOrders',
+                       'width':400,
+                       'height':350
+                      };
 
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.LineChart(document.getElementById('rest07'));
@@ -781,8 +790,10 @@ function TrendByWeek() {
         data.addRows(dataa);
 
         // Set chart options
-        var options = {'title':'TrendByWeek','width':700,
-                       'height':350};
+        var options = {'title':'TrendByWeek',
+                       'width':400,
+                       'height':350
+                      };
 
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.BarChart(document.getElementById('rest08'));
@@ -826,25 +837,31 @@ function RatingsTrend() {
       // instantiates the pie chart, passes in the data and
       // draws it.
       function drawChart() {
-        // var data = new google.visualization.DataTable();
-        var data = google.visualization.arrayToDataTable(dataa);
-        // data.addColumn('string', 'Number Of Orders');
-        // data.addColumn('number', 'Quantity');
-        // data.addRows(dataa);
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'No of Orders');
+        data.addColumn('number', 'Serv Rating');
+        data.addColumn('number', 'Amb Rating');
+        data.addColumn('number', 'VFM Rating');
+        data.addColumn('number', 'Item Rating');
+        data.addRows(dataa);
 
         // Set chart options
-        // var options = {'title':'RatingsTrend','width':700,
-        //                'height':350};
-        var options = {
-          title: 'RatingsTrend',
-          curveType: 'function',
-          legend: { position: 'bottom' }
-        };
+        var options = {'title':'Takeways',
+                       'width':800,
+                       'height':350,
+                       vAxis: {
+                          title: 'Y-Axis Label',
+                          minValue: 1,
+                          maxValue: 10,
+                          gridlines: { count: 10 } // Customize gridlines
+                        },
+                      // legend: 'none'
+                      };
 
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.LineChart(document.getElementById('rest09'));
         chart.draw(data, options);
-        // alert("Done");
       }
     },
 
