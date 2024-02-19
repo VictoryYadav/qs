@@ -118,7 +118,7 @@ class AuthController extends CI_Controller {
                     redirect($url);
                     
                 }else {
-                        $this->session->set_flashdata('error','Fail to Validate User'); 
+                        $this->session->set_flashdata('error','Password is incorrect!'); 
                         $url = 'login?o='.$this->session->userdata('EID').'&c='.$this->session->userdata('ChainId');
                         redirect(base_url() . $url, 'refresh');
                     }

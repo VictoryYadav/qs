@@ -158,6 +158,8 @@ $lang['kot'] 				= 'KOT';
 $lang['value'] 				= 'Value';
 $lang['remarks'] 			= 'Remarks';
 $lang['bilNo'] 				= 'Bill No';
+$lang['invoice'] 			= 'Invoice';
+$lang['discount'] 			= 'Discount';
 $lang['billDate'] 			= 'Bill Date';
 $lang['billAmount'] 		= 'Bill Amt';
 $lang['deliver'] 			= 'Deliver';
@@ -373,6 +375,9 @@ $lang['multiple']			= 'Multiple';
 $lang['selection']			= 'Selection';
 $lang['increment']			= 'Increment';
 $lang['ReplaceOriginalPriceWithItemPrice']			= 'Replace Original price with item price';
+$lang['income']				= 'Income';
+$lang['tax']				= 'Tax';
+$lang['abc']				= 'ABC';
 
 
 

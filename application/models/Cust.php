@@ -490,7 +490,7 @@ class Cust extends CI_Model{
 							$kitchenMainObj['Stat'] = 2;
 						}
 						
-						$kitchenMainObj['LoginCd'] = $CustId;
+						$kitchenMainObj['LoginCd'] = 0;
 						$kitchenMainObj['payRest'] = 0;
 
 						$CNo = insertRecord('KitchenMain', $kitchenMainObj);

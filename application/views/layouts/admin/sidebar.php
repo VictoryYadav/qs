@@ -26,6 +26,18 @@
              } 
             } 
             ?>
+
+        <li>
+            <a href="#" class="has-arrow waves-effect">
+                <i class="mdi mdi-cellphone-link"></i>
+                <span>Reports</span>
+            </a>
+            <ul class="sub-menu" aria-expanded="false">
+                <li><a href="<?= base_url('restaurant/abc_report'); ?>">ABC Report</a></li>
+                <li><a href="#">Report2</a></li>
+                <li><a href="#">Report3</a></li>
+            </ul>
+        </li>
         
     </ul>
 </div>

@@ -72,7 +72,8 @@
                                             
                                             <div class="col-md-3 form-group col-6">
                                                 <?php if($OType == 105) { ?>
-                                                <label><?= $this->lang->line('counter'); ?>: <?= $cashier[0]['Name']; ?></label>
+                                                <label><?= $this->lang->line('counter'); ?>: <?php
+                                                 echo (!empty($cashier)) ? $cashier[0]['Name']:'No Cashier'; ?></label>
                                                 <?php } ?>
                                                 <input type="hidden" id="ccd" name="ccd" class="form-control" value="<?= $cashier[0]['CCd']; ?>" />
                                             </div>

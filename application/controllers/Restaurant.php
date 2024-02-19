@@ -6779,6 +6779,136 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/item_files', $data);    
     }
 
+    public function abc_report(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+
+            $reports = $this->rest->getABCRepots($_POST);
+            $response = $reports;
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        $data['cuisine'] = $this->rest->getCuisineList();
+        $data['title'] = $this->lang->line('abc').' '.$this->lang->line('report');
+        $this->load->view('report/abcReport', $data);    
+    }
+
+    public function get_itemList_by_mcatgId(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+
+            $response = $this->rest->getAllItemsListByMenuCatgId($_POST['MCatgId']);
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function tax_report(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+
+            $response = $this->rest->getTaxRepots($_POST);
+            
+            $new_response = [];
+            foreach ($response as $key ) {
+                $new_response[$key['BillId']]['BillId'] = $key['BillId'];
+                // $new_response[$key['BillId']]['TaxPcent'] = $key['TaxPcent'];
+                $new_response[$key['BillId']]['Date'] = $key['Date'];
+
+                if($key['TaxName'] == 'VAT'){
+                    
+                    $new_response[$key['BillId']]['VAT'] = $key['TaxAmt'];
+                    $new_response[$key['BillId']]['VAT_Pcent'] = $key['TaxPcent'];
+                }
+
+                if($key['TaxName'] == 'SGST'){
+                    $new_response[$key['BillId']]['SGST'] = $key['TaxAmt'];
+                    $new_response[$key['BillId']]['SGST_Pcent'] = $key['TaxPcent'];
+                }
+
+                if($key['TaxName'] == 'CGST'){
+                    $new_response[$key['BillId']]['CGST'] = $key['TaxAmt'];
+                    $new_response[$key['BillId']]['CGST_Pcent'] = $key['TaxPcent'];
+                }
+            }
+
+            $res = [];
+            foreach ($new_response as $key) {
+                $temp['BillId'] = $key['BillId'];
+                // $temp['TaxPcent'] = $key['TaxPcent'];
+                $temp['Date'] = $key['Date'];
+
+                $temp['VAT'] = !empty($key['VAT'])?$key['VAT']:0;
+                $temp['CGST'] = !empty($key['CGST'])?$key['CGST']:0;
+                $temp['SGST'] = !empty($key['SGST'])?$key['SGST']:0;
+
+                $temp['VAT_Pcent'] = !empty($key['VAT_Pcent'])?$key['VAT_Pcent']:0;
+                $temp['CGST_Pcent'] = !empty($key['CGST_Pcent'])?$key['CGST_Pcent']:0;
+                $temp['SGST_Pcent'] = !empty($key['SGST_Pcent'])?$key['SGST_Pcent']:0;
+
+                $res[] = $temp;
+            }
+            $data['res'] = $res;
+            $data['headers'] = $this->rest->getTaxHead();
+            // echo "<pre>";
+            // print_r($data);die;
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $data
+              ));
+             die;
+        }
+
+        $data['title'] = $this->lang->line('tax').' '.$this->lang->line('report');
+        $this->load->view('report/taxReport', $data);    
+    }
+
+    public function income_report(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+
+            $response = $this->rest->getIncomeRepots($_POST);
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] = $this->lang->line('income').' '.$this->lang->line('report');
+        $this->load->view('report/incomeReport', $data);    
+    }
+
     public function db_create_old(){
         $destDB = "2e";
         // $servername = "localhost";
@@ -6875,6 +7005,8 @@ class Restaurant extends CI_Controller {
 
         echo "Database duplicated successfully";
     }
+
+
 
 
 

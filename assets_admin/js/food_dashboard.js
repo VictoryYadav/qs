@@ -5,6 +5,7 @@ var dinner = '';
 var revenueAndDiscounts = '';
 var ordersByHour = '';
 var billsAndRatings = '';
+var filterModes = '';
 
 $(document).ready(function () {
   base_url = $('#base_url').val();
@@ -14,18 +15,13 @@ $(document).ready(function () {
   revenueAndDiscounts = $('#revenueAndDiscounts').val();
   ordersByHour = $('#ordersByHour').val();
   billsAndRatings = $('#billsAndRatings').val();
+  filterModes = $('#changeFilter').val();
 
   RevenueAndDiscounts();
 
-  RevenueAndDiscountsModel();
-
   OrdersByHour();
 
-  OrdersByHourModel();
-
   BillsAndRatings();
-
-  BillsAndRatingsModel();
 
 });
 
@@ -44,6 +40,7 @@ function RevenueAndDiscounts() {
     data: {
 
       type: "RevenueAndDiscounts",
+      filterModes:filterModes
 
     },
 
@@ -135,117 +132,6 @@ function RevenueAndDiscounts() {
 
 }
 
-
-
-function RevenueAndDiscountsModel() {
-var range = $('#rev_dis_range').val();
-  $.ajax({
-
-    url: base_url+'DashboardController/food_graph',
-
-    type: "POST",
-
-    dataType: "json",
-
-    data: {
-
-      type: "RevenueAndDiscounts",
-      date: range
-
-    },
-
-    success: function (data) {
-
-      console.log(data.revenue_and_discounts_labal);
-
-      console.log(data.revenue_and_discounts_totitemdisc_value);
-
-      console.log(data.revenue_and_discounts_totamt_value);
-
-      var ctx = document.getElementById("food01_model").getContext("2d");
-
-      $("#food01Title").html(revenueAndDiscounts);
-
-      var myChart = new Chart(ctx, {
-
-        type: "bar",
-
-        data: {
-
-          labels: data.revenue_and_discounts_labal,
-
-          datasets: [
-
-            {
-
-              label: lunch,
-
-              backgroundColor: "#1091e8",
-
-              data: data.revenue_and_discounts_totitemdisc_value,
-
-            },
-
-            {
-
-              label: dinner,
-
-              backgroundColor: "#28a745",
-
-              data: data.revenue_and_discounts_totamt_value,
-
-            },
-
-          ],
-
-        },
-
-        options: {
-
-          title: {
-
-            display: true,
-
-            text: revenueAndDiscounts,
-
-          },
-
-          scales: {
-
-            yAxes: [
-
-              {
-
-                ticks: {
-
-                  beginAtZero: true,
-
-                },
-
-              },
-
-            ],
-
-          },
-
-        },
-
-      });
-
-    },
-
-    error: function (error) {
-
-      console.log(`Error ${error}`);
-
-    },
-
-  });
-
-}
-
-
-
 function OrdersByHour() {
 
   $.ajax({
@@ -259,6 +145,7 @@ function OrdersByHour() {
     data: {
 
       type: "OrdersByHour",
+      filterModes:filterModes
 
     },
 
@@ -344,111 +231,6 @@ function OrdersByHour() {
 
 }
 
-
-
-function OrdersByHourModel() {
-var range = $('#orders_by_hour_range').val();
-  $.ajax({
-
-    url: base_url+'DashboardController/food_graph',
-
-    type: "POST",
-
-    dataType: "json",
-
-    data: {
-
-      type: "OrdersByHour",
-      date: range
-
-    },
-
-    success: function (data) {
-
-      var ctx = document.getElementById("food02_model").getContext("2d");
-
-      $("#food02Title").html(ordersByHour);
-
-      var myChart = new Chart(ctx, {
-
-        type: "bar",
-
-        data: {
-
-          labels: data.revenue_and_discounts_labal,
-
-          datasets: [
-
-            {
-
-              label: lunch,
-
-              backgroundColor: "#1091e8",
-
-              data: data.revenue_and_discounts_totitemdisc_value,
-
-            },
-
-            {
-
-              label: dinner,
-
-              backgroundColor: "#28a745",
-
-              data: data.revenue_and_discounts_totamt_value,
-
-            },
-
-          ],
-
-        },
-
-        options: {
-
-          title: {
-
-            display: true,
-
-            text: ordersByHour,
-
-          },
-
-          scales: {
-
-            yAxes: [
-
-              {
-
-                ticks: {
-
-                  beginAtZero: true,
-
-                },
-
-              },
-
-            ],
-
-          },
-
-        },
-
-      });
-
-    },
-
-    error: function (error) {
-
-      console.log(`Error ${error}`);
-
-    },
-
-  });
-
-}
-
-
-
 function BillsAndRatings() {
 
   $.ajax({
@@ -462,6 +244,7 @@ function BillsAndRatings() {
     data: {
 
       type: "BillsAndRatings",
+      filterModes:filterModes
 
     },
 
@@ -548,105 +331,4 @@ function BillsAndRatings() {
 }
 
 
-
-function BillsAndRatingsModel() {
-  var range = $('#bills_rating_range').val();
-  $.ajax({
-
-    url: base_url+'DashboardController/food_graph',
-
-    type: "POST",
-
-    dataType: "json",
-
-    data: {
-
-      type: "BillsAndRatings",
-      date: range
-
-    },
-
-    success: function (data) {
-
-      var ctx = document.getElementById("food03_model").getContext("2d");
-
-      $("#food03Title").html(billsAndRatings);
-
-      var myChart = new Chart(ctx, {
-
-        type: "bar",
-
-        data: {
-
-          labels: data.revenue_and_discounts_labal,
-
-          datasets: [
-
-            {
-
-              label: lunch,
-
-              backgroundColor: "#1091e8",
-
-              data: data.revenue_and_discounts_totitemdisc_value,
-
-            },
-
-            {
-
-              label: dinner,
-
-              backgroundColor: "#28a745",
-
-              data: data.revenue_and_discounts_totamt_value,
-
-            },
-
-          ],
-
-        },
-
-        options: {
-
-          title: {
-
-            display: true,
-
-            text: billsAndRatings,
-
-          },
-
-          scales: {
-
-            yAxes: [
-
-              {
-
-                ticks: {
-
-                  beginAtZero: true,
-
-                },
-
-              },
-
-            ],
-
-          },
-
-        },
-
-      });
-
-    },
-
-    error: function (error) {
-
-      console.log(`Error ${error}`);
-
-    },
-
-  });
-
-}
 

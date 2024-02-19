@@ -845,6 +845,21 @@ class Rest extends CI_Model{
 						->get_where('MenuItem m', array('m.Stat' => 0, 'm.EID' => authuser()->EID, 'mir.OrigRate >' => 0))->result_array();		
 	}
 
+	public function getAllItemsListByMenuCatgId($MCatgId){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "m.ItemNm$langId as Name";
+
+		return $this->db2->select("m.ItemId, $lname")
+						->order_by('m.ItemNm1','ASC')
+						->group_by('m.ItemId')
+						->join('MenuItemRates mir', 'mir.ItemId = m.ItemId', 'inner')
+						->get_where('MenuItem m', array(
+										'm.Stat' => 0, 
+										'm.EID' => authuser()->EID, 
+										'mir.OrigRate >' => 0,
+										'm.MCatgId' => $MCatgId))->result_array();		
+	}
+
 	public function get_kitchen(){
 		$langId = $this->session->userdata('site_lang');
         $KitName = "KitName$langId as KitName";
@@ -1426,12 +1441,95 @@ class Rest extends CI_Model{
             									)
             					)
             		->result_array();
-					// echo "string";print_r($dd);
-     //        		print_r($this->db2->last_query());die;
-
-            // $this->db2->query("SELECT itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, $ItemGrpName, itd.Name, itd.Rate, itg.Reqd From ItemTypesGroup itg join ItemTypesDet itd on itg.ItemGrpCd = itd.ItemGrpCd AND itg.EID = $EID and itg.ItemTyp = $ItemTyp and itd.Itm_Portion= $Itm_Portion $sql order by itg.Rank, itd.Rank")->result_array();
         }
-}
+	}
 
+	public function getABCRepots($dt){
+
+		$EID = authuser()->EID;
+		$langId = $this->session->userdata('site_lang');
+        $ItemName = "mi.ItemNm$langId as ItemName";
+        $CuisineName = "c.Name$langId as CuisineName";
+        $menuCatName = "mc.Name$langId as menuCatName";
+
+        if(!empty($dt['cuisine'])){
+        	$this->db2->where('mi.CID', $dt['cuisine']);
+        }
+        if(!empty($dt['menucat'])){
+        	$this->db2->where('mi.MCatgId', $dt['menucat']);
+        }
+        if(!empty($dt['itemId'])){
+        	$this->db2->where('mi.ItemId', $dt['itemId']);
+        }
+        if(!empty($dt['fromDate'])){
+        	$this->db2->where('k.LstModDt >=', date('Y-m-d',strtotime($dt['fromDate'])));
+        }
+        if(!empty($dt['toDate'])){
+        	$this->db2->where('k.LstModDt <=', date('Y-m-d',strtotime($dt['toDate'])));
+        }
+
+		return $this->db2->select("k.ItemId, sum(k.Qty) as Quantity, $ItemName, $CuisineName, $menuCatName, sum(k.ItmRate) as Amount ")
+					->order_by("c.Name1, mc.Name1, sum(k.Qty)", "DESC")
+					->group_by('k.ItemId')
+					->join('MenuItem mi', 'mi.ItemId = k.ItemId', 'inner')
+					->join('Cuisines c', 'c.CID = mi.CID', 'inner')
+					->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')
+					->get_where('Kitchen k', array(
+							'k.Stat' => 3, 
+							'k.EID' => $EID
+							)
+						)
+					->result_array();
+	}
+
+	public function getTaxHead(){
+		$langId = $this->session->userdata('site_lang');
+        $taxName = "ShortName$langId as taxName";
+		return $this->db2->select("TaxName, $taxName, TaxPcent, concat(TaxName, '@', TaxPcent) as header")->get_where('Tax', array('Stat' => 0))
+		->result_array();
+	}
+
+	public function getTaxRepots($dt){
+
+		$EID = authuser()->EID;
+
+        if(!empty($dt['fromDate'])){
+        	$this->db2->where('b.billTime >=', date('Y-m-d',strtotime($dt['fromDate'])));
+        }
+        if(!empty($dt['toDate'])){
+        	$this->db2->where('b.billTime <=', date('Y-m-d',strtotime($dt['toDate'])));
+        }
+
+		return $this->db2->select("b.BillId, date(b.billTime) as Date, t.TaxName,t.TaxPcent, bt.TaxAmt, t.TaxType")
+					// ->order_by("b.BillId", "DESC")
+					->group_by('b.BillId, t.TaxName')
+					->join('BillingTax bt', 'bt.BillId = b.BillId', 'inner')
+					->join('Tax t', 't.TaxType = bt.TaxType', 'inner')
+					->get_where('Billing b', array(
+							'b.EID' => $EID
+							)
+						)
+					->result_array();
+	}
+
+	public function getIncomeRepots($dt){
+		$EID = authuser()->EID;
+
+        if(!empty($dt['fromDate'])){
+        	$this->db2->where('b.billTime >=', date('Y-m-d',strtotime($dt['fromDate'])));
+        }
+        if(!empty($dt['toDate'])){
+        	$this->db2->where('b.billTime <=', date('Y-m-d',strtotime($dt['toDate'])));
+        }
+
+       return $this->db2->select("DAYNAME(b.billTime) as dayName, DATE_FORMAT(date(b.billTime), '%d-%b-%y') as Date, count(b.BillId) as totalInvoice, sum(b.TotItemDisc + b.BillDiscAmt + b.RtngDiscAmt + b.custDiscAmt) as totalDiscount, sum(b.PaidAmt) as totalAmount")
+					->order_by('date(b.billTime)', 'DESC')
+					->group_by('date(b.billTime)')
+					->get_where('Billing b', array(
+							'b.EID' => $EID
+							)
+						)
+					->result_array();
+	}
 	
 }

@@ -5,6 +5,7 @@ var dinner = '';
 var customerFootfalls = '';
 var customerOrder = '';
 var paymentModes = '';
+var filterModes = '';
 
 $(document).ready(function () {
   base_url = $('#base_url').val();
@@ -14,6 +15,8 @@ $(document).ready(function () {
   customerFootfalls = $('#customerFootfalls').val();
   customerOrder = $('#customerOrder').val();
   paymentModes = $('#paymentModes').val();
+
+  filterModes = $('#changeFilter').val();
   
   $("#customer").click(function (e) {
 
@@ -41,13 +44,13 @@ $(document).ready(function () {
 
   // call customer function
   customersFootfalls();
-  customersFootfallsModel();
+  // customersFootfallsModel();
 
   customersOrderValue();
-  customersOrderValueModel();
+  // customersOrderValueModel();
 
   paymentMode();
-  paymentModeModel();
+  // paymentModeModel();
 
 });
 
@@ -60,6 +63,7 @@ function customersFootfalls() {
     dataType: "json",
     data: {
       type: "footfall",
+      filterModes : filterModes
     },
 
     success: function (data) {
@@ -122,8 +126,8 @@ function customersFootfallsModel() {
     data: {
 
       type: "footfall",
-      date: range
-
+      date: range,
+      filterModes : filterModes
     },
 
     success: function (data) {
@@ -225,6 +229,7 @@ function customersOrderValue() {
     data: {
 
       type: "orderValue",
+      filterModes : filterModes
       // date: range
 
     },
@@ -329,7 +334,8 @@ function customersOrderValueModel() {
     data: {
 
       type: "orderValue",
-      date: range
+      date: range,
+      filterModes : filterModes
 
     },
 
@@ -432,7 +438,8 @@ function paymentModeModel() {
     data: {
 
       type: "paymentMode",
-      date: range
+      date: range,
+      filterModes : filterModes
 
     },
 
@@ -531,6 +538,7 @@ function paymentMode(){
       data: {
 
         type: "paymentMode",
+        filterModes : filterModes
 
       },
 
