@@ -71,11 +71,11 @@
                                             </div>
                                             
                                             <div class="col-md-3 form-group col-6">
-                                                <?php if($OType == 105) { ?>
+                                                
                                                 <label><?= $this->lang->line('counter'); ?>: <?php
                                                  echo (!empty($cashier)) ? $cashier[0]['Name']:'No Cashier'; ?></label>
-                                                <?php } ?>
-                                                <input type="hidden" id="ccd" name="ccd" class="form-control" value="<?= $cashier[0]['CCd']; ?>" />
+                                                
+                                                <input type="hidden" id="ccd" name="ccd" class="form-control" value="<?php echo (!empty($cashier)) ? $cashier[0]['CCd']:0; ?>" />
                                             </div>
                                         
                                         </div>
@@ -1027,6 +1027,12 @@
         });
 
         function get_table_order_items(el){
+            var check_ccd = $('#ccd').val();
+            if(check_ccd == 0){
+                alert('Cashier Setup / Role not defined!');
+                $('#table-id').val(0);
+                return false;
+            }
             $('#order-table-body').html('');
             var mergeNo = el.value;
             var capacity = $('option:selected', el).attr('capacity');

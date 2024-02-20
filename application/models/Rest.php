@@ -1360,8 +1360,6 @@ class Rest extends CI_Model{
     	$mname = "mi.ItemNm$langId as menuName";
     	$dis_name = "mii.ItemNm$langId as discName";
 
-		// return $this->db2->query("SELECT $scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank,cod.Disc_ItemId, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId from CustOffersDet as cod join CustOffers as c on c.SchCd=cod.SchCd and  (cod.CID = $cid or cod.MCatgId = $MCatgId or cod.ItemTyp = $itemTyp or cod.ItemId = $itemId) left outer join Cuisines as c1 on cod.CID=c1.CID   left outer join MenuCatg as m on cod.MCatgId = m.MCatgId  left outer join ItemTypes as i on cod.ItemTyp = i.ItmTyp  left outer join MenuItem as mi on mi.ItemId = cod.ItemId where c.SchCd=cod.SchCd  and c.EID=$EID   and c.Stat=0 and (time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)  group by c.schcd, cod.sDetCd order by c.Rank, cod.Rank")->result_array();
-
 		$whr = "(cod.CID = $cid or cod.MCatgId = $MCatgId or cod.ItemTyp = $itemTyp or cod.ItemId = $itemId) and (time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)";
 
 		return $this->db2->select("$scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank,cod.Disc_ItemId, $dis_name, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, $mname, mii.KitCd, mii.PckCharge, m.TaxType, mii.PrepTime, m.DCd, mii.FID ")
@@ -1531,5 +1529,50 @@ class Rest extends CI_Model{
 						)
 					->result_array();
 	}
+
+	public function getStockStatementRepots($dt){
+
+		$EID = authuser()->EID;
+
+        $TransDt = $dt['TransDt'];
+		$openBalDt = date('Y-m-d', strtotime("-1 day", strtotime($TransDt)));
+        $KitCd = $dt['KitCd'];
+
+        $langId = $this->session->userdata('site_lang');
+        $mname = "mi.ItemNm$langId as ItemNm";
+        
+        // current date transaction
+         $current = $this->db2->query("select mi.ItemId, $mname, IFNULL((select sum(rsd1.Qty) from RMStockDet rsd1, RMStock rms1, RMItems rmi where rsd1.TransId=rms1.TransId and rms1.TransType > 10 and rsd1.Stat = 0 and rsd1.RMCd= rmi.RMCd and rmi.ItemId = mi.ItemId and rms1.ToStoreId = $KitCd and rms1.EID = $EID and rmi.EID = $EID and rms1.TransDt = '$TransDt' group by rsd1.RMCd ),0) as received, IFNULL((select sum(rsd1.Qty)  from RMStockDet rsd1, RMStock rms1, RMItems rmi where rsd1.TransId=rms1.TransId and rms1.TransType < 10 and rsd1.Stat = 0 and rsd1.RMCd= rmi.RMCd and rmi.ItemId = mi.ItemId and rms1.FrmStoreId = $KitCd and rms1.EID = $EID and rmi.EID = $EID and rms1.TransDt = '$TransDt' group by rsd1.RMCd),0) as issued, IFNULL((select ( k.Qty ) from Kitchen k, RMItems rmi where k.ItemId = mi.ItemId and k.EID = $EID and k.Stat = 3 and k.ItemId = rmi.ItemId and k.LstModDt = '$TransDt' group by k.ItemId),0) as consumed from MenuItem mi, RMItems rmi1  where mi.ItemId = rmi1.ItemId and mi.EID = $EID ")
+        ->result_array();
+
+        // opening balance 
+        $open = $this->db2->query("select mi.ItemId, $mname, IFNULL((select sum(rsd1.Qty) from RMStockDet rsd1, RMStock rms1, RMItems rmi where rsd1.TransId=rms1.TransId and rms1.TransType > 10 and rsd1.Stat = 0 and rsd1.RMCd= rmi.RMCd and rmi.ItemId = mi.ItemId and rms1.ToStoreId = $KitCd and rms1.EID = $EID and rmi.EID = $EID and rms1.TransDt <= '$openBalDt' group by rsd1.RMCd ),0) as received, IFNULL((select sum(rsd1.Qty)  from RMStockDet rsd1, RMStock rms1, RMItems rmi where rsd1.TransId=rms1.TransId and rms1.TransType < 10 and rsd1.Stat = 0 and rsd1.RMCd= rmi.RMCd and rmi.ItemId = mi.ItemId and rms1.FrmStoreId = $KitCd and rms1.EID = $EID and rmi.EID = $EID and rms1.TransDt <= '$openBalDt' group by rsd1.RMCd),0) as issued, IFNULL((select ( k.Qty ) from Kitchen k, RMItems rmi where k.ItemId = mi.ItemId and k.EID = $EID and k.Stat = 3 and k.ItemId = rmi.ItemId and k.LstModDt <= '$openBalDt' group by k.ItemId),0) as consumed from MenuItem mi, RMItems rmi1  where mi.ItemId = rmi1.ItemId and mi.EID = $EID ")
+        ->result_array();
+
+        $temp = [];
+        $data = [];
+        foreach ($open as $op) {
+        	foreach ($current as $cur) {
+        		if($op['ItemId'] == $cur['ItemId']){
+        			$temp['ItemId'] 	= $cur['ItemId'];
+        			$temp['ItemNm'] 	= $cur['ItemNm'];
+        			$temp['opening'] 	= $op['received'] - $op['issued'] - $op['consumed'];
+
+        			$temp['received'] 	= $cur['received'];
+        			$temp['issued'] 	= $cur['issued'];
+        			$temp['consumed'] 	= $cur['consumed'];
+        			$temp['closed'] 	= $temp['opening'] +$cur['received'] - $cur['issued'] - $cur['consumed'];
+
+        			$data[] = $temp;
+        		}
+        	}	
+        }
+
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        return $data;
+	}
+
 	
 }

@@ -6909,6 +6909,29 @@ class Restaurant extends CI_Controller {
         $this->load->view('report/incomeReport', $data);    
     }
 
+    public function stock_statement(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+
+            $response = $this->rest->getStockStatementRepots($_POST);
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] = $this->lang->line('stock').' '.$this->lang->line('statement');
+        $data['stores'] = $this->rest->getKitchenList();
+        $this->load->view('report/stockStatement', $data);    
+    }
+
     public function db_create_old(){
         $destDB = "2e";
         // $servername = "localhost";

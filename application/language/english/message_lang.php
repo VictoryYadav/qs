@@ -21,6 +21,7 @@ $lang['cookiePolicy'] = 'Cookie Policy';
 $lang['payNow'] = 'Pay Now';
 $lang['profile'] = 'Profile';
 $lang['currentorder'] = 'Current Order / Bill';
+$lang['current']      = 'Current';
 
 $lang['account'] = 'Account';
 $lang['history'] = 'History';
@@ -272,6 +273,7 @@ $lang['moveTable']			= 'Move Table';
 $lang['move']				= 'Move';
 $lang['kitchenDisplaySystem']= 'Kitchen Display System';
 $lang['closeKOT']			= 'Close KOT';
+$lang['close']				= 'Close';
 $lang['dueIn']				= 'Due In';
 $lang['kitchenPlanner']		= 'Kitchen Planner';
 $lang['billOfMaterial']		= 'Bill Of Material';
@@ -378,6 +380,12 @@ $lang['ReplaceOriginalPriceWithItemPrice']			= 'Replace Original price with item
 $lang['income']				= 'Income';
 $lang['tax']				= 'Tax';
 $lang['abc']				= 'ABC';
+$lang['issued']				= 'Issued';
+$lang['consumed']			= 'Consumed';
+$lang['opening']			= 'Opening';
+$lang['stock']				= 'Stock';
+$lang['statement']			= 'Statement';
+$lang['store']				= 'Store';
 
 
 
