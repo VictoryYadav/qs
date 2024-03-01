@@ -20,6 +20,9 @@ class Restaurant extends CI_Controller {
 
         $my_db = $this->session->userdata('my_db');
         $this->db2 = $this->load->database($my_db, TRUE);
+        
+        $this->output->delete_cache();
+
 	}
 
     public function index(){
@@ -5785,7 +5788,7 @@ class Restaurant extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
             $response = "Records Not Found!";
-            $data = $this->db2->select("FName, LName, DelAddress")->get_where('Users', array('MobileNo' => $_POST['phone']))->row_array();
+            $data = $this->db2->select("uId, FName, LName, DelAddress")->get_where('Users', array('MobileNo' => $_POST['phone']))->row_array();
             if(!empty($data)){
                 $status = 'success';
                 $response = $data;
@@ -6932,30 +6935,52 @@ class Restaurant extends CI_Controller {
         $this->load->view('report/stockStatement', $data);    
     }
 
+    public function discount_user(){
+        
+        $EID = authuser()->EID;
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+
+            if($_POST['uId'] > 0){
+                $userId = $_POST['uId'];
+            }else{
+                $userId = createCustUser($_POST['MobileNo']);
+            }
+
+            $upData['discId'] = $_POST['discId'];
+            $upData['FName'] = $_POST['FName'];
+
+            updateRecord('Users', $upData, array('EID' => $EID, 'uId' => $userId));
+
+            $response = 'Discount Updated';
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] = 'Discount User';
+        $data['discounts'] = $this->rest->getUserDiscount();
+        $this->load->view('rest/discount_user', $data);    
+    }
+
     public function db_create_old(){
         $destDB = "2e";
-        // $servername = "localhost";
-        // $username = "root";
-        // $password = "";
-        $servername11 = "139.59.28.122";
-        // $username = "root";
-        // $password = "sn9750";
-
-        $username = "developer";
-        $password = "pqowie321";
-
+        $sourceDatabase = "51e";
+        $destinationDatabase = $destDB;
+        
         // Create connection
-        $conn = new mysqli('139.59.28.122', 'developer', 'pqowie321');
-        // $conn = new mysqli($servername11, $username, $password);
-
+        $conn = new mysqli('139.59.28.122', 'developer', 'pqowie321*');
         // Check connection
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
-
-        // Source and destination database names
-        $sourceDatabase = "51e";
-        $destinationDatabase = $destDB;
 
         // SQL query to create a new database if it doesn't exist
         $sqlCreateDestinationDB = "CREATE DATABASE IF NOT EXISTS $destinationDatabase";
@@ -6986,7 +7011,7 @@ class Restaurant extends CI_Controller {
                     $conn->query("CREATE TABLE IF NOT EXISTS $table LIKE $sourceDatabase.$table");
 
                     // Copy data from source table to destination table
-                    // $conn->query("INSERT INTO $destinationDatabase.$table SELECT * FROM $sourceDatabase.$table");
+                    $conn->query("INSERT INTO $destinationDatabase.$table SELECT * FROM $sourceDatabase.$table");
 
                     // echo "Table $table copied successfully<br>";
                 } else {
@@ -7004,7 +7029,7 @@ class Restaurant extends CI_Controller {
     public function duplicateDatabase() {
         // Connect to the source database
 
-        $sourceDB = $this->load->database('1e', TRUE);
+        $sourceDB = $this->load->database('51e', TRUE);
 
         // Create the destination database
         $destinationDBName = '2e';
@@ -7017,13 +7042,15 @@ class Restaurant extends CI_Controller {
         $tables = $sourceDB->list_tables();
 
         // Copy tables to the destination database
+            
         foreach ($tables as $table) {
+            $dd = '51e'.'.'.$table;
             $tableStructure = $sourceDB->query("SHOW CREATE TABLE $table")->row_array();
             // echo "<pre>";
             // print_r($tableStructure);
             // die;
             $destinationDB->query($tableStructure['Create Table']);
-            $destinationDB->query("INSERT INTO $table SELECT * FROM $table");
+            $destinationDB->query("INSERT INTO $table SELECT * FROM $dd");
         }
 
         echo "Database duplicated successfully";

@@ -1314,14 +1314,6 @@ class Cust extends CI_Model{
                 	$TipAmount = $this->session->userdata('TipAmount');
                 	$itemTotalGross = $this->session->userdata('itemTotalGross');
                 }
-
-                // if($splitTyp == 1){
-                // 	//food and bar
-                // 	$billingObjStat = 4;
-                // }else if($splitTyp > 1){
-                // 	//split bill
-                // 	$billingObjStat = 5;
-                // }
                 
                 // FOR ONLINE PAYMENTS
                 $billingObj['EID'] = $EID;
@@ -1359,6 +1351,13 @@ class Cust extends CI_Model{
                 $billingObj['splitPercent'] = $splitPercent;
                 $billingObj['OType'] = $kitcheData[0]['OType'];
                 $billingObj['LoginCd'] = $kitcheData[0]['LoginCd'];
+                $discountDT = getDiscount($billingObj['CellNo']);
+                if(!empty($discountDT)){
+                	$billingObj['discPcent'] = $discountDT['pcent'];
+                	$billingObj['discId'] = $discountDT['discId'];
+                	$gt = $totalAmount / (100 - $discountDT['pcent']) * 100;
+                	$billingObj['autoDiscAmt'] = ($gt * $discountDT['pcent'])/100;
+                }
                 
                 // echo "<pre>";
                 // print_r($billingObj);

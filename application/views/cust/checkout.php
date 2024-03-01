@@ -243,6 +243,7 @@
                 var del_charge = response.kitcheData[0]['DelCharge'];
                 var pck_charge = response.kitcheData[0]['TotPckCharge'];
                 var ServChrg = response.kitcheData[0]['ServChrg'];
+                var discountDT = response.discountDT;
                 
                 var disc = parseInt(response.kitchen_main_data['BillDiscAmt']) + parseInt(response.kitcheData[0]['TotItemDisc']) + parseFloat(response.kitcheData[0]['RtngDiscAmt']);
                 
@@ -436,6 +437,31 @@
                 // var itemGrossAmt = (grand_total - serv - pck_charge).toFixed(2);
                 var itemGrossAmt = (grand_total).toFixed(2);
 
+                html_body +=`<div class="main-ammount">`;
+                html_body +=`<table style="width:100%;">`;
+                html_body +=`<tr class="">`;
+                html_body +=`   <th>Grand Total</th>`;
+                html_body +=`   <td class="text-right"><strong>${grand_total}</strong></td>`;
+                html_body +=`</tr>`;
+                html_body +=`</table>`;
+                html_body +=`</div>`;
+
+                if(discountDT.length != ''){
+
+                    var calc = (grand_total * discountDT.pcent) / 100;
+
+                    html_body +=`<div class="main-ammount">`;
+                    html_body +=`<table style="width:100%;">`;
+                    html_body +=`<tr class="">`;
+                    html_body +=`   <th>${discountDT.name} Discount @ ${discountDT.pcent} % </th>`;
+                    html_body +=`   <td class="text-right"><strong>${calc.toFixed(2)}</strong></td>`;
+                    html_body +=`</tr>`;
+                    html_body +=`</table>`;
+                    html_body +=`</div>`;
+
+                    grand_total  = (grand_total - calc).toFixed(2);
+                }
+
                 var tt = '<?php echo $Tips?>';
                 if(tt == 1){
                     html_body +=`<div class="main-ammount">`;
@@ -458,6 +484,7 @@
                 $("#payableAmt").val(grand_total);
                 // $("#totalAmt").val(itemGrossAmt);
                 $("#totalAmt").val(itemAmount);
+                // getDiscountOffer();
                 
 
             },
@@ -469,6 +496,20 @@
         });
     }
 
+    function getDiscountOffer(){
+
+        var payable = parseFloat($('#payableAmt').val());
+
+        $.post('<?= base_url('customer/getDiscounts') ?>',function(res){
+            if(res.status == 'success'){
+                var data = res.response;
+                var calc = payable - (payable * data.pcent) / 100;
+                alert(calc.toFixed(2));
+            }else{
+              alert(res.response); 
+            }
+        });        
+    }
 
     function check_bill_amount_offer(payable, discount){
 
@@ -491,7 +532,7 @@
               alert(res.response); 
             }
         });        
-    }    
+    }
     
 
     function getTaxValue(initil_value,total){
@@ -602,12 +643,10 @@
         });
     }
 $("#tips").focusout(function() {
-            // console.log('ok');
-            // alert("kkk");
             // var totalAmount = $("#total-amount").text();
             var serveCharge = $("#serve-charge").val();
             var orderAmount = $("#order-amount").val();
-            // var payAble = parseFloat(totalAmount) + (parseInt(<?= $ServChrg; ?>) * parseInt(orderAmount) / 100);
+          
             var tips = $(this).val();
             var string = $("#total-amount_loader").text();
             var res = string.split(":");
@@ -616,7 +655,7 @@ $("#tips").focusout(function() {
             console.log(totalTemp);
             $("#payable").val(totalTemp);
             $("#total-amount_loader").text('Cash : ' + totalTemp);
-            // totalAmount = newTotal;
+          
         });
 
         function change_tip(){

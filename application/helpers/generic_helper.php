@@ -464,6 +464,12 @@ function file_get_contents_curl($url)
     }
 }
 
+function getDiscount($mobile){
+	$CI = & get_instance();
+    $CI->load->model('User');
+    return $CI->User->getDiscountDetail($mobile);	
+}
+
 // Test the function
 // $englishNumber = '12345';
 // $chineseNumber = convertDigits($englishNumber, 'en', 'zh');

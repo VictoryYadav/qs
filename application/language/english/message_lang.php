@@ -387,6 +387,12 @@ $lang['stock']				= 'Stock';
 $lang['statement']			= 'Statement';
 $lang['store']				= 'Store';
 
+$lang['area']				= 'Area';
+$lang['suburb']				= 'Suburb';
+$lang['state']				= 'State';
+$lang['latitude']			= 'Latitude';
+$lang['longitude']			= 'Longitude';
+
 
 
 

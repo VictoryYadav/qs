@@ -84,7 +84,7 @@ class User extends CI_Model{
         $itmName = "m.ItemNm$langId as ItemNm";
         $ipName = "ip.Name$langId as Portions";
 
-		$billData = $comDb->query("SELECT ((k.ItmRate)* sum(k.Qty) * b.splitPercent) as ItemAmt, $itmName, k.CustItemDesc, k.TA, k.ItmRate, (sum(k.Qty) * b.splitPercent) as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, e.BillerName, b.BillPrefix, b.BillSuffix, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo,b.BillId, b.TotItemDisc, b.BillDiscAmt,b.custDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt,b.PaidAmt, b.SerCharge as bservecharge,b.SerChargeAmt, b.Tip,b.TableNo,b.MergeNo, b.billTime as BillDt, $ipName , k.Itm_Portion,b.CustId,b.CellNo  from Kitchen k, KitchenMain km, Billing b, MenuItem m, Eatary e , ItemPortions ip where k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and $qry and ((km.CNo = k.CNo) or (km.MCNo = k.MCNo)) and ( km.MergeNo = k.MergeNo) and ((km.CNo = b.CNo) or (km.MCNo = b.CNo)) and (km.MergeNo = b.MergeNo) and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID and km.EID = $EID and km.EID=m.EID and b.BillId = $billId $custAnd Group By k.ItemId, k.ItmRate, km.MCNo, km.MergeNo, k.CustItemDesc, k.TaxType ,k.Itm_Portion Order By k.TaxType, m.ItemNm1")->result_array();
+		$billData = $comDb->query("SELECT ((k.ItmRate)* sum(k.Qty) * b.splitPercent) as ItemAmt, $itmName, k.CustItemDesc, k.TA, k.ItmRate, (sum(k.Qty) * b.splitPercent) as Qty, (COUNT(k.TaxType)) as Tx, k.TaxType, k.Stat, e.Name, e.Addr, e.City, e.Pincode, e.CINNo, e.FSSAINo, e.GSTno, e.BillerName, b.BillPrefix, b.BillSuffix, e.PhoneNos, e.Remarks, e.Tagline, b.BillNo,b.BillId, b.TotItemDisc, b.BillDiscAmt,b.custDiscAmt, b.TotPckCharge,  b.DelCharge, b.TotAmt,b.PaidAmt, b.SerCharge as bservecharge,b.SerChargeAmt, b.Tip,b.TableNo,b.MergeNo, b.billTime as BillDt, dis.name as discountName, b.discId, b.discPcent, b.autoDiscAmt, $ipName , k.Itm_Portion,b.CustId,b.CellNo  from Kitchen k, KitchenMain km, Billing b left join discounts dis on dis.discId = b.discId, MenuItem m, Eatary e , ItemPortions ip where k.Itm_Portion = ip.IPCd and k.ItemId = m.ItemId and $qry and ((km.CNo = k.CNo) or (km.MCNo = k.MCNo)) and ( km.MergeNo = k.MergeNo) and ((km.CNo = b.CNo) or (km.MCNo = b.CNo)) and (km.MergeNo = b.MergeNo) and e.EID = km.EID and k.EID = km.EID  and b.EID = km.EID and km.EID = $EID and km.EID=m.EID and b.BillId = $billId $custAnd Group By k.ItemId, k.ItmRate, km.MCNo, km.MergeNo, k.CustItemDesc, k.TaxType ,k.Itm_Portion Order By k.TaxType, m.ItemNm1")->result_array();
 
 // print_r($this->db2->last_query());die;
 		// echo "<pre>";
@@ -407,6 +407,18 @@ class User extends CI_Model{
 			}
 		}
 		return $d;
+	}
+
+	public function getDiscountDetail($mobile){
+		$EID = authuser()->EID;
+		return $this->db2->select("u.uId, d.discId, d.name, d.pcent, d.visitNo")
+						->join('discounts d', 'd.discId = u.discId', 'inner')
+						->get_where('Users u', 
+										array('u.MobileNo' => $mobile,
+											  'u.EID' => $EID,
+											  'd.EID' => $EID,
+											  'd.stat' => 0)
+								)->row_array();
 	}
 
 }

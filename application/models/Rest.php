@@ -52,7 +52,7 @@ class Rest extends CI_Model{
 			$data['ChainId'] = $createrData['ChainId'];
 			$data['Stat'] = $createrData['Stat'];
 			$data['LoginCd'] = authuser()->RUserId;
-			$data['PWDHash'] = md5('QS1234');
+			$data['PWDHash'] = md5('eo1234');
 			$newRUserId = insertRecord('UsersRest', $data);	
 
 			$GUsersRest['FName'] = $data['FName'];
@@ -1572,6 +1572,11 @@ class Rest extends CI_Model{
         // print_r($data);
         // die;
         return $data;
+	}
+
+	public function getUserDiscount(){
+		return $this->db2->get_where('discounts', array('stat' => 0))
+		->result_array();
 	}
 
 	

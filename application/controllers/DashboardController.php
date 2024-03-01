@@ -12,6 +12,7 @@ class DashboardController extends CI_Controller
 
 		$my_db = $this->session->userdata('my_db');
         $this->db2 = $this->load->database($my_db, TRUE);
+        $this->output->delete_cache();
 	}
 
 	public function index(){

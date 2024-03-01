@@ -95,8 +95,8 @@ class AuthController extends CI_Controller {
                     $this->session->set_userdata('site_lang', 1);
                     $this->session->set_userdata('site_langName', 'english');
 
-                        // if pass = QS1234 go to change password page_not_found
-                    if($checkNumber['Passwd'] == 'QS1234'){
+                        // if pass = eo1234 go to change password page_not_found
+                    if($checkNumber['Passwd'] == 'eo1234'){
                         redirect(base_url('restaurant/change_password'));    
                     }
 

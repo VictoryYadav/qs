@@ -221,6 +221,138 @@ class Support extends CI_Controller {
         }
         return $cid;
     }
+
+    public function new_customer_create(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            // $status = 'success';
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+
+            $pData = $_POST;
+            $pData['StTime'] = date('H:i:s', strtotime($pData['StTime'])); 
+            $pData['EndTime'] = date('H:i:s', strtotime($pData['EndTime']));
+            $pData['Stat'] = 1;
+            unset($pData['DOB']);
+            $genDB = $this->load->database('GenTableData', TRUE);
+            $genDB->insert('EIDDet',$pData);
+            $CNo = $genDB->insert_id();
+
+            $response = "Restaurant Created.";
+            if($CNo){
+                $dbName = $CNo.'e';
+                $upData['EID'] = $CNo;
+                $upData['DBName'] = $dbName;
+                $upData['DBPasswd'] = 'pass';
+
+                $genDB->update('EIDDet',$upData, array('CNo' => $CNo));
+                // db creation
+                $destDB = $dbName;
+                $sourceDatabase = "51e";
+                $destinationDatabase = $destDB;
+                
+                // Create connection
+                $conn = new mysqli('139.59.28.122', 'developer', 'pqowie321*');
+                // Check connection
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                }
+
+                // SQL query to create a new database if it doesn't exist
+                $sqlCreateDestinationDB = "CREATE DATABASE IF NOT EXISTS $destinationDatabase";
+                if ($conn->query($sqlCreateDestinationDB) === TRUE) {
+                    $response = "$dbName Database Created.";
+                    // echo "Destination database created successfully<br>";
+                } else {
+                    echo "Error creating destination database: " . $conn->error . "<br>";
+                }
+
+                // Select source and destination databases
+                $conn->select_db($sourceDatabase);
+
+                // Get a list of tables in the source database
+                $tables = $conn->query("SHOW TABLES");
+                if ($tables) {
+                    while ($row = $tables->fetch_row()) {
+                        $table = $row[0];
+                        // Select the source table
+                        $conn->select_db($sourceDatabase);
+                        $result = $conn->query("SELECT * FROM $table");
+
+                        if ($result) {
+                            // Select the destination database
+                            $conn->select_db($destinationDatabase);
+                            // Create the table in the destination database if it doesn't exist
+                            $conn->query("CREATE TABLE IF NOT EXISTS $table LIKE $sourceDatabase.$table");
+                            // Copy data from source table to destination table
+                            $conn->query("INSERT INTO $destinationDatabase.$table SELECT * FROM $sourceDatabase.$table");
+                            // echo "Table $table copied successfully<br>";
+                        } else {
+                            echo "Error selecting data from table $table: " . $conn->error . "<br>";
+                        }
+                    }
+                } else {
+                    echo "Error getting list of tables: " . $conn->error . "<br>";
+                }
+
+                // Close connection
+                $conn->close();
+
+                // create user in usersrest
+                
+                if(!empty($dbName)){
+
+                    $db3 = $this->load->database($dbName, TRUE);
+                    $EID = $CNo;
+
+                    $user['FName'] = $_POST['ContactPerson'];
+                    $user['MobileNo'] = $_POST['CellNo'];
+                    $user['PEmail'] = $_POST['Email'];
+                    $user['UTyp'] = 9;
+                    $user['Passwd'] = 'eo1234';
+                    $user['DOB'] = date('Y-m-d', strtotime($_POST['DOB']));
+                    $user['Stat'] = 0;
+                    $user['EID'] = $EID;
+
+                    $genDB->insert('UsersRest', $user);
+
+                    $user['PWDHash'] = md5($user['Passwd']);
+                    $db3->insert('UsersRest', $user);
+                    $userId = $db3->insert_id();
+
+                    $roles = $db3->get_where('UserRoles', array('Stat' => 0))->result_array();
+                    $temp = [];
+                    $userRolesAccessObj = [];
+                    foreach ($roles as $role) {
+                        $temp['EID'] = $EID;
+                        $temp['RUserId'] = $userId;
+                        $temp['RoleId'] = $role['RoleId'];
+                        $temp['Stat'] = 0;    
+                        $temp['LoginCd'] =$userId;
+                        $userRolesAccessObj[] = $temp;
+                    }
+
+                    if(!empty($userRolesAccessObj)){
+                        $db3->insert_batch('UserRolesAccess', $userRolesAccessObj); 
+                    }
+
+                    $this->session->set_flashdata('success','Please login through the link and upload your restaurant data.');
+                }
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die; 
+        }
+        $data['title'] = 'New Customer';
+        $this->load->view('support/new_customer', $data); 
+    }
   
 
 }

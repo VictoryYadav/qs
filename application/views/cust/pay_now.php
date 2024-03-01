@@ -143,7 +143,7 @@ body{
                         <table class="table" >
                             <thead>
                                 <tr>
-                                    <th><?= $this->lang->line('billNo'); ?></th>
+                                    <th><?= $this->lang->line('bilNo'); ?></th>
                                     <th><?= $this->lang->line('mobile'); ?></th>
                                     <th><?= $this->lang->line('link'); ?></th>
                                 </tr>

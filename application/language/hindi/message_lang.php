@@ -385,3 +385,9 @@ $lang['opening']			= 'ओपनिंग';
 $lang['stock']				= 'स्टॉक';
 $lang['statement']			= 'स्टेटमेंट';
 $lang['store']				= 'स्टोर';
+
+$lang['area']				= 'एरिया';
+$lang['suburb']				= 'सुबुरब';
+$lang['state']				= 'स्टेट';
+$lang['latitude']			= 'लेटिटूट';
+$lang['longitude']			= 'लौंगीटूट';

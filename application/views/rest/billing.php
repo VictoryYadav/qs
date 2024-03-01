@@ -116,11 +116,11 @@
 
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <p style="margin-bottom: unset;font-weight: bold;font-size: 15px !important;">Bill No: <?= $billno ?></p>
+                                                        <p style="margin-bottom: unset;font-size: 15px !important;">Bill No: <b><?= $billno ?></b></p>
                                                     </div>
                                                     <?php if($this->session->userdata('billPrintTableNo') > 0) { ?>
                                                     <div class="col-6" style="text-align: right;">
-                                                        <p style="margin-bottom: unset;font-weight: bold;font-size: 15px !important;">Table No: <?= $MergeNo ?></p>
+                                                        <p style="margin-bottom: unset;font-size: 15px !important;">Table No: <b><?= $MergeNo ?></b></p>
                                                     </div>
                                                     <?php } ?>
                                                     
@@ -174,8 +174,8 @@
                                                     $newTaxType  = ' <div style="margin-bottom: 15px;"> ';
                                                     $newTaxType .= ' <table style="width:100%;"> ';
                                                     $newTaxType .= ' <tbody> ';
-                                                    $newTaxType .= ' <tr style="text-align: right;"> ';
-                                                    $newTaxType .= ' <th style="float: left;">Menu Item </th> ';
+                                                    $newTaxType .= ' <tr style="text-align: right;">';
+                                                    $newTaxType .= ' <th style="float: left;">Item </th> ';
                                                     $newTaxType .= ' <th>Qty</th> ';
                                                     $newTaxType .= ' <th>Rate</th> ';
                                                     $newTaxType .= ' <th>Amt</th> ';
@@ -244,7 +244,7 @@
                                                         <?php endif; ?>
                                                         <?php if ($tipamt > 0) : ?>
                                                             <tr>
-                                                                <th>TIP Amount</th>
+                                                                <td>TIP Amount</td>
                                                                 <td style="text-align: right;"><?= $tipamt ?></td>
                                                             </tr>
                                                         <?php endif; ?>
@@ -290,7 +290,14 @@
                                                                 <th></th>
                                                                 <td></td>
                                                             </tr>
-                                                        <?php   } ?>
+                                                        <?php   } 
+                                                        
+                                                        if($billData[0]['discId'] > 0) { ?>
+                                                        <tr style="border-bottom: 1px solid black;">
+                                                            <td><?= $billData[0]['discountName']; ?> Discount @ <?= $billData[0]['discPcent']; ?>%</td>
+                                                            <td style="text-align: right;"><?= $billData[0]['autoDiscAmt']; ?></td>
+                                                        </tr>
+                                                        <?php } ?>
                                                     
                                                         <tr>
                                                             <td style="font-weight: bold;">GRAND TOTAL</td>

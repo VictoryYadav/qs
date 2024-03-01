@@ -20,6 +20,7 @@ class Customer extends CI_Controller {
         $this->db2 = $this->load->database($my_db, TRUE);
 
         $this->load->model('Cust', 'cust');
+        $this->output->delete_cache();
 	}
 
     function switchLang() {
@@ -1403,6 +1404,7 @@ class Customer extends CI_Controller {
         $COrgId = $this->session->userdata('COrgId');
         $CustNo = $this->session->userdata('CustNo');
         $Fest = $this->session->userdata('Fest');
+        $CellNo = $this->session->userdata('CellNo');
 
         if ($CustId != '') {
 
@@ -1422,7 +1424,8 @@ class Customer extends CI_Controller {
                 $km = 0;
                 if(!empty($d)){
                     $km = $d[0];
-                }
+                }   
+                $response['discountDT'] = getDiscount($CellNo);
                 $response['kitchen_main_data'] = $km;
                 echo json_encode($response);
                 die();
@@ -1838,6 +1841,12 @@ class Customer extends CI_Controller {
             // echo "<pre>";
             // print_r($pData);
             // die;
+
+            $discountDT = getDiscount($pData['CellNo']);
+            if(!empty($discountDT)){
+                // $gt = $totalAmount / (100 - $discountDT['pcent']) * 100;
+                $pData['orderAmount'] = $pData['orderAmount'] - ($pData['orderAmount'] * $discountDT['pcent'])/100;
+            }
 
             // $res = array('status' => 1, 'billId' => 2);
             $res = billCreate($EID, $CNo, $pData);
@@ -2611,6 +2620,24 @@ class Customer extends CI_Controller {
             updateRecord('Users', $data, array('CustId' => $CustId) );
             $status = 'success';
             $response = 'Token Generated.';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function getDiscounts(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $mobile = $this->session->userdata('CellNo');
+
+            $status = 'success';
+            $response = getDiscount($mobile);
+            
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
