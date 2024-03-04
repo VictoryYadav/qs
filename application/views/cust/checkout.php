@@ -222,7 +222,7 @@
     // });
 
     window.onload = function() {
-        document.getElementById("tips").focus();
+        // document.getElementById("tips").focus();
       }
 
     function getBillAmount() {

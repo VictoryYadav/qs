@@ -411,7 +411,8 @@ class User extends CI_Model{
 
 	public function getDiscountDetail($mobile){
 		$EID = authuser()->EID;
-		return $this->db2->select("u.uId, d.discId, d.name, d.pcent, d.visitNo")
+		$discounts = [];
+		$data =  $this->db2->select("u.uId, d.discId, d.name, d.pcent, d.visitNo")
 						->join('discounts d', 'd.discId = u.discId', 'inner')
 						->get_where('Users u', 
 										array('u.MobileNo' => $mobile,
@@ -419,6 +420,11 @@ class User extends CI_Model{
 											  'd.EID' => $EID,
 											  'd.stat' => 0)
 								)->row_array();
+		if(!empty($data)){
+			$discounts = $data;
+		}
+
+		return $discounts;
 	}
 
 }
