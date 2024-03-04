@@ -219,7 +219,7 @@
 
     </div><!--End InvoiceBot-->
   <?php }else{ ?>
-    <h1>Something went wrong, please pick to support!</h1>
+    <h1>Something went wrong, please speak to support!</h1>
   <?php } ?>
   </div><!--End Invoice-->
 

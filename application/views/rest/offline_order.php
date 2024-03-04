@@ -992,7 +992,10 @@
                             if (response.status) {
                                 if (data_type == 'bill') {
                                     alert("<?= $this->lang->line('orderBillledSuccessfully'); ?>");
-                                    window.location = "<?= base_url('restaurant/bill/'); ?>"+response.data.billId;
+                                    // window.location = "<?= base_url('restaurant/kot_print/'); ?>"+response.data.MCNo+'/'+response.data.MergeNo+'/'+response.data.FKOTNo;
+                                    // window.location = "<?= base_url('restaurant/bill/'); ?>"+response.data.billId;
+                                     window.open("<?= base_url('restaurant/kot_print/'); ?>"+response.data.MCNo+'/'+response.data.MergeNo+'/'+response.data.FKOTNo,'_blank');
+                                    window.open("<?= base_url('restaurant/print/'); ?>"+response.data.billId,'_blank');
                                     return false;
                                 }else{
                                 alert("<?= $this->lang->line('orderPlacedSuccessfully'); ?>");

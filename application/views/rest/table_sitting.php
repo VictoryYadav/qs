@@ -1794,6 +1794,7 @@ getTableView();
                     alert(response.response);
                 }
                 // location.reload();
+                $('#billModel').modal('hide');
                 getTableView();
             });
         }
@@ -2393,7 +2394,9 @@ function cashCollectData(){
         }else{
           alert(res.response);
         }
-        location.reload();
+        // location.reload();
+        $('#cashCollectModel').modal('hide');
+        getTableView();
     });
   }else{
     alert('Amount has to be greater than or equal to Bill Amount.');
