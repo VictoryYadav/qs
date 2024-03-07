@@ -427,4 +427,11 @@ class User extends CI_Model{
 		return $discounts;
 	}
 
+	public function getThemeColour(){
+		$EID = authuser()->EID;
+		return $this->db2->select("headerClr, footerClr,footerTxtClr, cuisineClr, cuisineTxtClr, filterClr, filterTxtClr, categoryClr, categoryTxtClr, mainSection, menuBtn, successBtn, orderBtn, menuBtnClr, successBtnClr, orderBtnClr")
+					->get_where('ConfigTheme', array('EID' => $EID, 'Stat' => 1))
+					->row_array();
+	}
+
 }

@@ -1204,62 +1204,65 @@ class Restaurant extends CI_Controller {
     }
 
     public function set_theme(){
+        $data['EID']     = authuser()->EID;
+
+        $status = 'error';
+        $response = 'Something went wrong!!';
         if($this->input->method(true)=='POST'){
 
-            $q = "SELECT c.* from Cuisines as c, EatCuisine as ec where ec.EID = ".authuser()->EID." and ec.CID=c.CID and ec.stat = 0";
-            $cuisines = $this->db2->query($q)->result_array();
-            // print_r($cuisines);exit();
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
 
-            $item_types = $this->db2->get('ItemTypes')->result_array();
+            $status = 'success';
 
-            if($_POST){
-                // echo "<pre>";print_r($_POST);exit;
-                if(isset($_POST['apply_default']) && $_POST['apply_default']){
-                    $this->db2->query("UPDATE ConfigTheme set Status = 0");
-                    $this->db2->query("UPDATE ConfigTheme set Status = 1 where ThemeId = 1");
-                }else{
-                    if(isset($_POST['apply']) && $_POST['apply'] == 1){
-                        $this->db2->query("UPDATE ConfigTheme set Status = 0");
-                        $Theme['Status'] = 1;
-                    }
-
-                    $Theme['Sec1Background'] = $_POST['Sec1Background'];
-                    $Theme['Sec1TextColor'] = $_POST['Sec1TextColor'];
-                    $Theme['Sec2Background'] = $_POST['Sec2Background'];
-                    $Theme['Sec2TextColor'] = $_POST['Sec2TextColor'];
-                    $Theme['Sec3Background'] = $_POST['Sec3Background'];
-                    $Theme['Sec3TextColor'] = $_POST['Sec3TextColor'];
-                    $Theme['BodyBackground'] = $_POST['BodyBackground'];
-                    $Theme['BodyTextColor'] = $_POST['BodyTextColor'];
-                    $Theme['Sec2BtnText'] = $_POST['Sec2BtnText'];
-                    $Theme['Sec2BtnColor'] = $_POST['Sec2BtnColor'];
-                    $Theme['Button1Color'] = $_POST['Button1Color'];
-                    $Theme['Button1TextColor'] = $_POST['Button1TextColor'];
-                    $Theme['Button2Color'] = $_POST['Button2Color'];
-                    $Theme['Button2TextColor'] = $_POST['Button2TextColor'];
-                    // $Theme->ThemeId = 1;
-                echo "<pre>";
-                print_r($Theme);
-                die;
-                    insertRecord('ConfigTheme',$Theme);
-                }
+            $pData = $_POST;
+            $ThemeId = $pData['ThemeId'];
+            if($ThemeId > 0){
+                unset($pData['ThemeId']);
+                updateRecord('ConfigTheme', $pData, array('ThemeId' => $ThemeId));
+                $response = 'Theme Updated.';
+            }else{
+                $pData['EID'] = $data['EID'];
+                insertRecord('ConfigTheme', $pData);
+                $response = 'New Theme Added.';
             }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
         }
 
-        $data['data11'] = $this->db2->query("SELECT * from ConfigTheme order by ThemeId desc")->result_array();
-        if(!empty($data['data11'])){
-            $data['data11'] = $data['data11'][0];
-        }else{
-            $data['data11'] = $this->db2->query("SELECT * from ConfigTheme order by ThemeId")->result_array();
-            $data['data11'] = $data['data11'][0];
-        }
-
-        // echo "<pre>";
-        // print_r($data['data11']);
-        // die;
-
+        $data['themeNames'] = $this->rest->getThemeListName();
+        $data['themes']     = $this->rest->getThemeList();
         $data['title'] = $this->lang->line('themeSetting');
+
         $this->load->view('rest/theme_setting',$data);   
+    }
+
+    public function get_theme_data(){
+        $status = 'error';
+        $response = 'Something went wrong!!';
+        if($this->input->method(true)=='POST'){
+
+            $res = $this->rest->getThemeData($_POST['ThemeId']);
+            if(!empty($res)){
+                $status = 'success';
+                $response = $res;
+            }else{
+                $response = 'No Theme Found!!';
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }        
     }
 
     public function stock_list(){

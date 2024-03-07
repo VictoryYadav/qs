@@ -1,3 +1,4 @@
+
 <style>
 /*modal center*/
 .modal-dialog {
@@ -9,6 +10,16 @@
   justify-content: center;
 }
 
+.footerColor{
+    background: <?php echo $this->session->userdata('footerClr'); ?>;
+}
+
+h6{
+ color: <?php echo $this->session->userdata('footerTxtClr'); ?>;
+ font-size: 12px;
+}
+
+
 ./*modal.fade .modal-dialog {
   transform: translate(0, -100%);
 }
@@ -18,12 +29,12 @@
 }*/
 /* end modal center*/
 </style>
-<div class="navbar menu-footer fixed-bottom" style="background: #dee2e6;">
+<div class="navbar menu-footer fixed-bottom footerColor">
     <input type="hidden" value="<?php echo $this->session->userdata('site_lang'); ?>" id="site_lang">
     <div class="btn-group dropup">
         <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
             <img src="<?php echo base_url(); ?>assets/img/menu.svg" width="33" height="20">
-            <h6 style="font-size: 12px;"><?= $this->lang->line('account'); ?></h6>           
+            <h6><?= $this->lang->line('account'); ?></h6>           
         </a>
         <div class="dropdown-menu">
             <?php if(!empty($this->session->userdata('CustId'))){ ?>
@@ -41,7 +52,7 @@
     <div class="btn-group dropup">
         <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
             <img src="<?php echo base_url(); ?>assets/img/feedback.svg" width="33" height="20">
-            <h6 style="font-size: 12px;">
+            <h6>
                 <?= $this->lang->line('aboutus'); ?>
             </h6>
         </a>
@@ -56,7 +67,7 @@
     <div class="btn-group dropup">
         <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
             <img src="<?php echo base_url(); ?>assets/img/home.svg" width="33" height="20">
-            <h6 style="font-size: 12px;">
+            <h6>
                 <?= $this->lang->line('outlet'); ?>
             </h6>
         </a>
@@ -72,7 +83,7 @@
     <div class="btn-group dropup">
         <a href="#news" class="dropdown-toggle" data-toggle="dropdown">
             <img src="<?php echo base_url(); ?>assets/img/inbox.svg" width="33" height="20">
-            <h6 style="font-size: 12px;">
+            <h6>
                 <?= $this->lang->line('order'); ?>
             </h6>
         </a>

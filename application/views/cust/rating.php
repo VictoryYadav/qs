@@ -103,10 +103,8 @@
     .paybtn 
     {
         width: 50%;
-        background: #30b94f;
-        color: #fff;
-        /*background: #000 !important;*/
-        /*color: <?php echo isset($body_btn2text)?$body_btn2text:"#000"?> !important;*/
+        background: <?php echo $this->session->userdata('successBtn'); ?>;
+        color: <?php echo $this->session->userdata('successBtnClr'); ?>;
         height: 30px;
         margin-left: 0px !important;
         border-radius: 0 1.5rem 1.5rem 0;
@@ -125,11 +123,9 @@
         width: 50%;
         margin-right: 0px !important;
         border-radius: 1.5rem 0 0 1.5rem;
-        background-color: #bfbcbc;
-        color:#fff;
+        background-color: <?php echo $this->session->userdata('menuBtn'); ?>;
+        color: <?php echo $this->session->userdata('menuBtnClr'); ?>;
         height: 30px;
-        /*background-color:#000 !important;*/
-        /*color: <?php echo isset($body_btn1text)?$body_btn1text:"#000"?> !important;*/
     }
 
     .backbtn:hover

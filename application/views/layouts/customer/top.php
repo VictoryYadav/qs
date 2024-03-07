@@ -5,6 +5,12 @@ $folder = 'e'.$EID;
 
 ?>
 
+<style>
+    .header-section{
+        background: <?php echo $this->session->userdata('headerClr'); ?>;
+    }
+</style>
+
 <section class="header-section">
     <div class="container p-2">
         <div class="row">
@@ -12,7 +18,7 @@ $folder = 'e'.$EID;
                 <ul class="list-inline product-meta">
                     <li class="list-inline-item">
                         <a href="<?= base_url('customer'); ?>">
-                            <img src="<?= base_url() ?>theme/images/Eat-Out-Icon.png" alt="" style="width: 30px;height: 28px;">
+                            <img src="<?= base_url() ?>theme/images/Eat-Out-Icon.png" alt="Eat-Out" style="width: 30px;height: 28px;">
                         </a>
                     </li>
                     <li class="list-inline-item">
@@ -24,11 +30,13 @@ $folder = 'e'.$EID;
             </div>
             <div class="col-md-8 col-sm-8 col-8 text-right">
                 <ul class="list-inline product-meta">
+                    <?php if(authuser()->CatgID == 3){ ?>
                     <li class="list-inline-item">
                         <a href="#" onclick="goOutlet()">
                             <i class="fa fa-home" aria-hidden="true" style="color:blue;font-size: 19px;"></i>
                         </a>
                     </li>
+                <?php } ?>
                     <?php if($this->session->userdata('CustAssist') == 1){ ?>
                     <li class="list-inline-item">
                         <a onclick="call_help()" id="yellow_bell">

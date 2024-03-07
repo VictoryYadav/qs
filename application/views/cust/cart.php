@@ -12,10 +12,8 @@
 
 .paybtn 
 {
-    background: #30b94f;
-    color: #fff;
-    /*background: #000 !important;*/
-    /*color: <?php echo isset($body_btn2text)?$body_btn2text:"#000"?> !important;*/
+    background: <?php echo $this->session->userdata('successBtn'); ?>;
+    color: <?php echo $this->session->userdata('successBtnClr'); ?>;
     height: 35px;
     margin-left: -3px !important;
     border-radius: 0 1.5rem 1.5rem 0;
@@ -30,10 +28,8 @@
 
 .orderbtn 
 {
-    background: #f76004;
-    color: #fff;
-    /*background: #000 !important;*/
-    /*color: <?php echo isset($body_btn2text)?$body_btn2text:"#000"?> !important;*/
+    background: <?php echo $this->session->userdata('orderBtn'); ?>;
+    color: <?php echo $this->session->userdata('orderBtnClr'); ?>;
     height: 35px;
     margin-left: 0px !important;
     /*border-radius: 0 1.5rem 1.5rem 0;*/
@@ -51,11 +47,9 @@
 {
     margin-right: -2px !important;
     border-radius: 1.5rem 0 0 1.5rem;
-    background-color: #efc492;
-    color:#fff;
+    background-color: <?php echo $this->session->userdata('menuBtn'); ?>;
+    color: <?php echo $this->session->userdata('menuBtnClr'); ?>;
     height: 35px;
-    /*background-color:#000 !important;*/
-    /*color: <?php echo isset($body_btn1text)?$body_btn1text:"#000"?> !important;*/
 }
 
 .backbtn:hover

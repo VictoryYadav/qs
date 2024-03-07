@@ -3,10 +3,6 @@
 
     .bill-body {
         padding-bottom: 70px;
-        /*background-color: #0a88ff;*/
-        /*background-color: <?php echo isset($body_bg)?$body_bg:"#000"?> !important;
-        color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
-        /*padding-top: 65px;*/
         height: -webkit-fill-available;
     }
 
@@ -24,7 +20,6 @@
     .order-list {
         padding-left: 15px;
         padding-right: 15px;
-        /*color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
     }
 
     .order-list::-webkit-scrollbar {
@@ -41,12 +36,10 @@
     }
 
     .main-ammount {
-        /*color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
         padding: 0 15px;
     }
 
     .bill-ord-amt {
-        /*color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
         font-size: 14px;
         font-weight: bold;
     }
@@ -73,10 +66,10 @@
 
     .backbtn 
     {
+        background-color: <?php echo $this->session->userdata('menuBtn'); ?>;
+        color: <?php echo $this->session->userdata('menuBtnClr'); ?>;
         margin-right: -5px !important;
         border-radius: 1.5rem 0 0 1.5rem;
-        background-color: #efc492;
-        color:#fff;
         width: 30%;
     }
 
@@ -87,8 +80,8 @@
     }
     .paybtn 
     {
-        background: #30b94f;
-        color: #fff;
+        background: <?php echo $this->session->userdata('successBtn'); ?>;
+        color: <?php echo $this->session->userdata('successBtnClr'); ?>;
         margin-left: -5px !important;
         border-radius: 0 1.5rem 1.5rem 0;
         width: 32%;

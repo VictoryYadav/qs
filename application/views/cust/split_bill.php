@@ -3,6 +3,12 @@
 body{
     font-size: 12px;
 }
+
+.btn-success{
+    background: <?php echo $this->session->userdata('successBtn'); ?>;
+    color: <?php echo $this->session->userdata('successBtnClr'); ?>;
+}
+
 </style>
 </head>
 

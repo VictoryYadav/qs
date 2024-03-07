@@ -129,6 +129,29 @@ class Rcheck extends CI_Controller {
         $this->session->set_userdata('site_lang', 1);
         $this->session->set_userdata('site_langName', 'english');
 
+        // for theme color
+        $colors = getThemeColor();
+
+         $this->session->set_userdata('headerClr', $colors['headerClr']);
+         $this->session->set_userdata('footerClr', $colors['footerClr']);
+         $this->session->set_userdata('footerTxtClr', $colors['footerTxtClr']);
+         $this->session->set_userdata('cuisineClr', $colors['cuisineClr']);
+         $this->session->set_userdata('cuisineTxtClr', $colors['cuisineTxtClr']);
+         $this->session->set_userdata('filterClr', $colors['filterClr']);
+         $this->session->set_userdata('filterTxtClr', $colors['filterTxtClr']);
+         $this->session->set_userdata('categoryClr', $colors['categoryClr']);
+         $this->session->set_userdata('categoryTxtClr', $colors['categoryTxtClr']);
+         $this->session->set_userdata('mainSection', $colors['mainSection']);
+         $this->session->set_userdata('menuBtn', $colors['menuBtn']);
+         $this->session->set_userdata('successBtn', $colors['successBtn']);
+         $this->session->set_userdata('orderBtn', $colors['orderBtn']);
+         $this->session->set_userdata('menuBtnClr', $colors['menuBtnClr']);
+         $this->session->set_userdata('successBtnClr', $colors['successBtnClr']);
+         $this->session->set_userdata('orderBtnClr', $colors['orderBtnClr']);
+         
+         
+        // end for theme color
+
         if($_REQUEST['c'] == 1){
             // multi restaurant
             redirect(base_url('customer/outlets'));

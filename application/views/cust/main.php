@@ -27,7 +27,8 @@
     }
     .responsive__tabs ul.scrollable-tabs li a {
       display: inline-block;
-      color: #252525;
+      /*color: #252525;*/
+      color: <?php echo $this->session->userdata('cuisineTxtClr'); ?>;
       text-align: center;
       padding: 14px;
       text-decoration: none;
@@ -36,13 +37,6 @@
       /*background-color: #777;*/
       color:#008000;
     }
-
-    /*.btn_footer {
-        font-size: 12px;
-        letter-spacing: 1px;
-        display: inline-block;
-        padding: 3px 0px !important;
-    }*/
 
     .widget {
         padding: 5px 5px 5px !important;
@@ -76,6 +70,10 @@
             background: white;
             font-size: 12px !important;
         }
+        #filters label{
+            color: <?php echo $this->session->userdata('filterTxtClr'); ?>;
+        }
+
         label.active{
             color:white;
             background: #008000;
@@ -89,6 +87,9 @@
             margin-bottom: 0px !important;
         }
 
+        #mCategory li{
+            color: <?php echo $this->session->userdata('categoryTxtClr'); ?>;
+        }
         #mCategory li.active {
           	color:#008000;
           	border:1px solid #008000;
@@ -134,7 +135,6 @@
 		  	margin-bottom: 1px;
 		}
        /*end grid view*/
-
         
         /*modal button */
         .modal-footer {
@@ -153,8 +153,8 @@
         }
         .modal-confirm {
             width: 50%;
-            background: #2bbb1b;
-            color: #fff;
+            background: <?php echo $this->session->userdata('successBtn'); ?>;
+            color: <?php echo $this->session->userdata('successBtnClr'); ?>;
             margin-left: 0px !important;
             border-radius: 0 1.5rem 1.5rem 0;
             
@@ -169,7 +169,8 @@
             width: 50%;
             margin-right: 0px !important;
             border-radius: 1.5rem 0 0 1.5rem;
-            background-color: #efc492;
+            background-color: <?php echo $this->session->userdata('menuBtn'); ?>;
+            color: <?php echo $this->session->userdata('menuBtnClr'); ?>;;
         }
 
         .modal-back:hover {
@@ -235,6 +236,20 @@
 }
 /* read less */
 
+.cuisineColor{
+    background: <?php echo $this->session->userdata('cuisineClr'); ?>;
+}
+.filterColor{
+    background: <?php echo $this->session->userdata('filterClr'); ?>;
+}
+.categoryColor{
+    background: <?php echo $this->session->userdata('categoryClr'); ?>;
+}
+
+.mainColor{
+    background: <?php echo $this->session->userdata('mainSection'); ?>;
+}
+
 </style>
 </head>
 
@@ -244,7 +259,7 @@
     <?php $this->load->view('layouts/customer/top'); ?>
 <!-- Header Section End -->
 
-<section class="common-section">
+<section class="common-section cuisineColor">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
@@ -264,7 +279,7 @@
 	</div>
 </section>
 
-<section class="common-section" id="filterBlock">
+<section class="common-section filterColor" id="filterBlock">
 	<div class="container text-center">
 		<div class="row">
 			<div class="col-md-6 col-6">
@@ -286,7 +301,7 @@
 	</div>
 </section>
 
-<section class="common-section" style="background: #CEFFC9;">
+<section class="common-section categoryColor">
 	<div class="container">
 		<div class="featured__controls">
             <ul id="mCategory" style="padding-bottom: 5px;cursor: pointer;" class="list-inline">
@@ -295,7 +310,7 @@
 	</div>
 </section>
 
-<section class="section-sm">
+<section class="section-sm mainColor">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">

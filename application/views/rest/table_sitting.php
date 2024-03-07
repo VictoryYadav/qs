@@ -297,8 +297,10 @@ width: 100%;*/
                                                         <option value="0" settle="1"><?= $this->lang->line('select'); ?></option>
                                                         <?php 
                                                         if(!empty($SettingTableViewAccess)){
+                                                            $len = sizeof($SettingTableViewAccess);
+
                                                         foreach ($SettingTableViewAccess as $key => $data) { ?>
-                                                            <option value="<?= $data['CCd'] ?>" settle="0"><?= $data['Name'] ?></option>
+                                                            <option value="<?= $data['CCd'] ?>" settle="0" <?php if($len == 1){ echo 'selected'; } ?>><?= $data['Name'] ?></option>
                                                     <?php } } ?>
                                                 </select>
                                             </div>
@@ -310,12 +312,16 @@ width: 100%;*/
                                                 <button class="btn btn-primary btn-sm" title="Bill Create" id="billCreatebtn" style="display: none;">
                                                     <i class="fas fa-file-invoice"></i>
                                                 </button>
-
+                                                
+                                                <?php
+                                                if (($EType == 5) && ($this->session->userdata('BillMergeOpt') ==1)) {
+                                                    ?>
                                                 <a class="btn btn-secondary btn-sm" title="Bill Spilt" id="billSplit" target="_blank" style="display: none;">
                                                     <i class="mdi mdi-file-table-box-multiple-outline"></i>
                                                 </a>
 
                                                 <?php
+                                                 }
                                                 if (($EType == 5) && ($this->session->userdata('Move') > 0)) {
                                                     ?>
                                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#move_table_modal" title="Move Table">
@@ -1790,12 +1796,13 @@ getTableView();
 
                 if(response.status == 'success') {
                     alert(response.response);
+                    // refreshPage();
+                    // getTableView();
                 }else {
                     alert(response.response);
                 }
-                // location.reload();
                 $('#billModel').modal('hide');
-                getTableView();
+                location.reload();
             });
         }
 

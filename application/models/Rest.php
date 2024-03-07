@@ -1579,5 +1579,25 @@ class Rest extends CI_Model{
 		->result_array();
 	}
 
+	public function getThemeListName(){
+		$EID = authuser()->EID;
+
+		return $this->db2->select("ThemeId, themeName")->get_where('ConfigTheme', array('Stat' => 1, 'EID' => $EID))
+		->result_array();
+	}
+
+	public function getThemeList(){
+		$EID = authuser()->EID;
+
+		return $this->db2->select("*")->get_where('ConfigTheme', array('Stat' => 1, 'EID' => $EID))
+		->row_array();
+	}
+
+	public function getThemeData($ThemeId){
+		$EID = authuser()->EID;
+		return $this->db2->select("*")->get_where('ConfigTheme', array('ThemeId' => $ThemeId, 'EID' => $EID))
+		->row_array();	
+	}
+
 	
 }

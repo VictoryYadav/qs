@@ -12,6 +12,11 @@ body{
     width: 60px;
 }
 
+.btn-success{
+    background: <?php echo $this->session->userdata('successBtn'); ?>;
+    color: <?php echo $this->session->userdata('successBtnClr'); ?>;
+}
+
 </style>
 
 </head>

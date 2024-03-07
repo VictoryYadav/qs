@@ -470,6 +470,12 @@ function getDiscount($mobile){
     return $CI->User->getDiscountDetail($mobile);	
 }
 
+function getThemeColor(){
+	$CI = & get_instance();
+    $CI->load->model('User');
+    return $CI->User->getThemeColour();	
+}
+
 // Test the function
 // $englishNumber = '12345';
 // $chineseNumber = convertDigits($englishNumber, 'en', 'zh');
