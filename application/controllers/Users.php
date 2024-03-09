@@ -423,10 +423,13 @@ class Users extends CI_Controller {
                 $user['EID'] = $check['EID'];
                 $EID = $check['EID'];
 
-                $genTblDb->insert('UsersRest', $user);
-
+                $user['PWDHash'] = md5($user['Passwd']);
                 $db3->insert('UsersRest', $user);
                 $userId = $db3->insert_id();
+
+                unset($user['PWDHash']);
+                unset($user['UTyp']);
+                $genTblDb->insert('UsersRest', $user);
 
                 $roles = $db3->get_where('UserRoles', array('Stat' => 0))->result_array();
                 $temp = [];

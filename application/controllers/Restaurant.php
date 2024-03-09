@@ -82,6 +82,8 @@ class Restaurant extends CI_Controller {
                 }
 
                 if($genInsert == 1){
+                    unset($udata['UTyp']);
+                    unset($udata['RestRole']);
                     $genDB = $this->load->database('GenTableData', TRUE);
                     $genDB->insert('UsersRest', $udata);
                 }
@@ -2907,7 +2909,7 @@ class Restaurant extends CI_Controller {
             $url = base_url('restaurant/kot_print/').$CNo.'/'.$tableNo.'/'.$fKotNo;
             $dArray = array('MCNo' => $CNo, 'MergeNo' => $tableNo,'FKOTNo' => $fKotNo,'sitinKOTPrint' => $this->session->userdata('sitinKOTPrint'), 'url' => $url);
 
-            if ($data_type == 'bill') {
+            if ($data_type == 'bill' || $data_type == 'kot_bill') {
 
                 $MergeNo = $tableNo;
                 $lname = "m.ItemNm$langId";
@@ -3630,7 +3632,78 @@ class Restaurant extends CI_Controller {
         $data['title'] = 'Billing';
         $data['billId'] = $billId;
         $this->load->view('rest/billing', $data);
+    }
+// 8/19/5
+    public function kot_billing($billId, $MCNo, $MergeNo, $FKOTNo){
 
+        $data['title'] = 'KOT & Billking';
+        $kotList = $this->rest->getKotList($MCNo, $MergeNo, $FKOTNo);
+        $group_arr = [];
+        foreach ($kotList as $key ) {
+            $kot = $key['KitCd'];
+            if(!isset($group_arr[$kot])){
+                $group_arr[$kot] = [];
+            }
+            array_push($group_arr[$kot], $key);
+        }
+        $data['kotList'] = $group_arr;
+
+
+        $data['billId'] = $billId;
+
+        $EID = authuser()->EID;
+
+        $detail = $this->db2->select('CustId,CustNo,CellNo')->get_where('Billing', array('BillId' => $billId, 'EID' => $EID))->row_array();
+        $CustId = $detail['CustId'];
+
+        $data['CustNo'] = $detail['CustNo'];
+
+        $dbname = $this->session->userdata('my_db');
+
+        $flag = 'rest';
+        $res = getBillData($dbname, $EID, $billId, $CustId, $flag);
+        // echo "<pre>";
+        // print_r($res);
+        // die;
+        if(!empty($res['billData'])){
+
+            $billData = $res['billData'];
+            $data['ra'] = $res['ra'];
+            $data['taxDataArray'] = $res['taxDataArray'];
+            
+            $data['hotelName'] = $billData[0]['Name'];
+            $data['TableNo'] = $billData[0]['TableNo'];
+            $data['Fullname'] = getName($billData[0]['CustId']);
+            $data['CellNo'] = $billData[0]['CellNo'];
+            $data['phone'] = $billData[0]['PhoneNos'];
+            $data['gstno'] = $billData[0]['GSTno'];
+            $data['fssaino'] = $billData[0]['FSSAINo'];
+            $data['cinno'] = $billData[0]['CINNo'];
+            $data['billno'] = $billData[0]['BillNo'];
+            $data['OType'] = $billData[0]['OType'];
+            $data['dateOfBill'] = date('d-m-Y @ H:i', strtotime($billData[0]['BillDt']));
+            $data['address'] = $billData[0]['Addr'];
+            $data['pincode'] = $billData[0]['Pincode'];
+            $data['city'] = $billData[0]['City'];
+            $data['servicecharge'] = isset($billData[0]['ServChrg'])?$billData[0]['ServChrg']:"";
+            $data['bservecharge'] = $billData[0]['bservecharge'];
+            $data['SerChargeAmt'] = $billData[0]['SerChargeAmt'];
+
+            $data['tipamt'] = $billData[0]['Tip'];
+            $Stat = $billData[0]['Stat'];
+            $total = 0;
+            $sgstamt=0;
+            $cgstamt=0;
+            $grandTotal = $sgstamt + $cgstamt + $data['bservecharge'] + $data['tipamt'];
+            $data['thankuline'] = isset($billData[0]['Tagline'])?$billData[0]['Tagline']:"";
+
+            $data['total_discount_amount'] = $billData[0]['TotItemDisc'] + $billData[0]['BillDiscAmt'] + $billData[0]['custDiscAmt'];
+            $data['total_packing_charge_amount'] = $billData[0]['TotPckCharge'];
+            $data['total_delivery_charge_amount'] = $billData[0]['DelCharge'];
+
+            $data['billData'] = $res['billData'];
+        }
+        $this->load->view('rest/kot_bill', $data);
     }
 
     public function payments(){
@@ -4085,6 +4158,22 @@ class Restaurant extends CI_Controller {
         // echo "<pre>";
         // print_r($data);
         // die;
+
+        $group_arr = [];
+        foreach ($data['kotList'] as $key ) {
+            $kot = $key['KitCd'];
+            if(!isset($group_arr[$kot])){
+                $group_arr[$kot] = [];
+            }
+            array_push($group_arr[$kot], $key);
+        }
+
+        $data['kotList'] = $group_arr;
+
+        // echo "<pre>";
+        // print_r($group_arr);
+        // die;
+
         $this->load->view('rest/kots_print', $data);
     }
 

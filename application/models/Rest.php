@@ -52,6 +52,7 @@ class Rest extends CI_Model{
 			$data['ChainId'] = $createrData['ChainId'];
 			$data['Stat'] = $createrData['Stat'];
 			$data['LoginCd'] = authuser()->RUserId;
+			$data['Passwd'] = 'eo1234';
 			$data['PWDHash'] = md5('eo1234');
 			$newRUserId = insertRecord('UsersRest', $data);	
 
@@ -61,9 +62,10 @@ class Rest extends CI_Model{
 			$GUsersRest['PEmail'] = $data['PEmail'];
 			$GUsersRest['DOB'] = $data['DOB'];
 			$GUsersRest['Gender'] = $data['Gender'];
-			$GUsersRest['UTyp'] = $data['UTyp'];
-			$GUsersRest['RestRole'] = $data['RestRole'];
+			// $GUsersRest['UTyp'] = $data['UTyp'];
+			// $GUsersRest['RestRole'] = $data['RestRole'];
 			$GUsersRest['RUserId'] = $newRUserId;
+
 
 			$genDB = $this->load->database('GenTableData', TRUE);
 			$genDB->insert('UsersRest', $GUsersRest);		
@@ -915,7 +917,7 @@ class Rest extends CI_Model{
         $KitName = "ek.KitName$langId as KitName";
 
          return $this->db2->select("k.ItemId, k.MCNo, $lname,k.CustItemDesc,k.CustRmks, $ipName, sum(k.Qty) Qty, k.TableNo,k.MergeNo, k.KOTNo, k.FKOTNo,k.KitCd, $KitName, k.UKOTNo,k.LstModDt,k.TA,k.EDT, k.OType")
-        					->order_by('k.FKOTNo, m.ItemNm1, ek.KitName1, k.UKOTNo', 'ASC')
+        					->order_by('k.FKOTNo, m.ItemNm1, ek.KitName1, k.UKOTNo, k.FKOTNo', 'ASC')
         					->group_by('k.ItemId, ek.KitName1,k.Itm_Portion')
          					->join('MenuItem m','m.ItemId = k.ItemId','inner')
          					->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
@@ -924,9 +926,9 @@ class Rest extends CI_Model{
         					// ->where_not_in('k.Stat', array(4,6,7,99))
         					->get_where('Kitchen k', array(
         											'k.EID' => $EID,
-        											// 'k.MCNo' => $MCNo,
+        											'k.MCNo' => $MCNo,
         											'k.MergeNo' => $mergeNo,
-        											'k.FKOTNo' => $FKOTNo,
+        											// 'k.FKOTNo' => $FKOTNo,
         											'k.Stat' => $stat)
         								)
         					->result_array();

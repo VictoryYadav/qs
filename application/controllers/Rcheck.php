@@ -25,7 +25,7 @@ class Rcheck extends CI_Controller {
                         $c_data = explode("=", $req[1]);
                         if($c_data[0] == 'c'){
                             $_REQUEST['c'] = $c_data[1];
-                            if($_REQUEST['c'] == 2){
+                            if($_REQUEST['c'] == 3){
                                 // $this->session->set_userdata('oldEID', $e_data[1]);
                             }else{
                                 $my_db = $e_data[1].'e';
@@ -152,7 +152,7 @@ class Rcheck extends CI_Controller {
          
         // end for theme color
 
-        if($_REQUEST['c'] == 1){
+        if($_REQUEST['c'] == 2){
             // multi restaurant
             redirect(base_url('customer/outlets'));
         }else{

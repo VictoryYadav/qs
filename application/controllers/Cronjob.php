@@ -105,9 +105,11 @@ die;
         $today = date('Y-m-d');
         $yesterday = date('Y-m-d', strtotime("-1 day", strtotime($today)));
 
-        return $localDB->select("sum(PaidAmt) as PaidAmount")
+        $dd =  $localDB->select("sum(PaidAmt) as PaidAmount, count(PaidAmt) as Count")
                     ->group_by('PaymtMode')
-                    ->get_where('BillPayments', array('EID' => $EID, 'PymtDate' => $yesterday))->result_array();
+                    ->get_where('BillPayments', array('EID' => $EID, 'date(PymtDate)' => $yesterday))->result_array();
+
+                    print_r($localDB->last_query());die;
     }
 
    

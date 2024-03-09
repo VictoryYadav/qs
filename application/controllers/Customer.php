@@ -79,7 +79,7 @@ class Customer extends CI_Controller {
         $data['outlets'] = $this->db2->select('EID, Name, Stall, QRLink')
                                     ->order_by('Stall', 'ASC')
                                     ->get_where('Eatary', 
-                                        array('CatgId' => 2, 
+                                        array('CatgId' => 3, 
                                             'Stat' => 0,
                                             'dbEID' => $dbEID)
                                         )
@@ -893,6 +893,8 @@ class Customer extends CI_Controller {
                     $data1['MobileNo']  = $gen_check['MobileNo'];
                     $data1['DOB']       = $gen_check['DOB'];
                     $data1['Gender']    = $gen_check['Gender'];
+                    $data1['Passwd']    = 'eo1234';
+                    $data1['PWDHash']   = md5($data1['Passwd']);
                     insertRecord('Users',$data1);    
                 }else{
                     $genTblDb = $this->load->database('GenTableData', TRUE);
@@ -905,6 +907,8 @@ class Customer extends CI_Controller {
                     $CustId = $genTblDb->insert_id();
                     $this->session->set_userdata('CustId', $CustId);
                     $data['CustId'] = $CustId;
+                    $data['Passwd'] = 'eo1234';
+                    $data['PWDHash'] = md5($data['Passwd']);
                     insertRecord('Users',$data);
                 }
                 

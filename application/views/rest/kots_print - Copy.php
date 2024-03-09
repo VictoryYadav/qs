@@ -125,11 +125,9 @@
 <!-- <body translate="no"> -->
 <body translate="no" onload="window.print()">
   <div id="invoice-POS">
-  <?php if(!empty($kotList)){ 
-    foreach ($kotList as $kot) {
-    ?>
+  <?php if(!empty($kotList)){ ?>
     <center id="top">
-        <h2 style="margin-bottom: 5px;font-size: 16px;"><?= authuser()->RestName.' ('.$kot[0]['KitName'].')';  ?></h2>
+        <h2 style="margin-bottom: 5px;font-size: 16px;"><?= authuser()->RestName.' ('.$kotList[0]['KitName'].')';  ?></h2>
     </center>
 
     <div>
@@ -137,36 +135,33 @@
         <tr>
           <td><?= $this->lang->line('kotNo'); ?>: <?php 
                       if ($this->session->userdata('MultiKitchen') > 0) {
-                        echo convertToUnicodeNumber($kot[0]['KOTNo']).'-'.convertToUnicodeNumber($kot[0]['FKOTNo']);
+                        echo convertToUnicodeNumber($kotList[0]['KOTNo']).'-'.convertToUnicodeNumber($kotList[0]['FKOTNo']);
                       }else{
-                        echo convertToUnicodeNumber($kot[0]['KOTNo']);
+                        echo convertToUnicodeNumber($kotList[0]['KOTNo']);
                       }
                       ?><br>
             
           </td>
-          <?php 
-          if($kot[0]['OType'] < 100){
-          ?>
-          <td><?= $this->lang->line('tableNo'); ?>: <?= convertToUnicodeNumber($kot[0]['MergeNo']); ?></td> <?php } ?>
+          <td><?= $this->lang->line('tableNo'); ?>: <?= convertToUnicodeNumber($kotList[0]['MergeNo']); ?></td>
         </tr>
         <tr>
-          <td><?= $this->lang->line('date'); ?>: <?= date('d-M-Y H:i', strtotime($kot[0]['LstModDt'])); ?></td>
+          <td><?= $this->lang->line('date'); ?>: <?= date('d-M-Y H:i', strtotime($kotList[0]['LstModDt'])); ?></td>
           <td><?php 
-          if($kot[0]['OType']== 101){
+          if($kotList[0]['OType']== 101){
             echo "3rd Party";
-          }else if($kot[0]['OType']== 105){
+          }else if($kotList[0]['OType']== 105){
             echo "Take Away";
-          }else if($kot[0]['OType']== 110){
+          }else if($kotList[0]['OType']== 110){
             echo "Deliver";
-          }else if($kot[0]['OType']== 1){
+          }else if($kotList[0]['OType']== 1){
             echo "QSR";
-          }else if($kot[0]['OType']== 25){
+          }else if($kotList[0]['OType']== 25){
             echo "Drive-In";
-          }else if($kot[0]['OType']== 30){
+          }else if($kotList[0]['OType']== 30){
             echo "Charity";
-          }else if($kot[0]['OType']== 35){
+          }else if($kotList[0]['OType']== 35){
             echo "RoomService";
-          }else if($kot[0]['OType']== 40){
+          }else if($kotList[0]['OType']== 40){
             echo "Suite Service";
           }else{
             echo $this->lang->line('sitIn');
@@ -186,7 +181,7 @@
                 </tr>
                 <?php
                 $delvery = $this->lang->line('del');
-                foreach($kot as $key){
+                foreach($kotList as $key){
                 $portions = '';
                 $std = '';
                 $ta = '';
@@ -197,7 +192,7 @@
                     $std = ' - '.$key['CustItemDesc'];
                   }
                   
-                  if(in_array($kot[0]['OType'], array(1,7,8))){
+                  if(in_array($kotList[0]['OType'], array(1,7,8))){
                     if($key['TA'] > 0){
                       $ta = '(TA)';
                     }
@@ -223,7 +218,7 @@
         </div><!--End Table-->
 
     </div><!--End InvoiceBot-->
-  <?php } } else{ ?>
+  <?php }else{ ?>
     <h1>Something went wrong, please speak to support!</h1>
   <?php } ?>
   </div><!--End Invoice-->

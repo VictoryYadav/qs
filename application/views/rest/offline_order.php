@@ -104,6 +104,9 @@
                                                 <?php } ?>
                                                 <?php if($OType != 8){ ?>
                                                 <button class="btn btn-warning btn-sm send-to-kitchen" data_type="bill" id="btnBill"><?= $this->lang->line('bill'); ?></button>
+
+                                                <button class="btn btn-info btn-sm send-to-kitchen" data_type="kot_bill" ><?= $this->lang->line('kot'); ?> + <?= $this->lang->line('bill'); ?></button>
+
                                                 <?php } ?>
                                             </div>
                                             
@@ -854,7 +857,7 @@
                         alert("Please Enter 3rd Party Ref Number");
                     }
 
-                } else if (orderType == 105) {
+                } else if (orderType == 110) {
                     CCd = $("#ccd").val();
                     if (customerPhone == "") {
                         formFill = false;
@@ -993,9 +996,13 @@
                                 if (data_type == 'bill') {
                                     alert("<?= $this->lang->line('orderBillledSuccessfully'); ?>");
                                     // window.location = "<?= base_url('restaurant/kot_print/'); ?>"+response.data.MCNo+'/'+response.data.MergeNo+'/'+response.data.FKOTNo;
-                                    // window.location = "<?= base_url('restaurant/bill/'); ?>"+response.data.billId;
-                                     window.open("<?= base_url('restaurant/kot_print/'); ?>"+response.data.MCNo+'/'+response.data.MergeNo+'/'+response.data.FKOTNo,'_blank');
-                                    window.open("<?= base_url('restaurant/print/'); ?>"+response.data.billId,'_blank');
+                                    window.location = "<?= base_url('restaurant/bill/'); ?>"+response.data.billId;
+                                     
+                                    return false;
+                                }else if (data_type == 'kot_bill') {
+                                    alert("<?= $this->lang->line('orderBillledSuccessfully'); ?>");
+                                    window.location = "<?= base_url('restaurant/kot_billing/'); ?>"+response.data.billId+'/'+response.data.MCNo+'/'+response.data.MergeNo+'/'+response.data.FKOTNo;
+                                     
                                     return false;
                                 }else{
                                 alert("<?= $this->lang->line('orderPlacedSuccessfully'); ?>");
