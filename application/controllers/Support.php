@@ -308,6 +308,13 @@ class Support extends CI_Controller {
                     $db3 = $this->load->database($dbName, TRUE);
                     $EID = $CNo;
 
+                    $db3->query("UPDATE UsersRoleDaily SET EID = $EID");
+                    $db3->query("UPDATE Eat_Casher SET EID = $EID");
+                    $db3->query("UPDATE Eat_Kit SET EID = $EID");
+                    $db3->query("UPDATE Eat_DispOutlets SET EID = $EID");
+                    $db3->query("UPDATE UsersRest SET EID = $EID, DeputedEID = $EID");
+                    $db3->query("UPDATE Config SET EID = $EID");
+
                     $user['FName'] = $_POST['ContactPerson'];
                     $user['MobileNo'] = $_POST['CellNo'];
                     $user['PEmail'] = $_POST['Email'];
