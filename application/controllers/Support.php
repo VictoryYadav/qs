@@ -244,6 +244,14 @@ class Support extends CI_Controller {
             $response = "Restaurant Created.";
             if($CNo){
                 $dbName = $CNo.'e';
+                // append db in database.php 
+                    $database_file = APPPATH . 'config/database.php';
+                    $s = "$";
+                    $db1 = "db['".$dbName."']";
+                    $text_to_append = "$s"."$db1"." = array('dsn'   => '','hostname' => '139.59.28.122','username' => 'developer','password' => 'pqowie321*','database' => '$dbName','dbdriver' => 'mysqli','dbprefix' => '','pconnect' => FALSE,'db_debug' => (ENVIRONMENT !== 'production'),'cache_on' => FALSE,'cachedir' => '','char_set' => 'utf8','dbcollat' => 'utf8_general_ci','swap_pre' => '','encrypt' => FALSE,'compress' => FALSE,'stricton' => FALSE,'failover' => array(),'save_queries' => TRUE);\n";
+                        file_put_contents($database_file, $text_to_append.PHP_EOL , FILE_APPEND |   LOCK_EX);
+                    // end of append db
+
                 $upData['EID'] = $CNo;
                 $upData['DBName'] = $dbName;
                 $upData['DBPasswd'] = 'pass';
@@ -251,7 +259,7 @@ class Support extends CI_Controller {
                 $genDB->update('EIDDet',$upData, array('CNo' => $CNo));
                 // db creation
                 $destDB = $dbName;
-                $sourceDatabase = "51e";
+                $sourceDatabase = "eatout";
                 $destinationDatabase = $destDB;
                 
                 // Create connection
@@ -303,10 +311,109 @@ class Support extends CI_Controller {
 
                 // create user in usersrest
                 
-                if(!empty($dbName)){
+                // if(!empty($dbName)){
 
+                //     $db3 = $this->load->database($dbName, TRUE);
+                //     $EID = $CNo;
+
+                //     $db3->query("UPDATE UsersRoleDaily SET EID = $EID");
+                //     $db3->query("UPDATE Eat_Casher SET EID = $EID");
+                //     $db3->query("UPDATE Eat_Kit SET EID = $EID");
+                //     $db3->query("UPDATE Eat_DispOutlets SET EID = $EID");
+                //     $db3->query("UPDATE UsersRest SET EID = $EID, DeputedEID = $EID");
+                //     $db3->query("UPDATE Config SET EID = $EID");
+
+                //     $user['FName'] = $_POST['ContactPerson'];
+                //     $user['MobileNo'] = $_POST['CellNo'];
+                //     $user['PEmail'] = $_POST['Email'];
+                //     $user['UTyp'] = 9;
+                //     $user['Passwd'] = 'eo1234';
+                //     $user['DOB'] = date('Y-m-d', strtotime($_POST['DOB']));
+                //     $user['Stat'] = 0;
+                //     $user['EID'] = $EID;
+
+                //     $genDB->insert('UsersRest', $user);
+
+                //     $user['PWDHash'] = md5($user['Passwd']);
+                //     $db3->insert('UsersRest', $user);
+                //     $userId = $db3->insert_id();
+
+                //     // update eatary table
+                //     $eatry['Name'] = $pData['Name'];
+                //     $eatry['ECatg'] = $pData['ECatg'];
+                //     $eatry['CatgID'] = $pData['CatgID'];
+                //     $eatry['ContactNos'] = $pData['ContactPerson'];
+                //     $eatry['Email'] = $pData['Email'];
+                //     $eatry['PhoneNos'] = $pData['CellNo'];
+                //     $eatry['GSTNo'] = $pData['GSTNo'];
+                //     $eatry['ChainId'] = $pData['ChainId'];
+                //     $eatry['Addr'] = $pData['Area'];
+                //     $eatry['Suburb'] = $pData['Suburb'];
+                //     $eatry['City'] = $pData['City'];
+                //     $eatry['Pincode'] = $pData['PIN'];
+                //     $eatry['ContactAddr'] = $pData['HOAddress'];
+                //     $eatry['lat'] = $pData['Lat'];
+                //     $eatry['lng'] = $pData['Lng'];
+                //     $eatry['LoginCd'] = $userId;
+                //     $db3->update('Eatary', $eatry, array('EID' => 1));
+                //     // end of update eatary table
+
+                //     $roles = $db3->get_where('UserRoles', array('Stat' => 0))->result_array();
+                //     $temp = [];
+                //     $userRolesAccessObj = [];
+                //     foreach ($roles as $role) {
+                //         $temp['EID'] = $EID;
+                //         $temp['RUserId'] = $userId;
+                //         $temp['RoleId'] = $role['RoleId'];
+                //         $temp['Stat'] = 0;    
+                //         $temp['LoginCd'] =$userId;
+                //         $userRolesAccessObj[] = $temp;
+                //     }
+
+                //     if(!empty($userRolesAccessObj)){
+                //         $db3->insert_batch('UserRolesAccess', $userRolesAccessObj); 
+                //     }
+
+                //     $this->session->set_flashdata('success','Please login through the link and upload your restaurant data.');
+                // }
+                
+                $status = 'success';
+                $response = $CNo;
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die; 
+        }
+        $data['title'] = 'New Customer';
+        $this->load->view('support/new_customer', $data); 
+    }
+
+    public function update_customer(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $EID = $_POST['EID'];
+
+            if(!empty($EID)){
+                    $genDB = $this->load->database('GenTableData', TRUE);
+                    $EIDData = $genDB->get_where('EIDDet', array('EID' => $EID))->row_array();
+
+                    $user['FName'] = $EIDData['ContactPerson'];
+                    $user['MobileNo'] = $EIDData['CellNo'];
+                    $user['PEmail'] = $EIDData['Email'];
+                    $user['UTyp'] = 9;
+                    $user['Passwd'] = 'eo1234';
+                    // $user['DOB'] = date('Y-m-d', strtotime($EIDData['DOB']));
+                    $user['Stat'] = 0;
+                    $user['EID'] = $EID;
+                    $genDB->insert('UsersRest', $user);
+                    // end of genDB
+                    $dbName = $EID.'e';
                     $db3 = $this->load->database($dbName, TRUE);
-                    $EID = $CNo;
 
                     $db3->query("UPDATE UsersRoleDaily SET EID = $EID");
                     $db3->query("UPDATE Eat_Casher SET EID = $EID");
@@ -315,20 +422,28 @@ class Support extends CI_Controller {
                     $db3->query("UPDATE UsersRest SET EID = $EID, DeputedEID = $EID");
                     $db3->query("UPDATE Config SET EID = $EID");
 
-                    $user['FName'] = $_POST['ContactPerson'];
-                    $user['MobileNo'] = $_POST['CellNo'];
-                    $user['PEmail'] = $_POST['Email'];
-                    $user['UTyp'] = 9;
-                    $user['Passwd'] = 'eo1234';
-                    $user['DOB'] = date('Y-m-d', strtotime($_POST['DOB']));
-                    $user['Stat'] = 0;
-                    $user['EID'] = $EID;
-
-                    $genDB->insert('UsersRest', $user);
-
                     $user['PWDHash'] = md5($user['Passwd']);
                     $db3->insert('UsersRest', $user);
                     $userId = $db3->insert_id();
+                    // update eatary table
+                    $eatry['Name'] = $EIDData['Name'];
+                    $eatry['ECatg'] = $EIDData['ECatg'];
+                    $eatry['CatgID'] = $EIDData['CatgId'];
+                    $eatry['ContactNos'] = $EIDData['ContactPerson'];
+                    $eatry['Email'] = $EIDData['Email'];
+                    $eatry['PhoneNos'] = $EIDData['CellNo'];
+                    $eatry['GSTNo'] = $EIDData['GSTNo'];
+                    $eatry['ChainId'] = $EIDData['ChainId'];
+                    $eatry['Addr'] = $EIDData['Area'];
+                    $eatry['Suburb'] = $EIDData['Suburb'];
+                    $eatry['City'] = $EIDData['City'];
+                    $eatry['Pincode'] = $EIDData['PIN'];
+                    $eatry['ContactAddr'] = $EIDData['HOAddress'];
+                    $eatry['lat'] = $EIDData['Lat'];
+                    $eatry['lng'] = $EIDData['Lng'];
+                    $eatry['LoginCd'] = $userId;
+                    $db3->update('Eatary', $eatry, array('EID' => 1));
+                    // end of update eatary table
 
                     $roles = $db3->get_where('UserRoles', array('Stat' => 0))->result_array();
                     $temp = [];
@@ -347,9 +462,11 @@ class Support extends CI_Controller {
                     }
 
                     $this->session->set_flashdata('success','Please login through the link and upload your restaurant data.');
+                    if($userId){
+                        $status = 'success';
+                        $response = 'Restaurant Setup is completed.';
+                    }
                 }
-            }
-
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
@@ -357,8 +474,6 @@ class Support extends CI_Controller {
               ));
              die; 
         }
-        $data['title'] = 'New Customer';
-        $this->load->view('support/new_customer', $data); 
     }
   
 

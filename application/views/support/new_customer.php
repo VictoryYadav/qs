@@ -208,13 +208,28 @@
         var data = $(this).serializeArray();
         $.post('<?= base_url('support/new_customer_create') ?>',data,function(res){
             if(res.status == 'success'){
-              alert(res.response);
+              // alert(res.response);
               // location.reload();
+              var EID = res.response;
+              setInterval(function(){ updateData(EID); }, 30000);
+              
             }else{
               alert(res.response);
             }
         });
     });
+
+
+    function updateData(EID){
+        $.post('<?= base_url('support/update_customer') ?>',{EID:EID},function(res){
+            if(res.status == 'success'){
+              alert(res.response);
+              location.reload();
+            }else{
+              alert(res.response);
+            }
+        });
+    }
 
 
 

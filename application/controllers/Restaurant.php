@@ -3447,6 +3447,19 @@ class Restaurant extends CI_Controller {
     }
 
     public function test(){
+        // $db3 = $this->load->database('34e', TRUE);
+        // $dd = $db3->get('Eat_Kit')->row_array();
+        // print_r($dd);
+        // die;
+// Define the path to your database.php file
+        $dbName= '222e';
+$database_file = APPPATH . 'config/database.php';
+                    $s = "$";
+                    $db1 = "db['".$dbName."']";
+                    $text_to_append = "$s"."$db1"." = array('dsn'   => '','hostname' => '139.59.28.122','username' => 'developer','password' => 'pqowie321*','database' => '$dbName','dbdriver' => 'mysqli','dbprefix' => '','pconnect' => FALSE,'db_debug' => (ENVIRONMENT !== 'production'),'cache_on' => FALSE,'cachedir' => '','char_set' => 'utf8','dbcollat' => 'utf8_general_ci','swap_pre' => '','encrypt' => FALSE,'compress' => FALSE,'stricton' => FALSE,'failover' => array(),'save_queries' => TRUE);\n";
+                        file_put_contents($database_file, $text_to_append.PHP_EOL , FILE_APPEND |   LOCK_EX);
+die;
+die;
 
         echo "<pre>";
         print_r($_SESSION);
