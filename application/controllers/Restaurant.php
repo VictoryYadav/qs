@@ -3447,6 +3447,26 @@ class Restaurant extends CI_Controller {
     }
 
     public function test(){
+        echo "<pre>";
+        print_r($_SESSION);
+        die;
+
+        // SELECT e.Name, mc.Name1, mc.EID as catgEID, mi.ItemNm1, mi.ItemId, mi.EID as itmEID, mi.Ctyp, f.Name1, f.FID as fidno FROM FoodType f, MenuCatg mc, MenuItem mi, Eatary e WHERE f.fid=mi.fid and  mc.EID=mi.EID and mc.EID=e.EID and mc.MCatgId=mi.MCatgId and mc.Stat=0 and mi.Stat=0 order by e.EID, mc.EID, mc.Name1, mi.Itemid
+        $whr = "mc.EID=mi.EID and ec.EID=mc.EID";
+        $dd = $this->db2->select("e.Name, mc.Name1, mc.EID as catgEID, mi.ItemNm1, mi.ItemId, mi.EID as itmEID, mi.Ctyp, f.Name1, f.FID as fidno, c.Name1 as cuisineName, ec.CID")
+                ->order_by('e.EID, mc.EID, mc.Name1, mi.Itemid', 'DESC')
+                        ->join('MenuItem mi', 'mi.MCatgId =mc.MCatgId', 'inner')
+                        ->join('Eatary e', 'e.EID = mc.EID', 'inner')
+                        ->join('FoodType f', 'f.fid=mi.fid', 'inner')
+                        ->join('Cuisines c', 'c.CID = mc.CID', 'left')
+                        ->join('EatCuisine ec', 'ec.CID = mc.CID', 'left')
+                        ->where($whr)
+                        ->get_where('MenuCatg mc', array(
+                                        'mc.Stat' => 0,
+                                        'mi.Stat' => 0
+                                        )
+                    )->result_array();
+                        print_r($this->db2->last_query());die;
         // $db3 = $this->load->database('34e', TRUE);
         // $dd = $db3->get('Eat_Kit')->row_array();
         // print_r($dd);
@@ -3461,9 +3481,7 @@ $database_file = APPPATH . 'config/database.php';
 die;
 die;
 
-        echo "<pre>";
-        print_r($_SESSION);
-        die;
+        
 
         // menu item rates
         $dd = $this->db2->select("e.Name as RestName, mi.ItemNm, es.Name as Section, ip.Name as Item Portion, mir.ItmRate")
@@ -5602,6 +5620,29 @@ die;
         return $MCatgId;
     }
 
+    private function checkEatCuisine($name){
+        $ECID = 0;
+        $cuisine = $this->db2->select('ECID')->like('Name1', $name)->get_where('EatCuisine', array('EID' => authuser()->EID))->row_array();
+        if(!empty($cuisine)){
+            $ECID = $cuisine['ECID'];
+        }else{
+            $eat['Name1'] = $name;
+            $eat['EID'] = authuser()->EID;
+            $eat['CID'] = $this->checkCuisine($name);
+            $ECID = insertRecord('EatCuisine', $eat);
+        }
+        return $ECID;
+    }
+
+    private function getCIDFromEatCuisine($name){
+        $cid = 0;
+        $cuisine = $this->db2->select('CID')->like('Name1', $name)->get_where('EatCuisine', array('EID' => authuser()->EID))->row_array();
+        if(!empty($cuisine)){
+            $cid = $cuisine['CID'];
+        }
+        return $cid;
+    }
+
     private function checkCuisine($name){
         $cid = 0;
         $cuisine = $this->db2->select('CID')->like('Name1', $name)->get('Cuisines')->row_array();
@@ -5678,6 +5719,10 @@ die;
                         ->row_array();
         if(!empty($data)){
             $SecId = $data['SecId'];
+        }else{
+            $sec['Name1'] = $sectionName;
+            $sec['Stat'] = 0;
+            $SecId = insertRecord('Eat_Sections', $sec);
         }
         return $SecId;
     }
@@ -7053,6 +7098,173 @@ die;
         $data['title'] = 'Discount User';
         $data['discounts'] = $this->rest->getUserDiscount();
         $this->load->view('rest/discount_user', $data);    
+    }
+
+    public function data_upload(){
+        $EID = authuser()->EID;
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // print_r($_FILES);
+            // die;
+            $folderPath = 'uploads/e'.$EID.'/csv';
+            $filesPath = glob($folderPath.'/*'); // get all file names
+            // foreach($filesPath as $file){ // iterate files
+            //   if(is_file($file)) {
+            //     unlink($file); // delete file
+            //   }
+            // }  
+            // end remove all files inside folder
+
+            $flag = 0;
+
+            switch ($_POST['type']) {
+                case 'items':
+
+                    if(isset($_FILES['items_file']['name']) && !empty($_FILES['items_file']['name'])){ 
+                        $files = $_FILES['items_file'];
+                        $allowed = array('csv');
+                        $filename_c = $_FILES['items_file']['name'];
+                        $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                        if (!in_array($ext, $allowed)) {
+                            $flag = 1;
+                            $this->session->set_flashdata('error','Support only CSV format!');
+                        }
+                        // less than 1mb size upload
+                        if($files['size'] > 1048576){
+                            $flag = 1;
+                            $this->session->set_flashdata('error','File upload less than 1MB!');   
+                        }
+                        $_FILES['items_file']['name']= $files['name'];
+                        $_FILES['items_file']['type']= $files['type'];
+                        $_FILES['items_file']['tmp_name']= $files['tmp_name'];
+                        $_FILES['items_file']['error']= $files['error'];
+                        $_FILES['items_file']['size']= $files['size'];
+                        $file = $files['name'];
+
+                        $itemData = [];
+                        $temp = [];
+                        $count = 1;
+                        $checker = 0;
+
+                        if($flag == 0){
+                            $res = do_upload('items_file',$file,$folderPath,'*');
+                            if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
+                                while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
+                                    // echo "<pre>";
+                                    // print_r($csv_data);
+                                    // die;
+                                    if($csv_data[0] !='RestName'){
+
+                                        $temp['RestName'] = $csv_data[0];
+                                        $temp['Cuisine'] = $csv_data[1];
+                                        $temp['FID'] = $csv_data[2];
+                                        $temp['IMcCd'] = $csv_data[3];
+                                        $temp['MenuCatgNm'] = $csv_data[4];
+                                        $temp['CTypUsedFor'] = $csv_data[5];
+                                        $temp['ItemNm'] = $csv_data[6];
+                                        $temp['ItemTyp'] = $csv_data[7];
+                                        $temp['NV'] = $csv_data[8];
+                                        $temp['Section'] = $csv_data[9];
+                                        $temp['PckCharge'] = $csv_data[10];
+                                        $temp['Rate'] = $csv_data[11];
+                                        $temp['Rank'] = $csv_data[12];
+                                        $temp['ItmDesc'] = $csv_data[13];
+                                        $temp['Ingeredients'] = $csv_data[14];
+                                        $temp['MaxQty'] = $csv_data[15];
+                                        $temp['Rmks'] = $csv_data[16];
+                                        $temp['PrepTime'] = $csv_data[17];
+                                        $temp['DayNo'] = $csv_data[18];
+                                        $temp['FrmTime'] = $csv_data[19];
+                                        $temp['ToTime'] = $csv_data[20];
+                                        $temp['AltFrmTime'] = $csv_data[21];
+                                        $temp['AltToTime'] = $csv_data[22];
+                                        $temp['videoLink'] = $csv_data[23];
+                                        $temp['itemPortion'] = $csv_data[24];
+                                        $temp['LoginCd'] = authuser()->RUserId;
+
+                                        $itemData[] = $temp;
+                                    }
+                                }
+                                if(!empty($itemData)){
+                                    $this->db2->insert_batch('tempMenuItem', $itemData);
+                                    $mmId = 1;
+                                    $status = 'success';
+                                    $response = 'Data Inserted.';
+
+                                    foreach ($itemData as $row) {
+                                        $ECID = $this->checkEatCuisine($row['Cuisine']);
+                                        $mc['Name1'] = $row['MenuCatgNm'];
+                                        $mc['EID']   = $EID;
+                                        $mc['ChainId'] = 0;
+                                        $mc['CTyp'] = $row['CTypUsedFor'];
+                                        $mc['CID'] = $this->getCIDFromEatCuisine($row['Cuisine']);
+                                        $mc['TaxType'] = 0;
+                                        $mc['KitCd'] = 5;
+                                        $mc['Rank'] = 1;
+                                        $mc['Stat'] = 0;
+                                        $mc['LoginCd'] = $row['LoginCd'];
+
+                                        $MCatgId = insertRecord('MenuCatg', $mc);
+                                        if(!empty($MCatgId)){
+                                            $mItem['UItmCd'] = 1;
+                                            $mItem['IMcCd'] = $row['IMcCd'];
+                                            $mItem['EID'] = $EID;
+                                            $mItem['ChainId'] = 0;
+                                            $mItem['MCatgId'] = $MCatgId;
+                                            $mItem['CTyp'] = $mc['CTyp'];
+                                            $mItem['CID'] = $mc['CID'];
+                                            $mItem['FID'] = $this->checkFoodType($row['FID']);
+                                            $mItem['ItemNm1'] = $row['ItemNm'];
+                                            $mItem['NV'] = $row['NV'];
+                                            $mItem['PckCharge'] = $row['PckCharge'];
+                                            $mItem['KitCd'] = 5;
+                                            $mItem['Rank'] = 1;
+                                            $mItem['MaxQty'] = $row['MaxQty'];
+                                            $mItem['ItmDesc1'] = $row['ItmDesc'];
+                                            $mItem['Ingeredients1'] = $row['Ingeredients'];
+                                            $mItem['Rmks1'] = $row['Rmks'];
+                                            $mItem['PrepTime'] = $row['PrepTime'];
+                                            $mItem['DayNo'] = getDayNo($row['DayNo']); 
+                                            $mItem['FrmTime'] = $row['FrmTime'];
+                                            $mItem['ToTime'] = $row['ToTime'];
+                                            $mItem['AltFrmTime'] = $row['AltFrmTime'];
+                                            $mItem['AltToTime'] = $row['AltToTime'];
+                                            $mItem['AltToTime'] = $row['videoLink'];
+                                            $mItem['LoginCd'] = $row['LoginCd'];
+
+                                            $ItemId = insertRecord('MenuItem', $mItem);
+
+                                            if(!empty($ItemId)){
+                                                $mRates['EID']      = $EID;
+                                                $mRates['ChainId'] = 0;
+                                                $mRates['ItemId']   = $ItemId;
+                                                $mRates['SecId'] = $this->checkSection($row['Section']);
+                                                $mRates['Itm_Portion'] = $this->checkPortion($row['itemPortion']);
+                                                $mRates['ItmRate'] = $row['Rate'];
+                                                insertRecord('MenuItemRates', $mRates);
+                                            }
+                                        }
+                                    }
+                                }
+                                fclose($open);
+                            }
+                        }
+                      }
+
+                break;
+            }
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die; 
+        }
+        $data['title'] = 'Items Upload';
+        $this->load->view('rest/item_upload', $data);    
     }
 
     public function db_create_old(){

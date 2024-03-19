@@ -20,10 +20,20 @@
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <div class="row">
+                        <div class="row" id="showBlock">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
+                                        <div id="btnBlock" style="display: none;">
+                                            <div>
+                                                <p class="text-danger">
+                                                    Please login through the link and upload your restaurant data.
+                                                </p>
+                                                <div class="">
+                                                    <a href="" id="loginUrl">Login</a>
+                                                </div>
+                                            </div>
+                                        </div>
                                     <form method="post" id="customerForm">
                                         <div class="row">
 
@@ -193,7 +203,10 @@
         <div class="rightbar-overlay"></div>
         
         <?php $this->load->view('layouts/admin/script'); ?>
-
+<!-- loader -->
+<div class="container text-center" id="loadBlock" style="display: none;">
+    <img src="<?= base_url('assets/images/loader.gif'); ?>" alt="Eat Out">
+</div>
 
 <script type="text/javascript">
 
@@ -211,6 +224,8 @@
               // alert(res.response);
               // location.reload();
               var EID = res.response;
+              $('#showBlock').hide();
+              $('#loadBlock').show();
               setInterval(function(){ updateData(EID); }, 30000);
               
             }else{
@@ -224,6 +239,12 @@
         $.post('<?= base_url('support/update_customer') ?>',{EID:EID},function(res){
             if(res.status == 'success'){
               alert(res.response);
+              $('#loadBlock').hide();
+              $('#showBlock').show();
+              // var c = 1;
+              // $('#loginUrl').attr("href", "<?= base_url('login?o='); ?>"+EID+"&c="+c);
+              // document.getElementById("customerForm").reset();
+              // $('#btnBlock').show();
               location.reload();
             }else{
               alert(res.response);

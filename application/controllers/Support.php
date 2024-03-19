@@ -411,6 +411,7 @@ class Support extends CI_Controller {
                     $user['Stat'] = 0;
                     $user['EID'] = $EID;
                     $genDB->insert('UsersRest', $user);
+                    $GenId = $genDB->insert_id();
                     // end of genDB
                     $dbName = $EID.'e';
                     $db3 = $this->load->database($dbName, TRUE);
@@ -421,8 +422,16 @@ class Support extends CI_Controller {
                     $db3->query("UPDATE Eat_DispOutlets SET EID = $EID");
                     $db3->query("UPDATE UsersRest SET EID = $EID, DeputedEID = $EID");
                     $db3->query("UPDATE Config SET EID = $EID");
+                    $db3->query("UPDATE Eat_tables SET EID = $EID");
+                    $db3->query("UPDATE ConfigPymt SET EID = $EID");
+                    $db3->query("UPDATE ConfigTheme SET EID = $EID");
+                    
 
                     $user['PWDHash'] = md5($user['Passwd']);
+                    $user['Gender'] = 1;
+                    $user['DeputedEID'] = $EID;
+                    $user['LoginCd'] = 2;
+                    $user['GenRUserId'] = $GenId;
                     $db3->insert('UsersRest', $user);
                     $userId = $db3->insert_id();
                     // update eatary table
@@ -442,6 +451,8 @@ class Support extends CI_Controller {
                     $eatry['lat'] = $EIDData['Lat'];
                     $eatry['lng'] = $EIDData['Lng'];
                     $eatry['LoginCd'] = $userId;
+                    $eatry['EID'] = $EID;
+                    $eatry['dbEID'] = $EID;
                     $db3->update('Eatary', $eatry, array('EID' => 1));
                     // end of update eatary table
 
@@ -461,10 +472,12 @@ class Support extends CI_Controller {
                         $db3->insert_batch('UserRolesAccess', $userRolesAccessObj); 
                     }
 
+                    // send sms for new restaurant login url
+
                     $this->session->set_flashdata('success','Please login through the link and upload your restaurant data.');
                     if($userId){
                         $status = 'success';
-                        $response = 'Restaurant Setup is completed.';
+                        $response = 'Restaurant Basic Setup is Completed.';
                     }
                 }
             header('Content-Type: application/json');

@@ -129,8 +129,6 @@
               alert(res.response);
               $('#sendOtp').show();
               $('#changePassword').hide();
-              window.location = "<?php echo base_url('restaurant'); ?>";
-              return false;
               // location.reload();
             }else{
               alert(res.response);
@@ -147,7 +145,9 @@
         $.post('<?= base_url('restaurant/verifyOTP') ?>',data,function(res){
                 if(res.status == 'success'){
                   alert(res.response);
-                  location.reload();
+                  window.location = "<?php echo base_url('restaurant'); ?>";
+                  return false;
+                  // location.reload();
                 }else{
                   alert(res.response);
                   $('#sendOtp').show();
