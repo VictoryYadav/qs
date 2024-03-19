@@ -7191,8 +7191,6 @@ die;
                                 if(!empty($itemData)){
                                     $this->db2->insert_batch('tempMenuItem', $itemData);
                                     $mmId = 1;
-                                    $status = 'success';
-                                    $response = 'Data Inserted.';
 
                                     foreach ($itemData as $row) {
                                         $ECID = $this->checkEatCuisine($row['Cuisine']);
@@ -7248,6 +7246,8 @@ die;
                                             }
                                         }
                                     }
+                                    $status = 'success';
+                                    $response = 'Data Inserted.';
                                 }
                                 fclose($open);
                             }
