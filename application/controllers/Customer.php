@@ -2423,9 +2423,9 @@ class Customer extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
             
-            echo "<pre>";
-            print_r($_POST);
-            die;
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
 
             $otp = $this->session->userdata('payment_otp');
             $MergeNo = $this->session->userdata('MergeNo');
