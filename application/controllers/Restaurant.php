@@ -7230,21 +7230,25 @@ die;
 
             $EID = $_POST['EID'];
 
-            $this->db2->query('TRUNCATE EatCuisine');
-            $this->db2->query('TRUNCATE MenuCatg');
-            $this->db2->query('TRUNCATE MenuItem');
-            $this->db2->query('TRUNCATE MenuItemRates');
+            $check = $this->db2->get('tempMenuItem')->row_array();
+            if(!empty($check)){
+                $this->db2->query('TRUNCATE EatCuisine');
+                $this->db2->query('TRUNCATE MenuCatg');
+                $this->db2->query('TRUNCATE MenuItem');
+                $this->db2->query('TRUNCATE MenuItemRates');
+                $this->db2->query("INSERT INTO EatCuisine (CID, Name1, EID) SELECT DISTINCT c.CID, c.Name1, $EID From Cuisines c, tempMenuItem t where c.Name1 = t.Cuisine");
 
-            $this->db2->query("INSERT INTO EatCuisine (CID, Name1, EID) SELECT DISTINCT c.CID, c.Name1, $EID From Cuisines c, tempMenuItem t where c.Name1 = t.Cuisine");
+                $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, 0 From Cuisines c, tempMenuItem t, FoodType f where c.Name1 = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
 
-            $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, 0 From Cuisines c, tempMenuItem t, FoodType f where c.Name1 = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
+                $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, ItemNm1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, t.DayNo, t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink From tempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
 
-            $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, ItemNm1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, t.DayNo, t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink From tempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
+                $this->db2->query("INSERT INTO MenuItemRates (EID, SecId, ItemId, Itm_Portion, ItmRate)  SELECT $EID,1,  i.ItemId, ip.IPCd, t.Rate From tempMenuItem t, ItemPortions ip, MenuItem i where ip.Name1=t.itemPortion and i.ItemNm1=t.ItemNm");
+                $status = 'success';
+                $response = 'Basic Menu Item has been Setup.';
+            }else{
+                $response = 'No Data Found!!';
+            }
 
-            $this->db2->query("INSERT INTO MenuItemRates (EID, SecId, ItemId, Itm_Portion, ItmRate)  SELECT $EID,1,  i.ItemId, ip.IPCd, t.Rate From tempMenuItem t, ItemPortions ip, MenuItem i where ip.Name1=t.itemPortion and i.ItemNm1=t.ItemNm");
-
-            $status = 'success';
-            $response = 'Basic Menu Item has been Setup.';
 
             header('Content-Type: application/json');
             echo json_encode(array(

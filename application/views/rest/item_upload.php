@@ -122,10 +122,11 @@ function callAjax(formData){
 }
 
 function insertData(){
-    $('#showBlock').hide();
-    $('#loadBlock').show();
+
     var EID = $('#EID').val();
     if(EID > 0){
+        $('#showBlock').hide();
+        $('#loadBlock').show();
         $.post('<?= base_url('restaurant/insert_temp_menu_item') ?>',{EID:EID},function(res){
             if(res.status == 'success'){
               alert(res.response);
