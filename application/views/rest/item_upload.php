@@ -20,11 +20,11 @@
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <div class="row">
-                            <div class="col-md-6">
+                        <div class="row" id="showBlock">
+                            <div class="col-md-8">
                                 <div class="card">
                                     <div class="card-body">
-                                    <h5 class="card-title mb-3"><?= $this->lang->line('item'); ?></h5>
+                                     Note : <span class="text-danger">After file upload setup menu </span>
                                         <form method="post" enctype="multipart/form-data" id="items_form">
                                             <input type="hidden" name="type" value="items">
                                             <div class="row">
@@ -43,18 +43,24 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
-                                                        <input type="file" name="items_file" class="form-control" required="" accept=".csv" id="file">
+                                                        <input type="file" name="items_file" class="form-control form-control-sm" required="" accept=".csv" id="file">
                                                         <small class="text-danger"><?= $this->lang->line('uploadOnlyCSVFile'); ?> </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>&nbsp;</label><br>
+                                                        <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="text-center">
-                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
 
-                                                <button type="button" class="btn btn-sm btn-primary" onclick="insertData()"><?= $this->lang->line('go'); ?></button>
+                                                <button type="button" class="btn btn-sm btn-primary" onclick="insertData()">Setup Menu</button>
                                             </div>
                                         </form>
 
@@ -80,6 +86,11 @@
 
         <!-- Right bar overlay-->
         <div class="rightbar-overlay"></div>
+
+        <!-- loader -->
+        <div class="container text-center" id="loadBlock" style="display: none;">
+            <img src="<?= base_url('assets/images/loader.gif'); ?>" alt="Eat Out">
+        </div>
         
         <?php $this->load->view('layouts/admin/script'); ?>
 
@@ -95,6 +106,8 @@ $('#items_form').on('submit', function(e){
 });
 
 function callAjax(formData){
+    $('#showBlock').hide();
+    $('#loadBlock').show();
    $.ajax({
            url : '<?= base_url('restaurant/data_upload') ?>',
            type : 'POST',
@@ -103,12 +116,14 @@ function callAjax(formData){
            contentType: false,  
            success : function(data) {
                alert(data.response);
-               // location.reload();
+               location.reload();
            }
     }); 
 }
 
 function insertData(){
+    $('#showBlock').hide();
+    $('#loadBlock').show();
     var EID = $('#EID').val();
     if(EID > 0){
         $.post('<?= base_url('restaurant/insert_temp_menu_item') ?>',{EID:EID},function(res){
@@ -117,7 +132,7 @@ function insertData(){
             }else{
               alert(res.response);
             }
-              // location.reload();
+            location.reload();
         });
     }else{
         alert('Please select restaurant.');
