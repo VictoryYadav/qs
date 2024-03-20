@@ -7232,10 +7232,11 @@ die;
 
             $check = $this->db2->get('tempMenuItem')->row_array();
             if(!empty($check)){
-                $this->db2->query('TRUNCATE EatCuisine');
-                $this->db2->query('TRUNCATE MenuCatg');
-                $this->db2->query('TRUNCATE MenuItem');
-                $this->db2->query('TRUNCATE MenuItemRates');
+                $this->db2->query("DELETE From EatCuisine where EID=$EID");
+                $this->db2->query("DELETE From MenuCatg where EID=$EID");
+                $this->db2->query("DELETE From MenuItem where EID=$EID");
+                $this->db2->query("DELETE From MenuItemRates where EID=$EID");
+
                 $this->db2->query("INSERT INTO EatCuisine (CID, Name1, EID) SELECT DISTINCT c.CID, c.Name1, $EID From Cuisines c, tempMenuItem t where c.Name1 = t.Cuisine");
 
                 $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, 0 From Cuisines c, tempMenuItem t, FoodType f where c.Name1 = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");

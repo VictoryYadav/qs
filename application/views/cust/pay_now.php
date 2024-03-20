@@ -175,6 +175,44 @@ body{
         </div>
     </section>
 
+
+    <!-- payment OTP Modal -->
+    <div class="modal" id="otpModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">OTP</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form method="post" id="paymentForm">
+                <input type="hidden" name="paymentMode" id="paymentMode">
+                <input type="hidden" name="billId" id="paymentBillId">
+                <input type="hidden" name="paymentMCNo" id="paymentMCNo">
+                <input type="hidden" name="billAmount" id="paymentAmount">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="">OTP</label>
+                            <input type="number" name="otp" class="form-control form-control-sm" required="" placeholder="OTP">
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-sm btn-success" value="Verify">
+                            <button type="button" class="btn btn-sm btn-danger" onclick="resendOTP()">Resend</button>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <small class="text-danger" id="paymentSMS"></small>
+                    </div>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- footer section -->
     <?php $this->load->view('layouts/customer/footer'); ?>
     <!-- end footer section -->
@@ -296,7 +334,49 @@ function goPay(val){
             }
         });
     }
+    // onAccount
+    if(mode == 50){
+
+        $.post('<?= base_url('customer/send_payment_otp') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
+            if(res.status == 'success'){
+                $('#paymentBillId').val(BillId);
+                $('#paymentMCNo').val(MCNo);
+                $('#paymentAmount').val(amount);
+                $('#paymentMode').val(mode);
+                $('#otpModal').modal('show');
+                // window.location = res.response;  
+            }else{ 
+              alert(res.response);  
+            }
+        });
+    }
 }
+
+function resendOTP(){
+    $.post('<?= base_url('customer/resend_payment_OTP') ?>',function(res){
+        if(res.status == 'success'){
+            $('#paymentSMS').html(res.response)
+        }else{ 
+          alert(res.response);  
+        }
+    });
+}
+
+$('#paymentForm').on('submit', function(e){
+    e.preventDefault();
+    var data = $(this).serializeArray();
+    // console.log(data[1]['value']);
+    var BillId = data[1]['value'];
+    
+    $.post('<?= base_url('customer/settle_bill_without_payment') ?>', data, function(res){
+        if(res.status == 'success'){
+            window.location = '<?= base_url();?>customer/bill/'+BillId;   
+            return false;
+        }else{ 
+          alert(res.response);  
+        }
+    });
+})
 
 function checkStatus(billId,payNo, serialNo){
     $.post('<?= base_url('customer/check_payment_status') ?>',{billId:billId,payNo:payNo},function(res){

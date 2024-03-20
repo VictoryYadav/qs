@@ -992,6 +992,31 @@ class Customer extends CI_Controller {
         }   
     }
 
+    public function resend_payment_OTP(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $mobileNO = $this->session->userdata('CellNo');
+            $msgText  = '';
+            // $otp = rand(9999,1000);
+            $otp = 1212;
+            // $this->session->set_userdata('cust_otp', $otp);
+            $this->session->set_userdata('payment_otp', '1212');
+            // sendSMS($mobileNO, $msgText);
+
+            $status = "success";
+            $res = 'Resend OTP Successfully.';
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $res
+              ));
+             die;
+        }   
+    }
+
     public function order_details_ajax(){
 
         $CustId = $this->session->userdata('CustId');
@@ -2355,6 +2380,92 @@ class Customer extends CI_Controller {
                 $response = $res;
             }
             
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+    
+    public function send_payment_otp(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+
+            $mobileNO = $this->session->userdata('CellNo');
+            $msgText  = '';
+            // $otp = rand(9999,1000);
+            $otp = 1212;
+            // $this->session->set_userdata('cust_otp', $otp);
+            $this->session->set_userdata('payment_otp', '1212');
+            // sendSMS($mobileNO, $msgText);
+            $status = "success";
+            $response = "OTP send on your mobile no.";
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+    
+    public function settle_bill_without_payment(){
+        $EID = authuser()->EID;
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            
+            echo "<pre>";
+            print_r($_POST);
+            die;
+
+            $otp = $this->session->userdata('payment_otp');
+            $MergeNo = $this->session->userdata('MergeNo');
+            $MCNo = $_POST['paymentMCNo'];
+            $billId = $_POST['billId'];
+
+            if($_POST['otp'] == $otp){
+                $ca['custId']       = $this->session->userdata('CustId');
+                $ca['MobileNo']     = $this->session->userdata('CellNo');
+                $ca['OTP']          = $otp;
+                $ca['billId']       = $billId;
+                $ca['billAmount']   = $_POST['billAmount'];
+                $ca['EID']          = $EID;
+                $ca['mode']         = $_POST['paymentMode'];
+
+                $caId = insertRecord('custAccounts', $ca);
+                if(!empty($caId)){
+
+                    $pay = array('BillId' => $billId,'MCNo' => $MCNo,
+                                'MergeNo' => $MergeNo,
+                                'TotBillAmt' => $ca['billAmount'],
+                                'CellNo' => $this->session->userdata('CellNo'),
+                                'SplitTyp' => 0 ,'SplitAmt' => 0,'PymtId' => 0,
+                                'PaidAmt' => 0 ,'OrderRef' => 0,
+                                'PaymtMode'=> $_POST['paymentMode'],'PymtType' => 0,
+                                'PymtRef'=>  0, 'Stat'=>  1 ,'EID'=>  $EID,
+                                'billRef' => 0);
+
+                    insertRecord('BillPayments', $pay);
+
+                    autoSettlePayment($billId, $MergeNo, $MCNo);
+                    updateRecord('Billing', array('Stat' => 25,'payRest' => 1), array('BillId' => $billId, 'EID' => $EID));
+
+                    $status = "success";
+                    $response = "Bill Settled.";
+                }
+            }else{
+                $response = "OTP Doesn't Matched!!";
+            }
+
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
