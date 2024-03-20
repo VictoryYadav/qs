@@ -3447,6 +3447,13 @@ class Restaurant extends CI_Controller {
     }
 
     public function test(){
+
+        $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, 40, 0 From Cuisines c, tempMenuItem t, FoodType f where c.Name1 = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
+
+        $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, ItemNm1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink)  SELECT DISTINCT t.IMcCd, 40, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, t.DayNo, t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink From tempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
+
+        $this->db2->query("INSERT INTO MenuItemRates (EID, SecId, ItemId, Itm_Portion, ItmRate)  SELECT 40,1,  i.ItemId, ip.IPCd, t.Rate From tempMenuItem t, ItemPortions ip, MenuItem i where ip.Name1=t.itemPortion and i.ItemNm1=t.ItemNm");
+
         echo "<pre>";
         print_r($_SESSION);
         die;
@@ -5622,6 +5629,7 @@ die;
 
     private function checkEatCuisine($name){
         $ECID = 0;
+
         $cuisine = $this->db2->select('ECID')->like('Name1', $name)->get_where('EatCuisine', array('EID' => authuser()->EID))->row_array();
         if(!empty($cuisine)){
             $ECID = $cuisine['ECID'];
@@ -7101,7 +7109,7 @@ die;
     }
 
     public function data_upload(){
-        $EID = authuser()->EID;
+        
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -7109,6 +7117,7 @@ die;
             // print_r($_POST);
             // print_r($_FILES);
             // die;
+            $EID = $_POST['EID'];
             $folderPath = 'uploads/e'.$EID.'/csv';
             $filesPath = glob($folderPath.'/*'); // get all file names
             // foreach($filesPath as $file){ // iterate files
@@ -7189,63 +7198,9 @@ die;
                                     }
                                 }
                                 if(!empty($itemData)){
-                                    $this->db2->insert_batch('tempMenuItem', $itemData);
-                                    $mmId = 1;
-
-                                    foreach ($itemData as $row) {
-                                        $ECID = $this->checkEatCuisine($row['Cuisine']);
-                                        $mc['Name1'] = $row['MenuCatgNm'];
-                                        $mc['EID']   = $EID;
-                                        $mc['ChainId'] = 0;
-                                        $mc['CTyp'] = $row['CTypUsedFor'];
-                                        $mc['CID'] = $this->getCIDFromEatCuisine($row['Cuisine']);
-                                        $mc['TaxType'] = 0;
-                                        $mc['KitCd'] = 5;
-                                        $mc['Rank'] = 1;
-                                        $mc['Stat'] = 0;
-                                        $mc['LoginCd'] = $row['LoginCd'];
-
-                                        $MCatgId = insertRecord('MenuCatg', $mc);
-                                        if(!empty($MCatgId)){
-                                            $mItem['UItmCd'] = 1;
-                                            $mItem['IMcCd'] = $row['IMcCd'];
-                                            $mItem['EID'] = $EID;
-                                            $mItem['ChainId'] = 0;
-                                            $mItem['MCatgId'] = $MCatgId;
-                                            $mItem['CTyp'] = $mc['CTyp'];
-                                            $mItem['CID'] = $mc['CID'];
-                                            $mItem['FID'] = $this->checkFoodType($row['FID']);
-                                            $mItem['ItemNm1'] = $row['ItemNm'];
-                                            $mItem['NV'] = $row['NV'];
-                                            $mItem['PckCharge'] = $row['PckCharge'];
-                                            $mItem['KitCd'] = 5;
-                                            $mItem['Rank'] = 1;
-                                            $mItem['MaxQty'] = $row['MaxQty'];
-                                            $mItem['ItmDesc1'] = $row['ItmDesc'];
-                                            $mItem['Ingeredients1'] = $row['Ingeredients'];
-                                            $mItem['Rmks1'] = $row['Rmks'];
-                                            $mItem['PrepTime'] = $row['PrepTime'];
-                                            $mItem['DayNo'] = getDayNo($row['DayNo']); 
-                                            $mItem['FrmTime'] = $row['FrmTime'];
-                                            $mItem['ToTime'] = $row['ToTime'];
-                                            $mItem['AltFrmTime'] = $row['AltFrmTime'];
-                                            $mItem['AltToTime'] = $row['AltToTime'];
-                                            $mItem['AltToTime'] = $row['videoLink'];
-                                            $mItem['LoginCd'] = $row['LoginCd'];
-
-                                            $ItemId = insertRecord('MenuItem', $mItem);
-
-                                            if(!empty($ItemId)){
-                                                $mRates['EID']      = $EID;
-                                                $mRates['ChainId'] = 0;
-                                                $mRates['ItemId']   = $ItemId;
-                                                $mRates['SecId'] = $this->checkSection($row['Section']);
-                                                $mRates['Itm_Portion'] = $this->checkPortion($row['itemPortion']);
-                                                $mRates['ItmRate'] = $row['Rate'];
-                                                insertRecord('MenuItemRates', $mRates);
-                                            }
-                                        }
-                                    }
+                                   $this->db2->query('TRUNCATE tempMenuItem');
+                                   $this->db2->insert_batch('tempMenuItem', $itemData);
+                                    
                                     $status = 'success';
                                     $response = 'Data Inserted.';
                                 }
@@ -7264,7 +7219,40 @@ die;
              die; 
         }
         $data['title'] = 'Items Upload';
+        $data['rests'] = $this->rest->getRestaurantList();
         $this->load->view('rest/item_upload', $data);    
+    }
+
+    public function insert_temp_menu_item(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $EID = $_POST['EID'];
+
+            $this->db2->query('TRUNCATE EatCuisine');
+            $this->db2->query('TRUNCATE MenuCatg');
+            $this->db2->query('TRUNCATE MenuItem');
+            $this->db2->query('TRUNCATE MenuItemRates');
+
+            $this->db2->query("INSERT INTO EatCuisine (CID, Name1, EID) SELECT DISTINCT c.CID, c.Name1, $EID From Cuisines c, tempMenuItem t where c.Name1 = t.Cuisine");
+
+            $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, 0 From Cuisines c, tempMenuItem t, FoodType f where c.Name1 = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
+
+            $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, ItemNm1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, t.DayNo, t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink From tempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
+
+            $this->db2->query("INSERT INTO MenuItemRates (EID, SecId, ItemId, Itm_Portion, ItmRate)  SELECT $EID,1,  i.ItemId, ip.IPCd, t.Rate From tempMenuItem t, ItemPortions ip, MenuItem i where ip.Name1=t.itemPortion and i.ItemNm1=t.ItemNm");
+
+            $status = 'success';
+            $response = 'Basic Menu Item has been Setup.';
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
     }
 
     public function db_create_old(){

@@ -21,14 +21,29 @@
                     <div class="container-fluid">
 
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-body">
                                     <h5 class="card-title mb-3"><?= $this->lang->line('item'); ?></h5>
                                         <form method="post" enctype="multipart/form-data" id="items_form">
                                             <input type="hidden" name="type" value="items">
                                             <div class="row">
-                                                <div class="col-md-12">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('restaurant'); ?></label>
+                                                        <select name="EID" id="EID" class="form-control form-control-sm" required="">
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                            <?php 
+                                                            if(!empty($rests)){
+                                                                foreach ($rests as $rest) { ?>
+                                                            <option value="<?= $rest['EID']; ?>"><?= $rest['Name']; ?></option>
+                                                        <?php }
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
                                                         <input type="file" name="items_file" class="form-control" required="" accept=".csv" id="file">
@@ -38,8 +53,11 @@
                                             </div>
                                             <div class="text-center">
                                                 <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
+
+                                                <button type="button" class="btn btn-sm btn-primary" onclick="insertData()"><?= $this->lang->line('go'); ?></button>
                                             </div>
                                         </form>
+
                                     </div>
                                 </div>
                             </div>
@@ -88,5 +106,21 @@ function callAjax(formData){
                // location.reload();
            }
     }); 
+}
+
+function insertData(){
+    var EID = $('#EID').val();
+    if(EID > 0){
+        $.post('<?= base_url('restaurant/insert_temp_menu_item') ?>',{EID:EID},function(res){
+            if(res.status == 'success'){
+              alert(res.response);
+            }else{
+              alert(res.response);
+            }
+              // location.reload();
+        });
+    }else{
+        alert('Please select restaurant.');
+    }
 }
 </script>
