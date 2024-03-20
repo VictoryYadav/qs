@@ -335,7 +335,7 @@ function goPay(val){
         });
     }
     // onAccount
-    if(mode == 50){
+    if(mode == 47 || mode == 48 || mode == 49 || mode == 50){
 
         $.post('<?= base_url('customer/send_payment_otp') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
             if(res.status == 'success'){

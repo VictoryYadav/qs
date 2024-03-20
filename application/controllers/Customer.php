@@ -998,12 +998,11 @@ class Customer extends CI_Controller {
         if($this->input->method(true)=='POST'){
 
             $mobileNO = $this->session->userdata('CellNo');
-            $msgText  = '';
-            // $otp = rand(9999,1000);
-            $otp = 1212;
-            // $this->session->set_userdata('cust_otp', $otp);
-            $this->session->set_userdata('payment_otp', '1212');
-            // sendSMS($mobileNO, $msgText);
+
+            $otp = rand(9999,1000);
+            $this->session->set_userdata('payment_otp', $otp);
+            $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+            sendSMS($mobileNO, $msgText);
 
             $status = "success";
             $res = 'Resend OTP Successfully.';
@@ -2399,12 +2398,12 @@ class Customer extends CI_Controller {
             // die;
 
             $mobileNO = $this->session->userdata('CellNo');
-            $msgText  = '';
-            // $otp = rand(9999,1000);
-            $otp = 1212;
-            // $this->session->set_userdata('cust_otp', $otp);
-            $this->session->set_userdata('payment_otp', '1212');
-            // sendSMS($mobileNO, $msgText);
+
+            $otp = rand(9999,1000);
+            $this->session->set_userdata('payment_otp', $otp);
+            $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+            sendSMS($mobileNO, $msgText);
+
             $status = "success";
             $response = "OTP send on your mobile no.";
             
