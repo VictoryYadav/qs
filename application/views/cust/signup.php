@@ -11,7 +11,7 @@
       width: 350px;
       margin-top: 60px;
       margin-bottom: auto;
-      background: #f39c12;
+      background: #dbbd89;
       position: relative;
       display: flex;
       justify-content: center;
@@ -44,7 +44,8 @@
     }
     .login_btn {
       /*width: 100%;*/
-      background: #c0392b !important;
+      background: #ee0004 !important;
+      /*background: #c0392b !important;*/
       color: white !important;
     }
     .login_btn:focus {
@@ -55,11 +56,16 @@
       padding: 0 2rem;
     }
     .input-group-text {
-      background: #c0392b !important;
+      background: #dd3b2a !important;
       color: white !important;
       border: 0 !important;
       border-radius: 0.25rem 0 0 0.25rem !important;
     }
+
+    #otp{
+      border: 1px solid #c54242;
+    }
+
     .input_user,
     .input_pass:focus {
       box-shadow: none !important;
@@ -161,7 +167,7 @@
                       <div class="col-md-9 mx-auto">
                           <div class="form-group">
                             <label for=""><?= $this->lang->line('enterOTP'); ?></label>
-                              <input type="number" name="otp" class="form-control" placeholder="<?= $this->lang->line('enterOTP'); ?>" autocomplete="off" required="">
+                              <input type="number" name="otp" id="otp" class="form-control" placeholder="<?= $this->lang->line('enterOTP'); ?>" autocomplete="off" required="">
                               <span class="text-danger" id="errorMsg" style="font-size: 9px;"></span>
                           </div>
                           <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('verifyOTP'); ?>">

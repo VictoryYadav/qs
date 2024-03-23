@@ -952,6 +952,14 @@ width: 100%;*/
                     </button>
                 </div>
                 <div class="modal-body" style="max-height: 500px;overflow: auto;">
+                    <div class="row mb-2">
+                        <!-- <div class="col-md-3">
+                            <span id="fullname">vijay</span>
+                        </div> -->
+                        <div class="col-md-6">
+                            <i class="fas fa-phone-volume" style="color:green;"></i>&nbsp;&nbsp; <span id="mobileno"></span>
+                        </div>
+                    </div>
                     <form method="post" id="cashForm">
                     <div class="table-responsive">
                         <table class="table table-bordered">
@@ -969,7 +977,35 @@ width: 100%;*/
                             </tbody>
                         </table>
                     </div>
-                </form>
+                    </form>
+                    <div class="row mt-4 OTPBlock" style="display: none;">
+                        <form method="post" id="paymentForm">
+                            <input type="hidden" name="paymentMode" id="paymentMode">
+                            <input type="hidden" name="billId" id="paymentBillId">
+                            <input type="hidden" name="paymentCustId" id="paymentCustId">
+                            <input type="hidden" name="paymentMCNo" id="paymentMCNo">
+                            <input type="hidden" name="paymentMergeNo" id="paymentMergeNo">
+                            <input type="hidden" name="billAmount" id="paymentAmount">
+                            <input type="hidden" name="paymentMobile" id="paymentMobile">
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <input type="number" name="otp" class="form-control form-control-sm" required="" placeholder="OTP">
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <input type="submit" class="btn btn-sm btn-success" value="Verify">
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="sendOTP()">Send</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <small class="text-danger" id="paymentSMS"></small>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2331,7 +2367,9 @@ function cashCollect(custId, MCNo, mergeNo, oType){
           var payModes = res.response.payModes;
           var paymentReceived = "<?= $this->lang->line('paymentReceived'); ?>";
 
+          $('#mobileno').html(data[0].CellNo);
           $("#cashAmtR").prop("disabled", true);
+
           if(oType == 7){
             // alert(oType)
             $('#cashAmtR').prop('readonly', true);
@@ -2340,14 +2378,14 @@ function cashCollect(custId, MCNo, mergeNo, oType){
           if(sts > 0){
 
               var temp = '';
-              var pm = "<select name='PymtType' required='' class='form-control form-control-sm'>";
-
-              for (var i =0;  i< payModes.length; i++) {
-                  pm +='<option value="'+payModes[i].Name+'">'+payModes[i].Name+'</option>';
-                }
-                pm +='</option>';
 
                 for(let j = 0; j < data.length; j++){
+                    var pm = `<select name='PymtType' id='PymtType' required='' class='form-control form-control-sm' onchange='changeModes(${data[j].BillId}, ${data[j].CustId}, ${data[j].PaidAmt}, ${data[j].CellNo}, ${data[j].MergeNo}, ${data[j].CNo})' >`;
+
+                      for (var i =0;  i< payModes.length; i++) {
+                          pm +='<option value="'+payModes[i].PymtMode+'">'+payModes[i].Name+'</option>';
+                        }
+                        pm +='</option>';
                     temp +='<tr>\
                                 <td>'+convertToUnicodeNo(data[j].BillNo)+'</td>\
                                 <td>'+convertToUnicodeNo(data[j].MergeNo)+'</td>\
@@ -2365,7 +2403,7 @@ function cashCollect(custId, MCNo, mergeNo, oType){
                                     <input type="text" name="PaidAmt" style="width:70px;" required id="cashAmtR" value="'+convertToUnicodeNo(data[j].PaidAmt)+'" onblur="changeValue(this)" />\
                                     </td>\
                                 <td>\
-                                    <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success">\
+                                    <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success" id="cashBtn_'+data[j].BillId+'">\
                                         <i class="fas fa-save"></i>\
                                     </button>\
                                     </td>\
@@ -2384,6 +2422,57 @@ function cashCollect(custId, MCNo, mergeNo, oType){
         }
     });
 }
+
+ function changeModes(billId, custId, billAmount, mobile, MergeNo, MCNo){
+
+    var pmode = $('#PymtType').val();
+
+    if( mobile.toString().length < 10 && (pmode == 47 || pmode == 48 || pmode == 49 || pmode == 50)){
+        alert(`You can not select payment ${pmode} mode because invalid mobile no`);
+        $('#PymtType').val('');
+        return false;
+    }else if(mobile.toString().length >= 10 && (pmode == 47 || pmode == 48 || pmode == 49 || pmode == 50)){
+            
+            $('#paymentBillId').val(billId);
+            $('#paymentMobile').val(mobile);
+            $('#paymentAmount').val(billAmount);
+            $('#paymentMode').val(pmode);
+            $('#paymentCustId').val(custId);
+            $('#paymentMergeNo').val(MergeNo);
+            $('#paymentMCNo').val(MCNo);
+            $(`#cashBtn_${billId}`).prop("disabled", true);
+            $('.OTPBlock').show();
+        }
+}
+
+function sendOTP(){
+    var mobile = $('#paymentMobile').val();
+    $.post('<?= base_url('restaurant/send_payment_otp') ?>',{mobile:mobile},function(res){
+            if(res.status == 'success'){
+              $('#paymentSMS').html(res.response);  
+            }else{ 
+              alert(res.response);  
+            }
+    });
+}
+
+$('#paymentForm').on('submit', function(e){
+    e.preventDefault();
+    var data = $(this).serializeArray();
+
+    var billId = data[1]['value'];
+    
+    $.post('<?= base_url('restaurant/settle_bill_without_payment') ?>', data, function(res){
+        if(res.status == 'success'){
+            $(`#cashBtn_${billId}`).prop("disabled", false);
+            $('.OTPBlock').hide();
+            $('#cashCollectModel').modal('hide');
+            getTableView();
+        }else{ 
+          $('#paymentSMS').html(res.response);
+        }
+    });
+})
 
 function cashCollectData(){
     var data = $('#cashForm').serializeArray();

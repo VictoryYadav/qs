@@ -1003,6 +1003,7 @@ class Customer extends CI_Controller {
             $this->session->set_userdata('payment_otp', $otp);
             $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
             sendSMS($mobileNO, $msgText);
+            saveOTP($mobileNO, $otp, 'payNow');
 
             $status = "success";
             $res = 'Resend OTP Successfully.';
@@ -2403,6 +2404,7 @@ class Customer extends CI_Controller {
             $this->session->set_userdata('payment_otp', $otp);
             $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
             sendSMS($mobileNO, $msgText);
+            saveOTP($mobileNO, $otp, 'payNow');
 
             $status = "success";
             $response = "OTP send on your mobile no.";
@@ -2456,7 +2458,7 @@ class Customer extends CI_Controller {
                     insertRecord('BillPayments', $pay);
 
                     autoSettlePayment($billId, $MergeNo, $MCNo);
-                    updateRecord('Billing', array('Stat' => 25,'payRest' => 1), array('BillId' => $billId, 'EID' => $EID));
+                    updateRecord('Billing', array('Stat' => 25), array('BillId' => $billId, 'EID' => $EID));
 
                     $status = "success";
                     $response = "Bill Settled.";

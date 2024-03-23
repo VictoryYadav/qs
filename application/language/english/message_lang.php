@@ -392,6 +392,7 @@ $lang['suburb']				= 'Suburb';
 $lang['state']				= 'State';
 $lang['latitude']			= 'Latitude';
 $lang['longitude']			= 'Longitude';
+$lang['details']			= 'Details';
 
 
 

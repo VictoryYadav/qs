@@ -3359,18 +3359,16 @@ class Restaurant extends CI_Controller {
             
             $bill = array();
             $EID = authuser()->EID;
-             $bills = $this->db2->query("SELECT b.TableNo,b.MergeNo, b.BillId, b.BillNo, b.CNo, b.TotAmt, b.PaidAmt, b.CustId, b.EID, b.MergeNo,b.CellNo from Billing b where b.EID = $EID and b.MergeNo = '$mergeNo' and b.CNo = $MCNo $whr and b.payRest = 0")->result_array();
+             $bills = $this->db2->query("SELECT b.TableNo, b.MergeNo, b.BillId, b.BillNo, b.CNo, b.TotAmt, b.PaidAmt, b.CustId, b.EID, b.MergeNo, b.CellNo, b.CustId from Billing b where b.EID = $EID and b.MergeNo = '$mergeNo' and b.CNo = $MCNo $whr and b.payRest = 0")->result_array();
             $data['sts'] = 0;
             if(!empty($bills)){
                 $bill = $bills;
                 $data['sts'] = 1;
             }
-                        // print_r($this->db2->last_query());die;
+
             $data['bills'] = $bill;
-            $data['payModes'] = $this->rest->getPaymentType();
-            // echo "<pre>";
-            // print_r($data);
-            // die;
+            $data['payModes'] = $this->rest->getPaymentModes();
+        
             $status = 'success';
             
             header('Content-Type: application/json');
@@ -3380,6 +3378,65 @@ class Restaurant extends CI_Controller {
               ));
              die;
         }   
+    }
+
+    public function settle_bill_without_payment(){
+        $EID = authuser()->EID;
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+
+            $otp = $this->session->userdata('payment_otp');
+            $MergeNo = $_POST['paymentMergeNo'];
+            $MCNo = $_POST['paymentMCNo'];
+            $billId = $_POST['billId'];
+
+            if($_POST['otp'] == $otp){
+                $ca['custId']       = $_POST['paymentCustId'];
+                $ca['MobileNo']     = $_POST['paymentMobile'];
+                $ca['OTP']          = $_POST['otp'];
+                $ca['billId']       = $billId;
+                $ca['billAmount']   = $_POST['billAmount'];
+                $ca['EID']          = $EID;
+                $ca['mode']         = $_POST['paymentMode'];
+
+                $caId = insertRecord('custAccounts', $ca);
+                if(!empty($caId)){
+
+                    $pay = array('BillId' => $billId,
+                                'MCNo' => $MCNo,
+                                'MergeNo' => $MergeNo,
+                                'TotBillAmt' => $ca['billAmount'],
+                                'CellNo' => $_POST['paymentMobile'],
+                                'SplitTyp' => 0 ,'SplitAmt' => 0,'PymtId' => 0,
+                                'PaidAmt' => 0 ,'OrderRef' => 0,
+                                'PaymtMode'=> $_POST['paymentMode'],'PymtType' => 0,
+                                'PymtRef'=>  0, 'Stat'=>  1 ,'EID'=>  $EID,
+                                'billRef' => 0);
+
+                    insertRecord('BillPayments', $pay);
+
+                    autoSettlePayment($billId, $MergeNo, $MCNo);
+                    updateRecord('Billing', array('Stat' => 25), array('BillId' => $billId, 'EID' => $EID));
+
+                    $status = "success";
+                    $response = "Bill Settled.";
+                }
+            }else{
+                $response = "OTP Doesn't Matched!!";
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
     }
 
     public function collect_payment()
@@ -3393,6 +3450,12 @@ class Restaurant extends CI_Controller {
             // die;
 
             $pay = $_POST;
+
+            if(in_array($pay['PymtType'], array('OnAccount', 'EmployeeId', 'MembershipNo', 'RoomNo'))){
+                updateRecord('Billing', array('Stat' => 25), array('BillId' => $pay['BillId'], 'EID' => $pay['EID']));
+                $pay['PaidAmt'] = 0;
+            }
+
             $pay['PaymtMode'] = 1;
             $pay['SplitTyp'] = 0;
             $pay['SplitAmt'] = 0;
@@ -3444,6 +3507,56 @@ class Restaurant extends CI_Controller {
               ));
              die;
         } 
+    }
+
+    public function send_payment_otp(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            
+            $mobileNO = $_POST['mobile'];
+
+            $otp = rand(9999,1000);
+            $this->session->set_userdata('payment_otp', $otp);
+            $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+            sendSMS($mobileNO, $msgText);
+            saveOTP($mobileNO, $otp, 'payNow');
+
+            $status = "success";
+            $response = "OTP send on your mobile no.";
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function resend_payment_OTP(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $mobileNO = $_POST['mobile'];
+
+            $otp = rand(9999,1000);
+            $this->session->set_userdata('payment_otp', $otp);
+            $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+            sendSMS($mobileNO, $msgText);
+            saveOTP($mobileNO, $otp, 'table view');
+
+            $status = "success";
+            $res = 'Resend OTP Successfully.';
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $res
+              ));
+             die;
+        }   
     }
 
     public function test(){
@@ -7251,6 +7364,109 @@ die;
             }
 
 
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function payment_collection_settled_bill(){
+        $data['EID'] = authuser()->EID;
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+            $response = $this->rest->getSettledBillNotCollectPymnt($_POST);
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] = 'Payment Collection';
+        $data['pymtModes'] = $this->rest->getPaymentModes();
+        $this->load->view('rest/payment_collection', $data);
+    }
+    
+    public function getBillByCustId(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+            $response = $this->rest->getBillingByCustId($_POST['CustId']);
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function save_group_payment(){
+        $EID = authuser()->EID;
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            echo "<pre>";
+            print_r($_POST);
+            die;
+            $totalAmount = $_POST['amount'];
+            $bData = $this->rest->getBillingByCustId($_POST['CustId']);
+            if(!empty($bData)){
+                foreach ($bData as $bill) {
+                    if($totalAmount > 0){
+                        if($totalAmount >= $bill['totalBillPaidAmt']){
+                            $bpAmount = $bill['totalBillPaidAmt'];
+                            $totalAmount = $totalAmount - $bill['totalBillPaidAmt'];
+
+                            updateRecord('Billing', array('Stat' => 1), array('EID' => $EID, 'BillId' => $bill['BillId']));
+                            $pymt_rcpt = 1;
+                        }else{
+                            $bpAmount = $totalAmount;
+                            $totalAmount = $totalAmount - $totalAmount;
+                            $pymt_rcpt = 0;
+                        }
+                        // custAccounts
+                        $ca['receivedAmount'] = $bpAmount;
+                        $ca['receivedDate']   = date('Y-m-d H:i:s');
+                        $ca['pymt_rcpt']      = $pymt_rcpt;
+                        updateRecord('custAccounts', $ca, array('EID' => $EID, 'billId' => $bill['BillId']));
+                        $caData = $this->rest->getCustAccounts($bill['BillId']);
+                        // billpayments
+                        $pay['BillId'] = $bill['BillId'];
+                        $pay['MCNo'] = $bill['CNo'];
+                        $pay['MergeNo'] = $bill['MergeNo'];
+                        $pay['TotBillAmt'] = $bill['PaidAmt'];
+                        $pay['CellNo'] = $bill['CellNo'];
+                        $pay['SplitTyp'] = 0;
+                        $pay['SplitAmt'] = 0;
+                        $pay['PymtId'] = 0;
+                        $pay['PaidAmt'] = $bpAmount;
+                        $pay['OrderRef'] = 0;
+                        $pay['PaymtMode'] = $_POST['PaymtMode'];
+                        $pay['PymtType'] = 0;
+                        $pay['PymtRef'] = 0;
+                        $pay['Stat'] = $pymt_rcpt;
+                        $pay['EID'] = $EID;
+                        $pay['caId'] = $caData['caId'];
+                        insertRecord('BillPayments', $pay);
+                    }
+                }
+            }
+            $status = 'success';
+            $response = 'Cash Collected.';
+            
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,

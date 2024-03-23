@@ -60,8 +60,8 @@ die;
 
         $msgText = "1211 is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
         
-        sendSMS('7869068343', $msgText);
-        sendSMS('8850876764', $msgText);
+        // sendSMS('7869068343', $msgText);
+        // sendSMS('8850876764', $msgText);
 
         // deleteOTPSMS();
         // dailyBilling($dbName, $EID)

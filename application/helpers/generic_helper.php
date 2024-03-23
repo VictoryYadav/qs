@@ -476,6 +476,12 @@ function getThemeColor(){
     return $CI->User->getThemeColour();	
 }
 
+function saveOTP($mobile, $otp, $page){
+	$CI = & get_instance();
+    $CI->load->model('User');
+    return $CI->User->insertOTP($mobile, $otp, $page);	
+}
+
 // Test the function
 // $englishNumber = '12345';
 // $chineseNumber = convertDigits($englishNumber, 'en', 'zh');

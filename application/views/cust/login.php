@@ -6,12 +6,16 @@
       height: 100%;
 
     }
+    label{
+      background: #fff;
+    }
+
     .user_card {
       height: 350px;
       width: 350px;
       margin-top: 75px;
       margin-bottom: auto;
-      background: #efcfab;
+      background: #dbbd89;
       position: relative;
       display: flex;
       justify-content: center;
@@ -44,7 +48,7 @@
     }
     .login_btn {
       /*width: 100%;*/
-      background: #dd3b2a !important;
+      background: #ee0004 !important;
       color: white !important;
     }
     .login_btn:focus {
@@ -60,14 +64,17 @@
       border: 0 !important;
       border-radius: 0.25rem 0 0 0.25rem !important;
     }
+
+    #emailMobile, #otp{
+      border: 1px solid #c54242;
+    }
+
     .input_user,
     .input_pass:focus {
       box-shadow: none !important;
       outline: 0px !important;
     }
-    .custom-checkbox .custom-control-input:checked~.custom-control-label::before {
-      background-color: #c0392b !important;
-    }
+    
 </style>
 </head>
 

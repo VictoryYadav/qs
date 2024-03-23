@@ -391,3 +391,4 @@ $lang['suburb']				= 'सुबुरब';
 $lang['state']				= 'स्टेट';
 $lang['latitude']			= 'लेटिटूट';
 $lang['longitude']			= 'लौंगीटूट';
+$lang['details']			= 'डिटेल्स';

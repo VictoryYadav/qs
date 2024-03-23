@@ -733,7 +733,9 @@ class Rest extends CI_Model{
 	public function getPaymentModes(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId as Name";
-		return $this->db2->select("PymtMode, $lname,Company, CodePage1")->get_where('ConfigPymt', array('Stat' => 0, 'EID' => authuser()->EID))->result_array();
+		return $this->db2->select("PymtMode, $lname,Company, CodePage1")
+						->order_by('Rank', 'ASC')
+						->get_where('ConfigPymt', array('Stat' => 1, 'EID' => authuser()->EID))->result_array();
 	}
 
 	public function getConfigPayment(){
@@ -1600,6 +1602,55 @@ class Rest extends CI_Model{
 		return $this->db2->select("*")->get_where('ConfigTheme', array('ThemeId' => $ThemeId, 'EID' => $EID))
 		->row_array();	
 	}
+
+	public function getSettledBillNotCollectPymnt($data){
+
+		if(!empty($data['mobile'])){
+			$this->db2->where('b.CellNo', $data['mobile']);
+		}
+
+		if(!empty($data['fullname'])){
+			$this->db2->like('u.FName', $data['fullname']);
+			// $this->db2->like('u.LName', $data['fullname']);
+		}
+
+		$EID = authuser()->EID;
+		return $this->db2->select("b.CustId, b.CellNo, CONCAT_WS(' ', u.FName, u.LName) as Fullname, sum(b.PaidAmt) as TotalAmt ")
+						->order_by('b.BillId', 'ASC')
+						->group_by('b.CellNo')
+						->join('Users u', 'u.MobileNo = b.CellNo', 'inner')
+						->get_where('Billing b', array(
+											'b.Stat' => 25,
+									 		'b.EID' => $EID)
+									)
+		->result_array();	
+	}
+
+	public function getBillingByCustId($CustId){
+
+		$EID = authuser()->EID;
+		return $this->db2->query("SELECT b.BillId, b.CustId, b.CellNo, b.CNo, b.MergeNo, b.PaidAmt, DATE_FORMAT(DATE(b.billTime), '%d-%b-%Y - %H:%i') as billTime, IFNULL(b.PaidAmt - (SELECT IFNULL(sum(bp.PaidAmt), 0) From BillPayments bp, Billing b1 where bp.BillId = b1.BillId and bp.EID=b1.EID and b1.BillId = b.BillId and b1.EID = b.EID group by bp.EID, bp.BillId ,b1.EID, b1.BillId),b.PaidAmt) as totalBillPaidAmt
+			FROM `Billing` `b`
+			WHERE `b`.`Stat` = 25
+			AND `b`.`EID` = $EID
+			AND `b`.`CustId` = $CustId
+			ORDER BY `b`.`BillId` ASC")->result_array();
+
+		$sql = "IFNULL(b.PaidAmt - (SELECT IFNULL(sum(bp.PaidAmt), 0) From BillPayments bp, Billing b1 where bp.BillId = b1.BillId and bp.EID=b1.EID and b1.BillId = b.BillId and b1.EID = b.EID group by bp.EID, bp.BillId ,b1.EID, b1.BillId),b.PaidAmt) as totalPaidAmt";
+		return $this->db2->select("b.BillId, b.CustId, b.CellNo, b.CNo, b.MergeNo, b.PaidAmt, DATE_FORMAT(DATE(b.billTime),'%d-%b-%Y') as billTime, $sql")
+						->order_by('b.BillId', 'ASC')
+						->get_where('Billing b', array(
+											'b.Stat' => 25,
+									 		'b.EID' => $EID,
+									 		'b.CustId' => $CustId)
+									)
+		->result_array();	
+	}
+
+	public function getCustAccounts($billId){
+		return $this->db2->get_where('custAccounts', array('EID' => $EID, 'billId' => $billId))->row_array();
+	}
+	
 
 	
 }

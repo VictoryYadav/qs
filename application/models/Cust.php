@@ -1498,7 +1498,7 @@ class Cust extends CI_Model{
 	public function getPaymentModes(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId as Name";
-		return $this->db2->select("PymtMode, $lname ,Company, CodePage1")->get_where('ConfigPymt', array('Stat' => 1))->result_array();
+		return $this->db2->select("PymtMode, $lname ,Company, CodePage1")->get_where('ConfigPymt', array('Stat' => 1, 'EID' => authuser()->EID))->result_array();
 	}
 
 	public function getSplitPayments($billId){

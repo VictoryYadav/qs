@@ -434,4 +434,13 @@ class User extends CI_Model{
 					->row_array();
 	}
 
+	public function insertOTP($mobile, $otp, $page){
+		$otpData = array('mobileNo' => $mobile,
+        				 'otp' => $otp,
+        				 'stat' => 1,
+        				 'pageRequest' => $page
+        				);
+        insertRecord('OTP', $otpData);
+	}
+
 }
