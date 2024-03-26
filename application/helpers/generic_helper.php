@@ -482,6 +482,12 @@ function saveOTP($mobile, $otp, $page){
     return $CI->User->insertOTP($mobile, $otp, $page);	
 }
 
+function insertLoyalty($data){
+	$CI = & get_instance();
+    $CI->load->model('User');
+    return $CI->User->saveLoyalty($data);	
+}
+
 // Test the function
 // $englishNumber = '12345';
 // $chineseNumber = convertDigits($englishNumber, 'en', 'zh');

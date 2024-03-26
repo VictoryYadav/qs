@@ -2367,7 +2367,7 @@ function cashCollect(custId, MCNo, mergeNo, oType){
           var payModes = res.response.payModes;
           var paymentReceived = "<?= $this->lang->line('paymentReceived'); ?>";
 
-          $('#mobileno').html(data[0].CellNo);
+          
           $("#cashAmtR").prop("disabled", true);
 
           if(oType == 7){
@@ -2376,38 +2376,40 @@ function cashCollect(custId, MCNo, mergeNo, oType){
           }
 
           if(sts > 0){
+                if(data.length > 0){
+                    $('#mobileno').html(data[0].CellNo);
+                    var temp = '';
+                    for(let j = 0; j < data.length; j++){
+                        var pm = `<select name='PymtType' id='PymtType' required='' class='form-control form-control-sm' onchange='changeModes(${data[j].BillId}, ${data[j].CustId}, ${data[j].PaidAmt}, ${data[j].CellNo}, ${data[j].MergeNo}, ${data[j].CNo})' >`;
 
-              var temp = '';
-
-                for(let j = 0; j < data.length; j++){
-                    var pm = `<select name='PymtType' id='PymtType' required='' class='form-control form-control-sm' onchange='changeModes(${data[j].BillId}, ${data[j].CustId}, ${data[j].PaidAmt}, ${data[j].CellNo}, ${data[j].MergeNo}, ${data[j].CNo})' >`;
-
-                      for (var i =0;  i< payModes.length; i++) {
-                          pm +='<option value="'+payModes[i].PymtMode+'">'+payModes[i].Name+'</option>';
-                        }
-                        pm +='</option>';
-                    temp +='<tr>\
-                                <td>'+convertToUnicodeNo(data[j].BillNo)+'</td>\
-                                <td>'+convertToUnicodeNo(data[j].MergeNo)+'</td>\
-                                <td>'+convertToUnicodeNo(data[j].PaidAmt)+'</td>\
-                                <td>'+pm+'</td>\
-                                <td>\
-                                <input type="hidden" name="oType" value="'+oType+'"/>\
-                                <input type="hidden" name="TableNo" value="'+data[j].TableNo+'"/>\
-                                    <input type="hidden" name="BillId" value="'+data[j].BillId+'"/>\
-                                    <input type="hidden" name="MCNo" value="'+data[j].CNo+'"/>\
-                                    <input type="hidden" name="EID" value="'+data[j].EID+'"/>\
-                                    <input type="hidden" name="MergeNo" value="'+data[j].MergeNo+'"/>\
-                                    <input type="hidden" name="CellNo" value="'+data[j].CellNo+'"/>\
-                                    <input type="hidden" name="TotBillAmt" value="'+data[j].PaidAmt+'"/>\
-                                    <input type="text" name="PaidAmt" style="width:70px;" required id="cashAmtR" value="'+convertToUnicodeNo(data[j].PaidAmt)+'" onblur="changeValue(this)" />\
-                                    </td>\
-                                <td>\
-                                    <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success" id="cashBtn_'+data[j].BillId+'">\
-                                        <i class="fas fa-save"></i>\
-                                    </button>\
-                                    </td>\
-                            </tr>';
+                          for (var i =0;  i< payModes.length; i++) {
+                              pm +='<option value="'+payModes[i].PymtMode+'">'+payModes[i].Name+'</option>';
+                            }
+                            pm +='</option>';
+                        temp +='<tr>\
+                                    <td>'+convertToUnicodeNo(data[j].BillNo)+'</td>\
+                                    <td>'+convertToUnicodeNo(data[j].MergeNo)+'</td>\
+                                    <td>'+convertToUnicodeNo(data[j].PaidAmt)+'</td>\
+                                    <td>'+pm+'</td>\
+                                    <td>\
+                                    <input type="hidden" name="oType" value="'+oType+'"/>\
+                                    <input type="hidden" name="TableNo" value="'+data[j].TableNo+'"/>\
+                                        <input type="hidden" name="BillId" value="'+data[j].BillId+'"/>\
+                                        <input type="hidden" name="MCNo" value="'+data[j].CNo+'"/>\
+                                        <input type="hidden" name="EID" value="'+data[j].EID+'"/>\
+                                        <input type="hidden" name="MergeNo" value="'+data[j].MergeNo+'"/>\
+                                        <input type="hidden" name="CellNo" value="'+data[j].CellNo+'"/>\
+                                        <input type="hidden" name="TotBillAmt" value="'+data[j].PaidAmt+'"/>\
+                                        <input type="text" name="PaidAmt" style="width:70px;" required id="cashAmtR" value="'+convertToUnicodeNo(data[j].PaidAmt)+'" onblur="changeValue(this)" />\
+                                        <input type="hidden" name="CustId" value="'+data[j].CustId+'"/>\
+                                        </td>\
+                                    <td>\
+                                        <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success" id="cashBtn_'+data[j].BillId+'">\
+                                            <i class="fas fa-save"></i>\
+                                        </button>\
+                                        </td>\
+                                </tr>';
+                    }
                 }
 
             }else{

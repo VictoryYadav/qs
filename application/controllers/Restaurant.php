@@ -3466,6 +3466,7 @@ class Restaurant extends CI_Controller {
             $pay['Stat'] = 0;
             $TableNo = $pay['TableNo'];
             unset($pay['TableNo']);
+            unset($pay['CustId']);
             // print_r($pay);
 
             $checkBP = $this->db2->get_where('BillPayments', array('EID' => $pay['EID'],'BillId' => $pay['BillId']))->row_array();
@@ -3499,7 +3500,22 @@ class Restaurant extends CI_Controller {
                     updateRecord('BillPayments', array('Stat' => 1), array('BillId' => $billId,'EID' => $EID));
                 }
             }
-            
+
+            // loyality
+            $loyalties = array(
+                     'LId'          => 0,
+                     'custId'       => $_POST['CustId'],
+                     'EID'          => $EID,
+                     'billId'       => $_POST['BillId'],
+                     'billDate'     => date('Y-m-d H:i:s'),
+                     'billAmount'   => $_POST['TotBillAmt'],
+                     'MobileNo'     => $_POST['CellNo'],
+                     'OTP'          => 0,
+                     'earnedPoints' => 0,
+                     'earned_used'  => 0
+                    );
+            insertLoyalty($loyalties);
+
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
@@ -7418,9 +7434,9 @@ die;
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
 
-            echo "<pre>";
-            print_r($_POST);
-            die;
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
             $totalAmount = $_POST['amount'];
             $bData = $this->rest->getBillingByCustId($_POST['CustId']);
             if(!empty($bData)){
@@ -7432,6 +7448,21 @@ die;
 
                             updateRecord('Billing', array('Stat' => 1), array('EID' => $EID, 'BillId' => $bill['BillId']));
                             $pymt_rcpt = 1;
+
+                            // loyalty
+                            $loyalties = array(
+                             'LId'          => 0,
+                             'custId'       => $_POST['CustId'],
+                             'EID'          => $EID,
+                             'billId'       => $bill['BillId'],
+                             'billDate'     => date('Y-m-d H:i:s'),
+                             'billAmount'   => $bill['totalBillPaidAmt'],
+                             'MobileNo'     => $bill['CellNo'],
+                             'OTP'          => 0,
+                             'earnedPoints' => 0,
+                             'earned_used'  => 0
+                            );
+                            insertLoyalty($loyalties);
                         }else{
                             $bpAmount = $totalAmount;
                             $totalAmount = $totalAmount - $totalAmount;

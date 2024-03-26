@@ -443,4 +443,14 @@ class User extends CI_Model{
         insertRecord('OTP', $otpData);
 	}
 
+	public function saveLoyalty($data){
+		if($data['LId']> 0){
+			updateRecord('Loyalty', $data, array('LId' => $data['LId'], 'EID' => $data['EID'], 'billId' => $data['billId']));
+		}else{
+        	insertRecord('Loyalty', $data);
+		}
+	}
+
+	
+
 }

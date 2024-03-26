@@ -1678,13 +1678,26 @@ class Customer extends CI_Controller {
         $billId = $_POST['BillId'];
         $MCNo = $_POST['MCNo'];
         $MergeNo = $this->session->userdata('MergeNo');
-        $MergeNo = $this->session->userdata('MergeNo');
+
+        $loyalties = array(
+                     'LId'          => 0,
+                     'custId'       => $this->session->userdata('CustId'),
+                     'EID'          => $EID,
+                     'billId'       => $billId,
+                     'billDate'     => date('Y-m-d H:i:s'),
+                     'billAmount'   => $_POST['billAmount'],
+                     'MobileNo'     => $this->session->userdata('CellNo'),
+                     'OTP'          => 0,
+                     'earnedPoints' => 0,
+                     'earned_used'  => 0
+                    );
 
         if($this->session->userdata('AutoSettle') > 0){
             autoSettlePayment($billId, $MergeNo, $MCNo);
         }else{
             $this->db2->query("UPDATE KitchenMain km, Billing b SET km.custPymt = 1, km.payRest = 1 WHERE b.BillId = $billId and km.EID=b.EID and km.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo) and km.MergeNo = b.MergeNo");
         }
+        insertLoyalty($loyalties);
 
         // $this->session->set_userdata('CNo', 0);
     }
