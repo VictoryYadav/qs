@@ -2429,11 +2429,11 @@ function cashCollect(custId, MCNo, mergeNo, oType){
 
     var pmode = $('#PymtType').val();
 
-    if( mobile.toString().length < 10 && (pmode == 47 || pmode == 48 || pmode == 49 || pmode == 50)){
+    if( mobile.toString().length < 10 && (pmode >= 20 && pmode <= 30)){
         alert(`You can not select payment ${pmode} mode because invalid mobile no`);
         $('#PymtType').val('');
         return false;
-    }else if(mobile.toString().length >= 10 && (pmode == 47 || pmode == 48 || pmode == 49 || pmode == 50)){
+    }else if(mobile.toString().length >= 10 && (pmode >= 20 && pmode <= 30)){
             
             $('#paymentBillId').val(billId);
             $('#paymentMobile').val(mobile);

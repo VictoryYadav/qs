@@ -312,8 +312,8 @@ function goPay(val){
             }
         });
     }
-
-    if(mode == 5){
+    // razorpay
+    if(mode == 35){
         var totAmt = 0;
         var tips = 0;
         // var dd = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&totAmt='+btoa(totAmt)+'&tips='+btoa(tips);
@@ -323,8 +323,8 @@ function goPay(val){
         window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&billId='+btoa(BillId)+'&MCNo='+btoa(MCNo);
     }
 
-    // phoenpe = 46
-    if(mode == 46){
+    // phoenpe = 34
+    if(mode == 34){
 
         $.post('<?= base_url('phonepe/pay') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
             if(res.status == 'success'){
@@ -334,8 +334,8 @@ function goPay(val){
             }
         });
     }
-    // onAccount
-    if(mode == 47 || mode == 48 || mode == 49 || mode == 50){
+    // onAccount, RoomNo, MembershipNo, EmployeeId
+    if(mode >=20 && mode <= 30){
 
         $.post('<?= base_url('customer/send_payment_otp') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
             if(res.status == 'success'){

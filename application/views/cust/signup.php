@@ -40,7 +40,7 @@
       border: 2px solid white;
     }
     .form_container {
-      margin-top: 40px;
+      margin-top: 50px;
     }
     .login_btn {
       /*width: 100%;*/
@@ -166,7 +166,7 @@
                   <div class="row">
                       <div class="col-md-9 mx-auto">
                           <div class="form-group">
-                            <label for=""><?= $this->lang->line('enterOTP'); ?></label>
+                            <label for="" style="color: #fff;"><?= $this->lang->line('enterOTP'); ?></label>
                               <input type="number" name="otp" id="otp" class="form-control" placeholder="<?= $this->lang->line('enterOTP'); ?>" autocomplete="off" required="">
                               <span class="text-danger" id="errorMsg" style="font-size: 9px;"></span>
                           </div>

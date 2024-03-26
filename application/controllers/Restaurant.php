@@ -3451,11 +3451,6 @@ class Restaurant extends CI_Controller {
 
             $pay = $_POST;
 
-            if(in_array($pay['PymtType'], array('OnAccount', 'EmployeeId', 'MembershipNo', 'RoomNo'))){
-                updateRecord('Billing', array('Stat' => 25), array('BillId' => $pay['BillId'], 'EID' => $pay['EID']));
-                $pay['PaidAmt'] = 0;
-            }
-
             $pay['PaymtMode'] = 1;
             $pay['SplitTyp'] = 0;
             $pay['SplitAmt'] = 0;
