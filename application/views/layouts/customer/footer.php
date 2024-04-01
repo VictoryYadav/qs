@@ -40,6 +40,8 @@ h6{
             <?php if(!empty($this->session->userdata('CustId'))){ ?>
             <a class="dropdown-item" href="<?= base_url('customer/profile'); ?>"><?= $this->lang->line('profile'); ?></a>
             <a class="dropdown-item" href="<?= base_url('customer/current_order'); ?>"><?= $this->lang->line('currentorder'); ?></a>
+            <a class="dropdown-item" href="<?= base_url('customer/loyalty'); ?>"><?= $this->lang->line('loyalty'); ?></a>
+
             <a class="dropdown-item" href="<?= base_url('customer/transactions'); ?>"><?= $this->lang->line('history'); ?></a>
             <a class="dropdown-item" href="#"><?= $this->lang->line('username'); ?>(<?= $_SESSION['signup']['MobileNo']; ?>)</a>
             <a class="dropdown-item" href="<?= base_url('customer/logout'); ?>"><?= $this->lang->line('logout'); ?></a>

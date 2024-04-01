@@ -1587,7 +1587,7 @@ class Cust extends CI_Model{
 		if(!empty($billDT)){
 
 				$loyaltyDT = $this->db2->get_where('LoyaltyConfig lc', 
-										 array('lc.MinPaidValue >=' => $billDT[0]['totpayable'], 
+										 array('lc.MinPaidValue <=' => $billDT[0]['totpayable'], 
 										 	'lc.Stat' => 0)
 										 )
 				    				->result_array();

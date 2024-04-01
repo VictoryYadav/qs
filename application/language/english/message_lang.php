@@ -393,6 +393,7 @@ $lang['state']				= 'State';
 $lang['latitude']			= 'Latitude';
 $lang['longitude']			= 'Longitude';
 $lang['details']			= 'Details';
+$lang['loyalty']			= 'Loyalty';
 
 
 

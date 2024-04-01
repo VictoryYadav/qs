@@ -1614,6 +1614,7 @@ class Customer extends CI_Controller {
             if(!empty($checkLoyalty) && $checkLoyalty['Points'] > 0){
                 $data['checkLoyalty'] = 1;
             }
+            
             $this->load->view('cust/billing', $data);
         }else{
             $data['title'] = 'Bills';
@@ -1684,25 +1685,11 @@ class Customer extends CI_Controller {
         $MCNo = $_POST['MCNo'];
         $MergeNo = $this->session->userdata('MergeNo');
 
-        $loyalties = array(
-                     'LId'          => 0,
-                     'custId'       => $this->session->userdata('CustId'),
-                     'EID'          => $EID,
-                     'billId'       => $billId,
-                     'billDate'     => date('Y-m-d H:i:s'),
-                     'billAmount'   => $_POST['billAmount'],
-                     'MobileNo'     => $this->session->userdata('CellNo'),
-                     'OTP'          => 0,
-                     'Points'       => 0,
-                     'earned_used'  => 0
-                    );
-
         if($this->session->userdata('AutoSettle') > 0){
             autoSettlePayment($billId, $MergeNo, $MCNo);
         }else{
             $this->db2->query("UPDATE KitchenMain km, Billing b SET km.custPymt = 1, km.payRest = 1 WHERE b.BillId = $billId and km.EID=b.EID and km.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo) and km.MergeNo = b.MergeNo");
         }
-        insertLoyalty($loyalties);
 
         // $this->session->set_userdata('CNo', 0);
     }
@@ -2798,16 +2785,32 @@ class Customer extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
+
             $EID = authuser()->EID;
             $LNo = $_POST['LNo'];
             $totalPoints = $_POST['totalPoints'][$LNo];
             $billId = $_POST['billId'];
             $CustId = $this->session->userdata('CustId');
 
-            updateRecord('Loyalty', array('LNo' => $LNo, 'Points' => $totalPoints), array('EID' => $EID, 'billId' => $billId, 'custId' => $CustId));
+            $loyalties = array(
+                     'LId'          => 0,
+                     'LNo'          => $LNo,
+                     'custId'       => $CustId,
+                     'EID'          => $EID,
+                     'billId'       => $billId,
+                     'billDate'     => date('Y-m-d H:i:s'),
+                     'billAmount'   => $_POST['billAmount'],
+                     'MobileNo'     => $this->session->userdata('CellNo'),
+                     'OTP'          => 0,
+                     'Points'       => $totalPoints,
+                     'earned_used'  => 0
+                    );
+            insertLoyalty($loyalties);
+            $genTblDb = $this->load->database('GenTableData', TRUE);
+            $genTblDb->insert('Loyalty', $loyalties);
 
             $status = 'success';
-            $response = 'Loyality Points Updated';
+            $response = 'Loyality Points Added';
             
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -2877,6 +2880,9 @@ class Customer extends CI_Controller {
                     );
             insertLoyalty($loyalties);
 
+            $genTblDb = $this->load->database('GenTableData', TRUE);
+            $genTblDb->insert('Loyalty', $loyalties);
+
             if(!empty($payNo)){
                 $status = 'success';
                 $response = 'Loyalty payment is successfull.';
@@ -2889,6 +2895,34 @@ class Customer extends CI_Controller {
               ));
              die;
         }
+    }
+
+    public function loyalty(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $CustId = $this->session->userdata('CustId'),
+            $status     = 'success';
+            $genTblDb = $this->load->database('GenTableData', TRUE);
+
+            $response   = $genTblDb->select('l.EID, ed.Name, Sum(Case When l.earned_used = 0 
+         Then l.Points Else 0 End) EarnedPoints, Sum(Case When l.earned_used = 1 
+         Then l.Points Else 0 End) UsedPoints')
+                                ->group_by('l.EID')
+                                ->join('EIDDet ed', 'ed.EID = l.EID', 'inner')
+                                ->get_where('Loyalty l', array('l.custId' => $CustId))
+                                ->result_array();
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        $data['title'] = $this->lang->line('loyalty');
+        $this->load->view('cust/loyalty', $data);
     }
 
 }

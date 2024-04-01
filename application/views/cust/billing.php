@@ -383,7 +383,7 @@
 
           <!-- Modal Header -->
           <div class="modal-header">
-            <h4 class="modal-title">Loyality Points</h4>
+            <h4 class="modal-title">Loyalty Points</h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
 
@@ -391,7 +391,7 @@
           <div class="modal-body">
             <div class="row">
                 <div class="col-md-12">
-                    <h4 class="modal-title">Loyalities</h4>
+                    <p class="text-danger">Note : Eat-Out loyalty is valid acorss all outlets using Eat-Out.<br>Restaurant loyalty may be valid across the chain.</p>
                     <form method="post" id="loyaltyForm">
                         <div id="listBlock"></div>
                         <div id="innerBlock" class="mt-2">
@@ -452,6 +452,7 @@ $(document).ready(function() {
     function bill_page(billid){
         window.location.href = "<?= base_url('customer/rating');?>"+billid;
     }
+
     var CustLoyalty = "<?php echo $this->session->userdata('CustLoyalty'); ?>";
     var checkLoyalty = "<?= $checkLoyalty; ?>";
     if(CustLoyalty > 0 && (checkLoyalty == 0) ){
@@ -459,6 +460,7 @@ $(document).ready(function() {
     }
 
     function getLoyality(){
+        var billAmount = "<?= $billData[0]['PaidAmt'] ?>";
 
         $.post('<?= base_url('customer/get_loyality') ?>',{billId:billId},function(res){
             if(res.status == 'success'){
@@ -473,6 +475,8 @@ $(document).ready(function() {
                             <input type="radio" class="form-check-input" name="LNo" onchange="showPoints(${item.LNo})" value="${item.LNo}" required>${item.Name}
                           </label>
                           <input type="hidden" name="totalPoints[${item.LNo}]" value="${item.totalPoints}" />
+
+                          <input type="hidden" name="billAmount" value="${billAmount}" />
                           <input type="hidden" name="billId" value="${billId}" />
                         </div>`;
                         inner = `<div id="loyalty_${item.LNo}" class="desc">
