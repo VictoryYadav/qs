@@ -104,7 +104,7 @@ body{
                                         <input type="text" placeholder="Amount" class="form-control item-value" required name="amount" id="amount1" value="<?= convertToUnicodeNumber(round($payable)); ?>" <?php if($this->session->userdata('MultiPayment') == 0){ echo 'readonly'; } ?> onblur="changeValue(this)">
                                     </td>
                                     <td>
-                                        <select name="mode" id="mode1" class="form-control selectMode" required>
+                                        <select name="mode" id="mode1" class="form-control selectMode" required onchange="changeMode(1)">
                                             <option value=""><?= $this->lang->line('chooseMode'); ?></option>
                                             <?php
                                             foreach ($modes as $key) {
@@ -118,7 +118,7 @@ body{
                                         <button class="btn btn-sm btn-success btngo" id="go1" onclick="goPay(1)"><?php echo  $this->lang->line('pay'); ?></button>
                                     </td>
                                     <td>
-                                        <span id="payStatus1"><i class="fa fa-spinner" style="color:orange;"></i></span>
+                                        <span id="payStatus1"><i class="fa fa-spinner" fstyle="color:orange;"></i></span>
                                     </td>
                                     <td>
                                         <button class="btn btn btn-sm btn-danger deleteRow"><i class="fa fa-trash" id="delBtn1"></i></button>
@@ -213,6 +213,39 @@ body{
       </div>
     </div>
 
+    <!-- Loyalty Modal -->
+    <div class="modal" id="loyaltyModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Loyalty</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                        <table class="table order-list" id="splitTable">
+                            <thead>
+                                <tr>
+                                    <th><?= $this->lang->line('name'); ?></th>
+                                    <th>Earned Points</th>
+                                    <th>Used Points</th>
+                                </tr>
+                            </thead>
+                            <tbody id="loyaltyBody">
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- footer section -->
     <?php $this->load->view('layouts/customer/footer'); ?>
     <!-- end footer section -->
@@ -270,6 +303,50 @@ body{
     });
 });
 
+function changeMode(serialNo){
+    var pMode = $(`#mode${serialNo}`).val();
+    var billAmount = $('#payableAmt').val();
+    // loyalty
+    if(pMode == 31 || pMode == 32){
+
+        $.post('<?= base_url('customer/get_loyalty_points') ?>',{EatOutLoyalty : pMode},function(res){
+            if(res.status == 'success'){
+                if(res.response.length > 0){
+                    var temp = ``;
+                    var usedPointsAmt = 0;
+                    var billPerc = (billAmount * res.response[0].billUsagePerc) / 100;
+                    billPerc = Math.round(billPerc);
+                    if(parseInt(billPerc) > parseInt(res.response[0].MaxPointsUsage)){
+                        usedPointsAmt = res.response[0].MaxPointsUsage;
+                    }else{
+                        usedPointsAmt = billPerc;
+                    }
+                    var availPoints = parseInt(res.response[0].EarnedPoints) - parseInt(res.response[0].UsedPoints);
+                    if(parseInt(availPoints) < parseInt(usedPointsAmt)){
+                        usedPointsAmt = availPoints;
+                    }
+
+                    $(`#amount${serialNo}`).val(usedPointsAmt);
+                    res.response.forEach((item, index) => {
+                        temp += `<tr>
+                                    <td>${item.Name}</td>
+                                    <td>${item.EarnedPoints}</td>
+                                    <td>${item.UsedPoints}</td>
+                                </tr>`;
+                    });  
+                }else{
+                    temp += `<tr>
+                                <td colspan="3">No Loyalty Points Found!!</td>
+                            </tr>`;
+                }
+                $('#loyaltyBody').html(temp);
+                $('#loyaltyModal').modal('show');
+            }else{ 
+              alert(res.response);  
+            }
+        });
+    }
+}
 
 function goPay(val){
      $('.btngo').attr("disabled", "disabled");
@@ -312,6 +389,18 @@ function goPay(val){
             }
         });
     }
+
+    // loyalty
+    if(mode == 31 || mode == 32){
+
+        $.post('<?= base_url('customer/loyalty_pay') ?>',{amount:amount,mode:mode, BillId:BillId,MCNo:MCNo,payable:payable},function(res){
+            if(res.status == 'success'){
+                location.reload();
+            }else{ 
+              alert(res.response);  
+            }
+        });
+    }
     // razorpay
     if(mode == 35){
         var totAmt = 0;
@@ -334,6 +423,7 @@ function goPay(val){
             }
         });
     }
+
     // onAccount, RoomNo, MembershipNo, EmployeeId
     if(mode >=20 && mode <= 30){
 

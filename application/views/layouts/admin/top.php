@@ -65,6 +65,9 @@ body[data-topbar=dark] .header-item {
 
 
                     </div>
+                    <div class="" style="font-size: 15px;">
+                        <?= $title; ?>
+                    </div>
 
                      <!-- Search input -->
                      <div class="search-wrap" id="search-wrap">

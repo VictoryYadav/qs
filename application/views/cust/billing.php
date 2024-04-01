@@ -77,6 +77,14 @@
     background-color: #efd4b3;
     color:#fff;   
 }
+
+#innerBlock table{
+    width: 100%;
+}
+
+/*#innerBlock th, td {
+  padding: 5px;
+}*/
     </style>
 </head>
 
@@ -368,6 +376,38 @@
         </div>
     </section>
 
+<!-- loyalty modal -->
+    <div class="modal fade" id="loyalityModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Loyality Points</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="modal-title">Loyalities</h4>
+                    <form method="post" id="loyaltyForm">
+                        <div id="listBlock"></div>
+                        <div id="innerBlock" class="mt-2">
+                        </div>
+                        <div class="mt-2">
+                            <input type="submit" class="btn btn-sm btn-success" value="Submit">
+                        </div>
+                    </form>
+                </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
     <!-- footer section -->
     <?php $this->load->view('layouts/customer/footer'); ?>
     <!-- end footer section -->
@@ -377,36 +417,108 @@
     <?php $this->load->view('layouts/customer/script'); ?>
     <!-- end Js Plugins -->
 <script src="<?= base_url(); ?>assets/js/sendalert_notification.js"></script>
+
 </body>
 
 <script>
                     
 
 $(document).ready(function() {
-    var doc = new jsPDF();
-    var specialElementHandlers = {
-        '#editor': function(element, renderer) {
-            return true;
-        }
-    };
+    $("div.desc").hide();
+    
 
-    $('#download-pdf').click(function() {
-        doc.fromHTML($('#download-to-pdf').html(), 15, 15, {
-            'width': 170,
-            'elementHandlers': specialElementHandlers
-        });
-        doc.save('bill.pdf');
-    });
+    // var doc = new jsPDF();
+    // var specialElementHandlers = {
+    //     '#editor': function(element, renderer) {
+    //         return true;
+    //     }
+    // };
+
+    // $('#download-pdf').click(function() {
+    //     doc.fromHTML($('#download-to-pdf').html(), 15, 15, {
+    //         'width': 170,
+    //         'elementHandlers': specialElementHandlers
+    //     });
+    //     doc.save('bill.pdf');
+    // });
 });
 
+    var billId = "<?= $billId; ?>";
 
 // $('#download-to-pdf').on('click', function() {
 //     alert('Thank you for using Quick Service.');
 // });
 
-function bill_page(billid){
-    window.location.href = "<?= base_url('customer/rating');?>"+billid;
-}
+    function bill_page(billid){
+        window.location.href = "<?= base_url('customer/rating');?>"+billid;
+    }
+    var CustLoyalty = "<?php echo $this->session->userdata('CustLoyalty'); ?>";
+    var checkLoyalty = "<?= $checkLoyalty; ?>";
+    if(CustLoyalty > 0 && (checkLoyalty == 0) ){
+        getLoyality();
+    }
+
+    function getLoyality(){
+
+        $.post('<?= base_url('customer/get_loyality') ?>',{billId:billId},function(res){
+            if(res.status == 'success'){
+              var data = res.response;
+              if(data.length > 0){
+                var rdoOption = '';
+                var inner = ``;
+                var tblTemp = ``;
+                data.forEach((item, index) => {
+                    rdoOption += `<div class="form-check-inline">
+                          <label class="form-check-label">
+                            <input type="radio" class="form-check-input" name="LNo" onchange="showPoints(${item.LNo})" value="${item.LNo}" required>${item.Name}
+                          </label>
+                          <input type="hidden" name="totalPoints[${item.LNo}]" value="${item.totalPoints}" />
+                          <input type="hidden" name="billId" value="${billId}" />
+                        </div>`;
+                        inner = `<div id="loyalty_${item.LNo}" class="desc">
+                                    <table style="border: 1px solid #bdb4b4;border-collapse: collapse">
+                                        <tr>
+                                            <th>Mode</th>
+                                            <th>Points</th>
+                                        </tr>`;
+                        item.points.forEach((loy, ind) =>{
+                            inner += `<tr>
+                                            <td>${loy.Name}</td>
+                                            <td>${loy.PointsValue}</td>
+                                      </tr>`;
+                        });
+                         inner += `</table>
+                                    </div>`;
+                        $(`#innerBlock`).append(inner);
+                });
+                $(`#listBlock`).html(rdoOption);
+                $("div.desc").hide();
+                $(`#loyalityModal`).modal('show');
+              }
+            }else{
+              alert(res.response);
+            }
+        });
+    }
+
+    function showPoints(LNo){
+        $("div.desc").hide();
+        $(`#loyalty_${LNo}`).show();
+    }
+
+    $('#loyaltyForm').on('submit', function(e){
+        e.preventDefault();
+
+        var data = $(this).serializeArray();
+        $.post('<?= base_url('customer/update_loyalty_point') ?>',data,function(res){
+            if(res.status == 'success'){
+              alert(res.response);
+              location.reload();
+            }else{
+              alert(res.response);
+            }
+        });
+    })
 
 </script>
 

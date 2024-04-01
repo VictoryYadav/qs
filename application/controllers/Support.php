@@ -311,71 +311,6 @@ class Support extends CI_Controller {
 
                 // create user in usersrest
                 
-                // if(!empty($dbName)){
-
-                //     $db3 = $this->load->database($dbName, TRUE);
-                //     $EID = $CNo;
-
-                //     $db3->query("UPDATE UsersRoleDaily SET EID = $EID");
-                //     $db3->query("UPDATE Eat_Casher SET EID = $EID");
-                //     $db3->query("UPDATE Eat_Kit SET EID = $EID");
-                //     $db3->query("UPDATE Eat_DispOutlets SET EID = $EID");
-                //     $db3->query("UPDATE UsersRest SET EID = $EID, DeputedEID = $EID");
-                //     $db3->query("UPDATE Config SET EID = $EID");
-
-                //     $user['FName'] = $_POST['ContactPerson'];
-                //     $user['MobileNo'] = $_POST['CellNo'];
-                //     $user['PEmail'] = $_POST['Email'];
-                //     $user['UTyp'] = 9;
-                //     $user['Passwd'] = 'eo1234';
-                //     $user['DOB'] = date('Y-m-d', strtotime($_POST['DOB']));
-                //     $user['Stat'] = 0;
-                //     $user['EID'] = $EID;
-
-                //     $genDB->insert('UsersRest', $user);
-
-                //     $user['PWDHash'] = md5($user['Passwd']);
-                //     $db3->insert('UsersRest', $user);
-                //     $userId = $db3->insert_id();
-
-                //     // update eatary table
-                //     $eatry['Name'] = $pData['Name'];
-                //     $eatry['ECatg'] = $pData['ECatg'];
-                //     $eatry['CatgID'] = $pData['CatgID'];
-                //     $eatry['ContactNos'] = $pData['ContactPerson'];
-                //     $eatry['Email'] = $pData['Email'];
-                //     $eatry['PhoneNos'] = $pData['CellNo'];
-                //     $eatry['GSTNo'] = $pData['GSTNo'];
-                //     $eatry['ChainId'] = $pData['ChainId'];
-                //     $eatry['Addr'] = $pData['Area'];
-                //     $eatry['Suburb'] = $pData['Suburb'];
-                //     $eatry['City'] = $pData['City'];
-                //     $eatry['Pincode'] = $pData['PIN'];
-                //     $eatry['ContactAddr'] = $pData['HOAddress'];
-                //     $eatry['lat'] = $pData['Lat'];
-                //     $eatry['lng'] = $pData['Lng'];
-                //     $eatry['LoginCd'] = $userId;
-                //     $db3->update('Eatary', $eatry, array('EID' => 1));
-                //     // end of update eatary table
-
-                //     $roles = $db3->get_where('UserRoles', array('Stat' => 0))->result_array();
-                //     $temp = [];
-                //     $userRolesAccessObj = [];
-                //     foreach ($roles as $role) {
-                //         $temp['EID'] = $EID;
-                //         $temp['RUserId'] = $userId;
-                //         $temp['RoleId'] = $role['RoleId'];
-                //         $temp['Stat'] = 0;    
-                //         $temp['LoginCd'] =$userId;
-                //         $userRolesAccessObj[] = $temp;
-                //     }
-
-                //     if(!empty($userRolesAccessObj)){
-                //         $db3->insert_batch('UserRolesAccess', $userRolesAccessObj); 
-                //     }
-
-                //     $this->session->set_flashdata('success','Please login through the link and upload your restaurant data.');
-                // }
                 
                 $status = 'success';
                 $response = $CNo;
@@ -486,6 +421,83 @@ class Support extends CI_Controller {
                 'response' => $response
               ));
              die; 
+        }
+    }
+
+    public function loyality(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            $loyal['Name'] = $_POST['Name'];
+            $loyal['MinPaidValue'] = $_POST['MinPaidValue'];
+            $loyal['MaxPointsUsage'] = $_POST['MaxPointsUsage'];
+            $loyal['billUsagePerc'] = $_POST['billUsagePerc'];
+            $loyal['AcrossOutlets'] = $_POST['AcrossOutlets'];
+            $loyal['EatOutLoyalty'] = $_POST['EatOutLoyalty'];
+            $loyal['Validity'] = $_POST['Validity'];
+            $loyal['Stat'] = 0;
+            $LNo = insertRecord('LoyaltyConfig', $loyal);
+            if(!empty($LNo)){
+                for ($i=0; $i < sizeof($_POST['PointsValue']); $i++) { 
+                    $loyalDet['PointsValue'] = $_POST['PointsValue'][$i];
+                    $loyalDet['PymtMode'] = $_POST['PymtMode'][$i];
+                    $loyalDet['Stat'] = 0;
+                    $loyalDet['LNo'] = $LNo;
+                     insertRecord('LoyaltyConfigDet', $loyalDet);
+                }
+                $status = 'success';
+                $response = 'Loyality Added.';
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die; 
+        }
+        $data['title'] = 'Loyality';
+        $data['modes'] = $this->supp->getPaymentModes();
+        $data['lists'] = $this->supp->getLoyalities();
+
+        $this->load->view('support/loyality', $data); 
+    }
+
+    public function get_rest_list(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+            $response = $this->supp->getRestList();
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                    'status' => $status,
+                    'response' => $response
+                  ));
+            die; 
+        }
+    }
+
+    public function updateLoyalityStats(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $stat = ($_POST['Stat'] == 1)?0:1;
+            updateRecord('LoyaltyConfig', array('Stat' => $stat), array('LNo' => $_POST['LNo']));
+            
+            $status = "success";
+            $response = 'Status Updated.';
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                    'status' => $status,
+                    'response' => $response
+                  ));
+            die; 
         }
     }
   

@@ -1609,6 +1609,11 @@ class Customer extends CI_Controller {
             $data['total_delivery_charge_amount'] = $billData[0]['DelCharge'];
 
             $data['billData'] = $res['billData'];
+            $data['checkLoyalty'] = 0;
+            $checkLoyalty = $this->cust->checkLoyaltyPoints($billId);
+            if(!empty($checkLoyalty) && $checkLoyalty['Points'] > 0){
+                $data['checkLoyalty'] = 1;
+            }
             $this->load->view('cust/billing', $data);
         }else{
             $data['title'] = 'Bills';
@@ -1688,7 +1693,7 @@ class Customer extends CI_Controller {
                      'billAmount'   => $_POST['billAmount'],
                      'MobileNo'     => $this->session->userdata('CellNo'),
                      'OTP'          => 0,
-                     'earnedPoints' => 0,
+                     'Points'       => 0,
                      'earned_used'  => 0
                     );
 
@@ -2762,6 +2767,120 @@ class Customer extends CI_Controller {
 
             $status = 'success';
             $response = getDiscount($mobile);
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+    
+    public function get_loyality(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            
+            $status = 'success';
+            $response = $this->cust->getLoyalityList($_POST['billId']);
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function update_loyalty_point(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $EID = authuser()->EID;
+            $LNo = $_POST['LNo'];
+            $totalPoints = $_POST['totalPoints'][$LNo];
+            $billId = $_POST['billId'];
+            $CustId = $this->session->userdata('CustId');
+
+            updateRecord('Loyalty', array('LNo' => $LNo, 'Points' => $totalPoints), array('EID' => $EID, 'billId' => $billId, 'custId' => $CustId));
+
+            $status = 'success';
+            $response = 'Loyality Points Updated';
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function get_loyalty_points(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $CustId = $this->session->userdata('CustId');
+
+            $status = 'success';
+            $response = $this->cust->getLoyaltiPoints($CustId, $_POST['EatOutLoyalty']);
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }   
+    }
+
+    public function loyalty_pay(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            
+            $pay['BillId'] = $_POST['BillId'];
+            $pay['MCNo'] = $_POST['MCNo'];
+            $pay['MergeNo'] = $this->session->userdata('MergeNo');
+            $pay['TotBillAmt'] = $_POST['payable'];
+            $pay['CellNo'] = $this->session->userdata('CellNo');
+            $pay['SplitTyp'] = 0;
+            $pay['SplitAmt'] = 0;
+            $pay['PymtId'] = 0;
+            $pay['PaidAmt'] = $_POST['amount'];
+            $pay['OrderRef'] = 0;
+            $pay['PaymtMode'] = $_POST['mode'];
+            $pay['PymtType'] = 0;
+            $pay['PymtRef'] = 0;
+            $pay['Stat'] = 0;
+            $pay['EID'] = authuser()->EID;
+
+            insertRecord('BillPayments', $pay);
+            
+            $loyalties = array(
+                     'LId'          => 0,
+                     'custId'       => $this->session->userdata('CustId'),
+                     'EID'          => $pay['EID'],
+                     'billId'       => $pay['BillId'],
+                     'billDate'     => date('Y-m-d H:i:s'),
+                     'billAmount'   => $_POST['billAmount'],
+                     'MobileNo'     => $this->session->userdata('CellNo'),
+                     'OTP'          => 0,
+                     'Points'       => $pay['PaidAmt'],
+                     'earned_used'  => 1
+                    );
+            insertLoyalty($loyalties);
+
+            if(!empty($payNo)){
+                $status = 'success';
+                $response = 'Loyalty payment is successfull.';
+            }
             
             header('Content-Type: application/json');
             echo json_encode(array(

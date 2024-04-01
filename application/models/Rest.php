@@ -42,6 +42,13 @@ class Rest extends CI_Model{
 						->result_array();
 	}
 
+	public function getOTypeList(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Name";
+		return $this->db2->select("*, $lname")->get_where('ordeType', array('Stat' => 0))
+					->result_array();
+	}
+
 	public function addUser($data){
 
 		unset($data['RUserId']);
@@ -1648,9 +1655,208 @@ class Rest extends CI_Model{
 	}
 
 	public function getCustAccounts($billId){
+		$EID = authuser()->EID;
+
 		return $this->db2->get_where('custAccounts', array('EID' => $EID, 'billId' => $billId))->row_array();
 	}
+
+	public function getOnaccountsData(){
+
+		$EID = authuser()->EID;
+		return $this->db2->query("SELECT b.CustId, b.CellNo, CONCAT_WS(' ', u.FName, u.LName) as Fullname, b.PaidAmt, b.billTo, DATE_FORMAT(DATE(b.billTime), '%d-%b-%Y - %H:%i') as billTime, IFNULL(b.PaidAmt - (SELECT IFNULL(sum(bp.PaidAmt), 0) From BillPayments bp, Billing b1 where bp.BillId = b1.BillId and bp.EID=b1.EID and b1.BillId = b.BillId and b1.EID = b.EID group by bp.EID, bp.BillId ,b1.EID, b1.BillId),b.PaidAmt) as totalBillPaidAmt
+			FROM Billing b Inner join Users u on u.uId = b.CustId
+			WHERE b.Stat = 25
+			AND b.EID = $EID
+			Group by b.CustId
+			ORDER BY b.BillId ASC")
+					->result_array();
+	}
 	
+	public function getSalesSummary($dt){
+		$EID = authuser()->EID;
+		if(!empty($dt['fromDate'])){
+        	$this->db2->where('b.billTime >=', date('Y-m-d',strtotime($dt['fromDate'])));
+        }
+        if(!empty($dt['toDate'])){
+        	$this->db2->where('b.billTime <=', date('Y-m-d',strtotime($dt['toDate'])));
+        }
+		return $this->db2->select("DAYNAME(b.billTime) as dayName, DATE_FORMAT(DATE(b.billTime), '%d-%b-%Y') as billTime, sum(b.PaidAmt) as billAmt, sum(b.TotPckCharge) as TotPckCharge, sum(DelCharge) as DelCharge, sum(b.SerCharge) as SerCharge, sum(b.Tip) as tips, sum(b.TotItemDisc + b.BillDiscAmt + b.RtngDiscAmt + b.custDiscAmt) as Discounts")
+						->order_by('b.billTime', 'ASC')
+						->group_by('date(b.billTime)')
+						->where_in('b.Stat', array(1,5,25))
+						->get_where('Billing b', array('b.EID' => $EID))
+						->result_array();
+
+	}
+
+	public function getSalesRepots($pData){
+		
+		if(!empty($pData['fromDate'])){
+        	$this->db2->where('b.billTime >=', date('Y-m-d',strtotime($pData['fromDate'])));
+        }
+        if(!empty($pData['toDate'])){
+        	$this->db2->where('b.billTime <=', date('Y-m-d',strtotime($pData['toDate'])));
+        }
+
+        if(!empty($pData['orderBy'])){
+        	$this->db2->order_by('sum(k.Qty)', 'DESC');
+        	if($pData['orderBy'] == 'value'){
+        		$this->db2->order_by('sum(k.Qty * k.ItmRate)', 'DESC');
+        	}
+        }
+
+        if(!empty($pData['modes'])){
+        	$this->db2->order_by('k.Qty', 'ASC');
+        	// full_menu
+        	if($pData['modes'] == 'traded_goods'){
+        		$this->db2->where('rmi.ItemId >', 0);
+        		$this->db2->where('rmi.EID', $EID);
+        		$this->db2->join('RMItems rmi', 'rmi.ItemId = mi.ItemId', 'inner');
+        	}
+        }
+
+		$EID = authuser()->EID;
+		$langId = $this->session->userdata('site_lang');
+		$itemName = "mi.ItemNm$langId as menuItem";
+
+		return $this->db2->select("DATE_FORMAT(DATE(b.billTime), '%d-%b-%Y') as billTime, $itemName, sum(k.Qty) as Qty, sum(k.Qty * k.ItmRate) as itemValue ")
+						->order_by('b.billTime', 'ASC')
+						->group_by('k.ItemId, date(b.billTime)')
+						->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
+						->join('Kitchen k', 'k.MCNo = km.MCNo', 'inner')
+						->join('MenuItem mi', 'mi.ItemId = k.ItemId', 'inner')
+						->where_in('b.Stat', array(1,5,25))
+						->get_where('Billing b', array(
+												'b.EID' => $EID,
+												'km.EID' => $EID,
+												'k.EID' => $EID,
+												'mi.EID' => $EID,
+												'k.Stat' => 3
+												)
+									)
+						->result_array();
+	}
+
+	public function getItemSalesRepots($pData){
+		// echo "<pre>";
+		// print_r($pData);
+		// die;
+
+		if(!empty($pData['fromDate'])){
+        	$this->db2->where('b.billTime >=', date('Y-m-d',strtotime($pData['fromDate'])));
+        }
+        if(!empty($pData['toDate'])){
+        	$this->db2->where('b.billTime <=', date('Y-m-d',strtotime($pData['toDate'])));
+        }
+
+        if(!empty($pData['orderBy'])){
+        	$this->db2->order_by('sum(k.Qty)', 'DESC');
+        	if($pData['orderBy'] == 'value'){
+        		$this->db2->order_by('sum(k.Qty * k.ItmRate)', 'DESC');
+        	}
+        }
+
+        if(!empty($pData['modes'])){
+        	// full_menu
+        	if($pData['modes'] == 'traded_goods'){
+        		$this->db2->where('rmi.ItemId >', 0);
+        		$this->db2->where('rmi.EID', $EID);
+        		$this->db2->join('RMItems rmi', 'rmi.ItemId = mi.ItemId', 'inner');
+        	}
+        }
+
+		$EID = authuser()->EID;
+		$langId = $this->session->userdata('site_lang');
+		$itemName = "mi.ItemNm$langId as menuItem";
+
+		return $this->db2->select("$itemName, sum(k.Qty) as Qty, sum(k.Qty * k.ItmRate) as itemValue ")
+						->order_by("mi.ItemNm1", 'ASC')
+						->group_by('k.ItemId')
+						->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
+						->join('Kitchen k', 'k.MCNo = km.MCNo', 'inner')
+						->join('MenuItem mi', 'mi.ItemId = k.ItemId', 'inner')
+						->where_in('b.Stat', array(1,5,25))
+						->get_where('Billing b', array(
+												'b.EID' => $EID,
+												'km.EID' => $EID,
+												'k.EID' => $EID,
+												'mi.EID' => $EID,
+												'k.Stat' => 3
+												)
+									)
+						->result_array();
+	}
+	
+	public function getContributionRepots($pData){
+		// echo "<pre>";
+		// print_r($pData);
+		// die;
+
+		if(!empty($pData['fromDate'])){
+        	$this->db2->where('b.billTime >=', date('Y-m-d',strtotime($pData['fromDate'])));
+        }
+
+        if(!empty($pData['toDate'])){
+        	$this->db2->where('b.billTime <=', date('Y-m-d',strtotime($pData['toDate'])));
+        }
+
+        if(!empty($pData['cuisine'])){
+        	$this->db2->where('mi.CID', $pData['cuisine']);
+        }
+
+        if(!empty($pData['menucat'])){
+        	$this->db2->where('mi.MCatgId', $pData['menucat']);
+        }
+
+        if(!empty($pData['orderBy'])){
+        	$this->db2->order_by('sum(k.Qty)', 'DESC');
+        	if($pData['orderBy'] == 'value'){
+        		$this->db2->order_by('sum(k.Qty * k.ItmRate)', 'DESC');
+        	}
+        }
+
+        if(!empty($pData['modes'])){
+        	// full_menu
+        	if($pData['modes'] == 'traded_goods'){
+        		$this->db2->where('rmi.ItemId >', 0);
+        		$this->db2->where('rmi.EID', $EID);
+        		$this->db2->join('RMItems rmi', 'rmi.ItemId = mi.ItemId', 'inner');
+        	}
+        }
+
+        if(!empty($pData['OType'])){
+        	if($pData['OType']> 0){
+        		$this->db2->where('k.OType', $pData['OType']);
+        	}
+        }
+
+		$EID = authuser()->EID;
+		$langId = $this->session->userdata('site_lang');
+		$itemName = "mi.ItemNm$langId as ItemName";
+		$menuCat = "mc.Name$langId as menuCatName";
+		$cuisineName = "c.Name$langId as CuisineName";
+
+		return $this->db2->select("DATE_FORMAT(DATE(b.billTime), '%d-%b-%Y') as billTime, $cuisineName, $menuCat, $itemName, sum(k.Qty) as Qty, sum(k.Qty * k.ItmRate) as itemValue, (SELECT sum(k1.Qty) FROM kitchen k1 WHERE k1.Stat = 3 and date(k1.LstModDt) = date(b.billTime) and k1.EID=b.EID) as totalQty, (SELECT sum(k2.Qty *k2.ItmRate) FROM kitchen k2 WHERE k2.Stat = 3 and date(k2.LstModDt) = date(b.billTime) and k2.EID=b.EID) as totalItemValue ")
+						->order_by("c.Name1, mc.Name1, mi.ItemNm1", 'ASC')
+						->group_by('mi.ItemId, date(b.billTime)')
+						->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
+						->join('Kitchen k', 'k.MCNo = km.MCNo', 'inner')
+						->join('MenuItem mi', 'mi.ItemId = k.ItemId', 'inner')
+						->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')
+						->join('Cuisines c', 'c.CID = mi.CID', 'inner')
+						->where_in('b.Stat', array(1,5,25))
+						->get_where('Billing b', array(
+												'b.EID' => $EID,
+												'km.EID' => $EID,
+												'k.EID' => $EID,
+												'mi.EID' => $EID,
+												'k.Stat' => 3
+												)
+									)
+						->result_array();
+						print_r($this->db2->last_query());
+						die;
+	}
 
 	
 }

@@ -1062,7 +1062,6 @@ class Cust extends CI_Model{
     		$whr = "(mii.FID = 1 or mii.FID = 2)";
     	}
 
-    	$EID = authuser()->EID;
     	$langId = $this->session->userdata('site_lang');
         $ItemGrpName = "mi.ItemNm$langId as ItemGrpName";
         $ItemNm = "mii.ItemNm$langId as Name";
@@ -1080,7 +1079,7 @@ class Cust extends CI_Model{
             		->join('MenuItemRates mir', 'mir.ItemId = mii.ItemId', 'inner')
             		->where($whr)
             		->get_where('ItemTypesGroup itg', array(
-            							'itg.EID' => $EID,
+            							'itg.EID' => $this->EID,
             							'itg.Stat' => 0,
             							'itg.ItemId' => $ItemId,
             							'mir.Itm_Portion' => $itemPortionCode,
@@ -1098,7 +1097,7 @@ class Cust extends CI_Model{
             		->join('MenuItemRates mir', 'mir.ItemId = mii.ItemId', 'inner')
             		->where($whr)
             		->get_where('ItemTypesGroup itg', array(
-            							'itg.EID' => $EID,
+            							'itg.EID' => $this->EID,
             							'itg.Stat' => 0,
             							'mir.Itm_Portion' => $itemPortionCode,
             							'itg.ItemTyp' => $itemTyp
@@ -1166,8 +1165,8 @@ class Cust extends CI_Model{
 						->order_by('ee.Dayno', 'ASC')
                         ->join('Entertainment e', 'e.EntId = ee.EntId', 'inner')
                         ->get_where('Eat_Ent ee', array('ee.Stat' => 0,
-                        				 'ee.EID' => authuser()->EID,
-                        				 'e.EID' => authuser()->EID,
+                        				 'ee.EID' => $this->EID,
+                        				 'e.EID' => $this->EID,
                         				 'ee.Dayno >=' => date('Y-m-d')
                         				))
                         ->result_array();
@@ -1498,7 +1497,7 @@ class Cust extends CI_Model{
 	public function getPaymentModes(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId as Name";
-		return $this->db2->select("PymtMode, $lname ,Company, CodePage1")->get_where('ConfigPymt', array('Stat' => 1, 'EID' => authuser()->EID))->result_array();
+		return $this->db2->select("PymtMode, $lname ,Company, CodePage1")->get_where('ConfigPymt', array('Stat' => 1, 'EID' => $this->EID))->result_array();
 	}
 
 	public function getSplitPayments($billId){
@@ -1533,11 +1532,10 @@ class Cust extends CI_Model{
 	}
 
 	public function getCurrenOrderBill($custId){
-		$EID = authuser()->EID;
 		return $this->db2->select('BillStat, CNo')
 						->order_by('CNo', 'DESC')
 						->get_where('KitchenMain', array('CustId' => $custId,
-														 'EID' => $EID
+														 'EID' => $this->EID
 														)
 									)->row_array();
 	}
@@ -1545,7 +1543,7 @@ class Cust extends CI_Model{
 	public function checkBillCreation($MCNo){
 		return $this->db2->select('BillId, CNo')
 						->where_in('Stat', array(1,5))
-						->get_where('Billing', array('CNo' => $MCNo, 'EID' => authuser()->EID))
+						->get_where('Billing', array('CNo' => $MCNo, 'EID' => $this->EID))
 						->row_array();
 	}
 
@@ -1562,13 +1560,13 @@ class Cust extends CI_Model{
 		$this->db2->where('MCNo', $MCNo);
 
 		return $this->db2->get_where('BillingLinks', array(
-									'EID' => authuser()->EID
+									'EID' => $this->EID
 									))
 				->result_array();
 	}
 
 	public function getTableDetails($table){
-		return $this->db2->select('TblTyp, Capacity, SecId, CCd')->get_where('Eat_tables', array('EID' => authuser()->EID, 'TableNo' => $table))->row_array();
+		return $this->db2->select('TblTyp, Capacity, SecId, CCd')->get_where('Eat_tables', array('EID' => $this->EID, 'TableNo' => $table))->row_array();
 	}
 
 	public function checkUserFromGenDb($mobile){
@@ -1579,6 +1577,87 @@ class Cust extends CI_Model{
 		                ->row_array();
 	}
 
+	public function getLoyalityList($BillId){
+		$EID = $this->EID;
+		$CustId = $this->session->userdata('CustId');
+
+		$data = array();
+		$billDT = $this->db2->query("SELECT (bp.PaidAmt) as rcvdamt,bp.PaymtMode,   (SELECT sum(b1.PaidAmt) from Billing b1 where b1.BillId=bp.BillId and b1.EID= $EID and b1.CustId = $CustId) as totpayable from BillPayments bp  where  bp.BillId= $BillId and bp.EID = $EID")->result_array();
+
+		if(!empty($billDT)){
+
+				$loyaltyDT = $this->db2->get_where('LoyaltyConfig lc', 
+										 array('lc.MinPaidValue >=' => $billDT[0]['totpayable'], 
+										 	'lc.Stat' => 0)
+										 )
+				    				->result_array();
+				if(!empty($loyaltyDT)){
+					foreach ($loyaltyDT as &$row) {
+						$langId = $this->session->userdata('site_lang');
+        				$lname = "c.Name$langId as Name";
+						$configDet = $this->db2->select("PointsValue, $lname, c.PymtMode")
+												->join('ConfigPymt c', 'c.PymtMode = l.PymtMode', 'left')
+												->get_where('LoyaltyConfigDet l', array(
+													'l.LNo' => $row['LNo'],
+													'l.Stat' => 0
+													)
+												)
+												->result_array();
+						$points = [];
+						$tmpPoint = [];
+						$totalPoints = 0;
+						foreach ($configDet as $con) {
+							if($con['PymtMode'] == 0){
+								$tmpPoint['Name'] = 'All Payment';
+								$tmpPoint['PymtMode'] = $con['PymtMode'];
+								$tmpPoint['PointsValue'] = round($billDT[0]['totpayable'] / $con['PointsValue'], 2); 
+								$points[] = $tmpPoint;
+								$totalPoints = $tmpPoint['PointsValue'];
+								break;
+							}else{
+								foreach ($billDT as $bill) {
+									if($bill['PaymtMode'] == $con['PymtMode']){
+										$tmpPoint['Name'] = $con['Name'];
+										$tmpPoint['PymtMode'] = $con['PymtMode'];
+										$tmpPoint['PointsValue'] = round($bill['rcvdamt'] / $con['PointsValue'], 2); 
+										$totalPoints = $totalPoints + $tmpPoint['PointsValue'];
+										$points[] = $tmpPoint;
+									}
+								}
+							} //else block
+						} // configDet block
+						$row['totalPoints'] = $totalPoints;
+						$row['points'] = $points;
+					}
+					$data = $loyaltyDT;
+				}
+		}
+		return $data;
+	}
+
+	public function checkLoyaltyPoints($billId){
+		$CustId = $this->session->userdata('CustId');
+		return $this->db2->get_where('Loyalty', array('EID' => $this->EID, 'custId' => $CustId, 'billId' => $billId))
+					->row_array();
+	}
+	
+	public function getLoyaltiPoints($CustId, $RestEID){
+		if($RestEID == 32){
+			$this->db2->where('lc.EatOutLoyalty', $this->EID);
+		}else{
+			$this->db2->where('lc.EatOutLoyalty', 0);
+		}
+		return $this->db2->select("lc.Name, Sum(Case When l.earned_used = 0 
+         Then l.Points Else 0 End) EarnedPoints, Sum(Case When l.earned_used = 1 
+         Then l.Points Else 0 End) UsedPoints, lc.MaxPointsUsage, lc.billUsagePerc")
+					->group_by('lc.LNo')
+					->join('LoyaltyConfig lc', 'lc.LNo = l.LNo', 'inner')
+					->get_where('Loyalty l', 
+										array('l.EID' => $this->EID, 
+												'l.custId' => $CustId)
+								)
+					->result_array();
+	}
 
 	
 }

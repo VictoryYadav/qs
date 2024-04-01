@@ -34,8 +34,14 @@
             </a>
             <ul class="sub-menu" aria-expanded="false">
                 <li><a href="<?= base_url('restaurant/abc_report'); ?>">ABC Report</a></li>
-                <li><a href="#">Report2</a></li>
-                <li><a href="#">Report3</a></li>
+                <li><a href="<?= base_url('restaurant/tax_report'); ?>">Tax Report</a></li>
+                <li><a href="<?= base_url('restaurant/income_report'); ?>">Income Report</a></li>
+                <li><a href="<?= base_url('restaurant/sales_report'); ?>">Sales Report</a></li>
+                <li><a href="<?= base_url('restaurant/item_sales_report'); ?>">Item Sales Report</a></li>
+                
+                <li><a href="<?= base_url('restaurant/contribution_report'); ?>">Contribution Report</a></li>
+                <li><a href="<?= base_url('restaurant/sale_summary'); ?>">Sale Summary</a></li>
+                <li><a href="<?= base_url('restaurant/onaccount_sale_summary'); ?>">Onaccount Sale Summary</a></li>
             </ul>
         </li>
         

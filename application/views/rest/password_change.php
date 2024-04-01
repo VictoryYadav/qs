@@ -143,34 +143,34 @@
 
         var data = $(this).serializeArray();
         $.post('<?= base_url('restaurant/verifyOTP') ?>',data,function(res){
-                if(res.status == 'success'){
-                  alert(res.response);
-                  window.location = "<?php echo base_url('restaurant'); ?>";
-                  return false;
-                  // location.reload();
-                }else{
-                  alert(res.response);
-                  $('#sendOtp').show();
-                  $('#otp_text').val('');
-                }
-            });
+            if(res.status == 'success'){
+              alert(res.response);
+              window.location = "<?php echo base_url('restaurant'); ?>";
+              return false;
+              // location.reload();
+            }else{
+              alert(res.response);
+              $('#sendOtp').show();
+              $('#otp_text').val('');
+            }
+        });
 
     });
 
     function resend(){
         var old = "<?php echo $this->session->userdata('old_pwd'); ?>";
         var pass = "<?php echo $this->session->userdata('new_pwd'); ?>";
-        console.log(old);
-        console.log(pass);
+        // console.log(old);
+        // console.log(pass);
         $.post('<?= base_url('restaurant/change_password') ?>',{password:pass,c_password:pass,old_password:old},function(res){
-                if(res.status == 'success'){
-                  alert(res.response);
-                }else{
-                  alert(res.response);
-                }
-                $('#sendOtp').show();
-                $('#otp_text').val('');
-            });
+            if(res.status == 'success'){
+              alert(res.response);
+            }else{
+              alert(res.response);
+            }
+            $('#sendOtp').show();
+            $('#otp_text').val('');
+        });
     }
 
 </script>

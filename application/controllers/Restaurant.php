@@ -1434,42 +1434,6 @@ class Restaurant extends CI_Controller {
         } 
     }
 
-    public function cash_bill(){
-        // tempary solution
-        // $_SESSION['DynamicDB'] = $this->session->userdata('my_db');
-        // [DynamicDB] => 51e
-        // $EID = authuser()->EID;
-        // $EType = $this->session->userdata('EType');
-        // $RUserId = authuser()->RUserId;
-        // $data['RUserId'] = $RUserId;
-        // $data['EID'] = $EID;
-        // $data['EType'] = $EType;
-
-        // $billData = $this->db2->query("SELECT BillId,BillNo,PaymtMode, DATE(billTime) as BillDate, TotAmt FROM Billing WHERE PaidAmt = 0 AND EID = $EID AND PaymtMode = 'Cash'")->result_array();
-
-        // $GetDCD = $this->db2->query("SELECT CCd FROM `UsersRoleDaily` WHERE RUserId = $RUserId")->result_array();
-        // $tempArray =explode(",",$GetDCD[0]['CCd']);
-        // $SqlQueryVar = "SELECT CCd, Name FROM Eat_Casher Where EID = $EID AND Stat = 0";
-        // if(count($tempArray) >=1 && $tempArray[0] != ''){
-        //     $SqlQueryVar .=" AND (";
-        // for ($i=0; $i <count($tempArray) ; $i++) { 
-        //     if($i>=1){
-        //         $SqlQueryVar .=" OR ";
-        //     }
-        //     $SqlQueryVar .= "CCd =".$tempArray[$i];
-            
-        // }
-        // $SqlQueryVar .= ")";
-        // }else{
-
-        // }
-        
-        // $data['SettingTableViewAccess'] = $this->db2->query($SqlQueryVar)->result_array();
-
-        // $data['title'] = 'Bill Settlement';
-        // $this->load->view('rest/bill_settle',$data);
-    }
-
     public function bill_view(){
        
         $data['RUserId'] = authuser()->RUserId;
@@ -3506,7 +3470,7 @@ class Restaurant extends CI_Controller {
                      'billAmount'   => $_POST['TotBillAmt'],
                      'MobileNo'     => $_POST['CellNo'],
                      'OTP'          => 0,
-                     'earnedPoints' => 0,
+                     'Points' => 0,
                      'earned_used'  => 0
                     );
             insertLoyalty($loyalties);
@@ -3572,93 +3536,12 @@ class Restaurant extends CI_Controller {
 
     public function test(){
 
-        $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, 40, 0 From Cuisines c, tempMenuItem t, FoodType f where c.Name1 = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
-
-        $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, ItemNm1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink)  SELECT DISTINCT t.IMcCd, 40, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, t.DayNo, t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink From tempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
-
-        $this->db2->query("INSERT INTO MenuItemRates (EID, SecId, ItemId, Itm_Portion, ItmRate)  SELECT 40,1,  i.ItemId, ip.IPCd, t.Rate From tempMenuItem t, ItemPortions ip, MenuItem i where ip.Name1=t.itemPortion and i.ItemNm1=t.ItemNm");
-
+        
         echo "<pre>";
         print_r($_SESSION);
         die;
 
-        // SELECT e.Name, mc.Name1, mc.EID as catgEID, mi.ItemNm1, mi.ItemId, mi.EID as itmEID, mi.Ctyp, f.Name1, f.FID as fidno FROM FoodType f, MenuCatg mc, MenuItem mi, Eatary e WHERE f.fid=mi.fid and  mc.EID=mi.EID and mc.EID=e.EID and mc.MCatgId=mi.MCatgId and mc.Stat=0 and mi.Stat=0 order by e.EID, mc.EID, mc.Name1, mi.Itemid
-        $whr = "mc.EID=mi.EID and ec.EID=mc.EID";
-        $dd = $this->db2->select("e.Name, mc.Name1, mc.EID as catgEID, mi.ItemNm1, mi.ItemId, mi.EID as itmEID, mi.Ctyp, f.Name1, f.FID as fidno, c.Name1 as cuisineName, ec.CID")
-                ->order_by('e.EID, mc.EID, mc.Name1, mi.Itemid', 'DESC')
-                        ->join('MenuItem mi', 'mi.MCatgId =mc.MCatgId', 'inner')
-                        ->join('Eatary e', 'e.EID = mc.EID', 'inner')
-                        ->join('FoodType f', 'f.fid=mi.fid', 'inner')
-                        ->join('Cuisines c', 'c.CID = mc.CID', 'left')
-                        ->join('EatCuisine ec', 'ec.CID = mc.CID', 'left')
-                        ->where($whr)
-                        ->get_where('MenuCatg mc', array(
-                                        'mc.Stat' => 0,
-                                        'mi.Stat' => 0
-                                        )
-                    )->result_array();
-                        print_r($this->db2->last_query());die;
-        // $db3 = $this->load->database('34e', TRUE);
-        // $dd = $db3->get('Eat_Kit')->row_array();
-        // print_r($dd);
-        // die;
-// Define the path to your database.php file
-        $dbName= '222e';
-$database_file = APPPATH . 'config/database.php';
-                    $s = "$";
-                    $db1 = "db['".$dbName."']";
-                    $text_to_append = "$s"."$db1"." = array('dsn'   => '','hostname' => '139.59.28.122','username' => 'developer','password' => 'pqowie321*','database' => '$dbName','dbdriver' => 'mysqli','dbprefix' => '','pconnect' => FALSE,'db_debug' => (ENVIRONMENT !== 'production'),'cache_on' => FALSE,'cachedir' => '','char_set' => 'utf8','dbcollat' => 'utf8_general_ci','swap_pre' => '','encrypt' => FALSE,'compress' => FALSE,'stricton' => FALSE,'failover' => array(),'save_queries' => TRUE);\n";
-                        file_put_contents($database_file, $text_to_append.PHP_EOL , FILE_APPEND |   LOCK_EX);
-die;
-die;
-
         
-
-        // menu item rates
-        $dd = $this->db2->select("e.Name as RestName, mi.ItemNm, es.Name as Section, ip.Name as Item Portion, mir.ItmRate")
-                ->group_by('mi.ItemId')
-                ->join('MenuItem mi', 'mi.ItemId = mir.ItemId', 'inner')
-                ->join('Eatary e', 'e.EID = mi.EID', 'inner')
-                ->join('Eat_Sections es', 'es.SecId = mir.SecId', 'inner')
-                ->join('ItemPortions ip', 'ip.IPCd = mir.Itm_Portion', 'inner')
-                ->get('MenuItemRates mir')
-                ->result_array();
-
-        echo "<pre>";
-            print_r($this->db2->last_query());
-            print_r($dd);
-            die;
-
-        // menu item
-        $dd = $this->db2->select('e.Name as RestName, c.Name as Cuisine, mc.MCatgNm,fdd.Usedfor as CatgType, fd.Opt FoodType, mi.ItemNm, mi.IMcCd, mi.PckCharge, it.Name as ItemType, mi.ItemAttrib, mi.ItemSale, mi.ItemTag, mi.NV, mi.MaxDisc, mi.StdDiscount, mi.DiscRate, mi.Rank, mi.ItmDesc, mi.Ingeredients, mi.MaxQty, mi.MTyp, mi.Rmks as Remarks, mi.PrepTime,  mi.FrmTime, mi.ToTime, mi.AltFrmTime, mi.AltToTime, mi.DayNo, mi.KitCd, mi.videoLink')
-            ->group_by('mi.ItemId')
-                        ->join('Eatary e', 'e.EID = mi.EID', 'inner')
-                        ->join('Cuisines c', 'c.CID = mi.CID', 'inner')
-                        ->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')
-                        ->join('FoodType fd', 'fd.FID = mi.FID', 'inner')
-                        ->join('FoodType fdd', 'fdd.CTyp = mi.CTyp', 'inner')
-                        ->join('ItemTypes it', 'it.ItmTyp = mi.ItemTyp')
-                        ->get('MenuItem mi')
-                        ->result_array();
-
-                        echo "<pre>";
-            print_r($this->db2->last_query());
-            print_r($dd);
-            die;
-        // menuCategory
-            $dd = $this->db2->select('e.Name as RestName, c.Name as Cuisine, mc.MCatgNm, fd.Usedfor CategoryType')
-            ->group_by('mc.MCatgId')
-                        ->join('Eatary e', 'e.EID = mc.EID', 'inner')
-                        ->join('Cuisines c', 'c.CID = mc.CID', 'inner')
-                        ->join('FoodType fd', 'fd.CTyp = mc.CTyp', 'inner')
-                        ->get('MenuCatg mc')
-                        ->result_array();
-            echo "<pre>";
-            print_r($this->db2->last_query());
-            print_r($dd);
-            die;
-
-
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -3869,9 +3752,7 @@ die;
     }
 
     public function payments(){
-        // echo "<pre>";
-        // print_r($_SESSION);
-        // die;
+        
         $data['title'] = $this->lang->line('customerPayments');
         $data['fdate'] = date('Y-m-d');
         $data['tdate'] = date('Y-m-d');
@@ -6251,8 +6132,6 @@ die;
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
-// echo "<pre>";
-// print_r($_POST);die;
             switch ($_POST['type']) {
                 case 'search':
                         $EID = $_POST['EID'];
@@ -7434,6 +7313,7 @@ die;
             // die;
             $totalAmount = $_POST['amount'];
             $bData = $this->rest->getBillingByCustId($_POST['CustId']);
+
             if(!empty($bData)){
                 foreach ($bData as $bill) {
                     if($totalAmount > 0){
@@ -7454,7 +7334,7 @@ die;
                              'billAmount'   => $bill['totalBillPaidAmt'],
                              'MobileNo'     => $bill['CellNo'],
                              'OTP'          => 0,
-                             'earnedPoints' => 0,
+                             'Points' => 0,
                              'earned_used'  => 0
                             );
                             insertLoyalty($loyalties);
@@ -7500,6 +7380,116 @@ die;
               ));
              die;
         }
+    }
+
+    public function sales_report(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+            $response = $this->rest->getSalesRepots($_POST);
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] = 'Date Wise Detailed Sales '.$this->lang->line('report');
+        $this->load->view('report/salesReport', $data);    
+    }
+
+    public function item_sales_report(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+            $response = $this->rest->getItemSalesRepots($_POST);
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] = 'Item Sales '.$this->lang->line('report');
+        $this->load->view('report/itemSalesReport', $data);    
+    }
+
+    public function contribution_report(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+
+            $response = $this->rest->getContributionRepots($_POST);
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        $data['cuisine'] = $this->rest->getCuisineList();
+        $data['otypes'] = $this->rest->getOTypeList();
+        $data['title'] = 'Contribution '.$this->lang->line('report');
+        $this->load->view('report/contributionReport', $data);    
+    }
+
+    public function sale_summary(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+            $response = $this->rest->getSalesSummary($_POST);
+            // echo "<pre>";
+            // print_r($response);
+            // die;
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        $data['cuisine'] = $this->rest->getCuisineList();
+        $data['title'] = 'Sale Summary';
+        $this->load->view('report/saleSummary', $data);    
+    }
+
+    public function onaccount_sale_summary(){
+
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+            $response = $this->rest->getOnaccountsData();
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] = 'Pending Collection Reports';
+        $this->load->view('report/onAccountSaleSummary', $data);    
     }
 
     public function db_create_old(){
