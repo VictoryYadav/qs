@@ -50,6 +50,18 @@ class Customer extends CI_Controller {
 
     public function index1(){
 
+        $genTblDb = $this->load->database('GenTableData', TRUE);
+
+            $response = $genTblDb->select('l.LNo, l.EID, ed.Name, Sum(Case When l.earned_used = 0 
+         Then l.Points Else 0 End) EarnedPoints, Sum(Case When l.earned_used = 1 
+         Then l.Points Else 0 End) UsedPoints')
+                                ->group_by('l.EID, l.LNo')
+                                ->join('EIDDet ed', 'ed.EID = l.EID', 'inner')
+                                ->get_where('Loyalty l', array('l.custId' => 20))
+                                ->result_array();
+
+            print_r($genTblDb->last_query());
+
         // $ll = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
         // print_r($ll);die;
 
@@ -2902,18 +2914,19 @@ class Customer extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
 
-            $CustId = $this->session->userdata('CustId'),
+            $CustId = $this->session->userdata('CustId');
             $status     = 'success';
             $genTblDb = $this->load->database('GenTableData', TRUE);
 
-            $response   = $genTblDb->select('l.EID, ed.Name, Sum(Case When l.earned_used = 0 
+            $response = $genTblDb->select('l.EID, ed.Name, Sum(Case When l.earned_used = 0 
          Then l.Points Else 0 End) EarnedPoints, Sum(Case When l.earned_used = 1 
          Then l.Points Else 0 End) UsedPoints')
                                 ->group_by('l.EID')
                                 ->join('EIDDet ed', 'ed.EID = l.EID', 'inner')
                                 ->get_where('Loyalty l', array('l.custId' => $CustId))
                                 ->result_array();
-            
+
+            print_r($genTblDb->last_query());
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,

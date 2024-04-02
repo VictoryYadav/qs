@@ -188,8 +188,12 @@
               // alert(res.response);
               var temp = ``;
               res.response.forEach((item, index) =>{
-                temp =+ `<tr>
-                            <td>${item.Name}</td>
+                var restName =  item.Name;
+                if(item.LNo == 1){
+                    restName =  'Eat-Out';
+                }
+                temp += `<tr>
+                            <td>${restName}</td>
                             <td>${item.EarnedPoints}</td>
                             <td>${item.UsedPoints}</td>
                             <td>${item.EarnedPoints - item.UsedPoints}</td>
