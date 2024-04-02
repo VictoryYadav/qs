@@ -1,5 +1,5 @@
 <?php
-        if(authuser()->cur_password !='eo1234'){ ?>
+        if($this->session->userdata('cur_password') !='eo1234'){ ?>
 <div id="sidebar-menu">
     <!-- Left Menu Start -->
     <ul class="metismenu list-unstyled" id="side-menu">

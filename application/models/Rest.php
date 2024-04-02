@@ -1080,18 +1080,18 @@ class Rest extends CI_Model{
 	public function getUserList(){
 		return $this->db2->select("ur.*, ut.UTypName, rt.UTypName as designation")
 						->join('UserType ut', 'ut.UTyp = ur.UTyp', 'inner')
-						->join('UserType rt', 'rt.UTyp = ur.RestRole', 'inner')
+						->join('UserType rt', 'rt.UTyp = ur.RestRole', 'left')
 						->get_where('UsersRest ur', 
-							array('ur.EID' => authuser()->EID))
+							array('ur.EID' => authuser()->EID, 'ur.RUserId >' => 1 ))
 						->result_array();
 	}
 
 	public function getusersRestData(){
 		$EID = authuser()->EID;
 		return $this->db2->select('ur.RUserId, ur.FName, ur.LName, ur.MobileNo, ut.UTypName')
-						->join('UserType ut', 'ut.UTyp = ur.RestRole', 'inner')
+						->join('UserType ut', 'ut.UTyp = ur.RestRole', 'left')
 						->get_where('UsersRest ur', 
-							array('ur.EID' => $EID, 'ur.Stat' => 0 ))
+							array('ur.EID' => $EID, 'ur.Stat' => 0, 'ur.RUserId >' => 1 ))
 						->result_array();  	
 	}
 

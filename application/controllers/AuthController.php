@@ -88,9 +88,9 @@ class AuthController extends CI_Controller {
                         'mobile' => $data['phone'],
                         'ChainId' => $checkNumber['ChainId'],
                         'UTyp' => $checkNumber['UTyp'],
-                        'cur_password' => $checkNumber['Passwd'],
                     );
                     $this->session->set_userdata('logged_in', $session_data);
+                    $this->session->set_userdata('cur_password', $checkNumber['Passwd']);
                     // set site_lang = 1 => english
                     $this->session->set_userdata('site_lang', 1);
                     $this->session->set_userdata('site_langName', 'english');

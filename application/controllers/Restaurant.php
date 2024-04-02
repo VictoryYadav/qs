@@ -60,7 +60,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function add_user(){
-
+        $this->check_access();
         if($this->input->method(true)=='POST'){
             // echo "<pre>";
             // print_r($_POST);
@@ -105,6 +105,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function user_access(){
+        $this->check_access();
         if($this->input->method(true)=='POST'){
             $res = $this->rest->getUserAccessRole($_POST);
             header('Content-Type: application/json');
@@ -121,6 +122,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function role_assign(){
+        $this->check_access();
         $staus = 'error';
         $response = 'Something went wrong please try again!';
         if($this->input->method(true)=='POST'){
@@ -514,6 +516,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function offers_list(){
+        $this->check_access();
 		 $data['title'] = $this->lang->line('offerList');
 		 $data['offers'] = $this->rest->getOffersList();
 
@@ -524,6 +527,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function new_offer(){
+        $this->check_access();
         if($this->input->method(true)=='POST'){
 
             $EID = authuser()->EID;
@@ -729,6 +733,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function edit_offer($SchCd){
+        $this->check_access();
         $data['title'] = $this->lang->line('editOffer');
         
         $data['sch_typ'] = $this->rest->getOffersSchemeType();
@@ -757,6 +762,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function item_list(){
+        $this->check_access();
 
         $EID = authuser()->EID;
         $data['CID'] = '';
@@ -834,6 +840,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function order_dispense(){
+        $this->check_access();
     	$data['title'] = $this->lang->line('orderDispense');
         $data['RestName'] = authuser()->RestName;
         $data['RUserId'] = authuser()->RUserId;
@@ -1115,6 +1122,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function change_password(){
+        $this->check_access();
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -1178,6 +1186,8 @@ class Restaurant extends CI_Controller {
             if($_POST['otp'] == $otp){
                 $password = $this->session->userdata('new_pwd');
                 $this->rest->passwordUpdate($password);
+
+                $this->session->set_userdata('cur_password', $password);
                 $res = "Password has been updated.";
                 $status = 'success';
             }else{
@@ -1206,6 +1216,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function set_theme(){
+        $this->check_access();
         $data['EID']     = authuser()->EID;
 
         $status = 'error';
@@ -1268,6 +1279,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function stock_list(){
+        $this->check_access();
         $data['trans_id'] = 0;
         $data['trans_type_id'] = 0;
         $data['from_date'] = date('Y-m-d');
@@ -1283,6 +1295,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function add_stock(){
+        $this->check_access();
         if($this->input->method(true)=='POST'){
             
             if(isset($_POST['add_stock']) && $_POST['add_stock'] == 1){
@@ -1356,6 +1369,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function edit_stock($TransId){
+        $this->check_access();
 
         if($this->input->method(true)=='POST'){
 
@@ -1393,12 +1407,14 @@ class Restaurant extends CI_Controller {
     }
 
     public function stock_report(){
+        $this->check_access();
         $data['title'] = $this->lang->line('stockReport');
         $data['report'] = $this->rest->getStockReport();
         $this->load->view('rest/stock_report',$data);
     }
 
     public function stock_consumption(){
+        $this->check_access();
         $data['title'] = $this->lang->line('stockConsumption');
         $data['report'] = $this->rest->getStockConsumption();
         $this->load->view('rest/stock_consumptions',$data);   
@@ -1406,6 +1422,7 @@ class Restaurant extends CI_Controller {
 
 // this is not completed
     public function itemstockreport(){
+        $this->check_access();
         $data['CheckOTP'] = $this->session->userdata('DeliveryOTP');
         $data['EID'] = authuser()->EID;
         $data['EType'] = $this->session->userdata('EType');
@@ -1435,6 +1452,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function bill_view(){
+        $this->check_access();
        
         $data['RUserId'] = authuser()->RUserId;
         $data['EID'] =  authuser()->EID;
@@ -1685,6 +1703,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function sitting_table(){
+        $this->check_access();
         $data['title'] = $this->lang->line('tableView');
         $data['EType'] = $this->session->userdata('EType');
         if($data['EType'] == 5){
@@ -3057,6 +3076,7 @@ class Restaurant extends CI_Controller {
 
 
     public function rmcat(){
+        $this->check_access();
         $EID = authuser()->EID;
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -3103,6 +3123,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function rmitems_list(){
+        $this->check_access();
         $langId = $this->session->userdata('site_lang');
 
         $status = "error";
@@ -3155,6 +3176,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function bom_dish(){
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -3752,7 +3774,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function payments(){
-        
+        $this->check_access();
         $data['title'] = $this->lang->line('customerPayments');
         $data['fdate'] = date('Y-m-d');
         $data['tdate'] = date('Y-m-d');
@@ -3778,6 +3800,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function feedback(){
+        $this->check_access();
         $data['title'] = $this->lang->line('customerFeedback');
         $data['list'] = $this->db2->order_by('created_at','DESC')->get_where('Feedback', array('EID' => authuser()->EID))->result_array();
         
@@ -3836,6 +3859,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function link_generate(){
+        $this->check_access();
         include APPPATH.'third_party/phpqrcode/qrlib.php'; 
         $data['title'] = $this->lang->line('qrColdeLink');
         $data['eid'] = '';
@@ -3915,13 +3939,9 @@ class Restaurant extends CI_Controller {
     }
 
     public function add_item(){
+        $this->check_access();
 
         if($this->input->method(true)=='POST'){
-
-            // echo "<pre>";
-            // print_r($_POST);
-            // print_r($_FILES);
-            // die;
 
             $getItem = $this->db2->select('UItmCd, Rank')->order_by('ItemId', 'DESC')->get('MenuItem')->row_array();
 
@@ -4035,6 +4055,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function edit_item($ItemId){
+        $this->check_access();
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
  
@@ -4301,6 +4322,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function kds(){
+        $this->check_access();
         $EID = authuser()->EID;
         $data['title'] = $this->lang->line('kitchenDisplaySystem');
         $minutes = 0;
@@ -4342,6 +4364,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function kitchen_planner(){
+        $this->check_access();
         $EID = authuser()->EID;
         $data['title'] = $this->lang->line('kitchenPlanner');
         $data['kplanner'] = array();
@@ -4382,6 +4405,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function thirdParty(){
+        $this->check_access();
         $EID = authuser()->EID;
         $data['EID'] = $EID;
         $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
@@ -4398,6 +4422,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function takeAway(){
+        $this->check_access();
         $EID = authuser()->EID;
         $data['EID'] = $EID;
         $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
@@ -4414,6 +4439,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function Deliver(){
+        $this->check_access();
         $EID = authuser()->EID;
         $data['EID'] = $EID;
         $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
@@ -4430,6 +4456,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function sitIn(){
+        $this->check_access();
         $EType = $this->session->userdata('EType');
         $data['title'] = $this->lang->line('sitIn');
         if($EType == 5){
@@ -4549,6 +4576,7 @@ class Restaurant extends CI_Controller {
     // csv file upload
 
     public function csv_file_upload(){
+        $this->check_access();
         $EID = $this->session->userdata('EID');
         
         $status = "error";
@@ -6128,7 +6156,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function eatary(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6160,7 +6188,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function cuisine(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6195,7 +6223,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function eat_cuisine(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6237,7 +6265,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function menu_category(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6280,6 +6308,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function kitchen(){
+        $this->check_access();
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -6316,7 +6345,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function cashier(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6353,6 +6382,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function dispense_outlet(){
+        $this->check_access();
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -6389,6 +6419,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function table_list(){
+        $this->check_access();
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -6425,6 +6456,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function menu_list(){
+        $this->check_access();
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -6464,7 +6496,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function scheme_category(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6501,7 +6533,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function recommendation(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6535,7 +6567,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function paymentMode(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6568,7 +6600,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function third_party_list(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6603,7 +6635,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function config_payment(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6638,7 +6670,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function sections(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6673,7 +6705,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function entertainment(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6708,7 +6740,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function suppliers(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6745,7 +6777,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function itemType(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6782,7 +6814,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function item_type_group(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
@@ -6855,6 +6887,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function item_files_upload(){
+        $this->check_access();
         $EID = authuser()->EID;
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -6924,6 +6957,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function abc_report(){
+        $this->check_access();
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -6966,6 +7000,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function tax_report(){
+        $this->check_access();
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -7032,7 +7067,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function income_report(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         
@@ -7077,7 +7112,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function discount_user(){
-        
+        $this->check_access();
         $EID = authuser()->EID;
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -7112,6 +7147,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function data_upload(){
+        $this->check_access();
         
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -7264,6 +7300,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function payment_collection_settled_bill(){
+        $this->check_access();
         $data['EID'] = authuser()->EID;
 
         $status = "error";
@@ -7383,6 +7420,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function sales_report(){
+        $this->check_access();
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -7404,7 +7442,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function item_sales_report(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         
@@ -7425,7 +7463,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function contribution_report(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         
@@ -7448,7 +7486,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function sale_summary(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         
@@ -7472,7 +7510,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function onaccount_sale_summary(){
-
+        $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         
@@ -7490,6 +7528,31 @@ class Restaurant extends CI_Controller {
 
         $data['title'] = 'Pending Collection Reports';
         $this->load->view('report/onAccountSaleSummary', $data);    
+    }
+
+    private function check_access(){
+        $pgUrl = $this->uri->segment(2);
+        $RUserId = authuser()->RUserId;
+        $EID = authuser()->EID;
+        $data =  $this->db2->select('ur.RoleId')
+                        ->order_by('ur.Rank', 'ASC')
+                        ->join('UserRolesAccess ura', 'ura.RoleId = ur.RoleId','inner')
+                        ->get_where('UserRoles ur', 
+                            array('ura.RUserId' => $RUserId,
+                                'ura.EID' => $EID,
+                                'ur.Stat' => 0,
+                                'ur.pageUrl' => $pgUrl)
+                                )
+                        ->row_array();
+
+        if(empty($data)){
+            redirect(base_url('restaurant/access_denied'));
+        }
+    }
+
+    public function access_denied(){
+        $data['title'] = 'Access';
+        $this->load->view('page403', $data);
     }
 
     public function db_create_old(){

@@ -40,7 +40,8 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="text-danger text-center">
-                                          <h1><?= $title; ?> not available for your restaurant!</h1>
+                                          <h2><?= $title; ?> not provided...</h2>
+                                          <p>Speak to admin!</p>
                                         </div>
                                     </div>
                                 </div>

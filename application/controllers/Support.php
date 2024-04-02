@@ -358,7 +358,6 @@ class Support extends CI_Controller {
                     $db3->query("UPDATE UsersRest SET EID = $EID, DeputedEID = $EID");
                     $db3->query("UPDATE Config SET EID = $EID");
                     $db3->query("UPDATE Eat_tables SET EID = $EID");
-                    $db3->query("UPDATE ConfigPymt SET EID = $EID");
                     $db3->query("UPDATE ConfigTheme SET EID = $EID");
                     
 
