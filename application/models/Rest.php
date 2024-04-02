@@ -742,14 +742,14 @@ class Rest extends CI_Model{
         $lname = "Name$langId as Name";
 		return $this->db2->select("PymtMode, $lname,Company, CodePage1")
 						->order_by('Rank', 'ASC')
-						->get_where('ConfigPymt', array('Stat' => 1, 'EID' => authuser()->EID))->result_array();
+						->get_where('ConfigPymt', array('Stat' => 1))->result_array();
 	}
 
 	public function getConfigPayment(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId as Name";
 		return $this->db2->select("*, $lname")
-						->get_where('ConfigPymt', array('EID' => authuser()->EID))
+						->get('ConfigPymt')
 						->result_array();
 	}
 
