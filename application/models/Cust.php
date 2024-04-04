@@ -67,7 +67,7 @@ class Cust extends CI_Model{
 
 		$where = "mi.Stat = 0 and (DAYOFWEEK(CURDATE()) = mi.DayNo OR mi.DayNo = 0)  AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime)))";
 // et.TblTyp
-        $select_sql = "mc.TaxType, mc.KitCd,mc.CTyp, mi.ItemId, mi.ItemTyp, mi.NV, mi.PckCharge, $lname, $iDesc, $ingeredients, $Rmks, mi.PrepTime, mi.AvgRtng, mi.FID,mi.ItemAttrib, mi.ItemSale, mi.ItemTag, mi.ItemNm1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,mi.videoLink,  (select mir.OrigRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = '$tableNo' AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId and mi.Stat = 0 ORDER BY mir.OrigRate ASC LIMIT 1) as ItmRate, (select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = '$tableNo' AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId and mi.Stat = 0 ORDER BY mir.OrigRate ASC LIMIT 1) as Itm_Portion, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$this->EID' and et1.TableNo = '$tableNo') as TblTyp";
+        $select_sql = "mc.TaxType, mi.KitCd,mc.CTyp, mi.ItemId, mi.ItemTyp, mi.NV, mi.PckCharge, $lname, $iDesc, $ingeredients, $Rmks, mi.PrepTime, mi.AvgRtng, mi.FID,mi.ItemAttrib, mi.ItemSale, mi.ItemTag, mi.ItemNm1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,mi.videoLink,  (select mir.OrigRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = $tableNo AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId and mi.Stat = 0 ORDER BY mir.OrigRate ASC LIMIT 1) as ItmRate, (select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = $tableNo AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId and mi.Stat = 0 ORDER BY mir.OrigRate ASC LIMIT 1) as Itm_Portion, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$this->EID' and et1.TableNo = $tableNo) as TblTyp";
         if(!empty($mcat)){
         	$this->session->set_userdata('f_mcat', $mcat);
             $this->db2->where('mc.MCatgId', $mcat);
@@ -136,20 +136,24 @@ class Cust extends CI_Model{
 	      return $str;
 	}
 
-	public function getMenuItemRates($EID, $itemId, $TableNo,$cid,$MCatgId,$ItemTyp){
+	public function getMenuItemRates($EID, $itemId, $cid,$MCatgId,$ItemTyp){
 		$langId = $this->session->userdata('site_lang');
         $ipName = "ip.Name$langId as Name";
 
+        $TableNo = authuser()->TableNo;
+        $whr = "et.TableNo = $TableNo";
 		return $this->db2->select("ip.IPCd as IPCode, mir.OrigRate as ItmRate, $ipName")
 						->order_by('ItmRate', 'ASC')
 						->join('MenuItemRates mir', 'mir.ItemId = mi.ItemId', 'inner')
 						->join('ItemPortions ip', 'ip.IPCd = mir.Itm_Portion', 'inner')
 						->join('Eat_tables et', 'et.SecId = mir.SecId', 'inner')
+						->where($whr)
 						->get_where('MenuItem mi', array(
 							'mi.ItemId' => $itemId,
-							'mir.EID' => $EID,
-							'et.TableNo' => $TableNo))
+							'mir.EID' => $EID
+							))
 						->result_array();
+						// print_r($this->db2->last_query());die;
 	}
 
 	public function getOfferCustAjax($postData){
@@ -234,7 +238,10 @@ class Cust extends CI_Model{
 		$ChainId = $this->ChainId;
 		$ONo = $this->session->userdata('ONo');
 		$EType = $this->session->userdata('EType');
-		$TableNo = authuser()->TableNo;
+
+		$TableNo = $this->session->userdata('TableNo');
+		$TableNoStr = authuser()->TableNo;
+
 		$MergeNo = $this->session->userdata('MergeNo');
 		$KOTNo = $this->session->userdata('KOTNo');
 		$CellNo = $_SESSION['signup']['MobileNo'];
@@ -457,6 +464,7 @@ class Cust extends CI_Model{
 
 						
 						if ($EType == 5) {
+
 							$tblData = getTableDetail($TableNo);
 							$kitchenMainObj['CCd'] = $tblData['CCd'];
 						}
@@ -492,7 +500,8 @@ class Cust extends CI_Model{
 						
 						$kitchenMainObj['LoginCd'] = 0;
 						$kitchenMainObj['payRest'] = 0;
-
+						// echo "<pre>";
+						// print_r($kitchenMainObj);die;
 						$CNo = insertRecord('KitchenMain', $kitchenMainObj);
 						if ($CNo) {
 							
@@ -802,6 +811,7 @@ class Cust extends CI_Model{
 						$kitchenMainObj['CnfSettle'] = ($this->session->userdata('AutoSettle') == 1)?0:1;
 						$kitchenMainObj['LoginCd'] = 1;
 						$kitchenMainObj['payRest'] = 0;
+
 						$kichnid = insertRecord('KitchenMain', $kitchenMainObj);
 						if ($kichnid) {
 							$CNo = $kichnid;
@@ -888,7 +898,7 @@ class Cust extends CI_Model{
 						$eatobj = insertRecord('Eat_tables_Occ', $eatTablesOccObj);
 						if ($eatobj) {
 							// update Eat_tables for table Allocate
-							$eatTablesUpdate = $this->db2->query("UPDATE Eat_tables set Stat = 1, MergeNo = $MergeNo where EID = $EID AND TableNo = '$TableNo' AND  Stat = 0");
+							$eatTablesUpdate = $this->db2->query("UPDATE Eat_tables set Stat = 1, MergeNo = $MergeNo where EID = $EID AND TableNo = $TableNo AND  Stat = 0");
 						} else {
 							//alert "Add another customer to occupied table"
 						}

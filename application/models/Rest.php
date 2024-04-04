@@ -671,7 +671,7 @@ class Rest extends CI_Model{
 	}
 
 	public function getTablesAllotedData($EID){
-		return $this->db2->where_not_in('TableNo', array(101,105,110))
+		return $this->db2->where_not_in('TableNo', array(101,105,110, 115))
 				->get_where('Eat_tables', array("EID" => $EID))
 				->result_array();
 	}
@@ -1249,13 +1249,13 @@ class Rest extends CI_Model{
 		$section = "es.Name$langId as sectionName";
 		$cashier = "ec.Name$langId as cashierName";
 
-		$whr = "et.EID = es.EID and et.EID = ec.EID";
+		$whr = "et.EID = ec.EID";
 		return $this->db2->select("et.*, $section, $cashier")
 					// ->order_by()
 					->join('Eat_Sections es', 'es.SecId = et.SecId', 'inner')
 					->join('Eat_Casher ec', 'ec.CCd = et.CCd', 'inner')
 					->where($whr)
-					->get_where('Eat_tables et', array('et.EID' => $EID))
+					->get_where('Eat_tables et', array('et.EID' => $EID, 'et.TblTyp <=' => 100))
 					->result_array();
 	}
 

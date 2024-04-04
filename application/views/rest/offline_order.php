@@ -1152,7 +1152,7 @@
             // console.log('hilll '+OType);
             if(OType == 8){
                 var table = $('#table-id').val();
-                if(table > 0){
+                if(table != '' && table != '0'){
                     $('#item-list-modal').modal('show');
                 }else{
                     alert('Please select table first.');

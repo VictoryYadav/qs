@@ -116,7 +116,7 @@ function callAjax(formData){
            contentType: false,  
            success : function(data) {
                alert(data.response);
-               // location.reload();
+               location.reload();
            }
     }); 
 }

@@ -2488,7 +2488,7 @@ function cashCollectData(){
     $.post('<?= base_url('restaurant/collect_payment') ?>',data,function(res){
         if(res.status == 'success'){
           alert(res.response);
-            // getTableView();
+            getTableView();
         }else{
           alert(res.response);
         }

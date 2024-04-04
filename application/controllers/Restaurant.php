@@ -3449,6 +3449,7 @@ class Restaurant extends CI_Controller {
             unset($pay['TableNo']);
             unset($pay['CustId']);
             // print_r($pay);
+            $EID = $pay['EID'];
 
             $checkBP = $this->db2->get_where('BillPayments', array('EID' => $pay['EID'],'BillId' => $pay['BillId']))->row_array();
 
@@ -3466,7 +3467,6 @@ class Restaurant extends CI_Controller {
                 autoSettlePayment($pay['BillId'], $pay['MergeNo'], $_POST['MCNo']);
             }else{
                 $billId = $pay['BillId'];
-                $EID = $pay['EID'];
 
                 if($this->session->userdata('EType') == 1){
 
@@ -3557,7 +3557,36 @@ class Restaurant extends CI_Controller {
     }
 
     public function test(){
-
+        $d = 'A';
+        $d = "'$d'";
+        print_r($d);
+        die;
+        // temp menu item uploads
+        // MenuCatg Nm, fd1.Usedfor1 as CTypUsedFor, wd.Name1 as Day, it.Name1 as ItemTyp
+        $whr = " mi.CTyp = mc.CTyp and mc.CTyp !=1";
+        $dd = $this->db2->select("e.Name as RestName, c.Name1 as Cuisine, fd.Name1 as foodType, mi.IMcCd, mc.Name1 as MenuCatg, fd.Usedfor1 as CTypUsedFor,mi.ItemNm1 as ItemNm, it.Name1 as ItemTyp, mi.NV, es.Name1 as Section, mi.PckCharge, mir.OrigRate as Rate, mi.Rank, mi.ItmDesc1 as ItmDesc, mi.Ingeredients1 as Ingeredients, mi.MaxQty, mi.Rmks1 as Rmks, mi.PrepTime, wd.Name1 as Day, mi.FrmTime, mi.ToTime, mi.AltFrmTime, mi.AltToTime, mi.videoLink, ip.Name1 as itemPortion")
+            // ->group_by('mi.ItemId')
+                ->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')
+                ->join('Cuisines c', 'c.CID = mi.CID', 'inner')
+                ->join('Eatary e', 'e.EID = mi.EID', 'inner')
+                ->join('FoodType fd', 'fd.FID = mi.FID', 'inner')
+                // ->join('FoodType fd1', 'fd1.CTyp = mi.CTyp', 'inner')
+                ->join('ItemTypes it', 'it.ItmTyp = mi.ItemTyp', 'left')
+                ->join('MenuItemRates mir', 'mir.ItemId = mi.ItemId', 'inner')
+                ->join('Eat_Sections es', 'es.SecId = mir.SecId', 'inner')
+                ->join('ItemPortions ip', 'ip.IPCd = mir.Itm_Portion', 'inner')
+                ->join('WeekDays wd', 'wd.DayNo = mi.DayNo', 'left')
+                ->where($whr)
+                ->get_where('MenuItem mi', array(
+                                                    'mi.EID' => 51,
+                                                    'mc.EID' => 51,
+                                                    'mir.EID' => 51
+                                                )
+                        )
+                ->result_array();
+                echo "<pre>";
+                print_r($this->db2->last_query());
+                print_r($dd);die;
         
         echo "<pre>";
         print_r($_SESSION);
@@ -4212,16 +4241,13 @@ class Restaurant extends CI_Controller {
             $data['total_delivery_charge_amount'] = $billData[0]['DelCharge'];
 
             $data['billData'] = $res['billData'];
+
         }
         $this->load->view('print', $data);
     }
 
     public function kot_print($MCNo, $mergeNo, $FKOTNo){
         $data['kotList'] = $this->rest->getKotList($MCNo, $mergeNo, $FKOTNo);
-        $data['title'] = $this->lang->line('kot');
-        // echo "<pre>";
-        // print_r($data);
-        // die;
 
         $group_arr = [];
         foreach ($data['kotList'] as $key ) {
@@ -4238,6 +4264,7 @@ class Restaurant extends CI_Controller {
         // print_r($group_arr);
         // die;
 
+        $data['title'] = $this->lang->line('kot');
         $this->load->view('rest/kots_print', $data);
     }
 
@@ -6456,7 +6483,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function menu_list(){
-        $this->check_access();
+        // $this->check_access();
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -7230,15 +7257,16 @@ class Restaurant extends CI_Controller {
                                         $temp['AltFrmTime'] = $csv_data[21];
                                         $temp['AltToTime'] = $csv_data[22];
                                         $temp['videoLink'] = $csv_data[23];
-                                        $temp['itemPortion'] = $csv_data[24];
+                                        $temp['Itm_Portion'] = $csv_data[24];
                                         $temp['LoginCd'] = authuser()->RUserId;
 
                                         $itemData[] = $temp;
                                     }
                                 }
                                 if(!empty($itemData)){
-                                   $this->db2->query('TRUNCATE tempMenuItem');
-                                   $this->db2->insert_batch('tempMenuItem', $itemData);
+                                    // print_r($itemData);die;
+                                   $this->db2->query('TRUNCATE TempMenuItem');
+                                   $this->db2->insert_batch('TempMenuItem', $itemData);
                                     
                                     $status = 'success';
                                     $response = 'Data Inserted.';
@@ -7269,20 +7297,20 @@ class Restaurant extends CI_Controller {
 
             $EID = $_POST['EID'];
 
-            $check = $this->db2->get('tempMenuItem')->row_array();
+            $check = $this->db2->get('TempMenuItem')->row_array();
             if(!empty($check)){
                 $this->db2->query("DELETE From EatCuisine where EID=$EID");
                 $this->db2->query("DELETE From MenuCatg where EID=$EID");
                 $this->db2->query("DELETE From MenuItem where EID=$EID");
                 $this->db2->query("DELETE From MenuItemRates where EID=$EID");
 
-                $this->db2->query("INSERT INTO EatCuisine (CID, Name1, EID) SELECT DISTINCT c.CID, c.Name1, $EID From Cuisines c, tempMenuItem t where c.Name1 = t.Cuisine");
+                $this->db2->query("INSERT INTO EatCuisine (CID, Name1, EID) SELECT DISTINCT c.CID, c.Name1, $EID From Cuisines c, TempMenuItem t where c.Name1 = t.Cuisine");
 
-                $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, 0 From Cuisines c, tempMenuItem t, FoodType f where c.Name1 = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
+                $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, 0 From Cuisines c, TempMenuItem t, FoodType f where c.Name1 = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
 
-                $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, ItemNm1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, t.DayNo, t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink From tempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
+                $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, ItemNm1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, t.DayNo, t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink From TempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
 
-                $this->db2->query("INSERT INTO MenuItemRates (EID, SecId, ItemId, Itm_Portion, ItmRate)  SELECT $EID,1,  i.ItemId, ip.IPCd, t.Rate From tempMenuItem t, ItemPortions ip, MenuItem i where ip.Name1=t.itemPortion and i.ItemNm1=t.ItemNm");
+                $this->db2->query("INSERT INTO MenuItemRates (EID, SecId, ItemId, Itm_Portion, ItmRate)  SELECT $EID,1,  i.ItemId, ip.IPCd, t.Rate From TempMenuItem t, ItemPortions ip, MenuItem i where ip.Name1=t.Itm_Portion and i.ItemNm1=t.ItemNm");
                 $status = 'success';
                 $response = 'Basic Menu Item has been Setup.';
             }else{

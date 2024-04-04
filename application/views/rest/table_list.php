@@ -30,7 +30,7 @@
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('tableNo'); ?></label>
-                                                        <input type="number" class="form-control form-control-sm" name="TableNo" required="" id="TableNo" autocomplete="off">
+                                                        <input type="text" class="form-control form-control-sm" name="TableNo" required="" id="TableNo" autocomplete="off">
                                                     </div>
                                                 </div>
 
@@ -125,7 +125,7 @@
                                                         <td><?= $i++; ?></td>
                                                         <td><?= $row['TableNo']; ?></td>
                                                         <td><?= $row['MergeNo']; ?></td>
-                                                        <td><?= $row['TblTyp']; ?></td>
+                                                        <td>SitIn</td>
                                                         <td><?= $row['Capacity']; ?></td>
                                                         <td><?= $row['sectionName']; ?></td>
                                                         <td><?= $row['cashierName']; ?></td>

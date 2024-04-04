@@ -207,11 +207,10 @@ class Customer extends CI_Controller {
         if($this->input->method(true)=='POST'){
 
             $EID = authuser()->EID;
-            $TableNo = authuser()->TableNo;
             $data['EType'] = $this->session->userdata('EType');
             extract($_POST);
 
-            $MenuItemRates = $this->cust->getMenuItemRates($EID, $itemId, $TableNo, $cid, $MCatgId, $ItemTyp );
+            $MenuItemRates = $this->cust->getMenuItemRates($EID, $itemId, $cid, $MCatgId, $ItemTyp );
             print_r(json_encode($MenuItemRates));
             
         }        
@@ -324,6 +323,8 @@ class Customer extends CI_Controller {
                     // Get all Temp Item list
                     $kitcheData = $this->db2->query("SELECT k.OrdNo, k.ItemId, k.Qty, k.TA, k.Itm_Portion, (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,  k.ItmRate as Value, mi.PckCharge, k.OType, k.OrdTime , $ipName, k.Stat from Kitchen k, MenuItem mi,ItemPortions ip where k.Itm_Portion = ip.IPCd and k.CustId = $CustId AND k.EID = $EID AND k.TableNo = $TableNo AND k.ItemId = mi.ItemId AND k.BillStat = 0 AND $qry and k.CNo = $CNo")
                     ->result_array();
+
+                    // print_r($this->db2->last_query());die;
 
                     foreach ($kitcheData as &$key) {
                         $key['recom'] = $this->cust->checkRecommendation($key['ItemId']);
@@ -743,7 +744,7 @@ class Customer extends CI_Controller {
                 $rating = 0;
                 if(!empty($CustId) && $CustId > 0){
 
-                    $res = $this->db2->query("SELECT CNo from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = '$TableNo' AND timediff(Now(),LstModDt) < ('03:00:00') order by CNo desc limit 1")->row_array();
+                    $res = $this->db2->query("SELECT CNo from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = $TableNo AND timediff(Now(),LstModDt) < ('03:00:00') order by CNo desc limit 1")->row_array();
                     if(!empty($res)){
                         $this->session->set_userdata('CNo', $res['CNo']);
                     }else{
@@ -914,7 +915,7 @@ class Customer extends CI_Controller {
                 }
                 
                 if(!empty($CustId) && $CustId > 0){
-                    $res = $this->db2->query("SELECT CNo from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = '$TableNo' AND timediff(Now(),LstModDt) < ('03:00:00') order by CNo desc limit 1")->row_array();
+                    $res = $this->db2->query("SELECT CNo from KitchenMain where CustId = ".$CustId." and BillStat = 0 AND TableNo = $TableNo AND timediff(Now(),LstModDt) < ('03:00:00') order by CNo desc limit 1")->row_array();
                     if(!empty($res)){
                         $this->session->set_userdata('CNo', $res['CNo']);
                     }
