@@ -87,6 +87,7 @@ class Support extends CI_Controller {
     }
 
     public function csv_file_upload(){
+        $EID = authuser()->EID;
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -96,10 +97,10 @@ class Support extends CI_Controller {
             // print_r($_FILES);
             // die;
 
-            $folderPath = 'uploads/csv';
+            $folderPath = 'uploads/e'.$EID.'/csv';
             if (!file_exists($folderPath)) {
                 // Create the directory
-                mkdir($folderPath);
+                mkdir($folderPath, 0777, true);
             }
             // remove all files inside this folder uploads/qrcode/
             $filesPath = glob($folderPath.'/*'); // get all file names

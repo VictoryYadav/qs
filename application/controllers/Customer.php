@@ -1590,7 +1590,7 @@ class Customer extends CI_Controller {
             $data['fssaino'] = $billData[0]['FSSAINo'];
             $data['cinno'] = $billData[0]['CINNo'];
             $data['billno'] = $billData[0]['BillNo'];
-            $data['dateOfBill'] = date('d-m-Y @ H:i', strtotime($billData[0]['BillDt']));
+            $data['dateOfBill'] = date('d-M-Y @ H:i', strtotime($billData[0]['BillDt']));
             $data['address'] = $billData[0]['Addr'];
             $data['pincode'] = $billData[0]['Pincode'];
             $data['city'] = $billData[0]['City'];

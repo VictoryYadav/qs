@@ -575,7 +575,13 @@ class Restaurant extends CI_Controller {
                         $_FILES['description_image']['size']= $files['size'][$i];
                         $file = str_replace(' ', '_', rand('10000','999').'_'.$files['name'][$i]);
 
-                        $res = do_upload('description_image',$file,'uploads/offers','*');
+                        $folderPath = 'uploads/e'.$EID.'/offers';
+                        if (!file_exists($folderPath)) {
+                            // Create the directory
+                            mkdir($folderPath, 0777, true);
+                        }
+
+                        $res = do_upload('description_image',$file, $folderPath,'*');
                         $temp['SchImg'] = $file;
                     }
 
@@ -651,7 +657,13 @@ class Restaurant extends CI_Controller {
                         $_FILES['description_image']['size']= $files['size'][$i];
                         $file = str_replace(' ', '_', rand('10000','999').'_'.$files['name'][$i]);
 
-                        $res = do_upload('description_image',$file,'uploads/offers','*');
+                        $folderPath = 'uploads/e'.$EID.'/offers';
+                        if (!file_exists($folderPath)) {
+                            // Create the directory with file permission
+                            mkdir($folderPath, 0777, true);
+                        }
+
+                        $res = do_upload('description_image',$file, $folderPath,'*');
                         $CustOffersDet['SchImg'] = $file;
                     }
 
@@ -3557,9 +3569,8 @@ class Restaurant extends CI_Controller {
     }
 
     public function test(){
-        $d = 'A';
-        $d = "'$d'";
-        print_r($d);
+       echo "<pre>";
+        print_r($_SESSION);
         die;
         // temp menu item uploads
         // MenuCatg Nm, fd1.Usedfor1 as CTypUsedFor, wd.Name1 as Day, it.Name1 as ItemTyp
@@ -3588,9 +3599,7 @@ class Restaurant extends CI_Controller {
                 print_r($this->db2->last_query());
                 print_r($dd);die;
         
-        echo "<pre>";
-        print_r($_SESSION);
-        die;
+        
 
         
         $status = "error";
@@ -4031,6 +4040,10 @@ class Restaurant extends CI_Controller {
                 $file = $data[$iname];
 
                 $folderPath = 'uploads/e'.authuser()->EID;
+                if (!file_exists($folderPath)) {
+                    // Create the directory
+                    mkdir($folderPath, 0777, true);
+                }
 
                 if($flag == 0){
                     $res = do_upload('item_file',$file,$folderPath,'*');
@@ -4104,8 +4117,12 @@ class Restaurant extends CI_Controller {
 
             if(isset($_FILES['item_file']['name']) && !empty($_FILES['item_file']['name'])){ 
 
-                // remove existing file
                 $folderPath = 'uploads/e'.$EID;
+                if (!file_exists($folderPath)) {
+                    // Create the directory
+                    mkdir($folderPath, 0777, true);
+                }
+                // remove existing file
                 $filename = $folderPath.'/'.$updateData[$iname].'.jpg'; 
                 if (file_exists($filename)) {
                     unlink($filename);
@@ -4220,7 +4237,7 @@ class Restaurant extends CI_Controller {
             $data['fssaino'] = $billData[0]['FSSAINo'];
             $data['cinno'] = $billData[0]['CINNo'];
             $data['billno'] = $billData[0]['BillNo'];
-            $data['dateOfBill'] = date('d-m-Y @ H:i', strtotime($billData[0]['BillDt']));
+            $data['dateOfBill'] = date('d-M-Y @ H:i', strtotime($billData[0]['BillDt']));
             $data['address'] = $billData[0]['Addr'];
             $data['pincode'] = $billData[0]['Pincode'];
             $data['city'] = $billData[0]['City'];
@@ -4614,6 +4631,10 @@ class Restaurant extends CI_Controller {
             // print_r($_FILES);
             // die;
             $folderPath = 'uploads/e'.$EID.'/csv';
+            if (!file_exists($folderPath)) {
+                // Create the directory
+                mkdir($folderPath, 0777, true);
+            }
             // remove all files inside this folder uploads/qrcode/
             $filesPath = glob($folderPath.'/*'); // get all file names
             foreach($filesPath as $file){ // iterate files
@@ -6950,6 +6971,10 @@ class Restaurant extends CI_Controller {
                     // }
                     
                     $folderPath = 'uploads/e'.$EID.'/'; 
+                    if (!file_exists($folderPath)) {
+                        // Create the directory
+                        mkdir($folderPath, 0777, true);
+                    }
 
                     if($_FILES['files']['size'] < 1048576){
                          $res = do_upload('files',$file,$folderPath,'*');
@@ -7185,6 +7210,11 @@ class Restaurant extends CI_Controller {
             // die;
             $EID = $_POST['EID'];
             $folderPath = 'uploads/e'.$EID.'/csv';
+            if (!file_exists($folderPath)) {
+                // Create the directory
+                mkdir($folderPath, 0777, true);
+            }
+
             $filesPath = glob($folderPath.'/*'); // get all file names
             // foreach($filesPath as $file){ // iterate files
             //   if(is_file($file)) {

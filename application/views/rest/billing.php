@@ -24,7 +24,7 @@
     $billno = $billData[0]['BillNo'];
     $orderdate = $billData[0]['BillDt'];
     $date = new DateTime($orderdate);
-    $dateOfBill = $date->format('d-m-Y @ H:i');
+    $dateOfBill = $date->format('d-M-Y @ H:i');
     $address = $billData[0]['Addr'];
     $pincode = $billData[0]['Pincode'];
     $city = $billData[0]['City'];
