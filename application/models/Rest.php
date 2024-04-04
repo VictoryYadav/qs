@@ -1858,5 +1858,11 @@ class Rest extends CI_Model{
 						die;
 	}
 
+	public function getQRCodesLink(){
+		$EID = authuser()->EID;
+
+		return $this->db2->get_where('QRCodes', array('EID' => $EID))->result_array();
+	}
+
 	
 }

@@ -104,10 +104,10 @@
                                     <div class="card-body">
                                         <div class="text-center">
                                             <!-- <?= $key['img']; ?> -->
-                                            <img src="<?= base_url('uploads/qrcode/'.$key['img']); ?>" alt="qrcode" class="img-thumbnail">
+                                            <img src="<?= base_url('uploads/e'.$eid.'/qrcode/'.$key['file']); ?>" alt="qrcode" class="img-thumbnail">
                                             <div class="">
-                                                <?= $key['tblNo'] ?> - 
-                                                <a href="<?= base_url('uploads/qrcode/'.$key['img']); ?>" download>
+                                                <?= $key['TableNo'] ?> - 
+                                                <a href="<?= base_url('uploads/e'.$eid.'/qrcode/'.$key['file']); ?>" download>
                                                 <i class="fas fa-download"></i>
                                                 </a>
                                             </div>          

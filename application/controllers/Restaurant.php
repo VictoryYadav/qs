@@ -3898,9 +3898,11 @@ class Restaurant extends CI_Controller {
 
     public function link_generate(){
         $this->check_access();
+        $EID = authuser()->EID;
+
         include APPPATH.'third_party/phpqrcode/qrlib.php'; 
         $data['title'] = $this->lang->line('qrColdeLink');
-        $data['eid'] = '';
+        $data['eid'] = $EID;
         $data['chain'] = '';
         $data['table'] = '';
         $data['stock'] = '';
@@ -3911,18 +3913,23 @@ class Restaurant extends CI_Controller {
             $from = 0;
             $to = 0;
 
-            $data['eid'] = authuser()->EID;
             $data['chain'] = authuser()->ChainId;
 
+            $folderPath = "uploads/e$EID/qrcode/";
+            if (!file_exists($folderPath)) {
+                // Create the directory
+                mkdir($folderPath, 0777, true);
+            }
+
             // remove all files inside this folder uploads/qrcode/
-            $filesPath = glob('uploads/qrcode/*'); // get all file names
+            $filesPath = glob($folderPath.'/*'); // get all file names
             foreach($filesPath as $file){ // iterate files
               if(is_file($file)) {
                 unlink($file); // delete file
               }
             }  
             // end remove all files inside folder
-            $codesDir = "uploads/qrcode/"; 
+            $codesDir = $folderPath;
 
             if(!empty($_POST['qrcode'])){
                 if($_POST['qrcode'] == 'stall'){
@@ -3936,13 +3943,19 @@ class Restaurant extends CI_Controller {
                         $temp['link'] = base_url('qr?qr_data=').rtrim($link64, "=");
                         $temp['tblNo'] = $i;
 
-                        $codeFile = date('d-m-Y-h-i-s').'.png';
+                        $codeFile = $i.'_'.$EID.'_'.date('d-m-Y-h-i-s').'.png';
                         $formData = $temp['link'];
                         // generating QR code
                         QRcode::png($formData, $codesDir.$codeFile, $level = 'H', $size = 5);
                         $temp['img'] = $codeFile;
 
                         $listData[] = $temp;
+
+                        $tblDt['TableNo'] = $i;
+                        $tblDt['link'] = $temp['link'];
+                        $tblDt['EID'] = $EID;
+                        $tblDt['file'] = $codeFile;
+                        insertRecord('QRCodes', $tblDt);
                     }
                 }else{
                     $from = $_POST['from_table'];
@@ -3955,13 +3968,19 @@ class Restaurant extends CI_Controller {
                         $temp['link'] = base_url('qr?qr_data=').rtrim($link64, "=");
                         $temp['tblNo'] = $i;
 
-                        $codeFile = date('d-m-Y-h-i-s').'.png';
+                        $codeFile = $i.'_'.$EID.'_'.date('d-m-Y-h-i-s').'.png';
                         $formData = $temp['link'];
                         // generating QR code
                         QRcode::png($formData, $codesDir.$codeFile, $level = 'H', $size = 5);
                         $temp['img'] = $codeFile;
 
                         $listData[] = $temp;
+
+                        $tblDt['TableNo'] = $i;
+                        $tblDt['link'] = $temp['link'];
+                        $tblDt['EID'] = $EID;
+                        $tblDt['file'] = $codeFile;
+                        insertRecord('QRCodes', $tblDt);
                     }
                 }
             
@@ -3972,7 +3991,7 @@ class Restaurant extends CI_Controller {
         // echo "<pre>";
         // print_r($listData);
         // die;
-        $data['lists'] = $listData;
+        $data['lists'] = $this->rest->getQRCodesLink();
         $this->load->view('rest/link_create', $data);   
     }
 
