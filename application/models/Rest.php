@@ -835,6 +835,15 @@ class Rest extends CI_Model{
 						->result_array();
 	}
 
+	public function get_scheme_lists($type){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Name";
+
+		return $this->db2->select("SchCatg, $lname")
+						->get_where('CustOfferTypes', array('SchTyp' => $type))
+						->result_array();
+	}
+
 	public function get_foodType(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId as Opt";

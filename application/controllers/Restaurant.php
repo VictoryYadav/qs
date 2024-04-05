@@ -614,8 +614,8 @@ class Restaurant extends CI_Controller {
 
     	$data['title'] = $this->lang->line('newOffer');
 
-        $data['sch_typ'] = $this->rest->getOffersSchemeType();
-        $data['sch_cat'] = $this->rest->getOffersSchemeCategory(1);
+        // $data['sch_typ'] = $this->rest->getOffersSchemeType();
+        // $data['sch_cat'] = $this->rest->getOffersSchemeCategory(1);
         $data['weekDay'] = $this->rest->getWeekDayList();
         $data['cuisines'] = $this->rest->getCuisineList();
         $data['foodType'] = $this->rest->get_foodType();
@@ -3568,7 +3568,33 @@ class Restaurant extends CI_Controller {
         }   
     }
 
+    public function file_rename(){
+        // $folderPath = 'uploads/e51';
+        // foreach(glob($folderPath.'/*.*') as $file) {
+        //     echo "<pre>";
+        //     print_r($file);die;
+        // }
+        // die;
+
+        $data['title'] = 'File Rename';
+        $this->load->view('rest/rename_file', $data);
+    }
+
     public function test(){
+//         $old_file = 'uploads/Aalu bhindi.jpg';
+        
+//         $new_file = 'uploads/Aalu bhindi11.jpg';
+
+//         if (file_exists($old_file)) {
+//             if (rename($old_file, $new_file)) {
+//                 echo "File renamed successfully.";
+//             } else {
+//                 echo "Error renaming file.";
+//             }
+//         } else {
+//             echo "File does not exist.";
+//         }
+// die;
        echo "<pre>";
         print_r($_SESSION);
         die;
@@ -7624,6 +7650,23 @@ class Restaurant extends CI_Controller {
 
         if(empty($data)){
             redirect(base_url('restaurant/access_denied'));
+        }
+    }
+
+    public function get_schemes(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+            $response = $this->rest->get_scheme_lists($_POST['SchTyp']);
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
         }
     }
 

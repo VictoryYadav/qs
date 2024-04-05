@@ -1172,7 +1172,7 @@
             var itemTyp = $('#item_portions option:selected').attr('itemtyp');
             var FID = $('#item_portions option:selected').attr('fid');
             // change custom item price according to itemPortionCode
-            if (itemTyp != 0) {
+            if (itemTyp >= 11) {
                 getCustomItemDetails(itemId, itemTyp, portionCode, FID);
             }
             $("#product-price").val(' ' + rate);

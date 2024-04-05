@@ -2565,48 +2565,50 @@ class Customer extends CI_Controller {
             $itemPortionCode = $_POST['itemPortionCode'];
             $FID = $_POST['FID'];
             
-            $customDetails = $this->cust->getCustomDetails($itemTyp, $itemId, $itemPortionCode, $FID);
-
-            $grpType = $customDetails[0]['GrpType'];
-            $itemGroupCd = $customDetails[0]['ItemGrpCd'];
-            $itemGroup = $customDetails[0]['ItemGrpName'];
-            $itemReq = $customDetails[0]['Reqd'];
-
             $returnData = [];
+            $customDetails = $this->cust->getCustomDetails($itemTyp, $itemId, $itemPortionCode, $FID);
+            if(!empty($customDetails)){
 
-            $temp['GrpType'] = $grpType;
-            $temp['ItemGrpCd'] = $itemGroupCd;
-            $temp['ItemGrpName'] = $itemGroup;
-            $temp['Reqd'] = $itemReq;
-            $temp['Details'] = [];
+                $grpType = $customDetails[0]['GrpType'];
+                $itemGroupCd = $customDetails[0]['ItemGrpCd'];
+                $itemGroup = $customDetails[0]['ItemGrpName'];
+                $itemReq = $customDetails[0]['Reqd'];
+                
+                $temp['GrpType'] = $grpType;
+                $temp['ItemGrpCd'] = $itemGroupCd;
+                $temp['ItemGrpName'] = $itemGroup;
+                $temp['Reqd'] = $itemReq;
+                $temp['Details'] = [];
 
-            foreach ($customDetails as $key => $value) {
-                if ($value['ItemGrpName'] == $itemGroup) {
-                    $temp['Details'][] = [
-                        "Name" => $value['Name'],
-                        "Rate" => $value['Rate'],
-                        "ItemOptCd" => $value['ItemOptCd'],
-                    ];
-                } else {
-                    $returnData[] = $temp;
-                    $grpType = $value['GrpType'];
-                    $itemGroupCd = $value['ItemGrpCd'];
-                    $itemGroup = $value['ItemGrpName'];
-                    $itemReq = $value['Reqd'];
-                    $temp['GrpType'] = $grpType;
-                    $temp['ItemGrpCd'] = $itemGroupCd;
-                    $temp['ItemGrpName'] = $itemGroup;
-                    $temp['Reqd'] = $itemReq;
-                    $temp['Details'] = [];
-                    $temp['Details'][] = [
-                        "Name" => $value['Name'],
-                        "Rate" => $value['Rate'],
-                        "ItemOptCd" => $value['ItemOptCd'],
-                    ];
+                foreach ($customDetails as $key => $value) {
+                    if ($value['ItemGrpName'] == $itemGroup) {
+                        $temp['Details'][] = [
+                            "Name" => $value['Name'],
+                            "Rate" => $value['Rate'],
+                            "ItemOptCd" => $value['ItemOptCd'],
+                        ];
+                    } else {
+                        $returnData[] = $temp;
+                        $grpType = $value['GrpType'];
+                        $itemGroupCd = $value['ItemGrpCd'];
+                        $itemGroup = $value['ItemGrpName'];
+                        $itemReq = $value['Reqd'];
+                        $temp['GrpType'] = $grpType;
+                        $temp['ItemGrpCd'] = $itemGroupCd;
+                        $temp['ItemGrpName'] = $itemGroup;
+                        $temp['Reqd'] = $itemReq;
+                        $temp['Details'] = [];
+                        $temp['Details'][] = [
+                            "Name" => $value['Name'],
+                            "Rate" => $value['Rate'],
+                            "ItemOptCd" => $value['ItemOptCd'],
+                        ];
+                    }
                 }
+                
+                $returnData[] = $temp;
             }
 
-            $returnData[] = $temp;
             $response =  $returnData;
 
             header('Content-Type: application/json');

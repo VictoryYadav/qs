@@ -38,11 +38,8 @@
                                                         <label><?= $this->lang->line('schemeType');?></label>
                                                         <select class="form-control form-control-sm" id="sch_typ" name="SchTyp" required="">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <?php 
-                                                                foreach ($sch_typ as $key) {?>
-                                                                    <option value="<?= $key['SchCatg']; ?>"><?= $key['Name']; ?></option>
-                                                            <?php }
-                                                            ?>
+                                                            <option value="1">Bill Based</option>
+                                                            <option value="2">Item Based</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -52,11 +49,7 @@
                                                         <label><?= $this->lang->line('schemeCategory');?></label>
                                                         <select class="form-control form-control-sm" id="schcatg" name="SchCatg" required="">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <?php 
-                                                                foreach ($sch_cat as $key) {?>
-                                                                    <option value="<?= $key['SchCatg']; ?>"><?= $key['Name']; ?></option>
-                                                            <?php }
-                                                            ?>
+                                                            
                                                         </select>
                                                     </div>
                                                 </div>
@@ -179,6 +172,27 @@
         $('#add_desc').hide();
         $('#add_more').show();
     }
+
+    $('#sch_typ').on('change', function(e){
+        e.preventDefault();
+
+        var SchTyp = $(this).val();
+        if(SchTyp > 0){
+            $.post('<?= base_url('restaurant/get_schemes') ?>',{SchTyp:SchTyp},function(res){
+                if(res.status == 'success'){
+                  if(res.response.length > 0){
+                    var opt = `<option value="">Select</option>`;
+                    res.response.forEach((item, index) =>{
+                        opt += `<option value="${item.SchCatg}">${item.Name}</option>`;
+                    })
+                    $(`#schcatg`).html(opt);
+                  }
+                }else{
+                  alert(res.response);
+                }
+            });
+        }
+    })
 
     function add_more_description(){
         num_desc++;
