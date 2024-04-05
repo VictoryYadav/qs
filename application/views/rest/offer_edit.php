@@ -36,25 +36,17 @@
                                                 </div>
                                                 <div class="form-group col-md-4 col-6">
                                                     <label for="sch_typ"><?= $this->lang->line('schemeType');?></label>
-                                                    <select class="form-control form-control-sm" id="sch_typ" name="SchTyp" required="">
+                                                    <select class="form-control form-control-sm" id="sch_typ" name="SchTyp" required="" onchange="getCategoryl()">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
-                                                        <?php 
-                                                            foreach ($sch_typ as $key) {?>
-                                                                <option value="<?= $key['SchCatg']; ?>" <?php if($scheme[0]['SchTyp'] == $key['SchCatg']){echo 'selected';} ?>><?= $key['Name'];?></option>
-                                                            
-                                                        <?php }
-                                                        ?>
+                                                        <option value="1" <?php if($scheme[0]['SchTyp']==1){ echo 'selected'; } ?>>Bill Based</option>
+                                                        <option value="2" <?php if($scheme[0]['SchTyp']==2){ echo 'selected'; } ?> >Item Based</option>
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-4 col-6">
                                                     <label for="schcatg"><?= $this->lang->line('schemeCategory');?></label>
                                                     <select class="form-control form-control-sm" id="schcatg" name="SchCatg" required="">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
-                                                        <?php 
-                                                            foreach ($sch_cat as $key) {?>
-                                                                <option value="<?= $key['SchCatg']; ?>" <?php if($scheme[0]['SchCatg'] == $key['SchCatg']){echo 'selected';} ?>><?= $key['Name']; ?></option>
-                                                        <?php }
-                                                        ?>
+                                                        
                                                     </select>
                                                 </div>
 
@@ -244,6 +236,33 @@
         $('.discountItems').select2();
     });
 
+    getCategoryl();
+    function getCategoryl(){
+      var SchCatg = "<?php echo $scheme[0]['SchCatg']; ?>";
+
+        var SchTyp = $('#sch_typ').val();
+        if(SchTyp > 0){
+            $.post('<?= base_url('restaurant/get_schemes') ?>',{SchTyp:SchTyp},function(res){
+                if(res.status == 'success'){
+                    var dt = res.response;
+                  if(dt.length > 0){
+                    var opt = `<option value="">Select</option>`;
+                    for(var i = 0; i <dt.length; i++){
+                        var selct = ``;
+                        if(dt[i].SchCatg == SchCatg){
+                            selct = `selected`;
+                        }
+                        opt += `<option value="${dt[i].SchCatg}" ${selct}>${dt[i].Name}</option>`;
+                    }
+                    
+                    $(`#schcatg`).html(opt);
+                  }
+                }else{
+                  alert(res.response);
+                }
+            });
+        }
+    }
 
     var num_desc = <?= sizeof($descriptions)?>;
     for(i=1;i<=num_desc;i++){

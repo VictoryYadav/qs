@@ -69,12 +69,13 @@
                                                     if(!empty($offers)){
                                                         $i=1;
                                                         foreach ($offers as $key) {
+                                                    $SchTyp = ($key['SchTyp'] == 1)?'Bill Based':'Item Based';
                                                      ?>
                                                     
                                                 <tr>
                                                     <td><?php echo $i++; ?></td>
                                                     <td><?php echo $key['SchNm']; ?></td>
-                                                    <td><?php echo !empty($key['SchTyp'])?schemeType($key['SchTyp']):'-'; ?></td>
+                                                    <td><?= $SchTyp; ?></td>
                                                     <td><?php echo !empty($key['SchCatg'])?schemeType($key['SchCatg']):'-'; ?></td>
                                                     <td><?php echo date('d-M-Y',strtotime($key['FrmDt'])); ?></td>
                                                     <td><?php echo date('d-M-Y',strtotime($key['ToDt'])); ?></td>

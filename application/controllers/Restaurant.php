@@ -745,7 +745,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function edit_offer($SchCd){
-        $this->check_access();
+        // $this->check_access();
         $data['title'] = $this->lang->line('editOffer');
         
         $data['sch_typ'] = $this->rest->getOffersSchemeType();
