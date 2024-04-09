@@ -260,7 +260,7 @@ class Customer extends CI_Controller {
             $lname = "i.ItemNm$langId ItemNm";
             $ItmDesc = "i.ItmDesc$langId ItmDesc";
            
-            $items = $this->db2->query("SELECT i.ItemId, $lname, mir.Itm_Portion, mir.OrigRate, AvgRtng, $ItmDesc, i.ItemNm1 as imgSrc, ItemTyp, KitCd, MCatgId, i.FID, i.CID, i.PrepTime, i.NV FROM MenuItem i, MenuItemRates mir where i.ItemNm1 like '$itemName%' AND i.Stat = 0 AND i.EID = $EID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId = mir.ItemId and mir.OrigRate > 0 and mir.EID = $EID group by i.ItemId order by Rank")->result_array();
+            $items = $this->db2->query("SELECT i.ItemId, $lname, mir.Itm_Portion, mir.OrigRate, AvgRtng, $ItmDesc, i.ItemNm1 as imgSrc, ItemTyp, KitCd, MCatgId, i.FID, i.CID, i.PrepTime, i.NV, i.ItemSale FROM MenuItem i, MenuItemRates mir where i.ItemNm1 like '$itemName%' AND i.Stat = 0 AND i.EID = $EID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId = mir.ItemId and mir.OrigRate > 0 and mir.EID = $EID group by i.ItemId order by Rank")->result_array();
             
             if (!empty($items)) {
 
@@ -1051,122 +1051,124 @@ class Customer extends CI_Controller {
                     $i++;
                 }
                 
-                $res = $this->db2->query("SELECT mi.ItemId as MItemId, mi.MCatgId as MMCatgId, mi.CID as MCID, k.OrdNo, k.ItemId as KItemId, k.ItemTyp as KItemTyp, k.Itm_Portion, k.ItmRate, k.Qty as KQty, cod.* from Kitchen as k join CustOffersDet as cod on k.SchCd = cod.SchCd and k.SDetCd = cod.SDetCd join MenuItem as mi on mi.ItemId = k.ItemId where k.EID= $EID and k.CNo = '$CNo'")->result_array();
-                $price = $this->db2->query("SELECT sum(ItmRate) as total_amount from Kitchen where CNo = '$CNo' and EID = $EID group by CNo")->result_array();
+                if($this->session->userdata('SchType') == 1){
 
-                $total_price = 0;
-                if(!empty($price)){
-                    $total_price = $price[0]['total_amount'];
-                }
+                    $res = $this->db2->query("SELECT mi.ItemId as MItemId, mi.MCatgId as MMCatgId, mi.CID as MCID, k.OrdNo, k.ItemId as KItemId, k.ItemTyp as KItemTyp, k.Itm_Portion, k.ItmRate, k.Qty as KQty, cod.* from Kitchen as k join CustOffersDet as cod on k.SchCd = cod.SchCd and k.SDetCd = cod.SDetCd join MenuItem as mi on mi.ItemId = k.ItemId where k.EID= $EID and k.CNo = '$CNo'")->result_array();
+                    $price = $this->db2->query("SELECT sum(ItmRate) as total_amount from Kitchen where CNo = '$CNo' and EID = $EID group by CNo")->result_array();
 
-                $dis = 0;
-                $b= true;
-                foreach($res as $key){
-                    $item_dis = 0;
-                    if($key['CID'] > 0){
-                        if($key['MCID'] != $key['CID']){
-                            $b = false;
-                        }else{
-                            $b = true;
-                        }
+                    $total_price = 0;
+                    if(!empty($price)){
+                        $total_price = $price[0]['total_amount'];
                     }
-                    // if($key['CID'] > 0){
-                    //  if($key['MCID'] != $key['CID']){
-                    //      $b = false;
-                    //  }
-                    // }
-                    if($key['MCatgId'] > 0){
-                        if($key['MMCatgId'] != $key['MCatgId']){
-                            $b = false;
-                        }else{
-                            $b = true;
+
+                    $dis = 0;
+                    $b= true;
+                    foreach($res as $key){
+                        $item_dis = 0;
+                        if($key['CID'] > 0){
+                            if($key['MCID'] != $key['CID']){
+                                $b = false;
+                            }else{
+                                $b = true;
+                            }
                         }
-                    }
-                    if($key['ItemTyp'] > 0){
-                        if($key['KItemTyp'] != $key['ItemTyp']){
-                            $b = false;
-                        }else{
-                            $b = true;
+                        // if($key['CID'] > 0){
+                        //  if($key['MCID'] != $key['CID']){
+                        //      $b = false;
+                        //  }
+                        // }
+                        if($key['MCatgId'] > 0){
+                            if($key['MMCatgId'] != $key['MCatgId']){
+                                $b = false;
+                            }else{
+                                $b = true;
+                            }
                         }
-                    }
-                    if($key['IPCd'] > 0){
-                        if($key['Itm_Portion'] != $key['IPCd']){
-                            $b = false;
-                        }else{
-                            $b = true;
+                        if($key['ItemTyp'] > 0){
+                            if($key['KItemTyp'] != $key['ItemTyp']){
+                                $b = false;
+                            }else{
+                                $b = true;
+                            }
                         }
-                    }
-                    if($b){
-                        if(($key['KQty']*$key['ItmRate']) >= $key['MinBillAmt']){
-                            if($key['Disc_ItemId'] > 0 && $key['Disc_Qty'] > 0){
-                                if($key['Disc_ItemId'] == $key['KItemId'] && $key['Disc_IPCd'] == $key['Itm_Portion']){
-                                    if($key['KQty'] >= $key['Qty'] + $key['Disc_Qty']){
-                                        $n = $key['KQty'] / ($key['Qty'] + $key['Disc_Qty']);
-                                        if($n >= 1){
-                                            // if($key['Disc_ItemId'] == $key['KItemId'] && $key['Disc_IPCd'] == $key['Itm_Portion']){
-                                                if($key['Disc_pcent'] > 0){
-                                                    $item_dis += $key['Disc_pcent']*$key['ItmRate']*$key['Disc_Qty']/100;
-                                                }else{
-                                                    $item_dis += $key['ItmRate']*$key['Disc_Qty']*$n;
-                                                }
-                                            // }elseif($key['Disc_ItemId'] != $key['KItemId']){
-                                                
-                                            // }
-                                        }
-                                    }
-                                }elseif($key['Disc_ItemId'] == $key['KItemId'] && $key['Disc_IPCd'] != $key['Itm_Portion']){
-                                    $ch_price = $this->db2->query("SELECT * from Kitchen where CNo=".$CNo." and ItemId = ".$key['Disc_ItemId']." and Itm_Portion = ".$key['Disc_IPCd'])->result_array();
-                                    
-                                    if(!empty($ch_price)){
-                                        if($key['KQty'] >= $key['Qty']){
-                                            $n = $key['KQty'] / $key['Qty'];
+                        if($key['IPCd'] > 0){
+                            if($key['Itm_Portion'] != $key['IPCd']){
+                                $b = false;
+                            }else{
+                                $b = true;
+                            }
+                        }
+                        if($b){
+                            if(($key['KQty']*$key['ItmRate']) >= $key['MinBillAmt']){
+                                if($key['Disc_ItemId'] > 0 && $key['Disc_Qty'] > 0){
+                                    if($key['Disc_ItemId'] == $key['KItemId'] && $key['Disc_IPCd'] == $key['Itm_Portion']){
+                                        if($key['KQty'] >= $key['Qty'] + $key['Disc_Qty']){
+                                            $n = $key['KQty'] / ($key['Qty'] + $key['Disc_Qty']);
                                             if($n >= 1){
-                                                if($key['Disc_pcent'] > 0){
-                                                    $item_dis += $key['Disc_pcent']*$key['ItmRate']*$key['Disc_Qty']/100;
-                                                }elseif($ch_price[0]['Qty'] <= $key['Disc_Qty']*$n){
-                                                    $item_dis += $ch_price[0]['ItmRate']*$ch_price[0]['Qty'];
-                                                }else{
-                                                    $item_dis += $ch_price[0]['ItmRate']*$ch_price[0]['Disc_Qty']*$n;
+                                                // if($key['Disc_ItemId'] == $key['KItemId'] && $key['Disc_IPCd'] == $key['Itm_Portion']){
+                                                    if($key['Disc_pcent'] > 0){
+                                                        $item_dis += $key['Disc_pcent']*$key['ItmRate']*$key['Disc_Qty']/100;
+                                                    }else{
+                                                        $item_dis += $key['ItmRate']*$key['Disc_Qty']*$n;
+                                                    }
+                                                // }elseif($key['Disc_ItemId'] != $key['KItemId']){
+                                                    
+                                                // }
+                                            }
+                                        }
+                                    }elseif($key['Disc_ItemId'] == $key['KItemId'] && $key['Disc_IPCd'] != $key['Itm_Portion']){
+                                        $ch_price = $this->db2->query("SELECT * from Kitchen where CNo=".$CNo." and ItemId = ".$key['Disc_ItemId']." and Itm_Portion = ".$key['Disc_IPCd'])->result_array();
+                                        
+                                        if(!empty($ch_price)){
+                                            if($key['KQty'] >= $key['Qty']){
+                                                $n = $key['KQty'] / $key['Qty'];
+                                                if($n >= 1){
+                                                    if($key['Disc_pcent'] > 0){
+                                                        $item_dis += $key['Disc_pcent']*$key['ItmRate']*$key['Disc_Qty']/100;
+                                                    }elseif($ch_price[0]['Qty'] <= $key['Disc_Qty']*$n){
+                                                        $item_dis += $ch_price[0]['ItmRate']*$ch_price[0]['Qty'];
+                                                    }else{
+                                                        $item_dis += $ch_price[0]['ItmRate']*$ch_price[0]['Disc_Qty']*$n;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }elseif($key['Disc_ItemId'] != $key['KItemId']){
+                                        $ch_price = $this->db2->query("SELECT * from Kitchen where CNo=".$CNo." and ItemId = ".$key['Disc_ItemId']." and Itm_Portion = ".$key['Disc_IPCd'])->result_array();
+                                        
+                                        if(!empty($ch_price)){
+                                            if($key['KQty'] >= $key['Qty']){
+                                                $n = $key['KQty'] / $key['Qty'];
+                                                if($n >= 1){
+                                                    if($key['Disc_pcent'] > 0){
+                                                        $item_dis += $key['Disc_pcent']*$key['ItmRate']*$key['Disc_Qty']/100;
+                                                    }elseif($ch_price[0]['Qty'] <= $key['Disc_Qty']*$n){
+                                                        $item_dis += $ch_price[0]['ItmRate']*$ch_price[0]['Qty'];
+                                                    }else{
+                                                        $item_dis += $ch_price[0]['ItmRate']*$ch_price[0]['Disc_Qty']*$n;
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-                                }elseif($key['Disc_ItemId'] != $key['KItemId']){
-                                    $ch_price = $this->db2->query("SELECT * from Kitchen where CNo=".$CNo." and ItemId = ".$key['Disc_ItemId']." and Itm_Portion = ".$key['Disc_IPCd'])->result_array();
-                                    
-                                    if(!empty($ch_price)){
-                                        if($key['KQty'] >= $key['Qty']){
-                                            $n = $key['KQty'] / $key['Qty'];
-                                            if($n >= 1){
-                                                if($key['Disc_pcent'] > 0){
-                                                    $item_dis += $key['Disc_pcent']*$key['ItmRate']*$key['Disc_Qty']/100;
-                                                }elseif($ch_price[0]['Qty'] <= $key['Disc_Qty']*$n){
-                                                    $item_dis += $ch_price[0]['ItmRate']*$ch_price[0]['Qty'];
-                                                }else{
-                                                    $item_dis += $ch_price[0]['ItmRate']*$ch_price[0]['Disc_Qty']*$n;
-                                                }
-                                            }
-                                        }
+                                }elseif($key['Qty'] > 0 && $key['KQty'] >= $key['Qty']){
+                                    if($key['Disc_pcent'] > 0){
+                                        $item_dis += $key['Disc_pcent']*$key['ItmRate']*$key['KQty']/100;
+                                    }elseif($key['Disc_Amt'] > 0){
+                                        $item_dis+=$key['Disc_Amt'];
                                     }
-                                }
-                            }elseif($key['Qty'] > 0 && $key['KQty'] >= $key['Qty']){
-                                if($key['Disc_pcent'] > 0){
+                                }elseif($key['Disc_pcent'] > 0){
                                     $item_dis += $key['Disc_pcent']*$key['ItmRate']*$key['KQty']/100;
                                 }elseif($key['Disc_Amt'] > 0){
                                     $item_dis+=$key['Disc_Amt'];
                                 }
-                            }elseif($key['Disc_pcent'] > 0){
-                                $item_dis += $key['Disc_pcent']*$key['ItmRate']*$key['KQty']/100;
-                            }elseif($key['Disc_Amt'] > 0){
-                                $item_dis+=$key['Disc_Amt'];
                             }
                         }
+                        $dis+=$item_dis;
                     }
-                    $dis+=$item_dis;
+
+                    updateRecord('KitchenMain', array('BillDiscAmt' => $dis), array('CNo' => $CNo, 'EID' => $EID));
                 }
-
-                updateRecord('KitchenMain', array('BillDiscAmt' => $dis), array('CNo' => $CNo, 'EID' => $EID));
-
                 $resp1 = '';
                 // $statuss = 1;
                 $statuss = 2;
@@ -1224,24 +1226,6 @@ class Customer extends CI_Controller {
                  die;
             }
 
-            // if ($_POST['getPaymentList']) {
-            //     $kitcheData = $this->db2->query("SELECT k.OrdNo,k.ItemId, sum(k.Qty) as Qty, k.TA, k.Itm_Portion, (if (k.ItemTyp > 0,(CONCAT(mi.ItemNm1, ' - ' , k.CustItemDesc)),(mi.ItemNm1 ))) as ItemNm, k.ItmRate as Value, k.PckCharge, ip.Name as Portion from Kitchen k, KitchenMain km, MenuItem mi,ItemPortions ip where k.Itm_Portion = ip.IPCd and km.EID = $EID AND km.EID = k.EID and (km.CNo = $CNo OR km.MCNo = $CNo) and km.CNo = k.CNo AND k.ItemId = mi.ItemId AND km.BillStat = 0 AND k.Stat = 3 GROUP BY k.OrdNo,k.ItemId, k.Itm_Portion, k.TA, k.ItemTyp, k.CustItemDesc, k.ItmRate, k.PckCharge,ip.Name order BY mi.ItemNm1")->result_array();
-
-            //     if (empty($kitcheData)) {
-            //         $response = [
-            //             "status" => 0,
-            //             "msg" => "No Categary is available"
-            //         ];
-            //     } else {
-            //         $response = [
-            //             "status" => 1,
-            //             "kitcheData" => $kitcheData
-            //         ];
-            //     }
-
-            //     echo json_encode($response);
-            //     die();
-            // }
         }
     }
 
@@ -1649,7 +1633,7 @@ class Customer extends CI_Controller {
             $data['taxDataArray'] = $res['taxDataArray'];
 
             $data['hotelName'] = $billData[0]['Name'];
-            $data['Fullname'] = $billData[0]['FName'].' '.$billData[0]['LName'];
+            $data['Fullname'] = getName($billData[0]['CustId']);
             $data['phone'] = $billData[0]['PhoneNos'];
             $data['gstno'] = $billData[0]['GSTno'];
             $data['fssaino'] = $billData[0]['FSSAINo'];

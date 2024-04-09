@@ -762,7 +762,7 @@
                                         </div>\
                                     <?php } ?>
 										<?php if(!empty($this->session->userdata('CustId'))){ ?>
-										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+itemName+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].itemDescr+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-NV="'+data[i].NV+'" item-pck="'+data[i].PckCharge+'">\
+										<a href="#" data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+itemName+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].itemDescr+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-NV="'+data[i].NV+'" item-pck="'+data[i].PckCharge+'" item-itemsale="'+data[i].ItemSale+'">\
 											<img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+itemName+'">\
 										</a>\
 										<?php } else{ ?>
@@ -795,7 +795,7 @@
 					    <div class="row p-lg-3 p-sm-5 p-1">\
 					        <div class="col-lg-4 col-md-4 col-sm-4 col-4 align-self-center">\
 					        <?php if(!empty($this->session->userdata('CustId'))){ ?>
-					            <a data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+itemName+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].itemDescr+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'" item-NV="'+data[i].NV+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-pck="'+data[i].PckCharge+'">\
+					            <a data-toggle="modal" data-target="'+openModal+'" onclick="getItemDeatils(this,'+data[i].ItemTyp+');" item-id="'+data[i].ItemId+'" item-nm="'+itemName+'"  item-portion="'+data[i].Portion+'" item-portion-code="'+data[i].Itm_Portion+'" item-value="'+data[i].ItmRate+'" item-avgrtng="'+data[i].AvgRtng+'" item-dedc="'+data[i].itemDescr+'" item-imgsrc="<?= base_url(); ?>'+data[i].imgSrc+'" item-type="'+data[i].ItemTyp+'" item-kitcd="'+data[i].KitCd+'" cid="'+data[i].CID+'" mcatgid="'+data[i].MCatgId+'" item-fid="'+data[i].FID+'" TaxType="'+data[i].TaxType+'" tbltyp="'+data[i].TblTyp+'" item-NV="'+data[i].NV+'"  style="cursor: pointer;" item-prepTime="'+data[i].PrepTime+'" item-pck="'+data[i].PckCharge+'" item-itemsale="'+data[i].ItemSale+'">\
 					                <img class="item_img" src="<?= base_url(); ?>'+data[i].imgSrc+'" alt="'+itemName+'">\
 					            </a>\
 					            <?php } else{ ?>
@@ -885,7 +885,7 @@
                                 }
 
                                 template += `
-                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.OrigRate}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" item-NV="${item.NV}" style="cursor: pointer;" item-prepTime="${item.PrepTime}">${item.ItemNm}</li>
+                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.OrigRate}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" item-NV="${item.NV}" style="cursor: pointer;" item-prepTime="${item.PrepTime}" item-itemsale="${item.ItemSale}">${item.ItemNm}</li>
                             `;
                             });
                             template += `</ul>`;
@@ -924,6 +924,7 @@
             itemPortion = $(item).attr('item-portion');
             PrepTime = $(item).attr('item-prepTime');
             FID = $(item).attr('item-fid');
+            itemsale = $(item).attr('item-itemsale');
             deliveryVal = PrepTime;
             $('#itemTyp').val(itemTyp);
 
@@ -932,7 +933,7 @@
             itemKitCd = $(item).attr('item-kitcd');
 
             //get item portion from data base 
-            getItemPortion(itemId, itemPortion, cid, itemTyp, mCatgId, FID);
+            getItemPortion(itemId, itemPortion, cid, itemTyp, mCatgId, FID, itemsale);
 
             $('#minus-serve').attr("disabled", true);
             $('#serve-val').val($(item).attr('item-preptime'));
@@ -1004,11 +1005,13 @@
                 getCustomItemDetails(itemId, itemTyp, $(item).attr('item-portion-code'), $(item).attr('item-fid'));
             }
             // getCustOffer(itemId, $(item).attr('item-nm'), cid, itemTyp, mCatgId);
-            getItemOffers(itemId, $(item).attr('item-nm'), cid, itemTyp, mCatgId);
+            var item_Portion = $(item).attr('item-portion-code');
+                // itemsale
+            getItemOffers(itemId, $(item).attr('item-nm'), cid, itemTyp, mCatgId, item_Portion, FID, itemsale);
             
         }
 
-        function getItemPortion(itemId, itemPortion, cid, itemTyp, mCatgId, FID) {
+        function getItemPortion(itemId, itemPortion, cid, itemTyp, mCatgId, FID, itemsale) {
             var data = {
                 getItemPortion: 1,
                 itemId: itemId,
@@ -1021,7 +1024,7 @@
                 if (response.length != 0) {
                     var html = '';
                     for (let index = 0; index < response.length; index++) {
-                        html += `<option value="`+response[index]['IPCode']+`" rate="` + response[index]['ItmRate'] + `" offer_remark="` + response[index]['Remarks'] + `"  sdetcd="` + response[index]['SDetCd'] + `"  schcd="` + response[index]['SchCd'] + `" itemId="`+itemId+`" itemTyp="`+itemTyp+`" FID="`+FID+`"> ` + response[index]['Name'] + ` </option>`;
+                        html += `<option value="`+response[index]['IPCode']+`" rate="` + response[index]['ItmRate'] + `" offer_remark="` + response[index]['Remarks'] + `"  sdetcd="` + response[index]['SDetCd'] + `"  schcd="` + response[index]['SchCd'] + `" itemId="`+itemId+`" itemTyp="`+itemTyp+`" FID="`+FID+`" cid="`+cid+`" mCatgId="`+mCatgId+`" itemsale="`+itemsale+`"> ` + response[index]['Name'] + ` </option>`;
                     }
                     $('#item_portions').html(html);
                     $('#item_portions_custome').html(html);
@@ -1038,30 +1041,7 @@
             ajaxCall('<?= base_url('customer/get_item_portion_ajax') ?>', 'post', data, handleData);
         }
 
-        // function getCustOffer(itemId, itemNm, cid, itemTyp, mCatgId) {
-
-        //     $.ajax({
-        //         url: '<?= base_url('customer/offer_cust_ajax') ?>',
-        //         type: 'post',
-        //         data: {
-        //             getOrderData: 1,
-        //             itemId: itemId,
-        //             cid:cid,
-        //             itemTyp:itemTyp,
-        //             MCatgId:mCatgId
-        //         },
-        //         success: function(response) {
-        //             console.log(response);
-        //             if (response != 0) {
-        //                 $('#itemOffer').modal('show');
-        //                 $('#carouselExampleCaptions').html(response);
-        //                 $('.modal-title').html(itemNm + ' Offer');
-        //             }
-        //         }
-        //     });
-        // }
-
-        function getItemOffers(itemId, itemNm, cid, itemTyp, mCatgId) {
+        function getItemOffers(itemId, itemNm, cid, itemTyp, mCatgId, itemPortion, FID, itemsale) {
 
             $.ajax({
                 url: '<?= base_url('customer/get_item_offer_ajax') ?>',
@@ -1071,7 +1051,10 @@
                     itemId: itemId,
                     cid:cid,
                     itemTyp:itemTyp,
-                    MCatgId:mCatgId
+                    MCatgId:mCatgId,
+                    itemPortion:itemPortion,
+                    FID : FID,
+                    itemsale:itemsale
                 },
                 success: function(res) {
                     if(res.status == 'success'){
@@ -1196,10 +1179,18 @@
             var itemId = $('option:selected', this).attr('itemid');
             var itemTyp = $('option:selected', this).attr('itemtyp');
             var FID = $('option:selected', this).attr('fid');
+            var cid = $('option:selected', this).attr('cid');
+            var mCatgId = $('option:selected', this).attr('mcatgid');
+            var itemsale = $('option:selected', this).attr('itemsale');
             // change custom item price according to itemPortionCode
+            var portion = $(this).val();
+
+            getItemOffers(itemId, '', cid, itemTyp, mCatgId, portion, FID, itemsale);
             if (itemTyp != 0) {
                 getCustomItemDetails(itemId, itemTyp, element.val(), FID);
             }
+
+
             $("#product-price").val(' ' + rate);
             $("#product-priceView").text(' ' + convertToUnicodeNo(rate));
 

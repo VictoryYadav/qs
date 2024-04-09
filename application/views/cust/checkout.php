@@ -314,7 +314,7 @@
                         html += `<tr>`;
                         html += `<td>${item.ItemNm} ${ta}</td>`;
                         html += `<td class="text-center">${convertToUnicodeNo(item.Qty)}</td>`;
-                        html += `<td class="text-center">${convertToUnicodeNo(item.ItmRate)}</td>`;
+                        html += `<td class="text-center">${convertToUnicodeNo(item.OrigRate)}</td>`;
                         html += `<td class="text-right">${convertToUnicodeNo(item.OrdAmt)}</td>`;
                         html += `</tr>`;
 

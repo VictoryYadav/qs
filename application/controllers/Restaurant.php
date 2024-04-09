@@ -598,6 +598,7 @@ class Restaurant extends CI_Controller {
                     $temp['Disc_IPCd'] = $_POST['description_discountitemportion'][$i];
                     $temp['Disc_Qty'] = $_POST['description_discountquantity'][$i];
                     $temp['DiscItemPcent'] = $_POST['description_discountitempercentage'][$i];
+                    $temp['ItemSale'] = $_POST['description_itemsales'][$i];
                     $temp['MinBillAmt'] = $_POST['description_minbillamount'][$i];
                     $temp['Disc_pcent'] = $_POST['description_discountpercent'][$i];
                     $temp['Disc_Amt'] = $_POST['description_discountamount'][$i];
@@ -619,6 +620,7 @@ class Restaurant extends CI_Controller {
         $data['weekDay'] = $this->rest->getWeekDayList();
         $data['cuisines'] = $this->rest->getCuisineList();
         $data['foodType'] = $this->rest->get_foodType();
+        $data['itmSales'] = $this->rest->getItemSaleList();
 
 		$this->load->view('rest/add_new_offer',$data);	
     }
@@ -761,11 +763,11 @@ class Restaurant extends CI_Controller {
         $langId = $this->session->userdata('site_lang');
 
         $scName = "SchNm$langId as SchNm";
-        $data['scheme'] = $this->db2->select("$scName, SchCd, SchTyp ,SchCatg,FrmDt, ToDt, FrmDayNo, ToDayNo, FrmTime, ToTime, AltFrmTime, AltToTime")->get_where('CustOffers', array('SchCd' => $SchCd, 'EID' => $EID))->result_array();
+        $data['scheme'] = $this->db2->select("$scName, SchCd, SchTyp ,SchCatg,FrmDt, ToDt, FrmDayNo, ToDayNo, FrmTime, ToTime, AltFrmTime, AltToTime")->get_where('CustOffers', array('SchCd' => $SchCd, 'EID' => $EID))->row_array();
 
         $scDesc = "SchDesc$langId as SchDesc";
         $data['descriptions'] = $this->db2->select("*, $scDesc")->get_where('CustOffersDet', array('SchCd' =>$SchCd,'Stat' => 0))->result_array();
-
+        $data['itmSales'] = $this->rest->getItemSaleList();
         // echo "<pre>";
         // print_r($data['scheme']);
         // die;

@@ -32,14 +32,14 @@
                                             <div class="row">
                                                 <div class="form-group col-md-4">
                                                     <label for="schnm"><?= $this->lang->line('schemeName');?></label>
-                                                    <input type="text" id="schnm" name="SchNm" class="form-control form-control-sm" placeholder="Enter scheme name" required="" value="<?= $scheme[0]['SchNm']?>" />
+                                                    <input type="text" id="schnm" name="SchNm" class="form-control form-control-sm" placeholder="Enter scheme name" required="" value="<?= $scheme['SchNm'];?>" />
                                                 </div>
                                                 <div class="form-group col-md-4 col-6">
                                                     <label for="sch_typ"><?= $this->lang->line('schemeType');?></label>
                                                     <select class="form-control form-control-sm" id="sch_typ" name="SchTyp" required="" onchange="getCategoryl()">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
-                                                        <option value="1" <?php if($scheme[0]['SchTyp']==1){ echo 'selected'; } ?>>Bill Based</option>
-                                                        <option value="2" <?php if($scheme[0]['SchTyp']==2){ echo 'selected'; } ?> >Item Based</option>
+                                                        <option value="1" <?php if($scheme['SchTyp']==1){ echo 'selected'; } ?>>Bill Based</option>
+                                                        <option value="2" <?php if($scheme['SchTyp']==2){ echo 'selected'; } ?> >Item Based</option>
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-4 col-6">
@@ -52,11 +52,11 @@
 
                                                 <div class="form-group col-md-3 col-6">
                                                     <label for="from_date"><?= $this->lang->line('fromDate');?></label>
-                                                    <input type="date" name="FrmDt" class="form-control form-control-sm" id="from_date" <?php if(!empty($scheme[0]['FrmDt'])){?> value="<?= $scheme[0]['FrmDt']?>" <?php }?> />
+                                                    <input type="date" name="FrmDt" class="form-control form-control-sm" id="from_date" <?php if(!empty($scheme['FrmDt'])){?> value="<?= $scheme['FrmDt']?>" <?php }?> />
                                                 </div>
                                                 <div class="form-group col-md-3 col-6">
                                                     <label for="to_date"><?= $this->lang->line('toDate');?></label>
-                                                    <input type="date" name="ToDt" class="form-control form-control-sm" id="to_date" <?php if(!empty($scheme[0]['ToDt'])){?> value="<?= $scheme[0]['ToDt']?>" <?php }?> />
+                                                    <input type="date" name="ToDt" class="form-control form-control-sm" id="to_date" <?php if(!empty($scheme['ToDt'])){?> value="<?= $scheme['ToDt']?>" <?php }?> />
                                                 </div>
                                                 
                                                 <div class="form-group col-md-3 col-6">
@@ -65,7 +65,7 @@
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php 
                                                             foreach ($weekDay as $key) {?>
-                                                                <option value="<?= $key['DayNo']; ?>" <?php if($scheme[0]['FrmDayNo'] == $key['DayNo']){echo 'selected';} ?>><?= $key['Name']; ?></option>
+                                                                <option value="<?= $key['DayNo']; ?>" <?php if($scheme['FrmDayNo'] == $key['DayNo']){echo 'selected';} ?>><?= $key['Name']; ?></option>
                                                             
                                                         <?php }
                                                         ?>
@@ -77,26 +77,26 @@
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php 
                                                             foreach ($weekDay as $key) {?>
-                                                                <option value="<?= $key['DayNo']; ?>" <?php if($scheme[0]['ToDayNo'] == $key['DayNo']){echo 'selected';} ?>><?= $key['Name']; ?></option>
+                                                                <option value="<?= $key['DayNo']; ?>" <?php if($scheme['ToDayNo'] == $key['DayNo']){echo 'selected';} ?>><?= $key['Name']; ?></option>
                                                         <?php }
                                                         ?>
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-3 col-6">
                                                     <label for="from_time"><?= $this->lang->line('fromTime');?></label>
-                                                    <input type="time" name="FrmTime" class="form-control form-control-sm" id="from_time" <?php if(!empty($scheme[0]['FrmTime'])){?> value="<?= $scheme[0]['FrmTime']?>" <?php }?> />
+                                                    <input type="time" name="FrmTime" class="form-control form-control-sm" id="from_time" <?php if(!empty($scheme['FrmTime'])){?> value="<?= $scheme['FrmTime']?>" <?php }?> />
                                                 </div>
                                                 <div class="form-group col-md-3 col-6">
                                                     <label for="to_time"><?= $this->lang->line('toTime');?></label>
-                                                    <input type="time" name="ToTime" class="form-control form-control-sm" id="to_time" <?php if(!empty($scheme[0]['ToTime'])){?> value="<?= $scheme[0]['ToTime']?>" <?php }?> />
+                                                    <input type="time" name="ToTime" class="form-control form-control-sm" id="to_time" <?php if(!empty($scheme['ToTime'])){?> value="<?= $scheme['ToTime']?>" <?php }?> />
                                                 </div>
                                                 <div class="form-group col-md-3 col-6">
                                                     <label for="alt_from_time"><?= $this->lang->line('alternateFromTime');?></label>
-                                                    <input type="time" name="AltFrmTime" class="form-control form-control-sm" id="alt_from_time" <?php if(!empty($scheme[0]['AltFrmTime'])){?> value="<?= $scheme[0]['AltFrmTime']?>" <?php }?> />
+                                                    <input type="time" name="AltFrmTime" class="form-control form-control-sm" id="alt_from_time" <?php if(!empty($scheme['AltFrmTime'])){?> value="<?= $scheme['AltFrmTime']?>" <?php }?> />
                                                 </div>
                                                 <div class="form-group col-md-3 col-6">
                                                     <label for="alt_to_time"><?= $this->lang->line('alternateToTime');?></label>
-                                                    <input type="time" name="AltToTime" class="form-control form-control-sm" id="alt_to_time" <?php if(!empty($scheme[0]['ToTime'])){?> value="<?= $scheme[0]['ToTime']?>" <?php }?> />
+                                                    <input type="time" name="AltToTime" class="form-control form-control-sm" id="alt_to_time" <?php if(!empty($scheme['ToTime'])){?> value="<?= $scheme['ToTime']?>" <?php }?> />
                                                 </div>
                                             </div>
                                             <div class="offer_descriptions" id="offer_descriptions">
@@ -186,6 +186,17 @@
                                                                 <input type="number" class="form-control form-control-sm" id="description<?= $n?>_discountitempercentage" name="description_discountitempercentage[]" value="<?= $key['DiscItemPcent']?>">
                                                             </div>
 
+                                                            <div class="form-group col-md-3 col-6" id="description<?= $n?>_itemsales" style="display: block;">
+                                                                <label for="description<?= $n?>_itemsales"><?= $this->lang->line('itemSale');?></label>
+                                                                <select class="form-control form-control-sm" id="description<?= $n?>_itemsale" name="description_itemsales[]">
+                                                                <?php 
+                                                                    foreach($itmSales as $c){?>
+                                                                        <option value="<?= $c['TagId']?>" <?php if($key['ItemSale'] == $c['TagId']){echo 'selected';}?>><?= $c['TDesc']?></option>
+                                                                <?php }
+                                                                ?>
+                                                                </select>
+                                                            </div>
+
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_minbillamount_div" style="display: block;">
                                                                 <label for="description<?= $n?>_minbillamount"><?= $this->lang->line('minimumBillAmount');?></label>
                                                                 <input type="number" class="form-control form-control-sm" id="description<?= $n?>_minbillamount" name="description_minbillamount[]" value="<?= $key['MinBillAmt']?>">
@@ -238,7 +249,7 @@
 
     getCategoryl();
     function getCategoryl(){
-      var SchCatg = "<?php echo $scheme[0]['SchCatg']; ?>";
+      var SchCatg = "<?php echo $scheme['SchCatg']; ?>";
 
         var SchTyp = $('#sch_typ').val();
         if(SchTyp > 0){
@@ -351,6 +362,15 @@
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_discountitempercentage_div" style="display: block;">\
                             <label for="description'+num_desc+'_discountitempercentage"><?= $this->lang->line('discountItemPercentage');?></label>\
                             <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_discountitempercentage" name="description_discountitempercentage[]" value="0">\
+                        </div>\
+                        <div class="form-group col-md-3 col-6" id="description'+num_desc+'_itemsales" style="display: block;">\
+                            <label for="description'+num_desc+'_itemsales"><?= $this->lang->line('itemSale');?></label>\
+                            <select class="form-control form-control-sm" id="description'+num_desc+'_itemsale" name="description_itemsales[]">\
+                            <option value=""><?= $this->lang->line('select');?></option>\
+                                <?php foreach($itmSales as $key){?>
+                                        <option value="<?= $key['TagId']?>"><?= $key['TDesc']?></option>\
+                                <?php } ?>
+                            </select>\
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_minbillamount_div" style="display: block;">\
                             <label for="description'+num_desc+'_minbillamount"><?= $this->lang->line('minimumBillAmount');?></label>\

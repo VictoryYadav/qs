@@ -220,12 +220,14 @@ class Cust extends CI_Model{
 		    $cid = $postData['cid'];
 		    $itemTyp = $postData['itemTyp'];
 		    $MCatgId = $postData['MCatgId'];
+		    $itemPortion = $postData['itemPortion'];
+		    $FID = $postData['FID'];
 		    
 		    $langId = $this->session->userdata('site_lang');
         	$scName = "c.SchNm$langId as SchNm";
         	$scDesc = "cod.SchDesc$langId as SchDesc";
 
-			return $this->db2->query("SELECT $scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank,cod.Disc_ItemId, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId from CustOffersDet as cod join CustOffers as c on c.SchCd=cod.SchCd and  (cod.CID = $cid or cod.MCatgId = $MCatgId or cod.ItemTyp = $itemTyp or cod.ItemId = $itemId) left outer join Cuisines as c1 on cod.CID=c1.CID   left outer join MenuCatg as m on cod.MCatgId = m.MCatgId  left outer join ItemTypes as i on cod.ItemTyp = i.ItmTyp  left outer join MenuItem as mi on mi.ItemId = cod.ItemId where c.EID=".$this->EID." and c.ChainId =".$this->ChainId."  and c.Stat=0 and c.SchTyp = 2 and (time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)  group by c.schcd, cod.sDetCd order by c.Rank, cod.Rank")->result_array();
+			return $this->db2->query("SELECT $scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank,cod.Disc_ItemId, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId from CustOffersDet as cod join CustOffers as c on c.SchCd=cod.SchCd and  (cod.CID = $cid or cod.MCatgId = $MCatgId or cod.ItemTyp = $itemTyp or cod.ItemId = $itemId) left outer join Cuisines as c1 on cod.CID=c1.CID left outer join MenuCatg as m on cod.MCatgId = m.MCatgId  left outer join ItemTypes as i on cod.ItemTyp = i.ItmTyp  left outer join MenuItem as mi on mi.ItemId = cod.ItemId left outer join MenuItemRates as mir on mir.ItemId = mi.ItemId where mir.Itm_Portion = $itemPortion and mi.FID = $FID and mir.EID = ".$this->EID." and  c.EID=".$this->EID." and c.ChainId =".$this->ChainId."  and c.Stat=0 and cod.Stat=0 and c.SchTyp = 2 and (time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)  group by c.schcd, cod.sDetCd order by c.Rank, cod.Rank")->result_array();
 		}
 	}
 
@@ -648,7 +650,8 @@ class Cust extends CI_Model{
 					
 					$sdetcd = !empty($postData['sdetcd'])?$postData['sdetcd']:0;
 					$Offers = $this->getSchemeOfferList($schcd, $sdetcd);
-
+					
+					$offerOrigRate = $itmrate;
 					if(!empty($Offers)){
 						
 						$kitchenObj['ItemId'] = $Offers['ItemId'];
@@ -665,16 +668,30 @@ class Cust extends CI_Model{
 						$Disc_ItemId = $Offers['Disc_ItemId'];
 						$Disc_IPCd = $Offers['Disc_IPCd'];
 						$offerRate = $itmrate - ($itmrate * $Offers['Disc_pcent'] / 100);
-						if($Disc_ItemId != $postData['itemId']){
-							$offerRates = $this->db2->query("select mi.ItmRate from MenuItemRates as mi where mi.EID = $this->EID and mi.ItemId = $Disc_ItemId and mi.Itm_Portion = $Disc_IPCd and mi.SecId = (select SecId from Eat_tables where TableNo = $TableNo and EID = $this->EID)")->row_array();
-							$offerRate = $offerRates['ItmRate'] -  ($offerRates['ItmRate'] * $Offers['Disc_pcent'] / 100);
+						
+						if($Disc_ItemId != $postData['itemId'] || $Disc_IPCd != $Offers['IPCd']){
+							$offerRates = $this->db2->query("select mi.OrigRate from MenuItemRates as mi where mi.EID = $this->EID and mi.ItemId = $Disc_ItemId and mi.Itm_Portion = $Disc_IPCd and mi.SecId = (select SecId from Eat_tables where TableNo = $TableNo and EID = $this->EID)")->row_array();
+
+							$offerRate = $offerRates['OrigRate'] -  ($offerRates['OrigRate'] * $Offers['Disc_pcent'] / 100);
+							$offerOrigRate = $offerRates['OrigRate'];
 						}
+
+						if($Offers['SchTyp'] > 1) {
+							$offerRate = $itmrate - ($itmrate * $Offers['DiscItemPcent'] / 100);
+						
+							if($Disc_ItemId != $postData['itemId'] || $Disc_IPCd != $Offers['IPCd']){
+								
+								$offerRate = $offerRates['OrigRate'] -  ($offerRates['OrigRate'] * $Offers['DiscItemPcent'] / 100);
+								$offerOrigRate = $offerRates['OrigRate'];
+							}							
+						}
+
 
 						$kitchenObj['ItemId'] = $Disc_ItemId;
 						$kitchenObj['TaxType'] =$postData['tax_type'];
 						$kitchenObj['Qty'] = $Offers['Disc_Qty'];
 						$kitchenObj['ItmRate'] = $offerRate;
-						$kitchenObj['OrigRate'] = $itmrate; 	//(m.Value)
+						$kitchenObj['OrigRate'] = $offerOrigRate;
 						$kitchenObj['Itm_Portion'] = $Offers['Disc_IPCd'];
 						$kitchenObj['SchCd'] = $schcd;
 						$kitchenObj['SDetCd'] = $sdetcd;
@@ -1047,7 +1064,7 @@ class Cust extends CI_Model{
     	$scName = "c.SchNm$langId as SchNm";
     	$scDesc = "cod.SchDesc$langId as SchDesc";
 
-		return $this->db2->select("$scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank,cod.Disc_ItemId, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId")
+		return $this->db2->select("$scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.SchCatg, c.Rank,cod.Disc_ItemId, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, cod.DiscItemPcent")
 						->join('CustOffers c', 'c.SchCd = cod.SchCd', 'inner')
 						->get_where('CustOffersDet cod', array('c.SchCd' => $schcd,
 						 'cod.SDetCd' => $sdetcd,
@@ -1056,6 +1073,7 @@ class Cust extends CI_Model{
 						 'c.EID' => $this->EID,
 						 'c.ChainId' => $this->ChainId))
 						->row_array();
+						// print_r($this->db2->last_query());die;
 	}
 
 	
@@ -1206,7 +1224,7 @@ class Cust extends CI_Model{
             $lname = "m.ItemNm$langId";
             $ipName = "ip.Name$langId as Portions";
 
-		return $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate, k.ItmRate,sum(k.OrigRate*k.Qty) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate)*k1.Qty from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID and k1.CNo =$CNo AND (k1.Stat = $stat) and (k1.OrigRate-k1.ItmRate) > 0) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotPckCharge, $ipName, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name, k.TA  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) group by km.CNo, k.ItemId, k.Itm_Portion ,k.CustItemDesc order by TaxType, m.ItemNm1 Asc")->result_array();
+		return $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate, k.ItmRate,sum(k.OrigRate*k.Qty) as OrdAmt, (SELECT sum((k1.OrigRate-k1.ItmRate)*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.CNo=km.CNo and k1.EID=km.EID and k1.CNo =$CNo AND (k1.Stat = $stat) and ((k1.OrigRate-k1.ItmRate) * k1.Qty) > 0) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotPckCharge, $ipName, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name, k.TA  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND (km.CNo = $CNo OR km.MCNo = $CNo) group by km.CNo, k.ItemId, k.Itm_Portion ,k.CustItemDesc order by TaxType, m.ItemNm1 Asc")->result_array();
 		}
 	}
 

@@ -205,7 +205,7 @@
                                         }
                                         
                                         $sameTaxType .= ' <td>'.$data['Qty'].' </td>';
-                                        $sameTaxType .= ' <td>'.$data['ItmRate'].'</td> ';
+                                        $sameTaxType .= ' <td>'.$data['OrigRate'].'</td> ';
                                         $sameTaxType .= ' <td>'.$data['ItemAmt'].'</td> ';
                                         $sameTaxType .= ' </tr> ';
                                         $itemTotal +=$data['ItemAmt'];

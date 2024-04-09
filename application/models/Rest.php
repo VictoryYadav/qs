@@ -1180,6 +1180,14 @@ class Rest extends CI_Model{
 					->result_array();	
 	}
 
+	public function getItemSaleList(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "TDesc$langId as TDesc";
+		return $this->db2->select("TagId, $lname, TagTyp")
+					->get_where('MenuTags', array('TagTyp' => 3))
+					->result_array();	
+	}
+
 	public function getTransactionType(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "TDesc$langId as TDesc";

@@ -270,6 +270,15 @@
                             <label for="description'+num_desc+'discountitempercentage"><?= $this->lang->line('discountItemPercentage');?></label>\
                             <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_discountitempercentage" name="description_discountitempercentage[]" value="0">\
                         </div>\
+                        <div class="form-group col-md-3 col-6" id="description'+num_desc+'_itemsales" style="display: block;">\
+                            <label for="description'+num_desc+'_itemsales"><?= $this->lang->line('itemSale');?></label>\
+                            <select class="form-control form-control-sm" id="description'+num_desc+'_itemsale" name="description_itemsales[]">\
+                            <option value=""><?= $this->lang->line('select');?></option>\
+                                <?php foreach($itmSales as $key){?>
+                                        <option value="<?= $key['TagId']?>"><?= $key['TDesc']?></option>\
+                                <?php } ?>
+                            </select>\
+                        </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_minbillamount_div" style="display: block;">\
                             <label for="description'+num_desc+'_minbillamount"><?= $this->lang->line('minimumBillAmount');?></label>\
                             <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_minbillamount" name="description_minbillamount[]" value="0">\
