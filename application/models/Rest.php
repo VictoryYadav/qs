@@ -849,10 +849,23 @@ class Rest extends CI_Model{
         $lname = "Name$langId as Opt";
         $Usedfor = "Usedfor$langId as Usedfor";
 
-		return $this->db2->select("FID, CTyp ,$lname, $Usedfor")->order_by('CTyp, Rank','ASC')
-						->group_by('CTyp')
+		return $this->db2->select("FID, CTyp ,$lname, $Usedfor")
+						->order_by('CTyp, Rank','ASC')
+						// ->group_by('CTyp')
 						->get_where('FoodType', array('Stat' => 0))->result_array();	
 	}
+
+	public function get_CType(){
+		$langId = $this->session->userdata('site_lang');
+        $lname = "Name$langId as Opt";
+        $Usedfor = "Usedfor$langId as Usedfor";
+
+		return $this->db2->select("DISTINCT(CTyp), $Usedfor")
+						->order_by('CTyp, Rank','ASC')
+						// ->group_by('CTyp')
+						->get_where('FoodType', array('Stat' => 0))->result_array();	
+	}
+
 
 	public function getAllItemsList(){
 		$langId = $this->session->userdata('site_lang');
@@ -1388,18 +1401,39 @@ class Rest extends CI_Model{
     	$mname = "mi.ItemNm$langId as menuName";
     	$dis_name = "mii.ItemNm$langId as discName";
 
-		$whr = "(cod.CID = $cid or cod.MCatgId = $MCatgId or cod.ItemTyp = $itemTyp or cod.ItemId = $itemId) and (time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)";
+    	if(!empty($cid)){
+	    	$this->db2->or_where('cod.CID', $cid);
+	    }
+	    if(!empty($itemId)){
+	    	$this->db2->or_where('cod.ItemId', $itemId);
+	    }
+	    if(!empty($MCatgId)){
+	    	$this->db2->or_where('cod.MCatgId', $MCatgId);
+	    }
+	    // if(!empty($itemsale)){
+	    // 	$this->db2->or_where('cod.ItemSale', $itemsale);
+	    // }
+	    // if(!empty($itemPortion)){
+	    // 	$this->db2->or_where('cod.IPCd', $itemPortion);
+	    // }
+	    if(!empty($itemTyp)){
+	    	$this->db2->or_where('cod.ItemTyp', $itemTyp);
+	    }
 
-		return $this->db2->select("$scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank,cod.Disc_ItemId, $dis_name, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, $mname, mii.KitCd, mii.PckCharge, m.TaxType, mii.PrepTime, m.DCd, mii.FID ")
+		$whr = "(time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)";
+
+		return $this->db2->select("$scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank, cod.Disc_ItemId, $dis_name, cod.Qty, cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.DiscItemPcent, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, $mname, mii.KitCd, mii.PckCharge, m.TaxType, mii.PrepTime, m.DCd, mii.FID, mir.OrigRate as itmVal, mirr.OrigRate as disItmVal ")
 				->order_by('c.Rank, cod.Rank')
 				->group_by('c.schcd, cod.sDetCd')
+				->where($whr)
 				->join('CustOffersDet cod','c.SchCd= cod.SchCd', 'inner')
 				->join('Cuisines c1','c1.CID = cod.CID', 'left')
 				->join('MenuCatg m','m.MCatgId = cod.MCatgId', 'left')
 				->join('ItemTypes i','i.ItmTyp = cod.ItemTyp', 'left')
-				->join('MenuItem mi','mi.ItemId = cod.ItemId', 'inner')
+				->join('MenuItem mi','mi.ItemId = cod.ItemId', 'left')
+				->join('MenuItemRates mir','mir.ItemId = mi.ItemId', 'left')
 				->join('MenuItem mii','mii.ItemId = cod.Disc_ItemId', 'left')
-				->where($whr)
+				->join('MenuItemRates mirr','mirr.ItemId = cod.Disc_ItemId', 'left')
 				->get_where('CustOffers c', array(
 										'c.EID' => $EID,
 										'c.Stat' => 0

@@ -253,6 +253,7 @@ class Customer extends CI_Controller {
     public function searchItemList(){
         $langId = $this->session->userdata('site_lang');
         $EID  = authuser()->EID;
+        $tableNo = $this->session->userdata('TableNo');
 
         if (isset($_POST['searchItemCust']) && $_POST['searchItemCust']) {
             $itemName = $_POST['itemName'];
@@ -260,7 +261,7 @@ class Customer extends CI_Controller {
             $lname = "i.ItemNm$langId ItemNm";
             $ItmDesc = "i.ItmDesc$langId ItmDesc";
            
-            $items = $this->db2->query("SELECT i.ItemId, $lname, mir.Itm_Portion, mir.OrigRate, AvgRtng, $ItmDesc, i.ItemNm1 as imgSrc, ItemTyp, KitCd, MCatgId, i.FID, i.CID, i.PrepTime, i.NV, i.ItemSale FROM MenuItem i, MenuItemRates mir where i.ItemNm1 like '$itemName%' AND i.Stat = 0 AND i.EID = $EID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId = mir.ItemId and mir.OrigRate > 0 and mir.EID = $EID group by i.ItemId order by Rank")->result_array();
+            $items = $this->db2->query("SELECT i.ItemId, $lname, mir.Itm_Portion, mir.OrigRate, AvgRtng, $ItmDesc, i.ItemNm1 as imgSrc, ItemTyp, KitCd, MCatgId, i.FID, i.CID, i.PrepTime, i.NV, i.ItemSale, (select et1.TblTyp from Eat_tables et1 where et1.EID = $EID and et1.TableNo = $tableNo) as TblTyp FROM MenuItem i, MenuItemRates mir where i.ItemNm1 like '$itemName%' AND i.Stat = 0 AND i.EID = $EID AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and i.ItemId = mir.ItemId and mir.OrigRate > 0 and mir.EID = $EID group by i.ItemId order by Rank")->result_array();
             
             if (!empty($items)) {
 
@@ -1199,8 +1200,10 @@ class Customer extends CI_Controller {
                                                                 'Stat <= ' => 5,
                                                                 'BillStat' => 0,'EID' => $EID)
                                                             )->row_array();
+                        $langId = $this->session->userdata('site_lang');
+                        $scName = "c.SchNm$langId as SchNm";
 
-                        $billOfferAmt = $this->db2->select("c.SchNm, cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId,if(cod.Disc_ItemId > 0,(select ItemNm1 from MenuItem where ItemId = cod.Disc_ItemId),'-') as itemName, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent ")
+                        $billOfferAmt = $this->db2->select("$scName, cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId,if(cod.Disc_ItemId > 0,(select ItemNm1 from MenuItem where ItemId = cod.Disc_ItemId),'-') as itemName, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent ")
                                     ->order_by('cod.MinBillAmt', 'DESC')
                                     ->join('CustOffers c', 'c.SchCd = cod.SchCd', 'inner')
                                     ->get_where('CustOffersDet cod', 
@@ -1241,7 +1244,9 @@ class Customer extends CI_Controller {
                                                         'Stat <= ' => 5,
                                                         'BillStat' => 0)
                                                     )->row_array();
-                $billOfferAmt = $this->db2->select('c.SchNm, cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent ')
+                $langId = $this->session->userdata('site_lang');
+                $scName = "c.SchNm$langId as SchNm";
+                $billOfferAmt = $this->db2->select('$scName, cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent ')
                             ->order_by('cod.MinBillAmt', 'DESC')
                             ->join('CustOffers c', 'c.SchCd = cod.SchCd')
                             ->get_where('CustOffersDet cod', 

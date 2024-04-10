@@ -359,7 +359,7 @@
 
         var trow = 0;
 
-        function itemSlected(itemId, itemName, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, Qty, tableRow, FID) {
+        function itemSlected(itemId, itemName, origValue, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, Qty, tableRow, FID) {
 
             if(tableRow > 0){
                 trow  = tableRow;
@@ -404,7 +404,7 @@
                 <td><select class="form-control form-control-sm item-portion" id="select_${trow}_${itemId}" onchange="changePortion(${trow}, ${itemId})" ${disabled}><option></option></select></td>
                 <td style="width:50px;"><input type="text" class="form-control form-control-sm item-qty" min="1" value="${convertToUnicodeNo(qty)}" onblur="calculateValue(this)" style="width:50px;" id="qty_${trow}_${itemId}" ${readonly}></td>
                 <td class="item-rate" id="rate_${trow}_${itemId}">${convertToUnicodeNo(itemValue)}</td>
-                <td class="item-value" id="value_${trow}_${itemId}">${convertToUnicodeNo(itemValue)}</td>
+                <td class="item-value" id="value_${trow}_${itemId}">${convertToUnicodeNo(origValue)}</td>
                 <td><input type="checkbox" value="1" class="is_take_away" `+ch+`></td>
                 <td><input type="text" class="form-control form-control-sm item-remarks" style="width:100%;"></td>
                 <td style=" text-align: center; ">
@@ -487,7 +487,7 @@
                     var temp = `<select class="form-control" id="schemeOffer">`;
 
                     data.forEach((item, index) => {
-                        temp += `<option value="${item.SchCd}" itemid="${item.Disc_ItemId}" itemname="${item.discName}" itemvalue="${item.CID}" itemkitcd="${item.KitCd}" pckcharge="${item.PckCharge}" itm_portion="${item.Disc_IPCd}"  taxtype="${item.TaxType}"  preptime="${item.PrepTime}"  dcd="${item.DCd}"  itemtyp="${ItemTyp}" cid="${item.CID}"  mcatgid="${item.MCatgId}" qty="${item.Disc_Qty}" sdetcd="${item.SDetCd}" rowid="${ItemId}" trow="${trow}" fid="${item.FID}">${item.SchNm} - ${item.SchDesc} </option>`;
+                        temp += `<option value="${item.SchCd}" itemid="${item.Disc_ItemId}" itemname="${item.discName}" itemvalue="${item.itmVal}" itemkitcd="${item.KitCd}" pckcharge="${item.PckCharge}" itm_portion="${item.Disc_IPCd}"  taxtype="${item.TaxType}"  preptime="${item.PrepTime}"  dcd="${item.DCd}"  itemtyp="${ItemTyp}" cid="${item.CID}"  mcatgid="${item.MCatgId}" qty="${item.Qty}" disqty="${item.Disc_Qty}" sdetcd="${item.SDetCd}" rowid="${ItemId}" trow="${trow}" fid="${item.FID}" discitempcent="${item.DiscItemPcent}">${item.SchNm} - ${item.SchDesc} </option>`;
                     });
                     temp += `</select>`;
 
@@ -504,12 +504,12 @@
         $('#offerForm').on('submit', function(e){
             e.preventDefault();
             var SchCd = $('#schemeOffer').val();
-            var Qty = $('option:selected', $('#schemeOffer')).attr('qty');
+            var Qty = $('option:selected', $('#schemeOffer')).attr('disqty');
             var SDetCd = $('option:selected', $('#schemeOffer')).attr('sdetcd');
 
             var itemId = $('option:selected', $('#schemeOffer')).attr('itemid');
             var itemName = $('option:selected', $('#schemeOffer')).attr('itemname');
-            var itemValue = $('option:selected', $('#schemeOffer')).attr('itemvalue');
+            var origVal = $('option:selected', $('#schemeOffer')).attr('itemvalue');
             var itemKitCd = $('option:selected', $('#schemeOffer')).attr('itemkitcd');
             var PckCharge = $('option:selected', $('#schemeOffer')).attr('pckcharge');
             var Itm_Portion = $('option:selected', $('#schemeOffer')).attr('itm_portion');
@@ -520,6 +520,7 @@
             var CID = $('option:selected', $('#schemeOffer')).attr('cid');
             var MCatgId = $('option:selected', $('#schemeOffer')).attr('mcatgid');
             var FID = $('option:selected', $('#schemeOffer')).attr('fid');
+            var discitempcent = $('option:selected', $('#schemeOffer')).attr('discitempcent');
 
             var rowid = $('option:selected', $('#schemeOffer')).attr('rowid');
             var trow = $('option:selected', $('#schemeOffer')).attr('trow');
@@ -535,7 +536,9 @@
 
             $('.offersModal').modal('hide');
 
-            itemSlected(itemId, itemName, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, Qty, trow, FID);
+            var itemValue = parseInt(origVal) - (parseInt(origVal) * parseInt(discitempcent) / 100);
+
+            itemSlected(itemId, itemName, origVal, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, Qty, trow, FID);
 
         })
 
@@ -777,7 +780,7 @@
                                     }
                                     
                                     template += `
-                                <li onclick="itemSlected(${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd}, ${item.ItemTyp}, ${item.CID}, ${item.MCatgId}, 0, 0, 0, 0, ${item.FID});" style="cursor: pointer;">${printItemName}</li>
+                                <li onclick="itemSlected(${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd}, ${item.ItemTyp}, ${item.CID}, ${item.MCatgId}, 0, 0, 0, 0, ${item.FID});" style="cursor: pointer;">${printItemName}</li>
                             `;
                                 });
                                 template += `</ul>`;
@@ -832,6 +835,7 @@
                 var taxtype = [];
                 var itemRemarks = [];
                 var item_value = [];
+                var item_rate = [];
                 var pckValue = [];
                 var take_away = [];
                 var prep_time = [];
@@ -924,6 +928,10 @@
                     });
 
                     $(".item-rate").each(function(index, el) {
+                        item_rate.push( convertDigitToEnglish($(this).text()) );
+                    });
+
+                    $(".item-value").each(function(index, el) {
                         item_value.push( convertDigitToEnglish($(this).text()) );
                     });
 
@@ -968,7 +976,8 @@
                             itemKitCds: itemKitCds,
                             itemQty: itemQty,
                             itemRemarks: itemRemarks,
-                            ItmRates: item_value,
+                            ItmRates: item_rate,
+                            origRates: item_value,
                             Itm_Portion:Itm_Portion,
                             Stat: 1,
                             phone: Uphone,

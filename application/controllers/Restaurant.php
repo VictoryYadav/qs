@@ -619,7 +619,7 @@ class Restaurant extends CI_Controller {
         // $data['sch_cat'] = $this->rest->getOffersSchemeCategory(1);
         $data['weekDay'] = $this->rest->getWeekDayList();
         $data['cuisines'] = $this->rest->getCuisineList();
-        $data['foodType'] = $this->rest->get_foodType();
+        $data['foodType'] = $this->rest->get_CType();
         $data['itmSales'] = $this->rest->getItemSaleList();
 
 		$this->load->view('rest/add_new_offer',$data);	
@@ -754,7 +754,7 @@ class Restaurant extends CI_Controller {
         $data['sch_cat'] = $this->rest->getOffersSchemeCategory(1);
         $data['weekDay'] = $this->rest->getWeekDayList();
         $data['cuisines'] = $this->rest->getCuisineList();
-        $data['foodType'] = $this->rest->get_foodType();
+        $data['foodType'] = $this->rest->get_CType();
         // $data['itemList'] = $this->rest->getAllItemsList();
 
         $EID = authuser()->EID;
@@ -2753,6 +2753,7 @@ class Restaurant extends CI_Controller {
             $itemQty = !empty($_POST['itemQty'])?$_POST['itemQty']:0;
             $Itm_Portion = !empty($_POST['Itm_Portion'])?$_POST['Itm_Portion']:0;
             $ItmRate = !empty($_POST['ItmRates'])?$_POST['ItmRates']:0;
+            $origRates = !empty($_POST['origRates'])?$_POST['origRates']:0;
             $itemRemarks = !empty($_POST['itemRemarks'])?$_POST['itemRemarks']:0;
             $Stat = $_POST['Stat'];
             $phone = $_POST['phone'];
@@ -2876,7 +2877,7 @@ class Restaurant extends CI_Controller {
                 }
                 $kitchenObj['CustRmks'] = $itemRemarks[$i];
                 $kitchenObj['ItmRate'] = $ItmRate[$i];
-                $kitchenObj['OrigRate'] = $ItmRate[$i];
+                $kitchenObj['OrigRate'] = $origRates[$i];
                 $kitchenObj['Stat'] = $stat;
                 $kitchenObj['CellNo'] = $phone;
                 $kitchenObj['Itm_Portion'] = $Itm_Portion[$i];
@@ -4144,7 +4145,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function edit_item($ItemId){
-        $this->check_access();
+        // $this->check_access();
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
  

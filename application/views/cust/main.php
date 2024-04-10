@@ -885,7 +885,7 @@
                                 }
 
                                 template += `
-                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.OrigRate}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" item-NV="${item.NV}" style="cursor: pointer;" item-prepTime="${item.PrepTime}" item-itemsale="${item.ItemSale}">${item.ItemNm}</li>
+                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.OrigRate}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" item-NV="${item.NV}" style="cursor: pointer;" item-prepTime="${item.PrepTime}" item-itemsale="${item.ItemSale}" tbltyp="${item.TblTyp}">${item.ItemNm}</li>
                             `;
                             });
                             template += `</ul>`;
@@ -1061,7 +1061,9 @@
                         var data = res.response;
                         var temp = '<option value="0"><?= $this->lang->line('selectOffer'); ?></option>';
                         for(i=0; i<data.length; i++){
-                            temp += '<option value="'+data[i].SchCd+'" sdcode="'+data[i].SDetCd+'" Qty="'+data[i].Qty+'" Disc_Qty="'+data[i].Disc_Qty+'" Disc_pcent="'+data[i].Disc_pcent+'" Disc_Amt="'+data[i].Disc_Amt+'" ipcd="'+data[i].IPCd+'" itemid="'+data[i].ItemId+'">'+data[i].SchNm+'-'+data[i].SchDesc+'</option>';
+                            if(data[i].SchTyp == 2){
+                                temp += '<option value="'+data[i].SchCd+'" sdcode="'+data[i].SDetCd+'" Qty="'+data[i].Qty+'" Disc_Qty="'+data[i].Disc_Qty+'" Disc_pcent="'+data[i].Disc_pcent+'" Disc_Amt="'+data[i].Disc_Amt+'" ipcd="'+data[i].IPCd+'" itemid="'+data[i].ItemId+'">'+data[i].SchNm+'-'+data[i].SchDesc+'</option>';
+                            }
                         }
                         $('#schcd').html(temp);
                     }else{
@@ -1134,7 +1136,9 @@
             var itemId = $('option:selected', this).attr('itemid');
             var ipcd = $('option:selected', this).attr('ipcd');
 
-            $('#item_portions').val(ipcd);
+            if(ipcd > 0){
+                $('#item_portions').val(ipcd);
+            }
 
             if(schcd > 0){
                 $('#sdetcd').val($('option:selected', this).attr('sdcode'));
@@ -1149,6 +1153,7 @@
         function item_portions_call(){
             
             var portionCode = $('#item_portions').val();
+            
             var rate = $('#item_portions option:selected').attr('rate');
 
             var itemId = $('#item_portions option:selected').attr('itemid');
