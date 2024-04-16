@@ -451,6 +451,10 @@ class User extends CI_Model{
 		}
 	}
 
+	public function getMenuRates($ItemId, $IPCd){
+		return $this->db2->get_where('MenuItemRates', array('ItemId' => $ItemId, 'Itm_Portion' => $IPCd))->row_array();
+	}
+
 	
 
 }

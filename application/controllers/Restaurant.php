@@ -555,6 +555,7 @@ class Restaurant extends CI_Controller {
             $CustOffers['ToDt'] = $_POST['ToDt'];
             
             $SchCd = insertRecord('CustOffers', $CustOffers);
+            
             if(!empty($SchCd)){
                 $updat['PromoCode'] = $SchCd.'~'.$EID.'~'.$ChainId.'~'.$_POST['SchTyp'].'~'.$_POST['SchCatg'];
                 updateRecord('CustOffers', $updat, array('SchCd' => $SchCd));
@@ -588,22 +589,108 @@ class Restaurant extends CI_Controller {
                     $temp['SchCd'] = $SchCd;
                     $temp['SchDesc1'] = $_POST['description'][$i];
                     $temp['SchDesc2'] = $_POST['description'][$i];
-                    $temp['CID'] = $_POST['description_cid'][$i];
-                    $temp['MCatgId'] = $_POST['description_mcatgid'][$i];
-                    $temp['ItemTyp'] = $_POST['description_itemtyp'][$i];
-                    $temp['ItemId'] = $_POST['description_item'][$i];
-                    $temp['IPCd'] = $_POST['description_itemportion'][$i];
-                    $temp['Qty'] = $_POST['description_quantity'][$i];
-                    $temp['Disc_ItemId'] = $_POST['description_discountitem'][$i];
-                    $temp['Disc_IPCd'] = $_POST['description_discountitemportion'][$i];
-                    $temp['Disc_Qty'] = $_POST['description_discountquantity'][$i];
-                    $temp['DiscItemPcent'] = $_POST['description_discountitempercentage'][$i];
-                    $temp['ItemSale'] = $_POST['description_itemsales'][$i];
-                    $temp['MinBillAmt'] = $_POST['description_minbillamount'][$i];
-                    $temp['Disc_pcent'] = $_POST['description_discountpercent'][$i];
-                    $temp['Disc_Amt'] = $_POST['description_discountamount'][$i];
+                    $temp['CID'] = !empty($_POST['description_cid'][$i])?$_POST['description_cid'][$i]:0;
+                    $temp['MCatgId'] = !empty($_POST['description_mcatgid'][$i])?$_POST['description_mcatgid'][$i]:0;
+
+                    $temp['Disc_CID'] = !empty($_POST['description_disc_cid'][$i])?$_POST['description_disc_cid'][$i]:0;
+                    $temp['Disc_MCatgId'] = !empty($_POST['description_disc_mcatgid'][$i])?$_POST['description_disc_mcatgid'][$i]:0;
+
+                    $temp['ItemTyp'] = !empty($_POST['description_itemtyp'][$i])?$_POST['description_itemtyp'][$i]:0;
+                    $temp['ItemId'] = !empty($_POST['description_item'][$i])?$_POST['description_item'][$i]:0;
+                    $temp['IPCd'] = !empty($_POST['description_itemportion'][$i])?$_POST['description_itemportion'][$i]:0;
+                    $temp['Qty'] = !empty($_POST['description_quantity'][$i])?$_POST['description_quantity'][$i]:0;
+                    $temp['Disc_ItemId'] = !empty($_POST['description_discountitem'][$i])?$_POST['description_discountitem'][$i]:0;
+                    $temp['Disc_IPCd'] = !empty($_POST['description_discountitemportion'][$i])?$_POST['description_discountitemportion'][$i]:0;
+                    $temp['Disc_Qty'] = !empty($_POST['description_discountquantity'][$i])?$_POST['description_discountquantity'][$i]:0;
+                    $temp['DiscItemPcent'] = !empty($_POST['description_discountitempercentage'][$i])?$_POST['description_discountitempercentage'][$i]:0;
+                    $temp['ItemSale'] = !empty($_POST['description_itemsales'][$i])?$_POST['description_itemsales'][$i]:0;
+                    $temp['MinBillAmt'] = !empty($_POST['description_minbillamount'][$i])?$_POST['description_minbillamount'][$i]:0;
+                    $temp['Disc_pcent'] = !empty($_POST['description_discountpercent'][$i])?$_POST['description_discountpercent'][$i]:0;
+                    $temp['Disc_Amt'] = !empty($_POST['description_discountamount'][$i])?$_POST['description_discountamount'][$i]:0;
+                    $temp['DiscMaxAmt'] = !empty($_POST['description_disc_max_amt'][$i])?$_POST['description_disc_max_amt'][$i]:0;
                     $temp['Rank'] = 1;
                     $temp['Stat'] = 0;
+
+                    // switch ($_POST['SchCatg']) {
+                    //     // cuisine based
+                    //     case 2:
+                    //             $temp['MCatgId'] = 0;
+                    //             $temp['ItemId'] = 0;
+                    //             $temp['IPCd'] = 0;
+                    //             $temp['ItemSale'] = 0;
+                    //             $temp['ItemTyp'] = 0;
+                    //         break;
+                    //     // cuisine, portion based
+                    //     case 7:
+                    //             $temp['MCatgId'] = 0;
+                    //             $temp['ItemId'] = 0;
+                    //             $temp['ItemSale'] = 0;
+                    //             $temp['ItemTyp'] = 0;
+                    //         break;
+                    //         // menu category based
+                    //     case 3:
+                    //             $temp['CID'] = 0;
+                    //             $temp['ItemId'] = 0;
+                    //             $temp['IPCd'] = 0;
+                    //             $temp['ItemSale'] = 0;
+                    //             $temp['ItemTyp'] = 0;
+                    //         break;
+                    //         // menu category, portion based
+                    //     case 8:
+                    //             $temp['CID'] = 0;
+                    //             $temp['ItemId'] = 0;
+                    //             $temp['ItemSale'] = 0;
+                    //             $temp['ItemTyp'] = 0;
+                    //         break;
+                    //         // menu item based
+                    //     case 5:
+                    //             $temp['CID'] = 0;
+                    //             $temp['MCatgId'] = 0;
+                    //             $temp['IPCd'] = 0;
+                    //             $temp['ItemSale'] = 0;
+                    //             $temp['ItemTyp'] = 0;
+                    //         break;
+                    //         // menu item, portion based
+                    //     case 10:
+                    //             $temp['CID'] = 0;
+                    //             $temp['MCatgId'] = 0;
+                    //             $temp['ItemSale'] = 0;
+                    //             $temp['ItemTyp'] = 0;
+                    //         break;
+                    //         // portion based
+                    //     case 6:
+                    //             $temp['CID'] = 0;
+                    //             $temp['MCatgId'] = 0;
+                    //             $temp['ItemId'] = 0;
+                    //             $temp['ItemSale'] = 0;
+                    //             $temp['ItemTyp'] = 0;
+                    //         break;
+                    //     // item type based
+                    //     case 4:
+                    //             $temp['CID'] = 0;
+                    //             $temp['MCatgId'] = 0;
+                    //             $temp['ItemId'] = 0;
+                    //             $temp['IPCd'] = 0;
+                    //             $temp['ItemSale'] = 0;
+                    //         break;
+                    //         // item type, portion based
+                    //     case 9:
+                    //             $temp['CID'] = 0;
+                    //             $temp['MCatgId'] = 0;
+                    //             $temp['ItemId'] = 0;
+                    //             $temp['ItemSale'] = 0;
+                    //         break;
+                    //     // item sale, 22-must try, 24-food type based
+                    //     case 22:
+                    //     case 24:
+                    //             $temp['CID'] = 0;
+                    //             $temp['MCatgId'] = 0;
+                    //             $temp['ItemId'] = 0;
+                    //             $temp['IPCd'] = 0;
+                    //             $temp['ItemTyp'] = 0;
+                    //         break;
+
+                    // }
                     $CustOffersDet[] = $temp;
                 }
             }
@@ -615,11 +702,11 @@ class Restaurant extends CI_Controller {
 
     	$data['title'] = $this->lang->line('newOffer');
 
-        // $data['sch_typ'] = $this->rest->getOffersSchemeType();
-        // $data['sch_cat'] = $this->rest->getOffersSchemeCategory(1);
         $data['weekDay'] = $this->rest->getWeekDayList();
         $data['cuisines'] = $this->rest->getCuisineList();
-        $data['foodType'] = $this->rest->get_CType();
+        $data['menucat'] = $this->rest->get_MCatgId();
+        $data['portions'] = $this->rest->get_item_portion();
+        $data['itemType'] = $this->rest->getItemTypeList();
         $data['itmSales'] = $this->rest->getItemSaleList();
 
 		$this->load->view('rest/add_new_offer',$data);	
@@ -679,6 +766,9 @@ class Restaurant extends CI_Controller {
                     $CustOffersDet['IPCd'] = $_POST['description_itemportion'][$i];
                     $CustOffersDet['ItemTyp'] = $_POST['description_itemtyp'][$i];
                     $CustOffersDet['Qty'] = $_POST['description_quantity'][$i];
+
+                    $CustOffersDet['Disc_CID'] = !empty($_POST['description_disc_cid'][$i])?$_POST['description_disc_cid'][$i]:0;
+                    $CustOffersDet['Disc_MCatgId'] = !empty($_POST['description_disc_mcatgid'][$i])?$_POST['description_disc_mcatgid'][$i]:0;
                     $CustOffersDet['Disc_ItemId'] = $_POST['description_discountitem'][$i];
                     $CustOffersDet['Disc_IPCd'] = $_POST['description_discountitemportion'][$i];
                     $CustOffersDet['Disc_Qty'] = $_POST['description_discountquantity'][$i];
@@ -686,6 +776,9 @@ class Restaurant extends CI_Controller {
                     $CustOffersDet['Disc_pcent'] = $_POST['description_discountpercent'][$i];
                     $CustOffersDet['Disc_Amt'] = $_POST['description_discountamount'][$i];
                     $CustOffersDet['DiscItemPcent'] = $_POST['description_discountitempercentage'][$i];
+
+                    $CustOffersDet['DiscMaxAmt'] = $_POST['description_disc_max_amt'][$i];
+
                     $CustOffersDet['Rank'] = 1;
                     $CustOffersDet['Stat'] = 0;
 
@@ -751,11 +844,12 @@ class Restaurant extends CI_Controller {
         $data['title'] = $this->lang->line('editOffer');
         
         $data['sch_typ'] = $this->rest->getOffersSchemeType();
-        $data['sch_cat'] = $this->rest->getOffersSchemeCategory(1);
-        $data['weekDay'] = $this->rest->getWeekDayList();
+        $data['itemType'] = $this->rest->getItemTypeList();
         $data['cuisines'] = $this->rest->getCuisineList();
-        $data['foodType'] = $this->rest->get_CType();
-        // $data['itemList'] = $this->rest->getAllItemsList();
+        $data['menucat'] = $this->rest->get_MCatgId();
+        $data['itemList'] = $this->rest->getAllItemsList();
+        $data['portions'] = $this->rest->get_item_portion();
+        $data['weekDay'] = $this->rest->getWeekDayList();
 
         $EID = authuser()->EID;
         $data['SchCd'] = $SchCd;
@@ -2904,6 +2998,10 @@ class Restaurant extends CI_Controller {
                 $orderAmount = $orderAmount + $ItmRate[$i];
             }
 
+            // delete from temp kitchen
+            deleteRecord('tempKitchen', array('TableNo' => $tableNo, 'EID' => $EID));
+            // end delete from temp kitchen
+
             $url = base_url('restaurant/kot_print/').$CNo.'/'.$tableNo.'/'.$fKotNo;
             $dArray = array('MCNo' => $CNo, 'MergeNo' => $tableNo,'FKOTNo' => $fKotNo,'sitinKOTPrint' => $this->session->userdata('sitinKOTPrint'), 'url' => $url);
 
@@ -4599,6 +4697,186 @@ class Restaurant extends CI_Controller {
               ));
              die;
         }
+    }
+
+    public function insert_temp_kitchen(){
+        $EID = authuser()->EID;
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+
+                $thirdParty = 0;
+                $thirdPartyRef = 0;
+                $orderType = $_POST['orderType'];
+                if($orderType == 101){
+                    $thirdParty = !empty($_POST['thirdParty'])?$_POST['thirdParty']:0;
+                    $thirdPartyRef = !empty($_POST['thirdParty'])?$_POST['thirdParty']:0;
+                }
+                
+                // $take_away = !empty($_POST['take_away'])?$_POST['take_away']:0;
+                $prep_time = !empty($_POST['PrepTime'])?$_POST['PrepTime']:0;
+                                
+                $customerAddress = !empty($_POST['customerAddress'])?$_POST['customerAddress']:'';
+
+                $CustItem = !empty($_POST['CustItem'])?$_POST['CustItem']:0;
+                $CustItemDesc = !empty($_POST['CustItemDesc'])?$_POST['CustItemDesc']:'Std';
+                $Qty = !empty($_POST['Qty'])?$_POST['Qty']:1;
+                $SchCd = $_POST['SchCd'];
+                $SDetCd = $_POST['SDetCd'];
+
+                $TableNo = $_POST['TableNo'];
+
+                $kitchenObj['CNo'] = 0;
+                $kitchenObj['MCNo'] = 0;
+                $kitchenObj['CustId'] = 0;
+                $kitchenObj['EID'] = $EID;
+                $kitchenObj['ChainId'] = 0;
+                $kitchenObj['OType'] = $orderType;
+                
+                $kitchenObj['KitCd'] = $_POST['KitCd'];      
+                $kitchenObj['FKOTNo'] = 0;         
+                $kitchenObj['KOTNo'] = 0;
+                $kitchenObj['UKOTNo'] = 0;       
+                $kitchenObj['TableNo'] = $TableNo;
+                $kitchenObj['MergeNo'] = $TableNo;
+                $kitchenObj['ItemId'] = $_POST['ItemId'];
+                $kitchenObj['itemName'] = $_POST['itemName'];
+                $kitchenObj['Qty'] = $Qty;
+                $kitchenObj['PckCharge'] =$_POST['PckCharge'];
+                $kitchenObj['ItmRate'] = $_POST['ItmRate'];
+                $kitchenObj['OrigRate'] = $_POST['OrigRate'];
+                $kitchenObj['Stat'] = 0;
+                $kitchenObj['CellNo'] = $_POST['CellNo'];
+                $kitchenObj['Itm_Portion'] = $_POST['Itm_Portion'];
+                $kitchenObj['TaxType'] = $_POST['TaxType'];
+                $kitchenObj['SchCd'] = $SchCd;
+                $kitchenObj['SDetCd'] = $SDetCd;
+                $kitchenObj['CustItem'] = $CustItem;
+                $kitchenObj['CustItemDesc'] = $CustItemDesc;
+                $kitchenObj['CID'] = $_POST['CID'];
+                $kitchenObj['MCatgId'] = $_POST['MCatgId'];
+                $kitchenObj['PrepTime'] = $prep_time;
+                $kitchenObj['FID'] = $_POST['FID'];
+                $kitchenObj['DCd'] = $_POST['DCd'];
+                $kitchenObj['custAddr'] = $customerAddress;
+                // edt
+                $date = date("Y-m-d H:i:s");
+                $date = strtotime($date);
+                $time = $prep_time;
+                $date = strtotime("+" . $time . " minute", $date);
+                $edtTime = date('H:i', $date);
+                // edt
+                $kitchenObj['EDT'] = $edtTime;
+                $kitchenObj['LoginCd'] = authuser()->RUserId;
+                // echo "<pre>";print_r($kitchenObj);exit();
+                if(!empty($SchCd)){
+                    $Offers = $this->getSchemeOfferList($SchCd, $SDetCd);
+                    $origRates = $_POST['OrigRate'];
+                    $offerOrigRate = $origRates;
+                    if(!empty($Offers)){
+                        $OrdNo = $_POST['OrdNo'];
+                        if($OrdNo > 0){
+                            if($Offers['Qty'] > 1){
+                                $upData['Qty'] = $Offers['Qty'];
+                            }
+                            if($Offers['IPCd'] >= 1){
+                                $upData['Itm_Portion'] = $Offers['IPCd'];
+                                $mRates = getRates($Offers['ItemId'], $Offers['IPCd']);
+                                $upData['OrigRate'] = $mRates['OrigRate'];
+                                $upData['ItmRate'] = $mRates['ItmRate'];
+                            }
+
+                            $upData['SchCd'] = $SchCd;
+                            $upData['SDetCd'] = $SDetCd;
+                            updateRecord('tempKitchen', $upData, array('OrdNo' => $OrdNo, 'EID' => $EID));
+                        }
+                        // for offer 
+                        $Disc_ItemId = $Offers['Disc_ItemId'];
+                        $Disc_IPCd = $Offers['Disc_IPCd'];
+                        $offerRate = $origRates - ($origRates * $Offers['Disc_pcent'] / 100);
+                        if($Disc_ItemId > 0){
+                            if($Disc_ItemId != $Offers['ItemId'] || $Disc_IPCd != $Offers['IPCd']){
+                                $offerRates = $this->db2->query("select mi.OrigRate from MenuItemRates as mi where mi.EID = $EID and mi.ItemId = $Disc_ItemId and mi.Itm_Portion = $Disc_IPCd and mi.SecId = (select SecId from Eat_tables where TableNo = $TableNo and EID = $EID)")->row_array();
+
+                                $offerRate = $offerRates['OrigRate'] -  ($offerRates['OrigRate'] * $Offers['Disc_pcent'] / 100);
+                                $offerOrigRate = $offerRates['OrigRate'];
+                            }
+                        }
+
+                        if($Offers['SchTyp'] > 1) {
+                            $offerRate = $origRates - ($origRates * $Offers['DiscItemPcent'] / 100);
+                            if($Disc_ItemId > 0){
+                                if($Disc_ItemId != $Offers['ItemId'] || $Disc_IPCd != $Offers['IPCd']){
+                                    
+                                    $offerRate = $offerRates['OrigRate'] -  ($offerRates['OrigRate'] * $Offers['DiscItemPcent'] / 100);
+                                    $offerOrigRate = $offerRates['OrigRate'];
+                                }   
+                            }                       
+                        }
+
+                        if($Disc_ItemId > 0){
+                            $kitchenObj['ItemId'] = $Disc_ItemId;
+                            $kitchenObj['Itm_Portion'] = $Offers['Disc_IPCd'];
+                        }
+                        
+                        $kitchenObj['Qty'] = $Offers['Disc_Qty'];
+                        $kitchenObj['ItmRate'] = $offerRate;
+                        $kitchenObj['OrigRate'] = $offerOrigRate;
+                        $kitchenObj['SchCd'] = $SchCd;
+                        $kitchenObj['SDetCd'] = $SDetCd;
+                        insertRecord('tempKitchen', $kitchenObj);
+                    }
+                }else{
+                    insertRecord('tempKitchen', $kitchenObj);
+                }
+
+                $status = "success";
+                $response = 'Data Inserted';
+
+                header('Content-Type: application/json');
+                echo json_encode(array(
+                    'status' => $status,
+                    'response' => $response
+                  ));
+                 die;
+        }
+    }
+
+    public function get_temp_kitchen_data(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $status = "success";
+            $response = $this->rest->getTempKitchenData($_POST['TableNo']);
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }   
+    }
+
+    private function getSchemeOfferList($schcd, $sdetcd){
+
+        $langId = $this->session->userdata('site_lang');
+        $scName = "c.SchNm$langId as SchNm";
+        $scDesc = "cod.SchDesc$langId as SchDesc";
+
+        return $this->db2->select("$scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.SchCatg, c.Rank,cod.Disc_ItemId, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, cod.DiscItemPcent")
+                        ->join('CustOffers c', 'c.SchCd = cod.SchCd', 'inner')
+                        ->get_where('CustOffersDet cod', array('c.SchCd' => $schcd,
+                         'cod.SDetCd' => $sdetcd,
+                         'c.Stat' => 0,
+                         'cod.Stat' => 0,
+                         'c.EID' => authuser()->EID))
+                        ->row_array();
+                        // print_r($this->db2->last_query());die;
     }
     
     public function get_custom_items(){

@@ -37,6 +37,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $CI->User->countAllRecord($tbl);
 	}
 
+	function getRates($ItemId, $IPCd){
+		$CI = & get_instance();
+		$CI->load->model('User');
+		return $CI->User->getMenuRates($ItemId, $IPCd);
+	}
+
 	function getRecords($tbl=null,$where=null){
 		$CI = & get_instance();
 		$CI->load->model('User');

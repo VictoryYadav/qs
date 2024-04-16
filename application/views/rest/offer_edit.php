@@ -117,18 +117,18 @@
                                                             </div>
 
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_itemtyp_div" style="display: block;">
-                                                                <label for="description<?= $n?>_itemtyp"><?= $this->lang->line('foodType');?></label>
-                                                                <select class="form-control form-control-sm" id="description<?= $n?>_itemtyp" name="description_itemtyp[]" onchange="getItems(<?= $n?>)">
+                                                                <label for="description<?= $n?>_itemtyp"><?= $this->lang->line('item');?> <?= $this->lang->line('type');?></label>
+                                                                <select class="form-control form-control-sm itemType" id="description<?= $n?>_itemtyp" name="description_itemtyp[]" onchange="getItems(<?= $n?>)">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
-                                                                    <?php foreach($foodType as $it){?>
-                                                                        <option value="<?= $it['CTyp']?>" <?php if($it['CTyp'] == $key['ItemTyp']){echo 'selected';}?>><?= $it['Usedfor']?></option>
+                                                                    <?php foreach($itemType as $it){?>
+                                                                        <option value="<?= $it['ItmTyp']?>" <?php if($it['ItmTyp'] == $key['ItemTyp']){echo 'selected';}?>><?= $it['Name']?></option>
                                                                     <?php }?>
                                                                 </select>
                                                             </div>
 
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_itemsales" style="display: block;">
                                                                 <label for="description<?= $n?>_itemsales"><?= $this->lang->line('itemSale');?></label>
-                                                                <select class="form-control form-control-sm" id="description<?= $n?>_itemsale" name="description_itemsales[]">
+                                                                <select class="form-control form-control-sm itemSale" id="description<?= $n?>_itemsale" name="description_itemsales[]">
                                                                 <option value=""><?= $this->lang->line('all');?></option>
                                                                 <?php 
                                                                     foreach($itmSales as $c){?>
@@ -140,7 +140,7 @@
 
                                                             <div class="form-group col-md-3 col-6">
                                                                 <label for="description1_cid"><?= $this->lang->line('cuisine');?></label>
-                                                                <select class="form-control form-control-sm" id="description<?= $n?>_cid" name="description_cid[]" onchange="getCategory(<?= $n?>)">
+                                                                <select class="form-control form-control-sm cuisine" id="description<?= $n?>_cid" name="description_cid[]" onchange="getCategory(<?= $n?>)">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
                                                                     <?php 
                                                                         foreach($cuisines as $c){?>
@@ -152,7 +152,7 @@
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_mcatgid_div" style="display: block;">
                                                                 <label for="description<?= $n?>_mcatgid"><?= $this->lang->line('menuCategory');?></label>
                                                                 <input type="hidden" name="" id="mcatgid<?= $n?>" value="<?= $key['MCatgId']?>">
-                                                                <select class="form-control form-control-sm" id="description<?= $n?>_mcatgid" name="description_mcatgid[]" onchange="getItems(<?= $n?>)">
+                                                                <select class="form-control form-control-sm menuCategory" id="description<?= $n?>_mcatgid" name="description_mcatgid[]" onchange="getItems(<?= $n?>)">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
                                                                     
                                                                 </select>
@@ -161,14 +161,14 @@
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_item_div" style="display: block;">
                                                                 <label for="description<?= $n?>_item"><?= $this->lang->line('item');?></label>
                                                                 <input type="hidden" name="" id="item_id<?= $n?>" value="<?= $key['ItemId']?>">
-                                                                <select class="form-control form-control-sm" id="description<?= $n?>_item" name="description_item[]" onchange="getItemPortion(<?= $n?>)">
+                                                                <select class="form-control form-control-sm items" id="description<?= $n?>_item" name="description_item[]" onchange="getItemPortion(<?= $n?>)">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
                                                                 </select>
                                                             </div>
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_itemportion_div" style="display: block;">
                                                                 <label for="description<?= $n?>_itemportion"><?= $this->lang->line('itemPortion');?></label>
                                                                 <input type="hidden" name="" id="ipcd<?= $n?>" value="<?= $key['IPCd']?>">
-                                                                <select class="form-control form-control-sm" id="description<?= $n?>_itemportion" name="description_itemportion[]">
+                                                                <select class="form-control form-control-sm itemPortion" id="description<?= $n?>_itemportion" name="description_itemportion[]">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
                                                                 </select>
                                                             </div>
@@ -176,6 +176,27 @@
                                                                 <label for="description<?= $n?>_quantity"><?= $this->lang->line('quantity');?></label>
                                                                 <input type="number" class="form-control form-control-sm" id="description<?= $n?>_quantity" name="description_quantity[]" value="<?= $key['Qty']?>">
                                                             </div>
+
+                                                            <div class="form-group col-md-3 col-6" id="description<?= $n?>_disccid" style="display: block;">
+                                                                <label><?= $this->lang->line('discount');?> <?= $this->lang->line('cuisine');?></label>
+                                                                <select class="form-control form-control-sm disccuisine" id="description<?= $n; ?>_disccid" name="description_disc_cid[]">
+                                                                    <option value=""><?= $this->lang->line('select'); ?></option>
+                                                                    <?php foreach($cuisines as $c){ ?>
+                                                                        <option value="<?= $c['CID']?>" <?php if($key['Disc_CID'] == $c['CID']){echo 'selected';}?>><?= $c['Name']?></option>
+                                                                <?php } ?>
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="form-group col-md-3 col-6" id="description<?= $n?>_mcatgid_div" style="display: block;">
+                                                                <label><?= $this->lang->line('discount');?> <?= $this->lang->line('menuCategory');?></label>
+                                                                <select class="form-control form-control-sm discmenuCategory select2 custom-select" id="description<?= $n; ?>_disc_mcatgid" name="description_disc_mcatgid[]">
+                                                                    <option value=""><?= $this->lang->line('select'); ?></option>
+                                                                    <?php foreach($menucat as $mn){?>
+                                                                            <option value="<?= $mn['MCatgId']?>" <?php if($key['Disc_MCatgId'] == $mn['MCatgId']){echo 'selected';}?>><?= $mn['MCatgNm']?></option>
+                                                                    <?php } ?>
+                                                                </select>
+                                                            </div>
+
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_discountitem_div" style="display: block;">
                                                                 <label for="description<?= $n?>_discountitem"><?= $this->lang->line('discountItem');?></label>
                                                                 <input type="hidden" name="" id="disc_item_id<?= $n?>" value="<?= $key['Disc_ItemId']?>">
@@ -199,6 +220,11 @@
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_discountitempercentage_div" style="display: block;">
                                                                 <label for="description<?= $n?>_discountitempercentage"><?= $this->lang->line('discountItemPercentage');?></label>
                                                                 <input type="number" class="form-control form-control-sm" id="description<?= $n?>_discountitempercentage" name="description_discountitempercentage[]" value="<?= $key['DiscItemPcent']?>">
+                                                            </div>
+
+                                                            <div class="form-group col-md-3 col-6" id="description<?= $n?>_discountmaxamt_div" style="display: block;">
+                                                                <label for="description<?= $n?>discountmaxamt"><?= $this->lang->line('discount');?> <?= $this->lang->line('maximum');?> <?= $this->lang->line('amount');?></label>
+                                                                <input type="number" class="form-control form-control-sm" id="description<?= $n?>_disc_max_amt" name="description_disc_max_amt[]" value="<?= $key['DiscMaxAmt']; ?>">
                                                             </div>
 
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_minbillamount_div" style="display: block;">
@@ -248,7 +274,8 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('.discountItems').select2();
+        $('.discountItems, .menuCategory, .discmenuCategory, .items, .itemPortion').select2();
+
     });
 
     getCategoryl();
@@ -308,17 +335,17 @@
                             <input type="file" name="description_image[]" class="form-control form-control-sm" id="description'+num_desc+'_image" />\
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_itemtyp_div" style="display: block;">\
-                            <label for="description'+num_desc+'_itemtyp"><?= $this->lang->line('foodType');?></label>\
-                                <select class="form-control form-control-sm" id="description'+num_desc+'_itemtyp" name="description_itemtyp[]" onchange="getItems2(this, '+num_desc+')">\
+                            <label for="description'+num_desc+'_itemtyp"><?= $this->lang->line('item');?> <?= $this->lang->line('type');?></label>\
+                                <select class="form-control form-control-sm itemType" id="description'+num_desc+'_itemtyp" name="description_itemtyp[]" onchange="getItems2(this, '+num_desc+')">\
                                     <option value=""><?= $this->lang->line('select');?></option>\
-                                    <?php foreach($foodType as $key){?>
-                                        <option value="<?= $key['CTyp']?>"><?= $key['Usedfor']?></option>\
+                                    <?php foreach($itemType as $key){?>
+                                        <option value="<?= $key['ItmTyp']?>"><?= $key['Name']?></option>\
                                     <?php } ?>
                                 </select>\
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_itemsales" style="display: block;">\
                             <label for="description'+num_desc+'_itemsales"><?= $this->lang->line('itemSale');?></label>\
-                            <select class="form-control form-control-sm" id="description'+num_desc+'_itemsale" name="description_itemsales[]">\
+                            <select class="form-control form-control-sm itemSale" id="description'+num_desc+'_itemsale" name="description_itemsales[]">\
                             <option value=""><?= $this->lang->line('all');?></option>\
                                 <?php foreach($itmSales as $key){?>
                                         <option value="<?= $key['TagId']?>"><?= $key['TDesc']?></option>\
@@ -327,7 +354,7 @@
                         </div>\
                         <div class="form-group col-md-3 col-6">\
                             <label for="description'+num_desc+'_cid"><?= $this->lang->line('cuisine');?></label>\
-                            <select class="form-control form-control-sm" id="description'+num_desc+'_cid" name="description_cid[]" onchange="getCategory2(this,'+num_desc+')">\
+                            <select class="form-control form-control-sm cuisine" id="description'+num_desc+'_cid" name="description_cid[]" onchange="getCategory2(this,'+num_desc+')">\
                                 <option value=""><?= $this->lang->line('select');?></option>\
                                 <?php foreach($cuisines as $key){?>
                                         <option value="<?= $key['CID']?>"><?= $key['Name']?></option>\
@@ -336,25 +363,52 @@
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_mcatgid_div" style="display: block;">\
                             <label for="description'+num_desc+'_mcatgid"><?= $this->lang->line('menuCategory');?></label>\
-                            <select class="form-control form-control-sm" id="description'+num_desc+'_mcatgid" name="description_mcatgid[]">\
+                            <select class="form-control form-control-sm menuCategory select2 custom-select" id="description'+num_desc+'_mcatgid" name="description_mcatgid[]">\
                             <option value=""><?= $this->lang->line('select');?></option>\
+                            <?php foreach($menucat as $key){?>
+                                        <option value="<?= $key['MCatgId']?>"><?= $key['MCatgNm']?></option>\
+                            <?php } ?>
                             </select>\
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_item_div" style="display: block;">\
                             <label for="description'+num_desc+'_item"><?= $this->lang->line('item');?></label>\
-                            <select class="form-control form-control-sm" id="description'+num_desc+'_item" name="description_item[]" onchange="getItemPortion2(this, '+num_desc+')">\
+                            <select class="form-control form-control-sm items select2 custom-select" id="description'+num_desc+'_item" name="description_item[]" onchange="getItemPortion2(this, '+num_desc+')">\
                             <option value=""><?= $this->lang->line('select');?></option>\
+                            <?php foreach($itemList as $key){?>
+                                        <option value="<?= $key['ItemId']?>"><?= $key['Name']?></option>\
+                                <?php } ?>
                             </select>\
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_itemportion_div" style="display: block;">\
                             <label for="description'+num_desc+'_itemportion"><?= $this->lang->line('itemPortion');?></label>\
-                            <select class="form-control form-control-sm" id="description'+num_desc+'_itemportion" name="description_itemportion[]">\
+                            <select class="form-control form-control-sm itemPortion select2 custom-select" id="description'+num_desc+'_itemportion" name="description_itemportion[]">\
                                 <option value=""><?= $this->lang->line('select');?></option>\
+                                <?php foreach($portions as $key){?>
+                                        <option value="<?= $key['IPCd']?>"><?= $key['Name']?></option>\
+                                <?php } ?>
                             </select>\
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_quantity_div" style="display: block;">\
                             <label for="description'+num_desc+'_quantity"><?= $this->lang->line('quantity');?></label>\
                             <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_quantity" name="description_quantity[]" value="0">\
+                        </div>\
+                        <div class="form-group col-md-3 col-6">\
+                            <label for="description'+num_desc+'_cid"><?= $this->lang->line('discount');?> <?= $this->lang->line('cuisine');?></label>\
+                            <select class="form-control form-control-sm disccuisine" id="description'+num_desc+'_disccid" name="description_disc_cid[]" onchange="getCategoryDisc(this,'+num_desc+')">\
+                                <option value=""><?= $this->lang->line('select');?></option>\
+                                <?php foreach($cuisines as $key){?>
+                                        <option value="<?= $key['CID']?>"><?= $key['Name']?></option>\
+                                <?php } ?>
+                            </select>\
+                        </div>\
+                        <div class="form-group col-md-3 col-6" id="description'+num_desc+'_mcatgid_div" style="display: block;">\
+                            <label for="description'+num_desc+'_mcatgid"><?= $this->lang->line('discount');?> <?= $this->lang->line('menuCategory');?></label>\
+                            <select class="form-control form-control-sm discmenuCategory select2 custom-select" id="description'+num_desc+'_disc_mcatgid" name="description_disc_mcatgid[]" onchange="getItemsDisc(this, '+num_desc+')">\
+                            <option value=""><?= $this->lang->line('select');?></option>\
+                            <?php foreach($menucat as $key){?>
+                                        <option value="<?= $key['MCatgId']?>"><?= $key['MCatgNm']?></option>\
+                                <?php } ?>
+                            </select>\
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description1_discountitem_div" style="display: block;">\
                             <label for="description'+num_desc+'_discountitem"><?= $this->lang->line('discountItem');?></label>\
@@ -366,6 +420,9 @@
                             <label for="description'+num_desc+'_discountitemportion"><?= $this->lang->line('discountItemPortion');?></label>\
                             <select class="form-control form-control-sm" id="description'+num_desc+'_discountitemportion" name="description_discountitemportion[]">\
                                 <option value="0"><?= $this->lang->line('select');?></option>\
+                                <?php foreach($portions as $key){?>
+                                        <option value="<?= $key['IPCd']?>"><?= $key['Name']?></option>\
+                                <?php } ?>
                             </select>\
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_discountquantity_div" style="display: block;">\
@@ -375,6 +432,10 @@
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_discountitempercentage_div" style="display: block;">\
                             <label for="description'+num_desc+'_discountitempercentage"><?= $this->lang->line('discountItemPercentage');?></label>\
                             <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_discountitempercentage" name="description_discountitempercentage[]" value="0">\
+                        </div>\
+                        <div class="form-group col-md-3 col-6" id="description'+num_desc+'_discountmaxamt_div" style="display: block;">\
+                            <label for="description'+num_desc+'discountmaxamt"><?= $this->lang->line('discount');?> <?= $this->lang->line('maximum');?> <?= $this->lang->line('amount');?></label>\
+                            <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_disc_max_amt" name="description_disc_max_amt[]" value="0">\
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_minbillamount_div" style="display: block;">\
                             <label for="description'+num_desc+'_minbillamount"><?= $this->lang->line('minimumBillAmount');?></label>\

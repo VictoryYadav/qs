@@ -296,6 +296,7 @@ $lang['itemSale']			= 'Item Sale';
 $lang['itemTag']			= 'Item Tag';
 $lang['kitchen']			= 'Kitchen';
 $lang['maxQuantity']		= 'Max Quantity';
+$lang['maximum']			= 'Max';
 $lang['day']				= 'Day';
 $lang['RMName']				= 'RMName';
 $lang['RMCat']				= 'RMCat';

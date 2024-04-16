@@ -1431,7 +1431,7 @@ class Rest extends CI_Model{
 				->join('MenuCatg m','m.MCatgId = cod.MCatgId', 'left')
 				->join('ItemTypes i','i.ItmTyp = cod.ItemTyp', 'left')
 				->join('MenuItem mi','mi.ItemId = cod.ItemId', 'left')
-				->join('MenuItemRates mir','mir.ItemId = mi.ItemId', 'left')
+				->join('MenuItemRates mir','mir.ItemId = cod.ItemId', 'left')
 				->join('MenuItem mii','mii.ItemId = cod.Disc_ItemId', 'left')
 				->join('MenuItemRates mirr','mirr.ItemId = cod.Disc_ItemId', 'left')
 				->get_where('CustOffers c', array(
@@ -1913,6 +1913,17 @@ class Rest extends CI_Model{
 		$EID = authuser()->EID;
 
 		return $this->db2->get_where('QRCodes', array('EID' => $EID))->result_array();
+	}
+
+	public function getTempKitchenData($TableNo){
+		$EID = authuser()->EID;
+		return $this->db2->select("*")
+					->order_by('OrdNo', 'DESC')
+					->get_where('tempKitchen', 
+												array('EID' => $EID, 
+													  'TableNo' => $TableNo,
+													  'Stat' => 0))
+					->result_array();
 	}
 
 	

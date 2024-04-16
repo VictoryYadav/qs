@@ -296,6 +296,7 @@ $lang['itemSale']			= 'आइटम सेल';
 $lang['itemTag']			= 'आइटम टैग';
 $lang['kitchen']			= 'किचन';
 $lang['maxQuantity']		= 'मैक्स संख्या';
+$lang['maximum']			= 'मैक्स';
 $lang['day']				= 'दिन';
 $lang['RMName']				= 'RM नाम';
 $lang['RMCat']				= 'RM केटेगरी';
