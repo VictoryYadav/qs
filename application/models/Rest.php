@@ -1936,7 +1936,7 @@ class Rest extends CI_Model{
 												array('EID' => $EID, 
 													  'OrdNo' => $OrdNo,
 													  'Stat' => 0))
-					->result_array();
+					->row_array();
 	}
 
 	
