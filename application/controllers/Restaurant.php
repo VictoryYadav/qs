@@ -4734,34 +4734,37 @@ class Restaurant extends CI_Controller {
                 $kitchenObj['CustId'] = 0;
                 $kitchenObj['EID'] = $EID;
                 $kitchenObj['ChainId'] = 0;
-                $kitchenObj['OType'] = $orderType;
+                $kitchenObj['ItemId'] = $_POST['ItemId'];
+                $kitchenObj['itemName'] = $_POST['itemName'];
+                $kitchenObj['ItmRate'] = $_POST['ItmRate'];
+                $kitchenObj['OrigRate'] = $_POST['OrigRate'];
+                $kitchenObj['KitCd'] = $_POST['KitCd'];
+                $kitchenObj['ItemTyp'] = $_POST['ItemTyp'];
+                $kitchenObj['PckCharge'] =$_POST['PckCharge'];
+                $kitchenObj['Itm_Portion'] = $_POST['Itm_Portion'];
+                $kitchenObj['TaxType'] = $_POST['TaxType'];
+                $kitchenObj['PrepTime'] = $prep_time;
+                $kitchenObj['DCd'] = $_POST['DCd'];
+                $kitchenObj['CID'] = $_POST['CID'];
+                $kitchenObj['MCatgId'] = $_POST['MCatgId'];
+                $kitchenObj['TableNo'] = $TableNo;
+                $kitchenObj['MergeNo'] = $TableNo;
+                $kitchenObj['CellNo'] = $_POST['CellNo'];
                 
-                $kitchenObj['KitCd'] = $_POST['KitCd'];      
+                $kitchenObj['OType'] = $orderType;
+                $kitchenObj['Qty'] = $Qty;
+                $kitchenObj['FID'] = $_POST['FID'];
+                $kitchenObj['SchCd'] = $SchCd;
+                $kitchenObj['SDetCd'] = $SDetCd;
+
+                $kitchenObj['CustItem'] = $CustItem;
+                $kitchenObj['CustItemDesc'] = $CustItemDesc;
+                $kitchenObj['custAddr'] = $customerAddress;
+
                 $kitchenObj['FKOTNo'] = 0;         
                 $kitchenObj['KOTNo'] = 0;
                 $kitchenObj['UKOTNo'] = 0;       
-                $kitchenObj['TableNo'] = $TableNo;
-                $kitchenObj['MergeNo'] = $TableNo;
-                $kitchenObj['ItemId'] = $_POST['ItemId'];
-                $kitchenObj['itemName'] = $_POST['itemName'];
-                $kitchenObj['Qty'] = $Qty;
-                $kitchenObj['PckCharge'] =$_POST['PckCharge'];
-                $kitchenObj['ItmRate'] = $_POST['ItmRate'];
-                $kitchenObj['OrigRate'] = $_POST['OrigRate'];
                 $kitchenObj['Stat'] = 0;
-                $kitchenObj['CellNo'] = $_POST['CellNo'];
-                $kitchenObj['Itm_Portion'] = $_POST['Itm_Portion'];
-                $kitchenObj['TaxType'] = $_POST['TaxType'];
-                $kitchenObj['SchCd'] = $SchCd;
-                $kitchenObj['SDetCd'] = $SDetCd;
-                $kitchenObj['CustItem'] = $CustItem;
-                $kitchenObj['CustItemDesc'] = $CustItemDesc;
-                $kitchenObj['CID'] = $_POST['CID'];
-                $kitchenObj['MCatgId'] = $_POST['MCatgId'];
-                $kitchenObj['PrepTime'] = $prep_time;
-                $kitchenObj['FID'] = $_POST['FID'];
-                $kitchenObj['DCd'] = $_POST['DCd'];
-                $kitchenObj['custAddr'] = $customerAddress;
                 // edt
                 $date = date("Y-m-d H:i:s");
                 $date = strtotime($date);
@@ -4785,8 +4788,13 @@ class Restaurant extends CI_Controller {
                             if($Offers['IPCd'] >= 1){
                                 $upData['Itm_Portion'] = $Offers['IPCd'];
                                 $mRates = getRates($Offers['ItemId'], $Offers['IPCd']);
-                                $upData['OrigRate'] = $mRates['OrigRate'];
-                                $upData['ItmRate'] = $mRates['ItmRate'];
+                                
+                                $tmpKit = $this->rest->getTempKitchenByOrdno($OrdNo);
+                                if($tmpKit['CustItem'] == 0){
+                                    $upData['OrigRate'] = $mRates['OrigRate'];
+                                    $upData['ItmRate'] = $mRates['ItmRate'];
+                                }
+                                
                             }
 
                             $upData['SchCd'] = $SchCd;
@@ -4933,6 +4941,28 @@ class Restaurant extends CI_Controller {
             }else{
               $response =  'No customization available!!';  
             }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+     public function update_customItem_onTempKitchen(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            
+            $updateData['CustItem'] = 1;
+            $updateData['CustItemDesc'] = $_POST['CustItemDesc'];
+            $updateData['ItmRate'] = $_POST['OrigRates'];
+            $updateData['OrigRate'] = $_POST['OrigRates'];
+
+            updateRecord('tempKitchen', $updateData, array('EID' => authuser()->EID, 'OrdNo' => $_POST['OrdNo'], 'ItemId' => $_POST['ItemId']));
+            $status = 'success';
 
             header('Content-Type: application/json');
             echo json_encode(array(

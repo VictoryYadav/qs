@@ -36,7 +36,7 @@
                                                 </div>
                                                 <div class="form-group col-md-4 col-6">
                                                     <label for="sch_typ"><?= $this->lang->line('schemeType');?></label>
-                                                    <select class="form-control form-control-sm" id="sch_typ" name="SchTyp" required="" onchange="getCategoryl()">
+                                                    <select class="form-control form-control-sm" id="sch_typ" name="SchTyp" required="" onchange="getCategoryl()" disabled="">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <option value="1" <?php if($scheme['SchTyp']==1){ echo 'selected'; } ?>>Bill Based</option>
                                                         <option value="2" <?php if($scheme['SchTyp']==2){ echo 'selected'; } ?> >Item Based</option>
@@ -44,7 +44,7 @@
                                                 </div>
                                                 <div class="form-group col-md-4 col-6">
                                                     <label for="schcatg"><?= $this->lang->line('schemeCategory');?></label>
-                                                    <select class="form-control form-control-sm" id="schcatg" name="SchCatg" required="">
+                                                    <select class="form-control form-control-sm" id="schcatg" name="SchCatg" required="" disabled="">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         
                                                     </select>
@@ -275,8 +275,101 @@
 
     $(document).ready(function () {
         $('.discountItems, .menuCategory, .discmenuCategory, .items, .itemPortion').select2();
-
     });
+
+    function changeSchemeCategory(){
+        var schCat = $('#schcatg').val();
+        $('.cuisine').prop("disabled", false);
+        $('.itemType').prop("disabled", false);
+        $('.itemSale').prop("disabled", false);
+        $('.menuCategory').prop("disabled", false);
+        $('.items').prop("disabled", false);
+        $('.itemPortion').prop("disabled", false);
+        if(schCat > 0){
+            switch (schCat) {
+                // cuisine based
+              case '2':
+                    $('.itemType').prop("disabled", true);
+                    $('.itemSale').prop("disabled", true);
+                    $('.menuCategory').prop("disabled", true);
+                    $('.items').prop("disabled", true);
+                    $('.itemPortion').prop("disabled", true);
+                    // $('.cuisine').prop("disabled", true);
+                break;
+                // cuisine, portion based
+              case '7':
+                    $('.itemType').prop("disabled", true);
+                    $('.itemSale').prop("disabled", true);
+                    $('.menuCategory').prop("disabled", true);
+                    $('.items').prop("disabled", true);
+                    // $('.itemPortion').prop("disabled", true);
+                    // $('.cuisine').prop("disabled", true);
+                break;
+                // menu category based
+              case '3':
+                    $('.itemType').prop("disabled", true);
+                    $('.itemSale').prop("disabled", true);
+                    $('.items').prop("disabled", true);
+                    $('.itemPortion').prop("disabled", true);
+                    $('.cuisine').prop("disabled", true);
+                break;
+                 // menu category, portion based
+              case '8':
+                    $('.itemType').prop("disabled", true);
+                    $('.itemSale').prop("disabled", true);
+                    $('.items').prop("disabled", true);
+                    $('.cuisine').prop("disabled", true);
+                break;
+                // menu Item based
+              case '5':
+                    $('.itemType').prop("disabled", true);
+                    $('.itemSale').prop("disabled", true);
+                    $('.menuCategory').prop("disabled", true);
+                    $('.itemPortion').prop("disabled", true);
+                    $('.cuisine').prop("disabled", true);
+                break;
+                // menu Item, portion based
+              case '10':
+                    $('.itemType').prop("disabled", true);
+                    $('.itemSale').prop("disabled", true);
+                    $('.menuCategory').prop("disabled", true);
+                    $('.cuisine').prop("disabled", true);
+                break;
+               // portion based
+              case '6':
+                    $('.itemType').prop("disabled", true);
+                    $('.itemSale').prop("disabled", true);
+                    $('.cuisine').prop("disabled", true);
+                    $('.menuCategory').prop("disabled", true);
+                    $('.items').prop("disabled", true);
+                break;
+                 // item sale, must try, new item  based
+              case '22':
+              case '23':
+                    $('.itemType').prop("disabled", true);
+                    $('.cuisine').prop("disabled", true);
+                    $('.menuCategory').prop("disabled", true);
+                    $('.items').prop("disabled", true);
+                    $('.itemPortion').prop("disabled", true);
+                break;
+                // item type based
+              case '4':
+                    $('.itemSale').prop("disabled", true);
+                    $('.cuisine').prop("disabled", true);
+                    $('.menuCategory').prop("disabled", true);
+                    $('.items').prop("disabled", true);
+                    $('.itemPortion').prop("disabled", true);
+                break;
+                // itemtype, portion based
+                case '9':
+                    $('.itemSale').prop("disabled", true);
+                    $('.cuisine').prop("disabled", true);
+                    $('.menuCategory').prop("disabled", true);
+                    $('.items').prop("disabled", true);
+                break;
+            }
+        }
+    }
 
     getCategoryl();
     function getCategoryl(){
@@ -298,6 +391,7 @@
                     }
                     
                     $(`#schcatg`).html(opt);
+                    changeSchemeCategory();
                   }
                 }else{
                   alert(res.response);

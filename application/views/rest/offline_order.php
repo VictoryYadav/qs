@@ -319,6 +319,8 @@
                     <form method="post" id="customOfferForm">
                         <input type="hidden" id="custom_trow">
                         <input type="hidden" id="custom_itemId">
+                        <input type="hidden" id="custom_ordNo">
+                        
                         <div class="widget category" style="width: 100%;display: none;" id="radioOption">
                         </div>
 
@@ -392,13 +394,18 @@
 
                         var customOfferBtn = ``;
                         if(item.ItemTyp > 0){
-                            customOfferBtn = `<button type="button" onclick="getCustomItems(${trow}, ${item.ItemId}, ${item.ItemTyp}, ${item.Itm_Portion}, ${item.FID})" class="btn btn-sm btn-success btn-rounded">
+                            customOfferBtn = `<button type="button" onclick="getCustomItems(${trow}, ${item.ItemId}, ${item.ItemTyp}, ${item.Itm_Portion}, ${item.FID}, ${item.OrdNo})" class="btn btn-sm btn-success btn-rounded">
                                 <i class="fas fa-gift" aria-hidden="true"></i>
                             </button>`;
                         }
 
+                        var item_name = item.itemName;
+                        if(item.CustItemDesc != 'Std'){
+                            item_name = item_name +'-'+item.CustItemDesc;
+                        }
+
                         template += `<tr class="item-id trow_" data-id="${item.ItemId}" kitcd-id="${item.KitCd}" pckcharge ="${item.PckCharge}" Itm_Portion ="${item.Itm_Portion}" >
-                                    <td><a id="offerAnchor_${item.ItemId}""><span id="itemName_${trow}_${item.ItemId}">${item.itemName}</span></a></td>
+                                    <td><a id="offerAnchor_${item.ItemId}""><span id="itemName_${trow}_${item.ItemId}">${item_name}</span></a></td>
                                     <td><select class="form-control form-control-sm item-portion" id="select_${trow}_${item.ItemId}" onchange="changePortion(${trow}, ${item.ItemId})" ${disabled}><option></option></select></td>
                                     <td style="width:50px;"><input type="text" class="form-control form-control-sm item-qty" min="1" value="${convertToUnicodeNo(item.Qty)}" onblur="calculateValue(this)" style="width:50px;" id="qty_${trow}_${item.ItemId}" ${readonly}></td>
                                     <td class="item-rate" id="rate_${trow}_${item.ItemId}">${convertToUnicodeNo(item.ItmRate)}</td>
@@ -417,8 +424,8 @@
                                     <input type="hidden" value="${item.DCd}" class="DCd">
                                     <input type="hidden" value="${item.SchCd}" class="SchCd" id="SchCd_${trow}_${item.ItemId}">
                                     <input type="hidden" value="${item.SDetCd}" class="SDetCd" id="SDetCd_${trow}_${item.ItemId}">
-                                    <input type="hidden" value="0" class="CustItem" id="CustItem_${trow}_${item.ItemId}">
-                                    <input type="hidden" value="" class="CustItemDesc" id="CustItemDesc_${trow}_${item.ItemId}">
+                                    <input type="hidden" value="${item.CustItem}" class="CustItem" id="CustItem_${trow}_${item.ItemId}">
+                                    <input type="hidden" value="${item.CustItemDesc}" class="CustItemDesc" id="CustItemDesc_${trow}_${item.ItemId}">
                                     
                                     </td>
                                 </tr>`;
@@ -725,7 +732,7 @@
         }
 
         var groupNameList = [];
-        getCustomItems = (trow, ItemId, ItemTyp, Itm_Portion, FID) =>{
+        getCustomItems = (trow, ItemId, ItemTyp, Itm_Portion, FID, OrdNo) =>{
             $.post('<?= base_url('restaurant/get_custom_items') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, Itm_Portion:Itm_Portion, FID:FID},function(res){
                 if(res.status == 'success'){
 
@@ -767,6 +774,7 @@
                         
                 $("#custom_trow").val(trow);
                 $("#custom_itemId").val(ItemId);
+                $("#custom_ordNo").val(OrdNo);
 
                 $('#custOfferAmount').val($(`#rate_${trow}_${ItemId}`).text());
                 $('#custOfferAmountView').text($(`#rate_${trow}_${ItemId}`).text());
@@ -854,9 +862,12 @@
 
             var trow = $("#custom_trow").val();
             var ItemId = $("#custom_itemId").val();
+            var ordNo = $("#custom_ordNo").val();
+            var custOfferAmountView = $('#custOfferAmountView').text();
+
 
             $(`#select_${trow}_${ItemId}`).attr('disabled', 'true');
-            $(`#rate_${trow}_${ItemId}`).text($('#custOfferAmountView').text());
+            $(`#rate_${trow}_${ItemId}`).text(custOfferAmountView);
 
             if(radioName.length > 0){
                 radioName.forEach(item =>{
@@ -878,7 +889,16 @@
             $(`#CustItemDesc_${trow}_${ItemId}`).val(custOfferName.join(", "));
             
             customCalculateValue(trow, ItemId);
-            $('.customOfferModal').modal('hide');
+
+            $.post('<?= base_url('restaurant/update_customItem_onTempKitchen') ?>',{ItemId:ItemId, OrdNo:ordNo, CustItemDesc:custOfferName.join(", "), OrigRates:custOfferAmountView},function(res){
+                if(res.status == 'success'){
+                    getTableData();
+                    $('.customOfferModal').modal('hide');
+                }else{
+
+                }
+            });
+
 
 
         });

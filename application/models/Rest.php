@@ -1443,6 +1443,7 @@ class Rest extends CI_Model{
 	}
 
 	public function getCustomItemsList($postData){
+
 		$EID = authuser()->EID;
 		$FID = $postData['FID'];
 		$ItemId = $postData['ItemId'];
@@ -1496,11 +1497,12 @@ class Rest extends CI_Model{
             		->get_where('ItemTypesGroup itg', array(
             							'itg.EID' => $EID,
             							'itg.Stat' => 0,
-            							'mir.Itm_Portion' => $Itm_Portion,
+            							// 'mir.Itm_Portion' => $Itm_Portion,
             							'itg.ItemTyp' => $ItemTyp
             									)
             					)
             		->result_array();
+            		print_r($this->db2->last_query());die;
         }
 	}
 
@@ -1922,6 +1924,17 @@ class Rest extends CI_Model{
 					->get_where('tempKitchen', 
 												array('EID' => $EID, 
 													  'TableNo' => $TableNo,
+													  'Stat' => 0))
+					->result_array();
+	}
+
+	public function getTempKitchenByOrdno($OrdNo){
+		$EID = authuser()->EID;
+		return $this->db2->select("*")
+					->order_by('OrdNo', 'DESC')
+					->get_where('tempKitchen', 
+												array('EID' => $EID, 
+													  'OrdNo' => $OrdNo,
 													  'Stat' => 0))
 					->result_array();
 	}
