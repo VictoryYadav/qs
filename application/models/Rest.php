@@ -1389,17 +1389,20 @@ class Rest extends CI_Model{
 	}
 
 	public function getItemOfferList($postData){
-		$EID = authuser()->EID;
-	    $itemId = $postData['ItemId'];
-	    $cid = $postData['CID'];
-	    $itemTyp = $postData['ItemTyp'];
-	    $MCatgId = $postData['MCatgId'];
+		
+		$EID 			= authuser()->EID;
+	    $ItemId 		= $postData['ItemId'];
+	    $cid 			= $postData['CID'];
+	    $itemTyp 		= $postData['ItemTyp'];
+	    $MCatgId 		= $postData['MCatgId'];
+	    $itemPortion 	= $postData['Itm_Portion'];
+	    $itmSale 		= $postData['ItemSale'];
 	    
-	    $langId = $this->session->userdata('site_lang');
-    	$scName = "c.SchNm$langId as SchNm";
-    	$scDesc = "cod.SchDesc$langId as SchDesc";
-    	$mname = "mi.ItemNm$langId as menuName";
-    	$dis_name = "mii.ItemNm$langId as discName";
+	    $langId 	= $this->session->userdata('site_lang');
+    	$scName 	= "c.SchNm$langId as SchNm";
+    	$scDesc 	= "cod.SchDesc$langId as SchDesc";
+    	$mname 		= "mi.ItemNm$langId as menuName";
+    	$dis_name 	= "mii.ItemNm$langId as discName";
 
     	if(!empty($cid)){
 	    	$this->db2->or_where('cod.CID', $cid);
@@ -1410,12 +1413,12 @@ class Rest extends CI_Model{
 	    if(!empty($MCatgId)){
 	    	$this->db2->or_where('cod.MCatgId', $MCatgId);
 	    }
-	    // if(!empty($itemsale)){
-	    // 	$this->db2->or_where('cod.ItemSale', $itemsale);
-	    // }
-	    // if(!empty($itemPortion)){
-	    // 	$this->db2->or_where('cod.IPCd', $itemPortion);
-	    // }
+	    if(!empty($itmSale)){
+	    	$this->db2->or_where('cod.ItemSale', $itmSale);
+	    }
+	    if(!empty($itemPortion)){
+	    	$this->db2->or_where('cod.IPCd', $itemPortion);
+	    }
 	    if(!empty($itemTyp)){
 	    	$this->db2->or_where('cod.ItemTyp', $itemTyp);
 	    }

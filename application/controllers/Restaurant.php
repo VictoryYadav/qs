@@ -2811,7 +2811,7 @@ class Restaurant extends CI_Controller {
                 $order_by = " i.IMcCd";
             }
 
-            $items = $this->db2->query("SELECT i.ItemId, $itemName1, $ipname, mr.OrigRate, i.KitCd, i.PckCharge, i.ItemTyp, i.CID, i.MCatgId, i.IMcCd,i.PrepTime, i.FID, mr.Itm_Portion, mc.TaxType, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc, ItemPortions ip where mc.MCatgId = i.MCatgId and ip.IPCd = mr.Itm_Portion and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and mr.ItemId=i.ItemId and mr.OrigRate > 0 order by $order_by")->result_array();
+            $items = $this->db2->query("SELECT i.ItemId, $itemName1, $ipname, mr.OrigRate, i.KitCd, i.PckCharge, i.ItemTyp, i.CID, i.MCatgId, i.IMcCd,i.PrepTime, i.FID, i.ItemSale, mr.Itm_Portion, mc.TaxType, mc.DCd   FROM MenuItem i ,MenuItemRates mr, MenuCatg mc, ItemPortions ip where mc.MCatgId = i.MCatgId and ip.IPCd = mr.Itm_Portion and $likeQry AND i.Stat = 0 AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) and mr.ItemId=i.ItemId and mr.OrigRate > 0 order by $order_by")->result_array();
             // echo "<pre>";print_r($this->db2->last_query());die;
             if (!empty($items)) {
                 $response = [
@@ -4760,6 +4760,7 @@ class Restaurant extends CI_Controller {
                 $kitchenObj['CustItem'] = $CustItem;
                 $kitchenObj['CustItemDesc'] = $CustItemDesc;
                 $kitchenObj['custAddr'] = $customerAddress;
+                $kitchenObj['ItemSale'] = $_POST['ItemSale'];
 
                 $kitchenObj['FKOTNo'] = 0;         
                 $kitchenObj['KOTNo'] = 0;
@@ -4788,7 +4789,7 @@ class Restaurant extends CI_Controller {
                             if($Offers['IPCd'] >= 1){
                                 $upData['Itm_Portion'] = $Offers['IPCd'];
                                 $mRates = getRates($Offers['ItemId'], $Offers['IPCd']);
-                                
+
                                 $tmpKit = $this->rest->getTempKitchenByOrdno($OrdNo);
                                 if($tmpKit['CustItem'] == 0){
                                     $upData['OrigRate'] = $mRates['OrigRate'];
@@ -4804,18 +4805,20 @@ class Restaurant extends CI_Controller {
                         // for offer 
                         $Disc_ItemId = $Offers['Disc_ItemId'];
                         $Disc_IPCd = $Offers['Disc_IPCd'];
-                        $offerRate = $origRates - ($origRates * $Offers['Disc_pcent'] / 100);
+                        
+                        $offerRate = (int)$origRates - ((int)$origRates * (int)$Offers['Disc_pcent'] / 100);
                         if($Disc_ItemId > 0){
                             if($Disc_ItemId != $Offers['ItemId'] || $Disc_IPCd != $Offers['IPCd']){
                                 $offerRates = $this->db2->query("select mi.OrigRate from MenuItemRates as mi where mi.EID = $EID and mi.ItemId = $Disc_ItemId and mi.Itm_Portion = $Disc_IPCd and mi.SecId = (select SecId from Eat_tables where TableNo = $TableNo and EID = $EID)")->row_array();
-
-                                $offerRate = $offerRates['OrigRate'] -  ($offerRates['OrigRate'] * $Offers['Disc_pcent'] / 100);
-                                $offerOrigRate = $offerRates['OrigRate'];
+                                if(!empty($offerRates)){
+                                    $offerRate = $offerRates['OrigRate'] -  ($offerRates['OrigRate'] * $Offers['Disc_pcent'] / 100);
+                                    $offerOrigRate = $offerRates['OrigRate'];
+                                }
                             }
                         }
 
                         if($Offers['SchTyp'] > 1) {
-                            $offerRate = $origRates - ($origRates * $Offers['DiscItemPcent'] / 100);
+                            $offerRate = (int)$origRates - ((int)$origRates * (int)$Offers['DiscItemPcent'] / 100);
                             if($Disc_ItemId > 0){
                                 if($Disc_ItemId != $Offers['ItemId'] || $Disc_IPCd != $Offers['IPCd']){
                                     

@@ -360,7 +360,7 @@
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_quantity_div" style="display: block;">\
                             <label for="description'+num_desc+'_quantity"><?= $this->lang->line('quantity');?></label>\
-                            <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_quantity" name="description_quantity[]" value="0">\
+                            <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_quantity" name="description_quantity[]" value="1">\
                         </div>\
                         <div class="form-group col-md-3 col-6">\
                             <label for="description'+num_desc+'_cid"><?= $this->lang->line('discount');?> <?= $this->lang->line('cuisine');?></label>\

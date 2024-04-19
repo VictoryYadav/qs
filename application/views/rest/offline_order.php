@@ -389,7 +389,7 @@
                             disabled = 'disabled';
                         }
                         if(item.SchCd < 1){
-                            checkItemOffersNew(item.ItemId, item.ItemTyp, item.CID, item.MCatgId, trow, item.OrdNo);
+                            checkItemOffersNew(item.ItemId, item.ItemTyp, item.CID, item.MCatgId, trow, item.OrdNo, item.Itm_Portion, item.ItemSale);
                         }
 
                         var customOfferBtn = ``;
@@ -444,14 +444,14 @@
             });
         }
 
-        function itemSlected_new(itemId, disItemId, itemName, origValue, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, Qty, tableRow, FID, OrdNo) {
+        function itemSlected_new(itemId, disItemId, itemName, origValue, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, Qty, tableRow, FID, ItemSale, OrdNo) {
 
             var TableNo = $('#table-id').val();
             var CellNo = $('#phone').val();
             var orderType = $('#order-type').val();
             var customerAddress = $('#cust-address').val();
 
-            $.post('<?= base_url('restaurant/insert_temp_kitchen') ?>',{ ItemId:itemId, itemName:itemName, OrigRate:origValue, ItmRate:origValue, KitCd:itemKitCd,  ItemTyp:ItemTyp, PckCharge:PckCharge, Itm_Portion:Itm_Portion, TaxType:TaxType, PrepTime:PrepTime, DCd:DCd, CID:CID, MCatgId:MCatgId , TableNo:TableNo, CellNo:CellNo, orderType:orderType, FID:FID, Qty:Qty, SchCd:SchCd, SDetCd:SDetCd, OrdNo:OrdNo,customerAddress:customerAddress },function(res){
+            $.post('<?= base_url('restaurant/insert_temp_kitchen') ?>',{ ItemId:itemId, itemName:itemName, OrigRate:origValue, ItmRate:origValue, KitCd:itemKitCd,  ItemTyp:ItemTyp, PckCharge:PckCharge, Itm_Portion:Itm_Portion, TaxType:TaxType, PrepTime:PrepTime, DCd:DCd, CID:CID, MCatgId:MCatgId , TableNo:TableNo, CellNo:CellNo, orderType:orderType, FID:FID, Qty:Qty, SchCd:SchCd, SDetCd:SDetCd, OrdNo:OrdNo,customerAddress:customerAddress, ItemSale:ItemSale},function(res){
                 if(res.status == 'success'){
                   // var data = res.response;
                   $('#item-list-modal').modal('hide');
@@ -581,8 +581,8 @@
             });
         }
 
-        checkItemOffersNew = (ItemId, ItemTyp, CID, MCatgId, trow, OrdNo) =>{
-            $.post('<?= base_url('restaurant/get_item_offer') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, CID:CID, MCatgId:MCatgId},function(res){
+        checkItemOffersNew = (ItemId, ItemTyp, CID, MCatgId, trow, OrdNo, Itm_Portion,ItemSale) =>{
+            $.post('<?= base_url('restaurant/get_item_offer') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, CID:CID, MCatgId:MCatgId, Itm_Portion:Itm_Portion, ItemSale:ItemSale },function(res){
                 if(res.status == 'success'){
                   var data = res.response;
                   if(data.length> 0){
@@ -590,7 +590,7 @@
                     // $('#offerAnchor').attr('data-toggle', "modal");
                     // $('#offerAnchor').attr('data-animation', "bounce");
                     // $('#offerAnchor').attr('data-target', ".bs-example-modal-center");
-                    $('#offerAnchor_'+ItemId).attr('onclick', "showOfferModalNew("+ItemId+","+ItemTyp+","+CID+", "+MCatgId+", "+trow+", "+OrdNo+")");
+                    $('#offerAnchor_'+ItemId).attr('onclick', "showOfferModalNew("+ItemId+","+ItemTyp+","+CID+", "+MCatgId+", "+trow+", "+OrdNo+", "+Itm_Portion+", "+ItemSale+")");
                     // $('#offerAnchor_'+ItemId).attr('onclick', "showOfferModal("+ItemId+","+ItemTyp+","+CID+", "+MCatgId+", "+trow+")");
                     $('#offerAnchor_'+ItemId).css({"background-color": "yellow", "cursor": "pointer"});
 
@@ -620,15 +620,15 @@
             });
         }
 
-        showOfferModalNew = (ItemId, ItemTyp, CID, MCatgId, trow, OrdNo) =>{
-            $.post('<?= base_url('restaurant/get_item_offer') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, CID:CID, MCatgId:MCatgId},function(res){
+        showOfferModalNew = (ItemId, ItemTyp, CID, MCatgId, trow, OrdNo, Itm_Portion, ItemSale) =>{
+            $.post('<?= base_url('restaurant/get_item_offer') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, CID:CID, MCatgId:MCatgId, Itm_Portion:Itm_Portion, ItemSale:ItemSale},function(res){
                 if(res.status == 'success'){
                   var data = res.response;
                   if(data.length> 0){
                     var temp = `<select class="form-control" id="schemeOffer">`;
 
                     data.forEach((item, index) => {
-                        temp += `<option value="${item.SchCd}" itemid="${ItemId}" disitemid="${item.Disc_ItemId}" itemname="${item.discName}" itemvalue="${item.itmVal}" itemkitcd="${item.KitCd}" pckcharge="${item.PckCharge}" itm_portion="${item.IPCd}" disc_ipcd="${item.Disc_IPCd}" taxtype="${item.TaxType}"  preptime="${item.PrepTime}" dcd="${item.DCd}"  itemtyp="${ItemTyp}" cid="${item.CID}" mcatgid="${item.MCatgId}" qty="${item.Qty}" disqty="${item.Disc_Qty}" sdetcd="${item.SDetCd}" rowid="${ItemId}" trow="${trow}" fid="${item.FID}" discitempcent="${item.DiscItemPcent}" schtyp="${item.SchTyp}" ordno="${OrdNo}">${item.SchNm} - ${item.SchDesc} </option>`;
+                        temp += `<option value="${item.SchCd}" itemid="${ItemId}" disitemid="${item.Disc_ItemId}" itemname="${item.discName}" itemvalue="${item.itmVal}" itemkitcd="${item.KitCd}" pckcharge="${item.PckCharge}" itm_portion="${item.IPCd}" disc_ipcd="${item.Disc_IPCd}" taxtype="${item.TaxType}"  preptime="${item.PrepTime}" dcd="${item.DCd}"  itemtyp="${ItemTyp}" cid="${item.CID}" mcatgid="${item.MCatgId}" qty="${item.Qty}" disqty="${item.Disc_Qty}" sdetcd="${item.SDetCd}" rowid="${ItemId}" trow="${trow}" fid="${item.FID}" discitempcent="${item.DiscItemPcent}" schtyp="${item.SchTyp}" ordno="${OrdNo}" itemsale="${ItemSale}">${item.SchNm} - ${item.SchDesc} </option>`;
                     });
                     temp += `</select>`;
 
@@ -688,6 +688,7 @@
             var CID = $('option:selected', $('#schemeOffer')).attr('cid');
             var MCatgId = $('option:selected', $('#schemeOffer')).attr('mcatgid');
             var FID = $('option:selected', $('#schemeOffer')).attr('fid');
+            var ItemSale = $('option:selected', $('#schemeOffer')).attr('itemsale');
             var discitempcent = $('option:selected', $('#schemeOffer')).attr('discitempcent');
 
             var rowid = $('option:selected', $('#schemeOffer')).attr('rowid');
@@ -715,7 +716,7 @@
 
             var tableRow = trow + 1;
 
-            itemSlected_new(itemId, disItemid, itemName, origVal, itemValue, itemKitCd, PckCharge, disc_ipcd, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, disQty, tableRow, FID, OrdNo);
+            itemSlected_new(itemId, disItemid, itemName, origVal, itemValue, itemKitCd, PckCharge, disc_ipcd, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, disQty, tableRow, FID, ItemSale, OrdNo);
 
             // itemSlected(itemId, disItemid, itemName, origVal, itemValue, itemKitCd, PckCharge, disc_ipcd, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, disQty, tableRow, FID);
 
@@ -971,7 +972,7 @@
                                         printItemName = item.IMcCd+' - '+item.LngName+'-'+item.portionName;
                                     }
                                     
-                                    template += `<li onclick="itemSlected_new(${item.ItemId}, ${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd}, ${item.ItemTyp}, ${item.CID}, ${item.MCatgId}, 0, 0, 0, 0, ${item.FID}, 0);" style="cursor: pointer;">${printItemName}</li>`;
+                                    template += `<li onclick="itemSlected_new(${item.ItemId}, ${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd}, ${item.ItemTyp}, ${item.CID}, ${item.MCatgId}, 0, 0, 0, 0, ${item.FID}, ${item.ItemSale}, 0);" style="cursor: pointer;">${printItemName}</li>`;
 
                                     // template += `<li onclick="itemSlected(${item.ItemId}, ${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd}, ${item.ItemTyp}, ${item.CID}, ${item.MCatgId}, 0, 0, 0, 0, ${item.FID});" style="cursor: pointer;">${printItemName}</li>`;
 
