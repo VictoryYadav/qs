@@ -455,6 +455,20 @@ class User extends CI_Model{
 		return $this->db2->get_where('MenuItemRates', array('ItemId' => $ItemId, 'Itm_Portion' => $IPCd))->row_array();
 	}
 
+	public function getBillBasedOffer(){
+		$today = date('Y-m-d');
+		$tommorow = date('Y-m-d', strtotime("+1 day", strtotime($today)));
+		return $this->db2->select("MinBillAmt, Disc_pcent, Disc_Amt")
+					->get_where('CustOffers', 
+									array('EID' => authuser()->EID, 
+										'FrmDt >=' => $today, 
+										'ToDt <=' => $tommorow, 
+										'SchTyp' => 1, 
+										'SchCatg' => 1)
+								)
+					->row_array();
+	}
+
 	
 
 }

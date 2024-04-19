@@ -494,6 +494,12 @@ function insertLoyalty($data){
     return $CI->User->saveLoyalty($data);	
 }
 
+function billBasedOffer(){
+	$CI = & get_instance();
+    $CI->load->model('User');
+    return $CI->User->getBillBasedOffer();	
+}
+
 // Test the function
 // $englishNumber = '12345';
 // $chineseNumber = convertDigits($englishNumber, 'en', 'zh');

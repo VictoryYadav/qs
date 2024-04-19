@@ -2922,6 +2922,25 @@ class Restaurant extends CI_Controller {
 
                 $orderAmount = $orderAmount + $ItmRate[$i];
             }
+            // billbased offer
+            if($this->session->userdata('SchType') == 1){
+                $billOffer = billBasedOffer();
+                if(!empty($billOffer)){
+                    $dis = 0;
+                    if($orderAmount >= $billOffer['MinBillAmt']){
+                        if($billOffer['Disc_pcent'] > 0){
+                            $dis = ($orderAmount * $billOffer['Disc_pcent']) / 100;
+                            $dis = round($dis);
+                        }else{
+                             if($billOffer['Disc_Amt'] > 0){
+                                $dis = $billOffer['Disc_Amt'];
+                            }   
+                        }
+                    }
+                    updateRecord('KitchenMain', array('BillDiscAmt' => $dis), array('CNo' => $CNo, 'EID' => $EID));
+                }
+            }
+            // end of billbased offer
 
             // delete from temp kitchen
             deleteRecord('tempKitchen', array('TableNo' => $tableNo, 'EID' => $EID));
