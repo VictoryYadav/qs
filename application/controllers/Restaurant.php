@@ -553,6 +553,9 @@ class Restaurant extends CI_Controller {
             $CustOffers['AltToTime'] = $_POST['AltToTime'];
             $CustOffers['FrmDt'] = $_POST['FrmDt'];
             $CustOffers['ToDt'] = $_POST['ToDt'];
+            $CustOffers['MinBillAmt'] = $_POST['minbillamount'];
+            $CustOffers['Disc_pcent'] = $_POST['discountpercent'];
+            $CustOffers['Disc_Amt'] = $_POST['discountamount'];
             
             $SchCd = insertRecord('CustOffers', $CustOffers);
             
@@ -563,139 +566,58 @@ class Restaurant extends CI_Controller {
 
             $CustOffersDet = [];
             $temp = [];
+            if(!empty($_POST['description'])){
+                for($i = 0;$i<sizeof($_POST['description']);$i++){
+                    if(!empty($_POST['description'][$i])){
+                        if(isset($_FILES['description_image']['name']) && !empty($_FILES['description_image']['name'])){ 
 
-            for($i = 0;$i<sizeof($_POST['description']);$i++){
-                if(!empty($_POST['description'][$i])){
-                    if(isset($_FILES['description_image']['name']) && !empty($_FILES['description_image']['name'])){ 
+                            $files = $_FILES['description_image'];
+                            $_FILES['description_image']['name']= $files['name'][$i];
+                            $_FILES['description_image']['type']= $files['type'][$i];
+                            $_FILES['description_image']['tmp_name']= $files['tmp_name'][$i];
+                            $_FILES['description_image']['error']= $files['error'][$i];
+                            $_FILES['description_image']['size']= $files['size'][$i];
+                            $file = str_replace(' ', '_', rand('10000','999').'_'.$files['name'][$i]);
 
-                        $files = $_FILES['description_image'];
-                        $_FILES['description_image']['name']= $files['name'][$i];
-                        $_FILES['description_image']['type']= $files['type'][$i];
-                        $_FILES['description_image']['tmp_name']= $files['tmp_name'][$i];
-                        $_FILES['description_image']['error']= $files['error'][$i];
-                        $_FILES['description_image']['size']= $files['size'][$i];
-                        $file = str_replace(' ', '_', rand('10000','999').'_'.$files['name'][$i]);
+                            $folderPath = 'uploads/e'.$EID.'/offers';
+                            if (!file_exists($folderPath)) {
+                                // Create the directory
+                                mkdir($folderPath, 0777, true);
+                            }
 
-                        $folderPath = 'uploads/e'.$EID.'/offers';
-                        if (!file_exists($folderPath)) {
-                            // Create the directory
-                            mkdir($folderPath, 0777, true);
+                            $res = do_upload('description_image',$file, $folderPath,'*');
+                            $temp['SchImg'] = $file;
                         }
 
-                        $res = do_upload('description_image',$file, $folderPath,'*');
-                        $temp['SchImg'] = $file;
+                        $temp['SchCd'] = $SchCd;
+                        $temp['SchDesc1'] = $_POST['description'][$i];
+                        $temp['SchDesc2'] = $_POST['description'][$i];
+                        $temp['CID'] = !empty($_POST['description_cid'][$i])?$_POST['description_cid'][$i]:0;
+                        $temp['MCatgId'] = !empty($_POST['description_mcatgid'][$i])?$_POST['description_mcatgid'][$i]:0;
+
+                        $temp['Disc_CID'] = !empty($_POST['description_disc_cid'][$i])?$_POST['description_disc_cid'][$i]:0;
+                        $temp['Disc_MCatgId'] = !empty($_POST['description_disc_mcatgid'][$i])?$_POST['description_disc_mcatgid'][$i]:0;
+
+                        $temp['ItemTyp'] = !empty($_POST['description_itemtyp'][$i])?$_POST['description_itemtyp'][$i]:0;
+                        $temp['ItemId'] = !empty($_POST['description_item'][$i])?$_POST['description_item'][$i]:0;
+                        $temp['IPCd'] = !empty($_POST['description_itemportion'][$i])?$_POST['description_itemportion'][$i]:0;
+                        $temp['Qty'] = !empty($_POST['description_quantity'][$i])?$_POST['description_quantity'][$i]:0;
+                        $temp['Disc_ItemId'] = !empty($_POST['description_discountitem'][$i])?$_POST['description_discountitem'][$i]:0;
+                        $temp['Disc_IPCd'] = !empty($_POST['description_discountitemportion'][$i])?$_POST['description_discountitemportion'][$i]:0;
+                        $temp['Disc_Qty'] = !empty($_POST['description_discountquantity'][$i])?$_POST['description_discountquantity'][$i]:0;
+                        $temp['DiscItemPcent'] = !empty($_POST['description_discountitempercentage'][$i])?$_POST['description_discountitempercentage'][$i]:0;
+                        $temp['ItemSale'] = !empty($_POST['description_itemsales'][$i])?$_POST['description_itemsales'][$i]:0;
+
+                        $temp['DiscMaxAmt'] = !empty($_POST['description_disc_max_amt'][$i])?$_POST['description_disc_max_amt'][$i]:0;
+                        $temp['Rank'] = 1;
+                        $temp['Stat'] = 0;
+
+                        $CustOffersDet[] = $temp;
                     }
-
-                    $temp['SchCd'] = $SchCd;
-                    $temp['SchDesc1'] = $_POST['description'][$i];
-                    $temp['SchDesc2'] = $_POST['description'][$i];
-                    $temp['CID'] = !empty($_POST['description_cid'][$i])?$_POST['description_cid'][$i]:0;
-                    $temp['MCatgId'] = !empty($_POST['description_mcatgid'][$i])?$_POST['description_mcatgid'][$i]:0;
-
-                    $temp['Disc_CID'] = !empty($_POST['description_disc_cid'][$i])?$_POST['description_disc_cid'][$i]:0;
-                    $temp['Disc_MCatgId'] = !empty($_POST['description_disc_mcatgid'][$i])?$_POST['description_disc_mcatgid'][$i]:0;
-
-                    $temp['ItemTyp'] = !empty($_POST['description_itemtyp'][$i])?$_POST['description_itemtyp'][$i]:0;
-                    $temp['ItemId'] = !empty($_POST['description_item'][$i])?$_POST['description_item'][$i]:0;
-                    $temp['IPCd'] = !empty($_POST['description_itemportion'][$i])?$_POST['description_itemportion'][$i]:0;
-                    $temp['Qty'] = !empty($_POST['description_quantity'][$i])?$_POST['description_quantity'][$i]:0;
-                    $temp['Disc_ItemId'] = !empty($_POST['description_discountitem'][$i])?$_POST['description_discountitem'][$i]:0;
-                    $temp['Disc_IPCd'] = !empty($_POST['description_discountitemportion'][$i])?$_POST['description_discountitemportion'][$i]:0;
-                    $temp['Disc_Qty'] = !empty($_POST['description_discountquantity'][$i])?$_POST['description_discountquantity'][$i]:0;
-                    $temp['DiscItemPcent'] = !empty($_POST['description_discountitempercentage'][$i])?$_POST['description_discountitempercentage'][$i]:0;
-                    $temp['ItemSale'] = !empty($_POST['description_itemsales'][$i])?$_POST['description_itemsales'][$i]:0;
-                    $temp['MinBillAmt'] = !empty($_POST['description_minbillamount'][$i])?$_POST['description_minbillamount'][$i]:0;
-                    $temp['Disc_pcent'] = !empty($_POST['description_discountpercent'][$i])?$_POST['description_discountpercent'][$i]:0;
-                    $temp['Disc_Amt'] = !empty($_POST['description_discountamount'][$i])?$_POST['description_discountamount'][$i]:0;
-                    $temp['DiscMaxAmt'] = !empty($_POST['description_disc_max_amt'][$i])?$_POST['description_disc_max_amt'][$i]:0;
-                    $temp['Rank'] = 1;
-                    $temp['Stat'] = 0;
-
-                    // switch ($_POST['SchCatg']) {
-                    //     // cuisine based
-                    //     case 2:
-                    //             $temp['MCatgId'] = 0;
-                    //             $temp['ItemId'] = 0;
-                    //             $temp['IPCd'] = 0;
-                    //             $temp['ItemSale'] = 0;
-                    //             $temp['ItemTyp'] = 0;
-                    //         break;
-                    //     // cuisine, portion based
-                    //     case 7:
-                    //             $temp['MCatgId'] = 0;
-                    //             $temp['ItemId'] = 0;
-                    //             $temp['ItemSale'] = 0;
-                    //             $temp['ItemTyp'] = 0;
-                    //         break;
-                    //         // menu category based
-                    //     case 3:
-                    //             $temp['CID'] = 0;
-                    //             $temp['ItemId'] = 0;
-                    //             $temp['IPCd'] = 0;
-                    //             $temp['ItemSale'] = 0;
-                    //             $temp['ItemTyp'] = 0;
-                    //         break;
-                    //         // menu category, portion based
-                    //     case 8:
-                    //             $temp['CID'] = 0;
-                    //             $temp['ItemId'] = 0;
-                    //             $temp['ItemSale'] = 0;
-                    //             $temp['ItemTyp'] = 0;
-                    //         break;
-                    //         // menu item based
-                    //     case 5:
-                    //             $temp['CID'] = 0;
-                    //             $temp['MCatgId'] = 0;
-                    //             $temp['IPCd'] = 0;
-                    //             $temp['ItemSale'] = 0;
-                    //             $temp['ItemTyp'] = 0;
-                    //         break;
-                    //         // menu item, portion based
-                    //     case 10:
-                    //             $temp['CID'] = 0;
-                    //             $temp['MCatgId'] = 0;
-                    //             $temp['ItemSale'] = 0;
-                    //             $temp['ItemTyp'] = 0;
-                    //         break;
-                    //         // portion based
-                    //     case 6:
-                    //             $temp['CID'] = 0;
-                    //             $temp['MCatgId'] = 0;
-                    //             $temp['ItemId'] = 0;
-                    //             $temp['ItemSale'] = 0;
-                    //             $temp['ItemTyp'] = 0;
-                    //         break;
-                    //     // item type based
-                    //     case 4:
-                    //             $temp['CID'] = 0;
-                    //             $temp['MCatgId'] = 0;
-                    //             $temp['ItemId'] = 0;
-                    //             $temp['IPCd'] = 0;
-                    //             $temp['ItemSale'] = 0;
-                    //         break;
-                    //         // item type, portion based
-                    //     case 9:
-                    //             $temp['CID'] = 0;
-                    //             $temp['MCatgId'] = 0;
-                    //             $temp['ItemId'] = 0;
-                    //             $temp['ItemSale'] = 0;
-                    //         break;
-                    //     // item sale, 22-must try, 24-food type based
-                    //     case 22:
-                    //     case 24:
-                    //             $temp['CID'] = 0;
-                    //             $temp['MCatgId'] = 0;
-                    //             $temp['ItemId'] = 0;
-                    //             $temp['IPCd'] = 0;
-                    //             $temp['ItemTyp'] = 0;
-                    //         break;
-
-                    // }
-                    $CustOffersDet[] = $temp;
                 }
-            }
 
-            $this->db2->insert_batch('CustOffersDet', $CustOffersDet); 
+                $this->db2->insert_batch('CustOffersDet', $CustOffersDet); 
+            }
             $this->session->set_flashdata('success','Offer has been added.'); 
             redirect(base_url('restaurant/offers_list'));
         }
@@ -721,8 +643,8 @@ class Restaurant extends CI_Controller {
             $SchCd = $_POST['SchCd'];
             $CustOffers['SchNm1'] = $_POST['SchNm'];
             $CustOffers['SchNm2'] = '-';
-            $CustOffers['SchTyp'] = $_POST['SchTyp'];
-            $CustOffers['SchCatg'] = $_POST['SchCatg']; 
+            // $CustOffers['SchTyp'] = $_POST['SchTyp'];
+            // $CustOffers['SchCatg'] = $_POST['SchCatg']; 
             $CustOffers['FrmDayNo'] = $_POST['FromDayNo'];
             $CustOffers['ToDayNo'] = $_POST['ToDayNo']; 
             $CustOffers['FrmTime'] = $_POST['FrmTime'];
@@ -732,61 +654,64 @@ class Restaurant extends CI_Controller {
             $CustOffers['FrmDt'] = $_POST['FrmDt'];
             $CustOffers['ToDt'] = $_POST['ToDt'];
             $CustOffers['EID'] = authuser()->EID;
+            $CustOffers['MinBillAmt'] = $_POST['minbillamount'];
+            $CustOffers['Disc_pcent'] = $_POST['discountpercent'];
+            $CustOffers['Disc_Amt'] = $_POST['discountamount'];
+
             updateRecord('CustOffers',$CustOffers, array('SchCd' => $SchCd, 'EID' => $EID));
-            
-            for($i = 0;$i<sizeof($_POST['description']);$i++){
-                if(!empty($_POST['description'][$i])){
-                    if(isset($_FILES['description_image']['name']) && !empty($_FILES['description_image']['name'])){ 
+            if(!empty($_POST['description'])){
+                for($i = 0;$i<sizeof($_POST['description']);$i++){
+                    if(!empty($_POST['description'][$i])){
+                        if(isset($_FILES['description_image']['name']) && !empty($_FILES['description_image']['name'])){ 
 
-                        $files = $_FILES['description_image'];
-                        $_FILES['description_image']['name']= $files['name'][$i];
-                        $_FILES['description_image']['type']= $files['type'][$i];
-                        $_FILES['description_image']['tmp_name']= $files['tmp_name'][$i];
-                        $_FILES['description_image']['error']= $files['error'][$i];
-                        $_FILES['description_image']['size']= $files['size'][$i];
-                        $file = str_replace(' ', '_', rand('10000','999').'_'.$files['name'][$i]);
+                            $files = $_FILES['description_image'];
+                            $_FILES['description_image']['name']= $files['name'][$i];
+                            $_FILES['description_image']['type']= $files['type'][$i];
+                            $_FILES['description_image']['tmp_name']= $files['tmp_name'][$i];
+                            $_FILES['description_image']['error']= $files['error'][$i];
+                            $_FILES['description_image']['size']= $files['size'][$i];
+                            $file = str_replace(' ', '_', rand('10000','999').'_'.$files['name'][$i]);
 
-                        $folderPath = 'uploads/e'.$EID.'/offers';
-                        if (!file_exists($folderPath)) {
-                            // Create the directory with file permission
-                            mkdir($folderPath, 0777, true);
+                            $folderPath = 'uploads/e'.$EID.'/offers';
+                            if (!file_exists($folderPath)) {
+                                // Create the directory with file permission
+                                mkdir($folderPath, 0777, true);
+                            }
+
+                            $res = do_upload('description_image',$file, $folderPath,'*');
+                            $CustOffersDet['SchImg'] = $file;
                         }
 
-                        $res = do_upload('description_image',$file, $folderPath,'*');
-                        $CustOffersDet['SchImg'] = $file;
-                    }
+                        $CustOffersDet['SchCd'] = $SchCd;
+                        $CustOffersDet['SchDesc1'] = $_POST['description'][$i];
+                        $CustOffersDet['SchDesc2'] = $_POST['description'][$i];
+                        $CustOffersDet['CID'] = $_POST['description_cid'][$i];
+                        $CustOffersDet['MCatgId'] = $_POST['description_mcatgid'][$i];
+                        $CustOffersDet['ItemTyp'] = $_POST['description_itemtyp'][$i];
+                        $CustOffersDet['ItemId'] = $_POST['description_item'][$i];
+                        $CustOffersDet['IPCd'] = $_POST['description_itemportion'][$i];
+                        $CustOffersDet['ItemTyp'] = $_POST['description_itemtyp'][$i];
+                        $CustOffersDet['Qty'] = $_POST['description_quantity'][$i];
 
-                    $CustOffersDet['SchCd'] = $SchCd;
-                    $CustOffersDet['SchDesc1'] = $_POST['description'][$i];
-                    $CustOffersDet['SchDesc2'] = $_POST['description'][$i];
-                    $CustOffersDet['CID'] = $_POST['description_cid'][$i];
-                    $CustOffersDet['MCatgId'] = $_POST['description_mcatgid'][$i];
-                    $CustOffersDet['ItemTyp'] = $_POST['description_itemtyp'][$i];
-                    $CustOffersDet['ItemId'] = $_POST['description_item'][$i];
-                    $CustOffersDet['IPCd'] = $_POST['description_itemportion'][$i];
-                    $CustOffersDet['ItemTyp'] = $_POST['description_itemtyp'][$i];
-                    $CustOffersDet['Qty'] = $_POST['description_quantity'][$i];
+                        $CustOffersDet['Disc_CID'] = !empty($_POST['description_disc_cid'][$i])?$_POST['description_disc_cid'][$i]:0;
+                        $CustOffersDet['Disc_MCatgId'] = !empty($_POST['description_disc_mcatgid'][$i])?$_POST['description_disc_mcatgid'][$i]:0;
+                        $CustOffersDet['Disc_ItemId'] = $_POST['description_discountitem'][$i];
+                        $CustOffersDet['Disc_IPCd'] = $_POST['description_discountitemportion'][$i];
+                        $CustOffersDet['Disc_Qty'] = $_POST['description_discountquantity'][$i];
+                        
+                        $CustOffersDet['DiscItemPcent'] = $_POST['description_discountitempercentage'][$i];
 
-                    $CustOffersDet['Disc_CID'] = !empty($_POST['description_disc_cid'][$i])?$_POST['description_disc_cid'][$i]:0;
-                    $CustOffersDet['Disc_MCatgId'] = !empty($_POST['description_disc_mcatgid'][$i])?$_POST['description_disc_mcatgid'][$i]:0;
-                    $CustOffersDet['Disc_ItemId'] = $_POST['description_discountitem'][$i];
-                    $CustOffersDet['Disc_IPCd'] = $_POST['description_discountitemportion'][$i];
-                    $CustOffersDet['Disc_Qty'] = $_POST['description_discountquantity'][$i];
-                    $CustOffersDet['MinBillAmt'] = $_POST['description_minbillamount'][$i];
-                    $CustOffersDet['Disc_pcent'] = $_POST['description_discountpercent'][$i];
-                    $CustOffersDet['Disc_Amt'] = $_POST['description_discountamount'][$i];
-                    $CustOffersDet['DiscItemPcent'] = $_POST['description_discountitempercentage'][$i];
+                        $CustOffersDet['DiscMaxAmt'] = $_POST['description_disc_max_amt'][$i];
 
-                    $CustOffersDet['DiscMaxAmt'] = $_POST['description_disc_max_amt'][$i];
+                        $CustOffersDet['Rank'] = 1;
+                        $CustOffersDet['Stat'] = 0;
 
-                    $CustOffersDet['Rank'] = 1;
-                    $CustOffersDet['Stat'] = 0;
-
-                    if(isset($_POST['SDetCd'][$i]) && !empty($_POST['SDetCd'][$i])){
-                        $SDetCd = $_POST['SDetCd'][$i];
-                        updateRecord('CustOffersDet',$CustOffersDet, array('SDetCd' => $SDetCd));
-                    }else{
-                        recordInsert('CustOffersDet', $CustOffersDet);
+                        if(isset($_POST['SDetCd'][$i]) && !empty($_POST['SDetCd'][$i])){
+                            $SDetCd = $_POST['SDetCd'][$i];
+                            updateRecord('CustOffersDet',$CustOffersDet, array('SDetCd' => $SDetCd));
+                        }else{
+                            recordInsert('CustOffersDet', $CustOffersDet);
+                        }
                     }
                 }
             }
@@ -857,7 +782,7 @@ class Restaurant extends CI_Controller {
         $langId = $this->session->userdata('site_lang');
 
         $scName = "SchNm$langId as SchNm";
-        $data['scheme'] = $this->db2->select("$scName, SchCd, SchTyp ,SchCatg,FrmDt, ToDt, FrmDayNo, ToDayNo, FrmTime, ToTime, AltFrmTime, AltToTime")->get_where('CustOffers', array('SchCd' => $SchCd, 'EID' => $EID))->row_array();
+        $data['scheme'] = $this->db2->select("*, $scName")->get_where('CustOffers', array('SchCd' => $SchCd, 'EID' => $EID))->row_array();
 
         $scDesc = "SchDesc$langId as SchDesc";
         $data['descriptions'] = $this->db2->select("*, $scDesc")->get_where('CustOffersDet', array('SchCd' =>$SchCd,'Stat' => 0))->result_array();

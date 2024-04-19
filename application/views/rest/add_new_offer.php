@@ -124,6 +124,25 @@
                                                     </div>
                                                 </div>
 
+                                                <div class="col-md-3 col-6 billBased" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('minimumBillAmount');?></label>
+                                                        <input type="number" class="form-control form-control-sm" id="description_minbillamount" name="minbillamount" value="0">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-6 billBased" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('discountPercentage');?></label>
+                                                        <input type="number" class="form-control form-control-sm" id="description_discountpercent" name="discountpercent" value="0">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-6 billBased"  style="display: none;">
+                                                    <div class="form-group">
+                                                        <label for="description'+num_desc+'_discountamount"><?= $this->lang->line('discountAmount');?></label>
+                                                        <input type="number" class="form-control form-control-sm" id="description_discountamount" name="discountamount" value="0">
+                                                    </div>
+                                                </div>
+
                                             </div>
 
                                             <button type="button" class="btn btn-primary btn-sm" onclick="add_more_description()" id="add_desc"><?= $this->lang->line('addMoreOfferDetails');?></button>
@@ -204,8 +223,16 @@
         $('.items').prop("disabled", false);
         $('.itemPortion').prop("disabled", false);
 
+        $('.billBased').hide();
+        $('#add_desc').show();
+
         if(schCat > 0){
             switch (schCat) {
+                // bill based
+                case '1':
+                    $('.billBased').show();
+                    $('#add_desc').hide();
+                break;
                 // cuisine based
               case '2':
                     $('.itemType').prop("disabled", true);
@@ -403,18 +430,6 @@
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_discountitempercentage_div" style="display: block;">\
                             <label for="description'+num_desc+'discountitempercentage"><?= $this->lang->line('discount');?> <?= $this->lang->line('maximum');?> <?= $this->lang->line('amount');?></label>\
                             <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_disc_max_amt" name="description_disc_max_amt[]" value="0">\
-                        </div>\
-                        <div class="form-group col-md-3 col-6" id="description'+num_desc+'_minbillamount_div" style="display: block;">\
-                            <label for="description'+num_desc+'_minbillamount"><?= $this->lang->line('minimumBillAmount');?></label>\
-                            <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_minbillamount" name="description_minbillamount[]" value="0">\
-                        </div>\
-                        <div class="form-group col-md-3 col-6" id="description'+num_desc+'_discountpercent_div" style="display: block;">\
-                            <label for="description'+num_desc+'_discountpercent"><?= $this->lang->line('discountPercentage');?></label>\
-                            <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_discountpercent" name="description_discountpercent[]" value="0">\
-                        </div>\
-                        <div class="form-group col-md-3 col-6" id="description'+num_desc+'_discountamount_div" style="display: block;">\
-                            <label for="description'+num_desc+'_discountamount"><?= $this->lang->line('discountAmount');?></label>\
-                            <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_discountamount" name="description_discountamount[]" value="0">\
                         </div>\
                     </div>\
                 </div>';

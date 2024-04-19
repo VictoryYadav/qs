@@ -98,6 +98,25 @@
                                                     <label for="alt_to_time"><?= $this->lang->line('alternateToTime');?></label>
                                                     <input type="time" name="AltToTime" class="form-control form-control-sm" id="alt_to_time" <?php if(!empty($scheme['ToTime'])){?> value="<?= $scheme['ToTime']?>" <?php }?> />
                                                 </div>
+
+                                                <div class="col-md-3 col-6 billBased" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('minimumBillAmount');?></label>
+                                                        <input type="number" class="form-control form-control-sm" id="description_minbillamount" name="minbillamount" value="<?= $scheme['MinBillAmt']?>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-6 billBased" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('discountPercentage');?></label>
+                                                        <input type="number" class="form-control form-control-sm" id="description_discountpercent" name="discountpercent" value="<?= $scheme['Disc_pcent']?>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-6 billBased"  style="display: none;">
+                                                    <div class="form-group">
+                                                        <label for="description'+num_desc+'_discountamount"><?= $this->lang->line('discountAmount');?></label>
+                                                        <input type="number" class="form-control form-control-sm" id="description_discountamount" name="discountamount" value="<?= $scheme['Disc_Amt']?>">
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="offer_descriptions" id="offer_descriptions">
                                                 <?php $n = 1;foreach($descriptions as $key){?>
@@ -285,8 +304,17 @@
         $('.menuCategory').prop("disabled", false);
         $('.items').prop("disabled", false);
         $('.itemPortion').prop("disabled", false);
+
+        $('.billBased').hide();
+        $('#add_more').show();
+
         if(schCat > 0){
             switch (schCat) {
+                // bill based
+                case '1':
+                    $('.billBased').show();
+                    $('#add_more').hide();
+                break;
                 // cuisine based
               case '2':
                     $('.itemType').prop("disabled", true);
@@ -530,18 +558,6 @@
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_discountmaxamt_div" style="display: block;">\
                             <label for="description'+num_desc+'discountmaxamt"><?= $this->lang->line('discount');?> <?= $this->lang->line('maximum');?> <?= $this->lang->line('amount');?></label>\
                             <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_disc_max_amt" name="description_disc_max_amt[]" value="0">\
-                        </div>\
-                        <div class="form-group col-md-3 col-6" id="description'+num_desc+'_minbillamount_div" style="display: block;">\
-                            <label for="description'+num_desc+'_minbillamount"><?= $this->lang->line('minimumBillAmount');?></label>\
-                            <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_minbillamount" name="description_minbillamount[]" value="0">\
-                        </div>\
-                        <div class="form-group col-md-3 col-6" id="description'+num_desc+'_discountpercent_div" style="display: block;">\
-                            <label for="description'+num_desc+'_discountpercent"><?= $this->lang->line('discountPercentage');?></label>\
-                            <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_discountpercent" name="description_discountpercent[]" value="0">\
-                        </div>\
-                        <div class="form-group col-md-3 col-6" id="description'+num_desc+'_discountamount_div" style="display: block;">\
-                            <label for="description'+num_desc+'_discountamount"><?= $this->lang->line('discountAmount');?></label>\
-                            <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_discountamount" name="description_discountamount[]" value="0">\
                         </div>\
                     </div>\
                 </div>';

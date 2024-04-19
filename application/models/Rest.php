@@ -1423,6 +1423,53 @@ class Rest extends CI_Model{
 	    	$this->db2->or_where('cod.ItemTyp', $itemTyp);
 	    }
 
+	    // switch ($schCat) {
+     //            // cuisine based
+     //          case '2':
+     //          		$this->db2->where('cod.CID', $cid);
+     //            break;
+     //            // cuisine, portion based
+     //          case '7':
+     //          		$this->db2->where('cod.CID', $cid);
+     //          		$this->db2->where('cod.IPCd', $itemPortion);
+     //            break;
+     //            // menu category based
+     //          case '3':
+     //          		$this->db2->where('cod.MCatgId', $MCatgId);
+     //            break;
+     //             // menu category, portion based
+     //          case '8':
+     //          		$this->db2->where('cod.MCatgId', $MCatgId);
+     //          		$this->db2->where('cod.IPCd', $itemPortion);
+     //            break;
+     //            // menu Item based
+     //          case '5':
+     //            break;
+     //            // menu Item, portion based
+     //          case '10':
+     //          		$this->db2->where('cod.ItemId', $itemId);
+     //          		$this->db2->where('cod.IPCd', $itemPortion);
+     //            break;
+     //           // portion based
+     //          case '6':
+     //          		$this->db2->where('cod.IPCd', $itemPortion);
+     //            break;
+     //             // item sale, must try, new item  based
+     //          case '22':
+     //          case '23':
+     //          		$this->db2->where('cod.ItemSale', $itmSale);
+     //            break;
+     //            // item type based
+     //          case '4':
+     //          		$this->db2->where('cod.ItemTyp', $itemTyp);
+     //            break;
+     //            // itemtype, portion based
+     //            case '9':
+     //            	$this->db2->where('cod.ItemTyp', $itemTyp);
+     //            	$this->db2->where('cod.IPCd', $itemPortion);
+     //            break;
+     //        }
+
 		$whr = "(time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)";
 
 		return $this->db2->select("$scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank, cod.Disc_ItemId, $dis_name, cod.Qty, cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.DiscItemPcent, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, $mname, mii.KitCd, mii.PckCharge, m.TaxType, mii.PrepTime, m.DCd, mii.FID, mir.OrigRate as itmVal, mirr.OrigRate as disItmVal ")
