@@ -99,6 +99,15 @@
                                                     <input type="time" name="AltToTime" class="form-control form-control-sm" id="alt_to_time" <?php if(!empty($scheme['ToTime'])){?> value="<?= $scheme['ToTime']?>" <?php }?> />
                                                 </div>
 
+                                                <div class="form-group col-md-3 col-6">
+                                                    <label for=""><?= $this->lang->line('mode');?></label>
+                                                    <select name="Stat" class="form-control form-control-sm" id="Stat" required="">
+                                                        <option value=""><?= $this->lang->line('select');?></option>
+                                                        <option value="0" <?php if(($scheme['Stat'] == 0)){ echo 'selected'; } ?> ><?= $this->lang->line('active');?></option>
+                                                        <option value="1" <?php if(($scheme['Stat'] == 1)){ echo 'selected'; } ?>><?= $this->lang->line('inactive');?></option>
+                                                    </select>
+                                                </div>
+
                                                 <div class="col-md-3 col-6 billBased" style="display: none;">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('minimumBillAmount');?></label>

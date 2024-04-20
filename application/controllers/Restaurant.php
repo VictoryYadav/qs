@@ -657,6 +657,7 @@ class Restaurant extends CI_Controller {
             $CustOffers['MinBillAmt'] = $_POST['minbillamount'];
             $CustOffers['Disc_pcent'] = $_POST['discountpercent'];
             $CustOffers['Disc_Amt'] = $_POST['discountamount'];
+            $CustOffers['Stat'] = $_POST['Stat'];
 
             updateRecord('CustOffers',$CustOffers, array('SchCd' => $SchCd, 'EID' => $EID));
             if(!empty($_POST['description'])){
