@@ -346,22 +346,40 @@
         var cno = 0;
         var trow = 0;
         // Delete item from table
-        function deleteItem(event,trow, itemId) {
+        function deleteItem(event,trow, itemId, OrdNo) {
             // $(event).parent().parent().remove();
             var SchCd = $(`#SchCd_${trow}_${itemId}`).val();
             
             if(SchCd > 0){
                 if (confirm("Any offers related to this item will also get deleted.")) {
-                    $("#tableData .trow_"+trow).remove();
+                    // $("#tableData .trow_"+trow).remove();
+                    deleteTempItem(itemId, OrdNo);
                 }
                 return false;
             }else{
-                $("#tableData .trow_"+trow).remove();
+                // $("#tableData .trow_"+trow).remove();
+                deleteTempItem(itemId, OrdNo);
             }
         }
 
+        function deleteTempItem(ItemId, OrdNo){
+            $.post('<?= base_url('restaurant/delete_temp_kitchen') ?>',{ ItemId: ItemId, OrdNo:OrdNo },function(res){
+                if(res.status == 'success'){
+                    getTableData();
+                }else{
+                    alert(res.response);
+                }
+            });
+        }
+
         function getTableData(){
-            var TableNo = $('#table-id').val();
+            var TableNo = 0;
+            var orderType = $('#order-type').val();
+            if(orderType == 8){
+                TableNo = $('#table-id').val();
+            }else{
+                TableNo = orderType;
+            }
             $.post('<?= base_url('restaurant/get_temp_kitchen_data') ?>',{ TableNo:TableNo },function(res){
                 if(res.status == 'success'){
                   var data = res.response;
@@ -404,7 +422,7 @@
                             item_name = item_name +'-'+item.CustItemDesc;
                         }
 
-                        template += `<tr class="item-id trow_" data-id="${item.ItemId}" kitcd-id="${item.KitCd}" pckcharge ="${item.PckCharge}" Itm_Portion ="${item.Itm_Portion}" >
+                        template += `<tr class="item-id trow_${trow}" data-id="${item.ItemId}" kitcd-id="${item.KitCd}" pckcharge ="${item.PckCharge}" Itm_Portion ="${item.Itm_Portion}" >
                                     <td><a id="offerAnchor_${item.ItemId}""><span id="itemName_${trow}_${item.ItemId}">${item_name}</span></a></td>
                                     <td><select class="form-control form-control-sm item-portion" id="select_${trow}_${item.ItemId}" onchange="changePortion(${trow}, ${item.ItemId})" ${disabled}><option></option></select></td>
                                     <td style="width:50px;"><input type="text" class="form-control form-control-sm item-qty" min="1" value="${convertToUnicodeNo(item.Qty)}" onblur="calculateValue(this)" style="width:50px;" id="qty_${trow}_${item.ItemId}" ${readonly}></td>
@@ -414,7 +432,7 @@
                                     <td><input type="text" class="form-control form-control-sm item-remarks" style="width:100%;"></td>
                                     <td style=" text-align: center; ">
                                     ${customOfferBtn}
-                                    <button type="button" onclick="deleteItem(this, ${trow}, ${item.ItemId})" class="btn btn-sm btn-danger btn-rounded">
+                                    <button type="button" onclick="deleteItem(this, ${trow}, ${item.ItemId}, ${item.OrdNo})" class="btn btn-sm btn-danger btn-rounded">
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                     </button>
 
@@ -446,10 +464,16 @@
 
         function itemSlected_new(itemId, disItemId, itemName, origValue, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, Qty, tableRow, FID, ItemSale, OrdNo) {
 
-            var TableNo = $('#table-id').val();
+            var TableNo = 0;
             var CellNo = $('#phone').val();
-            var orderType = $('#order-type').val();
             var customerAddress = $('#cust-address').val();
+            var orderType = $('#order-type').val();
+
+            if(orderType == 8){
+                TableNo = $('#table-id').val();
+            }else{
+                TableNo = orderType;
+            }
 
             $.post('<?= base_url('restaurant/insert_temp_kitchen') ?>',{ ItemId:itemId, itemName:itemName, OrigRate:origValue, ItmRate:origValue, KitCd:itemKitCd,  ItemTyp:ItemTyp, PckCharge:PckCharge, Itm_Portion:Itm_Portion, TaxType:TaxType, PrepTime:PrepTime, DCd:DCd, CID:CID, MCatgId:MCatgId , TableNo:TableNo, CellNo:CellNo, orderType:orderType, FID:FID, Qty:Qty, SchCd:SchCd, SDetCd:SDetCd, OrdNo:OrdNo,customerAddress:customerAddress, ItemSale:ItemSale},function(res){
                 if(res.status == 'success'){

@@ -4818,6 +4818,25 @@ class Restaurant extends CI_Controller {
         }   
     }
 
+    public function delete_temp_kitchen(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            deleteRecord('tempKitchen', array('EID' => authuser()->EID, 'ItemId' => $_POST['ItemId'], 'OrdNo' => $_POST['OrdNo']));
+            
+            $status = "success";
+            $response = 'Item has been removed.';
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }   
+    }
+
     private function getSchemeOfferList($schcd, $sdetcd){
 
         $langId = $this->session->userdata('site_lang');
