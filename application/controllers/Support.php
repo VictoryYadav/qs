@@ -314,7 +314,7 @@ class Support extends CI_Controller {
                 
                 
                 $status = 'success';
-                $response = $CNo;
+                $response = array('EID' =>$CNo, 'CatgId' => $_POST['CatgId']);
             }
 
             header('Content-Type: application/json');

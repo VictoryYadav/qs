@@ -44,7 +44,9 @@
                 <li><a href="<?= base_url('restaurant/onaccount_sale_summary'); ?>">Onaccount Sale Summary</a></li>
             </ul>
         </li>
-        
+        <?php if( authuser()->mobile == '9029296666'){ ?>
+        <li><a href="<?= base_url('support/new_customer_create'); ?>">New Restaurant</a></li>
+        <?php } ?>
     </ul>
 </div>
 
