@@ -26,18 +26,12 @@
                                     <div class="card-body">
                                         <form method="post" id="tableForm">
                                             <input type="hidden" id="TId" name="TId" value="0">
+                                            <input type="hidden" name="TblTyp" id="TblTyp" value="7" >
                                             <div class="row">
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('tableNo'); ?></label>
                                                         <input type="text" class="form-control form-control-sm" name="TableNo" required="" id="TableNo" autocomplete="off">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-4 col-6">
-                                                    <div class="form-group">
-                                                        <label><?= $this->lang->line('tableType'); ?></label>
-                                                        <input type="text" class="form-control form-control-sm" name="TblTyp" required="" id="TblTyp" autocomplete="off" value="7" readonly="">
                                                     </div>
                                                 </div>
 
@@ -107,8 +101,6 @@
                                                 <tr >
                                                     <th>#</th>
                                                     <th><?= $this->lang->line('tableNo'); ?></th>
-                                                    <th><?= $this->lang->line('mergeNo'); ?></th>
-                                                    <th><?= $this->lang->line('tableType'); ?></th>
                                                     <th><?= $this->lang->line('capacity'); ?></th>
                                                     <th><?= $this->lang->line('section'); ?></th>
                                                     <th><?= $this->lang->line('cashier'); ?></th>
@@ -124,8 +116,6 @@
                                                     <tr>
                                                         <td><?= $i++; ?></td>
                                                         <td><?= $row['TableNo']; ?></td>
-                                                        <td><?= $row['MergeNo']; ?></td>
-                                                        <td>SitIn</td>
                                                         <td><?= $row['Capacity']; ?></td>
                                                         <td><?= $row['sectionName']; ?></td>
                                                         <td><?= $row['cashierName']; ?></td>
@@ -193,7 +183,7 @@
         
         $('#TId').val(tid);
         $('#TableNo').val(tableNo);
-        $('#TblTyp').val(TblTyp);
+        // $('#TblTyp').val(TblTyp);
         $('#Capacity').val(capacity);
         $('#SecId').val(SecId);
         $('#CCd').val(CCd);

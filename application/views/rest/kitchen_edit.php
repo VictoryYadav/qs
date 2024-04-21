@@ -133,7 +133,7 @@
         e.preventDefault();
 
         var data = $(this).serializeArray();
-        $.post('<?= base_url('restaurant/edit_kitchen') ?>',data,function(res){
+        $.post('<?= base_url('restaurant/kitchen') ?>',data,function(res){
             if(res.status == 'success'){
               $('#msgText').html(res.response);
             }else{
