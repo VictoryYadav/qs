@@ -145,7 +145,8 @@
         $.post('<?= base_url('restaurant/verifyOTP') ?>',data,function(res){
             if(res.status == 'success'){
               alert(res.response);
-              window.location = "<?php echo base_url('dashboard'); ?>";
+              window.location = res.response;
+              // "<?php echo base_url('dashboard'); ?>";
               return false;
               // location.reload();
             }else{

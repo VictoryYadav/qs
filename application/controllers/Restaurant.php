@@ -1156,7 +1156,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function change_password(){
-        $this->check_access();
+        // $this->check_access();
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -1222,8 +1222,13 @@ class Restaurant extends CI_Controller {
                 $this->rest->passwordUpdate($password);
 
                 $this->session->set_userdata('cur_password', $password);
-                $res = "Password has been updated.";
                 $status = 'success';
+                // $res = "Password has been updated.";
+                $res = base_url('dashboard');
+                $mItem = $this->db2->select('ItemId')->get_where('MenuItem', array('EID' => authuser()->EID))->row_array();
+                if(empty($mItem)){
+                    $res = base_url('restaurant/data_upload');
+                }
             }else{
                 $res = "OTP Doesn't Matched";
             }
@@ -7522,7 +7527,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function data_upload(){
-        $this->check_access();
+        // $this->check_access();
         
         $status = "error";
         $response = "Something went wrong! Try again later.";

@@ -242,6 +242,13 @@ class Support extends CI_Controller {
             $genDB->insert('EIDDet',$pData);
             $CNo = $genDB->insert_id();
 
+            // eid = cno
+            $folderPath = 'uploads/e'.$CNo;
+            if (!file_exists($folderPath)) {
+                // Create the directory
+                mkdir($folderPath, 0777, true);
+            }
+
             $response = "Restaurant Created.";
             if($CNo){
                 $dbName = $CNo.'e';
@@ -342,6 +349,7 @@ class Support extends CI_Controller {
                     $user['MobileNo'] = $EIDData['CellNo'];
                     $user['PEmail'] = $EIDData['Email'];
                     $user['UTyp'] = 9;
+                    $user['RestRole'] = 10;
                     $user['Passwd'] = 'eo1234';
                     // $user['DOB'] = date('Y-m-d', strtotime($EIDData['DOB']));
                     $user['Stat'] = 0;

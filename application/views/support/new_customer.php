@@ -30,7 +30,8 @@
                                                     Please login through the link and upload your restaurant data.
                                                 </p>
                                                 <div class="">
-                                                    <a href="" id="loginUrl">Login</a>
+                                                    <p id="signinurl" class="text-success"></p>
+                                                    <!-- <a href="" id="loginUrl">Login</a> -->
                                                 </div>
                                             </div>
                                         </div>
@@ -77,21 +78,21 @@
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
                                                     <label>E<?= $this->lang->line('category'); ?></label>
-                                                    <input type="text" name="ECatg" id="ECatg" class="form-control form-control-sm" >
+                                                    <input type="text" name="ECatg" id="ECatg" class="form-control form-control-sm" value="1">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
                                                     <label><?= $this->lang->line('chainNo'); ?></label>
-                                                    <input type="number" name="ChainId" id="ChainId" class="form-control form-control-sm" >
+                                                    <input type="number" name="ChainId" id="ChainId" class="form-control form-control-sm" value="0">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
                                                     <label><?= $this->lang->line('category'); ?></label>
-                                                    <input type="text" name="CatgId" id="CatgId" class="form-control form-control-sm" >
+                                                    <input type="text" name="CatgId" id="CatgId" class="form-control form-control-sm" value="1">
                                                 </div>
                                             </div>
 
@@ -147,14 +148,14 @@
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
                                                     <label><?= $this->lang->line('fromTime'); ?></label>
-                                                    <input type="time" name="StTime" id="StTime" class="form-control form-control-sm" >
+                                                    <input type="time" name="StTime" id="StTime" class="form-control form-control-sm" value="<?= date('H:i:s') ?>">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
                                                     <label><?= $this->lang->line('toTime'); ?></label>
-                                                    <input type="time" name="EndTime" id="EndTime" class="form-control form-control-sm" >
+                                                    <input type="time" name="EndTime" id="EndTime" class="form-control form-control-sm" value="<?= date('H:i:s') ?>">
                                                 </div>
                                             </div>
 
@@ -243,7 +244,8 @@
               $('#loadBlock').hide();
               $('#showBlock').show();
               
-              $('#loginUrl').attr("href", "<?= base_url('login?o='); ?>"+EID+"&c="+CatgId);
+              // $('#loginUrl').attr("href", "<?= base_url('login?o='); ?>"+EID+"&c="+CatgId);
+              $('#signinurl').html("<?= base_url('login?o='); ?>"+EID+"&c="+CatgId);
               document.getElementById("customerForm").reset();
               $('#btnBlock').show();
               // location.reload();
