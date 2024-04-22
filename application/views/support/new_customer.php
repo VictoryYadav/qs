@@ -184,6 +184,54 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table id="restTBL" class="table table-bordered topics">
+                                                <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th><?= $this->lang->line('restaurant'); ?></th>
+                                                    <th><?= $this->lang->line('mobile'); ?></th>
+                                                    <th><?= $this->lang->line('email'); ?></th>
+                                                    <th><?= $this->lang->line('link'); ?></th>
+                                                </tr>
+                                                </thead>
+            
+                                                <tbody>
+                                                    <?php
+                                                    if(!empty($rests)){
+                                                        $i=1;
+                                                        foreach ($rests as $key) {
+                                                            $url = base_url().'login?o='.$key['CNo'].'&c='.$key['CatgId'];
+                                                     ?>
+                                                    
+                                                <tr>
+                                                    <td><?php echo $i++; ?></td>
+                                                    <td><?php echo $key['Name']; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo $key['CellNo']; ?>
+                                                        </td>
+                                                    <td><?php echo $key['Email']; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?= $url; ?>
+                                                    </td>
+                                                </tr>
+                                                <?php }
+                                                 }
+                                                ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         
                     </div> <!-- container-fluid -->
                 </div>
@@ -212,8 +260,7 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        
-        
+        $('#restTBL').DataTable();
     });
 
     $('#customerForm').on('submit', function(e){

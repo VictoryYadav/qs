@@ -226,6 +226,7 @@ class Support extends CI_Controller {
     public function new_customer_create(){
         $status = "error";
         $response = "Something went wrong! Try again later.";
+        $genDB = $this->load->database('GenTableData', TRUE);
         if($this->input->method(true)=='POST'){
 
             // $status = 'success';
@@ -238,7 +239,6 @@ class Support extends CI_Controller {
             $pData['EndTime'] = date('H:i:s', strtotime($pData['EndTime']));
             $pData['Stat'] = 1;
             unset($pData['DOB']);
-            $genDB = $this->load->database('GenTableData', TRUE);
             $genDB->insert('EIDDet',$pData);
             $CNo = $genDB->insert_id();
 
@@ -332,6 +332,7 @@ class Support extends CI_Controller {
              die; 
         }
         $data['title'] = 'New Customer';
+        $data['rests'] = $genDB->select('CNo, EID, Name, CellNo, Email, CatgId')->get('EIDDet')->result_array();
         $this->load->view('support/new_customer', $data); 
     }
 
