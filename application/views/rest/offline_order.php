@@ -1074,7 +1074,7 @@
                 var thirdPartyRef = $("#3rd-party-refNo").val();
                 var customerAddress = $("#cust-address").val();
                 var customerPhone = $("#phone").val();
-                var CCd = 0;
+                var CCd = $("#ccd").val();
                 var totalValue = $("#total-value").val();
                 var itemCount = $("tr").length;
                 var formFill = true;
@@ -1113,7 +1113,6 @@
                     }
 
                 } else if (orderType == 110) {
-                    CCd = $("#ccd").val();
                     if (customerPhone == "") {
                         formFill = false;
                         alert("Enter Customer Phone Number");
