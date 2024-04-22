@@ -1408,7 +1408,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function edit_stock($TransId){
-        $this->check_access();
+        // $this->check_access();
 
         if($this->input->method(true)=='POST'){
 
@@ -1446,14 +1446,14 @@ class Restaurant extends CI_Controller {
     }
 
     public function stock_report(){
-        $this->check_access();
+        // $this->check_access();
         $data['title'] = $this->lang->line('stockReport');
         $data['report'] = $this->rest->getStockReport();
         $this->load->view('rest/stock_report',$data);
     }
 
     public function stock_consumption(){
-        $this->check_access();
+        // $this->check_access();
         $data['title'] = $this->lang->line('stockConsumption');
         $data['report'] = $this->rest->getStockConsumption();
         $this->load->view('rest/stock_consumptions',$data);   
@@ -1461,7 +1461,7 @@ class Restaurant extends CI_Controller {
 
 // this is not completed
     public function itemstockreport(){
-        $this->check_access();
+        // $this->check_access();
         $data['CheckOTP'] = $this->session->userdata('DeliveryOTP');
         $data['EID'] = authuser()->EID;
         $data['EType'] = $this->session->userdata('EType');
@@ -7665,8 +7665,8 @@ class Restaurant extends CI_Controller {
                 $this->db2->query("INSERT INTO EatCuisine (CID, Name1, EID) SELECT DISTINCT c.CID, c.Name1, $EID From Cuisines c, TempMenuItem t where c.Name1 = t.Cuisine");
 
                 $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, 0 From Cuisines c, TempMenuItem t, FoodType f where c.Name1 = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
-
-                $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, ItemNm1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, t.DayNo, t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink From TempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
+                // t.DayNo = 
+                $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, ItemNm1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, IFNULL((SELECT DayNo FROM WeekDays wd where wd.Name1 = t.DayNo),8), t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink From TempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
 
                 $this->db2->query("INSERT INTO MenuItemRates (EID, SecId, ItemId, Itm_Portion, ItmRate)  SELECT $EID,IFNULL((SELECT es.SecId From Eat_Sections es where es.Name1 = t.Section),1),  i.ItemId, ip.IPCd, t.Rate From TempMenuItem t, ItemPortions ip, MenuItem i where ip.Name1=t.Itm_Portion and i.ItemNm1=t.ItemNm");
                 $status = 'success';
