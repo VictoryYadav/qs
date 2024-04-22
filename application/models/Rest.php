@@ -1971,21 +1971,18 @@ class Rest extends CI_Model{
 		$EID = authuser()->EID;
 		$res = array();
 
-		$tempKit =  $this->db2->select("*")
+		$tempKit =  $this->db2->select("MCNo, CNo, ItemId, Itm_Portion, CellNo, OrdNo, CustItemDesc, KitCd, PckCharge, Qty, ItmRate, OrigRate, TaxType, ItemSale, custAddr, ItemTyp, DCd, SchCd, SDetCd, CustItem, CID, MCatgId, FID, itemName, PrepTime, CustRmks")
 					->order_by('OrdNo', 'DESC')
 					->get_where('tempKitchen', 
 												array('EID' => $EID, 
 													  'TableNo' => $TableNo,
 													  'Stat' => 0))
 					->result_array();
-		if(!empty($tempKit)){
-			$res = $tempKit;
-		}else{
-			
-			$langId = $this->session->userdata('site_lang');
-            $itemName = "mi.ItemNm$langId as itemName";
 
-			$res = $this->db2->select("k.MCNo, km.CNo, k.ItemId, k.Itm_Portion, k.CellNo, k.OrdNo, k.CustItemDesc, k.KitCd, k.PckCharge, k.Qty, kItmRate, k.OrigRate, k.TaxType, mi.ItemSale, km.custAddr, k.ItemTyp, k.DCd, k.SchCd, k.SDetCd, k.CustItem, mi.CID, mi.MCatgId, mi.FID, $itemName, mi.PrepTime")
+		$langId = $this->session->userdata('site_lang');
+        $itemName = "mi.ItemNm$langId as itemName";
+
+		$kitDt = $this->db2->select("k.MCNo, km.CNo, k.ItemId, k.Itm_Portion, k.CellNo, k.OrdNo, k.CustItemDesc, k.KitCd, k.PckCharge, k.Qty, k.ItmRate, k.OrigRate, k.TaxType, k.CustRmks, mi.ItemSale, km.custAddr, k.ItemTyp, k.DCd, k.SchCd, k.SDetCd, k.CustItem, mi.CID, mi.MCatgId, mi.FID, $itemName, mi.PrepTime")
 					->order_by('k.OrdNo', 'DESC')
 					->join('KitchenMain km', 'km.CNo = k.CNo')
 					->join('MenuItem mi', 'mi.ItemId = k.ItemId')
@@ -1997,7 +1994,19 @@ class Rest extends CI_Model{
 													  'k.Stat' => 3,
 													  'k.BillStat' => 0))
 					->result_array();
+
+		if(!empty($tempKit)){
+			$res = $tempKit;
 		}
+
+		if(!empty($kitDt)){
+			$res = $kitDt;
+		}
+
+		if(!empty($kitDt) && !empty($tempKit)){
+			$res = array_merge($kitDt, $tempKit);
+		}
+
 		return $res;
 	}
 

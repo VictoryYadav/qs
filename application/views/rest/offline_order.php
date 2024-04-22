@@ -390,22 +390,16 @@
                     var readonly = ``;
                     var ch = ``;
                     var orderType = $('#order-type').val();
+
+                    cno = data[0]['CNo'];
                     $('#phone').val(data[0]['CellNo']);
                     $('#cust-address').val(data[0]['custAddr']);
 
                     data.forEach((item, index) => {
                         trow++;
                         
-                        if(orderType != 8){
-                            ch = 'checked disabled';
-                        }
-                        
                         getPortionLists(item.ItemId, trow, item.Itm_Portion);
                         
-                        if(item.SchCd > 0){
-                            readonly = 'readonly';
-                            disabled = 'disabled';
-                        }
                         if(item.SchCd < 1){
                             checkItemOffersNew(item.ItemId, item.ItemTyp, item.CID, item.MCatgId, trow, item.OrdNo, item.Itm_Portion, item.ItemSale);
                         }
@@ -422,7 +416,42 @@
                             item_name = item_name +'-'+item.CustItemDesc;
                         }
 
-                        template += `<tr class="item-id trow_${trow}" data-id="${item.ItemId}" kitcd-id="${item.KitCd}" pckcharge ="${item.PckCharge}" Itm_Portion ="${item.Itm_Portion}" >
+                        if(item.CNo > 0){
+                            readonly = 'readonly';
+                            disabled = 'disabled';
+                             if(orderType != 8){
+                                ch = 'checked disabled';
+                            }else{
+                                ch = 'disabled';
+                            }   
+                            template += `<tr >
+                                    <td>${item_name}</td>
+                                    <td><select class="form-control form-control-sm item-portion" id="select_${trow}_${item.ItemId}" onchange="changePortion(${trow}, ${item.ItemId})" ${disabled}><option></option></select></td>
+                                    <td style="width:50px;"><input type="text" class="form-control form-control-sm item-qty" min="1" value="${convertToUnicodeNo(item.Qty)}" onblur="calculateValue(this)" style="width:50px;" id="qty_${trow}_${item.ItemId}" ${readonly}></td>
+                                    <td class="item-rate" id="rate_${trow}_${item.ItemId}">${convertToUnicodeNo(item.ItmRate)}</td>
+                                    <td class="item-value" id="value_${trow}_${item.ItemId}">${convertToUnicodeNo(item.ItmRate * item.Qty)}</td>
+                                    <td><input type="checkbox" value="1" class="is_take_away" ${ch}></td>
+                                    <td>${item.CustRmks}</td>
+                                    <td style=" text-align: center; ">
+                                    
+                                    </td>
+                                </tr>`;    
+                        }else{
+                            if(item.SchCd > 0){
+                                readonly = 'readonly';
+                                disabled = 'disabled';
+                            }else{
+                                readonly = '';
+                                disabled = '';
+                            }
+
+                            if(orderType != 8){
+                                ch = 'checked disabled';
+                            }else{
+                                ch = '';
+                            }
+
+                            template += `<tr class="item-id trow_${trow}" data-id="${item.ItemId}" kitcd-id="${item.KitCd}" pckcharge ="${item.PckCharge}" Itm_Portion ="${item.Itm_Portion}" >
                                     <td><a id="offerAnchor_${item.ItemId}""><span id="itemName_${trow}_${item.ItemId}">${item_name}</span></a></td>
                                     <td><select class="form-control form-control-sm item-portion" id="select_${trow}_${item.ItemId}" onchange="changePortion(${trow}, ${item.ItemId})" ${disabled}><option></option></select></td>
                                     <td style="width:50px;"><input type="text" class="form-control form-control-sm item-qty" min="1" value="${convertToUnicodeNo(item.Qty)}" onblur="calculateValue(this)" style="width:50px;" id="qty_${trow}_${item.ItemId}" ${readonly}></td>
@@ -446,7 +475,10 @@
                                     <input type="hidden" value="${item.CustItemDesc}" class="CustItemDesc" id="CustItemDesc_${trow}_${item.ItemId}">
                                     
                                     </td>
-                                </tr>`;
+                                </tr>`; 
+                        }
+
+                        
 
                                 // calculateValue(this);
                     });
