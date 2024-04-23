@@ -25,7 +25,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                      Note : <span class="text-danger">After file upload setup menu </span>
-                                     <a href="<?= base_url('uploads/common/menuItem_temp.csv') ?>" class="btn btn-sm btn-success" download>Format Download</a>
+                                     <a href="<?= base_url('uploads/common/menuItem_temp.csv') ?>" class="btn btn-sm btn-success" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="items_form">
                                             <input type="hidden" name="type" value="items">
                                             <div class="row">

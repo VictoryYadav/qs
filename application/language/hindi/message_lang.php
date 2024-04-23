@@ -394,3 +394,5 @@ $lang['latitude']			= 'लेटिटूट';
 $lang['longitude']			= 'लौंगीटूट';
 $lang['details']			= 'डिटेल्स';
 $lang['loyalty']			= 'लॉयल्टी';
+$lang['format']				= 'फॉर्मेट';
+$lang['download']			= 'डाउनलोड';

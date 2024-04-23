@@ -395,6 +395,8 @@ $lang['latitude']			= 'Latitude';
 $lang['longitude']			= 'Longitude';
 $lang['details']			= 'Details';
 $lang['loyalty']			= 'Loyalty';
+$lang['format']				= 'Format';
+$lang['download']			= 'Download';
 
 
 

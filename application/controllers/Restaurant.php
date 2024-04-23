@@ -6908,6 +6908,162 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/schemeCategory', $data);
     }
 
+    public function menu_item_rates(){
+        // $this->check_access();
+        $EID = authuser()->EID;
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            switch ($_POST['type']) {
+                case 'rates_file':
+                        $folderPath = 'uploads/e'.$EID.'/csv';
+                        if (!file_exists($folderPath)) {
+                            // Create the directory
+                            mkdir($folderPath, 0777, true);
+                        }
+                        // remove all files inside this folder uploads/qrcode/
+                        $filesPath = glob($folderPath.'/*'); // get all file names
+                        foreach($filesPath as $file){ // iterate files
+                          if(is_file($file)) {
+                            unlink($file); // delete file
+                          }
+                        }  
+                        // end remove all files inside folder
+                        $flag = 0;
+                        if(isset($_FILES['itmRates']['name']) && !empty($_FILES['itmRates']['name'])){ 
+                        $files = $_FILES['itmRates'];
+                        $allowed = array('csv');
+                        $filename_c = $_FILES['itmRates']['name'];
+                        $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                        if (!in_array($ext, $allowed)) {
+                            $flag = 1;
+                            $this->session->set_flashdata('error','Support only CSV format!');
+                        }
+                        // less than 1mb size upload
+                        if($files['size'] > 1048576){
+                            $flag = 1;
+                            $this->session->set_flashdata('error','File upload less than 1MB!');   
+                        }
+                        $_FILES['itmRates']['name']= $files['name'];
+                        $_FILES['itmRates']['type']= $files['type'];
+                        $_FILES['itmRates']['tmp_name']= $files['tmp_name'];
+                        $_FILES['itmRates']['error']= $files['error'];
+                        $_FILES['itmRates']['size']= $files['size'];
+                        $file = $files['name'];
+
+                        if($flag == 0){
+                            $res = do_upload('itmRates',$file,$folderPath,'*');
+                            if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
+
+                                $ratesData = [];
+                                $temp = [];
+                                $count = 1;
+                                $checker = 0;
+
+                                while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
+                                    // echo "<pre>";
+                                    // print_r($csv_data);
+                                    // die;
+                                    if($csv_data[0] !='RestName'){
+                                        $checker = 1;
+                                        $temp['EID'] = $this->checkEatary($csv_data[0]);
+
+                                        if($temp['EID'] < 1){
+                                          $response = $csv_data[0]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $temp['ItemId'] = $this->getItemId($temp['EID'], $csv_data[1]);
+
+                                        if($temp['ItemId'] < 1){
+                                          $response = $csv_data[1]. " Not Found in row no: $count";
+                                          $checker = 0;
+                                        }
+
+                                        $temp['SecId'] = $this->checkSection($csv_data[2]);
+
+                                        $temp['Itm_Portion'] =$this->checkPortion($csv_data[3]);
+
+                                        $temp['ItmRate']    = $csv_data[4];
+                                        $temp['OrigRate']   = 0;
+                                        $temp['ChainId']    = 0;
+
+                                        if($checker == 0){
+                                            $ratesData = [];
+                                            header('Content-Type: application/json');
+                                            echo json_encode(array(
+                                                'status' => $status,
+                                                'response' => $response
+                                              ));
+                                             die; 
+                                        }
+                                        $ratesData[] = $temp;
+                                    }
+                                }
+
+                                if(!empty($ratesData)){
+                                    $this->db2->insert_batch('MenuItemRates', $ratesData);
+                                    $status = 'success';
+                                    $response = 'Data Inserted.';
+                                }
+
+                                fclose($open);
+                            }
+                        }
+                      }
+                    break;
+                
+                case 'get':
+                    $status = 'success';
+                    $response = $this->rest->getItemRatesByItemId($_POST['ItemId']);
+                    break;
+                case 'update':
+                    $status = 'success';
+                    
+                    for ($i=0; $i <sizeof($_POST['SecId']) ; $i++) { 
+                        updateRecord('MenuItemRates', array('ItmRate'=> $_POST['itemRate'][$i]), array('EID' => $EID, 'ItemId' => $_POST['ItemId'], 'SecId' => $_POST['SecId'][$i], 'Itm_Portion' => $_POST['Itm_Portion'][$i]));
+                    }
+                    $response = 'Rate has been updated.';
+                    break;
+            }
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "KitName$langId";
+
+            $updateData[$lname] = $_POST['kitchen'];
+            $updateData['Stat'] = $_POST['Stat'];
+
+            if($_POST['KitCd'] > 0){
+                updateRecord('Eat_Kit', $updateData, array('KitCd' => $_POST['KitCd']));
+                $response = 'Updated Records'; 
+            }else{
+                unset($updateData['KitCd']);
+                $updateData['EID'] = authuser()->EID;
+                insertRecord('Eat_Kit', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = 'Menu Item Rates';
+        $data['itemList'] = $this->rest->getAllItemsList();
+        $this->load->view('rest/item_rates', $data);    
+    }
+
     public function recommendation(){
         $this->check_access();
         $status = "error";

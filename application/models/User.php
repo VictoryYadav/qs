@@ -209,8 +209,8 @@ class User extends CI_Model{
 	}
 
 	public function generate_otp($mobile, $page){
-		$otp = rand(9999,1000);
-		// $otp = 1212;
+		// $otp = rand(9999,1000);
+		$otp = 1212;
         $this->session->set_userdata('cust_otp', $otp);
         // $this->session->set_userdata('cust_otp', '1212');
         $otpData['mobileNo'] = $mobile;

@@ -949,7 +949,7 @@ class Rest extends CI_Model{
 
          return $this->db2->select("k.ItemId, k.MCNo, $lname,k.CustItemDesc,k.CustRmks, $ipName, sum(k.Qty) Qty, k.TableNo,k.MergeNo, k.KOTNo, k.FKOTNo,k.KitCd, $KitName, k.UKOTNo,k.LstModDt,k.TA,k.EDT, k.OType")
         					->order_by('k.FKOTNo, m.ItemNm1, ek.KitName1, k.UKOTNo, k.FKOTNo', 'ASC')
-        					->group_by('k.ItemId, ek.KitName1,k.Itm_Portion')
+        					->group_by('k.ItemId, k.FKOTNo, ek.KitName1,k.Itm_Portion')
          					->join('MenuItem m','m.ItemId = k.ItemId','inner')
          					->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
          					->join('Eat_Kit ek', 'ek.KitCd=k.KitCd', 'inner')
@@ -959,7 +959,7 @@ class Rest extends CI_Model{
         											'k.EID' => $EID,
         											'k.MCNo' => $MCNo,
         											'k.MergeNo' => $mergeNo,
-        											// 'k.FKOTNo' => $FKOTNo,
+        											'k.FKOTNo' => $FKOTNo,
         											'k.Stat' => $stat)
         								)
         					->result_array();
@@ -1385,6 +1385,18 @@ class Rest extends CI_Model{
 							'mir.EID' => $EID,
 							'et.TableNo' => $data['TableNo'])
 								)
+						->result_array();
+	}
+
+	public function getItemRatesByItemId($ItemId){
+		$langId = $this->session->userdata('site_lang');
+        $ipName = "ip.Name$langId as Portion";
+        $sectName = "es.Name$langId as Section";
+		
+		return $this->db2->select("mir.*, $ipName, $sectName")
+						->join('ItemPortions ip', 'ip.IPCd = mir.Itm_Portion', 'inner')
+						->join('Eat_Sections es', 'es.SecId = mir.SecId', 'inner')
+						->get_where('MenuItemRates mir', array('mir.EID' => authuser()->EID, 'mir.ItemId' => $ItemId))
 						->result_array();
 	}
 

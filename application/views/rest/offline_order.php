@@ -92,7 +92,13 @@
                                                 <input type="text" id="total-valueView" readonly="" value="0" class="form-control form-control-sm">
                                             </div>
                                         </div>
-
+                                            <!-- vijay -->
+                                        <!-- <div class="row">
+                                            <div class="col-md-6">
+                                                <input type="text" id="search-item" class="form-control" placeholder="Enter the item Name" style="border-radius: 50px;z-index: 5;">
+                                                <div id="item-search-result" style=";z-index: 999;position: absolute;overflow: scroll;height: 170px;background: #fff;"></div>
+                                            </div>
+                                        </div> -->
                                         <div class="row">
                                             <div class="col-md-7 form-group col-6">
                                                 
@@ -464,7 +470,7 @@
                                     <button type="button" onclick="deleteItem(this, ${trow}, ${item.ItemId}, ${item.OrdNo})" class="btn btn-sm btn-danger btn-rounded">
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                     </button>
-
+                                    <input type="hidden" value="${item.ItmRate}" class="itemRates" >
                                     <input type="hidden" value="${item.OrigRate}" class="origRates" >
                                     <input type="hidden" value="${item.TaxType}" class="taxtype">
                                     <input type="hidden" value="${item.PrepTime}" class="preptime">
@@ -1016,7 +1022,7 @@
                         success: (response) => {
                             console.log(response);
                             if (response.status) {
-                                var template = `<ul>`;
+                                var template = `<ul style="list-style:none;">`;
                                 response.items.forEach((item) => {
                                     var printItemName = '';
                                     var IMcCd = "<?php echo $this->session->userdata('IMcCdOpt'); ?>";
@@ -1086,6 +1092,7 @@
                 var itemRemarks = [];
                 var item_value = [];
                 var item_rate = [];
+                var itemRate = [];
                 var origRate = [];
                 var pckValue = [];
                 var take_away = [];
@@ -1185,6 +1192,10 @@
                         item_value.push( convertDigitToEnglish($(this).text()) );
                     });
 
+                    $(".itemRates").each(function(index, el) {
+                        itemRate.push( convertDigitToEnglish($(this).val()) );
+                    });
+
                     $(".origRates").each(function(index, el) {
                         origRate.push( convertDigitToEnglish($(this).val()) );
                     });
@@ -1230,7 +1241,7 @@
                             itemKitCds: itemKitCds,
                             itemQty: itemQty,
                             itemRemarks: itemRemarks,
-                            ItmRates: item_rate,
+                            ItmRates: itemRate,
                             origRates: origRate,
                             // origRates: item_value,
                             Itm_Portion:Itm_Portion,

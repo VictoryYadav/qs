@@ -82,7 +82,7 @@ class Rcheck extends CI_Controller {
         $my_db = $this->session->userdata('my_db');
         $db2 = $this->load->database($my_db, TRUE);
 
-        $orgCheck = $db2->query("SELECT e.CatgID,e.ChainId, e.ONo, c.StTime, c.CloseTime, c.EType, c.CustOrgs, c.MultiKitchen, c.MultiScan, c.Kitchen, c.AutoAllot, c.AutoDeliver, c.SchPop, c.SchType, c.ServChrg, c.Tips, c.EDT, c.TableReservation ,c.Deliver, c.CustAssist, c.TableAcceptReqd, c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge, c.Charity, c.Ing_Cals, c.NV,c.WelcomeMsg,c.Ent,c.MultiLingual,c.MultiPayment,c.pymtENV, c.CustLoyalty FROM Config c, Eatary e where e.EID = $EID and e.EID = c.EID")->row_array();
+        $orgCheck = $db2->query("SELECT e.CatgID,e.ChainId, e.ONo, e.Name, c.StTime, c.CloseTime, c.EType, c.CustOrgs, c.MultiKitchen, c.MultiScan, c.Kitchen, c.AutoAllot, c.AutoDeliver, c.SchPop, c.SchType, c.ServChrg, c.Tips, c.EDT, c.TableReservation ,c.Deliver, c.CustAssist, c.TableAcceptReqd, c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge, c.Charity, c.Ing_Cals, c.NV,c.WelcomeMsg,c.Ent,c.MultiLingual,c.MultiPayment,c.pymtENV, c.CustLoyalty FROM Config c, Eatary e where e.EID = $EID and e.EID = c.EID")->row_array();
         $dd = $_REQUEST['t'];
         $tblStr = "'$dd'";
         $session_data = array(
@@ -94,6 +94,7 @@ class Rcheck extends CI_Controller {
         );
         $this->session->set_userdata('logged_in', $session_data);
 
+        $this->session->set_userdata('restName', $orgCheck['Name']);
         $this->session->set_userdata('ChainId', $orgCheck['ChainId']);
         $this->session->set_userdata('ONo', $orgCheck['ONo']);
         $this->session->set_userdata('EType', $orgCheck['EType']);
