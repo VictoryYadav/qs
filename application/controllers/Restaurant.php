@@ -2799,9 +2799,11 @@ class Restaurant extends CI_Controller {
             $CustItem = !empty($_POST['CustItem'])?$_POST['CustItem']:0;
             $CustItemDesc = !empty($_POST['CustItemDesc'])?$_POST['CustItemDesc']:'Std';
             
+            $CustId = createCustUser($phone);
+            
             if ($CNo == 0) {
                 if(!empty($phone)){
-                    $CustId = createCustUser($phone);
+                    // $CustId = createCustUser($phone);
 
                     $this->db2->set('visit', 'visit+1', FALSE);
                     $this->db2->set('DelAddress', $customerAddress);

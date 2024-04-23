@@ -64,7 +64,7 @@
                                                 <div class="col-md-5 col-5">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('item'); ?></label>
-                                                        <select class="form-control form-control-sm select2 custom-select" name="ItemId" id="ItemId">
+                                                        <select class="form-control form-control-sm select2 custom-select" name="ItemId" id="ItemId" required="">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php 
                                                             foreach ($itemList as $item) {
