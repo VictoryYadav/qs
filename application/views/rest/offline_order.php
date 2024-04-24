@@ -100,13 +100,10 @@
                                             <!-- vijay -->
                                         <div class="row mb-2">
                                             <div class="col-md-6">
-                                                <input type="text" id="search-item" class="form-control" placeholder="Search Item Name" style="border-radius: 50px;z-index: 5;" autocomplete="off">
+                                                <input type="text" id="search-item" class="form-control form-control-sm" placeholder="Search Item Name" style="border-radius: 50px;z-index: 5;" autocomplete="off">
                                                 <div id="item-search-result"></div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-7 form-group col-6">
-                                                
+                                            <div class="col-md-6">
                                                 <!-- <button class="btn btn-primary btn-sm" title="Kitchen Order Ticket" onclick="searchKOT()"><?= $this->lang->line('kot'); ?> 
                                                     <i class="fa fa-plus"></i>
                                                 </button> -->
@@ -119,8 +116,8 @@
                                                 <button class="btn btn-info btn-sm send-to-kitchen" data_type="kot_bill" ><?= $this->lang->line('kot'); ?> + <?= $this->lang->line('bill'); ?></button>
 
                                                 <?php } ?>
+                                                
                                             </div>
-                                            
                                         </div>
 
                                         <div class="row">
@@ -1305,7 +1302,7 @@
                                     return false;
                                 }else if (data_type == 'kot_bill') {
                                     alert("<?= $this->lang->line('orderBillledSuccessfully'); ?>");
-                                    window.location = "<?= base_url('restaurant/kot_billing/'); ?>"+response.data.billId+'/'+response.data.MCNo+'/'+response.data.MergeNo+'/'+response.data.FKOTNo;
+                                    window.location = "<?= base_url('restaurant/kot_billing/'); ?>"+response.data.billId+'/'+response.data.MCNo+'/'+response.data.MergeNo+'/'+response.data.FKOTNo+'/'+response.data.KOTNo;
                                      
                                     return false;
                                 }else{

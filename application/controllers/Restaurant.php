@@ -2867,7 +2867,7 @@ class Restaurant extends CI_Controller {
                     }
                     if ($oldKitCd != $itemKitCds[$i]) {
                         // $itemKitCd = $itemKitCds[$i];
-                        $getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID=$EID AND KitCd = $itemKitCd")->result_array();
+                        $getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID=$EID AND KitCd = $itemKitCd and TableNo = $tableNo and Stat = 3")->result_array();
                         $fKotNo = $getFKOT[0]['FKOTNO'];
                         $fKotNo = $fKotNo + 1;
                         $fkotArray[$i] = $fKotNo;
@@ -2955,7 +2955,7 @@ class Restaurant extends CI_Controller {
             // end delete from temp kitchen
 
             $url = base_url('restaurant/kot_print/').$CNo.'/'.$tableNo.'/'.$fKotNo.'/'.$kotNo;
-            $dArray = array('MCNo' => $CNo, 'MergeNo' => $tableNo,'FKOTNo' => $fKotNo,'sitinKOTPrint' => $this->session->userdata('sitinKOTPrint'), 'url' => $url);
+            $dArray = array('MCNo' => $CNo, 'MergeNo' => $tableNo,'FKOTNo' => $fKotNo,'KOTNo' => $kotNo,'sitinKOTPrint' => $this->session->userdata('sitinKOTPrint'), 'url' => $url);
 
             if ($data_type == 'bill' || $data_type == 'kot_bill') {
 
@@ -2963,7 +2963,7 @@ class Restaurant extends CI_Controller {
                 $lname = "m.ItemNm$langId";
                 $ipName = "ip.Name$langId as Portions";
 
-                $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt, km.MCNo, km.MergeNo, k.FKOTNo,  (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotItemDisc,(SELECT sum(k1.PckCharge*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotPckCharge, $ipName, km.CNo,km.MergeNo, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.CustId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.MCNo AND km.MCNo IN (Select km1.MCNo from KitchenMain km1 where km1.MergeNo=$MergeNo group by km1.MergeNo) group by km.MCNo, k.ItemId, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by k.TaxType, m.ItemNm1 Asc")->result_array();
+                $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt, km.MCNo, km.MergeNo, k.FKOTNo, k.KOTNo, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotItemDisc,(SELECT sum(k1.PckCharge*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotPckCharge, $ipName, km.CNo,km.MergeNo, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.CustId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.MCNo AND km.MCNo IN (Select km1.MCNo from KitchenMain km1 where km1.MergeNo=$MergeNo group by km1.MergeNo) group by km.MCNo, k.ItemId, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by k.TaxType, m.ItemNm1 Asc")->result_array();
 
                 $taxDataArray = array();
 
@@ -3023,7 +3023,7 @@ class Restaurant extends CI_Controller {
                         $response = [
                             "status" => 1,
                             "msg" => "Bill Created.",
-                            "data" => array('billId' => $res['billId'], 'MergeNo' => $kitcheData[0]['MergeNo'], 'MCNo' => $kitcheData[0]['MCNo'], 'FKOTNo' => $kitcheData[0]['FKOTNo'])
+                            "data" => array('billId' => $res['billId'], 'MergeNo' => $kitcheData[0]['MergeNo'], 'MCNo' => $kitcheData[0]['MCNo'], 'FKOTNo' => $kitcheData[0]['FKOTNo'], 'KOTNo' => $kitcheData[0]['KOTNo'])
                         ];      
                     }else{
                         $response = [
@@ -3818,10 +3818,10 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/billing', $data);
     }
 // 8/19/5
-    public function kot_billing($billId, $MCNo, $MergeNo, $FKOTNo){
+    public function kot_billing($billId, $MCNo, $MergeNo, $FKOTNo, $KOTNo){
 
         $data['title'] = 'KOT & Billking';
-        $kotList = $this->rest->getKotList($MCNo, $MergeNo, $FKOTNo);
+        $kotList = $this->rest->getKotList($MCNo, $MergeNo, $FKOTNo, $KOTNo);
         $group_arr = [];
         foreach ($kotList as $key ) {
             $kot = $key['KitCd'];

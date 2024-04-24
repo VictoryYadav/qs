@@ -1225,7 +1225,7 @@ getTableView();
                             if (item.KOTPrintNo == 1) {
  
                                 if(new_head == 1){
-                                    template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>${kotNo}: ${convertToUnicodeNo(item.FKOTNo)}</b><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo}, '${item.MergeNo}',${item.FKOTNo}, ${item.KOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
+                                    template += `<tr style="background-color: #a1aff3;"><td colspan="3"><b>${kotNo}: ${convertToUnicodeNo(item.KOTNo)}-${convertToUnicodeNo(item.FKOTNo)}</b><b> <span style="text-align: right;margin-left: 40px;" onclick="getKitchenData(${item.MCNo}, '${item.MergeNo}',${item.FKOTNo}, ${item.KOTNo})"><i class="fa fa-print" aria-hidden="true" style="cursor: pointer;font-size: 18px;"></i></span></b></td>
                                     </tr>`;
                                     new_head = 0;
                                 }

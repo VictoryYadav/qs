@@ -949,7 +949,7 @@ class Rest extends CI_Model{
 
          return $this->db2->select("k.ItemId, k.MCNo, $lname,k.CustItemDesc,k.CustRmks, $ipName, sum(k.Qty) Qty, k.TableNo,k.MergeNo, k.KOTNo, k.FKOTNo,k.KitCd, $KitName, k.UKOTNo,k.LstModDt,k.TA,k.EDT, k.OType")
         					->order_by('k.FKOTNo, m.ItemNm1, ek.KitName1, k.UKOTNo, k.FKOTNo', 'ASC')
-        					->group_by('k.ItemId, k.FKOTNo, ek.KitName1,k.Itm_Portion')
+        					->group_by('ek.KitName1, k.ItemId, k.KOTNo, k.FKOTNo, k.Itm_Portion')
          					->join('MenuItem m','m.ItemId = k.ItemId','inner')
          					->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
          					->join('Eat_Kit ek', 'ek.KitCd=k.KitCd', 'inner')
@@ -959,7 +959,7 @@ class Rest extends CI_Model{
         											'k.EID' => $EID,
         											'k.MCNo' => $MCNo,
         											'k.MergeNo' => $mergeNo,
-        											'k.FKOTNo' => $FKOTNo,
+        											'k.KOTNo' => $KOTNo,
         											'k.Stat' => $stat)
         								)
         					->result_array();

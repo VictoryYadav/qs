@@ -8,8 +8,12 @@
   <title><?= $title; ?> | Eat-Out</title>
   <link href="<?= base_url(); ?>theme/images/Eat-Out-Icon.png" rel="shortcut icon">
   <style>
+
 @media print {
-    .page-break { display: block; page-break-before: always; }
+  .cutPrint {
+    /*break-inside: avoid;*/
+    page-break-before: always;
+  }
 }
 
 #invoice-POS {
@@ -128,6 +132,7 @@
   <?php if(!empty($kotList)){ 
     foreach ($kotList as $kot) {
     ?>
+    <div class="cutPrint">
     <center id="top">
         <h2 style="margin-bottom: 5px;font-size: 16px;"><?= authuser()->RestName.' ('.$kot[0]['KitName'].')';  ?></h2>
     </center>
@@ -222,6 +227,7 @@
             </table>
         </div><!--End Table-->
 
+      </div>  <!--cutprint-->
     </div><!--End InvoiceBot-->
   <?php } } else{ ?>
     <h1>Something went wrong, please speak to support!</h1>
