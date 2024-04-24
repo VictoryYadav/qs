@@ -2954,7 +2954,7 @@ class Restaurant extends CI_Controller {
             deleteRecord('tempKitchen', array('TableNo' => $tableNo, 'EID' => $EID));
             // end delete from temp kitchen
 
-            $url = base_url('restaurant/kot_print/').$CNo.'/'.$tableNo.'/'.$fKotNo;
+            $url = base_url('restaurant/kot_print/').$CNo.'/'.$tableNo.'/'.$fKotNo.'/'.$kotNo;
             $dArray = array('MCNo' => $CNo, 'MergeNo' => $tableNo,'FKOTNo' => $fKotNo,'sitinKOTPrint' => $this->session->userdata('sitinKOTPrint'), 'url' => $url);
 
             if ($data_type == 'bill' || $data_type == 'kot_bill') {
@@ -4361,8 +4361,8 @@ class Restaurant extends CI_Controller {
         $this->load->view('print', $data);
     }
 
-    public function kot_print($MCNo, $mergeNo, $FKOTNo){
-        $data['kotList'] = $this->rest->getKotList($MCNo, $mergeNo, $FKOTNo);
+    public function kot_print($MCNo, $mergeNo, $FKOTNo, $KOTNo){
+        $data['kotList'] = $this->rest->getKotList($MCNo, $mergeNo, $FKOTNo, $KOTNo);
 
         $group_arr = [];
         foreach ($data['kotList'] as $key ) {

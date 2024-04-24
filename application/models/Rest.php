@@ -937,7 +937,7 @@ class Rest extends CI_Model{
 		return $this->db2->query("SELECT ItemId, $lname FROM `MenuItem` WHERE EID = $EID and  LOWER($cname) LIKE '$item_name'")->result_array();
 	}
 
-	public function getKotList($MCNo, $mergeNo, $FKOTNo){
+	public function getKotList($MCNo, $mergeNo, $FKOTNo, $KOTNo){
 		$EID = authuser()->EID;
 		$EType = $this->session->userdata('EType');
 		$stat = ($EType == 5)?3:2;
@@ -1087,7 +1087,7 @@ class Rest extends CI_Model{
 
 	public  function getTAPendingBills()
 	{
-		return $this->db2->select('b.BillId,b.BillNo, b.billTime,b.PaidAmt, b.CellNo,b.OType,b.TableNo,b.CNo,b.EID, b.MergeNo,b.CustId, k.FKOTNo')
+		return $this->db2->select('b.BillId,b.BillNo, b.billTime,b.PaidAmt, b.CellNo,b.OType,b.TableNo,b.CNo,b.EID, b.MergeNo,b.CustId, k.FKOTNo, k.KOTNo')
 						->order_by('b.BillId', 'ASC')
 						->group_by('b.BillId')
 						->join('Kitchen k','k.MCNo = b.CNo', 'inner')

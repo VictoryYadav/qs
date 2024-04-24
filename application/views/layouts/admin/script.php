@@ -47,6 +47,11 @@
       <script src="<?= base_url(); ?>assets/js/sendalert_notification.js"></script>
     <!--end for common unicode change -->
 
+    <!-- tooltip -->
+
+    <script src="<?= base_url() ?>assets_admin/libs/tippy.js/tippy.all.min.js"></script>
+    <script src="<?= base_url() ?>assets_admin/js/pages/tooltipster.init.js"></script>
+
     </body>
 
 </html>

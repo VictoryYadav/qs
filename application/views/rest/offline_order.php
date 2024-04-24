@@ -1,4 +1,9 @@
 <?php $this->load->view('layouts/admin/head'); ?>
+<style>
+    .addcss{
+        z-index: 999;position: absolute;overflow: scroll;height: 170px;background: #fff;
+    }
+</style>
         <?php $this->load->view('layouts/admin/top'); ?>
             <!-- ========== Left Sidebar Start ========== -->
             <div class="vertical-menu">
@@ -93,18 +98,18 @@
                                             </div>
                                         </div>
                                             <!-- vijay -->
-                                        <!-- <div class="row">
+                                        <div class="row mb-2">
                                             <div class="col-md-6">
-                                                <input type="text" id="search-item" class="form-control" placeholder="Enter the item Name" style="border-radius: 50px;z-index: 5;">
-                                                <div id="item-search-result" style=";z-index: 999;position: absolute;overflow: scroll;height: 170px;background: #fff;"></div>
+                                                <input type="text" id="search-item" class="form-control" placeholder="Search Item Name" style="border-radius: 50px;z-index: 5;" autocomplete="off">
+                                                <div id="item-search-result"></div>
                                             </div>
-                                        </div> -->
+                                        </div>
                                         <div class="row">
                                             <div class="col-md-7 form-group col-6">
                                                 
-                                                <button class="btn btn-primary btn-sm" title="Kitchen Order Ticket" onclick="searchKOT()"><?= $this->lang->line('kot'); ?> 
+                                                <!-- <button class="btn btn-primary btn-sm" title="Kitchen Order Ticket" onclick="searchKOT()"><?= $this->lang->line('kot'); ?> 
                                                     <i class="fa fa-plus"></i>
-                                                </button>
+                                                </button> -->
                                                 <?php if($OType == 8){ ?>
                                                 <button class="btn btn-success btn-sm send-to-kitchen" data_type="save_to_kitchen" id="btnOrder"><?= $this->lang->line('order'); ?></button>
                                                 <?php } ?>
@@ -174,17 +179,17 @@
                                                         <td><?= convertToUnicodeNumber($key['PaidAmt']); ?></td>   
                                                         <td ><?= convertToUnicodeNumber($key['CellNo']); ?></td>
                                                         <td>
-                                                            <a href="<?php echo base_url('restaurant/kot_print/'.$key['CNo'].'/'.$key['MergeNo'].'/'.$key['FKOTNo']); ?>" class='btn btn-primary btn-sm'>
+                                                            <a href="<?php echo base_url('restaurant/kot_print/'.$key['CNo'].'/'.$key['MergeNo'].'/'.$key['FKOTNo'].'/'.$key['KOTNo']); ?>" class='btn btn-primary btn-sm tippy-btn' title="KOT Print" data-tippy-placement="top">
                                                                 <i class="fas fa-print"></i>
                                                             </a>
-                                                            <a href="<?php echo base_url('restaurant/print/'.$key['BillId']); ?>" class='btn btn-warning btn-sm'>
+                                                            <a href="<?php echo base_url('restaurant/print/'.$key['BillId']); ?>" class='btn btn-warning btn-sm tippy-btn' title=" Print" data-tippy-placement="top">
                                                                 <i class="fas fa-print"></i>
                                                             </a>
-                                                            <button title="Cash Collect" class="btn btn-sm btn-info" id="btnCash" onclick="cashCollect(<?= $key['BillId']; ?>,<?= $key['OType']; ?>,<?= $key['TableNo']; ?>,<?= $key['MergeNo']; ?>,'<?= $key['CellNo']; ?>',<?= $key['PaidAmt']; ?>,<?= $key['CNo']; ?>,<?= $key['EID']; ?>)"><i class="fas fa-money-check"></i>
+                                                            <button class="btn btn-sm btn-info tippy-btn" title="Cash Collect" data-tippy-placement="top" id="btnCash" onclick="cashCollect(<?= $key['BillId']; ?>,<?= $key['OType']; ?>,<?= $key['TableNo']; ?>,<?= $key['MergeNo']; ?>,'<?= $key['CellNo']; ?>',<?= $key['PaidAmt']; ?>,<?= $key['CNo']; ?>,<?= $key['EID']; ?>)"><i class="fas fa-money-check"></i>
                                                 </button>
                                                 <?php if($this->session->userdata('AutoSettle') == 0){ ?>
 
-                                                <button class="btn btn-sm btn-success" onclick="setPaidAmount(<?= $key['BillId']; ?>,<?= $key['CNo']; ?>,<?= $key['MergeNo']; ?>,<?= $key['CustId']; ?>,<?= $key['BillNo']; ?>,<?= $key['PaidAmt']; ?>)">
+                                                <button class="btn btn-sm btn-success tippy-btn" title="Bill Settle" data-tippy-placement="top" onclick="setPaidAmount(<?= $key['BillId']; ?>,<?= $key['CNo']; ?>,<?= $key['MergeNo']; ?>,<?= $key['CustId']; ?>,<?= $key['BillNo']; ?>,<?= $key['PaidAmt']; ?>)">
                                             <i class="fas fa-check-double"></i>
                                         </button>
                                             <?php } ?>
@@ -230,8 +235,8 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="text" id="search-item" class="form-control" placeholder="Enter the item Name">
-                            <div id="item-search-result"></div>
+                            <!-- <input type="text" id="search-item" class="form-control" placeholder="Enter the item Name">
+                            <div id="item-search-result"></div> -->
                         </div>
                     </div>
                 </div>
@@ -1009,6 +1014,17 @@
         $(document).ready(function() {
 
             $("#search-item").keyup(function(event) {
+
+                var OType = $("#order-type").val();
+                
+                if(OType == 8){
+                    var table = $('#table-id').val();
+                    if(table < 1){
+                        alert('Please select table first.');
+                        return false;
+                    }
+                }
+
                 var itemName = $(this).val();
                 if (itemName != '') {
                     $.ajax({
@@ -1047,6 +1063,8 @@
                             </ul>
                         `;
                             }
+                            $("#item-search-result").addClass('addcss');
+
                             $("#item-search-result").html(template);
                         },
                         error: (xhr, status, error) => {
@@ -1056,6 +1074,8 @@
                         }
                     });
                 } else {
+                    $("#item-search-result").removeClass('addcss');
+
                     $("#item-search-result").html('');
                 }
             });
@@ -1143,6 +1163,15 @@
                         formFill = false;
                         alert("Please Select Table No");
                     }
+                }
+                var checkItem = []
+                $(".item-id").each(function(index, el) {
+                    checkItem.push($(this).attr('data-id'));
+                });
+
+                if(checkItem.length < 1){
+                    formFill = false;
+                    alert("Please Select atleast one item!!");
                 }
 
                 if (formFill) {
