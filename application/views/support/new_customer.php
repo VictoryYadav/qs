@@ -98,6 +98,19 @@
 
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
+                                                    <label><?= $this->lang->line('country'); ?></label>
+                                                    <select  name="CountryCd" id="CountryCd" class="form-control form-control-sm select2 custom-select" required="">
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <?php 
+                                                        foreach ($country as $key) { ?>
+                                                            <option value="<?= $key['phone_code']; ?>"><?= $key['country_name']; ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 col-6">
+                                                <div class="form-group">
                                                     <label><?= $this->lang->line('GSTNo'); ?></label>
                                                     <input type="number" name="GSTNo" id="GSTNo" class="form-control form-control-sm" >
                                                 </div>
@@ -261,6 +274,7 @@
 
     $(document).ready(function () {
         $('#restTBL').DataTable();
+        $('#CountryCd').select2();
     });
 
     $('#customerForm').on('submit', function(e){

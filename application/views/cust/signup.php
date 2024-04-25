@@ -7,7 +7,7 @@
 
     }
     .user_card {
-      height: 410px;
+      height: 455px;
       width: 350px;
       margin-top: 60px;
       margin-bottom: auto;
@@ -95,11 +95,25 @@
               </div>
               <div class="d-flex justify-content-center form_container">
                 <form method="post" id="signupForm">
+
+                  <div class="input-group mb-3">
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fa fa-flag"></i></span>
+                    </div>
+                    <select name="CountryCd" class="form-control" required="">
+                        <option value=""><?= $this->lang->line('select'); ?></option>
+                        <?php 
+                        foreach ($country as $key) { ?>
+                            <option value="<?= $key['phone_code']; ?>"><?= $key['country_name']; ?></option>
+                        <?php } ?>                   
+                    </select>
+                  </div>
+
                   <div class="input-group mb-3">
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-phone"></i></span>
                     </div>
-                    <input type="text" name="MobileNo" class="form-control" placeholder="<?= $this->lang->line('enterMobile'); ?>" required="" autocomplete="off" minlength="10" maxlength="10" pattern="[6-9]{1}[0-9]{9}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" id="MobileNo">
+                    <input type="text" name="MobileNo" class="form-control" placeholder="<?= $this->lang->line('enterMobile'); ?>" required="" autocomplete="off" minlength="10" maxlength="10" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" id="MobileNo">
                     <small id="signupMsg" class="text-danger" style="font-size: 10px;"></small>
                   </div>
 

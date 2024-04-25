@@ -860,7 +860,8 @@ class Customer extends CI_Controller {
                  die;
             }
 
-            $data['title'] = $this->lang->line('signup');
+            $data['title']      = $this->lang->line('signup');
+            $data['country']    = $this->cust->getCountries();
             $this->load->view('cust/signup', $data);
         }
     }

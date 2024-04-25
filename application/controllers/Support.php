@@ -333,6 +333,7 @@ class Support extends CI_Controller {
         }
         $data['title'] = 'New Customer';
         $data['rests'] = $genDB->select('CNo, EID, Name, CellNo, Email, CatgId')->get('EIDDet')->result_array();
+        $data['country'] = $genDB->get_where('countries', array('Stat' => 0))->result_array();
         $this->load->view('support/new_customer', $data); 
     }
 
@@ -394,6 +395,7 @@ class Support extends CI_Controller {
                     $eatry['ContactAddr'] = $EIDData['HOAddress'];
                     $eatry['lat'] = $EIDData['Lat'];
                     $eatry['lng'] = $EIDData['Lng'];
+                    $eatry['CountryCd'] = $EIDData['CountryCd'];
                     $eatry['LoginCd'] = $userId;
                     $eatry['EID'] = $EID;
                     $eatry['dbEID'] = $EID;

@@ -1595,6 +1595,12 @@ class Cust extends CI_Model{
 					->get('countries')->result_array();
 	}
 
+	public function getCountries(){
+		return $this->db2->select('*')
+					->order_by('country_name', 'ASC')
+					->get_where('countries', array('Stat' => 0))->result_array();
+	}
+
 	public function getCityListByCountry($phone_code){
 		return $this->db2->get_where('city', array('status' => 0))->result_array();
 	}
