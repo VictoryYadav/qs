@@ -170,9 +170,11 @@
                          ?>
 
                         <a href="<?= base_url('customer'); ?>" class="btn btn-sm backbtn" style="width:<?= $width; ?>"><?php echo  $this->lang->line('menu'); ?></a>
-                         <?php if($this->session->userdata('BillMergeOpt') > 0 && ($EType == 5)){ ?>
+                         <?php 
+                         if($mergeCount <= 1){
+                         if($this->session->userdata('BillMergeOpt') > 0 && ($EType == 5)){ ?>
                         <a href="<?= base_url('customer/merge_order/'.$MergeNo); ?>" class="btn orderbtn btn-sm" style="width:<?= $width; ?>"><?><?php echo  $this->lang->line('mergeorder'); ?></a>
-                        <?php } ?>
+                        <?php } } ?>
                         <button class="btn btn-sm paybtn" onclick="payNow()" style="width:<?= $width; ?>"><?php echo  $this->lang->line('payNow'); ?></button>
                         
                         <?php if($this->session->flashdata('error')): ?>

@@ -69,6 +69,17 @@
                                             </div>
                                         <?php } ?>
                                             <div class="col-md-3 form-group col-6">
+                                                <label><?= $this->lang->line('country'); ?></label>
+                                                <select name="CountryCd" class="form-control form-control-sm select2 custom-select" id="CountryCd">
+                                                <option value=""><?= $this->lang->line('select'); ?></option>
+                                                <?php 
+                                                foreach ($country as $key) { ?>
+                                                    <option value="<?= $key['phone_code']; ?>" <?php if($CountryCd == $key['phone_code']){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
+                                                <?php } ?>                   
+                                            </select>
+                                            </div>
+
+                                            <div class="col-md-3 form-group col-6">
                                                 <label><?= $this->lang->line('mobile'); ?></label>
                                                 <input type="text" id="phone" class="form-control form-control-sm" minlength="10" maxlength="10" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" onchange="getCustDetails()">
                                                 <small class="text-danger msgPhone"></small>
@@ -350,6 +361,330 @@
 
 
 <script type="text/javascript">
+
+    $(document).ready(function() {
+        $('#CountryCd').select2();
+
+        $("#search-item").keyup(function(event) {
+
+            var OType = $("#order-type").val();
+            
+            if(OType == 8){
+                var table = $('#table-id').val();
+                if(table < 1){
+                    alert('Please select table first.');
+                    return false;
+                }
+            }
+
+            var itemName = $(this).val();
+            if (itemName != '') {
+                $.ajax({
+                    url: "<?php echo base_url('restaurant/order_ajax_3p'); ?>",
+                    type: "post",
+                    data: {
+                        searchItem: 1,
+                        itemName: itemName
+                    },
+                    dataType: "json",
+                    success: (response) => {
+                        console.log(response);
+                        if (response.status) {
+                            var template = `<ul style="list-style:none;">`;
+                            response.items.forEach((item) => {
+                                var printItemName = '';
+                                var IMcCd = "<?php echo $this->session->userdata('IMcCdOpt'); ?>";
+                                if(IMcCd == 0){
+                                    printItemName = item.LngName;
+                                }else if(IMcCd == 1){
+                                    printItemName = item.ItemId+' - '+item.LngName+'-'+item.portionName;
+                                }else if(IMcCd == 2){
+                                    printItemName = item.IMcCd+' - '+item.LngName+'-'+item.portionName;
+                                }
+                                
+                                template += `<li onclick="itemSlected_new(${item.ItemId}, ${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd}, ${item.ItemTyp}, ${item.CID}, ${item.MCatgId}, 0, 0, 0, 0, ${item.FID}, ${item.ItemSale}, 0);" style="cursor: pointer;">${printItemName}</li>`;
+
+                                // template += `<li onclick="itemSlected(${item.ItemId}, ${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd}, ${item.ItemTyp}, ${item.CID}, ${item.MCatgId}, 0, 0, 0, 0, ${item.FID});" style="cursor: pointer;">${printItemName}</li>`;
+
+                            });
+                            template += `</ul>`;
+                        } else {
+                            var template = `
+                        <ul>
+                            <li>No Item Found</li>
+                        </ul>
+                    `;
+                        }
+                        $("#item-search-result").addClass('addcss');
+
+                        $("#item-search-result").html(template);
+                    },
+                    error: (xhr, status, error) => {
+                        console.log(xhr);
+                        console.log(status);
+                        console.log(error);
+                    }
+                });
+            } else {
+                $("#item-search-result").removeClass('addcss');
+
+                $("#item-search-result").html('');
+            }
+        });
+
+        $(".send-to-kitchen").click(function(event) {
+
+            var data_type = $(this).attr('data_type');
+            // alert(data_type);
+            var orderType = $("#order-type").val();
+            console.log('vv '+orderType);
+            var seatNo = 0;
+            var oldSeatNo = 0;
+            if (orderType != 8 ) {
+                // var tableNo = 'TA';
+                var tableNo = orderType;
+            } else {
+                var tableNo = $("#table-id").val();
+                seatNo = $('#seatNo').val();
+                oldSeatNo = $('#seatNoOld').val();
+            }
+            var thirdParty = $("#3rd-party").val();
+            var thirdPartyRef = $("#3rd-party-refNo").val();
+            var customerAddress = $("#cust-address").val();
+            var customerPhone = $("#phone").val();
+            var CountryCd = $("#CountryCd").val();
+            var CCd = $("#ccd").val();
+            var totalValue = $("#total-value").val();
+            var itemCount = $("tr").length;
+            var formFill = true;
+            var itemIds = [];
+            var Itm_Portion = [];
+            var itemKitCds = [];
+            var itemQty = [];
+            var taxtype = [];
+            var itemRemarks = [];
+            var item_value = [];
+            var item_rate = [];
+            var itemRate = [];
+            var origRate = [];
+            var pckValue = [];
+            var take_away = [];
+            var prep_time = [];
+            var dcd_value = [];
+            var SchCd = []; var SDetCd = [];
+            var CustItem = []; var CustItemDesc =[];
+
+            var dataType = $(this).attr('data_type');
+            // Page Validation
+            if (orderType == 0) {
+                formFill = false;
+                alert("Please Select Order Type");
+            } else if (itemCount < 2) {
+                formFill = false;
+                alert("Please Enter Atleast 1 Item");
+            } else if (orderType == 101) {
+                if (thirdParty == 0) {
+                    formFill = false;
+                    alert("Please Select 3rd Party");
+                }
+                if (thirdPartyRef == '') {
+                    formFill = false;
+                    alert("Please Enter 3rd Party Ref Number");
+                }
+
+            } else if (orderType == 110) {
+                if (CountryCd == "") {
+                    formFill = false;
+                    alert("Enter Country Code");
+                }
+
+                if (customerPhone == "") {
+                    formFill = false;
+                    alert("Enter Customer Phone Number");
+                }
+            } else if (orderType == 8 ) {
+                if (tableNo == 0) {
+                    formFill = false;
+                    alert("Please Select Table No");
+                }
+            }
+            var checkItem = []
+            $(".item-id").each(function(index, el) {
+                checkItem.push($(this).attr('data-id'));
+            });
+
+            if(checkItem.length < 1){
+                formFill = false;
+                alert("Please Select atleast one item!!");
+            }
+
+            if (formFill) {
+                $('.send-to-kitchen').attr("disabled", "disabled");
+
+                $(".item-id").each(function(index, el) {
+                    itemIds.push($(this).attr('data-id'));
+                    // Itm_Portion.push($(this).attr('Itm_Portion'));
+                    itemKitCds.push($(this).attr('kitcd-id'));
+                    pckValue.push($(this).attr('pckcharge'));
+                });
+
+                $(".item-qty").each(function(index, el) {
+                    itemQty.push( convertDigitToEnglish($(this).val()) );
+                });
+
+                $(".taxtype").each(function(index, el) {
+                    taxtype.push($(this).val());
+                });
+
+                $(".preptime").each(function(index, el) {
+                    prep_time.push($(this).val());
+                });
+
+                $(".DCd").each(function(index, el) {
+                    dcd_value.push($(this).val());
+                });
+
+                $(".item-remarks").each(function(index, el) {
+                    itemRemarks.push($(this).val());
+                });
+
+                $(".is_take_away").each(function(index, el) {
+                    // alert(el.checked);
+                    var ch = 0;
+                    if(el.checked){
+                        ch = 1;
+                    }
+                    take_away.push(ch);
+                });
+
+                $(".item-rate").each(function(index, el) {
+                    item_rate.push( convertDigitToEnglish($(this).text()) );
+                });
+
+                $(".item-value").each(function(index, el) {
+                    item_value.push( convertDigitToEnglish($(this).text()) );
+                });
+
+                $(".itemRates").each(function(index, el) {
+                    itemRate.push( convertDigitToEnglish($(this).val()) );
+                });
+
+                $(".origRates").each(function(index, el) {
+                    origRate.push( convertDigitToEnglish($(this).val()) );
+                });
+
+                $(".item-portion").each(function(index, el) {
+                    Itm_Portion.push( $(this).val() );
+                });
+
+                $(".SchCd").each(function(index, el) {
+                    SchCd.push( $(this).val() );
+                });
+
+                $(".SDetCd").each(function(index, el) {
+                    SDetCd.push( $(this).val() );
+                });
+
+                $(".SDetCd").each(function(index, el) {
+                    CustItem.push( $(this).val() );
+                });
+                $(".CustItemDesc").each(function(index, el) {
+                    CustItemDesc.push( $(this).val() );
+                });
+
+
+                var Uphone = $('#phone').val();
+                
+                <?php if($OType != 101){ ?>
+                    thirdParty = 0;
+                    thirdPartyRef = 0;
+                <?php } ?>
+
+                $.ajax({
+                    url: "<?php echo base_url('restaurant/order_ajax_3p'); ?>",
+                    type: "post",
+                    data: {
+                        sendToKitchen: 1,
+                        orderType: orderType,
+                        tableNo: tableNo,
+                        thirdParty: thirdParty,
+                        thirdPartyRef: thirdPartyRef,
+                        totalValue: totalValue,
+                        itemIds: itemIds,
+                        itemKitCds: itemKitCds,
+                        itemQty: itemQty,
+                        itemRemarks: itemRemarks,
+                        ItmRates: itemRate,
+                        origRates: origRate,
+                        // origRates: item_value,
+                        Itm_Portion:Itm_Portion,
+                        Stat: 1,
+                        phone: Uphone,
+                        CountryCd: CountryCd,
+                        pckValue: pckValue,
+                        data_type : dataType,
+                        CNo:cno,
+                        taxtype:taxtype,
+                        take_away:take_away,
+                        prep_time:prep_time,
+                        seatNo:seatNo,
+                        oldSeatNo:oldSeatNo,
+                        DCd : dcd_value,
+                        customerAddress:customerAddress,
+                        CCd:CCd,
+                        SchCd : SchCd,
+                        SDetCd : SDetCd,
+                        CustItem : CustItem,
+                        CustItemDesc : CustItemDesc
+                    },
+
+                    dataType: "json",
+                    success: (response) => {
+                        console.log(response);
+                        if (response.status) {
+                            if (data_type == 'bill') {
+                                alert("<?= $this->lang->line('orderBillledSuccessfully'); ?>");
+                                // window.location = "<?= base_url('restaurant/kot_print/'); ?>"+response.data.MCNo+'/'+response.data.MergeNo+'/'+response.data.FKOTNo;
+                                window.location = "<?= base_url('restaurant/bill/'); ?>"+response.data.billId;
+                                 
+                                return false;
+                            }else if (data_type == 'kot_bill') {
+                                alert("<?= $this->lang->line('orderBillledSuccessfully'); ?>");
+                                window.location = "<?= base_url('restaurant/kot_billing/'); ?>"+response.data.billId+'/'+response.data.MCNo+'/'+response.data.MergeNo+'/'+response.data.FKOTNo+'/'+response.data.KOTNo;
+                                 
+                                return false;
+                            }else{
+                            alert("<?= $this->lang->line('orderPlacedSuccessfully'); ?>");
+                            
+                            var sitinKOTPrint = response.data.sitinKOTPrint;
+                            // alert(response.data.url)
+                                if(orderType == 8){
+                                    if(sitinKOTPrint > 0){
+                                        window.location = `${response.data.url}`;
+                                     }else{
+                                        location.reload();
+                                     }
+                                }else{
+                                    window.location = `${response.data.url}`;
+                                }
+                                return false;
+                            }
+
+                            location.reload();
+                        } else {
+                            alert("Failed To Place Order");
+                        }
+                    },
+                    error: (xhr, status, error) => {
+                        console.log(xhr);
+                        console.log(status);
+                        console.log(error);
+                    }
+                });
+            }
+        });
+    });
+
     var OType = $('#order-type').val();
         var cno = 0;
         var trow = 0;
@@ -1007,335 +1342,6 @@
             $(`#value_${trow}_${ItemId}`).text(convertToUnicodeNo(total));
             calculateTotal();
         }
-
-        $(document).ready(function() {
-
-            $("#search-item").keyup(function(event) {
-
-                var OType = $("#order-type").val();
-                
-                if(OType == 8){
-                    var table = $('#table-id').val();
-                    if(table < 1){
-                        alert('Please select table first.');
-                        return false;
-                    }
-                }
-
-                var itemName = $(this).val();
-                if (itemName != '') {
-                    $.ajax({
-                        url: "<?php echo base_url('restaurant/order_ajax_3p'); ?>",
-                        type: "post",
-                        data: {
-                            searchItem: 1,
-                            itemName: itemName
-                        },
-                        dataType: "json",
-                        success: (response) => {
-                            console.log(response);
-                            if (response.status) {
-                                var template = `<ul style="list-style:none;">`;
-                                response.items.forEach((item) => {
-                                    var printItemName = '';
-                                    var IMcCd = "<?php echo $this->session->userdata('IMcCdOpt'); ?>";
-                                    if(IMcCd == 0){
-                                        printItemName = item.LngName;
-                                    }else if(IMcCd == 1){
-                                        printItemName = item.ItemId+' - '+item.LngName+'-'+item.portionName;
-                                    }else if(IMcCd == 2){
-                                        printItemName = item.IMcCd+' - '+item.LngName+'-'+item.portionName;
-                                    }
-                                    
-                                    template += `<li onclick="itemSlected_new(${item.ItemId}, ${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd}, ${item.ItemTyp}, ${item.CID}, ${item.MCatgId}, 0, 0, 0, 0, ${item.FID}, ${item.ItemSale}, 0);" style="cursor: pointer;">${printItemName}</li>`;
-
-                                    // template += `<li onclick="itemSlected(${item.ItemId}, ${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd}, ${item.ItemTyp}, ${item.CID}, ${item.MCatgId}, 0, 0, 0, 0, ${item.FID});" style="cursor: pointer;">${printItemName}</li>`;
-
-                                });
-                                template += `</ul>`;
-                            } else {
-                                var template = `
-                            <ul>
-                                <li>No Item Found</li>
-                            </ul>
-                        `;
-                            }
-                            $("#item-search-result").addClass('addcss');
-
-                            $("#item-search-result").html(template);
-                        },
-                        error: (xhr, status, error) => {
-                            console.log(xhr);
-                            console.log(status);
-                            console.log(error);
-                        }
-                    });
-                } else {
-                    $("#item-search-result").removeClass('addcss');
-
-                    $("#item-search-result").html('');
-                }
-            });
-
-            $(".send-to-kitchen").click(function(event) {
-
-                var data_type = $(this).attr('data_type');
-                // alert(data_type);
-                var orderType = $("#order-type").val();
-                console.log('vv '+orderType);
-                var seatNo = 0;
-                var oldSeatNo = 0;
-                if (orderType != 8 ) {
-                    // var tableNo = 'TA';
-                    var tableNo = orderType;
-                } else {
-                    var tableNo = $("#table-id").val();
-                    seatNo = $('#seatNo').val();
-                    oldSeatNo = $('#seatNoOld').val();
-                }
-                var thirdParty = $("#3rd-party").val();
-                var thirdPartyRef = $("#3rd-party-refNo").val();
-                var customerAddress = $("#cust-address").val();
-                var customerPhone = $("#phone").val();
-                var CCd = $("#ccd").val();
-                var totalValue = $("#total-value").val();
-                var itemCount = $("tr").length;
-                var formFill = true;
-                var itemIds = [];
-                var Itm_Portion = [];
-                var itemKitCds = [];
-                var itemQty = [];
-                var taxtype = [];
-                var itemRemarks = [];
-                var item_value = [];
-                var item_rate = [];
-                var itemRate = [];
-                var origRate = [];
-                var pckValue = [];
-                var take_away = [];
-                var prep_time = [];
-                var dcd_value = [];
-                var SchCd = []; var SDetCd = [];
-                var CustItem = []; var CustItemDesc =[];
-
-                var dataType = $(this).attr('data_type');
-                // Page Validation
-                if (orderType == 0) {
-                    formFill = false;
-                    alert("Please Select Order Type");
-                } else if (itemCount < 2) {
-                    formFill = false;
-                    alert("Please Enter Atleast 1 Item");
-                } else if (orderType == 101) {
-                    if (thirdParty == 0) {
-                        formFill = false;
-                        alert("Please Select 3rd Party");
-                    }
-                    if (thirdPartyRef == '') {
-                        formFill = false;
-                        alert("Please Enter 3rd Party Ref Number");
-                    }
-
-                } else if (orderType == 110) {
-                    if (customerPhone == "") {
-                        formFill = false;
-                        alert("Enter Customer Phone Number");
-                    }
-                    if (customerPhone == "") {
-                        formFill = false;
-                        alert("Enter Customer Phone Number");
-                    }
-
-                } else if (orderType == 110) {
-                    if (customerAddress == "") {
-                        formFill = false;
-                        alert("Enter Customer Address");
-                    }
-                    if (customerPhone == "") {
-                        formFill = false;
-                        alert("Enter Customer Phone Number");
-                    }
-                } else if (orderType == 8 ) {
-                    if (tableNo == 0) {
-                        formFill = false;
-                        alert("Please Select Table No");
-                    }
-                }
-                var checkItem = []
-                $(".item-id").each(function(index, el) {
-                    checkItem.push($(this).attr('data-id'));
-                });
-
-                if(checkItem.length < 1){
-                    formFill = false;
-                    alert("Please Select atleast one item!!");
-                }
-
-                if (formFill) {
-                    $('.send-to-kitchen').attr("disabled", "disabled");
-
-                    $(".item-id").each(function(index, el) {
-                        itemIds.push($(this).attr('data-id'));
-                        // Itm_Portion.push($(this).attr('Itm_Portion'));
-                        itemKitCds.push($(this).attr('kitcd-id'));
-                        pckValue.push($(this).attr('pckcharge'));
-                    });
-
-                    $(".item-qty").each(function(index, el) {
-                        itemQty.push( convertDigitToEnglish($(this).val()) );
-                    });
-
-                    $(".taxtype").each(function(index, el) {
-                        taxtype.push($(this).val());
-                    });
-
-                    $(".preptime").each(function(index, el) {
-                        prep_time.push($(this).val());
-                    });
-
-                    $(".DCd").each(function(index, el) {
-                        dcd_value.push($(this).val());
-                    });
-
-                    $(".item-remarks").each(function(index, el) {
-                        itemRemarks.push($(this).val());
-                    });
-
-                    $(".is_take_away").each(function(index, el) {
-                        // alert(el.checked);
-                        var ch = 0;
-                        if(el.checked){
-                            ch = 1;
-                        }
-                        take_away.push(ch);
-                    });
-
-                    $(".item-rate").each(function(index, el) {
-                        item_rate.push( convertDigitToEnglish($(this).text()) );
-                    });
-
-                    $(".item-value").each(function(index, el) {
-                        item_value.push( convertDigitToEnglish($(this).text()) );
-                    });
-
-                    $(".itemRates").each(function(index, el) {
-                        itemRate.push( convertDigitToEnglish($(this).val()) );
-                    });
-
-                    $(".origRates").each(function(index, el) {
-                        origRate.push( convertDigitToEnglish($(this).val()) );
-                    });
-
-                    $(".item-portion").each(function(index, el) {
-                        Itm_Portion.push( $(this).val() );
-                    });
-
-                    $(".SchCd").each(function(index, el) {
-                        SchCd.push( $(this).val() );
-                    });
-
-                    $(".SDetCd").each(function(index, el) {
-                        SDetCd.push( $(this).val() );
-                    });
-
-                    $(".SDetCd").each(function(index, el) {
-                        CustItem.push( $(this).val() );
-                    });
-                    $(".CustItemDesc").each(function(index, el) {
-                        CustItemDesc.push( $(this).val() );
-                    });
-
-
-                    var Uphone = $('#phone').val();
-                    
-                    <?php if($OType != 101){ ?>
-                        thirdParty = 0;
-                        thirdPartyRef = 0;
-                    <?php } ?>
-
-                    $.ajax({
-                        url: "<?php echo base_url('restaurant/order_ajax_3p'); ?>",
-                        type: "post",
-                        data: {
-                            sendToKitchen: 1,
-                            orderType: orderType,
-                            tableNo: tableNo,
-                            thirdParty: thirdParty,
-                            thirdPartyRef: thirdPartyRef,
-                            totalValue: totalValue,
-                            itemIds: itemIds,
-                            itemKitCds: itemKitCds,
-                            itemQty: itemQty,
-                            itemRemarks: itemRemarks,
-                            ItmRates: itemRate,
-                            origRates: origRate,
-                            // origRates: item_value,
-                            Itm_Portion:Itm_Portion,
-                            Stat: 1,
-                            phone: Uphone,
-                            pckValue: pckValue,
-                            data_type : dataType,
-                            CNo:cno,
-                            taxtype:taxtype,
-                            take_away:take_away,
-                            prep_time:prep_time,
-                            seatNo:seatNo,
-                            oldSeatNo:oldSeatNo,
-                            DCd : dcd_value,
-                            customerAddress:customerAddress,
-                            CCd:CCd,
-                            SchCd : SchCd,
-                            SDetCd : SDetCd,
-                            CustItem : CustItem,
-                            CustItemDesc : CustItemDesc
-                        },
-
-                        dataType: "json",
-                        success: (response) => {
-                            console.log(response);
-                            if (response.status) {
-                                if (data_type == 'bill') {
-                                    alert("<?= $this->lang->line('orderBillledSuccessfully'); ?>");
-                                    // window.location = "<?= base_url('restaurant/kot_print/'); ?>"+response.data.MCNo+'/'+response.data.MergeNo+'/'+response.data.FKOTNo;
-                                    window.location = "<?= base_url('restaurant/bill/'); ?>"+response.data.billId;
-                                     
-                                    return false;
-                                }else if (data_type == 'kot_bill') {
-                                    alert("<?= $this->lang->line('orderBillledSuccessfully'); ?>");
-                                    window.location = "<?= base_url('restaurant/kot_billing/'); ?>"+response.data.billId+'/'+response.data.MCNo+'/'+response.data.MergeNo+'/'+response.data.FKOTNo+'/'+response.data.KOTNo;
-                                     
-                                    return false;
-                                }else{
-                                alert("<?= $this->lang->line('orderPlacedSuccessfully'); ?>");
-                                
-                                var sitinKOTPrint = response.data.sitinKOTPrint;
-                                // alert(response.data.url)
-                                    if(orderType == 8){
-                                        if(sitinKOTPrint > 0){
-                                            window.location = `${response.data.url}`;
-                                         }else{
-                                            location.reload();
-                                         }
-                                    }else{
-                                        window.location = `${response.data.url}`;
-                                    }
-                                    return false;
-                                }
-
-                                location.reload();
-                            } else {
-                                alert("Failed To Place Order");
-                            }
-                        },
-                        error: (xhr, status, error) => {
-                            console.log(xhr);
-                            console.log(status);
-                            console.log(error);
-                        }
-                    });
-                }
-            });
-        });
 
         function get_table_order_items(el){
             var check_ccd = $('#ccd').val();

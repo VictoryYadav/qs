@@ -157,7 +157,14 @@ class User extends CI_Model{
 
 	// common for create user at first time enter our app
 	public function createCustomerUser($mobile){
+		$CountryCd = $this->session->userdata('CountryCd');
+		$pCountryCd = $this->session->userdata('pCountryCd');
+		if($pCountryCd > 0){
+			$CountryCd = $pCountryCd;
+		}
 		$CustId = 0;
+		$mobile = $CountryCd.$mobile;
+
 		if(!empty($mobile)){
 			$localDb = $this->db2->get_where('Users', array('MobileNo' => $mobile))->row_array();
 			if(empty($localDb)){
@@ -173,28 +180,28 @@ class User extends CI_Model{
 		            $data1['FName']     = $gen_check['FName'];
 		            $data1['LName']     = $gen_check['LName'];
 		            $data1['email']     = $gen_check['email'];
-		            $data1['MobileNo']  = $gen_check['MobileNo'];
+		            $data1['MobileNo']  = $CountryCd.$gen_check['MobileNo'];
 		            $data1['DOB']       = $gen_check['DOB'];
 		            $data1['Gender']    = $gen_check['Gender'];
-		            $data1['visit'] = 1;
-		            $data1['PWDHash'] = md5('eatout246');
+		            $data1['visit'] 	= 1;
+		            $data1['PWDHash'] 	= md5('eatout246');
 		            insertRecord('Users',$data1);    
 		        }else{
-		        	$data['MobileNo'] = $mobile;
+		        	$data['MobileNo'] 	= $mobile;
 
-		        	$Adata = $data;
-		        	$Adata['EID'] = authuser()->EID;
-		        	$Adata['page'] = 'offline order';
+		        	$Adata 				= $data;
+		        	$Adata['EID'] 		= authuser()->EID;
+		        	$Adata['page'] 		= 'offline order';
 		            $genTblDb->insert('AllUsers', $Adata);
-		            $CustId = $genTblDb->insert_id();
+		            $CustId 			= $genTblDb->insert_id();
 		            
-		            $data['CustId'] = $CustId;
-		            $data['visit'] = 1;
-		            $data['PWDHash'] = md5('eatout246');
+		            $data['CustId'] 	= $CustId;
+		            $data['visit'] 		= 1;
+		            $data['PWDHash'] 	= md5('eatout246');
 		            insertRecord('Users',$data);
 		        }
 			}else{
-				$CustId = $localDb['CustId'];
+					$CustId 			= $localDb['CustId'];
 			}
 		}
 		return $CustId;

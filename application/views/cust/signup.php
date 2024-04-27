@@ -104,7 +104,7 @@
                         <option value=""><?= $this->lang->line('select'); ?></option>
                         <?php 
                         foreach ($country as $key) { ?>
-                            <option value="<?= $key['phone_code']; ?>"><?= $key['country_name']; ?></option>
+                            <option value="<?= $key['phone_code']; ?>" <?php if($CountryCd == $key['phone_code']){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
                         <?php } ?>                   
                     </select>
                   </div>

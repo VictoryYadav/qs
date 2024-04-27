@@ -2033,5 +2033,11 @@ class Rest extends CI_Model{
 					->row_array();
 	}
 
+	public function getCountries(){
+		return $this->db2->select('*')
+					->order_by('country_name', 'ASC')
+					->get_where('countries', array('Stat' => 0))->result_array();
+	}
+
 	
 }

@@ -65,7 +65,7 @@
       border-radius: 0.25rem 0 0 0.25rem !important;
     }
 
-    #emailMobile, #otp{
+    #emailMobile, #otp, #CountryCd{
       border: 1px solid #c54242;
     }
 
@@ -96,6 +96,20 @@
               </div>
               <div class="d-flex justify-content-center form_container">
                 <form method="post" id="loginForm">
+
+                  <div class="input-group mb-3">
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fa fa-flag"></i></span>
+                    </div>
+                    <select name="CountryCd" class="form-control" required="" id="CountryCd">
+                        <option value=""><?= $this->lang->line('select'); ?></option>
+                        <?php 
+                        foreach ($country as $key) { ?>
+                            <option value="<?= $key['phone_code']; ?>" <?php if($CountryCd == $key['phone_code']){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
+                        <?php } ?>                   
+                    </select>
+                  </div>
+
                   <div class="input-group mb-3">
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-user"></i></span>

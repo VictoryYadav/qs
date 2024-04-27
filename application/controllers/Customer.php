@@ -666,7 +666,9 @@ class Customer extends CI_Controller {
             $status = 'error';
             $response = 'Something went wrong plz try again!';
             if($this->input->method(true)=='POST'){
+                
                 $emailMobile = $_POST['emailMobile'];
+                $emailMobile = $_POST['CountryCd'].$_POST['emailMobile'];
                 $check = $this->db2->select('MobileNo')
                                 ->where('MobileNo', $emailMobile)
                                 ->get('Users')
@@ -711,6 +713,8 @@ class Customer extends CI_Controller {
             }
 
             $data['title'] = $this->lang->line('log_in');
+            $data['country']    = $this->cust->getCountries();
+            $data['CountryCd']    = $this->session->userdata('CountryCd');
             $this->load->view('cust/login', $data);
         }
 
@@ -862,6 +866,7 @@ class Customer extends CI_Controller {
 
             $data['title']      = $this->lang->line('signup');
             $data['country']    = $this->cust->getCountries();
+            $data['CountryCd']    = $this->session->userdata('CountryCd');
             $this->load->view('cust/signup', $data);
         }
     }
@@ -899,12 +904,14 @@ class Customer extends CI_Controller {
                     $data1['Gender']    = $gen_check['Gender'];
                     $data1['Passwd']    = 'eo1234';
                     $data1['PWDHash']   = md5($data1['Passwd']);
+                    $data['MobileNo'] = $gen_check['CountryCd'].$gen_check['MobileNo']; 
                     insertRecord('Users',$data1);    
                 }else{
                     $genTblDb = $this->load->database('GenTableData', TRUE);
                     $data = $ses_data;
 
                     $Adata = $data;
+                    $Adata['MobileNo'] = $data['CountryCd'].$data['MobileNo']; 
                     $Adata['EID'] = authuser()->EID;
                     $Adata['page'] = 'signup';
                     $genTblDb->insert('AllUsers', $Adata);
@@ -913,6 +920,7 @@ class Customer extends CI_Controller {
                     $data['CustId'] = $CustId;
                     $data['Passwd'] = 'eo1234';
                     $data['PWDHash'] = md5($data['Passwd']);
+                    $data['MobileNo'] = $data['CountryCd'].$data['MobileNo']; 
                     insertRecord('Users',$data);
                 }
                 
@@ -1358,6 +1366,9 @@ class Customer extends CI_Controller {
         $kitchenData = $this->db2->select('MCNo, MergeNo')->order_by('CNo', 'DESC')->get_where('KitchenMain', array('EID' => $data['EID'], 'CustId' => $data['CustId'], 'CNo' => $CNo))->row_array();
 
         $data['MergeNo'] = $kitchenData['MergeNo'];
+        $EID = $data['EID'];
+        $mergeCount = $this->db2->query("SELECT count(kk.CNo) as count FROM `kitchen` kk WHERE MCNo=(SELECT k1.MCNo from kitchen k1 where k1.CNo = $CNo and k1.EID=$EID)")->row_array();
+        $data['mergeCount'] = $mergeCount['count'];
 
         $bilchk = billCheck($CNo);
         if(!empty($bilchk)){
@@ -1811,6 +1822,8 @@ class Customer extends CI_Controller {
         $data['title'] = $this->lang->line('splitbill');
         $data['MergeNo'] = $MergeNo;
         if($_POST['btnName'] == 'splitBill'){
+            $data['country']    = $this->cust->getCountries();
+            $data['CountryCd']    = $this->session->userdata('CountryCd');
             $this->load->view('cust/split_bill', $data);
         }else if($_POST['btnName'] == 'payNow'){
             
@@ -1868,6 +1881,11 @@ class Customer extends CI_Controller {
             if(!empty($discountDT)){
                 // $gt = $totalAmount / (100 - $discountDT['pcent']) * 100;
                 $pData['orderAmount'] = $pData['orderAmount'] - ($pData['orderAmount'] * $discountDT['pcent'])/100;
+            }
+
+            if($pData['CustId'] == 0){
+                $this->session->set_userdata('pCountryCd', $_POST['CountryCd'][$i]);
+                createCustUser($pData['CellNo']);
             }
 
             // $res = array('status' => 1, 'billId' => 2);

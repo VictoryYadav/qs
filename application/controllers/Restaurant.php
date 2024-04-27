@@ -2799,7 +2799,15 @@ class Restaurant extends CI_Controller {
             $CustItem = !empty($_POST['CustItem'])?$_POST['CustItem']:0;
             $CustItemDesc = !empty($_POST['CustItemDesc'])?$_POST['CustItemDesc']:'Std';
             
-            $CustId = createCustUser($phone);
+            $CountryCd = $_POST['CountryCd'];
+            if(!empty($CountryCd)){
+                $this->session->set_userdata('pCountryCd', $CountryCd);
+            }
+
+            $CustId = 0;
+            if(!empty($phone)){
+                $CustId = createCustUser($phone);
+            }
             
             if ($CNo == 0) {
                 if(!empty($phone)){
@@ -4555,6 +4563,8 @@ class Restaurant extends CI_Controller {
         $data['bills'] = $this->rest->getTAPendingBills();
         $data['cashier'] = $this->rest->getCasherList();
         $data['payModes'] = $this->rest->getPaymentType();
+        $data['country']    = $this->rest->getCountries();
+        $data['CountryCd']    = $this->session->userdata('CountryCd');
         // echo "<pre>";
         // print_r($data);
         // die;
@@ -4572,6 +4582,8 @@ class Restaurant extends CI_Controller {
         $data['bills'] = $this->rest->getTAPendingBills();
         $data['payModes'] = $this->rest->getPaymentType();
         $data['cashier'] = $this->rest->getCasherList();
+        $data['country']    = $this->rest->getCountries();
+        $data['CountryCd']    = $this->session->userdata('CountryCd');
         // echo "<pre>";
         // print_r($data);
         // die;
@@ -4589,6 +4601,8 @@ class Restaurant extends CI_Controller {
         $data['bills'] = $this->rest->getTAPendingBills();
         $data['cashier'] = $this->rest->getCasherList();
         $data['payModes'] = $this->rest->getPaymentType();
+        $data['country']    = $this->rest->getCountries();
+        $data['CountryCd']    = $this->session->userdata('CountryCd');
         // echo "<pre>";
         // print_r($data);
         // die;
@@ -4607,6 +4621,8 @@ class Restaurant extends CI_Controller {
             $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
             $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
             $data['cashier'] = $this->rest->getCasherList();
+            $data['country']    = $this->rest->getCountries();
+            $data['CountryCd']    = $this->session->userdata('CountryCd');
             // echo "<pre>";
             // print_r($data);
             // die;

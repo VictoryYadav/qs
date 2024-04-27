@@ -63,8 +63,8 @@ body{
                     <table class="table" id="splitTable">
                         <thead>
                             <tr>
+                                <th><?= $this->lang->line('country'); ?></th>
                                 <th width="155px;"><?= $this->lang->line('mobile'); ?></th>
-                                <!-- <th>Messaging Channel</th> -->
                                 <th width="100px;"></th>
                                 <th width="100px;">%</th>
                                 <th width="100px;"><?= $this->lang->line('amount'); ?></th>
@@ -76,10 +76,14 @@ body{
                                 $count = 0;
                                 for ($i=0; $i < sizeof($mobile) ; $i++) {
                                     $count++;
+                                    $cd = substr($mobile[$i], 0, -10);
                                 ?>
                             <tr>
                                 <td>
-                                    <input type="text" value="<?= $mobile[$i]; ?>" placeholder="Mobile" class="form-control" required name="mobile[]">
+                                    <input type="text" value="<?= $cd; ?>" placeholder="Mobile" class="form-control" required name="CountryCd[]" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" value="<?= $mobile[$i]; ?>" placeholder="Mobile" class="form-control" required name="mobile[]" readonly>
                                     <input type="hidden" value="<?= $cust_id[$i]; ?>" class="form-control" name="custid[]">
                                 </td>
                                 <!-- <td>
@@ -136,21 +140,28 @@ body{
    // add row
    function addRow(){
     rowCount++;
-    var row = '<tr>\
-                            <td><input type="text" placeholder="Mobile" class="form-control" required name="mobile[]"></td>\
-                            <td>\
-                                <input type="text" class="form-control grossAmtRow" readonly="" name="totItemAmt[]" id="grossAmtRow_'+rowCount+'">\
-                            </td>\
-                            <td>\
-                                <input type="number" name="percent[]" placeholder="Percent" class="form-control percentRow" id="percentRow_'+rowCount+'" onchange="calcPerAmt('+rowCount+')">\
-                            </td>\
-                            <td>\
-                                <input type="number" name="amount[]" placeholder="Amount" class="form-control amountRow" id="amountRow_'+rowCount+'" onchange="calcAmt('+rowCount+')" required>\
-                            </td>\
-                            <td>\
-                                <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>\
-                            </td>\
-                        </tr>';
+    var row = `<tr>
+                    <td><select name="CountryCd[]" class="form-control" required="" id="CountryCd">
+                        <option value=""><?= $this->lang->line('select'); ?></option>
+                        <?php 
+                        foreach ($country as $key) { ?>
+                            <option value="<?= $key['phone_code']; ?>" <?php if($CountryCd == $key['phone_code']){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
+                        <?php } ?>                   
+                    </select></td>
+                    <td><input type="text" placeholder="Mobile" class="form-control" required name="mobile[]"></td>
+                    <td>
+                        <input type="text" class="form-control grossAmtRow" readonly="" name="totItemAmt[]" id="grossAmtRow_'+rowCount+'">
+                    </td>
+                    <td>
+                        <input type="number" name="percent[]" placeholder="Percent" class="form-control percentRow" id="percentRow_'+rowCount+'" onchange="calcPerAmt('+rowCount+')">
+                    </td>
+                    <td>
+                        <input type="number" name="amount[]" placeholder="Amount" class="form-control amountRow" id="amountRow_'+rowCount+'" onchange="calcAmt('+rowCount+')" required>
+                    </td>
+                    <td>
+                        <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>`;
     $('#addBody').append(row) 
     $('#splitType').val(0);
 

@@ -38,7 +38,7 @@ class AuthController extends CI_Controller {
 
                 if (!empty($login_check)) {
 
-                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, c.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint, c.JoinTable, c.tableSharing, c.Bill_KOT_Print, c.SchType')
+                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, c.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, e.CountryCd, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint, c.JoinTable, c.tableSharing, c.Bill_KOT_Print, c.SchType')
                             ->join('Eatary e',' u.EID = e.EID', 'inner')
                             ->join('Config c','u.EID = c.EID','inner')
                             // u.ChainId = c.ChainId 
@@ -81,6 +81,8 @@ class AuthController extends CI_Controller {
                         $this->session->set_userdata('tableSharing',$checkNumber['tableSharing']); 
                         $this->session->set_userdata('Bill_KOT_Print',$checkNumber['Bill_KOT_Print']);         
                         $this->session->set_userdata('SchType', $checkNumber['SchType']); 
+                        $this->session->set_userdata('CountryCd', $checkNumber['CountryCd']);
+                        $this->session->set_userdata('pCountryCd', 0);
                         
                         $session_data = array(
                         'EID' => $checkNumber['EID'],
