@@ -349,10 +349,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	    return $CI->User->getRestVist($cellNo);	
 	}
 
-	function taxCalculateData($kitcheData, $EID, $CNo, $MergeNo){
+	function taxCalculateData($kitcheData, $EID, $CNo, $MergeNo, $per_cent){
 		$CI = & get_instance();
 	    $CI->load->model('User');
-	    return $CI->User->getTaxCalculation($kitcheData, $EID, $CNo, $MergeNo);	
+	    return $CI->User->getTaxCalculation($kitcheData, $EID, $CNo, $MergeNo, $per_cent);	
 	}
 
 	function getSeatNo($CNo){

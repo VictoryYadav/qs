@@ -1197,7 +1197,7 @@ class Customer extends CI_Controller {
 
                 $SchType = $this->session->userdata('SchType');
 
-                if(in_array($SchType, array(2,3))){
+                if(in_array($SchType, array(1,3))){
 
                     $chkOfferKitMain = $this->db2->select('SchCd')->get_where('KitchenMain', array('SchCd' => 0, 'CNo' => $CNo, 'EID' => $EID, 'BillStat' => 0))
                                         ->row_array();
@@ -1366,8 +1366,10 @@ class Customer extends CI_Controller {
         $kitchenData = $this->db2->select('MCNo, MergeNo')->order_by('CNo', 'DESC')->get_where('KitchenMain', array('EID' => $data['EID'], 'CustId' => $data['CustId'], 'CNo' => $CNo))->row_array();
 
         $data['MergeNo'] = $kitchenData['MergeNo'];
+        $MergeNo = $kitchenData['MergeNo'];
         $EID = $data['EID'];
-        $mergeCount = $this->db2->query("SELECT count(kk.CNo) as count FROM `kitchen` kk WHERE MCNo=(SELECT k1.MCNo from kitchen k1 where k1.CNo = $CNo and k1.EID=$EID)")->row_array();
+
+        $mergeCount = $this->db2->query("SELECT count(kk.CNo) as count FROM KitchenMain kk WHERE kk.MergeNo=$MergeNo and kk.EID=$EID and kk.BillStat=0 and kk.MCNo=(SELECT k1.MCNo from KitchenMain k1 where k1.CNo = $CNo and k1.EID=$EID and k1.MergeNo=$MergeNo and k1.BillStat=0 group by k1.CNo)")->row_array();
         $data['mergeCount'] = $mergeCount['count'];
 
         $bilchk = billCheck($CNo);
@@ -1440,7 +1442,8 @@ class Customer extends CI_Controller {
 
                 $kitcheData = $this->cust->getBillAmount($EID, $CNo);
                 if(!empty($kitcheData)){
-                   $res = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo);
+                   $per_cent = 1;
+                   $res = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo, $per_cent);
 
                     $response['kitcheData'] = $kitcheData;
                     $response['TaxData'] = $res['taxDataArray'];
@@ -1710,9 +1713,19 @@ class Customer extends CI_Controller {
         $data['Cash'] = $this->session->userdata('Cash');
         $data['CustId'] = $this->session->userdata('CustId');
 
+        $EID = authuser()->EID;
+        $CNo = $this->session->userdata('CNo');
+        $EType = $this->session->userdata('EType');
+        $stat = ($EType == 5)?3:2;
+
         if(sizeof($data['orders']) <= 1){
             $this->session->set_flashdata('error','No Orders to Merge from this table.'); 
             redirect(base_url('customer/checkout'));
+        }else{
+            foreach ($data['orders'] as $key) {
+                updateRecord('KitchenMain', array('MCNo' => $CNo), array('CNo' => $key['CNo'], 'EID' => $EID));
+                updateRecord('Kitchen', array('MCNo' => $CNo), array('CNo' => $key['CNo'], 'EID' => $EID, 'Stat' => $stat));
+            }
         }
 
         $this->load->view('cust/mergeOrder', $data);
@@ -1723,7 +1736,8 @@ class Customer extends CI_Controller {
         $res = 'Something went wrong plz try again!';
         if($this->input->method(true)=='POST'){
             $status = 'success';
-            $TableNo = authuser()->TableNo;
+            $strTableNo = authuser()->TableNo;
+            $TableNo = $this->session->userdata('TableNo');
             $CNo = $_POST['CNo'];
 
             $langId = $this->session->userdata('site_lang');
@@ -1736,6 +1750,7 @@ class Customer extends CI_Controller {
                         ->result_array();
             // echo "<pre>";
             // print_r($res);
+            // print_r($this->db2->last_query());
             // die;
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -1872,7 +1887,8 @@ class Customer extends CI_Controller {
             $pData['MergeNo'] = $_POST['MergeNo'];
             $pData['tot_sgst'] = $_POST['tot_sgst'];
 
-            $pData['itemTotalGross'] = round($pData['TotalGross'] + ($pData['TotalGross'] * $pData['tot_sgst']) / 100);
+            $pData['itemTotalGross'] = $pData['TotalGross'];
+            // $pData['itemTotalGross'] = round($pData['TotalGross'] + ($pData['TotalGross'] * $pData['tot_sgst']) / 100);
             // echo "<pre>";
             // print_r($pData);
             // die;

@@ -308,7 +308,7 @@ class User extends CI_Model{
 		return $visit;	
 	}
 
-	public function getTaxCalculation($kitcheData, $EID, $CNo, $MergeNo){
+	public function getTaxCalculation($kitcheData, $EID, $CNo, $MergeNo, $per_cent){
 
 		$EType = $this->session->userdata('EType');
 		$stat = ($EType == 5)?3:2; 
@@ -332,7 +332,7 @@ class User extends CI_Model{
 		$taxDataArray = array();
 		foreach ($tax_type_array as $key => $value) {
 
-		    $TaxData = $this->db2->query("SELECT $taxName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included,k.ItmRate, k.Qty,k.ItemId, (sum(k.OrigRate*k.Qty)) as ItemAmt, (if (t.Included <5,((sum(k.OrigRate*k.Qty)) - ((sum(k.OrigRate*k.Qty)) / (1+t.TaxPcent/100))),((sum(k.OrigRate*k.Qty))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where (k.Stat = $stat) and k.EID=km.EID and (k.MergeNo = km.MergeNo) and km.MergeNo = '$MergeNo' and (km.CNo=$CNo or km.MCNo =$CNo) and k.CNo = km.CNo and t.TaxType = k.TaxType and t.TaxType = $value AND km.BillStat = 0 group by t.ShortName1,t.TNo,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.rank")->result_array();
+		    $TaxData = $this->db2->query("SELECT $taxName,t.TaxPcent,t.TNo, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included,k.ItmRate, k.Qty,k.ItemId, (sum(k.OrigRate*k.Qty * $per_cent)) as ItemAmt, (if (t.Included <5,((sum(k.OrigRate*k.Qty*$per_cent)) - ((sum(k.OrigRate*k.Qty*$per_cent)) / (1+t.TaxPcent/100))),((sum(k.OrigRate*k.Qty*$per_cent))*t.TaxPcent/100))) as SubAmtTax from Tax t, KitchenMain km, Kitchen k where (k.Stat = $stat) and k.EID=km.EID and (k.MergeNo = km.MergeNo) and km.MergeNo = '$MergeNo' and (km.CNo=$CNo or km.MCNo =$CNo) and k.CNo = km.CNo and t.TaxType = k.TaxType and t.TaxType = $value AND km.BillStat = 0 group by t.ShortName1,t.TNo,t.TaxPcent, t.TaxType, t.Rank, t.TaxOn, t.TaxGroup, t.Included order by t.rank")->result_array();
 		    $taxDataArray[$value] = $TaxData;
 		}
 

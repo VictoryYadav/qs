@@ -2985,7 +2985,8 @@ class Restaurant extends CI_Controller {
                     $MergeNo = $kitcheData[0]['MergeNo'];
                     $CNo = $kitcheData[0]['CNo'];
 
-                    $TaxRes = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo);
+                    $per_cent = 1;
+                    $TaxRes = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo, $per_cent);
                     $taxDataArray = $TaxRes['taxDataArray'];
 
                     foreach ($kitcheData as $kit ) {
@@ -3755,7 +3756,8 @@ class Restaurant extends CI_Controller {
                     $MergeNo = $kitcheData[0]['MergeNo'];
                     $CNo = $kitcheData[0]['MCNo'];
 
-                    $TaxRes = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo);
+                    $per_cent = 1;
+                    $TaxRes = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo, $per_cent);
                     $taxDataArray = $TaxRes['taxDataArray'];
 
                     foreach ($kitcheData as $kit ) {
@@ -6508,7 +6510,8 @@ class Restaurant extends CI_Controller {
                     $MergeNo = $kitcheData[0]['MergeNo'];
                     $CNo = $kitcheData[0]['MCNo'];
 
-                    $TaxRes = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo);
+                    $per_cent = 1
+                    $TaxRes = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo, $per_cent);
                     $taxDataArray = $TaxRes['taxDataArray'];
 
                     foreach ($kitcheData as $kit ) {
