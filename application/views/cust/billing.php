@@ -323,8 +323,8 @@
                             <?php } ?>
                         
                             <tr>
-                                <td style="font-weight: bold;">GRAND TOTAL</td>
-                                <td style="text-align: right;font-weight: bold;"><?= $billData[0]['PaidAmt'] ?></td>
+                                <td><span style="font-weight: bold;">GRAND TOTAL</span>(<small>rounded off</small>)</td>
+                                <td style="text-align: right;font-weight: bold;"><?= round($billData[0]['PaidAmt']) ?></td>
                             </tr>
                         </table>
                     </div>

@@ -727,19 +727,27 @@
                 if(res.status == 'success'){
                   var data = res.response;
                   var template = ``;
+                  var phoneNo = '';
                   if(data.length > 0){
+                    var arrLength = data.length;
+
                     var trow = 0;
                     var disabled =``;
                     var readonly = ``;
                     var ch = ``;
                     var orderType = $('#order-type').val();
 
-                    cno = data[0]['CNo'];
+                    cno = data[arrLength-1]['CNo'];
+
                     $('#phone').val(data[0]['CellNo']);
                     $('#cust-address').val(data[0]['custAddr']);
 
                     data.forEach((item, index) => {
                         trow++;
+
+                        if(item.CellNo != ''){
+                            phoneNo = item.CellNo;
+                        }
                         
                         getPortionLists(item.ItemId, trow, item.Itm_Portion);
                         
@@ -766,7 +774,11 @@
                                 ch = 'checked disabled';
                             }else{
                                 ch = 'disabled';
+                                if(item.TA > 0){
+                                    ch = 'checked disabled';
+                                }
                             }   
+
                             template += `<tr >
                                     <td>${item_name}</td>
                                     <td><select class="form-control form-control-sm item-portion" id="select_${trow}_${item.ItemId}" onchange="changePortion(${trow}, ${item.ItemId})" ${disabled}><option></option></select></td>
@@ -825,7 +837,8 @@
 
                                 // calculateValue(this);
                     });
-
+// data[0]['CellNo']
+                    $('#phone').val(phoneNo);
                     $("#order-table-body").html(template);
                     calculateTotal(); 
 

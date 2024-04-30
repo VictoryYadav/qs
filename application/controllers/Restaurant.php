@@ -1906,7 +1906,7 @@ class Restaurant extends CI_Controller {
             $langId = $this->session->userdata('site_lang');
             $lname = "i.ItemNm$langId as ItemNm";
             // SUM(k.AQty) as AQty
-            $kots = $this->db2->query("SELECT k.MergeNo,k.TableNo, k.FKOTNo, k.KOTNo, k.KitCd, SUM(k.Qty) as Qty , k.KOTPrintNo, k.ItemId, $lname, SUM(k.Qty) as Qty, SUM(k.DQty) as DQty,TIME_FORMAT(ADDTIME(k.OrdTime,k.EDT), '%H:%i') as EDT, k.CellNo, k.CNo,k.MCNo FROM Kitchen k, MenuItem i WHERE k.ItemId = i.ItemId AND ( k.Stat = $stat ) AND k.EID = $EID $where and k.MergeNo = '$mergeNo' and k.payRest = 0  GROUP BY k.FKOTNo, k.KOTNo, k.KitCd, k.ItemId, k.EDT, k.MergeNo $groupby order by k.KOTNo, k.FKOTNo, i.ItemNm1 DESC")->result_array();
+            $kots = $this->db2->query("SELECT k.MergeNo,k.TableNo, k.FKOTNo, k.KOTNo, k.KitCd, SUM(k.Qty) as Qty , k.KOTPrintNo, k.ItemId, $lname, SUM(k.Qty) as Qty, SUM(k.DQty) as DQty,TIME_FORMAT(ADDTIME(k.OrdTime,k.EDT), '%H:%i') as EDT, k.CellNo, k.CNo,k.MCNo FROM Kitchen k, MenuItem i WHERE k.ItemId = i.ItemId AND ( k.Stat = $stat ) AND k.EID = $EID $where and k.MergeNo = '$mergeNo' and k.payRest = 0  GROUP BY k.KitCd, k.KOTNo, k.FKOTNo, k.ItemId, k.EDT, k.MergeNo $groupby order by k.KOTNo, k.FKOTNo, i.ItemNm1 DESC")->result_array();
             
             if (empty($kots)) {
                 $response = [
@@ -6510,7 +6510,7 @@ class Restaurant extends CI_Controller {
                     $MergeNo = $kitcheData[0]['MergeNo'];
                     $CNo = $kitcheData[0]['MCNo'];
 
-                    $per_cent = 1
+                    $per_cent = 1;
                     $TaxRes = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo, $per_cent);
                     $taxDataArray = $TaxRes['taxDataArray'];
 
