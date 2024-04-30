@@ -304,12 +304,17 @@
         dispCounter = "'"+dispCounter+"'";
         var btn = '';
         var url = "<?= base_url('restaurant/print/');?>"+BillId;
-        btn += '<a onclick="dispenseNotification('+BillId+','+mobile+','+oType+','+dispCounter+')" class="btn btn-sm btn-danger btn-rounded" title="Send Message"><i class="fa fa-bullhorn"></i></a>\
+        btn += '<a onclick="dispenseNotification('+BillId+','+mobile+','+oType+','+dispCounter+')" class="btn btn-sm btn-danger btn-rounded tippy-btn" title="Send Message" data-tippy-placement="top"><i class="fa fa-bullhorn"></i></a>\
             | <button onclick="deliveryNotification('+CNo+','+BillId+','+mobile+','+oType+','+dispCounter+', '+DCd+')" class="btn btn-sm btn-primary btn-rounded" title="Deliver"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>\
-            | <a href="'+url+'" class="btn btn-sm btn-warning btn-rounded" title="Print"><i class="fa fa-print" aria-hidden="true"></i></a>                    ';
+            | <a href="'+url+'" class="btn btn-sm btn-warning btn-rounded" title="Print"><i class="fa fa-print" aria-hidden="true"></i></a>\
+            | <button class="btn btn-sm btn-danger btn-rounded tippy-btn" title="Refresh" data-tippy-placement="top" onclick="refreshPage()" > <i class="mdi mdi-speedometer-slow"></i></button>';
 
         $('#showActionBtn').html(btn);
         handleDetails(CNo);   
+    }
+
+    refreshPage = () => {
+        getTableView();
     }
 
     function dispenseNotification(billId, mobile, oType, dispCounter){

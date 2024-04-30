@@ -1505,8 +1505,10 @@
         function getCustDetails(){
             
             var phone = $('#phone').val();
+            var CountryCd = $('#CountryCd').val();
+            
             if(phone.length == 10){
-                $.post('<?= base_url('restaurant/get_cust_details') ?>',{phone:phone},function(response){
+                $.post('<?= base_url('restaurant/get_cust_details') ?>',{phone:phone, CountryCd:CountryCd},function(response){
 
                 if(response.status == 'success') {
                         var data = response.response;
@@ -1517,6 +1519,7 @@
             });
             }else{
                 $('.msgPhone').html('Enter Valid Phone');
+                $('#cust-address').val('');
             }
             // console.log(phone);
             

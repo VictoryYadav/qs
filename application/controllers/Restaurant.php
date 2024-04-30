@@ -6355,7 +6355,8 @@ class Restaurant extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
             $response = "Records Not Found!";
-            $data = $this->db2->select("uId, FName, LName, DelAddress")->get_where('Users', array('MobileNo' => $_POST['phone']))->row_array();
+            $mobile = $_POST['CountryCd'].$_POST['phone'];
+            $data = $this->db2->select("uId, FName, LName, DelAddress")->get_where('Users', array('MobileNo' => $mobile))->row_array();
             if(!empty($data)){
                 $status = 'success';
                 $response = $data;
