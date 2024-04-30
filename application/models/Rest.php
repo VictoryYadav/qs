@@ -1027,9 +1027,9 @@ class Rest extends CI_Model{
         $iname = "m.ItemNm$langId as ItemNm";
         $ipname = "ip.Name$langId as Portions";
 
-		$data = $this->db2->select("k.OrdNo,k.EDT,k.KitCd,k.KStat,k.KOTNo, k.FKOTNo, k.ItemId, k.Qty, k.CustItemDesc, k.Itm_Portion, k.TableNo,k.MergeNo,k.CustRmks,k.TA,k.LstModDt,k.OType, $iname, $ipname")
-						  ->order_by('k.FKOTNo', 'ASC')
-						  ->group_by('k.KitCd, k.FKOTNo, k.ItemId,k.CustItemDesc, k.Itm_Portion,k.CustRmks,k.TA')
+		$data = $this->db2->select("k.OrdNo,k.EDT,k.KitCd,k.KStat, k.KOTNo, k.FKOTNo, k.ItemId, k.Qty, k.CustItemDesc, k.Itm_Portion, k.TableNo,k.MergeNo,k.CustRmks,k.TA,k.LstModDt,k.OType, $iname, $ipname")
+						  ->order_by('k.KOTNo, k.FKOTNo', 'ASC')
+						  ->group_by('k.KitCd, k.KOTNo, k.FKOTNo, k.ItemId, k.CustItemDesc, k.Itm_Portion,k.CustRmks,k.TA')
 						  ->join('MenuItem m','m.ItemId = k.ItemId','inner')
          				  ->join('ItemPortions ip','ip.IPCd = k.Itm_Portion','inner')
          				  ->get_where('Kitchen k', array(

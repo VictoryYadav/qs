@@ -116,7 +116,7 @@
                                             <div class="col-3">
                                                 <label><?= $this->lang->line('type'); ?></label>
                                                 <select class="form-control form-control-sm" id="dispMode" onchange="getTableView();">  
-                                                    <option value="0"><?= $this->lang->line('select'); ?></option> 
+                                                    <option value="0"><?= $this->lang->line('all'); ?></option> 
                                                     <option value="101"><?= $this->lang->line('thirdParty'); ?></option>
                                                     <option value="105"><?= $this->lang->line('takeAway'); ?></option>
                                                     <option value="110"><?= $this->lang->line('deliver'); ?></option>
@@ -274,9 +274,12 @@
                                 if(CellNo ==''){
                                     CellNo = 0;
                                 }
-                                
+                                bcolor = ``;
+                                if(item.KStat == 5){
+                                    bcolor = `#a7efa7`;
+                                }
                                     template += `
-                        <tr cno="${item.CNo}">
+                        <tr cno="${item.CNo}" style="background:${bcolor};">
                             <td><input type="radio" name="selectOption" onchange="showAction('${item.CNo}', ${item.CustId},${item.BillId}, ${CellNo}, ${item.OType}, ${dispText}, ${item.DCd})" /> &nbsp;${convertToUnicodeNo(item.BillNo)}</td>
                             <td>${convertToUnicodeNo(item.Qty)}</td>
                             <td>${convertToUnicodeNo(item.CellNo)}</td>
@@ -399,11 +402,16 @@
                                     item_name += item.ItemNm;
                                 }
 
+                                bcolor = ``;
+                                if(item.KStat == 5){
+                                    bcolor = `#a7efa7`;
+                                }
+
                                 template += `<tr class="${ (
                                     item.Qty == item.AQty
                                         ? 'h-deliver'
                                         : ''
-                                                )}">
+                                                )}" style="background:${bcolor};">
                                         <td>${item_name}</td>
                                         <td>${convertToUnicodeNo(item.Qty)}</td>
                                         <td>${item.CustRmks}</td>

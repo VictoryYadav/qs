@@ -1049,7 +1049,7 @@ class Restaurant extends CI_Controller {
                 $langId = $this->session->userdata('site_lang');
                 $partyName = "p.Name$langId as thirdPartyName";
 
-                $kitchenData = $this->db2->select("b.BillId, b.BillNo, sum(k.Qty) as Qty, k.OType, k.TPRefNo, k.TPId, km.CustId, k.CellNo, k.EID, k.DCd, km.CNo, $partyName")
+                $kitchenData = $this->db2->select("b.BillId, b.BillNo, sum(k.Qty) as Qty, k.OType, k.TPRefNo, k.TPId, km.CustId, k.CellNo, k.EID, k.DCd, km.CNo, $partyName, (SELECT IF(min(k1.KStat)=0,0,5) FROM Kitchen k1 where k1.CNo=km.CNo and k1.DCd=k.DCd and k1.EID=km.EID group by k1.CNo) as KStat")
                                     ->order_by('b.BillId', 'Asc')
                                     ->group_by('b.BillId, k.DCd')
                                     ->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
@@ -1091,7 +1091,7 @@ class Restaurant extends CI_Controller {
                 $ipName = "ip.Name$langId as ipName";
                 $CNo = $_POST['CNo'];
                 
-                $orderList = $this->db2->select("$ItemNm, k.Qty, k.CustItemDesc, k.CustRmks, k.Itm_Portion, $ipName")
+                $orderList = $this->db2->select("$ItemNm, k.Qty, k.CustItemDesc, k.CustRmks, k.Itm_Portion, $ipName, k.KStat")
                                     ->order_by('k.DCd', 'Asc')
                                     ->group_by('k.DCd, i.ItemId, k.CustItemDesc, k.CustRmks, k.Itm_Portion')
                                     ->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
@@ -3521,7 +3521,7 @@ class Restaurant extends CI_Controller {
             $pay['Stat'] = 0;
             $TableNo = $pay['TableNo'];
             unset($pay['TableNo']);
-            unset($pay['CustId']);
+            // unset($pay['CustId']);
             // print_r($pay);
             $EID = $pay['EID'];
 
@@ -3559,7 +3559,7 @@ class Restaurant extends CI_Controller {
             // loyality
             $loyalties = array(
                      'LId'          => 0,
-                     'custId'       => $_POST['CustId'],
+                     'custId'       => 0,
                      'EID'          => $EID,
                      'billId'       => $_POST['BillId'],
                      'billDate'     => date('Y-m-d H:i:s'),
