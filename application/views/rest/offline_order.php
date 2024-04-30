@@ -112,7 +112,7 @@
                                         <div class="row mb-2">
                                             <div class="col-md-6">
                                                 <input type="text" id="search-item" class="form-control form-control-sm" placeholder="Search Item Name" style="border-radius: 50px;z-index: 5;" autocomplete="off">
-                                                <div id="item-search-result"></div>
+                                                <div id="item-search-result" style="width: 90%;"></div>
                                             </div>
                                             <div class="col-md-6">
                                                 <!-- <button class="btn btn-primary btn-sm" title="Kitchen Order Ticket" onclick="searchKOT()"><?= $this->lang->line('kot'); ?> 

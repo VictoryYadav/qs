@@ -438,9 +438,9 @@ class Cust extends CI_Model{
 				$OType = 0;
 				$TblTyp = $postData['TblTyp'];
 
-				if($TblTyp == 0){
+				if($TblTyp == 100){
                     // QSR
-                    $OType = 1;
+                    $OType = 100;
                 }else if($TblTyp == 5){
                     // Seat no basis - common table like in bars
                     $OType = 5;

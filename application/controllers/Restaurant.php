@@ -1061,7 +1061,7 @@ class Restaurant extends CI_Controller {
                                                 'k.DCd' => $DCd,
                                                 'k.DStat' => 0,
                                                 'k.Stat' => 3,
-                                                'k.OType >' => 100,
+                                                'k.OType >=' => 100,
                                                 )
                                             )
                                     ->result_array();
