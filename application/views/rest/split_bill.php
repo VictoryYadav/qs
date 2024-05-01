@@ -69,6 +69,7 @@
                                                     <table class="table" id="splitTable">
                                                         <thead>
                                                             <tr>
+                                                                <th width="155px;"><?= $this->lang->line('country'); ?></th>
                                                                 <th width="155px;"><?= $this->lang->line('mobile'); ?></th>
                                                                 <th width="100px;"></th>
                                                                 <th width="100px;">%</th>
@@ -80,7 +81,16 @@
                                                            
                                                             <tr>
                                                                 <td>
-                                                                    <input type="text" value="" placeholder="Mobile" class="form-control form-control-sm" required name="mobile[]">
+                                                                    <select name="CountryCd[]" class="form-control form-control-sm CountryCd select2 custom-select" required="" >
+                                                                        <?= $this->lang->line('select'); ?>
+                                                                        <?php 
+                        foreach ($country as $key) { ?>
+                            <option value="<?= $key['phone_code']; ?>" <?php if($CountryCd == $key['phone_code']){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
+                        <?php } ?> 
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" value="<?= $CellNo; ?>" placeholder="Mobile" class="form-control form-control-sm" required name="mobile[]">
                                                                 </td>
                                                                 <td>
                                                                     <input type="text" class="form-control grossAmtRow form-control-sm" name="totItemAmt[]" id="grossAmtRow_1" readonly>
@@ -132,6 +142,10 @@
 
 <script type="text/javascript">
 
+    $(document).ready(function() {
+        $('.CountryCd').select2();
+    });
+
     var totalAmt = "<?= round($payable); ?>";
     var grossAmt = "<?= round($grossItemAmt); ?>";
     var tipAmt   = "<?= round($tip); ?>";
@@ -140,21 +154,28 @@
    // add row
    function addRow(){
         rowCount++;
-        var row = '<tr>\
-                        <td><input type="text" placeholder="Mobile" class="form-control form-control-sm" required name="mobile[]"></td>\
-                        <td>\
-                            <input type="text" class="form-control grossAmtRow form-control-sm" readonly="" name="totItemAmt[]" id="grossAmtRow_'+rowCount+'">\
-                        </td>\
-                        <td>\
-                            <input type="number" name="percent[]" placeholder="Percent" class="form-control percentRow form-control-sm" id="percentRow_'+rowCount+'" onchange="calcPerAmt('+rowCount+')">\
-                        </td>\
-                        <td>\
-                            <input type="number" name="amount[]" placeholder="Amount" class="form-control amountRow form-control-sm" id="amountRow_'+rowCount+'" onchange="calcAmt('+rowCount+')" required>\
-                        </td>\
-                        <td>\
-                            <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>\
-                        </td>\
-                    </tr>';
+        var row = `<tr>
+                        <td><select name="CountryCd[]" class="form-control form-control CountryCd select2 custom-select" required="">
+                        <option value=""><?= $this->lang->line('select'); ?></option>
+                        <?php 
+                        foreach ($country as $key) { ?>
+                            <option value="<?= $key['phone_code']; ?>" <?php if($CountryCd == $key['phone_code']){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
+                        <?php } ?>                   
+                    </select></td>
+                        <td><input type="text" placeholder="Mobile" class="form-control form-control-sm" required name="mobile[]"></td>
+                        <td>
+                            <input type="text" class="form-control grossAmtRow form-control-sm" readonly="" name="totItemAmt[]" id="grossAmtRow_${rowCount}">
+                        </td>
+                        <td>
+                            <input type="number" name="percent[]" placeholder="Percent" class="form-control percentRow form-control-sm" id="percentRow_${rowCount}" onchange="calcPerAmt(${rowCount})">
+                        </td>
+                        <td>
+                            <input type="number" name="amount[]" placeholder="Amount" class="form-control amountRow form-control-sm" id="amountRow_${rowCount}" onchange="calcAmt(${rowCount})" required>
+                        </td>
+                        <td>
+                            <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>
+                        </td>
+                    </tr>`;
         $('#addBody').append(row) 
         $('#splitType').val(0);
 
@@ -164,6 +185,8 @@
         $('.amountRow').val('');
         $('.grossAmtRow').val(0);
         $('#splitType').val(0);
+
+        $('.CountryCd').select2();
    }
 
    // remove row

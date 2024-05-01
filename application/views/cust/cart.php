@@ -1,9 +1,10 @@
 <?php $this->load->view('layouts/customer/head'); ?>
 <style>
 
-    #RecommendationModal,.common-section{
-        font-size: 12px;
-    }
+#RecommendationModal,.common-section{
+    font-size: 12px;
+}
+
 .payment-btns 
 {
     padding-left: 10px;
@@ -100,12 +101,13 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
     <!-- Shoping Cart Section Begin -->
     <section class="common-section p-2 dashboard-container">
         <div class="container">
+            
             <div class="row" id="cartView">
                 <div class="col-lg-12">
                     <form method="post" id="cartForm">
                         <input type="hidden" name="goBill" value="1" />
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover table-sm">
                             <thead>
                               <tr>
                                 <th class="text-center"><?= $this->lang->line('order'); ?></th>
@@ -146,8 +148,8 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
     <div class="modal" id="RecommendationModal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div style="margin-left: 14px;margin-bottom: -15px;">
-                    <h6><?= $this->lang->line('recommendation'); ?></h6>
+                <div class="modal-header" style="background: #dbbd89;">
+                    <h6 class="modal-title text-white"><?= $this->lang->line('recommendation'); ?></h6>
                     <p id="item_name"></p>
                 </div>
                 <div class="modal-body">
@@ -155,12 +157,12 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                         <div class="col-md-12">
                             <form method="post" id="recomForm">
                                 <div class="table-responsive" >
-                                  <table class="table">
+                                  <table class="table table-hover table-sm" style="font-size: 13px;">
                                     <thead>
                                         <tr>
-                                            <td><?= $this->lang->line('item'); ?></td>
-                                            <td><?= $this->lang->line('quantity'); ?></td>
-                                            <td><?= $this->lang->line('rate'); ?></td>
+                                            <th><?= $this->lang->line('item'); ?></th>
+                                            <th><?= $this->lang->line('quantity'); ?></th>
+                                            <th><?= $this->lang->line('rate'); ?></th>
                                         </tr>
                                     </thead>
                                     <tbody id="recom-body">
@@ -181,19 +183,19 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
     <div class="modal" id="billBasedOffer">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div style="margin-left: 14px;margin-bottom: -15px;">
-                    <h6>Offers</h6>
+                <div class="modal-header" style="background: #dbbd89;">
+                    <h6 class="modal-title text-white"><?= $this->lang->line('offers'); ?></h6>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive" >
-                              <table class="table">
+                              <table class="table table-hover table-sm" style="font-size: 13px;">
                                 <thead>
                                     <tr>
-                                        <td>MinBilAmt</td>
-                                        <td>Disc</td>
-                                        <td>ItemName</td>
+                                        <th><?= $this->lang->line('bill'); ?> <?= $this->lang->line('amount'); ?></th>
+                                        <th><?= $this->lang->line('discount'); ?></th>
+                                        <th><?= $this->lang->line('item'); ?> <?= $this->lang->line('name'); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody id="billOffer-body">
@@ -489,7 +491,6 @@ function billBaseOffer(){
                     $('#billOffer-body').html(temp);
                     $('#billBasedOffer').modal();
                 }
-
 
             },
             error: (xhr, status, error) => {

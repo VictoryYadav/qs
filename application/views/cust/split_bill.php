@@ -9,6 +9,21 @@ body{
     color: <?php echo $this->session->userdata('successBtnClr'); ?>;
 }
 
+/*select2*/
+.select2-container--default .select2-selection--single {
+  background-color: #00000000;
+  border: 1px solid #ced4da;
+  border-radius: 2px;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    /*color: #717070;*/
+    line-height: 28px;
+    font-size: 12px;
+}
+.select2-container .select2-selection--single {
+  height: 29px;
+}
+
 </style>
 </head>
 
@@ -49,7 +64,7 @@ body{
 
                     <div class="col-md-4 col-9">
                         <label for=""><?= $this->lang->line('splitType'); ?> : </label>
-                        <select name="splitType" id="splitType" onchange="splitChange()" required="">
+                        <select name="splitType" id="splitType" onchange="splitChange()" required="" class="form-control form-control-sm">
                             <option value=""><?= $this->lang->line('chooseSplitType'); ?></option>
                             <option value="1"><?= $this->lang->line('foodBarSeparate'); ?></option>
                             <option value="2"><?= $this->lang->line('equalSplit'); ?></option>
@@ -60,10 +75,10 @@ body{
                 </div>
                     
                 <div class="table-responsive">
-                    <table class="table" id="splitTable">
+                    <table class="table table-sm" id="splitTable">
                         <thead>
                             <tr>
-                                <th><?= $this->lang->line('country'); ?></th>
+                                <th width="160px;"><?= $this->lang->line('country'); ?></th>
                                 <th width="155px;"><?= $this->lang->line('mobile'); ?></th>
                                 <th width="100px;"></th>
                                 <th width="100px;">%</th>
@@ -132,6 +147,10 @@ body{
 
 <script type="text/javascript">
 
+    $(document).ready(function() {
+        
+    });
+
     var totalAmt = "<?= round($payable); ?>";
     var grossAmt = "<?= round($grossItemAmt); ?>";
     var tipAmt   = "<?= round($tip); ?>";
@@ -141,7 +160,7 @@ body{
    function addRow(){
     rowCount++;
     var row = `<tr>
-                    <td><select name="CountryCd[]" class="form-control" required="" id="CountryCd">
+                    <td><select name="CountryCd[]" class="form-control CountryCd select2 custom-select" required="" id="CountryCd">
                         <option value=""><?= $this->lang->line('select'); ?></option>
                         <?php 
                         foreach ($country as $key) { ?>
@@ -162,15 +181,15 @@ body{
                         <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>
                     </td>
                 </tr>`;
-    $('#addBody').append(row) 
-    $('#splitType').val(0);
+        $('#addBody').append(row) 
+        $('#splitType').val(0);
 
-    $('.percentRow').removeAttr("readonly");
-    $('.amountRow').removeAttr("readonly");
-    $('.percentRow').val('');
-    $('.amountRow').val('');
-    $('.grossAmtRow').val(0);
-    
+        $('.percentRow').removeAttr("readonly");
+        $('.amountRow').removeAttr("readonly");
+        $('.percentRow').val('');
+        $('.amountRow').val('');
+        $('.grossAmtRow').val(0);
+        $('.CountryCd').select2();
    }
 
    // remove row

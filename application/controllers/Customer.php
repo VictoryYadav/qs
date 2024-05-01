@@ -1247,7 +1247,7 @@ class Customer extends CI_Controller {
         if($this->input->method(true)=='POST'){
             $status = 'success';
             $CNo = $this->session->userdata('CNo');
-            $orderValue = $this->db2->select('sum(Qty *  ItmRate) as itmValue')
+            $orderValue = $this->db2->select("sum(Qty *  ItmRate) as itmValue")
                                         ->get_where('Kitchen', 
                                                     array('CNo' => $CNo, 
                                                         'Stat <= ' => 5,
@@ -1255,7 +1255,7 @@ class Customer extends CI_Controller {
                                                     )->row_array();
                 $langId = $this->session->userdata('site_lang');
                 $scName = "c.SchNm$langId as SchNm";
-                $billOfferAmt = $this->db2->select('$scName, cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent ')
+                $billOfferAmt = $this->db2->select("$scName, cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent")
                             ->order_by('cod.MinBillAmt', 'DESC')
                             ->join('CustOffers c', 'c.SchCd = cod.SchCd')
                             ->get_where('CustOffersDet cod', 

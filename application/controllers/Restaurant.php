@@ -4613,6 +4613,25 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/offline_order', $data);
     }
 
+    public function mcdonald(){
+        $this->check_access();
+        $EID = authuser()->EID;
+        $data['EID'] = $EID;
+        $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
+        $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
+        $data['bills'] = $this->rest->getTAPendingBills();
+        $data['cashier'] = $this->rest->getCasherList();
+        $data['payModes'] = $this->rest->getPaymentType();
+        $data['country']    = $this->rest->getCountries();
+        $data['CountryCd']    = $this->session->userdata('CountryCd');
+        // echo "<pre>";
+        // print_r($data);
+        // die;
+        $data['title'] = 'McDonalds';
+        $data['OType'] = 100;
+        $this->load->view('rest/offline_order', $data);
+    }
+
     public function sitIn(){
         $this->check_access();
         $EType = $this->session->userdata('EType');
@@ -6440,6 +6459,12 @@ class Restaurant extends CI_Controller {
                     $pData['cust_discount'] = 0;
                     $pData['TableNo'] = 0;
                     $pData['TipAmount'] = 0;
+
+                    $CountryCd = $_POST['CountryCd'][$i];
+                    if(!empty($CountryCd)){
+                        $this->session->set_userdata('pCountryCd', $CountryCd);
+                    }
+
                     $this->session->set_userdata('CellNo', $pData['CellNo']);
                     $pData['CustId'] = createCustUser($pData['CellNo']);
 
@@ -6490,7 +6515,7 @@ class Restaurant extends CI_Controller {
             }
 
             // add merge no to string
-            $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate,k.ItmRate,  SUM(if (k.TA=1,((k.OrigRate)*k.Qty),(k.OrigRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where k1.MergeNo = km.MergeNo and k1.MergeNo = $MergeNo  and k1.EID=km.EID AND (k1.Stat = 3) and k1.BillStat = km.BillStat GROUP BY k1.EID) as TotPckCharge, $ipName, km.CNo,km.MergeNo, km.MCNo,sum(km.BillDiscAmt) as BillDiscAmt, sum(km.DelCharge) as DelCharge, sum(km.RtngDiscAmt) as totRtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType, k.TA, km.RtngDiscAmt,km.TableNo, km.CustId, c.ServChrg, c.Tips,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = 3) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND km.MergeNo = $MergeNo group by $groupby, k.TA,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by TaxType, m.ItemNm1 Asc")->result_array();
+            $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate,k.ItmRate, k.CellNo,  SUM(if (k.TA=1,((k.OrigRate)*k.Qty),(k.OrigRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge) from Kitchen k1 where k1.MergeNo = km.MergeNo and k1.MergeNo = $MergeNo  and k1.EID=km.EID AND (k1.Stat = 3) and k1.BillStat = km.BillStat GROUP BY k1.EID) as TotPckCharge, $ipName, km.CNo,km.MergeNo, km.MCNo,sum(km.BillDiscAmt) as BillDiscAmt, sum(km.DelCharge) as DelCharge, sum(km.RtngDiscAmt) as totRtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType, k.TA, km.RtngDiscAmt,km.TableNo, km.CustId, c.ServChrg, c.Tips,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = 3) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND km.MergeNo = $MergeNo group by $groupby, k.TA,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by TaxType, m.ItemNm1 Asc")->result_array();
 
             // remove string
             $MergeNo = str_replace("'","",$MergeNo);
@@ -6500,7 +6525,7 @@ class Restaurant extends CI_Controller {
             // print_r($MergeNo);
             // print_r($this->db2->last_query());
             // die;
-            
+                $cellNo = '';
                 $taxDataArray = array();
                 if(!empty($kitcheData)){
                     $initil_value = $kitcheData[0]['TaxType'];
@@ -6517,6 +6542,9 @@ class Restaurant extends CI_Controller {
 
                     foreach ($kitcheData as $kit ) {
                         $orderAmt = $orderAmt + $kit['OrdAmt'];
+                        if(!empty($kit['CellNo'])){
+                            $cellNo = $kit['CellNo'];
+                        }
                     }
 
                     //tax calculate
@@ -6548,9 +6576,19 @@ class Restaurant extends CI_Controller {
         // echo "<pre>";
         // print_r($data);
         // die;
-        
+        $data['CellNo']     = $cellNo;
+        $data['country']    = $this->rest->getCountries();
+        $data['CountryCd']  = $this->session->userdata('CountryCd');
+
         $data['title'] = $this->lang->line('splitbill');
         $this->load->view('rest/split_bill', $data); 
+    }
+
+    public function split_bills(){
+        $data['title'] = 'Split Bills';
+        $data['bills'] = $this->rest->getSplitBills();
+        $data['payModes'] = $this->rest->getPaymentType();
+        $this->load->view('rest/split_bill_list', $data);
     }
 
     public function eatary(){

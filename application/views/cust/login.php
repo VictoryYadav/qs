@@ -74,6 +74,20 @@
       box-shadow: none !important;
       outline: 0px !important;
     }
+    /*select2*/
+    .select2-container--default .select2-selection--single {
+      background-color: #dbbd89;
+      border: 1px solid #b9404c;
+      border-radius: 2px;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #717070;
+        line-height: 28px;
+        font-size: 12px;
+    }
+    .select2-container .select2-selection--single {
+      height: 29px;
+    }
     
 </style>
 </head>
@@ -101,7 +115,7 @@
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-flag"></i></span>
                     </div>
-                    <select name="CountryCd" class="form-control" required="" id="CountryCd">
+                    <select name="CountryCd" class="form-control CountryCd select2 custom-select" required="" id="CountryCd">
                         <option value=""><?= $this->lang->line('select'); ?></option>
                         <?php 
                         foreach ($country as $key) { ?>
@@ -193,6 +207,11 @@
 </body>
 
 <script type="text/javascript">
+
+  $(document).ready(function() {
+    $('.CountryCd').select2();
+  });
+
   window.onload = function() {
     document.getElementById("emailMobile").focus();
     // document.getElementById("otp").focus();

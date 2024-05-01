@@ -2039,5 +2039,20 @@ class Rest extends CI_Model{
 					->get_where('countries', array('Stat' => 0))->result_array();
 	}
 
+	public  function getSplitBills()
+	{
+		return $this->db2->select('b.BillId, b.BillNo, b.billTime, b.PaidAmt, b.CellNo, b.OType, b.TableNo, b.CNo, b.EID, b.MergeNo, b.CustId, k.FKOTNo, k.KOTNo')
+						->order_by('b.BillId', 'ASC')
+						->group_by('b.BillId')
+						->join('Kitchen k','k.MCNo = b.CNo', 'inner')
+						->get_where('Billing b', array(
+											'b.payRest' => 0,
+											'b.splitTyp' => 2,
+											'b.EID' => authuser()->EID,
+											'k.EID' => authuser()->EID
+											))
+						->result_array();
+	}
+
 	
 }

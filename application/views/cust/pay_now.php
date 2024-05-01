@@ -50,7 +50,7 @@ body{
             <div class="row mt-1">
                 <div class="col-md-12">
                     <div class="table-responsive">
-                        <table class="table order-list" id="splitTable">
+                        <table class="table table-sm order-list" id="splitTable">
                             <thead>
                                 <tr>
                                     <th style="width: 150px;"><?= $this->lang->line('amount'); ?></th>
@@ -145,7 +145,7 @@ body{
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
-                        <table class="table" >
+                        <table class="table table-sm" style="width: 100%;">
                             <thead>
                                 <tr>
                                     <th><?= $this->lang->line('bilNo'); ?></th>
