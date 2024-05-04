@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Support extends CI_Controller {
 
-    private $db2;
+    private $genDB;
 
 	public function __construct()
 	{
@@ -14,6 +14,8 @@ class Support extends CI_Controller {
         } else {
             redirect(base_url());
         }
+
+        $this->genDB = $this->load->database('GenTableData', TRUE);
         $this->load->model('Supp', 'supp');
 	}
 
@@ -27,15 +29,15 @@ class Support extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
-            $genDB = $this->load->database('GenTableData', TRUE);
+
             $updateData = $_POST;
 
             if($_POST['UItmCd'] > 0){
-                $genDB->update('AI_Items', $updateData, array('UItmCd' => $_POST['UItmCd']));
+                $this->genDB->update('AI_Items', $updateData, array('UItmCd' => $_POST['UItmCd']));
                 $response = 'Updated Records'; 
             }else{
                 unset($updateData['UItmCd']);
-                $genDB->insert('AI_Items', $updateData);
+                $this->genDB->insert('AI_Items', $updateData);
                 $response = 'Insert Records'; 
             }
 
@@ -220,9 +222,9 @@ class Support extends CI_Controller {
     }
 
     private function checkCuisine($name){
-        $genDB = $this->load->database('GenTableData', TRUE);
+        
         $cid = 0;
-        $cuisine = $genDB->select('CID')->like('Name', $name)->get('Cuisines')->row_array();
+        $cuisine = $this->genDB->select('CID')->like('Name', $name)->get('Cuisines')->row_array();
         if(!empty($cuisine)){
             $cid = $cuisine['CID'];
         }
@@ -232,7 +234,7 @@ class Support extends CI_Controller {
     public function new_customer_create(){
         $status = "error";
         $response = "Something went wrong! Try again later.";
-        $genDB = $this->load->database('GenTableData', TRUE);
+        
         if($this->input->method(true)=='POST'){
 
             // $status = 'success';
@@ -245,8 +247,8 @@ class Support extends CI_Controller {
             $pData['EndTime'] = date('H:i:s', strtotime($pData['EndTime']));
             $pData['Stat'] = 1;
             unset($pData['DOB']);
-            $genDB->insert('EIDDet',$pData);
-            $CNo = $genDB->insert_id();
+            $this->genDB->insert('EIDDet',$pData);
+            $CNo = $this->genDB->insert_id();
 
             // eid = cno
             $folderPath = 'uploads/e'.$CNo;
@@ -270,7 +272,7 @@ class Support extends CI_Controller {
                 $upData['DBName'] = $dbName;
                 $upData['DBPasswd'] = 'pass';
 
-                $genDB->update('EIDDet',$upData, array('CNo' => $CNo));
+                $this->genDB->update('EIDDet',$upData, array('CNo' => $CNo));
                 // db creation
                 $destDB = $dbName;
                 $sourceDatabase = "eatout";
@@ -338,8 +340,8 @@ class Support extends CI_Controller {
              die; 
         }
         $data['title'] = 'New Customer';
-        $data['rests'] = $genDB->select('CNo, EID, Name, CellNo, Email, CatgId')->get('EIDDet')->result_array();
-        $data['country'] = $genDB->get_where('countries', array('Stat' => 0))->result_array();
+        $data['rests'] = $this->genDB->select('CNo, EID, Name, CellNo, Email, CatgId')->get('EIDDet')->result_array();
+        $data['country'] = $this->genDB->get_where('countries', array('Stat' => 0))->result_array();
         $this->load->view('support/new_customer', $data); 
     }
 
@@ -350,8 +352,7 @@ class Support extends CI_Controller {
             $EID = $_POST['EID'];
 
             if(!empty($EID)){
-                    $genDB = $this->load->database('GenTableData', TRUE);
-                    $EIDData = $genDB->get_where('EIDDet', array('EID' => $EID))->row_array();
+                    $EIDData = $this->genDB->get_where('EIDDet', array('EID' => $EID))->row_array();
 
                     $user['FName'] = $EIDData['ContactPerson'];
                     $user['MobileNo'] = $EIDData['CellNo'];
@@ -363,7 +364,7 @@ class Support extends CI_Controller {
                     $user['Stat'] = 0;
                     $user['EID'] = $EID;
                     $genDB->insert('UsersRest', $user);
-                    $GenId = $genDB->insert_id();
+                    $GenId = $this->genDB->insert_id();
                     // end of genDB
                     $dbName = $EID.'e';
                     $db3 = $this->load->database($dbName, TRUE);

@@ -58,7 +58,7 @@
 
         var data = $(this).serializeArray();
         
-        $.post('<?= base_url('sauth/index') ?>',data,function(res){
+        $.post('<?= base_url('SAuth/index') ?>',data,function(res){
             if(res.status == 'success'){
             	window.location = `${res.response}`;
                 return false;

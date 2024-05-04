@@ -30,7 +30,7 @@
 					</div>
 
 					<div class="form-group">
-						<input type="tel" class="form-control form-control-sm" placeholder="Phone / Email" name="mobileNo" id="mobileNo" required="" autocomplete="off" />
+						<input type="tel" class="form-control form-control-sm" placeholder="Phone" name="mobileNo" id="mobileNo" required="" autocomplete="off" />
 					</div>
 
 					<div class="form-group">
@@ -42,11 +42,12 @@
 					</div>
 
 					<div class="form-group">
-						<input type="email" class="form-control form-control-sm" placeholder="Eamil" name="email" autocomplete="off" />
+						<input type="email" class="form-control form-control-sm" placeholder="Email" name="email" autocomplete="off" />
 					</div>
 
 					<div class="form-group">
-						<input type="date" class="form-control form-control-sm" placeholder="Eamil" name="DOB" autocomplete="off" />
+						<?php $date = date('Y-m-d', strtotime("-20 years")); ?>
+						<input type="date" class="form-control form-control-sm" placeholder="date" name="DOB" autocomplete="off" value="$date" />
 					</div>
 
 					<div class="form-group">
@@ -84,7 +85,7 @@
 
         var data = $(this).serializeArray();
         
-        $.post('<?= base_url('sauth/signup') ?>',data,function(res){
+        $.post('<?= base_url('SAuth/signup') ?>',data,function(res){
             if(res.status == 'success'){
             	window.location = `${res.response}`;
                 return false;
