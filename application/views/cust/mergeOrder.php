@@ -232,8 +232,8 @@
     <div class="modal" id="orderDetails">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <p class="modal-title offers-txt">Orders</p>
+                <div class="modal-header" style="background: #dbbd89;">
+                    <p class="modal-title offers-txt text-white">Orders</p>
                     <button type="button" class="close" data-dismiss="modal">
                         <i class="fa fa-times text-danger" aria-hidden="true"></i>
                     </button>
@@ -241,7 +241,7 @@
 
                 <div class="modal-body">
                     <div class="table-responsive">
-                      <table class="table table-striped">
+                      <table class="table table-sm" style="font-size: 12px;">
                             <thead>
                                 <tr>
                                     <th><?= $this->lang->line('item'); ?></th>

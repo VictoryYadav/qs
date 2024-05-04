@@ -208,6 +208,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $CI->User->getLangMenuList();
 	}
 
+	function lngShortName($langId){
+		$CI = & get_instance();
+		$CI->load->model('User');
+		return $CI->User->getLngShortName($langId);
+	}
+
 	function allOffers(){
 		$CI = & get_instance();
 		$CI->load->model('Cust');
@@ -509,6 +515,26 @@ function checkValidEmail($str){
 	    // echo("$email is not a valid email address");
 	    return 0; 
 	}
+}
+
+function translateText($text, $currentLng, $targetLng ){
+	// https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
+
+        // curl_setopt($curlSession, CURLOPT_URL, 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=hi&dt=t&q='.urlencode($text));
+
+    $curlSession = curl_init(); 
+    curl_setopt($curlSession, CURLOPT_URL, "https://translate.googleapis.com/translate_a/single?client=gtx&sl=$currentLng&tl=$targetLng&dt=t&q=".urlencode($text));
+    curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);
+    curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($curlSession);
+    $jsonData = json_decode($response);
+    curl_close($curlSession);
+
+    if(isset($jsonData[0][0][0])){
+        return $jsonData[0][0][0];
+    }else{
+        return false;
+    }
 }
 
 // Test the function

@@ -150,10 +150,10 @@
                     <table class="fixed_headers" style="width:100%;">
                         <thead>
                             <tr>
-                                <th>Restaurant</th>
-                                <th>Earned Points</th>
-                                <th>Used Points</th>
-                                <th>Available Points</th>
+                                <th><?= $this->lang->line('restaurant');?></th>
+                                <th><?= $this->lang->line('earned');?> <?= $this->lang->line('points');?></th>
+                                <th><?= $this->lang->line('used');?> <?= $this->lang->line('points');?></th>
+                                <th><?= $this->lang->line('available');?> <?= $this->lang->line('points');?></th>
                             </tr>
                         </thead>
                         <tbody id="loyaltyBody">

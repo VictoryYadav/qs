@@ -1,6 +1,19 @@
 <?php $this->load->view('layouts/customer/head'); ?>
 <style>
-
+/*select2*/
+    .select2-container--default .select2-selection--single {
+      background-color: #00000000;
+      border: 1px solid #ced4da;
+      border-radius: 2px;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #717070;
+        line-height: 28px;
+        font-size: 11px;
+    }
+    .select2-container .select2-selection--single {
+      height: 29px;
+    }
 </style>
 </head>
 
@@ -19,20 +32,19 @@
                             <div class="col-md-4 col-5">
                                 <div class="form-group">
                                     <label for=""><?= $this->lang->line('country');?></label>
-                                    <select name="country" id="country" class="form-control" onchange="getCity()">
-                                        <option value=""><?= $this->lang->line('select');?></option>
-                                        <?php  
-                                        foreach ($countryList as $key) {
-                                        ?>
-                                        <option value="<?= $key['phone_code']; ?>" <?php if($key['phone_code'] == $country) { echo 'selected'; } ?>><?= $key['country_name']; ?></option>
-                                    <?php } ?>
+                                    <select name="country" id="country" class="form-control select2 custom-select" onchange="getCity()">
+                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                            <?php 
+                                            foreach ($country as $key) { ?>
+                                                <option value="<?= $key['phone_code']; ?>" <?php if($CountryCd == $key['phone_code']){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
+                                            <?php } ?> 
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-4 col-5">
                                 <div class="form-group">
                                     <label for=""><?= $this->lang->line('city');?></label>
-                                    <select name="city" id="city" class="form-control">
+                                    <select name="city" id="city" class="form-control select2 custom-select">
                                         <option value=""><?= $this->lang->line('select');?></option>
                                     </select>
                                 </div>
@@ -46,7 +58,7 @@
                         </div>
                     </form>
                     <div class="table-responsive">
-                      <table class="table table-striped" id="tblData">
+                      <table class="table table-striped table-sm" id="tblData">
                         <thead style="font-size: 12px;">
                             <tr>
                                 <th><?= $this->lang->line('date');?></th>
@@ -72,9 +84,9 @@
                             }
                              }else{
                             ?>
-                            <tr>
-                                <td colspan="3"><?= $this->lang->line('noDataFound');?></td>
-                            </tr>
+                            <!-- <tr>
+                                <td colspan="4"><?= $this->lang->line('noDataFound');?></td>
+                            </tr> -->
                         <?php } ?>
 
                         </tbody>
@@ -102,6 +114,7 @@
 
     $(document).ready(function () {
         $('#tblData').DataTable();
+        $('#country').select2();
     });
     function RedirectPage(id, eid, dbname, dbpass) {
         window.location.href = "<?= base_url('customer/bill/')?>" + id + "?EID=" + eid + "&dbn=" + dbname + "&dbp=" + dbpass+"&ShowRatings=0";
@@ -119,7 +132,7 @@
             if(res.status == 'success'){
               var cities = res.response;
               $('#city').empty();
-              var temp = `<option value="">City</option>`;
+              var temp = `<option value=""><?= $this->lang->line('select');?></option>`;
               var select = '';
               cities.forEach((ct) => {
                 if(city == ct.city_id){
@@ -128,7 +141,7 @@
                   temp += `<option value="${ct.city_id}" ${select}>${ct.city_name}</option>`;
               });
               $('#city').html(temp);
-              
+              $('#city').select2();       
             }else{
               alert(res.response);
             }

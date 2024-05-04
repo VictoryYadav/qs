@@ -15,7 +15,7 @@
       width: 350px;
       margin-top: 75px;
       margin-bottom: auto;
-      background: #dbbd89;
+      background: #f9d99e;
       position: relative;
       display: flex;
       justify-content: center;
@@ -76,7 +76,7 @@
     }
     /*select2*/
     .select2-container--default .select2-selection--single {
-      background-color: #dbbd89;
+      background-color: #f9d99e;
       border: 1px solid #b9404c;
       border-radius: 2px;
     }
@@ -136,7 +136,7 @@
                   
                   <div class="d-flex justify-content-center mt-3 login_container">
                       <!-- <button type="button" name="button" class="btn btn-sm login_btn">Login</button> -->
-                      <input type="submit" class="btn btn-sm login_btn form-control" value="<?= $this->lang->line('log_in'); ?>">
+                      <input type="submit" class="btn btn-sm login_btn form-control" value="<?= $this->lang->line('log_in'); ?>" style="font-size: 12px !important;font-weight: bold;">
                   </div>
                 </form>
               </div>

@@ -11,7 +11,8 @@
       width: 350px;
       margin-top: 60px;
       margin-bottom: auto;
-      background: #dbbd89;
+      background: #f9d99e;
+      /*background: #dbbd89;*/
       position: relative;
       display: flex;
       justify-content: center;
@@ -77,7 +78,7 @@
 
     /*select2*/
     .select2-container--default .select2-selection--single {
-      background-color: #dbbd89;
+      background-color: #f9d99e;
       border: 1px solid #ced4da;
       border-radius: 2px;
     }
@@ -159,8 +160,8 @@
                     </div>
                     <select name="Gender" class="form-control">
                         <option value=""><?= $this->lang->line('select'); ?></option>
-                        <option value="0"><?= $this->lang->line('male'); ?></option>
-                        <option value="1"><?= $this->lang->line('female'); ?></option>
+                        <option value="1"><?= $this->lang->line('male'); ?></option>
+                        <option value="2"><?= $this->lang->line('female'); ?></option>
                         <option value="3"><?= $this->lang->line('transgender'); ?></option>                    
                     </select>
                   </div>
@@ -174,14 +175,14 @@
                   </div>
 
                   <div class="d-flex justify-content-center mt-3 login_container">
-                      <input type="submit" class="btn btn-sm login_btn form-control" value="<?= $this->lang->line('signup'); ?>">
+                      <input type="submit" class="btn btn-sm login_btn form-control" value="<?= $this->lang->line('signup'); ?>" style="font-size: 12px !important;font-weight: bold;">
                   </div>
                 </form>
               </div>
           
               <div class="mt-4">
                 <div class="d-flex justify-content-center links">
-                  You have an account?&nbsp;&nbsp;<a href="<?= base_url('customer/login');?>"><span style="font-size: 12px;color: #fff;"><?= $this->lang->line('log_in'); ?></span></a>
+                  Have an account?&nbsp;&nbsp;<a href="<?= base_url('customer/login');?>"><span style="font-size: 12px;color: red;"><?= $this->lang->line('log_in'); ?></span></a>
                 </div>
               </div>
             </div>
@@ -224,7 +225,7 @@
 <script type="text/javascript">
 
   $(document).ready(function() {
-        $('.CountryCd').select2();
+    $('.CountryCd').select2();
   });
 
   window.onload = function() {

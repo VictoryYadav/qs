@@ -1,12 +1,12 @@
-<?php $this->load->view('layouts/admin/head'); ?>
-        <?php $this->load->view('layouts/admin/top'); ?>
+<?php $this->load->view('layouts/support/head'); ?>
+        <?php $this->load->view('layouts/support/top'); ?>
             <!-- ========== Left Sidebar Start ========== -->
             <div class="vertical-menu">
 
                 <div data-simplebar class="h-100">
 
                     <!--- Sidemenu -->
-                    <?php $this->load->view('layouts/admin/sidebar'); ?>
+                    <?php $this->load->view('layouts/support/sidebar'); ?>
                     <!-- Sidebar -->
                 </div>
             </div>
@@ -250,7 +250,7 @@
                 </div>
                 <!-- End Page-content -->
 
-                <?php $this->load->view('layouts/admin/footer'); ?>
+                <?php $this->load->view('layouts/support/footer'); ?>
             </div>
             <!-- end main content-->
 
@@ -258,13 +258,13 @@
         <!-- END layout-wrapper -->
 
         <!-- Right Sidebar -->
-        <?php $this->load->view('layouts/admin/color'); ?>
+        <?php $this->load->view('layouts/support/color'); ?>
         <!-- /Right-bar -->
 
         <!-- Right bar overlay-->
         <div class="rightbar-overlay"></div>
         
-        <?php $this->load->view('layouts/admin/script'); ?>
+        <?php $this->load->view('layouts/support/script'); ?>
 <!-- loader -->
 <div class="container text-center" id="loadBlock" style="display: none;">
     <img src="<?= base_url('assets/images/loader.gif'); ?>" alt="Eat Out">
@@ -297,7 +297,6 @@
         });
     });
 
-
     function updateData(EID, CatgId){
         $.post('<?= base_url('support/update_customer') ?>',{EID:EID},function(res){
             if(res.status == 'success'){
@@ -315,8 +314,5 @@
             }
         });
     }
-
-
-
     
 </script>

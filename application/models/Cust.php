@@ -638,6 +638,7 @@ class Cust extends CI_Model{
 				$kitchenObj['EDT'] = $edtTime;
 				$kitchenObj['TA'] = $postData['takeAway'];
 				$kitchenObj['PckCharge'] = 0;
+				$kitchenObj['langId'] =$this->session->userdata('site_lang');
 				if($kitchenObj['TA'] == 1){
 					$kitchenObj['PckCharge'] = $postData['PckCharge'];
 				}
@@ -1508,15 +1509,15 @@ class Cust extends CI_Model{
                         }
                     }
 
-                    
-                    // store to gen db
-                    // $custPymtObj['BillId'] = $lastInsertBillId;
-                    // $custPymtObj['CustId'] = $CustId;
-                    // $custPymtObj['BillNo'] = $newBillNo;
-                    // $custPymtObj['EID'] = $EID;
-                    // $custPymtObj['PaidAmt'] = $totalAmount;
-                    // $custPymtObj['PaymtMode'] = $paymentMode;
-                    // $genTblDb->insert('CustPymts', $custPymtObj);
+                    // store to gen db whenever bill generated
+
+                    $custPymtObj['BillId'] 		= $lastInsertBillId;
+                    $custPymtObj['CustId'] 		= $CustId;
+                    $custPymtObj['BillNo'] 		= $lastInsertBillId;
+                    $custPymtObj['EID'] 		= $EID;
+                    $custPymtObj['PaidAmt'] 	= $totalAmount;
+                    $custPymtObj['PaymtMode'] 	= $paymentMode;
+                    $genTblDb->insert('CustPymts', $custPymtObj);
                     
                     $kstat = ($EType == 5)?3:2;
                     // check for customer split bill 9-jan-24
@@ -1603,7 +1604,7 @@ class Cust extends CI_Model{
 	}
 
 	public function getCityListByCountry($phone_code){
-		return $this->db2->get_where('city', array('status' => 0))->result_array();
+		return $this->db2->get_where('city', array('status' => 0, 'phone_code' => $phone_code))->result_array();
 	}
 
 	public function getUserDetails($custId){

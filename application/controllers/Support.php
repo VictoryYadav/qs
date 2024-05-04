@@ -17,6 +17,12 @@ class Support extends CI_Controller {
         $this->load->model('Supp', 'supp');
 	}
 
+    public function index(){
+
+        $data['title'] = $this->lang->line('dashboard');
+        $this->load->view('support/index', $data);
+    }
+
     public function uitemcd_list(){
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -510,6 +516,14 @@ class Support extends CI_Controller {
                   ));
             die; 
         }
+    }
+
+
+    public function logout(){
+        // $this->session->unset_userdata('logged_in');
+        
+        $this->session->sess_destroy();
+        redirect(base_url('supportlogin'));
     }
   
 

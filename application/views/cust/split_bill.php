@@ -44,26 +44,28 @@ body{
                 <input type="hidden" name="tot_sgst" value="<?= round($tot_sgst); ?>">
 
                 <div class="row">
-                    <div class="col-md-2 col-4">
+                    <div class="col-md-2 col-6">
                         <label for=""><?= $this->lang->line('payable'); ?>: </label>
                         <b id="payable"><?= convertToUnicodeNumber(round($payable)); ?></b>
                     </div>
-                    <div class="col-md-2 col-5">
+                    <div class="col-md-2 col-6">
                         <label for=""><?= $this->lang->line('orderAmount'); ?>: </label>
                         <b id="grossAmt"><?= convertToUnicodeNumber(round($grossItemAmt)); ?></b>
                     </div>
 
-                    <div class="col-md-2 col-3">
+                    <div class="col-md-2 col-4">
                         <label for=""><?= $this->lang->line('tips'); ?>: </label>
                         <b id="tipAmt"><?= convertToUnicodeNumber(round($tip)); ?></b>
                     </div>
                     
-                    <div class="col-md-2 col-3">
+                    <div class="col-md-2 col-8">
                         <button class="btn btn btn-sm btn-success" onclick="addRow()"><i class="fa fa-plus"></i></button>
                     </div>
 
-                    <div class="col-md-4 col-9">
+                    <div class="col-md-2 col-4">
                         <label for=""><?= $this->lang->line('splitType'); ?> : </label>
+                    </div>
+                    <div class="col-md-2 col-8">
                         <select name="splitType" id="splitType" onchange="splitChange()" required="" class="form-control form-control-sm">
                             <option value=""><?= $this->lang->line('chooseSplitType'); ?></option>
                             <option value="1"><?= $this->lang->line('foodBarSeparate'); ?></option>

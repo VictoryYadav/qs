@@ -80,6 +80,11 @@
     }
 }
 
+table th,td{
+    text-align: center;
+    vertical-align: center;
+}
+
 
 </style>
 
@@ -106,12 +111,13 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                 <div class="col-lg-12">
                     <form method="post" id="cartForm">
                         <input type="hidden" name="goBill" value="1" />
+
                         <div class="table-responsive">
                             <table class="table table-hover table-sm">
                             <thead>
                               <tr>
                                 <th class="text-center"><?= $this->lang->line('order'); ?></th>
-                                <th class="text-center"><?= $this->lang->line('quantity'); ?></th>
+                                <th width="95px"><?= $this->lang->line('quantity'); ?></th>
                                 <th class="text-center"><?= $this->lang->line('rate'); ?></th>
                                 <th class="text-center"></th>
                               </tr>
@@ -287,7 +293,7 @@ function billBaseOffer(){
                             template += ` <td>${italicItem}</td> `;
                         }
 
-                        template += ` <input type="hidden" name="OrdNo[]" value="${item.OrdNo}" /><td class="text-center">
+                        template += ` <input type="hidden" name="OrdNo[]" value="${item.OrdNo}" /><td >
                             <div class="input-group" style="width: 94px;height: 23px;margin-left: 5px;">
                                 <span class="input-group-btn">
                                     <button type="button" id="minus-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 25px;"  onclick="decQty(${item.OrdNo})">-

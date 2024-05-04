@@ -66,3 +66,9 @@ $route['logout'] = 'AuthController/logout';
 
 $route['page_not_found'] = 'Rcheck/page_not_found';
 $route['qr'] = 'Rcheck/index';
+
+
+// support
+$route['supportlogin'] = 'SAuth/index';
+$route['supportsignup'] = 'SAuth/signup';
+

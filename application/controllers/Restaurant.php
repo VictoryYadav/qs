@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Restaurant extends CI_Controller {
-// Restaurant 
+
     private $db2;
 	public function __construct()
 	{
@@ -60,7 +60,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function add_user(){
-        $this->check_access();
+        // $this->check_access();
         if($this->input->method(true)=='POST'){
             // echo "<pre>";
             // print_r($_POST);
@@ -101,6 +101,8 @@ class Restaurant extends CI_Controller {
         $data['users'] = $this->rest->getUserList();
         $data['restRole'] = $this->rest->getUserRestRole();
         $data['userType'] = $this->rest->getUserTypeList();
+        // $data['country']    = $this->rest->getCountries();
+        // $data['CountryCd']    = $this->session->userdata('CountryCd');
 		$this->load->view('rest/add_user',$data);
     }
 
@@ -2923,7 +2925,7 @@ class Restaurant extends CI_Controller {
                 $kitchenObj['SDetCd'] = $SDetCd[$i];
                 $kitchenObj['CustItem'] = $CustItem[$i];
                 $kitchenObj['CustItemDesc'] = $CustItemDesc[$i];
-
+                $kitchenObj['langId'] =$this->session->userdata('site_lang');
                 // edt
                 $date = date("Y-m-d H:i:s");
                 $date = strtotime($date);
@@ -3823,7 +3825,7 @@ class Restaurant extends CI_Controller {
 
     public function bill($billId){
 
-        $data['title'] = 'Billing';
+        $data['title'] = $this->lang->line('billing');
         $data['billId'] = $billId;
         $this->load->view('rest/billing', $data);
     }
@@ -4374,9 +4376,18 @@ class Restaurant extends CI_Controller {
     public function kot_print($MCNo, $mergeNo, $FKOTNo, $KOTNo){
         $data['kotList'] = $this->rest->getKotList($MCNo, $mergeNo, $FKOTNo, $KOTNo);
 
+        $langId = $this->session->userdata('site_lang');
+
         $group_arr = [];
-        foreach ($data['kotList'] as $key ) {
+        foreach ($data['kotList'] as &$key ) {
             $kot = $key['KitCd'];
+            if($langId != $key['langId']){
+                $text = $key['CustRmks'];
+                $currentLng = lngShortName($key['langId']);
+                $targetLng  = lngShortName($langId);
+                $key['CustRmks'] = translateText($text, $currentLng, $targetLng);
+            }
+
             if(!isset($group_arr[$kot])){
                 $group_arr[$kot] = [];
             }

@@ -47,6 +47,19 @@
                                                     </div>
                                                 </div>
 
+                                                <!-- <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('country'); ?></label>
+                                                        <select class="form-control form-control-sm select2 custom-select" required="" name="CountryCd" id="CountryCd">
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                            <?php 
+                                                            foreach ($country as $key) { ?>
+                                                                <option value="<?= $key['phone_code']; ?>" <?php if($CountryCd == $key['phone_code']){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
+                                                            <?php } ?>  
+                                                        </select>
+                                                    </div>
+                                                </div> -->
+
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('mobile'); ?></label>
@@ -235,6 +248,7 @@ $(document).ready(function () {
     $('#usersTBL').DataTable();
     $('#MobileNo').prop('readonly', false);
     $('#PEmail').prop('readonly', false); 
+    // $('#CountryCd').select2();
 });
 
 function editData(RUserId, FName, LName, MobileNo, PEmail, DOB, Gender, UTyp, RestRole, Stat, EID){

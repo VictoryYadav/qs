@@ -29,6 +29,7 @@ $lang['history'] = 'History';
 $lang['bookTable'] = 'Book Table';
 $lang['referOutlet'] = 'Refer Outlet';
 $lang['username'] = 'Username';
+$lang['login'] = 'Login';
 $lang['logout'] = 'Logout';
 $lang['aboutus'] = 'About Us';
 $lang['offers'] = 'Offers';
@@ -398,6 +399,9 @@ $lang['details']			= 'Details';
 $lang['loyalty']			= 'Loyalty';
 $lang['format']				= 'Format';
 $lang['download']			= 'Download';
+$lang['earned']				= 'Earned';
+$lang['used']				= 'Used';
+$lang['points']				= 'Points';
 
 
 

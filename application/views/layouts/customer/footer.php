@@ -111,8 +111,8 @@ h6{
     <div class="modal" id="offers-modal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <p class="modal-title offers-txt"><?= $this->lang->line('offers'); ?></p>
+                <div class="modal-header" style="background: #dbbd89;">
+                    <p class="modal-title offers-txt text-white"><?= $this->lang->line('offers'); ?></p>
                     <button type="button" class="close" data-dismiss="modal">
                         <i class="fa fa-times text-danger" aria-hidden="true"></i>
                     </button>
@@ -145,7 +145,7 @@ h6{
                             }
                             ?>
 
-                            <div class="ad-listing-list mt-20">
+                            <div class="ad-listing-list mt-20" style="border:1px solid #ede8e8;">
                                 <div class="row p-1">
                                     <div class="col-lg-12 col-md-12 col-sm-12 text-center">
                                         <img src="<?= base_url($imgsrc); ?>" alt="<?= $name; ?>" style="height: 100px;width: 200px;background-size: cover;">
@@ -167,8 +167,8 @@ h6{
     <div class="modal" id="Ent_modal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <p class="modal-title offers-txt"><?= $this->lang->line('entertainment'); ?></p>
+                <div class="modal-header" style="background: #dbbd89;">
+                    <p class="modal-title offers-txt text-white"><?= $this->lang->line('entertainment'); ?></p>
                     <button type="button" class="close" data-dismiss="modal">
                         <i class="fa fa-times text-danger" aria-hidden="true"></i>
                     </button>

@@ -1244,6 +1244,7 @@ class Customer extends CI_Controller {
     public function billBasedOfferUpdate(){
         $res = '';
         $status = 'error';
+        $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
             $status = 'success';
             $CNo = $this->session->userdata('CNo');
@@ -1251,7 +1252,8 @@ class Customer extends CI_Controller {
                                         ->get_where('Kitchen', 
                                                     array('CNo' => $CNo, 
                                                         'Stat <= ' => 5,
-                                                        'BillStat' => 0)
+                                                        'BillStat' => 0,
+                                                        'EID' => $EID)
                                                     )->row_array();
                 $langId = $this->session->userdata('site_lang');
                 $scName = "c.SchNm$langId as SchNm";
@@ -1260,7 +1262,7 @@ class Customer extends CI_Controller {
                             ->join('CustOffers c', 'c.SchCd = cod.SchCd')
                             ->get_where('CustOffersDet cod', 
                              array('cod.MinBillAmt < ' => $orderValue['itmValue'],
-                                'c.SchCatg <' => 20))
+                                'c.SchCatg <' => 20,'c.EID' => $EID))
                             ->row_array();
 
                 if(!empty($billOfferAmt)){
@@ -1269,17 +1271,16 @@ class Customer extends CI_Controller {
                                          'SDetCd' => $billOfferAmt['SDetCd'],
                                          'BillDiscAmt' => $billOfferAmt['Disc_Amt'],
                                          'BillDiscPcent' => $billOfferAmt['Disc_pcent']
-                                         ), array('CNo' => $CNo));   
+                                         ), array('CNo' => $CNo, 'EID' => $EID));   
                                     
                      if($billOfferAmt['Disc_ItemId'] > 0){
 
                         $kitcheData = $this->db2->order_by('OrdNo', 'ASC')
-                                                ->get_where('Kitchen', array('CNo' => $CNo))
+                                                ->get_where('Kitchen', array('CNo' => $CNo, 'EID' => $EID))
                                                 ->row_array();
 
                         $Disc_ItemId = $billOfferAmt['Disc_ItemId'];
                         $Disc_IPCd = $billOfferAmt['Disc_IPCd'];
-                        $EID = $kitcheData['EID'];
                         $ChainId = $kitcheData['ChainId'];
                         $TableNo = $kitcheData['TableNo'];
 
@@ -1362,15 +1363,16 @@ class Customer extends CI_Controller {
         $data['Cash'] = $this->session->userdata('Cash');
         $data['KOTNo'] = $this->session->userdata('KOTNo');
         $CNo = $this->session->userdata('CNo');
-
-        $kitchenData = $this->db2->select('MCNo, MergeNo')->order_by('CNo', 'DESC')->get_where('KitchenMain', array('EID' => $data['EID'], 'CustId' => $data['CustId'], 'CNo' => $CNo))->row_array();
-
-        $data['MergeNo'] = $kitchenData['MergeNo'];
-        $MergeNo = $kitchenData['MergeNo'];
         $EID = $data['EID'];
 
-        $mergeCount = $this->db2->query("SELECT count(kk.CNo) as count FROM KitchenMain kk WHERE kk.MergeNo=$MergeNo and kk.EID=$EID and kk.BillStat=0 and kk.MCNo=(SELECT k1.MCNo from KitchenMain k1 where k1.CNo = $CNo and k1.EID=$EID and k1.MergeNo=$MergeNo and k1.BillStat=0 group by k1.CNo)")->row_array();
-        $data['mergeCount'] = $mergeCount['count'];
+        $kitchenData = $this->db2->select('MCNo, MergeNo')->order_by('CNo', 'DESC')->get_where('KitchenMain', array('EID' => $data['EID'], 'CustId' => $data['CustId'], 'CNo' => $CNo))->row_array();
+        if(!empty($kitchenData)){
+            $data['MergeNo'] = $kitchenData['MergeNo'];
+            $MergeNo = $kitchenData['MergeNo'];
+            
+            $mergeCount = $this->db2->query("SELECT count(kk.CNo) as count FROM KitchenMain kk WHERE kk.MergeNo=$MergeNo and kk.EID=$EID and kk.BillStat=0 and kk.MCNo=(SELECT k1.MCNo from KitchenMain k1 where k1.CNo = $CNo and k1.EID=$EID and k1.MergeNo=$MergeNo and k1.BillStat=0 group by k1.CNo)")->row_array();
+            $data['mergeCount'] = $mergeCount['count'];
+        }
 
         $bilchk = billCheck($CNo);
         if(!empty($bilchk)){
@@ -2165,7 +2167,6 @@ class Customer extends CI_Controller {
     public function transactions(){
 
         $data['title'] = $this->lang->line('transactions');
-        $data['country'] = 91;
         $data['city'] = 0;
         if($this->input->method(true)=='POST'){            
             $data['country'] = $_POST['country'];
@@ -2189,7 +2190,8 @@ class Customer extends CI_Controller {
                             ->where($whr)
                             ->get_where('CustPymts cp', array('cp.CustId' => $CustId))
                             ->result_array();
-        $data['countryList'] = $this->cust->getCountryList();
+        $data['country']    = $this->cust->getCountries();
+        $data['CountryCd']    = $this->session->userdata('CountryCd');
         $this->load->view('cust/transactions', $data);
     }
 
@@ -2274,6 +2276,9 @@ class Customer extends CI_Controller {
                 $this->session->set_flashdata('success','Record Inserted.');
             }
         }
+
+        $data['country']    = $this->cust->getCountries();
+        $data['CountryCd']  = $this->session->userdata('CountryCd');
 
         $this->load->view('contact', $data);
     }
@@ -2712,8 +2717,10 @@ class Customer extends CI_Controller {
                 if($data['detail'] > 0){
                     $billData = $this->db2->select('BillId, Stat, CNo, PaidAmt')
                                         ->order_by('Billid','DESC')
-                                        ->get_where('Billing', array('CustId' => $CustId,
-                                                             'EID' => authuser()->EID
+                                        ->get_where('Billing', array('CustId' => $CustId
+                                            ,
+                                            'payRest' => 0,
+                                            'EID' => authuser()->EID
                                                             )
                                                     )->row_array();
                     if(!empty($billData)){

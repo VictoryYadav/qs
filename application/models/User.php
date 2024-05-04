@@ -154,6 +154,15 @@ class User extends CI_Model{
                                 )
                         ->result_array();	
 	}
+	
+	public function getLngShortName($langId){
+		$EID = authuser()->EID;
+		return $this->db2->select("shortName")
+                        ->get_where('Eat_Lang', 
+                            				array('EID' => $EID, 'LCd' => $langId)
+                                )
+                        ->row('shortName');	
+	}
 
 	// common for create user at first time enter our app
 	public function createCustomerUser($mobile){

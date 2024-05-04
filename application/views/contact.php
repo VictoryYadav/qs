@@ -1,6 +1,19 @@
 <?php $this->load->view('layouts/customer/head'); ?>
 <style>
-
+/*select2*/
+    .select2-container--default .select2-selection--single {
+      background-color: #00000000;
+      border: 1px solid #ced4da;
+      border-radius: 2px;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #717070;
+        line-height: 28px;
+        font-size: 11px;
+    }
+    .select2-container .select2-selection--single {
+      height: 29px;
+    }
 </style>
 </head>
 
@@ -23,6 +36,16 @@
                         <div class="form-group">
                             <input type="text" class="form-control" name="fullname" placeholder="FullName" required="">
                         </div>
+                        <div class="form-group">
+                            <select name="CountryCd" class="form-control CountryCd select2 custom-select" required="" >
+                                <option value=""><?= $this->lang->line('select'); ?></option>
+                                <?php 
+                                foreach ($country as $key) { ?>
+                                    <option value="<?= $key['phone_code']; ?>" <?php if($CountryCd == $key['phone_code']){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
+                                <?php } ?> 
+                            </select>
+                        </div>
+
                         <div class="form-group">
                             <input type="tel" class="form-control" name="phone" placeholder="Phone No" required="">
                         </div>
@@ -72,9 +95,10 @@
 </body>
 
 <script type="text/javascript">
+
    $(document).ready(function() {
-        
-    });
+     $('.CountryCd').select2();
+   });
 
 </script>
 
