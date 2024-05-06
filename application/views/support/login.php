@@ -31,7 +31,7 @@
 					</div>
 
 					<div class="form-group">
-						<input type="tel" class="form-control form-control-sm" placeholder="Phone" name="mobileNo" required="" autocomplete="off" />
+						<input type="text" class="form-control form-control-sm" placeholder="Phone" name="mobileNo" required="" autocomplete="off" minlength="10" maxlength="10" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
 					</div>
 					<div class="form-group">
 						<input type="password" class="form-control form-control-sm" placeholder="Password" name="pwd" required="" autocomplete="off" />
@@ -57,7 +57,7 @@
 	    $('#countryCd').select2();
 	});
 
-   $('#signupForm').on('submit', function(e){
+   $('#loginForm').on('submit', function(e){
         e.preventDefault();
 
         var data = $(this).serializeArray();
