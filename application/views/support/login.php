@@ -10,6 +10,7 @@
     <link href="<?php echo base_url(); ?>assets_admin/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets_admin/css/animate.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets_admin/css/style.css" rel="stylesheet">
+    <link href="<?= base_url() ?>assets_admin/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body style="background-image:url(<?php echo base_url(); ?>assets_admin/images/bg.jpg); background-repeat:no-repeat; background-size: cover;">
     <div style="background: rgba(0, 0, 0, 0); padding-top:10%; min-height: 100%;">
@@ -21,7 +22,7 @@
 				<form class="m-t" method="POST" id="loginForm">
 
 					<div class="form-group">
-						<select name="countryCd" id="countryCd" class="form-control form-control-sm" required="">
+						<select name="countryCd" id="countryCd" class="form-control form-control-sm select2 custom-select" required="">
 							<option value=""><?= $this->lang->line('select'); ?></option>
 							<?php 
                         foreach ($country as $key) { ?>
@@ -50,6 +51,7 @@
     </div>
     <script src="<?php echo base_url(); ?>assets_admin/js/jquery-3.1.1.min.js"></script>
     <script src="<?php echo base_url(); ?>assets_admin/js/bootstrap.min.js"></script>
+    <script src="<?= base_url() ?>assets_admin/libs/select2/js/select2.min.js"></script>
 </body>
 <script type="text/javascript">
 
