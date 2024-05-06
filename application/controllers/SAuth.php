@@ -26,11 +26,11 @@ class SAuth extends CI_Controller {
             $pwdHash 	= md5($_POST['pwd']);
             $countryCd 	= $_POST['countryCd'];
 
-            $user = $this->genDB->get_where('usersSupport', array('mobileNo' => $mobile, 'pwdHash' => $pwdHash, 'countryCd' => $countryCd))->row_array();
+            $user = $this->genDB->get_where('usersSupport', array('mobileNo' => $mobile, 'pwdHash' => $pwdHash, 'countryCd' => $countryCd, 'stat' => 0))->row_array();
             if(!empty($user)){
             	$session_data = array(
                         'userId' => $user['userId'],
-                        'fullnamemobileNo' => $user['fullnamemobileNo'],
+                        'fullname' => $user['fullname'],
                         'mobileNo' => $user['mobileNo'],
                         'email' => $user['email'],
                         'countryCd' => $user['countryCd']
@@ -38,6 +38,8 @@ class SAuth extends CI_Controller {
                 $this->session->set_userdata('logged_in', $session_data);
             	$status = 'success';
             	$response = base_url('support/index');
+            }else{
+            	$response = 'Password Does not Matched!!';
             }
 
             header('Content-Type: application/json');

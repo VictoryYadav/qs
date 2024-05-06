@@ -20,7 +20,7 @@
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <div class="row" id="showBlock">
+                        <div class="row showBlock" >
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
@@ -197,7 +197,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row showBlock">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
@@ -287,7 +287,7 @@
               // location.reload();
               var EID = res.response.EID;
               var CatgId = res.response.CatgId;
-              $('#showBlock').hide();
+              $('.showBlock').hide();
               $('#loadBlock').show();
               setInterval(function(){ updateData(EID, CatgId); }, 30000);
               
@@ -302,7 +302,7 @@
             if(res.status == 'success'){
               alert(res.response);
               $('#loadBlock').hide();
-              $('#showBlock').show();
+              $('.showBlock').show();
               
               // $('#loginUrl').attr("href", "<?= base_url('login?o='); ?>"+EID+"&c="+CatgId);
               $('#signinurl').html("<?= base_url('login?o='); ?>"+EID+"&c="+CatgId);

@@ -24,6 +24,8 @@
         
         <li><a href="<?= base_url('support/new_customer_create'); ?>">New Restaurant</a></li>
 
+        <li><a href="<?= base_url('support/users'); ?>">Users</a></li>
+
         <li><a href="<?= base_url('support/loyality'); ?>">Loyalty</a></li>
         
     </ul>

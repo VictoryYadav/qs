@@ -31,7 +31,7 @@
 					</div>
 
 					<div class="form-group">
-						<input type="tel" class="form-control form-control-sm" placeholder="Phone / Email" name="mobileNo" required="" autocomplete="off" />
+						<input type="tel" class="form-control form-control-sm" placeholder="Phone" name="mobileNo" required="" autocomplete="off" />
 					</div>
 					<div class="form-group">
 						<input type="password" class="form-control form-control-sm" placeholder="Password" name="pwd" required="" autocomplete="off" />
@@ -41,6 +41,10 @@
 					<?php endif; ?>
 					<button type="submit" class="btn btn-primary block full-width m-b"><?= $this->lang->line('login'); ?></button>
 				</form>
+				<?php 
+	                foreach ($country as $key) { ?>
+	                	<a href="<?= $key['domainUrl']; ?>supportlogin" target="_blank"><?= $key['country_name']; ?></a> |
+	            <?php } ?>  
 			</div>
 		</div>
     </div>

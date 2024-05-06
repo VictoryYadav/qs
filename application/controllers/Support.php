@@ -195,8 +195,8 @@ class Support extends CI_Controller {
                                 }
 
                                 if(!empty($itemData)){
-                                    $genDB = $this->load->database('GenTableData', TRUE);
-                                    $genDB->insert_batch('AI_Items', $itemData);
+                                    
+                                    $this->genDB->insert_batch('AI_Items', $itemData);
                                     $status = 'success';
                                     $response = 'Data Inserted.';
                                 }
@@ -251,10 +251,15 @@ class Support extends CI_Controller {
             $CNo = $this->genDB->insert_id();
 
             // eid = cno
-            $folderPath = 'uploads/e'.$CNo;
+            // $folderPath = 'uploads/e'.$CNo;
+            $root = $_SERVER["DOCUMENT_ROOT"];
+            // $folderPath = $root . "/uploads/e$CNo";
+            $folderPath = "/var/www/eo.vtrend.org/public_html/uploads/e$CNo";
+            
             if (!file_exists($folderPath)) {
                 // Create the directory
-                mkdir($folderPath, 0777, true);
+                mkdir($folderPath, 0777, TRUE);
+                chmod($folderPath, 0777);
             }
 
             $response = "Restaurant Created.";
@@ -364,7 +369,7 @@ class Support extends CI_Controller {
                     // $user['DOB'] = date('Y-m-d', strtotime($EIDData['DOB']));
                     $user['Stat'] = 0;
                     $user['EID'] = $EID;
-                    $genDB->insert('UsersRest', $user);
+                    $this->genDB->insert('UsersRest', $user);
                     $GenId = $this->genDB->insert_id();
                     // end of genDB
                     $dbName = $EID.'e';
@@ -526,6 +531,37 @@ class Support extends CI_Controller {
         
         $this->session->sess_destroy();
         redirect(base_url('supportlogin'));
+    }
+
+    public function users(){
+
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+
+            $status = 'success';
+            $stat = 0;
+            $response = 'User Activated.';
+
+            if($_POST['stat'] == 0){
+                $stat = 1;
+                $response = 'User Deactivated.';
+            }
+            
+            $this->genDB->update('usersSupport', array('stat' => $stat), array('userId' => $_POST['userId']));
+            
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = 'Support Users';
+        $data['users'] = $this->genDB->get('usersSupport')->result_array();
+        $this->load->view('support/users', $data); 
     }
   
 
