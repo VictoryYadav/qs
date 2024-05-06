@@ -25,7 +25,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table id="restTBL" class="table table-bordered topics">
+                                            <table id="userTBL" class="table table-bordered topics">
                                                 <thead>
                                                 <tr>
                                                     <th>#</th>
@@ -93,6 +93,11 @@
 
 
 <script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#userTBL').DataTable();
+    });
+
     function changeStatus(userId, stat){
 
         $.post('<?= base_url('support/users') ?>',{userId:userId, stat:stat},function(res){
