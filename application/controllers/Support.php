@@ -340,7 +340,8 @@ class Support extends CI_Controller {
              die; 
         }
         $data['title'] = 'New Customer';
-        $data['rests'] = $this->genDB->select('CNo, EID, Name, CellNo, Email, CatgId')->get('EIDDet')->result_array();
+        $data['rests'] = $this->genDB->select('CNo, EID, Name, CellNo, Email, CatgId')
+        ->order_by('CNo', 'DESC')->get('EIDDet')->result_array();
         $data['country'] = $this->genDB->get_where('countries', array('Stat' => 0))->result_array();
         $this->load->view('support/new_customer', $data); 
     }

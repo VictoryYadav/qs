@@ -54,6 +54,19 @@
 
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
+                                                    <label><?= $this->lang->line('country'); ?></label>
+                                                    <select  name="CountryCd" id="CountryCd" class="form-control form-control-sm select2 custom-select" required="">
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <?php 
+                                                        foreach ($country as $key) { ?>
+                                                            <option value="<?= $key['phone_code']; ?>"><?= $key['country_name']; ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 col-6">
+                                                <div class="form-group">
                                                     <label><?= $this->lang->line('mobile'); ?></label>
                                                     <input type="number" name="CellNo" id="CellNo" class="form-control form-control-sm" required="">
                                                 </div>
@@ -93,19 +106,6 @@
                                                 <div class="form-group">
                                                     <label><?= $this->lang->line('category'); ?></label>
                                                     <input type="text" name="CatgId" id="CatgId" class="form-control form-control-sm" value="1">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-3 col-6">
-                                                <div class="form-group">
-                                                    <label><?= $this->lang->line('country'); ?></label>
-                                                    <select  name="CountryCd" id="CountryCd" class="form-control form-control-sm select2 custom-select" required="">
-                                                        <option value=""><?= $this->lang->line('select'); ?></option>
-                                                        <?php 
-                                                        foreach ($country as $key) { ?>
-                                                            <option value="<?= $key['phone_code']; ?>"><?= $key['country_name']; ?></option>
-                                                        <?php } ?>
-                                                    </select>
                                                 </div>
                                             </div>
 
