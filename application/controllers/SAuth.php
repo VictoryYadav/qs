@@ -39,7 +39,7 @@ class SAuth extends CI_Controller {
             	$status = 'success';
             	$response = base_url('support/index');
             }else{
-            	$response = 'Password Does not Matched!!';
+            	$response = 'Password Does not Match!!';
             }
 
             header('Content-Type: application/json');
@@ -65,6 +65,7 @@ class SAuth extends CI_Controller {
             // die;
 
             $supp = $_POST;
+            $supp['userType'] = 2;
             $supp['pwdHash'] = md5($supp['pwd']);
 
             $userId = $this->genDB->insert('usersSupport', $supp);

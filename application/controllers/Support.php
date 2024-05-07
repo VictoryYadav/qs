@@ -563,6 +563,175 @@ class Support extends CI_Controller {
         $data['users'] = $this->genDB->get('usersSupport')->result_array();
         $this->load->view('support/users', $data); 
     }
+
+    public function user_access(){
+
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+
+            if ($_POST['type'] == 'available') {
+                $userId =  $_POST['userId'];
+                $city = $_POST['city'];
+                $country = $_POST['countryCd'];
+
+                $status = 'success';
+                $response = $this->genDB->select("ed.EID, ed.Name")
+                                ->order_by('Name', 'ASC')
+                                ->get_where("EIDDet ed", array('suppUserId' => 0, 'Stat' => 0, 'city_id' => $city, 'CountryCd' => $country))
+                                ->result_array();
+            }
+
+            if ($_POST['type'] == 'assigned') {
+                $userId =  $_POST['userId'];
+                $city = $_POST['city'];
+                $country = $_POST['countryCd'];
+
+                $status = 'success';
+                $response = $this->genDB->select("ed.EID, ed.Name")
+                                ->order_by('Name', 'ASC')
+                                ->get_where("EIDDet ed", array('ed.suppUserId' => $userId, 'city_id' => $city, 'CountryCd' => $country))
+                                ->result_array();
+            }
+
+            if ($_POST['type'] == 'setRest') {
+                $userId =  $_POST['userId'];
+                
+                foreach ($_POST['EID'] as $key) {
+                $this->genDB->update('EIDDet', array('suppUserId' => $userId), array('EID' => $key));
+                    
+                }
+
+                $status = 'success';
+                $response = 'Restaurant Assigned.';
+            }
+            
+            if ($_POST['type'] == 'removeRest') {
+                $userId =  $_POST['userId'];
+                
+                foreach ($_POST['EID'] as $key) {
+                $this->genDB->update('EIDDet', array('suppUserId' => 0), array('EID' => $key, 'suppUserId' => $userId));
+                    
+                }
+
+                $status = 'success';
+                $response = 'Restaurant Assigned.';
+            }
+            
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = 'Support User Access';
+        $data['users'] = $this->genDB->get('usersSupport')->result_array();
+        $data['country'] = $this->genDB->get_where('countries', array('Stat' => 0))->result_array(); 
+        $this->load->view('support/supp_user_access', $data); 
+    }
+
+    public function get_city_by_country(){
+
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+            
+            $response = $this->genDB->get_where('city', array('phone_code' => $_POST['phone_code']) )->result_array();
+            $status = 'success';
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function access_assign(){
+
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+
+            if ($_POST['type'] == 'main') {
+                $userId =  $_POST['userId'];
+
+                $status = 'success';
+                $response = $this->genDB->select("EID, Name")
+                                ->order_by('Name', 'ASC')
+                                ->get_where("EIDDet", array('suppUserId' => $userId))
+                                ->result_array();
+            }
+
+            if ($_POST['type'] == 'temp') {
+                $userId =  $_POST['userId'];
+
+                $status = 'success';
+                $response = $this->genDB->select("EID, Name")
+                                ->order_by('Name', 'ASC')
+                                ->get_where("EIDDet", array('suppUserId' => $userId))
+                                ->result_array();
+            }
+
+            if ($_POST['type'] == 'setRest') {
+                $userId         = $_POST['userId'];
+                $tempuserId     = $_POST['tempuserId'];
+                $userType       = $_POST['userType'];
+
+                if($userType == 1){
+                    // main
+                    $updateData['suppUserId'] = $tempuserId;
+                }else if($userType == 2){
+                    // alternate
+                    $updateData['suppUserIdAlt'] = $tempuserId;
+                }
+
+                foreach ($_POST['EID'] as $key) {
+                    $this->genDB->update('EIDDet', $updateData, array('EID' => $key, 'suppUserId' => $userId));
+                }
+
+                $status = 'success';
+                $response = 'Restaurant Assigned.';
+            }
+            
+            if ($_POST['type'] == 'removeRest') {
+                $userId         =  $_POST['userId'];
+                $tempuserId     = $_POST['tempuserId'];
+                $userType       = $_POST['userType'];
+
+                if($userType == 1){
+                    // main
+                    $updateData['suppUserId'] = $userId;
+                }else if($userType == 2){
+                    // alternate
+                    $updateData['suppUserIdAlt'] = 0;
+                }
+                
+                foreach ($_POST['EID'] as $key) {
+                    $this->genDB->update('EIDDet', array('suppUserId' => 0), array('EID' => $key));
+                }
+
+                $status = 'success';
+                $response = 'Restaurant Assigned.';
+            }
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = 'Access Assigend';
+        $data['users'] = $this->genDB->get('usersSupport')->result_array();
+        $data['alternateUsers'] = $this->genDB->get_where('usersSupport', array('stat' => 0))->result_array();
+        $this->load->view('support/user_access_assign', $data); 
+    }
   
 
 }

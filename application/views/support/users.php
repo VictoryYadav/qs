@@ -32,6 +32,7 @@
                                                     <th><?= $this->lang->line('name'); ?></th>
                                                     <th><?= $this->lang->line('mobile'); ?></th>
                                                     <th><?= $this->lang->line('email'); ?></th>
+                                                    <th><?= $this->lang->line('type'); ?></th>
                                                     <th><?= $this->lang->line('mode'); ?></th>
                                                 </tr>
                                                 </thead>
@@ -44,6 +45,8 @@
                                                             $sts = ($key['stat'] == 0)? $this->lang->line('active'):$this->lang->line('inactive');
 
                                                             $clr = ($key['stat'] == 0)?'success':'danger';
+
+                                                            $usertype = ($key['userType'] == 1)? 'Rest Create':'Rest Support';
                                                      ?>
                                                     
                                                 <tr>
@@ -54,6 +57,8 @@
                                                         <?php echo $key['mobileNo']; ?>
                                                         </td>
                                                     <td><?php echo $key['email']; ?>
+                                                    </td>
+                                                    <td><?php echo $usertype; ?>
                                                     </td>
                                                     <td>
                                                         <span class="badge badge-boxed  badge-<?= $clr; ?>" style="cursor: pointer;" onclick="changeStatus(<?= $key['userId']; ?>, <?= $key['stat']; ?>);"><?= $sts; ?></span>
