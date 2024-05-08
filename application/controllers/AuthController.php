@@ -128,6 +128,10 @@ class AuthController extends CI_Controller {
             }
         }
 
+        // session destroy for comes link from another sites
+            // $this->session->sess_destroy();
+        // end of session
+
         if ($this->session->userdata('logged_in')) {
             redirect(base_url('restaurant'));
         } else {
@@ -136,6 +140,7 @@ class AuthController extends CI_Controller {
     		}
 
             if($_GET['o'] > 0){
+
         		$this->session->set_userdata('EID', $_GET['o']);
         		$this->session->set_userdata('CatgID', $_GET['c']);
 

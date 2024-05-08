@@ -51,7 +51,7 @@
 
                                             <div class="col-md-4 col-12">
                                                 <div class="form-group">
-                                                    <label for="">Temp User</label>
+                                                    <label for="">Alternate User</label>
                                                     <select class="form-control form-control-sm" name="tempuserId" id="tempuserId" onchange="getTempUser();">
                                                     <option value=""><?= $this->lang->line('select'); ?></option>
                                                     <?php
@@ -180,8 +180,7 @@ $(document).ready(function(){
         }
     });
 
-    // select all assigned roles
-    
+    // select all assigned roles 
     $('#selectAll_A').on('click',function(){
         if(this.checked){
             $('.selectedAssignedRoles').each(function(){
@@ -203,7 +202,6 @@ $(document).ready(function(){
         }
     });
 });
-
 
 var userId = 0;
 var tempuserId = 0;
@@ -371,7 +369,6 @@ removeRoles = () => {
     }else{
         alert('Please select atleast one assigned roles');
     }
-
 }
 
 </script>

@@ -30,38 +30,20 @@
                                                 <tr>
                                                     <th>#</th>
                                                     <th><?= $this->lang->line('name'); ?></th>
-                                                    <th><?= $this->lang->line('mobile'); ?></th>
-                                                    <th><?= $this->lang->line('email'); ?></th>
-                                                    <th><?= $this->lang->line('type'); ?></th>
-                                                    <th><?= $this->lang->line('mode'); ?></th>
                                                 </tr>
                                                 </thead>
             
                                                 <tbody>
                                                     <?php
-                                                    if(!empty($users)){
+                                                    if(!empty($rests)){
                                                         $i=1;
-                                                        foreach ($users as $key) {
-                                                            $sts = ($key['stat'] == 0)? $this->lang->line('active'):$this->lang->line('inactive');
-
-                                                            $clr = ($key['stat'] == 0)?'success':'danger';
-
-                                                            $usertype = ($key['userType'] == 1)? 'Rest Create':'Rest Support';
+                                                        foreach ($rests as $key) {
+                                                            $url = base_url('login?o='.$key['EID'].'&c='.$key['CatgId']);
                                                      ?>
                                                     
                                                 <tr>
-                                                    <td><?php echo $i++; ?></td>
-                                                    <td><?php echo $key['fullname']; ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php echo $key['mobileNo']; ?>
-                                                        </td>
-                                                    <td><?php echo $key['email']; ?>
-                                                    </td>
-                                                    <td><?php echo $usertype; ?>
-                                                    </td>
-                                                    <td>
-                                                        <span class="badge badge-boxed  badge-<?= $clr; ?>" style="cursor: pointer;" onclick="changeStatus(<?= $key['userId']; ?>, <?= $key['stat']; ?>, <?= $key['mobileNo']; ?>);"><?= $sts; ?></span>
+                                                    <td><?= $i++; ?></td>
+                                                    <td><a href="<?= $url; ?>"><?= $key['Name']; ?></a>
                                                     </td>
                                                 </tr>
                                                 <?php }
@@ -103,9 +85,9 @@
         $('#userTBL').DataTable();
     });
 
-    function changeStatus(userId, stat, mobileNo){
+    function changeStatus(userId, stat){
 
-        $.post('<?= base_url('support/users') ?>',{userId:userId, stat:stat, mobileNo:mobileNo},function(res){
+        $.post('<?= base_url('support/users') ?>',{userId:userId, stat:stat},function(res){
             if(res.status == 'success'){
               alert(res.response);
             }else{

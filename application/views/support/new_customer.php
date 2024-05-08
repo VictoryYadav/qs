@@ -68,7 +68,7 @@
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
                                                     <label><?= $this->lang->line('mobile'); ?></label>
-                                                    <input type="number" name="CellNo" id="CellNo" class="form-control form-control-sm" required="">
+                                                    <input type="text" name="CellNo" id="CellNo" class="form-control form-control-sm" required="" minlength="10" maxlength="10" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
                                                 </div>
                                             </div>
 
@@ -112,7 +112,7 @@
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
                                                     <label><?= $this->lang->line('GSTNo'); ?></label>
-                                                    <input type="number" name="GSTNo" id="GSTNo" class="form-control form-control-sm" >
+                                                    <input type="text" name="GSTNo" id="GSTNo" class="form-control form-control-sm" >
                                                 </div>
                                             </div>
 

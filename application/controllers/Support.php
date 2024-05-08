@@ -546,6 +546,22 @@ class Support extends CI_Controller {
             if($_POST['stat'] == 0){
                 $stat = 1;
                 $response = 'User Deactivated.';
+
+                $dt['suppUserId'] = 0;
+                $dt['suppUserIdAlt'] = 0;
+
+                $restList = $this->getRestLists($_POST['userId']);
+                if(!empty($restList)){
+                    foreach ($restList as $key) {
+
+                        $this->genDB->update('EIDDet', $dt, array('suppUserId' => $_POST['userId'], 'EID' => $key['EID']));
+                        $this->genDB->update('EIDDet', $dt, array('suppUserIdAlt' => $_POST['userId'], 'EID' => $key['EID']));
+
+                        $dbName = $key['EID'].'e';
+                        $db3 = $this->load->database($dbName, TRUE);
+                        $db3->update('UsersRest', array('Stat' => 3), array('MobileNo' => $_POST['mobileNo']));
+                    }
+                }
             }
             
             $this->genDB->update('usersSupport', array('stat' => $stat), array('userId' => $_POST['userId']));
@@ -600,6 +616,25 @@ class Support extends CI_Controller {
                 foreach ($_POST['EID'] as $key) {
                 $this->genDB->update('EIDDet', array('suppUserId' => $userId), array('EID' => $key));
                     
+                    $suppUser = $this->getSuppUserDetail($userId);
+                    $dbName = $key.'e';
+                    $db3 = $this->load->database($dbName, TRUE);
+                    $check = $db3->select('MobileNo')->get_where('UsersRest', array('EID' => $key, 'MobileNo'  => $suppUser['mobileNo']))->row_array();
+                    if(empty($check)){
+                        $restUser = array(
+                                        'FName'     => $suppUser['fullname'],
+                                        'MobileNo'  => $suppUser['mobileNo'],
+                                        'Passwd'    => $suppUser['pwd'],
+                                        'PWDHash'   => md5($suppUser['pwd']),
+                                        'Gender'    => $suppUser['gender'],
+                                        'DOB'       => $suppUser['DOB'],
+                                        'PEmail'    => $suppUser['email'],
+                                        'EID'       => $key,
+                                        'UTyp'      => 10,
+                                        'RestRole'  => 10
+                                    );
+                        $db3->insert('UsersRest', $restUser);
+                    }
                 }
 
                 $status = 'success';
@@ -692,6 +727,26 @@ class Support extends CI_Controller {
 
                 foreach ($_POST['EID'] as $key) {
                     $this->genDB->update('EIDDet', $updateData, array('EID' => $key, 'suppUserId' => $userId));
+
+                    $suppUser = $this->getSuppUserDetail($tempuserId);
+                    $dbName = $key.'e';
+                    $db3 = $this->load->database($dbName, TRUE);
+                    $check = $db3->select('MobileNo')->get_where('UsersRest', array('EID' => $key, 'MobileNo'  => $suppUser['mobileNo']))->row_array();
+                    if(empty($check)){
+                        $restUser = array(
+                                        'FName'     => $suppUser['fullname'],
+                                        'MobileNo'  => $suppUser['mobileNo'],
+                                        'Passwd'    => $suppUser['pwd'],
+                                        'PWDHash'   => md5($suppUser['pwd']),
+                                        'Gender'    => $suppUser['gender'],
+                                        'DOB'       => $suppUser['DOB'],
+                                        'PEmail'    => $suppUser['email'],
+                                        'EID'       => $key,
+                                        'UTyp'      => 10,
+                                        'RestRole'  => 10
+                                    );
+                        $db3->insert('UsersRest', $restUser);
+                    }
                 }
 
                 $status = 'success';
@@ -731,6 +786,34 @@ class Support extends CI_Controller {
         $data['users'] = $this->genDB->get('usersSupport')->result_array();
         $data['alternateUsers'] = $this->genDB->get_where('usersSupport', array('stat' => 0))->result_array();
         $this->load->view('support/user_access_assign', $data); 
+    }
+
+    public function rest_list(){
+        $userId = authuser()->userId;
+        $data['title'] = 'Assign Rest List';
+        $data['rests'] = $this->getRestLists($userId);
+        $this->load->view('support/assgin_rest_list', $data);    
+    }
+
+    private function getRestLists($userId){
+        return $this->genDB->select("EID, Name, CatgId")
+                                ->group_start() 
+                                    ->where('suppUserId', $userId)
+                                    ->or_where('suppUserIdAlt',$userId)
+                                ->group_end()
+                            ->get('EIDDet')
+                            ->result_array();
+    }
+
+    private function getSuppUserDetail($userId){
+        return $this->genDB->get_where('usersSupport', array('userId' => $userId))
+                            ->row_array();
+    }
+
+    public function test(){
+        echo "<pre>";
+        print_r($_SESSION);
+        die;
     }
   
 
