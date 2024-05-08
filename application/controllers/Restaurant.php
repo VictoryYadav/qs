@@ -8185,6 +8185,69 @@ class Restaurant extends CI_Controller {
         $this->load->view('page403', $data);
     }
 
+    public function config(){
+        $EID = authuser()->EID;
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+            
+            $configDt['EType']  = $_POST['EType'];
+            $configDt['MultiKitchen'] = $_POST['MultiKitchen'];
+            $configDt['SchType'] = $_POST['SchType'];
+            $configDt['pymtENV'] = $_POST['pymtENV'];
+            $configDt['ServChrg'] = $_POST['ServChrg'];
+            $configDt['DelCharge'] = $_POST['DelCharge'];
+
+            $configDt['MultiLingual'] = !isset($_POST['MultiLingual'])?0:1;
+            $configDt['AutoDeliver'] = !isset($_POST['AutoDeliver'])?0:1;
+            $configDt['EDT'] = !isset($_POST['EDT'])?0:1;
+            $configDt['Move'] = !isset($_POST['Move'])?0:1;
+            $configDt['JoinTable'] = !isset($_POST['JoinTable'])?0:1;
+            $configDt['SchPop'] = !isset($_POST['SchPop'])?0:1;
+            $configDt['TableReservation'] = !isset($_POST['TableReservation'])?0:1;
+            $configDt['Discount'] = !isset($_POST['Discount'])?0:1;
+            $configDt['MultiPayment'] = !isset($_POST['MultiPayment'])?0:1;
+            $configDt['Tips'] = !isset($_POST['Tips'])?0:1;
+            $configDt['CustLoyalty'] = !isset($_POST['CustLoyalty'])?0:1;
+            $configDt['RtngDisc'] = !isset($_POST['RtngDisc'])?0:1;
+            $configDt['TableAcceptReqd'] = !isset($_POST['TableAcceptReqd'])?0:1;
+            $configDt['AutoSettle'] = !isset($_POST['AutoSettle'])?0:1;
+            $configDt['AutoPrintKOT'] = !isset($_POST['AutoPrintKOT'])?0:1;
+            $configDt['CustAssist'] = !isset($_POST['CustAssist'])?0:1;
+            $configDt['Dispense_OTP'] = !isset($_POST['Dispense_OTP'])?0:1;
+            $configDt['Ingredients'] = !isset($_POST['Ingredients'])?0:1;
+            $configDt['NV'] = !isset($_POST['NV'])?0:1;
+            $configDt['WelcomeMsg'] = !isset($_POST['WelcomeMsg'])?0:1;
+            $configDt['billPrintTableNo'] = !isset($_POST['billPrintTableNo'])?0:1;
+            $configDt['Bill_KOT_Print'] = !isset($_POST['Bill_KOT_Print'])?0:1;
+            $configDt['sitinKOTPrint'] = !isset($_POST['sitinKOTPrint'])?0:1;
+            $configDt['Ing_Cals'] = !isset($_POST['Ing_Cals'])?0:1;
+            $configDt['Ent'] = !isset($_POST['Ent'])?0:1;
+
+            $configDt['GSTInclusiveRates'] = !isset($_POST['GSTInclusiveRates'])?0:1;
+            $configDt['Seatwise'] = !isset($_POST['Seatwise'])?0:1;
+            $configDt['BillMergeOpt'] = !isset($_POST['BillMergeOpt'])?0:1;
+            $configDt['DeliveryOTP'] = !isset($_POST['DeliveryOTP'])?0:1;
+            $configDt['Charity'] = !isset($_POST['Charity'])?0:1;
+            $configDt['IMcCdOpt'] = !isset($_POST['IMcCdOpt'])?0:1;
+            $configDt['tableSharing'] = !isset($_POST['tableSharing'])?0:1;
+
+            updateRecord('Config', $configDt, array('EID' => $EID) );
+            $response = 'Config Upadated';
+            // echo "<pre>";
+            // print_r($configDt);
+            // die;
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        $data['title'] = 'Config';
+        $data['detail'] = getRecords('Config',array('EID' => $EID));
+        $this->load->view('rest/config', $data);
+    }
+
     public function db_create_old(){
         $destDB = "2e";
         $sourceDatabase = "51e";
