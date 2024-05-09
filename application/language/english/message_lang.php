@@ -403,6 +403,9 @@ $lang['earned']				= 'Earned';
 $lang['used']				= 'Used';
 $lang['points']				= 'Points';
 
+$lang['etype']				= 'EType';
+$lang['qsr']				= 'QSR';
+
 
 
 

@@ -206,10 +206,11 @@
 
                 <div class="row">
                     <div class="col-12 text-center">
-                        
+                        <?php if($this->session->userdata('billSplitOpt') > 0 && ($EType == 5)){ ?>
                         <button class="btn btn-sm backbtn" type="submit" name="btnName" value="splitBill">
                         <?php echo  $this->lang->line('splitbill'); ?>
                         </button>
+                    <?php } ?>
                          <button class="btn btn-sm paybtn" type="submit" name="btnName" value="payNow">
                             <?php echo  $this->lang->line('payNow'); ?>
                         </button>

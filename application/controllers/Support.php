@@ -348,6 +348,10 @@ class Support extends CI_Controller {
         $data['rests'] = $this->genDB->select('CNo, EID, Name, CellNo, Email, CatgId')
         ->order_by('CNo', 'DESC')->get('EIDDet')->result_array();
         $data['country'] = $this->genDB->get_where('countries', array('Stat' => 0))->result_array();
+
+        $data['ECategory'] = $this->genDB->get('ECategory')->result_array();
+        $data['Category'] = $this->genDB->get('Category')->result_array();
+        
         $this->load->view('support/new_customer', $data); 
     }
 
@@ -395,6 +399,7 @@ class Support extends CI_Controller {
                     // update eatary table
                     $eatry['Name'] = $EIDData['Name'];
                     $eatry['ECatg'] = $EIDData['ECatg'];
+                    $eatry['EType'] = $EIDData['EType'];
                     $eatry['CatgID'] = $EIDData['CatgId'];
                     $eatry['ContactNos'] = $EIDData['ContactPerson'];
                     $eatry['Email'] = $EIDData['Email'];

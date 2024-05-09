@@ -38,7 +38,7 @@ class AuthController extends CI_Controller {
 
                 if (!empty($login_check)) {
 
-                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, c.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, e.CountryCd, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt,c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint, c.JoinTable, c.tableSharing, c.Bill_KOT_Print, c.SchType')
+                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, e.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, e.CountryCd, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt, c.billSplitOpt, c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint, c.JoinTable, c.tableSharing, c.Bill_KOT_Print, c.SchType')
                             ->join('Eatary e',' u.EID = e.EID', 'inner')
                             ->join('Config c','u.EID = c.EID','inner')
                             // u.ChainId = c.ChainId 
@@ -66,6 +66,8 @@ class AuthController extends CI_Controller {
                         $this->session->set_userdata('CustAssist', $checkNumber['CustAssist']);
                         $this->session->set_userdata('TableAcceptReqd', $checkNumber['TableAcceptReqd']);
                         $this->session->set_userdata('BillMergeOpt', $checkNumber['BillMergeOpt']);
+                        $this->session->set_userdata('billSplitOpt', $checkNumber['billSplitOpt']);
+                        
                         $this->session->set_userdata('AutoSettle', $checkNumber['AutoSettle']);
                         $this->session->set_userdata('Dispense_OTP', $checkNumber['Dispense_OTP']);
                         $this->session->set_userdata('DelCharge', $checkNumber['DelCharge']);

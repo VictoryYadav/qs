@@ -90,8 +90,37 @@
 
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
+                                                    <label><?= $this->lang->line('category'); ?></label>
+                                                    <select name="CatgId" id="CatgId" class="form-control form-control-sm" required="">
+                                                    <option value=""><?= $this->lang->line('select'); ?></option>
+                                                <?php foreach ($Category as $key) { ?> 
+                                                    <option value="<?= $key['CatgID']; ?>" ><?= $key['CatgNm']; ?></option>
+                                                <?php } ?>
+                                                        </select>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 col-6">
+                                                <div class="form-group">
+                                                    <label><?= $this->lang->line('etype'); ?></label>
+                                                    <select name="EType" id="" class="form-control form-control-sm" required="">
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <option value="1"><?= $this->lang->line('qsr'); ?></option>
+                                                        <option value="5"><?= $this->lang->line('sitIn'); ?></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 col-6">
+                                                <div class="form-group">
                                                     <label>E<?= $this->lang->line('category'); ?></label>
-                                                    <input type="text" name="ECatg" id="ECatg" class="form-control form-control-sm" value="1">
+                                                    <select name="ECatg" id="ECatg" class="form-control form-control-sm" required="">
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <?php foreach ($ECategory as $key) { ?> 
+                                                        <option value="<?= $key['CatgID']; ?>" ><?= $key['CatgNm']; ?></option>
+                                                    <?php } ?>
+                                                        </select>
                                                 </div>
                                             </div>
 
@@ -99,13 +128,6 @@
                                                 <div class="form-group">
                                                     <label><?= $this->lang->line('chainNo'); ?></label>
                                                     <input type="number" name="ChainId" id="ChainId" class="form-control form-control-sm" value="0">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-3 col-6">
-                                                <div class="form-group">
-                                                    <label><?= $this->lang->line('category'); ?></label>
-                                                    <input type="text" name="CatgId" id="CatgId" class="form-control form-control-sm" value="1">
                                                 </div>
                                             </div>
 

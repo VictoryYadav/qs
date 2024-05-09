@@ -401,3 +401,6 @@ $lang['download']			= 'डाउनलोड';
 $lang['earned']				= 'अर्जित';
 $lang['used']				= 'प्रयुक्त';
 $lang['points']				= 'अंक';
+
+$lang['etype']				= 'इ टाइप';
+$lang['qsr']				= 'क्यू अस आर';

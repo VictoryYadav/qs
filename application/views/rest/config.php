@@ -27,15 +27,6 @@
                                         <form method="post" id="configForm">
                                             
                                             <div class="row">
-                                                <div class="col-md-2 col-12">
-                                                    <div class="form-group">
-                                                        <label for="">EType</label>
-                                                        <select name="EType" id="" class="form-control form-control-sm" required="">
-                                                            <option value="1" <?php if($detail['EType'] == 1){ echo 'selected'; } ?>>QSR</option>
-                                                            <option value="5" <?php if($detail['EType'] == 5){ echo 'selected'; } ?> >Sit In</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
 
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
@@ -317,6 +308,13 @@
                                                         <div class="custom-control custom-checkbox">
                                                             <input type="checkbox" class="custom-control-input" id="customCheck31" data-parsley-multiple="groups" data-parsley-mincheck="2" name="BillMergeOpt" <?php if($detail['BillMergeOpt'] == 1){ echo 'checked'; } ?> value="<?= $detail['BillMergeOpt'];?>">
                                                             <label class="custom-control-label" for="customCheck31">Bill Merge Option</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="checkbox my-2">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck34" data-parsley-multiple="groups" data-parsley-mincheck="2" name="billSplitOpt" <?php if($detail['billSplitOpt'] == 1){ echo 'checked'; } ?> value="<?= $detail['billSplitOpt'];?>">
+                                                            <label class="custom-control-label" for="customCheck34">Bill Split Option</label>
                                                         </div>
                                                     </div>
 

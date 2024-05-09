@@ -6631,6 +6631,8 @@ class Restaurant extends CI_Controller {
         
         $data['title'] = $this->lang->line('restaurant');
         $data['eatary'] = $this->rest->getRestaurantList();
+        // $data['ECategory'] = $this->db2->get('ECategory')->result_array();
+        // $data['Category'] = $this->db2->get('Category')->result_array();
         $this->load->view('rest/eatary_edit', $data);    
     }
 
@@ -8190,7 +8192,6 @@ class Restaurant extends CI_Controller {
         if($this->input->method(true)=='POST'){
             $status = "success";
             
-            $configDt['EType']  = $_POST['EType'];
             $configDt['MultiKitchen'] = $_POST['MultiKitchen'];
             $configDt['SchType'] = $_POST['SchType'];
             $configDt['pymtENV'] = $_POST['pymtENV'];
@@ -8226,6 +8227,7 @@ class Restaurant extends CI_Controller {
             $configDt['GSTInclusiveRates'] = !isset($_POST['GSTInclusiveRates'])?0:1;
             $configDt['Seatwise'] = !isset($_POST['Seatwise'])?0:1;
             $configDt['BillMergeOpt'] = !isset($_POST['BillMergeOpt'])?0:1;
+            $configDt['billSplitOpt'] = !isset($_POST['billSplitOpt'])?0:1;
             $configDt['DeliveryOTP'] = !isset($_POST['DeliveryOTP'])?0:1;
             $configDt['Charity'] = !isset($_POST['Charity'])?0:1;
             $configDt['IMcCdOpt'] = !isset($_POST['IMcCdOpt'])?0:1;

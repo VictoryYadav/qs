@@ -124,7 +124,21 @@ getEataryData = () =>{
                     <div class="col-md-3 col-6">
                         <div class="form-group">
                             <label><?= $this->lang->line('category'); ?></label>
-                            <input type="text" name="CatgId" class="form-control form-control-sm" required="" value="${data.CatgID}">
+                            <input type="text" name="CatgId" class="form-control form-control-sm" required="" value="${data.CatgID}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-6">
+                        <div class="form-group">
+                            <label><?= $this->lang->line('etype'); ?></label>
+                            <input type="text" name="EType" class="form-control form-control-sm" required="" value="${data.EType}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-6">
+                        <div class="form-group">
+                            <label>E<?= $this->lang->line('category'); ?></label>
+                            <input type="text" name="ECatg" class="form-control form-control-sm" required="" value="${data.ECatg}" readonly>
                         </div>
                     </div>
 
