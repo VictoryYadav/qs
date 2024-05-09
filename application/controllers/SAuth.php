@@ -33,7 +33,8 @@ class SAuth extends CI_Controller {
                         'fullname' => $user['fullname'],
                         'mobileNo' => $user['mobileNo'],
                         'email' => $user['email'],
-                        'countryCd' => $user['countryCd']
+                        'countryCd' => $user['countryCd'],
+                        'userType' => $user['userType']
                     );
                 $this->session->set_userdata('logged_in', $session_data);
             	$status = 'success';
@@ -75,7 +76,8 @@ class SAuth extends CI_Controller {
                         'fullname' => $supp['fullname'],
                         'mobileNo' => $supp['mobileNo'],
                         'email' => $supp['email'],
-                        'countryCd' => $supp['countryCd']
+                        'countryCd' => $supp['countryCd'],
+                        'userType' => $user['userType']
                     );
                 $this->session->set_userdata('logged_in', $session_data);
 
