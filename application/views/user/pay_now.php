@@ -209,6 +209,7 @@ body{
 <script type="text/javascript">
 
     var BillId = '<?= $BillId; ?>';
+    var MCNo = '<?= $MCNo; ?>';
     var totalPayable ='<?= round($payable); ?>';
 
     $(document).ready(function () {

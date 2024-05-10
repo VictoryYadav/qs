@@ -1,6 +1,7 @@
 <?php $this->load->view('layouts/customer/head');
-$folder = 'e'.$this->session->userdata('EID'); 
- ?>
+    $EID = $this->session->userdata('EID'); 
+    $folder = 'e'.$EID; 
+?>
 <style>
 body{
     font-size: 13px;
@@ -29,7 +30,7 @@ body{
                     <ul class="list-inline product-meta">
 
                         <li class="list-inline-item">
-                            <img src="<?= base_url('uploads/'.$folder.'/logo.jpg') ?>" width="auto" height="28px;">
+                            <img src="<?= base_url('uploads/'.$folder.'/'.$EID.'_logo.jpg') ?>" width="auto" height="28px;">
                         </li>
                     </ul>
                 </div>

@@ -16,6 +16,7 @@ class Users extends CI_Controller {
             if(!empty($eo_data)){
                 $req = explode("_", $eo_data);
                 // echo "<pre>";print_r($req);exit();
+                $this->session->set_userdata('site_lang', 1);
                 $this->session->set_userdata('EID', $req[0]);
                 $this->session->set_userdata('page', $req[1]);
                 $this->session->set_userdata('BillId', $req[2]);
@@ -351,6 +352,7 @@ class Users extends CI_Controller {
     }
 
     public function bill($billId){
+        
         $data['title'] = $this->lang->line('bill');
         $data['billId'] = $billId;
 
@@ -374,7 +376,7 @@ class Users extends CI_Controller {
             $data['taxDataArray'] = $res['taxDataArray'];
 
             $data['hotelName'] = $billData[0]['Name'];
-            $data['BillName'] = $billData[0]['BillName'];
+            $data['BillName'] = $billData[0]['BillerName'];
             $data['Fullname'] = getName($billData[0]['CustId']);
             $data['phone'] = $billData[0]['PhoneNos'];
             $data['gstno'] = $billData[0]['GSTno'];
