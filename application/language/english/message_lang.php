@@ -332,6 +332,7 @@ $lang['country']			= 'Country';
 $lang['city']				= 'City';
 $lang['noDataFound']		= 'No Data Found!';
 $lang['changePassword']		= 'Change Password';
+$lang['password']			= 'Password';
 $lang['chainNo']			= 'Chain No';
 $lang['ONo']				= 'ONo';
 $lang['stall']				= 'Stall';

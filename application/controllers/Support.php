@@ -25,6 +25,45 @@ class Support extends CI_Controller {
         $this->load->view('support/index', $data);
     }
 
+    public function new_user()
+    {
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+            $this->session->set_userdata('signup', $_POST);
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+
+            $supp = $_POST;
+            $supp['pwdHash'] = md5($supp['pwd']);
+
+            $userId = $this->genDB->insert('usersSupport', $supp);
+
+            $session_data = array(
+                        'userId' => $userId,
+                        'fullname' => $supp['fullname'],
+                        'mobileNo' => $supp['mobileNo'],
+                        'email' => $supp['email'],
+                        'countryCd' => $supp['countryCd'],
+                        'userType' => $supp['userType']
+                    );
+                $this->session->set_userdata('logged_in', $session_data);
+
+            $status = 'success';
+            $response = 'New User Created';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        $data['title'] = 'New User';
+        $data['country'] = $this->genDB->get_where('countries', array('Stat' => 0))->result_array();
+        $this->load->view('support/add_user', $data);
+    }
+
     public function uitemcd_list(){
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -538,6 +577,13 @@ class Support extends CI_Controller {
         redirect(base_url('supportlogin'));
     }
 
+    public function rest_login($EID, $CatgId)
+    {
+        $this->session->sess_destroy();
+        $url = base_url('login?o='.$EID.'&c='.$CatgId);
+        redirect($url);
+    }
+
     public function users(){
 
         $status = 'error';
@@ -797,16 +843,19 @@ class Support extends CI_Controller {
         $userId = authuser()->userId;
         $data['title'] = 'Assign Rest List';
         $data['rests'] = $this->getRestLists($userId);
+        
         $this->load->view('support/assgin_rest_list', $data);    
     }
 
     private function getRestLists($userId){
-        return $this->genDB->select("EID, Name, CatgId")
+        return $this->genDB->select("ed.EID, ed.Name, ed.CatgId, ed.suppUserId, ed.suppUserIdAlt, c.country_name, ct.city_name")
+                            ->join('countries c', 'c.phone_code = ed.CountryCd', 'left')
+                            ->join('city ct', 'ct.city_id = ed.city_id', 'left')
                                 ->group_start() 
-                                    ->where('suppUserId', $userId)
-                                    ->or_where('suppUserIdAlt',$userId)
+                                    ->where('ed.suppUserId', $userId)
+                                    ->or_where('ed.suppUserIdAlt',$userId)
                                 ->group_end()
-                            ->get('EIDDet')
+                            ->get('EIDDet ed')
                             ->result_array();
     }
 

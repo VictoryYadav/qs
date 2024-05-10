@@ -30,6 +30,9 @@
                                                 <tr>
                                                     <th>#</th>
                                                     <th><?= $this->lang->line('name'); ?></th>
+                                                    <th><?= $this->lang->line('country'); ?></th>
+                                                    <th><?= $this->lang->line('city'); ?></th>
+                                                    <th>Access</th>
                                                 </tr>
                                                 </thead>
             
@@ -37,13 +40,35 @@
                                                     <?php
                                                     if(!empty($rests)){
                                                         $i=1;
+
+                                                        $type = '';
                                                         foreach ($rests as $key) {
-                                                            $url = base_url('login?o='.$key['EID'].'&c='.$key['CatgId']);
+                                                            $EID = $key['EID'];
+                                                            $CatgId = $key['CatgId'];
+                                                            
+                                                            if($key['suppUserId'] > 0){
+                                                                $type = 'Main';
+                                                            }
+
+                                                            if($key['suppUserIdAlt'] > 0){
+                                                                $type = 'Alternate';
+                                                            }
+
+                                                            if($key['suppUserId'] > 0 && $key['suppUserIdAlt'] > 0){
+                                                                $type = 'Both';
+                                                            }
                                                      ?>
                                                     
                                                 <tr>
                                                     <td><?= $i++; ?></td>
-                                                    <td><a href="<?= $url; ?>"><?= $key['Name']; ?></a>
+                                                    <td><a href="<?= base_url("support/rest_login/$EID/$CatgId"); ?>"><?= $key['Name']; ?></a>
+                                                    </td>
+                                                    <td><?= $key['country_name']; ?>
+                                                    </td>
+                                                    <td><?= $key['city_name']; ?></a>
+                                                    </td>
+                                                    <td>
+                                                        <?= $type; ?>
                                                     </td>
                                                 </tr>
                                                 <?php }

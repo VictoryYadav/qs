@@ -332,6 +332,7 @@ $lang['country']			= 'कंट्री';
 $lang['city']				= 'सिटी';
 $lang['noDataFound']		= 'डाटा प्राप्त नहीं हुआ!';
 $lang['changePassword']		= 'पासवर्ड बदलें';
+$lang['password']			= 'पासवर्ड';
 $lang['chainNo']			= 'चैन न';
 $lang['ONo']				= 'ओ न';
 $lang['stall']				= 'स्टाल';

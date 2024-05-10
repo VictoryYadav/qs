@@ -61,7 +61,11 @@
                                                     <td><?php echo $usertype; ?>
                                                     </td>
                                                     <td>
+                                                        <?php if($key['stat'] == 0){ ?>
                                                         <span class="badge badge-boxed  badge-<?= $clr; ?>" style="cursor: pointer;" onclick="changeStatus(<?= $key['userId']; ?>, <?= $key['stat']; ?>, <?= $key['mobileNo']; ?>);"><?= $sts; ?></span>
+                                                    <?php }else{ ?>
+                                                        <span class="badge badge-boxed  badge-<?= $clr; ?>" ><?= $sts; ?></span>
+                                                    <?php } ?>
                                                     </td>
                                                 </tr>
                                                 <?php }
