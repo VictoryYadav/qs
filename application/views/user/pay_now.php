@@ -347,7 +347,8 @@ function goPay(val){
         // alert(dd);
         
         amount = convertDigitToEnglish(amount);
-        window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&billId='+btoa(BillId)+'&MCNo='+btoa(MCNo);
+        var pageurl = 'user';
+        window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&billId='+btoa(BillId)+'&MCNo='+btoa(MCNo)+'&pageurl='+btoa(pageurl);
     }
 
     // phoenpe = 34

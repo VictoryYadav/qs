@@ -39,6 +39,9 @@ class Razorpay extends CI_Controller {
         $billId = base64_decode(rtrim($_GET['billId'], "="));
         $MCNo = base64_decode(rtrim($_GET['MCNo'], "="));
 
+        $pageurl = base64_decode(rtrim($_GET['pageurl'], "="));
+        $this->session->set_userdata('pageurl', $pageurl);
+
         if (empty($billId)) {
             redirect(base_url('customer'));
         }
@@ -164,6 +167,10 @@ class Razorpay extends CI_Controller {
             // print_r($pay);
             // die;
             $payNo = insertRecord('BillPayments', $pay);
+            $pageurl = $this->session->userdata('pageurl');
+            if($pageurl == 'user'){
+                redirect(base_url('users/pay/'.$pay['BillId'].'/'.$pay['MCNo']));    
+            }
             redirect(base_url('customer/pay/'.$pay['BillId'].'/'.$pay['MCNo']));
 
         } else {
