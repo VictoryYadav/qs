@@ -485,6 +485,15 @@ class User extends CI_Model{
 					->row_array();
 	}
 
+	public function getOnAccountCust($CustId, $custType){
+		return $this->db2->get_where('CustList', 
+									array('CustId' => $CustId, 
+										'Stat' => 0,
+										'custType' => $custType)
+								)
+					->row_array();
+	}
+
 	
 
 }

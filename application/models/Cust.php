@@ -1742,5 +1742,12 @@ class Cust extends CI_Model{
 					->result_array();
 	}
 
+	public function getCustAccount($custId)
+	{
+		return $this->db2->select("sum(billAmount) as billAmount")
+					->get_where('custAccounts', array('custId' => $custId, 'EID' => authuser()->EID, 'pymt_rcpt' => 0))
+					->row_array();
+	}
+
 	
 }

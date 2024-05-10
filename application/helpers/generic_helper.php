@@ -506,6 +506,12 @@ function billBasedOffer(){
     return $CI->User->getBillBasedOffer();	
 }
 
+function checkOnAccountCust($CustId, $custType){
+	$CI = & get_instance();
+    $CI->load->model('User');
+    return $CI->User->getOnAccountCust($CustId, $custType);	
+}
+
 function checkValidEmail($str){
 	if (filter_var($email, FILTER_VALIDATE_EMAIL)) { 
 	    // echo("$email is a valid email address"); 

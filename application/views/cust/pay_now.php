@@ -407,9 +407,9 @@ function goPay(val){
         var tips = 0;
         // var dd = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&totAmt='+btoa(totAmt)+'&tips='+btoa(tips);
         // alert(dd);
-        
+        var pageurl = 'customer';
         amount = convertDigitToEnglish(amount);
-        window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&billId='+btoa(BillId)+'&MCNo='+btoa(MCNo);
+        window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&billId='+btoa(BillId)+'&MCNo='+btoa(MCNo)+'&pageurl='+btoa(pageurl);
     }
 
     // phoenpe = 34
@@ -426,8 +426,8 @@ function goPay(val){
 
     // onAccount, RoomNo, MembershipNo, EmployeeId
     if(mode >=20 && mode <= 30){
-
-        $.post('<?= base_url('customer/send_payment_otp') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
+        // for onaccount
+        $.post('<?= base_url('customer/check_onaccount_cust') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
             if(res.status == 'success'){
                 $('#paymentBillId').val(BillId);
                 $('#paymentMCNo').val(MCNo);
@@ -439,6 +439,19 @@ function goPay(val){
               alert(res.response);  
             }
         });
+
+        // $.post('<?= base_url('customer/send_payment_otp') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
+        //     if(res.status == 'success'){
+        //         $('#paymentBillId').val(BillId);
+        //         $('#paymentMCNo').val(MCNo);
+        //         $('#paymentAmount').val(amount);
+        //         $('#paymentMode').val(mode);
+        //         $('#otpModal').modal('show');
+        //         // window.location = res.response;  
+        //     }else{ 
+        //       alert(res.response);  
+        //     }
+        // });
     }
 }
 

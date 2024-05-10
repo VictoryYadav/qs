@@ -2424,6 +2424,60 @@ class Customer extends CI_Controller {
              die;
         }
     }
+
+    public function check_onaccount_cust(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            $mobileNO = $this->session->userdata('CellNo');
+            $CustId = $this->session->userdata('CustId');
+            $onAccount = checkOnAccountCust($CustId, 1);
+            if(!empty($onAccount)){
+                $custAcc = $this->cust->getCustAccount($CustId);
+                if(!empty($custAcc)){
+                    $total = $custAcc['billAmount'] + $_POST['amount'];
+
+                    if($total <= $onAccount['MaxLimit']){
+                        $otp = rand(9999,1000);
+                        $this->session->set_userdata('payment_otp', $otp);
+                        $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+                        sendSMS($mobileNO, $msgText);
+                        saveOTP($mobileNO, $otp, 'payNow');
+                        $status = "success";
+                        $response = "OTP send on your mobile no.";
+                    }else{
+                        $response = "Out of Limit!!";
+                    }
+                }else{
+                    $total = $_POST['amount'];
+                    if($total <= $onAccount['MaxLimit']){
+                        $otp = rand(9999,1000);
+                        $this->session->set_userdata('payment_otp', $otp);
+                        $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+                        sendSMS($mobileNO, $msgText);
+                        saveOTP($mobileNO, $otp, 'payNow');
+                        $status = "success";
+                        $response = "OTP send on your mobile no.";
+                    }else{
+                        $response = "Out of Limit!!";
+                    }
+                }
+            }else{
+                $response = "Dont't have account on onAccount!!";
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
     
     public function send_payment_otp(){
         $status = "error";
