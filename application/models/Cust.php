@@ -1449,6 +1449,8 @@ class Cust extends CI_Model{
             
                     $lastInsertBillId = insertRecord('Billing', $billingObj);
 
+                    $genTblDb = $this->load->database('GenTableData', TRUE);
+                    
                     if(!empty($lastInsertBillId)){
                     	// gen db
                     	$kitchenSale = $this->db2->select("b.BillId, k.ItemId, k.Qty, k.Itm_Portion, k.OType, k.TA, k.EID, m.UItmCd")
@@ -1482,7 +1484,6 @@ class Cust extends CI_Model{
 	                    	}
 
 	                    	if(!empty($kitchenSaleObj)){
-	                    		$genTblDb = $this->load->database('GenTableData', TRUE);
 	                    		$genTblDb->insert_batch('KitchenSale', $kitchenSaleObj); 
 	                    	}
 	                    }

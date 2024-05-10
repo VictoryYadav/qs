@@ -1,6 +1,8 @@
-<?php $this->load->view('layouts/customer/head');
-$folder = 'e'.$this->session->userdata('EID'); 
- ?>
+<?php $this->load->view('layouts/customer/head'); 
+$EID = $this->session->userdata('EID');
+$folder = 'e'.$EID; 
+?>
+<link href="<?= base_url() ?>assets_admin/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
 <style>
 body{
     font-size: 13px;
@@ -29,7 +31,7 @@ body{
                     <ul class="list-inline product-meta">
 
                         <li class="list-inline-item">
-                            <img src="<?= base_url('uploads/'.$folder.'/logo.jpg') ?>" width="auto" height="28px;">
+                            <img src="<?= base_url('uploads/'.$folder.'/'.$EID.'_logo.jpg') ?>" width="auto" height="28px;">
                         </li>
                     </ul>
                 </div>
@@ -44,8 +46,19 @@ body{
             <form method="post" id="loginForm">
                 <div class="row">
                     <div class="col-md-6 mx-auto">
+
                         <div class="form-group">
-                            <input type="number" name="mobile" class="form-control" placeholder="Enter Mobile" required="" autocomplete="off" maxlength="10">
+                            <select name="countryCd" id="countryCd" class="form-control form-control-sm select2 custom-select" required="">
+                                <option value="">Select Country</option>
+                                <?php 
+                            foreach ($country as $key) { ?>
+                                <option value="<?= $key['phone_code']; ?>" ><?= $key['country_name']; ?></option>
+                            <?php } ?>  
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="number" name="mobile" class="form-control" placeholder="Enter Mobile" required="" autocomplete="off" minlength="10" maxlength="10" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
                             <small id="loginMsg" class="text-danger" style="font-size: 10px;"></small>
                         </div>
 
@@ -192,13 +205,14 @@ body{
 
 </body>
 
+<script src="<?= base_url() ?>assets_admin/libs/select2/js/select2.min.js"></script>
 <script type="text/javascript">
 
     var BillId = '<?= $BillId; ?>';
     var totalPayable ='<?= round($payable); ?>';
 
     $(document).ready(function () {
-        
+        $('#countryCd').select2();
         goToBill();
 
     var counter = 1;
@@ -295,8 +309,6 @@ function goPay(val){
     }
 
     var payNo = 0;
-
-    console.log('call to ajax');
     // for cash
     if(mode == 1){
         $.post('<?= base_url('users/multi_payment') ?>',{amount:amount,mode:mode, BillId:BillId,MCNo:MCNo,payable:payable},function(res){
@@ -316,16 +328,30 @@ function goPay(val){
         });
     }
 
-    if(mode == 5){
+     // loyalty
+    if(mode == 31 || mode == 32){
+
+        $.post('<?= base_url('customer/loyalty_pay') ?>',{amount:amount,mode:mode, BillId:BillId,MCNo:MCNo,payable:payable},function(res){
+            if(res.status == 'success'){
+                location.reload();
+            }else{ 
+              alert(res.response);  
+            }
+        });
+    }
+    // razorpay
+    if(mode == 35){
         var totAmt = 0;
         var tips = 0;
         // var dd = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&totAmt='+btoa(totAmt)+'&tips='+btoa(tips);
         // alert(dd);
-        window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&totAmt='+btoa(totAmt)+'&tips='+btoa(tips)+'&billId='+btoa(BillId);
+        
+        amount = convertDigitToEnglish(amount);
+        window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&billId='+btoa(BillId)+'&MCNo='+btoa(MCNo);
     }
 
-    // phoenpe = 46
-    if(mode == 46){
+    // phoenpe = 34
+    if(mode == 34){
 
         $.post('<?= base_url('phonepe/pay') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
             if(res.status == 'success'){
@@ -335,6 +361,25 @@ function goPay(val){
             }
         });
     }
+
+    // onAccount, RoomNo, MembershipNo, EmployeeId
+    if(mode >=20 && mode <= 30){
+
+        $.post('<?= base_url('customer/send_payment_otp') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
+            if(res.status == 'success'){
+                $('#paymentBillId').val(BillId);
+                $('#paymentMCNo').val(MCNo);
+                $('#paymentAmount').val(amount);
+                $('#paymentMode').val(mode);
+                $('#otpModal').modal('show');
+                // window.location = res.response;  
+            }else{ 
+              alert(res.response);  
+            }
+        });
+    }
+
+
 }
 
 function checkStatus(billId,payNo, serialNo){
@@ -364,7 +409,7 @@ function goToBill(){
     var total = $('#sum').val();
 
     if(payable == total){
-        $.post('<?= base_url('users/updateCustPayment') ?>',{BillId:BillId},function(res){
+        $.post('<?= base_url('users/updateCustPayment') ?>',{BillId:BillId, MCNo:MCNo},function(res){
         
         });
         
@@ -374,10 +419,6 @@ function goToBill(){
     // setInterval(function(){ goToBill(); }, 3000);
 }
 
-</script>
-
-
-<script type="text/javascript">
   var mobile = ''; 
     $('#loginForm').on('submit', function(e){
         e.preventDefault();
@@ -423,6 +464,8 @@ function goToBill(){
             }
       });
    }
+
+
 </script>
 
 </html>

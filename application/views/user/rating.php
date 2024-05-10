@@ -1,6 +1,8 @@
 <?php $this->load->view('layouts/customer/head'); 
-$folder = 'e'.$this->session->userdata('EID'); 
+$EID = $this->session->userdata('EID');
+$folder = 'e'.$EID; 
 ?>
+<link href="<?= base_url() ?>assets_admin/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
 <style type="text/css">
 
     .order-details-page {
@@ -269,7 +271,7 @@ $folder = 'e'.$this->session->userdata('EID');
                     <ul class="list-inline product-meta">
 
                         <li class="list-inline-item">
-                            <img src="<?= base_url('uploads/'.$folder.'/logo.jpg') ?>" width="auto" height="28px;">
+                            <img src="<?= base_url('uploads/'.$folder.'/'.$EID.'_logo.jpg') ?>" width="auto" height="28px;">
                         </li>
                     </ul>
                 </div>
@@ -284,8 +286,19 @@ $folder = 'e'.$this->session->userdata('EID');
             <form method="post" id="loginForm">
                 <div class="row">
                     <div class="col-md-6 mx-auto">
+
                         <div class="form-group">
-                            <input type="number" name="mobile" class="form-control" placeholder="Enter Mobile" required="" autocomplete="off" maxlength="10">
+                            <select name="countryCd" id="countryCd" class="form-control form-control-sm select2 custom-select" required="">
+                                <option value="">Select Country</option>
+                                <?php 
+                            foreach ($country as $key) { ?>
+                                <option value="<?= $key['phone_code']; ?>" ><?= $key['country_name']; ?></option>
+                            <?php } ?>  
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" name="mobile" class="form-control" placeholder="Enter Mobile" required="" autocomplete="off" minlength="10" maxlength="10" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
                             <small id="loginMsg" class="text-danger" style="font-size: 10px;"></small>
                         </div>
 
@@ -376,7 +389,7 @@ $folder = 'e'.$this->session->userdata('EID');
                                 $count++;
                                 ?>
                                 <tr style="border-bottom: none;">
-                                    <td style='width: 35%;'><?= $value['ItemNm']; ?></td>
+                                    <td style='width: 35%;'><?= $value['ItemNm1']; ?></td>
                                     <!-- Rating Slider -->
                                     <td>
                                         <div class="row">
@@ -415,8 +428,12 @@ $folder = 'e'.$this->session->userdata('EID');
     <!-- end Js Plugins -->
 
 </body>
-
+<script src="<?= base_url() ?>assets_admin/libs/select2/js/select2.min.js"></script>
 <script type="text/javascript">
+
+    $(document).ready(function() {
+        $('#countryCd').select2();
+    });
 
     var ServiceRange = document.getElementById("ServiceRange");
     var ServiceValue = document.getElementById("ServiceValue");
@@ -553,8 +570,9 @@ $folder = 'e'.$this->session->userdata('EID');
     $('#loginForm').on('submit', function(e){
         e.preventDefault();
         var data = $(this).serializeArray();
-        // console.log(data[0].value);
-        mobile = data[0].value;
+        console.log(data[0].value);
+        
+        mobile = data[1].value;
 
         $.post('<?= base_url('users/send_otp') ?>',data,function(res){
             if(res.status == 'success'){

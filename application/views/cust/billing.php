@@ -173,13 +173,9 @@
                                     $ta = ($data['TA'] != 0)?'[TA]':'';
                                         $sameTaxType .= ' <tr> ';
                                         if($data['Itm_Portion'] > 4 ){
-                                            
                                             $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].' ('.$data['Portions'].$ta.') </td> ';
-
                                         }else{
-
-                                            $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].$ta.'</td> ';
-
+                                            $sameTaxType .= '<td style="float: left;">'.$data['ItemNm'].$ta.'</td> ';
                                         }
                                         
                                         $sameTaxType .= ' <td style="text-align: right;"> '.$data['Qty'].' </td>';

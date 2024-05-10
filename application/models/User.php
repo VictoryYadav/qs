@@ -199,7 +199,7 @@ class User extends CI_Model{
 		        	$data['MobileNo'] 	= $mobile;
 
 		        	$Adata 				= $data;
-		        	$Adata['EID'] 		= authuser()->EID;
+		        	$Adata['EID'] 		= $this->session->userdata('EID');
 		        	$Adata['page'] 		= 'offline order';
 		            $genTblDb->insert('AllUsers', $Adata);
 		            $CustId 			= $genTblDb->insert_id();
@@ -255,7 +255,7 @@ class User extends CI_Model{
 
 	public function SettlePayment($billId, $MergeNo, $MCNo){
 
-		$EID = authuser()->EID;
+		$EID = $this->session->userdata('EID');
         $EType = $this->session->userdata('EType');
 
         $this->db2->trans_start();

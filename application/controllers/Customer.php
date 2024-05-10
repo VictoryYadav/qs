@@ -1394,7 +1394,7 @@ class Customer extends CI_Controller {
         $CustId = $this->session->userdata('CustId');
         $CNo = $this->session->userdata('CNo');
         $EID = authuser()->EID;
-        $TableNo = authuser()->TableNo;
+        $TableNo = $this->session->userdata('TableNo');
 
         $orderOption = $_POST['orderOption'];
         $status = 0;

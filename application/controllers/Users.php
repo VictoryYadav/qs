@@ -60,9 +60,22 @@ class Users extends CI_Controller {
 
             extract($_POST);
 
-            $CellNo = $this->session->userdata('CellNo');;
-            $CustId = 0;
+            $CellNo = $this->session->userdata('CellNo');
+            $countryCode = $this->session->userdata('pCountryCd');
+            $CustId = $this->session->userdata('CustId');
+
+            $CellNo = $countryCode.$CellNo;
             $ChainId = 0;
+
+            // delete rating for same mobile number
+                $genCheckid = $this->db2->query("SELECT RCd  FROM `Ratings` WHERE EID = $EID AND BillId = $billid AND CustId = $CustId AND CellNo = $CellNo")->row_array();
+
+                if (!empty($genCheckid)) {
+                    $RCd = $genCheckid['RCd'];
+                     $this->db2->query("DELETE FROM `Ratings` WHERE EID = $EID AND BillId = $billid AND CustId = $CustId AND CellNo = $CellNo");
+                    $this->db2->query("DELETE FROM `RatingDet` WHERE RCd = $RCd");
+                }
+            // end of 
 
             $RatingInsert['EID']        = $EID;
             $RatingInsert['ChainId']    = $ChainId;
@@ -99,14 +112,14 @@ class Users extends CI_Controller {
 
             $genTblDb = $this->load->database('GenTableData', TRUE);
             // gen db
-            // $genCheckid = $genTblDb->query("SELECT RCd  FROM `Ratings` WHERE EID = $EID AND BillId = $billid AND CustId = $CustId AND CellNo = $CellNo")->result_array();
+            $genCheckid = $genTblDb->query("SELECT RCd  FROM `Ratings` WHERE EID = $EID AND BillId = $billid AND CustId = $CustId AND CellNo = $CellNo")->result_array();
 
-            // // gen db
-            // if (!empty($genCheckid)) {
-            //     $RCd = $genCheckid[0]['RCd'];
-            //     $deleteRating = $genTblDb->query("DELETE FROM `Ratings` WHERE EID = $EID AND BillId = $billid AND CustId = $CustId AND CellNo = $CellNo");
-            //     $deleteRatingDet = $genTblDb->query("DELETE FROM `RatingDet` WHERE RCd = $RCd");
-            // }
+            // gen db
+            if (!empty($genCheckid)) {
+                $RCd = $genCheckid[0]['RCd'];
+                $deleteRating = $genTblDb->query("DELETE FROM `Ratings` WHERE EID = $EID AND BillId = $billid AND CustId = $CustId AND CellNo = $CellNo");
+                $deleteRatingDet = $genTblDb->query("DELETE FROM `RatingDet` WHERE RCd = $RCd");
+            }
             // gen db
             $genRatingObj['EID']        = $EID;
             $genRatingObj['ChainId']    = $ChainId;
@@ -152,14 +165,17 @@ class Users extends CI_Controller {
 
         $data['link'] = '';
 
-        $data['kitchenGetData'] = $this->db2->select('b.BillId,k.ItemId , m.UItmCd, m.ItemNm, k.CustItemDesc')
-                                    ->order_by('m.ItemNm','ASC')
+        $data['kitchenGetData'] = $this->db2->select("b.BillId,k.ItemId , m.UItmCd, m.ItemNm1, k.CustItemDesc")
+                                    ->order_by('m.ItemNm1','ASC')
                                     ->group_by('k.ItemId,k.MCNo')
                                     ->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
                                     ->join('Kitchen k', 'k.MCNo = km.MCNo', 'inner')
                                     ->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
                                     ->get_where('Billing b', array('b.BillId' => $billId, 'k.Stat' => 3, 'b.EID' => $EID))
                                     ->result_array();
+        $data['country']    = $this->db2->select('*')
+                    ->order_by('country_name', 'ASC')
+                    ->get_where('countries', array('Stat' => 0))->result_array();
 
         $this->load->view('user/rating', $data);
         
@@ -170,6 +186,7 @@ class Users extends CI_Controller {
         $status = 'error';
         $response = 'Something went wrong plz try again!';
         if($this->input->method(true)=='POST'){
+            $this->session->set_userdata('pCountryCd', $_POST['countryCd']);
             $mobile = $_POST['mobile'];
 
             $CustId = createCustUser($mobile);
@@ -242,11 +259,15 @@ class Users extends CI_Controller {
         $EID = $this->session->userdata('EID');
         
         $data['title'] = $this->lang->line('payNow');
-        $data["modes"] = $this->db2->select('PymtMode, Company, CodePage1')->get_where('ConfigPymt', array('Stat' => 1))->result_array();
+        $data["modes"] = $this->db2->select('PymtMode, Name1 as Name, Company, CodePage1')->get_where('ConfigPymt', array('Stat' => 1))->result_array();
+
         $data['payable'] = $this->session->userdata('payable');
         $data['BillId'] = $BillId;
         $data['MCNo'] = $MCNo;
         $data["splitBills"] = $this->db2->get_where('BillPayments', array('BillId' => $BillId,'Stat' => 1,'EID' => $EID))->result_array();
+        $data['country']    = $this->db2->select('*')
+                    ->order_by('country_name', 'ASC')
+                    ->get_where('countries', array('Stat' => 0))->result_array();
         // echo "<pre>";
         // print_r($data);
         // die;
@@ -321,11 +342,12 @@ class Users extends CI_Controller {
     }
 
     public function updateCustPayment(){
-        $EID  = $this->session->userdata('EID');
+        $EID    = $this->session->userdata('EID');
         $billId = $_POST['BillId'];
+        $MCNo   = $_POST['MCNo'];
 
         $MergeNo = $this->session->userdata('MergeNo');
-        autoSettlePayment($billId, $MergeNo);
+        autoSettlePayment($billId, $MergeNo, $MCNo);
     }
 
     public function bill($billId){
