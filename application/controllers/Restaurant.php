@@ -7915,7 +7915,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function payment_collection_settled_bill(){
-        $this->check_access();
+        // $this->check_access();
         $data['EID'] = authuser()->EID;
 
         $status = "error";
@@ -8125,7 +8125,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function onaccount_sale_summary(){
-        $this->check_access();
+        // $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
         

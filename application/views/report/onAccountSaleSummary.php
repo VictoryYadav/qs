@@ -31,7 +31,6 @@
                                                     <!-- <th>#</th> -->
                                                     <th><?= $this->lang->line('name'); ?></th>
                                                     <th><?= $this->lang->line('mobileNo'); ?></th>
-                                                    <th>Bill Amount</th>
                                                     <th>Outstanding</th>
                                                     <th>Billed To</th>
                                                     <th>Detail</th>
@@ -100,7 +99,6 @@
                         temp += `<tr>
                                     <td>${item.Fullname}</td>
                                     <td>${item.CellNo}</td>
-                                    <td>${item.PaidAmt}</td>
                                     <td>${item.totalBillPaidAmt}</td>
                                     <td>${item.billTo}</td>
                                     <td>

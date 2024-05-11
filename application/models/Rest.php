@@ -1739,8 +1739,8 @@ class Rest extends CI_Model{
 		$EID = authuser()->EID;
 		return $this->db2->select("b.CustId, b.CellNo, CONCAT_WS(' ', u.FName, u.LName) as Fullname, sum(b.PaidAmt) as TotalAmt ")
 						->order_by('b.BillId', 'ASC')
-						->group_by('b.CellNo')
-						->join('Users u', 'u.MobileNo = b.CellNo', 'inner')
+						->group_by('b.CustId')
+						->join('Users u', 'u.CustId = b.CustId', 'inner')
 						->get_where('Billing b', array(
 											'b.Stat' => 25,
 									 		'b.EID' => $EID)
@@ -1751,7 +1751,7 @@ class Rest extends CI_Model{
 	public function getBillingByCustId($CustId){
 
 		$EID = authuser()->EID;
-		return $this->db2->query("SELECT b.BillId, b.CustId, b.CellNo, b.CNo, b.MergeNo, b.PaidAmt, DATE_FORMAT(DATE(b.billTime), '%d-%b-%Y - %H:%i') as billTime, IFNULL(b.PaidAmt - (SELECT IFNULL(sum(bp.PaidAmt), 0) From BillPayments bp, Billing b1 where bp.BillId = b1.BillId and bp.EID=b1.EID and b1.BillId = b.BillId and b1.EID = b.EID group by bp.EID, bp.BillId ,b1.EID, b1.BillId),b.PaidAmt) as totalBillPaidAmt
+		return $this->db2->query("SELECT b.BillId, b.CustId, b.CellNo, b.CNo, b.MergeNo, b.PaidAmt, DATE_FORMAT(b.billTime, '%d-%b-%Y - %H:%i') as billTime, IFNULL(b.PaidAmt - (SELECT IFNULL(sum(bp.PaidAmt), 0) From BillPayments bp, Billing b1 where bp.BillId = b1.BillId and bp.EID=b1.EID and b1.BillId = b.BillId and b1.EID = b.EID group by bp.EID, bp.BillId ,b1.EID, b1.BillId),b.PaidAmt) as totalBillPaidAmt
 			FROM `Billing` `b`
 			WHERE `b`.`Stat` = 25
 			AND `b`.`EID` = $EID
@@ -1778,8 +1778,8 @@ class Rest extends CI_Model{
 	public function getOnaccountsData(){
 
 		$EID = authuser()->EID;
-		return $this->db2->query("SELECT b.CustId, b.CellNo, CONCAT_WS(' ', u.FName, u.LName) as Fullname, b.PaidAmt, b.billTo, DATE_FORMAT(DATE(b.billTime), '%d-%b-%Y - %H:%i') as billTime, IFNULL(b.PaidAmt - (SELECT IFNULL(sum(bp.PaidAmt), 0) From BillPayments bp, Billing b1 where bp.BillId = b1.BillId and bp.EID=b1.EID and b1.BillId = b.BillId and b1.EID = b.EID group by bp.EID, bp.BillId ,b1.EID, b1.BillId),b.PaidAmt) as totalBillPaidAmt
-			FROM Billing b Inner join Users u on u.uId = b.CustId
+		return $this->db2->query("SELECT b.CustId, b.CellNo, CONCAT_WS(' ', u.FName, u.LName) as Fullname, b.PaidAmt, b.billTo, DATE_FORMAT(b.billTime, '%d-%b-%Y - %H:%i') as billTime, IFNULL(sum(b.PaidAmt) - (SELECT IFNULL(sum(bp.PaidAmt), 0) From BillPayments bp, Billing b1 where bp.BillId = b1.BillId and bp.EID=b1.EID and b1.BillId = b.BillId and b1.EID = b.EID group by bp.EID, bp.BillId ,b1.EID, b1.BillId),b.PaidAmt) as totalBillPaidAmt
+			FROM Billing b Inner join Users u on u.CustId = b.CustId
 			WHERE b.Stat = 25
 			AND b.EID = $EID
 			Group by b.CustId

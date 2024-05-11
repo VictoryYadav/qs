@@ -2440,7 +2440,7 @@ class Customer extends CI_Controller {
                 $custAcc = $this->cust->getCustAccount($CustId);
                 if(!empty($custAcc)){
                     $total = $custAcc['billAmount'] + $_POST['amount'];
-
+                    
                     if($total <= $onAccount['MaxLimit']){
                         $otp = rand(9999,1000);
                         $this->session->set_userdata('payment_otp', $otp);
