@@ -31,6 +31,18 @@
                                         <form method="post" id="discountForm">
                                             <input type="hidden" name="uId" id="uId">
                                             <div class="row">
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('country'); ?></label>
+                                                        <select name="countryCd" id="countryCd" class="form-control form-control-sm select2 custom-select" required="">
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <?php 
+                                                    foreach ($country as $key) { ?>
+                                                        <option value="<?= $key['phone_code']; ?>" ><?= $key['country_name']; ?></option>
+                                                    <?php } ?>  
+                                                    </select>
+                                                    </div>
+                                                </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
@@ -94,6 +106,7 @@
 
 <script type="text/javascript">
 $(document).ready(function () {
+    $('#countryCd').select2();
 });
 
 $('#MobileNo').on('change', function(e){

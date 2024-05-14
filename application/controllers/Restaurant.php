@@ -7721,22 +7721,24 @@ class Restaurant extends CI_Controller {
     }
 
     public function discount_user(){
-        $this->check_access();
+        // $this->check_access();
         $EID = authuser()->EID;
         $status = "error";
         $response = "Something went wrong! Try again later.";
         
         if($this->input->method(true)=='POST'){
             $status = "success";
-
+            $country = $_POST['countryCd'];
+            $this->session->set_userdata('pCountryCd', $CountryCd);
             if($_POST['uId'] > 0){
                 $userId = $_POST['uId'];
             }else{
                 $userId = createCustUser($_POST['MobileNo']);
             }
 
-            $upData['discId'] = $_POST['discId'];
-            $upData['FName'] = $_POST['FName'];
+            $upData['CountryCd']   = $country;
+            $upData['discId']      = $_POST['discId'];
+            $upData['FName']       = $_POST['FName'];
 
             updateRecord('Users', $upData, array('EID' => $EID, 'uId' => $userId));
 
@@ -7752,6 +7754,7 @@ class Restaurant extends CI_Controller {
 
         $data['title'] = 'Discount User';
         $data['discounts'] = $this->rest->getUserDiscount();
+        $data['country'] = $this->rest->getCountries();
         $this->load->view('rest/discount_user', $data);    
     }
 
@@ -8296,7 +8299,7 @@ class Restaurant extends CI_Controller {
                 case 'pdata':
                     $CountryCd              = $_POST['countryCd'];
                     $this->session->set_userdata('pCountryCd', $CountryCd);
-                    
+
                     $cusList['EID']         = $EID;
                     $cusList['MobileNo']    = $CountryCd.$_POST['MobileNo'];
                     $cusList['CustId']      = createCustUser($_POST['MobileNo']);
@@ -8442,10 +8445,10 @@ class Restaurant extends CI_Controller {
             rechargeHistory($RC);
             $response = 'Prepaid Recharge Inserted.';
 
-            $acc = $this->db2->get_where('custList', array('CustId' => $_POST['CustId']))->row_array();
+            $acc = $this->db2->get_where('CustList', array('CustId' => $_POST['CustId']))->row_array();
             
             $dt['prePaidAmt'] = $acc['prePaidAmt'] + $_POST['prePaidAmt'];
-            updateRecord('custList', $dt, array('CustId' => $_POST['CustId']));
+            updateRecord('CustList', $dt, array('CustId' => $_POST['CustId']));
             
                 
             header('Content-Type: application/json');
@@ -8457,7 +8460,7 @@ class Restaurant extends CI_Controller {
         }
 
         $data['title'] = 'Prepaid Recharge';
-        $data['users'] = $this->db2->get('custList')->result_array();
+        $data['users'] = $this->db2->get('CustList')->result_array();
         $this->load->view('rest/prepaid_recharge', $data);
     }
 

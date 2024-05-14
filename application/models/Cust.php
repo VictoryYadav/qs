@@ -1426,7 +1426,7 @@ class Cust extends CI_Model{
                 $billingObj['splitPercent'] = $splitPercent;
                 $billingObj['OType'] = $kitcheData[0]['OType'];
                 $billingObj['LoginCd'] = $kitcheData[0]['LoginCd'];
-                $discountDT = getDiscount($billingObj['CellNo']);
+                $discountDT = getDiscount($billingObj['CustId']);
                 if(!empty($discountDT)){
                 	$billingObj['discPcent'] = $discountDT['pcent'];
                 	$billingObj['discId'] = $discountDT['discId'];

@@ -1458,7 +1458,7 @@ class Customer extends CI_Controller {
                 if(!empty($d)){
                     $km = $d[0];
                 }   
-                $response['discountDT'] = getDiscount($CellNo);
+                $response['discountDT'] = getDiscount($CustId);
                 $response['kitchen_main_data'] = $km;
                 echo json_encode($response);
                 die();
@@ -1895,7 +1895,7 @@ class Customer extends CI_Controller {
             // print_r($pData);
             // die;
 
-            $discountDT = getDiscount($pData['CellNo']);
+            $discountDT = getDiscount($pData['CustId']);
             if(!empty($discountDT)){
                 // $gt = $totalAmount / (100 - $discountDT['pcent']) * 100;
                 $pData['orderAmount'] = $pData['orderAmount'] - ($pData['orderAmount'] * $discountDT['pcent'])/100;
@@ -2840,9 +2840,10 @@ class Customer extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
             $mobile = $this->session->userdata('CellNo');
+            $CustId = $this->session->userdata('CustId');
 
             $status = 'success';
-            $response = getDiscount($mobile);
+            $response = getDiscount($CustId);
             
             header('Content-Type: application/json');
             echo json_encode(array(
