@@ -494,6 +494,11 @@ class User extends CI_Model{
 					->row_array();
 	}
 
+	public function createRCHistory($data){
+		$data['EID'] = $this->session->userdata('EID');
+		$this->db2->insert('rechargeHist', $data);
+	}
+
 	
 
 }

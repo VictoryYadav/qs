@@ -7967,9 +7967,41 @@ class Restaurant extends CI_Controller {
             $bData = $this->rest->getBillingByCustId($_POST['CustId']);
 
             if(!empty($bData)){
+                $extraAmount = 0;
+                $counter = 1;
                 foreach ($bData as $bill) {
+                    $onAccDetail = checkOnAccountCust($_POST['CustId'], 1);
+                    if(!empty($onAccDetail)){
+                        if($onAccDetail['prePaidAmt'] > 0){
+                            $totalAmount = $totalAmount + $onAccDetail['prePaidAmt'];
+                            $RC['CustId'] = $_POST['CustId'];
+                            $RC['Amount'] = $onAccDetail['prePaidAmt'];
+                            $RC['Remarks'] = 'Adjust';
+                            rechargeHistory($RC);
+                            $cusList['prePaidAmt'] = 0;
+                            updateRecord('CustList', $cusList, array('CustId' => $_POST['CustId']));
+                        }
+
+                        if($totalAmount >= $bill['totalBillPaidAmt']){
+                            $extraAmount = ($totalAmount - $bill['totalBillPaidAmt']);
+                            if($counter == 1){
+                                if($extraAmount > 0){
+                                    $cusList['prePaidAmt']  = $extraAmount;
+
+                                    $RC['CustId'] = $_POST['CustId'];
+                                    $RC['Amount'] = $extraAmount;
+                                    $RC['Remarks'] = 'Added';
+                                    rechargeHistory($RC);
+                                    updateRecord('CustList', $cusList, array('CustId' => $_POST['CustId']));
+                                }
+                            }
+                            $counter++;
+                        }
+                    }
+
                     if($totalAmount > 0){
                         if($totalAmount >= $bill['totalBillPaidAmt']){
+
                             $bpAmount = $bill['totalBillPaidAmt'];
                             $totalAmount = $totalAmount - $bill['totalBillPaidAmt'];
 
@@ -8248,6 +8280,185 @@ class Restaurant extends CI_Controller {
         $data['title'] = 'Config';
         $data['detail'] = getRecords('Config',array('EID' => $EID));
         $this->load->view('rest/config', $data);
+    }
+
+    public function prepaid_account(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+            $EID = authuser()->EID;
+            $CountryCd = $this->session->userdata('CountryCd');
+            $this->session->set_userdata('pCountryCd', $CountryCd);
+            $status = "success";
+
+            switch ($_POST['type']) {
+                case 'pdata':
+                    $CountryCd              = $_POST['countryCd'];
+                    $this->session->set_userdata('pCountryCd', $CountryCd);
+                    
+                    $cusList['EID']         = $EID;
+                    $cusList['MobileNo']    = $CountryCd.$_POST['MobileNo'];
+                    $cusList['CustId']      = createCustUser($_POST['MobileNo']);
+                    $cusList['MaxLimit']    = $_POST['MaxLimit'];
+                    $cusList['prePaidAmt']  = $_POST['prePaidAmt'];
+                    $cusList['custType']    = $_POST['custType'];
+                    if($_POST['acNo'] > 0){
+                        $response = 'Prepaid Account Updated.';
+                        updateRecord('CustList', $cusList, array('acNo' => $_POST['acNo']));
+                    }else{
+
+                        insertRecord('CustList', $cusList);
+                        $response = 'Prepaid Account Inserted.';
+                        $RC['CustId'] = $cusList['CustId'];
+                        $RC['Amount'] = $cusList['prePaidAmt'];
+                        $RC['Remarks'] = 'Added';
+                        rechargeHistory($RC);
+                    }
+
+                break;
+
+                case 'file_data':
+                    
+                    $folderPath = 'uploads/e'.$EID.'/csv';
+                    if (!file_exists($folderPath)) {
+                        // Create the directory
+                        mkdir($folderPath, 0777, true);
+                    }
+                    // remove all files inside this folder uploads/qrcode/
+                    $filesPath = glob($folderPath.'/*'); // get all file names
+                    foreach($filesPath as $file){ // iterate files
+                      if(is_file($file)) {
+                        unlink($file); // delete file
+                      }
+                    }  
+                    // end remove all files inside folder
+                    $flag = 0;
+                    if(isset($_FILES['prepaid_files']['name']) && !empty($_FILES['prepaid_files']['name'])){ 
+                        $files = $_FILES['prepaid_files'];
+                        $allowed = array('csv');
+                        $filename_c = $_FILES['prepaid_files']['name'];
+                        $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                        if (!in_array($ext, $allowed)) {
+                            $flag = 1;
+                            $this->session->set_flashdata('error','Support only CSV format!');
+                        }
+                        // less than 1mb size upload
+                        if($files['size'] > 1048576){
+                            $flag = 1;
+                            $this->session->set_flashdata('error','File upload less than 1MB!');   
+                        }
+                        $_FILES['prepaid_files']['name']= $files['name'];
+                        $_FILES['prepaid_files']['type']= $files['type'];
+                        $_FILES['prepaid_files']['tmp_name']= $files['tmp_name'];
+                        $_FILES['prepaid_files']['error']= $files['error'];
+                        $_FILES['prepaid_files']['size']= $files['size'];
+                        $file = $files['name'];
+
+                        if($flag == 0){
+                            $res = do_upload('prepaid_files',$file,$folderPath,'*');
+                            if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
+
+                                $itemData = [];
+                                $temp = [];
+                                $count = 1;
+                                $checker = 0;
+
+                                while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
+                                    // echo "<pre>";
+                                    // print_r($csv_data);
+                                    // die;
+                                    if($csv_data[0] !='MobileNo'){
+                                    
+                                        $checker = 1;
+
+                                    $temp['CustId'] = createCustUser($csv_data[0]);
+                                        $temp['MobileNo'] = $CountryCd.$csv_data[0];
+                                        $temp['MaxLimit'] = $csv_data[1];
+                                        $temp['prePaidAmt'] = $csv_data[2];
+                                        $custType = '';
+
+                                        if($csv_data[3] == 'OnAccount'){
+                                            $custType = 1;
+                                        }
+
+                                        if($csv_data[3] == 'Prepaid'){
+                                            $custType = 2;
+                                        }
+
+                                        if($csv_data[3] == 'Corporate'){
+                                            $custType = 3;
+                                        }
+
+                                        $temp['custType'] = $custType;
+                                        $temp['EID'] = $EID;
+                                        $itemData[] = $temp;
+                                    }
+                                    $count++;    
+                                }
+
+                                if(!empty($itemData)){
+                                    $this->db2->insert_batch('CustList', $itemData);
+                                    $status = 'success';
+                                    $response = 'Data Inserted.';
+                                }
+                             
+                                fclose($open);
+                            }
+                        }
+                      }
+
+                break;
+                
+            }
+                
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] = 'Prepaid Amount';
+        $data['prepaids'] = $this->db2->get('CustList')->result_array();
+        $data['country'] = $this->rest->getCountries();
+        $this->load->view('rest/prepaid_account', $data);
+    }
+
+    public function prepaid_recharge(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+            $EID = authuser()->EID;
+            $CountryCd = $this->session->userdata('CountryCd');
+            $this->session->set_userdata('pCountryCd', $CountryCd);
+            $status = "success";        
+
+            $RC['CustId']   = $_POST['CustId'];
+            $RC['Amount']   = $_POST['prePaidAmt'];
+            $RC['Remarks']  = 'Added';
+            rechargeHistory($RC);
+            $response = 'Prepaid Recharge Inserted.';
+
+            $acc = $this->db2->get_where('custList', array('CustId' => $_POST['CustId']))->row_array();
+            
+            $dt['prePaidAmt'] = $acc['prePaidAmt'] + $_POST['prePaidAmt'];
+            updateRecord('custList', $dt, array('CustId' => $_POST['CustId']));
+            
+                
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] = 'Prepaid Recharge';
+        $data['users'] = $this->db2->get('custList')->result_array();
+        $this->load->view('rest/prepaid_recharge', $data);
     }
 
     public function db_create_old(){

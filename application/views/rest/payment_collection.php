@@ -60,7 +60,7 @@
                                                     <th>#</th>
                                                     <th><?= $this->lang->line('name'); ?></th>
                                                     <th><?= $this->lang->line('mobile'); ?></th>
-                                                    <th><?= $this->lang->line('amount'); ?></th>
+                                                    <th>Unpaid Bill Amt</th>
                                                     <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
                                                 </thead >

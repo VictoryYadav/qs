@@ -548,6 +548,11 @@ function translateText($text, $currentLng, $targetLng ){
 // $chineseNumber = convertDigits($englishNumber, 'en', 'zh');
 // $hindiNumber = convertDigits($englishNumber, 'en', 'hi');
 
+function rechargeHistory($data){
+	$CI = & get_instance();
+    $CI->load->model('User');
+    return $CI->User->createRCHistory($data);	
+}
 
 
 

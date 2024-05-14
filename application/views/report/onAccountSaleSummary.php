@@ -30,7 +30,7 @@
                                                 <tr>
                                                     <!-- <th>#</th> -->
                                                     <th><?= $this->lang->line('name'); ?></th>
-                                                    <th><?= $this->lang->line('mobileNo'); ?></th>
+                                                    <th><?= $this->lang->line('mobile'); ?></th>
                                                     <th>Outstanding</th>
                                                     <th>Billed To</th>
                                                     <th>Detail</th>
