@@ -2054,5 +2054,16 @@ class Rest extends CI_Model{
 						->result_array();
 	}
 
+	public function discountUserList(){
+		$EID = authuser()->EID;
+		return  $this->db2->select("u.uId, u.FName, u.LName, u.MobileNo, d.discId, d.name, d.pcent")
+						->join('discounts d', 'd.discId = u.discId', 'inner')
+						->get_where('Users u', 
+										array(
+											  'u.EID' => $EID,
+											  'd.EID' => $EID)
+								)->result_array();
+	}
+
 	
 }

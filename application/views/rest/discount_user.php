@@ -81,6 +81,50 @@
                                 </div>
     
                             </div>
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table id="usersTBL" class="table table-bordered topics">
+                                                <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th><?= $this->lang->line('userName'); ?></th>
+                                                    <th><?= $this->lang->line('mobile'); ?></th>
+                                                    <th><?= $this->lang->line('discount'); ?></th>
+                                                    <th><?= $this->lang->line('action'); ?></th>
+                                                </tr>
+                                                </thead>
+            
+                                                <tbody>
+                                                    <?php
+                                                    if(!empty($users)){
+                                                        $i=1;
+                                                        foreach ($users as $key) {
+                                                     ?>
+                                                    
+                                                <tr>
+                                                    <td><?php echo $i++; ?></td>
+                                                    <td><?php echo $key['FName'].' '.$key['LName']; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo $key['MobileNo']; ?> 
+                                                    </td>
+                                                    <td><?php echo $key['name'].'('.$key['pcent'].')%'; ?>
+                                                    </td>
+                                                    <td>
+                                                        
+                                                    </td>
+                                                </tr>
+                                                <?php }
+                                                 }
+                                                ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
                     </div> <!-- container-fluid -->

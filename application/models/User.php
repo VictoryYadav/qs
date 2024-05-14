@@ -166,7 +166,8 @@ class User extends CI_Model{
 
 	// common for create user at first time enter our app
 	public function createCustomerUser($mobile){
-		$CountryCd = $this->session->userdata('CountryCd');
+		$EID 		= $this->session->userdata('EID');
+		$CountryCd 	= $this->session->userdata('CountryCd');
 		$pCountryCd = $this->session->userdata('pCountryCd');
 		if($pCountryCd > 0){
 			$CountryCd = $pCountryCd;
@@ -194,12 +195,13 @@ class User extends CI_Model{
 		            $data1['Gender']    = $gen_check['Gender'];
 		            $data1['visit'] 	= 1;
 		            $data1['PWDHash'] 	= md5('eatout246');
+		            $data1['EID'] 		= $EID;
 		            insertRecord('Users',$data1);    
 		        }else{
 		        	$data['MobileNo'] 	= $mobile;
 
 		        	$Adata 				= $data;
-		        	$Adata['EID'] 		= $this->session->userdata('EID');
+		        	$Adata['EID'] 		= $EID;
 		        	$Adata['page'] 		= 'offline order';
 		            $genTblDb->insert('AllUsers', $Adata);
 		            $CustId 			= $genTblDb->insert_id();
@@ -207,6 +209,7 @@ class User extends CI_Model{
 		            $data['CustId'] 	= $CustId;
 		            $data['visit'] 		= 1;
 		            $data['PWDHash'] 	= md5('eatout246');
+		            $data['EID'] 		= $EID;
 		            insertRecord('Users',$data);
 		        }
 			}else{

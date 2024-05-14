@@ -7755,6 +7755,8 @@ class Restaurant extends CI_Controller {
         $data['title'] = 'Discount User';
         $data['discounts'] = $this->rest->getUserDiscount();
         $data['country'] = $this->rest->getCountries();
+        $data['users'] = $this->rest->discountUserList();
+        
         $this->load->view('rest/discount_user', $data);    
     }
 
