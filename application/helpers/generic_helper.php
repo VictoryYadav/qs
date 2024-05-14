@@ -476,10 +476,10 @@ function file_get_contents_curl($url)
     }
 }
 
-function getDiscount($mobile){
+function getDiscount($CustId){
 	$CI = & get_instance();
     $CI->load->model('User');
-    return $CI->User->getDiscountDetail($mobile);	
+    return $CI->User->getDiscountDetail($CustId);	
 }
 
 function getThemeColor(){
