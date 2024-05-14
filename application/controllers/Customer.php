@@ -1458,7 +1458,10 @@ class Customer extends CI_Controller {
                 if(!empty($d)){
                     $km = $d[0];
                 }   
-                $response['discountDT'] = getDiscount($CustId);
+                $response['discountDT'] = array();
+                if($this->session->userdata('Discount') > 0){
+                    $response['discountDT'] = getDiscount($CustId);
+                }
                 $response['kitchen_main_data'] = $km;
                 echo json_encode($response);
                 die();
@@ -1894,11 +1897,12 @@ class Customer extends CI_Controller {
             // echo "<pre>";
             // print_r($pData);
             // die;
-
-            $discountDT = getDiscount($pData['CustId']);
-            if(!empty($discountDT)){
-                // $gt = $totalAmount / (100 - $discountDT['pcent']) * 100;
-                $pData['orderAmount'] = $pData['orderAmount'] - ($pData['orderAmount'] * $discountDT['pcent'])/100;
+            if($this->session->userdata('Discount') > 0){
+                $discountDT = getDiscount($pData['CustId']);
+                if(!empty($discountDT)){
+                    // $gt = $totalAmount / (100 - $discountDT['pcent']) * 100;
+                    $pData['orderAmount'] = $pData['orderAmount'] - ($pData['orderAmount'] * $discountDT['pcent'])/100;
+                }
             }
 
             if($pData['CustId'] == 0){
@@ -2843,7 +2847,10 @@ class Customer extends CI_Controller {
             $CustId = $this->session->userdata('CustId');
 
             $status = 'success';
-            $response = getDiscount($CustId);
+            $response = array();
+            if($this->session->userdata('Discount') > 0){
+                $response = getDiscount($CustId);
+            }
             
             header('Content-Type: application/json');
             echo json_encode(array(

@@ -150,6 +150,7 @@
 
 <script type="text/javascript">
 $(document).ready(function () {
+    $('#usersTBL').DataTable();
     $('#countryCd').select2();
 });
 

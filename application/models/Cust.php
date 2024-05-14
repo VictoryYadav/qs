@@ -1426,12 +1426,16 @@ class Cust extends CI_Model{
                 $billingObj['splitPercent'] = $splitPercent;
                 $billingObj['OType'] = $kitcheData[0]['OType'];
                 $billingObj['LoginCd'] = $kitcheData[0]['LoginCd'];
-                $discountDT = getDiscount($billingObj['CustId']);
-                if(!empty($discountDT)){
-                	$billingObj['discPcent'] = $discountDT['pcent'];
-                	$billingObj['discId'] = $discountDT['discId'];
-                	$gt = $totalAmount / (100 - $discountDT['pcent']) * 100;
-                	$billingObj['autoDiscAmt'] = ($gt * $discountDT['pcent'])/100;
+
+                $discountDT = array();
+                if($this->session->userdata('Discount') > 0){
+	                $discountDT = getDiscount($billingObj['CustId']);
+	                if(!empty($discountDT)){
+	                	$billingObj['discPcent'] = $discountDT['pcent'];
+	                	$billingObj['discId'] = $discountDT['discId'];
+	                	$gt = $totalAmount / (100 - $discountDT['pcent']) * 100;
+	                	$billingObj['autoDiscAmt'] = ($gt * $discountDT['pcent'])/100;
+	                }
                 }
                 
                 // echo "<pre>";
