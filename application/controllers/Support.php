@@ -296,6 +296,21 @@ class Support extends CI_Controller {
                 // Create the directory
                 mkdir($folderPath, 0777, TRUE);
                 chmod($folderPath, 0777);
+
+                if (file_exists($folderPath)) {
+                    $offer = $folderPath."/offers";
+                    $qrcode = $folderPath."/qrcode";
+                    $csv = $folderPath."/csv";
+
+                    mkdir($offer, 0777, TRUE);
+                    chmod($offer, 0777);
+
+                    mkdir($qrcode, 0777, TRUE);
+                    chmod($qrcode, 0777);
+
+                    mkdir($csv, 0777, TRUE);
+                    chmod($csv, 0777);
+                }
             }
 
             $response = "Restaurant Created.";
