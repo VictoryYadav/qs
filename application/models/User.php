@@ -235,6 +235,7 @@ class User extends CI_Model{
         $otpData['mobileNo'] = $mobile;
         $otpData['otp'] = $otp;
         $otpData['stat'] = 0;
+        $otpData['EID'] = $this->session->userdata('EID');
         $otpData['pageRequest'] = $page;
 
         if($mobile){

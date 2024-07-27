@@ -6284,6 +6284,7 @@ class Restaurant extends CI_Controller {
                 $otpData['mobileNo'] = $mobile;
                 $otpData['otp'] = '';
                 $otpData['stat'] = 0;
+                $otpData['EID'] = authuser()->EID;
                 $otpData['pageRequest'] = 'Dispense';
 
                 if($mobile){
@@ -6323,17 +6324,18 @@ class Restaurant extends CI_Controller {
             // print_r($_POST);
             // die;
             extract($_POST);
-
+            $EID = authuser()->EID;
             $RestName = authuser()->RestName;
             $Dispense_OTP = $this->session->userdata('Dispense_OTP');
 
             if($oType != 101){
 
-                updateRecord('kitchen', array('DStat' => 1), array('CNo' => $CNo, 'DCd' => $DCd));
+                updateRecord('Kitchen', array('DStat' => 1), array('CNo' => $CNo, 'DCd' => $DCd, 'EID' => $EID));
 
                 $otpData['mobileNo'] = $mobile;
                 $otpData['otp'] = '';
                 $otpData['stat'] = 0;
+                $otpData['EID'] = $EID;
                 $otpData['pageRequest'] = 'Dispense';
 
                 if($mobile){

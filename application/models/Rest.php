@@ -45,7 +45,7 @@ class Rest extends CI_Model{
 	public function getOTypeList(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId as Name";
-		return $this->db2->select("*, $lname")->get_where('ordeType', array('Stat' => 0))
+		return $this->db2->select("*, $lname")->get_where('orderType', array('Stat' => 0))
 					->result_array();
 	}
 

@@ -31,9 +31,6 @@ class Support extends CI_Controller {
         $response = 'Something went wrong plz try again!';
         if($this->input->method(true)=='POST'){
             $this->session->set_userdata('signup', $_POST);
-            // echo "<pre>";
-            // print_r($_POST);
-            // die;
 
             $supp = $_POST;
             $supp['pwdHash'] = md5($supp['pwd']);
@@ -426,8 +423,9 @@ class Support extends CI_Controller {
                     $db3->query("UPDATE Config SET EID = $EID");
                     $db3->query("UPDATE Eat_tables SET EID = $EID");
                     $db3->query("UPDATE ConfigTheme SET EID = $EID");
+                    $db3->query("UPDATE Eat_Lang SET EID = $EID");
+                    $db3->query("UPDATE ItemTypes SET EID = $EID");
                     
-
                     $user['PWDHash'] = md5($user['Passwd']);
                     $user['Gender'] = 1;
                     $user['DeputedEID'] = $EID;
