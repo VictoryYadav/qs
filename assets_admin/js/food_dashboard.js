@@ -31,7 +31,7 @@ function RevenueAndDiscounts() {
 
   $.ajax({
 
-    url: base_url+'DashboardController/food_graph',
+    url: base_url+'restaurant/food_graph',
 
     type: "POST",
 
@@ -136,7 +136,7 @@ function OrdersByHour() {
 
   $.ajax({
 
-    url: base_url+'DashboardController/food_graph',
+    url: base_url+'restaurant/food_graph',
 
     type: "POST",
 
@@ -235,7 +235,7 @@ function BillsAndRatings() {
 
   $.ajax({
 
-    url: base_url+'DashboardController/food_graph',
+    url: base_url+'restaurant/food_graph',
 
     type: "POST",
 

@@ -58,7 +58,7 @@ function customersFootfalls() {
 
   $.ajax({
 
-    url: base_url+'DashboardController/customer_graph',
+    url: base_url+'restaurant/customer_graph',
     type: "POST",
     dataType: "json",
     data: {
@@ -117,7 +117,7 @@ function customersFootfallsModel() {
   // alert(range);
   $.ajax({
 
-    url: base_url+'DashboardController/customer_graph',
+    url: base_url+'restaurant/customer_graph',
 
     type: "POST",
 
@@ -220,7 +220,7 @@ function customersOrderValue() {
   // var range = $('#order_value_range').val();
   $.ajax({
 
-    url: base_url+'DashboardController/customer_graph',
+    url: base_url+'restaurant/customer_graph',
 
     type: "POST",
 
@@ -325,7 +325,7 @@ function customersOrderValueModel() {
   // alert(range);
   $.ajax({
 
-    url: base_url+'DashboardController/customer_graph',
+    url: base_url+'restaurant/customer_graph',
 
     type: "POST",
 
@@ -429,7 +429,7 @@ function paymentModeModel() {
   // alert(range);
   $.ajax({
 
-    url: base_url+'DashboardController/customer_graph',
+    url: base_url+'restaurant/customer_graph',
 
     type: "POST",
 
@@ -529,7 +529,7 @@ function paymentModeModel() {
 function paymentMode(){
    $.ajax({
 
-      url: base_url+'DashboardController/customer_graph',
+      url: base_url+'restaurant/customer_graph',
 
       type: "POST",
 

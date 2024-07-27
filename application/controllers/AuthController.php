@@ -116,10 +116,6 @@ class AuthController extends CI_Controller {
                                                 ->row_array();
                     $url = base_url('restaurant').'/'.$userRolesAccessData['pageUrl'];
                     
-                    if($userRolesAccessData['pageUrl'] == 'dashboard'){
-                        redirect(base_url('dashboard'));
-                    }
-
                     redirect($url);
                     
                 }else {

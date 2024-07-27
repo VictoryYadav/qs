@@ -32,7 +32,7 @@ function TakeAways() {
 
   $.ajax({
 
-    url: base_url+'DashboardController/rest_graph',
+    url: base_url+'restaurant/rest_graph',
 
     type: "POST",
 
@@ -131,7 +131,7 @@ function Offers() {
 
   $.ajax({
 
-    url: base_url+'DashboardController/rest_graph',
+    url: base_url+'restaurant/rest_graph',
 
     type: "POST",
 
@@ -230,7 +230,7 @@ function Offers() {
 function tableWiseOccupencyLunch() {
   $.ajax({
 
-    url: base_url+'DashboardController/rest_graph',
+    url: base_url+'restaurant/rest_graph',
 
     type: "POST",
 
@@ -285,7 +285,7 @@ function tableWiseOccupencyLunch() {
 function TrendKitchenOrders() {
   $.ajax({
 
-    url: base_url+'DashboardController/rest_graph',
+    url: base_url+'restaurant/rest_graph',
 
     type: "POST",
 
@@ -340,7 +340,7 @@ function TrendKitchenOrders() {
 function RatingsTrend() {
   $.ajax({
 
-    url: base_url+'DashboardController/rest_graph',
+    url: base_url+'restaurant/rest_graph',
 
     type: "POST",
 
@@ -404,7 +404,7 @@ function RatingsTrend() {
 function tableWiseCount() {
   $.ajax({
 
-    url: base_url+'DashboardController/rest_graph',
+    url: base_url+'restaurant/rest_graph',
 
     type: "POST",
 

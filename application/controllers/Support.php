@@ -468,7 +468,7 @@ class Support extends CI_Controller {
                     $eatry['CountryCd'] = $EIDData['CountryCd'];
                     $eatry['LoginCd'] = $userId;
                     $eatry['EID'] = $EID;
-                    $eatry['dbEID'] = $EID;
+                    $eatry['aggEID'] = $EID;
                     $db3->update('Eatary', $eatry, array('EID' => 1));
                     // end of update eatary table
 
