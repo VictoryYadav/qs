@@ -94,9 +94,7 @@
 
 <body>
 
-    <!-- Header Section Begin -->
     <?php $this->load->view('layouts/customer/top'); ?>
-    <!-- Header Section End -->
 
     <section class="common-section p-2">
 
@@ -135,7 +133,6 @@
                   </div>
                   
                   <div class="d-flex justify-content-center mt-3 login_container">
-                      <!-- <button type="button" name="button" class="btn btn-sm login_btn">Login</button> -->
                       <input type="submit" class="btn btn-sm login_btn form-control" value="<?= $this->lang->line('log_in'); ?>" style="font-size: 12px !important;font-weight: bold;">
                   </div>
                 </form>
@@ -188,7 +185,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header" style="background: #e1af75;">
-        <h6 class="modal-title text-white" id="labelName">Name</h6>
+        <h6 class="modal-title text-white" id="labelName"><?= $this->lang->line('name'); ?></h6>
         <button type="button" class="close" onclick="goHome()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

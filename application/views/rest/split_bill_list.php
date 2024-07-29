@@ -96,45 +96,81 @@
         <div class="modal-dialog">
             <div class="modal-content" >
                 <div class="modal-header">
-                    <h6><?= $this->lang->line('cashCollect'); ?></h6>
+                    <h6><?= $this->lang->line('paymentCollection'); ?></h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" style="max-height: 500px;overflow: auto;">
-                    <form method="post" id="cashForm">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th><?= $this->lang->line('mode'); ?></th>
-                                    <th><?= $this->lang->line('amount'); ?></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody id="cashBody">
-                                <tr>
-                                    <td>
-                                        <select name="" id="" class="form-control form-control-sm">
-                                        <?php
-                                        foreach ($payModes as $key) {
-                                         ?>
-                                         <option value="<?= $key['Name']; ?>"><?= $key['Name']; ?></option>
-                                        <?php } ?>
-                                        </select>
-                                    </td>
-                                    <td id="cashBodyTd">
-                                    </td>
-                                    <td>
-                                        <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success">
-                                        <i class="fas fa-save"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form method="post" id="cashForm">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th><?= $this->lang->line('mode'); ?></th>
+                                                <th><?= $this->lang->line('amount'); ?></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cashBody">
+                                            <tr>
+                                                <td>
+                                                    <select name="PymtType" id="PymtType" class="form-control form-control-sm" onchange='changeModes()'>
+                                                    <?php
+                                                    foreach ($payModes as $key) {
+                                                     ?>
+                                                     <option value="<?= $key['PymtMode']; ?>"><?= $key['Name']; ?></option>
+                                                    <?php } ?>
+                                                    </select>
+                                                </td>
+                                                <td id="cashBodyTd">
+                                                </td>
+                                                <td>
+                                                    <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-save"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </form>
+
+                    <div class="row mt-4 OTPBlock" style="display: none;">
+                        <div class="col-md-12">
+                            <form method="post" id="paymentForm">
+                                <input type="hidden" name="paymentMode" id="paymentMode">
+                                <input type="hidden" name="billId" id="paymentBillId">
+                                <input type="hidden" name="paymentCustId" id="paymentCustId">
+                                <input type="hidden" name="paymentMCNo" id="paymentMCNo">
+                                <input type="hidden" name="paymentMergeNo" id="paymentMergeNo">
+                                <input type="hidden" name="billAmount" id="paymentAmount">
+                                <input type="hidden" name="paymentMobile" id="paymentMobile">
+                                
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <input type="number" name="otp" class="form-control form-control-sm" required="" placeholder="OTP">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <input type="submit" class="btn btn-sm btn-success" value="Verify">
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="sendOTP()">Send</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <small class="text-danger" id="paymentSMS"></small>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -149,7 +185,7 @@
     });
 
     function cashCollect(billId, oType, tableNo, mergeNo, cellNo, paidAmt, MCNo,EID){
-        var tbl = `<input type="hidden" name="BillId" value="${billId}"/><input type="hidden" name="oType" value="${oType}"/><input type="hidden" name="TableNo" value="${tableNo}"/><input type="hidden" name="MCNo" value="${MCNo}"/><input type="hidden" name="EID" value="${EID}"/><input type="hidden" name="MergeNo" value="${mergeNo}"/><input type="hidden" name="CellNo" value="${cellNo}"/><input type="hidden" name="TotBillAmt" value="${paidAmt}"/><input type="text" name="PaidAmt" value="${convertToUnicodeNo(paidAmt)}" required class="form-control form-control-sm" onblur="changeValue(this)" />`;
+        var tbl = '<input type="hidden" id="cashBillId" name="BillId" value="'+billId+'" /><input type="hidden"  id="cashoType" name="oType" value="'+oType+'"/><input type="hidden" id="cashTableNo" name="TableNo" value="'+tableNo+'"/><input type="hidden" id="cashMCNo" name="MCNo" value="'+MCNo+'"/><input type="hidden" id="cashEID" name="EID" value="'+EID+'"/><input type="hidden" id="cashMergeNo" name="MergeNo" value="'+mergeNo+'"/><input type="hidden" id="cashCellNo" name="CellNo" value="'+cellNo+'"/><input type="hidden" id="cashTotBillAmt" name="TotBillAmt" value="'+paidAmt+'"/><input type="text" name="PaidAmt" value="'+convertToUnicodeNo(paidAmt)+'" required class="form-control form-control-sm" onblur="changeValue(this)" />';
 
         
         $('#cashBodyTd').html(tbl);
@@ -160,11 +196,11 @@
     function cashCollectData(){
         var data = $('#cashForm').serializeArray();
       
-        var TotBillAmt = data[7].value;
-        var PaidAmt = data[8].value;
+        var TotBillAmt = data[8].value;
+        var PaidAmt = data[9].value;
 
         PaidAmt = convertDigitToEnglish(PaidAmt);
-        data[8].value = PaidAmt;
+        data[9].value = PaidAmt;
 
       // console.log(PaidAmt+' , '+TotBillAmt);
       if(parseFloat(PaidAmt) >= parseFloat(TotBillAmt)){
@@ -194,5 +230,69 @@
             location.reload();
         });
     }
+
+    var mobile10 = '';
+
+    function changeModes(){
+        var billId = $('#cashBillId').val();
+        // var custId = $('#cashBillId').val();
+        var billAmount = $('#cashTotBillAmt').val();
+        mobile10 = $('#cashCellNo').val();
+        mobile10 = mobile10.substr(mobile10.length - 10);
+        var MergeNo = $('#cashMergeNo').val();
+        var MCNo    = $('#cashMCNo').val();
+        var pmode = $('#PymtType').val();
+        $('.OTPBlock').hide();
+        if( mobile10.toString().length < 10 && (pmode >= 20 && pmode <= 30)){
+            alert(`You can not select payment ${pmode} mode because invalid mobile no`);
+            $('#PymtType').val('');
+            return false;
+        }else if(mobile10.toString().length >= 10 && (pmode >= 20 && pmode <= 30)){
+                
+                $('#paymentBillId').val(billId);
+                $('#paymentMobile').val(mobile10);
+                $('#paymentAmount').val(billAmount);
+                $('#paymentMode').val(pmode);
+                $('#paymentCustId').val(0);
+                $('#paymentMergeNo').val(MergeNo);
+                $('#paymentMCNo').val(MCNo);
+                $(`#cashBtn_${billId}`).prop("disabled", true);
+                sendOTP();
+                $('.OTPBlock').show();
+            }
+    }
+
+    function sendOTP(){
+        
+        if(mobile10.toString().length >= 10){
+            $.post('<?= base_url('restaurant/send_payment_otp') ?>',{mobile:mobile10},function(res){
+                    if(res.status == 'success'){
+                      $('#paymentSMS').html(res.response);  
+                    }else{ 
+                      alert(res.response);  
+                    }
+            });
+        }else{
+            alert('No Mobile No');
+        }
+    }
+
+    $('#paymentForm').on('submit', function(e){
+        e.preventDefault();
+        var data = $(this).serializeArray();
+
+        var billId = data[1]['value'];
+        
+        $.post('<?= base_url('restaurant/settle_bill_without_payment') ?>', data, function(res){
+            if(res.status == 'success'){
+                $(`#cashBtn_${billId}`).prop("disabled", false);
+                $('.OTPBlock').hide();
+                $('#cashCollectModel').modal('hide');
+                location.reload();
+            }else{ 
+              $('#paymentSMS').html(res.response);
+            }
+        });
+    })
 
 </script>

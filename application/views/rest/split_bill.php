@@ -46,7 +46,7 @@
                                                 
                                                 <div class="col-md-2 col-3">
                                                     <label for="">&nbsp;</label><br>
-                                                    <button class="btn btn btn-sm btn-success" onclick="addRow()"><i class="fa fa-plus"></i></button>
+                                                    <button class="btn btn btn-sm btn-success" onclick="addRow()" id="btnADD"><i class="fa fa-plus"></i></button>
                                                 </div>
 
                                                 <div class="col-md-4 col-9">
@@ -84,9 +84,9 @@
                                                                     <select name="CountryCd[]" class="form-control form-control-sm CountryCd select2 custom-select" required="" >
                                                                         <?= $this->lang->line('select'); ?>
                                                                         <?php 
-                        foreach ($country as $key) { ?>
-                            <option value="<?= $key['phone_code']; ?>" <?php if($CountryCd == $key['phone_code']){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
-                        <?php } ?> 
+                                                                        foreach ($country as $key) { ?>
+                                                                            <option value="<?= $key['phone_code']; ?>" <?php if($CountryCd == $key['phone_code']){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
+                                                                        <?php } ?> 
                                                                     </select>
                                                                 </td>
                                                                 <td>
@@ -207,11 +207,15 @@
 
         var rowCount = $('#splitTable tr').length - 1;
         var val = $('#splitType').val();
-        console.log(val+' ,row '+rowCount+', amt= '+totalAmt);
+        // console.log(val+' ,row '+rowCount+', amt= '+totalAmt);
         if(val > 0){
             if(val == 1){
-                if(rowCount == 0){
-                    alert('Single Contact Required');
+                if(rowCount == 1){
+                    // alert('Single Contact Required');
+                    $('.percentRow').val(100);
+                    $('.amountRow').val(totalAmt);
+                    $('.grossAmtRow').val(grossAmt);
+                    // $('#btnADD')
                 }else if(rowCount > 1){
                     alert('Bill for this option can be generated only for one Contact.');
                 }

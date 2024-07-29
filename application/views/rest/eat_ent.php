@@ -12,7 +12,7 @@
             </div>
             <!-- Left Sidebar End -->
 
-            <!-- ============================================================== -->
+            <!-- =======================================EntId======================= -->
             <!-- Start right Content here -->
             <!-- ============================================================== -->
             <div class="main-content">
@@ -24,32 +24,64 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form method="post" id="recomForm">
-                                            <input type="hidden" id="RecNo" name="RecNo" value="0">
+                                        <form method="post" id="entForm">
+                                            <input type="hidden" id="EntId" name="EntId" value="0">
                                             <div class="row">
                                                 <div class="col-md-3 col-5">
                                                     <div class="form-group">
-                                                        <label><?= $this->lang->line('item'); ?></label>
-                                                        <select name="ItemId" id="ItemId" class="form-control form-control-sm select2 custom-select" required="">
+                                                        <label><?= $this->lang->line('name'); ?></label>
+                                                        <select name="EntId" id="EntId" class="form-control form-control-sm" required="">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
-
-                                                            <?php foreach ($itemList as $item) { ?>
-                                                            <option value="<?= $item['ItemId']; ?>"><?= $item['Name']; ?></option>
-                                                            <?php } ?>
+                                                            <?php 
+                                                            if(!empty($lists)){
+                                                                foreach ($lists as $key) { ?>
+                                                                    <option value="<?= $key['EntId']; ?>"><?= $key['Name']; ?></option>
+                                                            <?php } } ?>
                                                         </select>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-5">
                                                     <div class="form-group">
-                                                        <label><?= $this->lang->line('recommendation'); ?></label>
-                                                        <select name="RcItemId" id="RcItemId" class="form-control form-control-sm select2 custom-select" required="">
+                                                        <label><?= $this->lang->line('day'); ?></label>
+                                                        <select name="Dayno" id="Dayno" class="form-control form-control-sm" required="" >
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
-
-                                                            <?php foreach ($itemList as $item) { ?>
-                                                            <option value="<?= $item['ItemId']; ?>"><?= $item['Name']; ?></option>
-                                                            <?php } ?>
+                                                        <?php
+                                                        foreach ($weekDay as $key) { ?>
+                                                            <option value="<?= $key['DayNo']; ?>"><?= $key['Name']; ?></option>
+                                                        <?php } ?>
                                                         </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-5">
+                                                    <div class="form-group">
+                                                        <label>Performer</label>
+                                                        <input type="text" name="performBy" id="performBy" class="form-control form-control-sm" required="" placeholder="<?= $this->lang->line('name'); ?>" />
+                                                        
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-5">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('image'); ?></label>
+                                                        <input type="file" name="item_file" id="PerImg" class="form-control form-control-sm" required="" />
+                                                        
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-5">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('fromDate'); ?></label>
+                                                        <input type="date" name="fromDt" id="fromDt" class="form-control form-control-sm" required="" value="<?= date('Y-m-d'); ?>" />
+                                                        
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-5">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('toDate'); ?></label>
+                                                        <input type="date" name="toDt" id="toDt" class="form-control form-control-sm" required="" value="<?= date('Y-m-d'); ?>" />
+                                                        
                                                     </div>
                                                 </div>
 
@@ -84,42 +116,36 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table id="itemTbl" class="table table-bordered">
+                                            <table id="TableData" class="table table-bordered">
                                                 <thead>
                                                 <tr >
                                                     <th>#</th>
-                                                    <th><?= $this->lang->line('item'); ?></th>
-                                                    <th><?= $this->lang->line('recommendation'); ?></th>
+                                                    <th><?= $this->lang->line('name'); ?></th>
+                                                    <th><?= $this->lang->line('day'); ?></th>
+                                                    <th><?= $this->lang->line('date'); ?></th>
                                                     <th><?= $this->lang->line('mode'); ?></th>
-                                                    <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
                                                 </thead>
             
                                                 <tbody>
                                                     <?php
-                                                    if(!empty($recList)){
+                                                    
+                                                    if(!empty($entertainments)){
                                                         $i = 1;
-                                                        foreach ($recList as $row) {
+                                                        foreach ($entertainments as $row) {
                                                             $sts = ($row['Stat'] == 0)? $this->lang->line('active'):$this->lang->line('inactive');
 
                                                             $clr = ($row['Stat'] == 0)?'success':'danger';
-                                                         ?>
+                                                     ?>
                                                     <tr>
                                                         <td><?= $i++; ?></td>
-                                                        <td><?= $row['ItemNm']; ?></td>
-                                                        <td><?= $row['recName']; ?></td>
-                                                        <td>
-                                                            <span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['RecNo'] ?>,<?= $row['ItemId'] ?>,<?= $row['RcItemId'] ?>, <?= $row['Stat'] ?>)">
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
+                                                        <td><?= $row['Name']; ?></td>
+                                                        <td><?= $row['weekDay']; ?></td>
+                                                        <td><?= date('d-M-Y', strtotime($row['fromDt'])).' to '.date('d-M-Y', strtotime($row['toDt'])) ?></td>
+                                                        <td><span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span>
                                                         </td>
                                                     </tr>
-                                                    <?php  }
-                                                    } 
-                                                    ?>
+                                                    <?php  }  } ?>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -127,6 +153,7 @@
                                 </div>
                             </div>
                         </div>
+
                         
                     </div> <!-- container-fluid -->
                 </div>
@@ -152,31 +179,32 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#itemTbl').DataTable();
-        $('#ItemId').select2();
-        $('#RcItemId').select2();
+        $('#TableData').DataTable();
     });
 
-    $('#recomForm').on('submit', function(e){
+    $('#entForm').on('submit', function(e){
         e.preventDefault();
 
-        var data = $(this).serializeArray();
-        $.post('<?= base_url('restaurant/recommendation') ?>',data,function(res){
-            if(res.status == 'success'){
-              $('#msgText').html(res.response);
-            }else{
-              $('#msgText').html(res.response);
-            }
-            location.reload();
+        var formData = new FormData(document.getElementById("entForm"));
+        
+        $.ajax({
+               url : '<?= base_url('restaurant/eat_ent') ?>',
+               type : 'POST',
+               data : formData,
+               processData: false,  
+               contentType: false,  
+               success : function(data) {
+                   alert(data.response);
+                   // location.reload();
+               }
         });
 
     });
 
-    function editData(RecNo,itemid, RcItemId, stat){
+    function editData(EntId,name, stat){
         
-        $('#RecNo').val(RecNo);
-        $('#ItemId').val(itemid).trigger('change');
-        $('#RcItemId').val(RcItemId).trigger('change');
+        $('#EntId').val(EntId);
+        $('#name').val(name);
         $('#Stat').val(stat);   
 
         $('#saveBtn').hide();

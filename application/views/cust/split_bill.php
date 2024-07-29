@@ -35,12 +35,12 @@ body{
 
     <section class="common-section p-2 dashboard-container">
         <div class="container">
-            <form action="<?= base_url('customer/splitBill/'.$MergeNo); ?>" method="post">
-                <input type="hidden" name="payableAmount" value="<?= round($payable); ?>">
+            <form method="post" id="billForm">
+                <input type="hidden" name="payableAmount" value="<?= round($payable); ?>" >
                 <input type="hidden" name="grossAmount" value="<?= round($grossItemAmt); ?>">
                 <input type="hidden" name="tipAmount" value="<?= round($tip); ?>">
-                <input type="hidden" name="MergeNo" value="<?= round($MergeNo); ?>">
-                <input type="hidden" name="MCNo" value="<?= round($MCNo); ?>">
+                <input type="hidden" name="MergeNo" value="<?= $MergeNo; ?>">
+                <input type="hidden" name="MCNo" value="<?= $MCNo; ?>">
                 <input type="hidden" name="tot_sgst" value="<?= round($tot_sgst); ?>">
 
                 <div class="row">
@@ -94,23 +94,17 @@ body{
                                 for ($i=0; $i < sizeof($mobile) ; $i++) {
                                     $count++;
                                     $cd = substr($mobile[$i], 0, -10);
+                                    $mobile10 = substr($mobile[$i], -10);
                                 ?>
                             <tr>
                                 <td>
                                     <input type="text" value="<?= $cd; ?>" placeholder="Mobile" class="form-control" required name="CountryCd[]" readonly>
                                 </td>
                                 <td>
-                                    <input type="text" value="<?= $mobile[$i]; ?>" placeholder="Mobile" class="form-control" required name="mobile[]" readonly>
+                                    <input type="text" value="<?= $mobile10; ?>" placeholder="Mobile" class="form-control" required name="mobile[]" readonly>
                                     <input type="hidden" value="<?= $cust_id[$i]; ?>" class="form-control" name="custid[]">
                                 </td>
-                                <!-- <td>
-                                    <select name="msgFormat[]" id="" class="form-control" required>
-                                        <option value="">Messaging Channel</option>
-                                        <option value="W">WhatsApp</option>
-                                        <option value="E">Email</option>
-                                    </select>
-                                </td> -->
-                                <!-- gross amt + tips  percentage -->
+                                
                                 <td>
                                     <input type="text" class="form-control grossAmtRow" name="totItemAmt[]" id="grossAmtRow_<?php echo $count; ?>" readonly>
                                 </td>
@@ -130,28 +124,19 @@ body{
                 </div>
                 <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('splitbill'); ?>">
             </form>
-                
-                
             
         </div>
     </section>
 
     <!-- footer section -->
     <?php $this->load->view('layouts/customer/footer'); ?>
-    <!-- end footer section -->
-
-
-    <!-- Js Plugins -->
+    
     <?php $this->load->view('layouts/customer/script'); ?>
     <!-- end Js Plugins -->
 
 </body>
 
 <script type="text/javascript">
-
-    $(document).ready(function() {
-        
-    });
 
     var totalAmt = "<?= round($payable); ?>";
     var grossAmt = "<?= round($grossItemAmt); ?>";
@@ -169,7 +154,7 @@ body{
                             <option value="<?= $key['phone_code']; ?>" <?php if($CountryCd == $key['phone_code']){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
                         <?php } ?>                   
                     </select></td>
-                    <td><input type="text" placeholder="Mobile" class="form-control" required name="mobile[]"></td>
+                    <td><input type="text" placeholder="Mobile" class="form-control" required name="mobile[]"><input type="hidden" value="0" class="form-control" name="custid[]"></td>
                     <td>
                         <input type="text" class="form-control grossAmtRow" readonly="" name="totItemAmt[]" id="grossAmtRow_'+rowCount+'">
                     </td>
@@ -215,8 +200,11 @@ body{
         console.log(val+' ,row '+rowCount+', amt= '+totalAmt);
         if(val > 0){
             if(val == 1){
-                if(rowCount == 0){
-                    alert('Single Contact Required');
+                if(rowCount == 1){
+                    
+                    $('.percentRow').val(100);
+                    $('.amountRow').val(totalAmt);
+                    $('.grossAmtRow').val(grossAmt);
                 }else if(rowCount > 1){
                     alert('Bill for this option can be generated only for one Contact.');
                 }
@@ -257,11 +245,9 @@ body{
         }else{
             alert('Choose Split Type');
         }
-
    }
 
    function calcPerAmt(rowCount){
-
     var val = $('#percentRow_'+rowCount).val();
     console.log(rowCount+' v '+val);
 
@@ -276,7 +262,6 @@ body{
    }
 
    function calcAmt(rowCount){
-
     var val = $('#amountRow_'+rowCount).val();
     console.log(rowCount+' v '+val);
 
@@ -290,6 +275,39 @@ body{
     $('#amountRow_'+rowCount).val(convertToUnicodeNo(val));
    }
 
+   $('#billForm').on('submit', function(e){
+        e.preventDefault();
+        var data = $(this).serializeArray();
+        var rowCount = $('#splitTable tr').length - 1;
+        var val = $('#splitType').val();
+        if(val > 0){
+            if(val == 1){
+                if(rowCount == 1){
+                    $('.percentRow').val(100);
+                    $('.amountRow').val(totalAmt);
+                    $('.grossAmtRow').val(grossAmt);
+                    callAjax(data, val);
+                }else if(rowCount > 1){
+                    alert('Bill for this option can be generated only for one Contact.');
+                }
+            }else{
+                callAjax(data, val);
+            }
+        }else{
+            alert('Select Split Type');
+        }
+   });
+
+   function callAjax(data, splitType){
+        $.post('<?= base_url('customer/splitBill') ?>',data,function(res){
+            if(res.status == 'success'){
+              window.location = `${res.response}`;
+              return false;
+            }else{
+              alert(res.response);
+            }
+        });
+   }
 
 </script>
 

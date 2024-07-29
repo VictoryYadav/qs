@@ -34,9 +34,6 @@
             </div>
             <!-- Left Sidebar End -->
 
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
             <div class="main-content">
 
                 <div class="page-content">
@@ -99,6 +96,19 @@
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
+                                                        <label for="cid_input"><?= $this->lang->line('cuisine'); ?></label>
+                                                        <select class="form-control form-control-sm" required="" name="CID">
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                            <?php
+                                                                foreach($CuisineList as $row){ ?>
+                                                            <option value="<?= $row['CID']; ?>" <?php if($row['CID'] == $detail['CID']){ echo 'selected'; } ?> ><?= $row['Name']; ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
                                                         <label for="menu_category"><?= $this->lang->line('menuCategory'); ?></label>
                                                             <select class="form-control form-control-sm" required="" name="MCatgId">
                                                                 <option value=""><?= $this->lang->line('select'); ?></option>
@@ -113,7 +123,7 @@
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label for="category_type"><?= $this->lang->line('cuisineType'); ?></label>
-                                                        <select class="form-control form-control-sm" required="" name="CTyp">
+                                                        <select class="form-control form-control-sm" required="" name="CTyp" onchange="getFood()" id="CTyp">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php
                                                             foreach ($ctypList as $key) {
@@ -126,26 +136,9 @@
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label for="cid_input"><?= $this->lang->line('cuisine'); ?></label>
-                                                        <select class="form-control form-control-sm" required="" name="CID">
-                                                        <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <?php
-                                                                foreach($CuisineList as $row){ ?>
-                                                            <option value="<?= $row['CID']; ?>" <?php if($row['CID'] == $detail['CID']){ echo 'selected'; } ?> ><?= $row['Name']; ?></option>
-                                                            <?php } ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3 col-6">
-                                                    <div class="form-group">
                                                         <label for="fid"><?= $this->lang->line('foodType'); ?></label>
-                                                        <select class="form-control form-control-sm" required="" name="FID">
+                                                        <select class="form-control form-control-sm" required="" name="FID" id="FID">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <?php
-                                                                foreach($FoodType as $row){ ?>
-                                                                <option value="<?= $row['FID']; ?>" <?php if($row['FID'] == $detail['FID']){ echo 'selected'; } ?>><?= $row['Opt']; ?></option>
-                                                               <?php } ?>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -177,7 +170,22 @@
                                                         <input type="time" class="form-control form-control-sm" required="" placeholder="Enter From Time 2" name="AltToTime" value="<?= $detail['AltToTime']; ?>">
                                                     </div>
                                                 </div>
-                                            
+
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label for="item_type"><?= $this->lang->line('item'); ?> <?= $this->lang->line('type'); ?></label>
+                                                        <select class="form-control form-control-sm" required="" name="ItemTyp">
+                                                            <option value="0"><?= $this->lang->line('select'); ?></option>
+                                                            <?php
+                                                            foreach ($menuTags as $key) {
+                                                                if($key['TagTyp'] == 2){
+                                                             ?>
+                                                            <option value="<?= $key['TagId']; ?>" <?php if($key['TagId'] == $detail['ItemTyp']){ echo 'selected'; } ?>><?= $key['TDesc']; ?></option>
+                                                            <?php } } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label for="item_attribute"><?= $this->lang->line('itemAttribute'); ?></label>
@@ -189,20 +197,6 @@
                                                              ?>
                                                             <option value="<?= $key['TagId']; ?>" <?php if($key['TagId'] == $detail['ItemAttrib']){ echo 'selected'; } ?>><?= $key['TDesc']; ?></option>
                                                             <?php } } ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3 col-6">
-                                                    <div class="form-group">
-                                                        <label for="item_type"><?= $this->lang->line('type'); ?></label>
-                                                        <select class="form-control form-control-sm" required="" name="ItemTyp">
-                                                            <option value="0"><?= $this->lang->line('select'); ?></option>
-                                                            <?php
-                                                            foreach ($itemType as $key) {
-                                                             ?>
-                                                            <option value="<?= $key['ItmTyp']; ?>" <?php if($key['ItmTyp'] == $detail['ItemTyp']){ echo 'selected'; } ?>><?= $key['Name']; ?></option>
-                                                            <?php } ?>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -268,7 +262,6 @@
                                                     <div class="form-group">
                                                         <label for="DayNo"><?= $this->lang->line('day'); ?></label>
                                                         <select class="form-control form-control-sm" required="" name="DayNo">
-                                                            <option value="0"><?= $this->lang->line('all'); ?></option>
                                                             <?php
                                                             foreach ($weekDay as $key) {
                                                              ?>
@@ -365,7 +358,7 @@
                                                                 <input type="number" name="price[]" id="" class="form-control form-control-sm" required="" value="<?= $iRate['ItmRate'] ?>" />
                                                             </td>
                                                             <td>
-                                                                <!-- <button type="button" class="btn btn-danger btn-sm btn-rounded deleteRow"><i class="fa fa-trash"></i></button> -->
+                                                               
                                                             </td>
                                                         </tr>
                                                     <?php } } ?>
@@ -468,12 +461,35 @@ $("#addrow").on("click", function () {
                     </tr>';
 
         $("#tblBody").append(newRow);
-        
 });
 
 // remove row
 $("#tblBody").on('click','.deleteRow',function(){
     $(this).parent().parent().remove();
 });
+
+getFood();
+function getFood(){
+    var CTyp = $('#CTyp').val();
+    var fid = "<?= $detail['FID']; ?>";
+
+    $.post('<?= base_url('restaurant/getfood_by_ctype') ?>',{CTyp:CTyp},function(res){
+        if(res.status == 'success'){
+            var temp = "<option value= ><?= $this->lang->line('select'); ?></option>";
+            res.response.forEach((item, index) => {
+                var selct = ``;
+                if(item.FID == fid){
+                    selct = `selected`;
+                }
+                temp += `<option value="${item.FID}" ${selct}>${item.Opt}</option>`;
+            });
+
+            $('#FID').html(temp);
+
+        }else{
+          alert(res.response);
+        }
+    });
+}
 
 </script>

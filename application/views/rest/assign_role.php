@@ -10,11 +10,7 @@
                     <!-- Sidebar -->
                 </div>
             </div>
-            <!-- Left Sidebar End -->
 
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
             <div class="main-content">
 
                 <div class="page-content">
@@ -28,7 +24,7 @@
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <select name="RUserId" id="RUserId" onchange="roleAssign()" class="form-control select2 custom-select" style="width: 100%;">
-                                                        <option value="">Select</option>
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php
                                                         foreach ($usersRestData as $key) {
                                                          ?>
@@ -75,7 +71,7 @@
     function  roleAssign() {
         var RUserId = $('#RUserId').val();
         if(RUserId){
-            // console.log('ff'+mobile);
+            
             $('#msgText').hide();
 
             $.ajax({
@@ -84,16 +80,13 @@
                 data: {RUserId:RUserId},
                     success: function(res) {
                         if(res.status == 'success'){
-                            // var username = res.response.username.name;
                             var createForm = res.response.createForm;
                             $('#formData').html(createForm);
-
                         }else{
                             alert(res.status);
                         }
                 }
             });
-
         }else{
             $('#msgText').show();
             $('#msgText').html('Please select Mobile No.');
@@ -102,7 +95,6 @@
     }
 
     function submitData(){
-        
         var data = $('roleAssignForm').serializeArray();
         $.post('<?= base_url('resaurant/role_assign') ?>',data,function(res){
             if(res.status == 'success'){

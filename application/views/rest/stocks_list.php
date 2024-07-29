@@ -16,11 +16,7 @@ $RestName = authuser()->RestName;
                     <!-- Sidebar -->
                 </div>
             </div>
-            <!-- Left Sidebar End -->
-
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
+            
             <div class="main-content">
 
                 <div class="page-content">
@@ -128,7 +124,6 @@ $RestName = authuser()->RestName;
                                                         ?>
                                                     </td>
                                                 </tr>
-
                                                   <?php } } ?>
                                                 </tbody>
                                             </table>
@@ -169,10 +164,6 @@ $RestName = authuser()->RestName;
         $('#stock_list_table').DataTable();
     });
 
-
-</script>
-
-<script type="text/javascript">
     function edit(id){
         window.location.href="<?php echo base_url();?>restaurant/edit_stock/"+id;
     }

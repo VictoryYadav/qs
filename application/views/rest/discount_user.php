@@ -53,13 +53,6 @@
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label><?= $this->lang->line('name'); ?></label>
-                                                        <input type="text" name="FName" class="form-control form-control-sm" required="" id="FName">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3 col-6">
-                                                    <div class="form-group">
                                                         <label>Discount Group</label>
                                                         <select name="discId" id="discId" class="form-control form-control-sm" required="">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
@@ -113,7 +106,9 @@
                                                     <td><?php echo $key['name'].'('.$key['pcent'].')%'; ?>
                                                     </td>
                                                     <td>
-                                                        
+                                                        <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $key['CustId'] ?>, <?= $key['MobileNo'] ?>, <?= $key['discId'] ?>)">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
                                                     </td>
                                                 </tr>
                                                 <?php }
@@ -189,6 +184,17 @@ $('#discountForm').on('submit', function(e){
     });
 
 });
+
+function editData(uId, MobileNo, discId){
+    var mobile10 = MobileNo.toString();
+    var cd = mobile10.slice(0, 2)
+    mobile10 = mobile10.substr(mobile10.length - 10);
+
+    $('#uId').val(uId);
+    $(`#countryCd`).val(cd).trigger('change');
+    $('#MobileNo').val(mobile10);
+    $('#discId').val(discId);
+}
 
 
 </script>

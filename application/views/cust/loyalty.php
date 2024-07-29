@@ -3,10 +3,6 @@
 
     .order-details-page {
         padding-bottom: 70px;
-        /*background-color: #0a88ff;*/
-        /*background-color: <?php echo isset($body_bg)?$body_bg:"#000"?> !important;*/
-        /*color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
-        /*padding-top: 65px;*/
         height: -webkit-fill-available;
     }
 
@@ -20,7 +16,6 @@
         padding-right: 15px;
         overflow: scroll;
         height: 350px;
-        /*cursor: all-scroll;*/
     }
 
     .order-list::-webkit-scrollbar {
@@ -32,7 +27,6 @@
     }
     .order-list::-webkit-scrollbar-thumb {
         background-color: white;
-        /*outline: 1px solid slategrey;*/
     }
 
     .order-list tr {
@@ -161,7 +155,6 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- <div class="sharethis-inline-share-buttons"></div> -->
             </div>
 
         </div>
@@ -170,10 +163,7 @@
 
     <!-- footer section -->
     <?php $this->load->view('layouts/customer/footer'); ?>
-    <!-- end footer section -->
-
-
-    <!-- Js Plugins -->
+   
     <?php $this->load->view('layouts/customer/script'); ?>
     <!-- end Js Plugins -->
 
@@ -185,7 +175,6 @@
     function getLoyaltyPoints(){
         $.post('<?= base_url('customer/loyalty') ?>',function(res){
             if(res.status == 'success'){
-              // alert(res.response);
               var temp = ``;
               res.response.forEach((item, index) =>{
                 var restName =  item.Name;
@@ -205,7 +194,6 @@
             }
         });
     }
-
 
 </script>
 

@@ -21,7 +21,6 @@
 
     <!-- Header Section Begin -->
     <?php $this->load->view('layouts/customer/top'); ?>
-    <!-- Header Section End -->
 
     <section class="common-section p-2 dashboard-container">
         <div class="container">
@@ -83,11 +82,7 @@
                             <?php
                             }
                              }else{
-                            ?>
-                            <!-- <tr>
-                                <td colspan="4"><?= $this->lang->line('noDataFound');?></td>
-                            </tr> -->
-                        <?php } ?>
+                             } ?>
 
                         </tbody>
                       </table>
@@ -116,10 +111,9 @@
         $('#tblData').DataTable();
         $('#country').select2();
     });
+    
     function RedirectPage(id, eid, dbname, dbpass) {
         window.location.href = "<?= base_url('customer/bill/')?>" + id + "?EID=" + eid + "&dbn=" + dbname + "&dbp=" + dbpass+"&ShowRatings=0";
-
-        // if ShowRatings= 1 then group rating will show in bill page "
     }
 
     getCity();

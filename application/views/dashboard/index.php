@@ -306,7 +306,7 @@
     // $('#reportForm').on('submit', function(e){
     //     e.preventDefault();
     //     var data = $(this).serializeArray();
-    //     $.post('<?= base_url('DashboardController/csv_report') ?>',data,function(res){
+    //     $.post('<?= base_url('restaurant/csv_report') ?>',data,function(res){
     //         if(res.status == 'success'){
     //           alert(res.response);
     //         }else{

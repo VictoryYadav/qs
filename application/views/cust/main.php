@@ -335,8 +335,8 @@
     <div class="modal" id="item-list-modal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header text-center" style="display: block; padding: 5px; background-color: darkblue;">
-                    <h4 class="modal-title text-white">Search Item</h4>
+                <div class="modal-header text-center" style="display: block; padding: 5px; background-color: #efb955;">
+                    <h4 class="modal-title text-white"><?= $this->lang->line('search'); ?> <?= $this->lang->line('item'); ?></h4>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -356,18 +356,16 @@
             <div class="modal-content">
                 <img id="product-img" class="modal-item-img" src="<?= base_url(); ?>assets/img/sample-foods.jpg">
                         <input type="hidden" id="sdetcd" value="">
-                        <!-- <input type="hidden" id="schcd" value=""> -->
                         <input type="text" id="TaxType" hidden>
                         <input type="hidden" id="itemTyp">
-                        <!-- <p id="item-prepare-time" time="" style="font-size: 12px;color: blue;margin-bottom: 2px;">45 min to prepare</p> -->
                 <div class="modal-body" style="padding-top: 0px;">
-                    <p id="item-name-modal" style="margin-bottom: 1px;">Item name</p>
+                    <p id="item-name-modal" style="margin-bottom: 1px;"><?= $this->lang->line('item'); ?> <?= $this->lang->line('name'); ?></p>
                     <span id="item_offer_remark"></span>
                     <ul class="list-inline product-meta">
 				    	<li class="list-inline-item">
 				    		<i class="fa fa-star ratings text-warning" aria-hidden="true">
                             </i>
-                            <span id="item-rating-modal" class="rating-no" style="color: #000;">0</span>
+                            <span id="item-rating-modal" class="rating-no">0</span>
 				    	</li>
                         <?php if($this->session->userdata('Ing_cals') == 1){ ?>
 				    	<li class="list-inline-item">
@@ -382,7 +380,7 @@
 				    	</li>
 				    </ul>
 
-                    <p id="item-desc-modal" style="font-size: 12px;" class="more"></p>
+                    <p id="item-desc-modal" style="font-size: 13px;" class="more"></p>
 
                     <div class="row" style="margin-left: 0px;margin-right: 0px;position: relative;">
                         <div class="form-group" style="width: 156px; margin-bottom: 4px;">
@@ -444,17 +442,17 @@
                         </div>
                     <?php } ?>
 
-                    <div class="row" style="margin: 0px;">
-                        <?php if($this->session->userdata('SchPop') > 0 ){ ?>
-                        <div class="form-group" style="width: 100%;">
+                    <div class="row" style="margin: 0px;padding-bottom: 20px;">
+                        <div class="form-group offerBlock" style="width: 100%;">
                             <select name="schcd" id="schcd" class="form-control" >
                                 <option value=""><?= $this->lang->line('selectOffer'); ?></option>
                             </select>
                         </div>
-                        <?php } ?>
                         <div class="remark" style="width: 100%">
                             <input id="cust-remarks" type="text" class="form-control Remarks-input" placeholder="<?= $this->lang->line('enterRemarks'); ?>" name="remark-box">
                         </div>
+
+                        <small id="requiredMsg" class="text-danger"></small>
 
                         <div class="widget category" style="width: 100%;display: none;" id="radioOption">
                             
@@ -467,13 +465,19 @@
                             </ul>
                         </div>
 
+                        <div class="form-group" style="width: 100%;margin-top: 8px;" id="customizeItemBlock" style="display: none;">
+                            <select name="customizeItem" id="customizeItem" class="form-control" >
+                                <option value="0"><?= $this->lang->line('select'); ?></option>
+                            </select>
+                        </div>
+
                     </div>
 
                     
                 </div>
             </div>
         </div>
-
+        <?php if($this->session->userdata('addItemLock') < 1 ){ ?>
         <div class="modal-footer" style="bottom: 0px;background-color: #ffffff;padding: 3px;padding-left: 15px;right: 0px;bottom: 0px;left: 0px;z-index: 1050;outline: 0px;position: fixed; width: 100%;">
             <button type="button" class="btn col-5 modal-back" data-dismiss="modal" style="padding: 5px 5px 5px; font-size: 12px;"><?php echo  $this->lang->line('back'); ?></button>
             <label class="col-2" style="padding: 3px;height: 25px;text-align: center;">
@@ -482,6 +486,7 @@
             </label>
             <button type="button" class="btn col-5 modal-confirm" data-dismiss="modal" id="confirm-order" tax_type="" tbltyp="" pck="" style="padding: 5px 5px 5px; font-size: 12px;"><?php echo  $this->lang->line('addItem'); ?></button>
         </div>
+        <?php } ?>
     </div>
 
     <!-- ingrediants Modal -->
@@ -524,6 +529,8 @@
 
 </body>
 <script type="text/javascript">
+    $(`#customizeItemBlock`).hide();
+    
     var deliveryVal = 0;
 	var prList = 'grid';
 	function showProdct(val=''){
@@ -711,7 +718,6 @@
 
                     if(data[i].ItemTyp > 0 )
                     {
-                        // openModal = '#customizeModal';
                         openModal = '#itemModal';
                     }
 
@@ -743,7 +749,6 @@
                         attrib = '<div class="price" style="background:#567d1a;color:#fff;"><?= $this->lang->line('verySweet'); ?></div>';
                         attribView = '<span style="background:#567d1a;color:#fff;border-radius:50px;padding:3px;margin-right:2px;font-size:10px;"><?= $this->lang->line('verySweet'); ?></span>';
                     }
-
                                     // <div class="priceBottom">$400</div>\
                                     // <div class="priceBottomRight">$300</div>\
                       grid += '<div class="col-lg-3 col-md-4 col-sm-6 col-6 col-mbl">\
@@ -844,7 +849,6 @@
               $('.view').html(listView);
             }else{
               alert(res.response);
-              // show error msg pending
             }
         });
     }
@@ -858,9 +862,6 @@
             $('#mCategory li.active').removeClass('active');
             $(this).addClass('active');
         });
-</script>
-
-<script>
     
     var groupNameList = [];
         $("#search-item").keyup(function(event) {
@@ -880,12 +881,17 @@
                             var template = `<ul style='list-style-type:none;padding:5px;'>`;
                             response.items.forEach((item) => {
                                 var targetModal = "#itemModal";
-                                if (item.ItemTyp > 0) {
-                                    targetModal = "#itemModal";
+                                
+                                var IMcCd = "<?php echo $this->session->userdata('IMcCdOpt'); ?>";
+                                var printItemName = '';
+                                if(IMcCd == 0){
+                                    printItemName = item.ItemNm;
+                                }else {
+                                    printItemName = item.ItemNm+'-'+item.portionName;
                                 }
-
+                                
                                 template += `
-                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.OrigRate}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-dcd="${item.DCd}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" item-NV="${item.NV}" style="cursor: pointer;" item-prepTime="${item.PrepTime}" item-itemsale="${item.ItemSale}" tbltyp="${item.TblTyp}">${item.ItemNm}</li>
+                                <li data-toggle="modal" data-target="${targetModal}" onclick="getItemDeatils(this,${item.ItemTyp});" item-id="${item.ItemId}" item-nm="${item.ItemNm}"  item-portion="${item.Itm_Portion}" item-portion-code="${item.Itm_Portion}" item-value="${item.OrigRate}" item-avgrtng="${item.AvgRtng}" item-dedc="${item.ItmDesc}" item-dcd="${item.DCd}" item-imgsrc="${item.imgSrc}" item-type="${item.ItemTyp}" item-kitcd="${item.KitCd}" cid="${item.CID}" mcatgid="${item.MCatgId}" item-fid="${item.FID}" TaxType="${item.TaxType}" item-NV="${item.NV}" item-pck="${item.PckCharge}" style="cursor: pointer;" item-prepTime="${item.PrepTime}" item-itemsale="${item.ItemSale}" tbltyp="${item.TblTyp}">${printItemName}</li>
                             `;
                             });
                             template += `</ul>`;
@@ -1007,9 +1013,8 @@
             }
             // getCustOffer(itemId, $(item).attr('item-nm'), cid, itemTyp, mCatgId);
             var item_Portion = $(item).attr('item-portion-code');
-                // itemsale
-            getItemOffers(itemId, $(item).attr('item-nm'), cid, itemTyp, mCatgId, item_Portion, FID, itemsale);
-            
+                
+            getItemOffers(itemId, $(item).attr('item-nm'), cid, itemTyp, mCatgId, item_Portion, FID, itemsale);        
         }
 
         function getItemPortion(itemId, itemPortion, cid, itemTyp, mCatgId, FID, itemsale) {
@@ -1021,17 +1026,19 @@
                 MCatgId:mCatgId
             };
             function handleData(response) {
-                // itemId, itemTyp, itemPortionCode, FID
+                
                 if (response.length != 0) {
                     var html = '';
                     for (let index = 0; index < response.length; index++) {
-                        html += `<option value="`+response[index]['IPCode']+`" rate="` + response[index]['ItmRate'] + `" offer_remark="` + response[index]['Remarks'] + `"  sdetcd="` + response[index]['SDetCd'] + `"  schcd="` + response[index]['SchCd'] + `" itemId="`+itemId+`" itemTyp="`+itemTyp+`" FID="`+FID+`" cid="`+cid+`" mCatgId="`+mCatgId+`" itemsale="`+itemsale+`"> ` + response[index]['Name'] + ` </option>`;
+                        var slct = '';
+                        if(itemPortion == response[index]['IPCode']){
+                            slct = 'selected';
+                        }
+                        html += `<option value="`+response[index]['IPCode']+`" rate="` + response[index]['ItmRate'] + `" offer_remark="` + response[index]['Remarks'] + `"  sdetcd="` + response[index]['SDetCd'] + `"  schcd="` + response[index]['SchCd'] + `" itemId="`+itemId+`" itemTyp="`+itemTyp+`" FID="`+FID+`" cid="`+cid+`" mCatgId="`+mCatgId+`" itemsale="`+itemsale+`" ${slct} > ` + response[index]['Name'] + ` </option>`;
                     }
                     $('#item_portions').html(html);
                     $('#item_portions_custome').html(html);
                     $("#item_offer_remark").text(response[0]['Remarks']);
-                    // $('#sdetcd').val(response[0]['SDetCd']);
-                    // $('#schcd').val(response[0]['SchCd']);
                 } else {
                     var html = `<option> ` + itemPortion + ` </option>`;
                     $('#item_portions').html(html);
@@ -1042,93 +1049,149 @@
             ajaxCall('<?= base_url('customer/get_item_portion_ajax') ?>', 'post', data, handleData);
         }
 
-        function getItemOffers(itemId, itemNm, cid, itemTyp, mCatgId, itemPortion, FID, itemsale) {
-
-            $.ajax({
-                url: '<?= base_url('customer/get_item_offer_ajax') ?>',
-                type: 'post',
-                data: {
-                    getOrderData: 1,
-                    itemId: itemId,
-                    cid:cid,
-                    itemTyp:itemTyp,
-                    MCatgId:mCatgId,
-                    itemPortion:itemPortion,
-                    FID : FID,
-                    itemsale:itemsale
-                },
-                success: function(res) {
-                    if(res.status == 'success'){
-                        var data = res.response;
-                        var temp = '<option value="0"><?= $this->lang->line('selectOffer'); ?></option>';
-                        for(i=0; i<data.length; i++){
-                            if(data[i].SchTyp == 2){
-                                temp += '<option value="'+data[i].SchCd+'" sdcode="'+data[i].SDetCd+'" Qty="'+data[i].Qty+'" Disc_Qty="'+data[i].Disc_Qty+'" Disc_pcent="'+data[i].Disc_pcent+'" Disc_Amt="'+data[i].Disc_Amt+'" ipcd="'+data[i].IPCd+'" itemid="'+data[i].ItemId+'">'+data[i].SchNm+'-'+data[i].SchDesc+'</option>';
+        function getItemOffers(itemId, itemNm, cid, itemTyp, mCatgId, itemPortion, FID, itemsale)
+        {
+            $(`.offerBlock`).hide();
+            var tableOffer = "<?= $currentTableOffer; ?>"; 
+            var TableNo = "<?= $this->session->userdata('TableNo'); ?>";
+            var SchType = "<?= $this->session->userdata('SchType'); ?>";
+            if((TableNo == 101 || TableNo == 105 || TableNo == 110 || TableNo == 100) && tableOffer == 1){
+                if(SchType == 2 || SchType == 3){
+                    $(`.offerBlock`).show();
+                    $.ajax({
+                        url: '<?= base_url('customer/get_item_offer_ajax') ?>',
+                        type: 'post',
+                        data: {
+                            getOrderData: 1,
+                            itemId: itemId,
+                            cid:cid,
+                            itemTyp:itemTyp,
+                            MCatgId:mCatgId,
+                            itemPortion:itemPortion,
+                            FID : FID,
+                            itemsale:itemsale
+                        },
+                        success: function(res) {
+                            if(res.status == 'success'){
+                                var data = res.response;
+                                var temp = '<option value="0"><?= $this->lang->line('selectOffer'); ?></option>';
+                                if(data.length > 0){
+                                    for(i=0; i<data.length; i++){
+                                        if(data[i].SchTyp == 2){
+                                            temp += '<option value="'+data[i].SchCd+'" sdcode="'+data[i].SDetCd+'" Qty="'+data[i].Qty+'" Disc_Qty="'+data[i].Disc_Qty+'" Disc_pcent="'+data[i].Disc_pcent+'" Disc_Amt="'+data[i].Disc_Amt+'" ipcd="'+data[i].IPCd+'" Disc_IPCd="'+data[i].Disc_IPCd+'"  itemid="'+data[i].ItemId+'" disc_itemid="'+data[i].Disc_ItemId+'" itemtype="'+data[i].ItemTyp+'" disc_itemtype="'+data[i].Disc_ItemTyp+'" schcat="'+data[i].SchCatg+'">'+data[i].SchNm+'-'+data[i].SchDesc+'</option>';
+                                        }
+                                    }
+                                    $('#schcd').css("border", "#e30223 solid 1px");
+                                }
+                                $('#schcd').html(temp);
+                            }else{
+                              alert(res.response);
                             }
                         }
-                        $('#schcd').html(temp);
-                    }else{
-                      alert(res.response);
-                    }
+                    });
                 }
-            });
+            }else{
+                if(SchType == 2 || SchType == 3){
+                    $(`.offerBlock`).show();
+                    $.ajax({
+                        url: '<?= base_url('customer/get_item_offer_ajax') ?>',
+                        type: 'post',
+                        data: {
+                            getOrderData: 1,
+                            itemId: itemId,
+                            cid:cid,
+                            itemTyp:itemTyp,
+                            MCatgId:mCatgId,
+                            itemPortion:itemPortion,
+                            FID : FID,
+                            itemsale:itemsale
+                        },
+                        success: function(res) {
+                            if(res.status == 'success'){
+                                var data = res.response;
+                                var temp = '<option value="0"><?= $this->lang->line('selectOffer'); ?></option>';
+                                if(data.length > 0){
+                                    for(i=0; i<data.length; i++){
+                                        if(data[i].SchTyp == 2){
+                                            temp += '<option value="'+data[i].SchCd+'" sdcode="'+data[i].SDetCd+'" Qty="'+data[i].Qty+'" Disc_Qty="'+data[i].Disc_Qty+'" Disc_pcent="'+data[i].Disc_pcent+'" Disc_Amt="'+data[i].Disc_Amt+'" ipcd="'+data[i].IPCd+'" Disc_IPCd="'+data[i].Disc_IPCd+'"  itemid="'+data[i].ItemId+'" disc_itemid="'+data[i].Disc_ItemId+'" itemtype="'+data[i].ItemTyp+'" disc_itemtype="'+data[i].Disc_ItemTyp+'" schcat="'+data[i].SchCatg+'">'+data[i].SchNm+'-'+data[i].SchDesc+'</option>';
+                                        }
+                                    }
+                                    $('#schcd').css("border", "#e30223 solid 1px");
+                                }
+                                $('#schcd').html(temp);
+                            }else{
+                              alert(res.response);
+                            }
+                        }
+                    });
+                }                
+            }
+
         }
 
         function getCustomItemDetails(itemId, itemTyp, itemPortionCode, FID){
-            
-            $.post('<?= base_url('customer/get_custom_item') ?>',
-                {
-                    getCustomItem:1,
-                    itemId:itemId,
-                    itemTyp:itemTyp,
-                    itemPortionCode:itemPortionCode,
-                    FID:FID
-                },
-                function(res){
+            var schcd = $(`#schcd`).val();
+            if(schcd > 0){
 
-                    if(res.status == 'success'){
+            }else{
+                $.post('<?= base_url('customer/get_custom_item') ?>',
+                    {
+                        getCustomItem:1,
+                        itemId:itemId,
+                        itemTyp:itemTyp,
+                        itemPortionCode:itemPortionCode,
+                        FID:FID
+                    },
+                    function(res){
 
-                        var customItem = res.response;
-                        radioList = customItem;
-                        
-                        for(i=0; i< customItem.length; i++){
-                            // alert(customItem[i].ItemGrpName);
-                            if(customItem[i].GrpType == 1){
-                                groupNameList.push(customItem[i].ItemGrpName);
+                        if(res.status == 'success'){
+
+                            var customItem = res.response;
+                            radioList = customItem;
+
+                            $('#radioOption').html('');
+                            $('#checkboxOption').html('');
+                            groupNameList = [];
+
+                            for(i=0; i< customItem.length; i++){
                                 
-                                var tempRadio = '<h5 class="widget-header" id="radioHeader">'+customItem[i].ItemGrpName+'</h5>\
-                                        <ul class="category-list">';
-                                var details = customItem[i].Details;
-                                
-                                for(var r=0; r < details.length; r++){
-                                    var name = "'"+details[r].Name+"'";
-                                    tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+details[r].Rate+')</span></li>';
+                                if(customItem[i].GrpType == 1){
+                                    groupNameList.push(customItem[i].ItemGrpName);
+                                    
+                                    var tempRadio = '<h5 class="widget-header" id="radioHeader">'+customItem[i].ItemGrpName+'&nbsp;<span class="text-danger">*</span></h5>\
+                                            <ul class="category-list">';
+                                    var details = customItem[i].Details;
+                                    
+                                    for(var r=0; r < details.length; r++){
+                                        var name = "'"+details[r].Name+"'";
+                                        tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+details[r].Rate+')</span></li>';
+                                    }
+                                    tempRadio += '</ul>';
+                                    $('#radioOption').append(tempRadio);
+                                    $('#radioOption').show();
+                                }else if(customItem[i].GrpType == 2){
+                                    
+                                    var tempCHK = '<h5 class="widget-header" id="radioHeader">'+customItem[i].ItemGrpName+'</h5>\
+                                            <ul class="category-list">';
+
+                                    var details = customItem[i].Details;
+                                    
+                                    for(var c=0; c < details.length; c++){
+                                        var name = "'"+details[c].Name+"'";
+                                        tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+details[c].Rate+')</span></li>';
+                                    }
+                                    tempCHK += '</ul>';
+                                    $('#checkboxOption').append(tempCHK);
+                                    $('#checkboxOption').show();
                                 }
-                                tempRadio += '</ul>';
-                                $('#radioOption').html(tempRadio);
-                                $('#radioOption').show();
-                            }else if(customItem[i].GrpType == 2){
-                                
-                                var tempCHK = '<h5 class="widget-header" id="radioHeader">'+customItem[i].ItemGrpName+'</h5>\
-                                        <ul class="category-list">';
-
-                                var details = customItem[i].Details;
-                                
-                                for(var c=0; c < details.length; c++){
-                                    var name = "'"+details[c].Name+"'";
-                                    tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+details[c].Rate+')</span></li>';
-                                }
-                                tempCHK += '</ul>';
-                                $('#checkboxOption').html(tempCHK);
-                                $('#checkboxOption').show();
                             }
-                        }
 
-                    }else{
-                        alert(res.response);
+                        }else{
+                            alert(res.response);
+                        }
                     }
-                }
-            );
+                );
+            }
         }
 
         $('#schcd').change(function(){
@@ -1136,19 +1199,28 @@
             
             var itemId = $('option:selected', this).attr('itemid');
             var ipcd = $('option:selected', this).attr('ipcd');
-
+            var SDetCd = $('option:selected', this).attr('sdcode');
+            var itemtype = $('option:selected', this).attr('itemtype');
+            var Disc_IPCd = $('option:selected', this).attr('Disc_IPCd');
+            var disc_itemtype = $('option:selected', this).attr('disc_itemtype');
+            
             if(ipcd > 0){
                 $('#item_portions').val(ipcd);
             }
 
             if(schcd > 0){
                 $('#sdetcd').val($('option:selected', this).attr('sdcode'));
+
+                $('#radioOption').hide();
+                $('#checkboxOption').hide();
+                if(itemtype > 0){
+                    getCustomizeItem(schcd, SDetCd, disc_itemtype, Disc_IPCd);
+                }
             }else{
                 $('#sdetcd').val(0);
             }
 
             item_portions_call();
-
         })
 
         function item_portions_call(){
@@ -1161,7 +1233,7 @@
             var itemTyp = $('#item_portions option:selected').attr('itemtyp');
             var FID = $('#item_portions option:selected').attr('fid');
             // change custom item price according to itemPortionCode
-            if (itemTyp >= 11) {
+            if (itemTyp > 0) {
                 getCustomItemDetails(itemId, itemTyp, portionCode, FID);
             }
             $("#product-price").val(' ' + rate);
@@ -1203,18 +1275,9 @@
             $('#totalAmount').val(rate);
             $('#totalAmountView').text(convertToUnicodeNo(rate));
             var remarks = $('option:selected', this).attr('offer_remark');
-            // var det = $('option:selected', this).attr('sdetcd');
-            // var sch = $('option:selected', this).attr('schcd');
-            // alert(remarks);
             if(remarks !== 'null'){
-                // remarks comment by me
-                // $("#item_offer_remark").text(remarks);
-                // $("#sdetcd").val(det);
-                // $('#schcd').val(sch);
             }else{
                 $("#item_offer_remark").text('');
-                // $("#sdetcd").val("");
-                // $('#schcd').val("");
             }
         });
 
@@ -1295,27 +1358,46 @@
 
         function itemOrderConfirm() {
             // mandatory radio options
-            
-            console.log('gg '+groupNameList);
-            if(groupNameList.length > 0){
-                var mandatory = false;
-                //groupNameList
-                for(var g=0; g<groupNameList.length;g++){ 
-                    //comment on and check this code mandatory = false;
-                    var groupName = document.getElementsByName(groupNameList[g]); 
-                      for(var i=0; i<groupName.length;i++){ 
-                          if(groupName[i].checked == true){ 
-                              mandatory = true;     
+            var schcd = $('#schcd').val();
+            var customizeItemId = $('#customizeItem').val();
+            var flag = 1;
+            if(schcd == 0){
+                if(groupNameList.length > 0){
+                    var mandatory = false;
+                    //groupNameList
+                    var counter = 0;
+                    var totalGroup = groupNameList.length;
+                    var notSelect = '';
+                    for(var g=0; g<groupNameList.length;g++){ 
+                        //comment on and check this code mandatory = false;
+                        var groupName = document.getElementsByName(groupNameList[g]); 
+                          for(var i=0; i<groupName.length;i++){ 
+                              if(groupName[i].checked == true){ 
+                                  mandatory = true; 
+                                  counter++;    
+                              }else{
+                                notSelect = groupNameList[g];
+                              } 
                           } 
-                      } 
-                  }
-                   
-                  if(!mandatory){ 
-                      alert("Please Choose the Required Field!!"); 
-                      return false; 
-                  } 
-            }
+                      }
 
+                    if(counter < totalGroup){
+                        flag = 0;
+                        alert('Please Choose the Required '+notSelect);
+                        return false; 
+                    }
+                }
+            }else{
+                var Disc_IPCd = $('option:selected', $('#schcd')).attr('Disc_IPCd');
+                var disc_itemtype = $('option:selected', $('#schcd')).attr('disc_itemtype');
+                if(Disc_IPCd > 0 && disc_itemtype > 0){
+                    if(customizeItemId == 0){
+                        alert('Please select customize Item');
+                        return false;
+                    }
+                }
+            }
+            
             var custRemarks = $("#cust-remarks").val();
             var qty = $("#qty-val").val();
             var serveTime = $("#serve-val").val();
@@ -1325,7 +1407,6 @@
             var tax_type = $('#confirm-order').attr('tax_type');
             var TblTyp = $('#confirm-order').attr('tbltyp');
             var sdetcd = $('#sdetcd').val();
-            var schcd = $('#schcd').val();
             var itemTyp = $('#itemTyp').val();
             var total = $('#totalAmount').val();
 
@@ -1337,7 +1418,6 @@
                 type: "post",
                 data: {
                     orderToCart: 1,
-                    // confirmOrder: 1,
                     itemId: itemId,
                     custRemarks: custRemarks,
                     qty: qty,
@@ -1359,7 +1439,8 @@
                     checkboxRate:this.checkboxRate,
                     radioRate:this.radioRate,
                     raidoGrpCd: this.raidoGrpCd,
-                    radioName: this.radioName
+                    radioName: this.radioName,
+                    customizeItemId:customizeItemId
                 },
                 dataType: "json",
                 beforeSend: function() {
@@ -1367,21 +1448,21 @@
                 },
                 success: (response) => {
                     if (response == 1) {
-                        window.location.assign("cust_registration.php");
-                        // not implement 
+                        window.location = "<?= base_url('customer'); ?>";
+                        return false;
                     }
                     $("#cust-remarks").val('');
                     $("#qty-val").val(1);
                     $('#minus-qty').prop('disabled', true);
                     $("#take-away").prop('checked', false);
                     $("#serve-val").val(5);
-                    // 7-nov-23 for payment
+                    
                     if (response.status == 2) {
-                        alert('Bill has been generated for previous order, please pay first');
+                        alert('Payment for earlier bill is pending, please clear previous bill first !!');
                         window.location = `${response.redirectTo}`;
                         return false;
                     }
-                    // 
+                    
                     if (response.status == 100) {
                         alert(response.msg);
                         window.location.reload();
@@ -1398,6 +1479,7 @@
                     console.log(error);
                 }
             });
+            
         }
 
         function ingerediants(itemName, ingerediants){
@@ -1413,8 +1495,27 @@
         }
 
         function youtubeOpen(){
-            
             $('#youtubeModal').modal('show');
+        }
+
+        function getCustomizeItem(SchCd, SDetCd, ItemTyp, IPCd){
+            $.post('<?= base_url('customer/get_customize_items') ?>',{SchCd:SchCd,SDetCd:SDetCd,ItemTyp:ItemTyp, IPCd:IPCd},function(res){
+                if(res.status == 'success'){
+                    if(res.response.length > 0){
+                        var tempOpt = `<option value="0"><?= $this->lang->line('select'); ?></option>`;
+                        res.response.forEach((item, index) => {
+                            tempOpt += `<option value="${item.ItemId}">${item.itemName} (${item.PortionName})</option>`;
+                        });
+                        $(`#customizeItemBlock`).show();
+                        $(`#customizeItem`).html(tempOpt);
+                    }else{
+                        $(`#customizeItemBlock`).hide();
+                    }
+
+                }else{
+                  alert(res.response);
+                }
+            });
         }
 
         

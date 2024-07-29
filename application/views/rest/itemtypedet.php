@@ -27,16 +27,41 @@
                                         <form method="post" id="groupForm">
                                             <input type="hidden" id="ItemOptCd" name="ItemOptCd" value="0">
                                             <div class="row">
+
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label><?= $this->lang->line('name'); ?></label>
-                                                        <select name="ItemId" id="ItemId" class="form-control form-control-sm select2 custom-select" required="">
+                                                        <label><?= $this->lang->line('type'); ?></label>
+                                                        <select name="customType" id="type" class="form-control form-control-sm" required="" onchange="changeModes()">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <?php
-                                                            foreach ($itemList as $item) {
-                                                             ?>
-                                                             <option value="<?= $item['ItemId']; ?>"><?= $item['Name']; ?></option>
-                                                            <?php } ?>
+                                                            <option value="5"><?= $this->lang->line('custom'); ?></option>
+                                                            <option value="0"><?= $this->lang->line('combo'); ?></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('menu'); ?> <?= $this->lang->line('name'); ?></label>
+                                                        <select name="ItemId" id="ItemId" class="form-control form-control-sm select2 custom-select" required="" onchange="getProtions()">
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6" id="SecIdBlock" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('section'); ?></label>
+                                                        <select name="SecId" id="SecId" class="form-control form-control-sm">
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6" id="ipcdBlock" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('itemPortion'); ?></label>
+                                                        <select name="IPCd" id="IPCd" class="form-control form-control-sm">
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -116,7 +141,7 @@
                                                         <td><span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span>
                                                         </td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['ItemOptCd'] ?>, <?= $row['ItemId'] ?>, <?= $row['ItemGrpCd'] ?>, <?= $row['Rank'] ?>, <?= $row['Stat'] ?>)">
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['ItemOptCd'] ?>, <?= $row['ItemId'] ?>, <?= $row['ItemGrpCd'] ?>, <?= $row['Rank'] ?>, <?= $row['Stat'] ?>, <?= $row['IPCd'] ?>, <?= $row['customType'] ?>, <?= $row['SecId'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
@@ -158,6 +183,7 @@
         $('#TableData').DataTable();
         $('#ItemGrpCd').select2();
         $('#ItemId').select2();
+        // $('#IPCd').select2();
     });
 
     getPrice = () =>{
@@ -182,15 +208,80 @@
 
     });
 
-    function editData(ItemOptCd, ItemId, ItemGrpCd, Rank, stat){
+    var cur_item_id = 0;
+    var cur_ipcd = 0;
+
+    function editData(ItemOptCd, ItemId, ItemGrpCd, Rank, stat, IPCd, customType, SecId){
         
         $('#ItemOptCd').val(ItemOptCd);
         $('#ItemId').val(ItemId).trigger('change');
         $("#ItemGrpCd").val(ItemGrpCd).trigger('change');
+        $("#IPCd").val(IPCd).trigger('change');
         $('#Rank').val(Rank);
-        $('#Stat').val(stat);   
+        $('#Stat').val(stat);  
+        $('#type').val(customType); 
+        $('#SecId').val(SecId); 
 
         $('#saveBtn').hide();
         $('#updateBtn').show();
+
+        cur_item_id = ItemId;
+        cur_ipcd = IPCd;
+        changeModes();
+    }
+
+    function getProtions(){
+        var ItemId = $(`#ItemId`).val();
+        $.post('<?= base_url('restaurant/get_item_portion_by_itemId') ?>',{ItemId:ItemId},function(res){
+            if(res.status == 'success'){
+                var temp = "<option value= ><?= $this->lang->line('select'); ?></option>";
+                var sec = "<option value= ><?= $this->lang->line('select'); ?></option>";
+                res.response.forEach((item, index) => {
+                    var selc = '';
+                    if(cur_ipcd == item.Itm_Portion){
+                        selc = 'selected';
+                    }
+                    temp += `<option value="${item.Itm_Portion}" ${selc}>${item.Portion}</option>`;
+                     selc = '';
+                    if(cur_ipcd == item.SecId){
+                        selc = 'selected';
+                    }
+                    sec += `<option value="${item.SecId}" ${selc}>${item.Section}</option>`;
+                });
+
+                $('#IPCd').html(temp);
+                $('#SecId').html(sec);
+
+            }else{
+              alert(res.response);
+            }
+        });
+    }
+
+    function changeModes(){
+        var type = $('#type').val();
+        if(type == 0){
+            $('#ipcdBlock').show();
+            $('#SecIdBlock').show();
+        }else{
+            $('#ipcdBlock').hide();
+            $('#SecIdBlock').hide();
+        }
+        $.post('<?= base_url('restaurant/get_menu_list') ?>',{Stat:type},function(res){
+            if(res.status == 'success'){
+                var temp = "<option value= ><?= $this->lang->line('select'); ?></option>";
+                res.response.forEach((item, index) => {
+                    var selc = '';
+                    if(cur_item_id == item.ItemId){
+                        selc = 'selected';
+                    }
+                    temp += `<option value="${item.ItemId}" ${selc}>${item.ItemName}</option>`;
+                });
+                $('#ItemId').html(temp);
+                getProtions();
+            }else{
+              alert(res.response);
+            }
+        });
     }
 </script>

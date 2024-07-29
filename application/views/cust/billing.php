@@ -149,6 +149,11 @@
                                 <p style="margin-bottom: unset;">Ord: <b><?= $CustNo ?></b></p>
                             </div>
                         <?php endif; ?>
+                        <?php if($this->session->userdata('billPrintTableNo') > 0) { ?>
+                        <div class="col-6" style="text-align: right;">
+                            <p style="margin-bottom: unset;font-size: 15px !important;">Table No: <b><?= $MergeNo ?></b></p>
+                        </div>
+                        <?php } ?>
                         <div class="col-12">
                             <p style="margin-bottom: unset;font-size: 15px !important;">Date: <?= $dateOfBill ?></p>
                         </div>
@@ -170,17 +175,21 @@
                             $itemTotal = 0;
                             foreach ($billData as $keyData => $data) {
                                 if($data['TaxType'] == $value['TaxType']){
+                                    
+                                    $qty = ($splitTyp == 0)?round($data['Qty'], 0):$data['Qty'];
+                                    
                                     $ta = ($data['TA'] != 0)?'[TA]':'';
+                                    $CustItemDesc = ($data['CustItemDesc'] !='Std')?'-'.$data['CustItemDesc']:'';
                                         $sameTaxType .= ' <tr> ';
                                         if($data['Itm_Portion'] > 4 ){
-                                            $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].' ('.$data['Portions'].$ta.') </td> ';
+                                            $sameTaxType .= ' <td style="float: left;">'.$data['ItemNm'].' ('.$data['Portions'].$ta.')'.$CustItemDesc.' </td> ';
                                         }else{
-                                            $sameTaxType .= '<td style="float: left;">'.$data['ItemNm'].$ta.'</td> ';
+                                            $sameTaxType .= '<td style="float: left;">'.$data['ItemNm'].$ta.$CustItemDesc.'</td> ';
                                         }
                                         
-                                        $sameTaxType .= ' <td style="text-align: right;"> '.$data['Qty'].' </td>';
+                                        $sameTaxType .= ' <td style="text-align: right;"> '.$qty.' </td>';
                                         $sameTaxType .= ' <td style="text-align: right;">'.$data['OrigRate'].'</td> ';
-                                        $sameTaxType .= ' <td style="text-align: right;">'.$data['ItemAmt'].'</td> ';
+                                        $sameTaxType .= ' <td style="text-align: right;">'.round($data['ItemAmt'],2).'</td> ';
                                         $sameTaxType .= ' </tr> ';
                                         $itemTotal +=$data['ItemAmt'];
                                 }
@@ -304,13 +313,7 @@
                                     </tr>
                             <?php   }?>
 
-                            <?php
-                                if($total_discount_amount != 0 || $total_packing_charge_amount || $total_delivery_charge_amount){?>
-                                <tr style=" border-bottom: 1px solid;">
-                                    <th></th>
-                                    <td></td>
-                                </tr>
-                            <?php   } 
+                            <?php  
                             if($billData[0]['discId'] > 0) { ?>
                             <tr style="border-bottom: 1px solid black;">
                                 <td><?= $billData[0]['discountName']; ?> Discount @ <?= $billData[0]['discPcent']; ?>%</td>
@@ -326,6 +329,9 @@
                     </div>
                     <div style="border-bottom: 1px solid;"></div>
                     <p><?= $thankuline ?></p>
+                    <?php if($splitTyp == 2){ ?>
+                    <p style="color: red;">Note : Split Bills</p>
+                    <?php } ?>
                     <br>
                     <?php if(isset($_GET['ShowRatings']) && $_GET['ShowRatings'] == 1){
                         
@@ -378,22 +384,22 @@
         <div class="modal-content">
 
           <!-- Modal Header -->
-          <div class="modal-header">
-            <h4 class="modal-title">Loyalty Points</h4>
+          <div class="modal-header" style="background: #dbbd89;">
+            <h4 class="modal-title text-white">Loyalty Points</h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
 
           <!-- Modal body -->
           <div class="modal-body">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 text-center">
                     <p class="text-danger">Note : Eat-Out loyalty is valid acorss all outlets using Eat-Out.<br>Restaurant loyalty may be valid across the chain.</p>
                     <form method="post" id="loyaltyForm">
                         <div id="listBlock"></div>
                         <div id="innerBlock" class="mt-2">
                         </div>
                         <div class="mt-2">
-                            <input type="submit" class="btn btn-sm btn-success" value="Submit">
+                            <input type="submit" class="btn btn-sm btn-success btn-block" value="Submit">
                         </div>
                     </form>
                 </div>
@@ -476,7 +482,7 @@ $(document).ready(function() {
                           <input type="hidden" name="billId" value="${billId}" />
                         </div>`;
                         inner = `<div id="loyalty_${item.LNo}" class="desc">
-                                    <table style="border: 1px solid #bdb4b4;border-collapse: collapse">
+                                    <table style="border: 1px solid #bdb4b4;border-collapse: collapse;font-size:13px;">
                                         <tr>
                                             <th>Mode</th>
                                             <th>Points</th>

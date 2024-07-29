@@ -2,7 +2,7 @@
 <style>
 
 #RecommendationModal,.common-section{
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .payment-btns 
@@ -119,7 +119,8 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                                 <th class="text-center"><?= $this->lang->line('order'); ?></th>
                                 <th width="95px"><?= $this->lang->line('quantity'); ?></th>
                                 <th class="text-center"><?= $this->lang->line('rate'); ?></th>
-                                <th class="text-center"></th>
+                                <th class="text-right"></th>
+                                <th class="text-left"></th>
                               </tr>
                             </thead>
                             <tbody id="order-details-table-body">
@@ -144,7 +145,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                 ?>
                 <button type="button" class="btn btn-sm orderbtn" data-dismiss="modal" onclick="kotGenerate()" style="width: <?= $width; ?>"><?php echo  $this->lang->line('order'); ?></button>
                 <?php } ?>
-                <button type="button" class="btn btn-sm paybtn" data-dismiss="modal" onclick="goBill()" style="width: <?= $width; ?>"><?php echo  $this->lang->line('checkout'); ?></button>
+                <button type="button" class="btn btn-sm paybtn" data-dismiss="modal" onclick="goCheckout()" style="width: <?= $width; ?>"><?php echo  $this->lang->line('checkout'); ?></button>
 
             </div>
             <!-- end of btn -->
@@ -156,7 +157,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
             <div class="modal-content">
                 <div class="modal-header" style="background: #dbbd89;">
                     <h6 class="modal-title text-white"><?= $this->lang->line('recommendation'); ?></h6>
-                    <p id="item_name"></p>
+                    <p id="item_name" class="text-white"></p>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -195,23 +196,71 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="table-responsive" >
-                              <table class="table table-hover table-sm" style="font-size: 13px;">
-                                <thead>
-                                    <tr>
-                                        <th><?= $this->lang->line('bill'); ?> <?= $this->lang->line('amount'); ?></th>
-                                        <th><?= $this->lang->line('discount'); ?></th>
-                                        <th><?= $this->lang->line('item'); ?> <?= $this->lang->line('name'); ?></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="billOffer-body">
-                                </tbody>
-                              </table>
-                            </div>
-                            <div>
-                                <button class="btn btn-sm btn-success" onclick="billBaseOffer()">Yes</button>
-                                <button class="btn btn-sm btn-danger" onclick="gotoCheckout()">No</button>
-                            </div>
+                            <form method="post" id="billBasedForm">
+                                <input type="hidden" id="billBasedFlag" value="" name="flag">
+                                <input type="hidden" id="billBasedMCNo" value="0" name="MCNo">
+                                <input type="hidden" id="billBasedMergeNo" value="0" name="MergeNo">
+                                <input type="hidden" id="billBasedCustId" value="0" name="CustId">
+                                <input type="hidden" id="billBasedFilter" value="0" name="tableFilter">
+                                <input type="hidden" id="sdetcd" value="0" name="sdetcd">
+                        
+                                <div class="row" >
+                                    <div class="col-md-12 mt-2">
+                                        <select name="SchCd" id="SchCd" class="form-control form-control-sm" onchange="changeOffer()" required="">
+                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-12 mt-2 itemidBlock" style="display: none;">
+                                        <select name="ItemId" id="ItemId" class="form-control select2 custom-select form-control-sm">
+                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-12 mt-2">
+                                        <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('yes'); ?>" />
+                                        <button class="btn btn-sm btn-danger" onclick="goBill()"><?= $this->lang->line('no'); ?></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="customOfferModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background: #dbbd89;">
+                    <h6 class="modal-title text-white"><?= $this->lang->line('customization'); ?></h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form method="post" id="customizationForm">
+                                <div class="widget category" style="width: 100%;display: none;" id="radioOption">
+                            
+                                </div>
+
+                                <div class="widget category" style="width: 100%;display: none;" id="checkboxOption">
+                                    <h5 class="widget-header" id="chkHeader"></h5>
+                                    <ul class="category-list" id="chkList">
+                                        
+                                    </ul>
+                                </div>
+                                <div class="text-center">
+                                    <input type="hidden" id="itemTotal" value="0">
+                                    <input type="hidden" id="origTotal" value="0">
+                                    <input type="hidden" id="origTotalView" value="0">
+
+                                    <input type="hidden" id="order_no" value="0">
+                                    <input type="hidden" id="order_no_itemid" value="0">
+                                    <b><span id="itmTotalView">0</span></b>
+                                </div>
+                                <div class="text-right">
+                                    <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('submit'); ?>">
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -223,31 +272,37 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
 
     <!-- footer section -->
     <?php $this->load->view('layouts/customer/footer'); ?>
-    <!-- end footer section -->
-
-
-    <!-- Js Plugins -->
+    
     <?php $this->load->view('layouts/customer/script'); ?>
-    <!-- end Js Plugins -->
 
 </body>
 
 <script>
 
-function gotoCheckout(){
-    window.location = "<?= base_url('customer/checkout'); ?>";
-}
+    $(`#billBasedForm`).on('submit', function(e){
+        e.preventDefault();
 
-function billBaseOffer(){
-    $.post('<?= base_url('customer/billBasedOfferUpdate') ?>',function(res){
-        if(res.status == 'success'){
-          window.location = "<?= base_url('customer/checkout'); ?>";
-        }else{
-          alert(res.response);
-        }
-    });
-}
-// send_to_kitchen_ajax
+        var ipcd = $('option:selected', $('#ItemId')).attr('ipcd');
+        var data = $(this).serializeArray();
+        var form = new FormData(document.getElementById("billBasedForm"));
+        form.append('ipcd', ipcd);
+
+        $.ajax({
+               url : '<?= base_url('customer/billBasedOfferUpdate') ?>',
+               type : 'POST',
+               data : form,
+               processData: false,  
+               contentType: false,  
+               success : function(res) {
+                    if(res.status == 'success'){
+                        goBill();
+                    }else{
+                      alert(res.response);
+                    }        
+               }
+        });
+    })
+
     function getSendToKitchenList() {
         $.ajax({
             url: "<?php echo base_url('customer/cart'); ?>",
@@ -264,6 +319,18 @@ function billBaseOffer(){
                     window.location.reload();
                 } else if (response.status == 1) {
                     response.kitcheData.forEach((item) => {
+                        var btndisable = ``;
+                        if (item.SchCd > 0) {
+                            btndisable = `disabled`;
+                        }
+
+                        var customOfferBtn = ``;
+                        if(item.ItemTyp > 0){
+                            customOfferBtn = `<button type="button" onclick="getCustomItems(${item.ItemId}, ${item.ItemTyp}, ${item.Itm_Portion}, ${item.FID}, ${item.OrdNo})" style="border-radius:50px;background:#50e13c;color:#fff;border:1px solid #50e13c;">
+                                        <i class="fa fa-gift" style="font-size:12px;"></i>
+                                        </button>`;
+                        }
+
                         if (item.TA != 0) {
                             var rate = parseInt(item.Value);
                             var itemName = item.ItemNm + ` (TA)`;
@@ -271,10 +338,13 @@ function billBaseOffer(){
                             var rate = item.Value;
                             var itemName = item.ItemNm;
                         }
-
+                        
+                        var recommend = "<?= $this->session->userdata('recommend'); ?>";
                         var recmnd = '';
-                        if(item.recom > 0){
-                            recmnd = `<a onclick="recommendation(${item.ItemId}, '${item.ItemNm}')" style="cursor:pointer;color:green;">`;
+                        if(recommend == 1){
+                            if(item.recom > 0){
+                                recmnd = `<a onclick="recommendation(${item.ItemId}, '${item.ItemNm}')" style="cursor:pointer;color:green;">`;
+                            }
                         }
 
                         // for italic
@@ -293,21 +363,22 @@ function billBaseOffer(){
                             template += ` <td>${italicItem}</td> `;
                         }
 
-                        template += ` <input type="hidden" name="OrdNo[]" value="${item.OrdNo}" /><td >
+                        template += ` <input type="hidden" name="OrdNo[]" value="${item.OrdNo}" /><input type="hidden" id="tmp_itmrate_${item.OrdNo}" value="${item.tmpItmRate}" /><input type="hidden" id="tmp_origrate_${item.OrdNo}" value="${item.tmpOrigRate}" /><td >
                             <div class="input-group" style="width: 94px;height: 23px;margin-left: 5px;">
                                 <span class="input-group-btn">
-                                    <button type="button" id="minus-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 25px;"  onclick="decQty(${item.OrdNo})">-
+                                    <button type="button" id="minus-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 25px;"  onclick="decQty(${item.OrdNo})" ${btndisable}>-
                                     </button>
                                 </span>
                                 <input type="hidden" id="qty-val${item.OrdNo}" value="${item.Qty}" name="qty[]">
                                 <input type="text" readonly="" id="qty-valView${item.OrdNo}" class="form-control input-number" value="${convertToUnicodeNo(item.Qty)}" min="1" max="10" style="text-align: center; height:20px;">
                                 <span class="input-group-btn">
-                                    <button type="button" id="add-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 25px;" onclick="incQty(${item.OrdNo})">+
+                                    <button type="button" id="add-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 25px;" onclick="incQty(${item.OrdNo})" ${btndisable}>+
                                     </button>
                                 </span>
                             </div></td> `;
                         template += ` <td class="text-center">${convertToUnicodeNo(rate)}</td> `;
-                        template += ` <td class="text-center">
+                        template += `<td class="text-right">${customOfferBtn}</td> 
+                                    <td class="text-left">
                                         <button type="button" onclick="cancelOrder(${item.OrdNo});" style="border-radius:50px;background:red;color:#fff;border:1px solid red;">
                                         <i class="fa fa-trash" style="font-size:12px;"></i>
                                         </button>
@@ -315,6 +386,7 @@ function billBaseOffer(){
                         template += ` </tr> `;
                     });
                 } else {
+                    alert('No Order Pending!! ');
                     window.location = "<?php echo base_url('customer'); ?>";
                     $(".paybtn").prop('disabled', true);
                 }
@@ -332,11 +404,9 @@ function billBaseOffer(){
     function goBack() {
         <?php
         if ($cId != '') {
-            // $backUrl = "item_details.php?cId=$cId&mCatgId=$mCatgId&cType=$cType";
             $backUrl = base_url('customer');
         } else {
             $backUrl = base_url('customer');
-            // $backUrl = base_url('customer/landing_page');
         }
         ?>
         window.location = '<?= "$backUrl" ?>';
@@ -353,10 +423,8 @@ function billBaseOffer(){
             success: response => {
                 console.log(response);
                 if (response.status == 11) {
-                    // window.location = "cust_registration.php";
                     window.location = "<?php echo base_url('customer/signup'); ?>";
                 } else if (response.status == 1) {
-                    // window.location = "order_details.php";
                     window.location = "<?php echo base_url('customer/order_details'); ?>";
                 }
             },
@@ -395,8 +463,7 @@ function billBaseOffer(){
     $(document).ready(() => {
         getSendToKitchenList();
     });
-
-    // quantity increase and decrease
+ 
     function incQty(ord){
         let val = parseInt($('#qty-val'+ord).val()) + 1;
         $('#qty-val'+ord).val(val);
@@ -420,7 +487,6 @@ function billBaseOffer(){
         $('#qty-valView'+ord).val(convertToUnicodeNo(val));
         $('#add-qty'+ord).prop('disabled', false);
     }
-    // end quantity increase and decrease
 
     function recommendation(itemId, itemName){
 
@@ -449,7 +515,6 @@ function billBaseOffer(){
               alert(res.response);
             }
         });
-
         $('#RecommendationModal').modal();
     }
 
@@ -467,37 +532,35 @@ function billBaseOffer(){
 
     });
 
-    // generate billing page
+    function goCheckout() {
+        var tableOffer = "<?= $currentTableOffer; ?>"; 
+        var TableNo = "<?= $this->session->userdata('TableNo'); ?>";
+        var SchType = "<?php echo $this->session->userdata('SchType'); ?>";
+        if(SchType == 1){
+            if((TableNo == 101 || TableNo == 105 || TableNo == 110 || TableNo == 100) && tableOffer == 1){
+                checkBillOffer(); 
+            }else{
+                checkBillOffer();  
+            }       
+        }else{
+            goBill();
+        }
+    }
 
-    function goBill() {
+    function goBill(){
         var data = $('#cartForm').serializeArray();
-
         $.ajax({
             url: "<?php echo base_url('customer/order_details_ajax'); ?>",
             type: "post",
             data: data,
             success: response => {
-                
                 console.log(response);
-                if (response.status == 2) {
-                    Swal.fire({
-                      text: '<?= $this->lang->line('kitchen_msg'); ?>',
-                      confirmButtonText: 'OK',
-                      confirmButtonColor: "green",
-                    });
-                    window.location = "<?= base_url('customer/checkout'); ?>";
-                }
-
-                if (response.status == 3) {
-                    var list = response.resp;
-                    var temp = '';
-                    for (var i = 0; i < list.length; i++) {
-                        temp +='<tr><td>'+list[i].MinBillAmt+'</td><td>'+list[i].Bill_Disc_pcent+'</td><td>'+list[i].itemName+'</td></tr>';
-                    }
-                    $('#billOffer-body').html(temp);
-                    $('#billBasedOffer').modal();
-                }
-
+                Swal.fire({
+                  text: '<?= $this->lang->line('kitchen_msg'); ?>',
+                  confirmButtonText: 'OK',
+                  confirmButtonColor: "green",
+                });
+                window.location = "<?= base_url('customer/checkout'); ?>";
             },
             error: (xhr, status, error) => {
                 console.log(xhr);
@@ -505,14 +568,39 @@ function billBaseOffer(){
                 console.log(error);
             }
         });
+    }
 
+    function checkBillOffer(){
+        $.post('<?= base_url('customer/order_details_ajax') ?>', {billOffer:1} ,function(res){
+            if(res.status == 'success'){
+                
+                if(res.resp.length > 0){
+                    var temp = "<option value='' ><?php echo $this->lang->line('select'); ?></option>";
+                    res.resp.forEach((item) => {
+                        var discpcent = 0;
+                        if(item.Disc_pcent > 0){
+                            discpcent = item.Disc_pcent;
+                        }else{
+                            discpcent = item.DiscItemPcent;
+                        }
+                        temp +=`<option value="${item.SchCd}" sdetcd="${item.SDetCd}" cid="${item.CID}" disccid="${item.Disc_CID}" mcatgid="${item.MCatgId}" discmcatgid="${item.Disc_MCatgId}" itemtyp="${item.ItemTyp}" discitemtyp="${item.Disc_ItemTyp}" itemid="${item.ItemId}" discitemid="${item.Disc_ItemId}" ipcd="${item.IPCd}" discipcd="${item.Disc_IPCd}" minbillamt="${item.MinBillAmt}" offertype="${item.offerType}" >${item.MinBillAmt}-${item.SchNm}</option>`;
+                    });
+
+                    $('#SchCd').html(temp);
+                    $('#billBasedOffer').modal();
+                }else{
+                    goBill();
+                }
+            }else{
+              alert(res.response);
+            }
+        });
     }
 
     function kotGenerate(){
         var data = $('#cartForm').serializeArray();
         $.post('<?= base_url('customer/kotGenerate') ?>', data ,function(res){
             if(res.status == 'success'){
-                // alert(res.response);
                 Swal.fire({
                       text: res.response,
                       confirmButtonText: 'OK',
@@ -523,9 +611,238 @@ function billBaseOffer(){
               alert(res.response);
             }
         });
-
     }
+
+    var groupNameList = [];
+    var radioRate= [];
+    var checkboxRate= [];
+    var raidoGrpCd= [];
+    var radioName= [];
+    var checkboxName= [];
+    var checkboxVal= [];
+    var checkboxItemCd= [];
+    var checkboxGrpCd= "";
+    var total= 0;
+    var custOfferName = [];
+
+    function getCustomItems(itemId, itemTyp, itemPortionCode, FID, OrdNo){
+        custOfferName = [];
+        checkboxName = [];
+        radioName = [];
+
+        $.post('<?= base_url('customer/get_custom_item') ?>',
+            {
+                getCustomItem:1,
+                itemId:itemId,
+                itemTyp:itemTyp,
+                itemPortionCode:itemPortionCode,
+                FID:FID
+            },
+            function(res){
+
+                if(res.status == 'success'){
+
+                    var customItem = res.response;
+                    radioList = customItem;
+
+                    $('#radioOption').html('');
+                    $('#checkboxOption').html('');
+                    groupNameList = [];
+                    radioRate= [];
+                    checkboxRate= [];
+                    for(i=0; i< customItem.length; i++){
+                        
+                        if(customItem[i].GrpType == 1){
+                            groupNameList.push(customItem[i].ItemGrpName);
+                            
+                            var tempRadio = '<h5 class="widget-header" id="radioHeader">'+customItem[i].ItemGrpName+'&nbsp;<span class="text-danger">*</span></h5>\
+                                    <ul class="category-list">';
+                            var details = customItem[i].Details;
+                            
+                            for(var r=0; r < details.length; r++){
+                                var name = "'"+details[r].Name+"'";
+                                tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+details[r].Rate+')</span></li>';
+                            }
+                            tempRadio += '</ul>';
+                            $('#radioOption').append(tempRadio);
+                            $('#radioOption').show();
+                        }else if(customItem[i].GrpType == 2){
+                            
+                            var tempCHK = '<h5 class="widget-header" id="radioHeader">'+customItem[i].ItemGrpName+'</h5>\
+                                    <ul class="category-list">';
+
+                            var details = customItem[i].Details;
+                            
+                            for(var c=0; c < details.length; c++){
+                                var name = "'"+details[c].Name+"'";
+                                tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+details[c].Rate+')</span></li>';
+                            }
+                            tempCHK += '</ul>';
+                            $('#checkboxOption').append(tempCHK);
+                            $('#checkboxOption').show();
+                        }
+                    }
+
+                    $(`#order_no`).val(OrdNo);
+                    $(`#order_no_itemid`).val(itemId);
+                    $(`#itemTotal`).val($(`#tmp_itmrate_${OrdNo}`).val());
+                    $(`#origTotal`).val($(`#tmp_origrate_${OrdNo}`).val());
+
+                    $(`#itmTotalView`).text($(`#tmp_itmrate_${OrdNo}`).val());
+                    $(`#customOfferModal`).modal('show')
+                }else{
+                    alert(res.response);
+                }
+            }
+        );
+    }
+
+    function calculateTotalc(itemGrpCd, index, itemName, event) {
+
+        element = event.currentTarget;
+        var rate = element.getAttribute('rate');
+        console.log('calc '+index, event.target.type, rate);
+        
+        if (event.target.type == "radio") {
+            this.radioRate[index] = parseInt(rate);
+            this.raidoGrpCd[index] = itemGrpCd;
+            this.radioName[index] = itemName;
+        } else {
+            // console.log(event.target.checked);
+            if (event.target.checked) {
+                this.checkboxRate[index] = parseInt(rate);
+                this.checkboxName[index] = itemName;
+            } else {
+                this.checkboxRate[index] = 0;
+                this.checkboxName[index] = 0;
+                // console.log(index);
+            }
+        }
+        getTotalc();
+    }
+
+    function getTotalc() {
+        var tmpItemRate =  $('#itemTotal').val();
+        var tmpOrigRate =  $('#origTotal').val();
+        var tmpOrigRateTotal = 0;
+
+        var radioTotal = 0;
+        this.radioRate.forEach(item => {
+            radioTotal += parseInt(item);
+        });
+
+        var checkTotal = 0;
+        this.checkboxRate.forEach(item => {
+            checkTotal += parseInt(item);
+        });
+
+        this.total = parseInt(tmpItemRate) + parseInt(radioTotal) + parseInt(checkTotal);
+        tmpOrigRateTotal = parseInt(tmpOrigRate) + parseInt(radioTotal) + parseInt(checkTotal);
+
+        $('#origTotalView').val(tmpOrigRateTotal);
+        $('#itmTotalView').text(this.total);
+    }
+
+    $(`#customizationForm`).on('submit', function(e){
+        e.preventDefault();
+        // mandatory radio options
+            if(groupNameList.length > 0){
+                var mandatory = false;
+                //groupNameList
+                var counter = 0;
+                var totalGroup = groupNameList.length;
+                for(var g=0; g<groupNameList.length;g++){ 
+                    //comment on and check this code mandatory = false;
+                    var groupName = document.getElementsByName(groupNameList[g]); 
+                      for(var i=0; i<groupName.length;i++){ 
+                          if(groupName[i].checked == true){ 
+                              mandatory = true;
+                              counter++;     
+                          } 
+                      } 
+                  }
+                   
+                  // if(!mandatory){ 
+                  //     alert("Please Choose the Required Field!!"); 
+                  //     return false; 
+                  // } 
+                if(totalGroup != counter){
+                    alert("Please Choose the Required Field!!"); 
+                    return false; 
+                }
+            }
+
+        var ordNo   = $(`#order_no`).val();
+        var ItemId  = $(`#order_no_itemid`).val();
+        var kitItemRate = $('#itmTotalView').text();
+        var kitOrigRate  = $(`#origTotalView`).val();
+
+        if(radioName.length > 0){
+            radioName.forEach(item =>{
+                custOfferName.push(item);
+            });
+        }
+
+        if(checkboxName.length > 0){
+            checkboxName.forEach(item =>{
+                custOfferName.push(item);
+            });
+        }
+
+        $.post('<?= base_url('customer/update_customItem_onKitchen') ?>',{ItemId:ItemId, OrdNo:ordNo, CustItemDesc:custOfferName.join(", "), ItemRates:kitItemRate, OrigRates:kitOrigRate},function(res){
+            if(res.status == 'success'){
+                $('#customOfferModal').modal('hide');
+                getSendToKitchenList();
+            }else{
+
+            }
+        });
+    });
     
+    function changeOffer(){
+        var SchCd = $(`#SchCd`).val(); 
+        var sdetcd = $('option:selected', $('#SchCd')).attr('sdetcd');
+        var cid = $('option:selected', $('#SchCd')).attr('cid');
+        var mcatgid = $('option:selected', $('#SchCd')).attr('mcatgid');
+        var itemid = $('option:selected', $('#SchCd')).attr('itemid');
+        var itemtyp = $('option:selected', $('#SchCd')).attr('itemtyp');
+        var ipcd = $('option:selected', $('#SchCd')).attr('ipcd');
+
+        var disccid = $('option:selected', $('#SchCd')).attr('disccid');
+        var discmcatgid = $('option:selected', $('#SchCd')).attr('discmcatgid');
+        var discitemid = $('option:selected', $('#SchCd')).attr('discitemid');
+        var discitemtyp = $('option:selected', $('#SchCd')).attr('discitemtyp');
+        var discipcd = $('option:selected', $('#SchCd')).attr('discipcd');
+
+        var MergeNo = $('option:selected', $('#SchCd')).attr('mergeno');
+        var minbillamt = $('option:selected', $('#SchCd')).attr('minbillamt');
+        var offerType = $('option:selected', $('#SchCd')).attr('offertype');
+
+        $(`#sdetcd`).val(sdetcd);
+        $(`#ItemId`).prop('required', false);
+        $(`.btnyes`).prop('disabled', false);
+        $(`.itemidBlock`).hide();
+        $.post('<?= base_url('customer/get_selection_offer') ?>', {SchCd:SchCd, sdetcd:sdetcd, cid:cid, mcatgid:mcatgid, itemid:itemid, itemtyp:itemtyp, ipcd:ipcd,disccid:disccid, discmcatgid:discmcatgid, discitemid:discitemid, discitemtyp:discitemtyp, discipcd:discipcd, MergeNo:MergeNo, minbillamt:minbillamt,offerType:offerType}, function(res){
+            if(res.status == 'success'){
+                var data = res.response;
+                if(data.length > 0){
+                    var temp = `<option value="" ><?php echo $this->lang->line('select'); ?></option>`;
+                    data.forEach((item) => {
+                        temp +=`<option value="${item.ItemId}" ipcd="${item.IPCd}">${item.itemName}-${item.portionName}</option>`;
+                    });
+                    $(`.itemidBlock`).show();
+                    $('#ItemId').select2();
+                    $(`#ItemId`).prop('required', true);
+                    $(`#ItemId`).html(temp);
+                }
+                    $(`#ItemId`).prop('required', false);
+            }else{
+                $(`.btnyes`).prop('disabled', true);
+                $(`.itemidBlock`).hide();
+              alert(res.response);
+            }
+        });  
+    }
 </script>
 
 </html>

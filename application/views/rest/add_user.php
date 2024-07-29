@@ -12,9 +12,6 @@
             </div>
             <!-- Left Sidebar End -->
 
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
             <div class="main-content">
 
                 <div class="page-content">
@@ -24,11 +21,8 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <?php if($this->session->flashdata('success')): ?>
-                                            <div class="alert alert-success" role="alert" id="alertBlock"><?= $this->session->flashdata('success') ?></div>
-                                            <?php endif; ?>
-                                            
-                                        <form method="post" action="<?php echo base_url('restaurant/add_user'); ?>">
+                                        
+                                        <form method="post" id="userForm">
                                             <input type="hidden" name="RUserId" id="RUserId" value="0">
                                             <input type="hidden" name="EID" id="EID" value="<?= $EID; ?>">
                                                 Note: <span class="text-danger">Mobile and Email Can't be changed later. Users can not reactivated.</span>
@@ -46,19 +40,6 @@
                                                         <input type="text" name="LName" class="form-control form-control-sm" placeholder="<?= $this->lang->line('lastName'); ?>" required="" id="LName">
                                                     </div>
                                                 </div>
-
-                                                <!-- <div class="col-md-3 col-6">
-                                                    <div class="form-group">
-                                                        <label><?= $this->lang->line('country'); ?></label>
-                                                        <select class="form-control form-control-sm select2 custom-select" required="" name="CountryCd" id="CountryCd">
-                                                            <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <?php 
-                                                            foreach ($country as $key) { ?>
-                                                                <option value="<?= $key['phone_code']; ?>" <?php if($CountryCd == $key['phone_code']){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
-                                                            <?php } ?>  
-                                                        </select>
-                                                    </div>
-                                                </div> -->
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
@@ -78,7 +59,6 @@
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('dob'); ?></label>
                                                         <?php 
-
                                                         $dateP = date('Y-m-d', strtotime("-20 years", strtotime(date('Y-m-d'))));
                                                         ?>
                                                         <input type="date" name="DOB" class="form-control form-control-sm" value="<?php echo $dateP; ?>" required id="DOB">
@@ -135,20 +115,6 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- <div class="col-md-3 col-6">
-                                                    <div class="form-group">
-                                                        <label><?= $this->lang->line('outletName'); ?></label>
-                                                        <select class="form-control form-control-sm" required="" name="EID" id="EID">
-                                                            <option value="">Choose</option>
-                                                            <?php
-                                                            foreach ($restaurant as $res) {
-                                                            ?>
-                                                            <option value="<?php echo $res['EID']; ?>" <?php if($EID == $res['EID']){ echo 'selected'; } ?>><?php echo $res['Name']; ?></option>
-                                                            <?php } ?>
-                                                        </select>
-                                                    </div>
-                                                </div> -->
-
                                             </div>
                                             <div class="text-center">
                                                 <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>" id="saveBtn">
@@ -186,6 +152,10 @@
                                                             $sts = ($key['Stat'] == 0)? $this->lang->line('active'):$this->lang->line('inactive');
 
                                                             $clr = ($key['Stat'] == 0)?'success':'danger';
+                                                            $designation = '';
+                                                            if(!empty($key['designation'])){
+                                                                $designation = '['.$key['designation'].']';
+                                                            }
                                                      ?>
                                                     
                                                 <tr>
@@ -198,7 +168,7 @@
                                                         <?php echo $key['MobileNo']; ?><br>
                                                            <small><?php echo $key['PEmail']; ?></small> 
                                                         </td>
-                                                    <td><?php echo $key['UTypName'].' ['.$key['designation'].']'; ?><br>
+                                                    <td><?php echo $key['UTypName'].' '.$designation; ?><br>
                                                         <span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span>
                                                     </td>
                                                     <td>
@@ -250,6 +220,20 @@ $(document).ready(function () {
     $('#PEmail').prop('readonly', false); 
     // $('#CountryCd').select2();
 });
+
+$('#userForm').on('submit', function(e){
+        e.preventDefault();
+
+        var data = $(this).serializeArray();
+        $.post('<?= base_url('restaurant/add_user') ?>',data,function(res){
+            if(res.status == 'success'){
+              alert(res.response);
+            }else{
+              alert(res.response);
+            }
+              location.reload();
+        });
+    });
 
 function editData(RUserId, FName, LName, MobileNo, PEmail, DOB, Gender, UTyp, RestRole, Stat, EID){
         

@@ -79,7 +79,20 @@
                                                 <div class="form-group">
                                                     <label>Outlets</label>
                                                     <select name="EatOutLoyalty" id="EatOutLoyalty" class="form-control form-control-sm" required="">
-                                                        <option value="0"><?= $this->lang->line('all'); ?></option>
+                                                        <option value="0"><?= $this->lang->line('select'); ?></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 col-6">
+                                                <div class="form-group">
+                                                    <label>Currenct</label>
+                                                    <select name="Currency" id="Currency" class="form-control form-control-sm" required="" >
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <?php 
+                                                        foreach ($currency as $key) {?>
+                                                        <option value="<?= $key['name']; ?>"><?= $key['name']; ?></option>
+                                                        <?php } ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -154,6 +167,7 @@
                                                     <th>Min Bill Amt</th>
                                                     <th>Max Points</th>
                                                     <th>Across Outlets</th>
+                                                    <th>Currency</th>
                                                     <th>Validity</th>
                                                     <th>Status</th>
                                                 </tr>
@@ -178,6 +192,7 @@
                                                         <?= $key['MinPaidValue']; ?></td>
                                                     <td><?= $key['MaxPointsUsage']; ?></td>
                                                     <td><?= $outlet; ?></td>
+                                                    <td><?= $key['Currency']; ?></td>
                                                     <td><?= $key['Validity'].' Days'; ?></td>
                                                     <td>
                                                         <span class="badge badge-boxed  badge-<?= $clr; ?>" onclick="changeStatus(<?= $key['LNo']; ?>, <?= $key['Stat']; ?>)" style="cursor: pointer;"><?= $sts; ?></span>
@@ -231,7 +246,7 @@
         var outlet = $('#AcrossOutlets').val();
         var temp = ``;
         if(outlet == 0){
-            $.post('<?= base_url('support/get_rest_list') ?>',function(res){
+            $.post('<?= base_url('restaurant/get_rest_list') ?>',function(res){
                 if(res.status == 'success'){
                     temp += `<option value="">Select</option>`;
                   res.response.forEach((item, index) =>{
@@ -279,7 +294,7 @@
         e.preventDefault();
 
         var data = $(this).serializeArray();
-        $.post('<?= base_url('support/loyality') ?>',data,function(res){
+        $.post('<?= base_url('restaurant/loyalty') ?>',data,function(res){
             if(res.status == 'success'){
               alert(res.response);
               location.reload();
@@ -291,7 +306,7 @@
     });
 
     function changeStatus(LNo, Stat){
-        $.post('<?= base_url('support/updateLoyalityStats') ?>',{LNo:LNo, Stat:Stat},function(res){
+        $.post('<?= base_url('restaurant/updateLoyalityStats') ?>',{LNo:LNo, Stat:Stat},function(res){
             if(res.status == 'success'){
               // alert(res.response);
               location.reload();

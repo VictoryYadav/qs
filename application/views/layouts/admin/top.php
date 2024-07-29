@@ -65,7 +65,7 @@ body[data-topbar=dark] .header-item {
 
 
                     </div>
-                    <div class="" style="font-size: 15px;">
+                    <div class="" style="font-size: 16px;color: #000;font-weight: 500;">
                         <?= $title; ?>
                     </div>
 

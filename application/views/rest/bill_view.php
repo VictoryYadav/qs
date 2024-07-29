@@ -12,9 +12,6 @@
             </div>
             <!-- Left Sidebar End -->
 
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
             <div class="main-content">
 
                 <div class="page-content">
@@ -48,6 +45,7 @@
                                                     <tr>
                                                         <th><?= $this->lang->line('billNo'); ?></th>
                                                         <th><?= $this->lang->line('billDate'); ?></th>
+                                                        <th><?= $this->lang->line('mobile'); ?></th>
                                                         <th><?= $this->lang->line('billAmount'); ?></th>
                                                         <th><?= $this->lang->line('paidAmount'); ?></th>
                                                         <th><?= $this->lang->line('mode'); ?></th>
@@ -67,6 +65,7 @@
                                                         </td>
                                                         <td><?= date('d-M-Y',strtotime($key['BillDate'])); ?></td>
 
+                                                        <td><?= convertToUnicodeNumber($key['CellNo']); ?></td>   
                                                         <td><?= convertToUnicodeNumber($key['bPaidAmt']); ?></td>   
                                                         <td ><?= convertToUnicodeNumber($key['PaidAmt']); ?></td>
                                                         <td><?= $key['Company']; ?></td>
@@ -104,7 +103,6 @@
         <div class="rightbar-overlay"></div>
         
         <?php $this->load->view('layouts/admin/script'); ?>
-
 
 <script>
     $(document).ready(function () {

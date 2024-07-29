@@ -221,13 +221,14 @@
         var country = MobileNo.slice(0, -10);
 
         $('#acNo').val(acNo);
-        $('#countryCd').val(country).trigger('change');;
+        $('#countryCd').val(country).trigger('change');
+        $('#countryCd').attr('disabled', true);
         $('#MobileNo').val(mobile);
         $('#MaxLimit').val(MaxLimit);
         $('#prePaidAmt').val(prePaidAmt);
         $('#custType').val(custType);
         $('#Stat').val(stat);   
-        $('#prePaidAmt').attr('readonly', true);
+        $('#MobileNo').attr('readonly', true);
 
         $('#saveBtn').hide();
         $('#updateBtn').show();

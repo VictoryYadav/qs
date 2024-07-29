@@ -95,9 +95,8 @@
 
 <body>
 
-    <!-- Header Section Begin -->
+    
     <?php $this->load->view('layouts/customer/top'); ?>
-    <!-- Header Section End -->
 
     <section class="common-section p-2">
 
@@ -214,7 +213,6 @@
     <!-- footer section -->
     <?php $this->load->view('layouts/customer/footer'); ?>
     <!-- end footer section -->
-
 
     <!-- Js Plugins -->
     <?php $this->load->view('layouts/customer/script'); ?>

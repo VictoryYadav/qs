@@ -14,10 +14,7 @@
                 </div>
             </div>
             <!-- Left Sidebar End -->
-
-            <!-- ============================================================== -->
             <!-- Start right Content here -->
-            <!-- ============================================================== -->
             <div class="main-content">
 
                 <div class="page-content">
@@ -108,25 +105,24 @@
                                                 <input type="text" id="total-valueView" readonly="" value="0" class="form-control form-control-sm">
                                             </div>
                                         </div>
-                                            <!-- vijay -->
+                                            
                                         <div class="row mb-2">
                                             <div class="col-md-6">
                                                 <input type="text" id="search-item" class="form-control form-control-sm" placeholder="Search Item Name" style="border-radius: 50px;z-index: 5;" autocomplete="off">
                                                 <div id="item-search-result" style="width: 90%;"></div>
                                             </div>
                                             <div class="col-md-6">
-                                                <!-- <button class="btn btn-primary btn-sm" title="Kitchen Order Ticket" onclick="searchKOT()"><?= $this->lang->line('kot'); ?> 
-                                                    <i class="fa fa-plus"></i>
-                                                </button> -->
-                                                <?php if($OType == 8){ ?>
-                                                <button class="btn btn-success btn-sm send-to-kitchen" data_type="save_to_kitchen" id="btnOrder"><?= $this->lang->line('order'); ?></button>
-                                                <?php } ?>
-                                                <?php if($OType != 8){ ?>
-                                                <button class="btn btn-warning btn-sm send-to-kitchen" data_type="bill" id="btnBill"><?= $this->lang->line('bill'); ?></button>
+                                                
+                                                <button class="btn btn-success btn-sm send-to-kitchen" data_type="save_to_kitchen" id="btnOrder" onclick="send_to_kitchen('save_to_kitchen')"><?= $this->lang->line('order'); ?></button>
+                                                
+                                                <?php if($OType != 8){ 
+                                                    if($this->session->userdata('restBilling') == 1){
+                                                    ?>
+                                                <button class="btn btn-warning btn-sm send-to-kitchen" data_type="bill" id="btnBill"  onclick="check_bill_offer('bill')"><?= $this->lang->line('bill'); ?></button>
+                                            <?php }else if($this->session->userdata('restBilling') == 2){ ?>
+                                                <button class="btn btn-info btn-sm send-to-kitchen" data_type="kot_bill" onclick="check_bill_offer('kot_bill')" id="kot_bill"><?= $this->lang->line('kot'); ?> + <?= $this->lang->line('bill'); ?></button>
 
-                                                <button class="btn btn-info btn-sm send-to-kitchen" data_type="kot_bill" ><?= $this->lang->line('kot'); ?> + <?= $this->lang->line('bill'); ?></button>
-
-                                                <?php } ?>
+                                                <?php } } ?>
                                                 
                                             </div>
                                         </div>
@@ -194,13 +190,17 @@
                                                                 <i class="fas fa-print"></i>
                                                             </a>
                                                             <button class="btn btn-sm btn-info tippy-btn" title="Cash Collect" data-tippy-placement="top" id="btnCash" onclick="cashCollect(<?= $key['BillId']; ?>,<?= $key['OType']; ?>,<?= $key['TableNo']; ?>,<?= $key['MergeNo']; ?>,'<?= $key['CellNo']; ?>',<?= $key['PaidAmt']; ?>,<?= $key['CNo']; ?>,<?= $key['EID']; ?>)"><i class="fas fa-money-check"></i>
-                                                </button>
+                                                            </button>
+
                                                 <?php if($this->session->userdata('AutoSettle') == 0){ ?>
 
                                                 <button class="btn btn-sm btn-success tippy-btn" title="Bill Settle" data-tippy-placement="top" onclick="setPaidAmount(<?= $key['BillId']; ?>,<?= $key['CNo']; ?>,<?= $key['MergeNo']; ?>,<?= $key['CustId']; ?>,<?= $key['BillNo']; ?>,<?= $key['PaidAmt']; ?>)">
                                             <i class="fas fa-check-double"></i>
                                         </button>
                                             <?php } ?>
+
+                                            <button class="btn btn-sm btn-info tippy-btn" title="Add Mobile" data-tippy-placement="top" id="btnCash" onclick="addMobile(<?= $key['BillId']; ?>,<?= $key['CNo']; ?>,<?= $key['EID']; ?>)"><i class="fas fa-phone"></i>
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                 <?php } } ?>
@@ -212,8 +212,6 @@
                             </div>
                         </div>
                         <?php } ?>
-
-                        
                     </div> <!-- container-fluid -->
                 </div>
                 <!-- End Page-content -->
@@ -231,71 +229,85 @@
 
         <!-- Right bar overlay-->
         <div class="rightbar-overlay"></div>
-        
-    <!-- The Modal -->
-    <div class="modal" id="item-list-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header text-center" style="display: block; padding: 5px; background-color: darkblue; color: white;">
-                    <h4 class="modal-title">Add item</h4>
-                    <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <!-- <input type="text" id="search-item" class="form-control" placeholder="Enter the item Name">
-                            <div id="item-search-result"></div> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- cach collect -->
     <div class="modal" id="cashCollectModel">
         <div class="modal-dialog">
             <div class="modal-content" >
                 <div class="modal-header">
-                    <h6><?= $this->lang->line('cashCollect'); ?></h6>
+                    <h6><?= $this->lang->line('paymentCollection'); ?></h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" style="max-height: 500px;overflow: auto;">
-                    <form method="post" id="cashForm">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th><?= $this->lang->line('mode'); ?></th>
-                                    <th><?= $this->lang->line('amount'); ?></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody id="cashBody">
-                                <tr>
-                                    <td>
-                                        <select name="" id="" class="form-control form-control-sm">
-                                        <?php
-                                        foreach ($payModes as $key) {
-                                         ?>
-                                         <option value="<?= $key['Name']; ?>"><?= $key['Name']; ?></option>
-                                        <?php } ?>
-                                        </select>
-                                    </td>
-                                    <td id="cashBodyTd">
-                                    </td>
-                                    <td>
-                                        <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success">
-                                        <i class="fas fa-save"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form method="post" id="cashForm">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th><?= $this->lang->line('mode'); ?></th>
+                                                <th><?= $this->lang->line('amount'); ?></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cashBody">
+                                            <tr>
+                                                <td>
+                                                    <select name="PymtType" id="PymtType" class="form-control form-control-sm" onchange='changeModes()'>
+                                                    <?php
+                                                    foreach ($payModes as $key) {
+                                                     ?>
+                                                     <option value="<?= $key['PymtMode']; ?>"><?= $key['Name']; ?></option>
+                                                    <?php } ?>
+                                                    </select>
+                                                </td>
+                                                <td id="cashBodyTd">
+                                                </td>
+                                                <td>
+                                                    <button type="button" onclick="cashCollectData()" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-save"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </form>
+                    <div class="row mt-4 OTPBlock" style="display: none;">
+                        <div class="col-md-12">
+                            <form method="post" id="paymentForm">
+                                <input type="hidden" name="paymentMode" id="paymentMode">
+                                <input type="hidden" name="billId" id="paymentBillId">
+                                <input type="hidden" name="paymentCustId" id="paymentCustId">
+                                <input type="hidden" name="paymentMCNo" id="paymentMCNo">
+                                <input type="hidden" name="paymentMergeNo" id="paymentMergeNo">
+                                <input type="hidden" name="billAmount" id="paymentAmount">
+                                <input type="hidden" name="paymentMobile" id="paymentMobile">
+                                
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <input type="number" name="otp" class="form-control form-control-sm" required="" placeholder="OTP">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <input type="submit" class="btn btn-sm btn-success" value="Verify">
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="sendOTP()"><?= $this->lang->line('send'); ?></button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <small class="text-danger" id="paymentSMS"></small>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -317,6 +329,12 @@
                             <label for=""><?= $this->lang->line('select'); ?> <?= $this->lang->line('offers'); ?></label>
                             <div id="offerBody"></div>
                         </div>
+
+                        <div class="form-group" id="customizeBlock" style="display: none;">
+                            <label for=""><?= $this->lang->line('select'); ?> <?= $this->lang->line('offers'); ?> <?= $this->lang->line('item'); ?></label>
+                            <select name="customizeItem" id="customizeItem" class="form-control"></select>
+                        </div>
+
                         <input type="submit" class="btn btn-sm btn-success" value="Submit">
                     </form>
                 </div>
@@ -329,7 +347,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title align-self-center mt-0" id="exampleModalLabel">Custom <?= $this->lang->line('offers'); ?></h5>
+                    <h5 class="modal-title align-self-center mt-0" id="exampleModalLabel"><?= $this->lang->line('customization'); ?></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -348,7 +366,10 @@
                             <ul class="category-list" id="chkList"></ul>
                         </div>
                         <input type="hidden" id="custOfferAmount" value="0">
+                        <input type="hidden" id="custOfferOrigAmount" value="0">
+
                         <div id="custOfferAmountView" class="text-danger text-center">0</div>
+                        <input type="hidden" id="custOfferOrigAmountView" value="0">
 
                         <input type="submit" class="btn btn-sm btn-success" value="Submit">
                     </form>
@@ -357,24 +378,140 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
-        <?php $this->load->view('layouts/admin/script'); ?>
+    <!-- mobileModal -->
+    <div class="modal fade bs-example-modal-center mobileModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title align-self-center mt-0" id="exampleModalLabel"><?= $this->lang->line('mobile'); ?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="mobileForm">
+                        <input type="hidden" id="mobileCNo" name="mobileCNo">
+                        <input type="hidden" id="mobileBillId" name="mobileBillId">
+                        <input type="hidden" id="mobileEID" name="mobileEID">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <select name="CountryCd" class="form-control form-control-sm select2 custom-select" id="mobileCountryCd" required="">
+                                <option value=""><?= $this->lang->line('select'); ?></option>
+                                <?php 
+                                foreach ($country as $key) { ?>
+                                    <option value="<?= $key['phone_code']; ?>" <?php if($CountryCd == $key['phone_code']){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
+                                <?php } ?>                   
+                                </select>
+                            </div>
+
+                            <div class="col-md-8">
+                                <input type="text" class="form-control form-control-sm" name="mobile" required="" autocomplete="off" minlength="10" maxlength="10" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+                            </div>
+                        </div>
+                        
+                        <input type="submit" class="btn btn-sm btn-success" value="Submit">
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal" id="billBasedModal">
+        <div class="modal-dialog">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <h6><?= $this->lang->line('bill'); ?> <?= $this->lang->line('offers'); ?></h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 500px;overflow: auto;">
+                    <form method="post" id="billBasedForm">
+                        <input type="hidden" id="billBasedMergeNo" value="0" name="MergeNo">
+                        <input type="hidden" id="billBasedOrderType" value="0" name="order_type">
+                        <input type="hidden" id="billBasedDataType" value="0" name="data_type">
+                        <input type="hidden" id="sdetcd" value="0" name="sdetcd">
+
+                        <div class="row">
+                            <div class="col-md-12 mt-2">
+                                <select name="SchCd" id="SchCd" class="form-control form-control-sm" onchange="changeBillOffer()" required="">
+                                    <option value=""><?= $this->lang->line('select'); ?></option>
+                                </select>
+                            </div>
+                            <div class="col-md-12 mt-2 itemidBlock" style="display: none;">
+                                <select name="ItemId" id="ItemId" class="form-control select2 custom-select form-control-sm">
+                                    <option value=""><?= $this->lang->line('select'); ?></option>
+                                </select>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <input type="submit" class="btn btn-sm btn-success btnyes" value="<?= $this->lang->line('yes'); ?>" />
+                                <button class="btn btn-sm btn-danger" onclick="gotoBillCreate()"><?= $this->lang->line('no'); ?></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="RecommendationModal">
+        <div class="modal-dialog">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <h6><?= $this->lang->line('recommendation'); ?></h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 500px;overflow: auto;">
+                    <form method="post" id="recomForm">
+                        <div class="table-responsive" >
+                          <table class="table table-hover table-sm" style="font-size: 13px;">
+                            <thead>
+                                <tr>
+                                    <th><?= $this->lang->line('item'); ?></th>
+                                    <th><?= $this->lang->line('quantity'); ?></th>
+                                    <th><?= $this->lang->line('rate'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody id="recom-body">
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="text-right">
+                            <button class="btn btn-sm btn-success"><?= $this->lang->line('add'); ?></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php $this->load->view('layouts/admin/script'); ?>
 
 
 <script type="text/javascript">
+    var tableOffer = "<?php echo $currentTableOffer; ?>"; 
 
     $(document).ready(function() {
         $('#CountryCd').select2();
+        $('#mobileCountryCd').select2();
+
+        $(`#btnBill`).prop('disabled', true);
+        $(`#kot_bill`).prop('disabled', true);
 
         $("#search-item").keyup(function(event) {
 
             var OType = $("#order-type").val();
-            
+            var table = 0;
             if(OType == 8){
-                var table = $('#table-id').val();
+                table = $('#table-id').val();
                 if(table < 1){
                     alert('Please select table first.');
                     return false;
                 }
+            }else{
+                table = OType;
             }
 
             var itemName = $(this).val();
@@ -384,7 +521,8 @@
                     type: "post",
                     data: {
                         searchItem: 1,
-                        itemName: itemName
+                        itemName: itemName,
+                        TableNo : table
                     },
                     dataType: "json",
                     success: (response) => {
@@ -402,10 +540,7 @@
                                     printItemName = item.IMcCd+' - '+item.LngName+'-'+item.portionName;
                                 }
                                 
-                                template += `<li onclick="itemSlected_new(${item.ItemId}, ${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd}, ${item.ItemTyp}, ${item.CID}, ${item.MCatgId}, 0, 0, 0, 0, ${item.FID}, ${item.ItemSale}, 0);" style="cursor: pointer;">${printItemName}</li>`;
-
-                                // template += `<li onclick="itemSlected(${item.ItemId}, ${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd}, ${item.ItemTyp}, ${item.CID}, ${item.MCatgId}, 0, 0, 0, 0, ${item.FID});" style="cursor: pointer;">${printItemName}</li>`;
-
+                                template += `<li onclick="itemSlected_new(${item.ItemId}, ${item.ItemId}, '${item.LngName}', ${item.OrigRate}, ${item.OrigRate}, ${item.KitCd},${item.PckCharge},${item.Itm_Portion}, ${item.TaxType}, ${item.PrepTime}, ${item.DCd}, ${item.ItemTyp}, ${item.CID}, ${item.MCatgId}, 0, 0, 0, 0, ${item.FID}, ${item.ItemSale}, 0, 0);" style="cursor: pointer;">${printItemName}</li>`;
                             });
                             template += `</ul>`;
                         } else {
@@ -416,7 +551,6 @@
                     `;
                         }
                         $("#item-search-result").addClass('addcss');
-
                         $("#item-search-result").html(template);
                     },
                     error: (xhr, status, error) => {
@@ -427,237 +561,350 @@
                 });
             } else {
                 $("#item-search-result").removeClass('addcss');
-
                 $("#item-search-result").html('');
             }
         });
 
-        $(".send-to-kitchen").click(function(event) {
+    });
 
-            var data_type = $(this).attr('data_type');
-            // alert(data_type);
-            var orderType = $("#order-type").val();
-            console.log('vv '+orderType);
-            var seatNo = 0;
-            var oldSeatNo = 0;
-            if (orderType != 8 ) {
-                // var tableNo = 'TA';
-                var tableNo = orderType;
-            } else {
-                var tableNo = $("#table-id").val();
-                seatNo = $('#seatNo').val();
-                oldSeatNo = $('#seatNoOld').val();
+    function check_bill_offer(data_type){
+
+        var OType = $("#order-type").val();
+        var MergeNo = OType;
+        var SchType = "<?php echo  $this->session->userdata('SchType'); ?>";
+        if(SchType == 1 || SchType == 3){
+            if((OType == 101 || OType == 105 || OType == 110 || OType == 100) && tableOffer == 1){
+                billBasedOffers(OType, MergeNo, data_type);
+            }else{
+                go_bill(OType, MergeNo, data_type);    
             }
-            var thirdParty = $("#3rd-party").val();
-            var thirdPartyRef = $("#3rd-party-refNo").val();
-            var customerAddress = $("#cust-address").val();
-            var customerPhone = $("#phone").val();
-            var CountryCd = $("#CountryCd").val();
-            var CCd = $("#ccd").val();
-            var totalValue = $("#total-value").val();
-            var itemCount = $("tr").length;
-            var formFill = true;
-            var itemIds = [];
-            var Itm_Portion = [];
-            var itemKitCds = [];
-            var itemQty = [];
-            var taxtype = [];
-            var itemRemarks = [];
-            var item_value = [];
-            var item_rate = [];
-            var itemRate = [];
-            var origRate = [];
-            var pckValue = [];
-            var take_away = [];
-            var prep_time = [];
-            var dcd_value = [];
-            var SchCd = []; var SDetCd = [];
-            var CustItem = []; var CustItemDesc =[];
+        }else{
+            go_bill(OType, MergeNo, data_type);
+        }
+    }
 
-            var dataType = $(this).attr('data_type');
-            // Page Validation
-            if (orderType == 0) {
-                formFill = false;
-                alert("Please Select Order Type");
-            } else if (itemCount < 2) {
-                formFill = false;
-                alert("Please Enter Atleast 1 Item");
-            } else if (orderType == 101) {
-                if (thirdParty == 0) {
-                    formFill = false;
-                    alert("Please Select 3rd Party");
-                }
-                if (thirdPartyRef == '') {
-                    formFill = false;
-                    alert("Please Enter 3rd Party Ref Number");
-                }
+    function billBasedOffers(OType, MergeNo, data_type){
+        $.post('<?= base_url('restaurant/check_bill_based_offer') ?>',{MergeNo:MergeNo},function(res){
+            if(res.status == 'success'){
+                var data = res.response;
+                if(data.length > 0){
+                    var ss = "<option value='' ><?php echo $this->lang->line('select'); ?></option>";
+                    var temp = `${ss}`;
 
-            } else if (orderType == 110) {
-                if (CountryCd == "") {
-                    formFill = false;
-                    alert("Enter Country Code");
-                }
+                    data.forEach((item) => {
+                        var discpcent = 0;
+                        if(item.Disc_pcent > 0){
+                            discpcent = item.Disc_pcent;
+                        }else{
+                            discpcent = item.DiscItemPcent;
+                        }
+                        temp +=`<option value="${item.SchCd}" sdetcd="${item.SDetCd}" cid="${item.CID}" disccid="${item.Disc_CID}" mcatgid="${item.MCatgId}" discmcatgid="${item.Disc_MCatgId}" itemtyp="${item.ItemTyp}" discitemtyp="${item.Disc_ItemTyp}" itemid="${item.ItemId}" discitemid="${item.Disc_ItemId}" ipcd="${item.IPCd}" discipcd="${item.Disc_IPCd}" mergeno="${MergeNo}" minbillamt="${item.MinBillAmt}" offertype="${item.offerType}" >${item.MinBillAmt}-${item.SchNm}</option>`;
+                    });
 
-                if (customerPhone == "") {
-                    formFill = false;
-                    alert("Enter Customer Phone Number");
+                    $(`#billBasedMergeNo`).val(MergeNo);
+                    $(`#billBasedOrderType`).val(OType);
+                    $(`#billBasedDataType`).val(data_type);
+                    $(`#SchCd`).html(temp);
+                    $(`#billBasedModal`).modal('show');
+                }else{
+                    go_bill(OType, MergeNo, data_type);
                 }
-            } else if (orderType == 8 ) {
-                if (tableNo == 0) {
-                    formFill = false;
-                    alert("Please Select Table No");
-                }
+            }else{
+              alert(res.response);
             }
-            var checkItem = []
+        });
+    }
+
+    function changeBillOffer(){
+        var SchCd = $(`#SchCd`).val(); 
+        var sdetcd = $('option:selected', $('#SchCd')).attr('sdetcd');
+        var cid = $('option:selected', $('#SchCd')).attr('cid');
+        var mcatgid = $('option:selected', $('#SchCd')).attr('mcatgid');
+        var itemid = $('option:selected', $('#SchCd')).attr('itemid');
+        var itemtyp = $('option:selected', $('#SchCd')).attr('itemtyp');
+        var ipcd = $('option:selected', $('#SchCd')).attr('ipcd');
+
+        var disccid = $('option:selected', $('#SchCd')).attr('disccid');
+        var discmcatgid = $('option:selected', $('#SchCd')).attr('discmcatgid');
+        var discitemid = $('option:selected', $('#SchCd')).attr('discitemid');
+        var discitemtyp = $('option:selected', $('#SchCd')).attr('discitemtyp');
+        var discipcd = $('option:selected', $('#SchCd')).attr('discipcd');
+
+        var MergeNo = $('option:selected', $('#SchCd')).attr('mergeno');
+        var minbillamt = $('option:selected', $('#SchCd')).attr('minbillamt');
+        var offerType = $('option:selected', $('#SchCd')).attr('offertype');
+
+        $(`#sdetcd`).val(sdetcd);
+        $(`#ItemId`).prop('required', false);
+        $(`.btnyes`).prop('disabled', false);
+        $(`.itemidBlock`).hide();
+        $.post('<?= base_url('restaurant/get_selection_offer') ?>', {SchCd:SchCd, sdetcd:sdetcd, cid:cid, mcatgid:mcatgid, itemid:itemid, itemtyp:itemtyp, ipcd:ipcd,disccid:disccid, discmcatgid:discmcatgid, discitemid:discitemid, discitemtyp:discitemtyp, discipcd:discipcd, MergeNo:MergeNo, minbillamt:minbillamt,offerType:offerType}, function(res){
+            if(res.status == 'success'){
+                var data = res.response;
+                if(data.length > 0){
+                    var temp = `<option value="" ><?php echo $this->lang->line('select'); ?></option>`;
+                    data.forEach((item) => {
+                        temp +=`<option value="${item.ItemId}" ipcd="${item.IPCd}">${item.itemName}-${item.portionName}</option>`;
+                    });
+                    $(`.itemidBlock`).show();
+                    $('#ItemId').select2();
+                    $(`#ItemId`).prop('required', true);
+                    $(`#ItemId`).html(temp);
+                }
+                    $(`#ItemId`).prop('required', false);
+            }else{
+                $(`.btnyes`).prop('disabled', true);
+                $(`.itemidBlock`).hide();
+              alert(res.response);
+            }
+        });  
+    }
+
+    $(`#billBasedForm`).on('submit', function(e){
+        e.preventDefault();
+        var ipcd = $('option:selected', $('#ItemId')).attr('ipcd');
+        var data = $(this).serializeArray();
+        var form = new FormData(document.getElementById("billBasedForm"));
+        form.append('ipcd', ipcd);
+
+        $.ajax({
+               url : '<?= base_url('restaurant/billBasedOfferUpdate') ?>',
+               type : 'POST',
+               data : form,
+               processData: false,  
+               contentType: false,  
+               success : function(res) {
+                    if(res.status == 'success'){
+                        var MergeNo = $(`#billBasedMergeNo`).val();
+                        var orderType = $(`#billBasedOrderType`).val();
+                        var data_type = $(`#billBasedDataType`).val();
+                        
+                        $(`#billBasedModal`).modal('hide');
+
+                        go_bill(orderType, MergeNo, data_type);
+                    }else{
+                      alert(res.response);
+                    }        
+               }
+        });
+    })
+
+    function send_to_kitchen(data_type){
+        
+        var orderType = $("#order-type").val();
+        var seatNo = 0;
+        var oldSeatNo = 0;
+        if (orderType != 8 ) {
+            var tableNo = orderType;
+        } else {
+            var tableNo = $("#table-id").val();
+            seatNo = $('#seatNo').val();
+            oldSeatNo = $('#seatNoOld').val();
+        }
+        var thirdParty = $("#3rd-party").val();
+        var thirdPartyRef = $("#3rd-party-refNo").val();
+        var customerAddress = $("#cust-address").val();
+        var customerPhone = $("#phone").val();
+        var CountryCd = $("#CountryCd").val();
+        var CCd = $("#ccd").val();
+        var totalValue = $("#total-value").val();
+        var itemCount = $("tr").length;
+        var formFill = true;
+        var itemIds = [];
+        var Itm_Portion = [];
+        var itemKitCds = [];
+        var itemQty = [];
+        var taxtype = [];
+        var ItemTyp = [];
+        var itemRemarks = [];
+        var item_value = [];
+        var item_rate = [];
+        var itemRate = [];
+        var origRate = [];
+        var pckValue = [];
+        var take_away = [];
+        var prep_time = [];
+        var dcd_value = [];
+        var SchCd = []; var SDetCd = [];
+        var CustItem = []; var CustItemDesc =[];
+
+        var dataType = data_type;
+        // Page Validation
+        if (orderType == 0) {
+            formFill = false;
+            alert("Please Select Order Type");
+        } else if (itemCount < 2) {
+            formFill = false;
+            alert("Please Enter Atleast 1 Item");
+        } else if (orderType == 101) {
+            if (thirdParty == 0) {
+                formFill = false;
+                alert("Please Select 3rd Party");
+            }
+            if (thirdPartyRef == '') {
+                formFill = false;
+                alert("Please Enter 3rd Party Ref Number");
+            }
+
+        } else if (orderType == 110) {
+            if (CountryCd == "") {
+                formFill = false;
+                alert("Enter Country Code");
+            }
+
+            if (customerPhone == "") {
+                formFill = false;
+                alert("Enter Customer Phone Number");
+            }
+        } else if (orderType == 8 ) {
+            if (tableNo == 0) {
+                formFill = false;
+                alert("Please Select Table No");
+            }
+        }
+        var checkItem = []
+        $(".item-id").each(function(index, el) {
+            checkItem.push($(this).attr('data-id'));
+        });
+
+        if(checkItem.length < 1){
+            formFill = false;
+            alert("Please Select atleast one item!!");
+        }
+
+        if (formFill) {
+            $('.send-to-kitchen').attr("disabled", "disabled");
+
             $(".item-id").each(function(index, el) {
-                checkItem.push($(this).attr('data-id'));
+                itemIds.push($(this).attr('data-id'));
+                itemKitCds.push($(this).attr('kitcd-id'));
+                pckValue.push($(this).attr('pckcharge'));
             });
 
-            if(checkItem.length < 1){
-                formFill = false;
-                alert("Please Select atleast one item!!");
-            }
+            $(".item-qty").each(function(index, el) {
+                itemQty.push( convertDigitToEnglish($(this).val()) );
+            });
 
-            if (formFill) {
-                $('.send-to-kitchen').attr("disabled", "disabled");
+            $(".taxtype").each(function(index, el) {
+                taxtype.push($(this).val());
+            });
 
-                $(".item-id").each(function(index, el) {
-                    itemIds.push($(this).attr('data-id'));
-                    // Itm_Portion.push($(this).attr('Itm_Portion'));
-                    itemKitCds.push($(this).attr('kitcd-id'));
-                    pckValue.push($(this).attr('pckcharge'));
-                });
+            $(".ItemTyp").each(function(index, el) {
+                ItemTyp.push($(this).val());
+            });
 
-                $(".item-qty").each(function(index, el) {
-                    itemQty.push( convertDigitToEnglish($(this).val()) );
-                });
+            $(".preptime").each(function(index, el) {
+                prep_time.push($(this).val());
+            });
 
-                $(".taxtype").each(function(index, el) {
-                    taxtype.push($(this).val());
-                });
+            $(".DCd").each(function(index, el) {
+                dcd_value.push($(this).val());
+            });
 
-                $(".preptime").each(function(index, el) {
-                    prep_time.push($(this).val());
-                });
+            $(".item-remarks").each(function(index, el) {
+                itemRemarks.push($(this).val());
+            });
 
-                $(".DCd").each(function(index, el) {
-                    dcd_value.push($(this).val());
-                });
+            $(".is_take_away").each(function(index, el) {
+                var ch = 0;
+                if(el.checked){
+                    ch = 1;
+                }
+                take_away.push(ch);
+            });
 
-                $(".item-remarks").each(function(index, el) {
-                    itemRemarks.push($(this).val());
-                });
+            $(".item-rate").each(function(index, el) {
+                item_rate.push( convertDigitToEnglish($(this).text()) );
+            });
 
-                $(".is_take_away").each(function(index, el) {
-                    // alert(el.checked);
-                    var ch = 0;
-                    if(el.checked){
-                        ch = 1;
-                    }
-                    take_away.push(ch);
-                });
+            $(".item-value").each(function(index, el) {
+                item_value.push( convertDigitToEnglish($(this).text()) );
+            });
 
-                $(".item-rate").each(function(index, el) {
-                    item_rate.push( convertDigitToEnglish($(this).text()) );
-                });
+            $(".itemRates").each(function(index, el) {
+                itemRate.push( convertDigitToEnglish($(this).val()) );
+            });
 
-                $(".item-value").each(function(index, el) {
-                    item_value.push( convertDigitToEnglish($(this).text()) );
-                });
+            $(".origRates").each(function(index, el) {
+                origRate.push( convertDigitToEnglish($(this).val()) );
+            });
 
-                $(".itemRates").each(function(index, el) {
-                    itemRate.push( convertDigitToEnglish($(this).val()) );
-                });
+            $(".item-portion").each(function(index, el) {
+                Itm_Portion.push( $(this).val() );
+            });
 
-                $(".origRates").each(function(index, el) {
-                    origRate.push( convertDigitToEnglish($(this).val()) );
-                });
+            $(".SchCd").each(function(index, el) {
+                SchCd.push( $(this).val() );
+            });
 
-                $(".item-portion").each(function(index, el) {
-                    Itm_Portion.push( $(this).val() );
-                });
+            $(".SDetCd").each(function(index, el) {
+                SDetCd.push( $(this).val() );
+            });
 
-                $(".SchCd").each(function(index, el) {
-                    SchCd.push( $(this).val() );
-                });
+            $(".SDetCd").each(function(index, el) {
+                CustItem.push( $(this).val() );
+            });
+            $(".CustItemDesc").each(function(index, el) {
+                CustItemDesc.push( $(this).val() );
+            });
 
-                $(".SDetCd").each(function(index, el) {
-                    SDetCd.push( $(this).val() );
-                });
+            var Uphone = $('#phone').val();
+            
+            <?php if($OType != 101){ ?>
+                thirdParty = 0;
+                thirdPartyRef = 0;
+            <?php } ?>
 
-                $(".SDetCd").each(function(index, el) {
-                    CustItem.push( $(this).val() );
-                });
-                $(".CustItemDesc").each(function(index, el) {
-                    CustItemDesc.push( $(this).val() );
-                });
+            $.ajax({
+                url: "<?php echo base_url('restaurant/order_ajax_3p'); ?>",
+                type: "post",
+                data: {
+                    sendToKitchen: 1,
+                    orderType: orderType,
+                    tableNo: tableNo,
+                    thirdParty: thirdParty,
+                    thirdPartyRef: thirdPartyRef,
+                    totalValue: totalValue,
+                    itemIds: itemIds,
+                    itemKitCds: itemKitCds,
+                    itemQty: itemQty,
+                    itemRemarks: itemRemarks,
+                    ItmRates: item_rate,
+                    origRates: origRate,
+                    // origRates: item_value,
+                    Itm_Portion:Itm_Portion,
+                    Stat: 1,
+                    phone: Uphone,
+                    CountryCd: CountryCd,
+                    pckValue: pckValue,
+                    data_type : dataType,
+                    CNo:cno,
+                    taxtype:taxtype,
+                    ItemTyp:ItemTyp,
+                    take_away:take_away,
+                    prep_time:prep_time,
+                    seatNo:seatNo,
+                    oldSeatNo:oldSeatNo,
+                    DCd : dcd_value,
+                    customerAddress:customerAddress,
+                    CCd:CCd,
+                    SchCd : SchCd,
+                    SDetCd : SDetCd,
+                    CustItem : CustItem,
+                    CustItemDesc : CustItemDesc
+                },
 
+                dataType: "json",
+                success: (response) => {
+                    console.log(response);
+                    if (response.status) {
 
-                var Uphone = $('#phone').val();
-                
-                <?php if($OType != 101){ ?>
-                    thirdParty = 0;
-                    thirdPartyRef = 0;
-                <?php } ?>
+                        alert("<?= $this->lang->line('orderPlacedSuccessfully'); ?>");
 
-                $.ajax({
-                    url: "<?php echo base_url('restaurant/order_ajax_3p'); ?>",
-                    type: "post",
-                    data: {
-                        sendToKitchen: 1,
-                        orderType: orderType,
-                        tableNo: tableNo,
-                        thirdParty: thirdParty,
-                        thirdPartyRef: thirdPartyRef,
-                        totalValue: totalValue,
-                        itemIds: itemIds,
-                        itemKitCds: itemKitCds,
-                        itemQty: itemQty,
-                        itemRemarks: itemRemarks,
-                        ItmRates: itemRate,
-                        origRates: origRate,
-                        // origRates: item_value,
-                        Itm_Portion:Itm_Portion,
-                        Stat: 1,
-                        phone: Uphone,
-                        CountryCd: CountryCd,
-                        pckValue: pckValue,
-                        data_type : dataType,
-                        CNo:cno,
-                        taxtype:taxtype,
-                        take_away:take_away,
-                        prep_time:prep_time,
-                        seatNo:seatNo,
-                        oldSeatNo:oldSeatNo,
-                        DCd : dcd_value,
-                        customerAddress:customerAddress,
-                        CCd:CCd,
-                        SchCd : SchCd,
-                        SDetCd : SDetCd,
-                        CustItem : CustItem,
-                        CustItemDesc : CustItemDesc
-                    },
-
-                    dataType: "json",
-                    success: (response) => {
-                        console.log(response);
-                        if (response.status) {
-                            if (data_type == 'bill') {
-                                alert("<?= $this->lang->line('orderBillledSuccessfully'); ?>");
-                                // window.location = "<?= base_url('restaurant/kot_print/'); ?>"+response.data.MCNo+'/'+response.data.MergeNo+'/'+response.data.FKOTNo;
-                                window.location = "<?= base_url('restaurant/bill/'); ?>"+response.data.billId;
-                                 
-                                return false;
-                            }else if (data_type == 'kot_bill') {
-                                alert("<?= $this->lang->line('orderBillledSuccessfully'); ?>");
-                                window.location = "<?= base_url('restaurant/kot_billing/'); ?>"+response.data.billId+'/'+response.data.MCNo+'/'+response.data.MergeNo+'/'+response.data.FKOTNo+'/'+response.data.KOTNo;
-                                 
-                                return false;
-                            }else{
-                            alert("<?= $this->lang->line('orderPlacedSuccessfully'); ?>");
-                            
+                        if (orderType != 8 ) {
+                            getTableData();
+                        }else{
                             var sitinKOTPrint = response.data.sitinKOTPrint;
-                            // alert(response.data.url)
                                 if(orderType == 8){
                                     if(sitinKOTPrint > 0){
                                         window.location = `${response.data.url}`;
@@ -668,39 +915,90 @@
                                     window.location = `${response.data.url}`;
                                 }
                                 return false;
-                            }
-
-                            location.reload();
-                        } else {
-                            alert("Failed To Place Order");
                         }
-                    },
-                    error: (xhr, status, error) => {
-                        console.log(xhr);
-                        console.log(status);
-                        console.log(error);
+
+                        // location.reload();
+                    } else {
+                        alert("Failed To Place Order");
                     }
-                });
+                },
+                error: (xhr, status, error) => {
+                    console.log(xhr);
+                    console.log(status);
+                    console.log(error);
+                }
+            });
+        }
+    }
+
+    function go_bill(orderType, tableNo, data_type){
+
+        $.ajax({
+            url: "<?php echo base_url('restaurant/order_ajax_3p'); ?>",
+            type: "post",
+            data: {
+                bill_create: 1,
+                orderType: orderType,
+                tableNo: tableNo,
+                data_type : data_type,
+            },
+
+            dataType: "json",
+            success: (response) => {
+                console.log(response);
+                if (response.status) {
+                    if (data_type == 'bill') {
+                        alert("<?= $this->lang->line('orderBillledSuccessfully'); ?>");
+                        window.location = "<?= base_url('restaurant/bill/'); ?>"+response.data.billId;
+                         
+                        return false;
+                    }else if (data_type == 'kot_bill') {
+                        alert("<?= $this->lang->line('orderBillledSuccessfully'); ?>");
+                        window.location = "<?= base_url('restaurant/kot_billing/'); ?>"+response.data.billId+'/'+response.data.MCNo+'/'+response.data.MergeNo+'/'+response.data.FKOTNo+'/'+response.data.KOTNo;
+                         
+                        return false;
+                    }else{
+                        alert("<?= $this->lang->line('orderPlacedSuccessfully'); ?>");
+                    }
+
+                    location.reload();
+                } else {
+                    alert("Failed To Place Order");
+                }
+            },
+            error: (xhr, status, error) => {
+                console.log(xhr);
+                console.log(status);
+                console.log(error);
             }
         });
-    });
+    }
+
+    var radioRate = [];
+    var checkboxRate= [];
+    var custOfferTotal = 0;
+    var OrigOfferTotal = 0;
+    var raidoGrpCd= [];
+    var radioName= [];
+    var checkboxVal= [];
+    var checkboxItemCd= [];
+    var checkboxGrpCd= "";
+    var checkboxName= [];
+    var custOfferName = [];
 
     var OType = $('#order-type').val();
         var cno = 0;
         var trow = 0;
-        // Delete item from table
         function deleteItem(event,trow, itemId, OrdNo) {
             // $(event).parent().parent().remove();
             var SchCd = $(`#SchCd_${trow}_${itemId}`).val();
             
             if(SchCd > 0){
                 if (confirm("Any offers related to this item will also get deleted.")) {
-                    // $("#tableData .trow_"+trow).remove();
                     deleteTempItem(itemId, OrdNo);
                 }
                 return false;
             }else{
-                // $("#tableData .trow_"+trow).remove();
                 deleteTempItem(itemId, OrdNo);
             }
         }
@@ -709,6 +1007,7 @@
             $.post('<?= base_url('restaurant/delete_temp_kitchen') ?>',{ ItemId: ItemId, OrdNo:OrdNo },function(res){
                 if(res.status == 'success'){
                     getTableData();
+                    calculateTotal();
                 }else{
                     alert(res.response);
                 }
@@ -723,6 +1022,7 @@
             }else{
                 TableNo = orderType;
             }
+
             $.post('<?= base_url('restaurant/get_temp_kitchen_data') ?>',{ TableNo:TableNo },function(res){
                 if(res.status == 'success'){
                   var data = res.response;
@@ -739,14 +1039,13 @@
 
                     cno = data[arrLength-1]['CNo'];
 
-                    $('#phone').val(data[0]['CellNo']);
+                    $('#phone').val(data[0]['CellNo'].substr(data[0]['CellNo'].length - 10));
                     $('#cust-address').val(data[0]['custAddr']);
 
                     data.forEach((item, index) => {
                         trow++;
-
                         if(item.CellNo != ''){
-                            phoneNo = item.CellNo;
+                            phoneNo = item.CellNo.substr(item.CellNo.length - 10);
                         }
                         
                         getPortionLists(item.ItemId, trow, item.Itm_Portion);
@@ -757,8 +1056,15 @@
 
                         var customOfferBtn = ``;
                         if(item.ItemTyp > 0){
-                            customOfferBtn = `<button type="button" onclick="getCustomItems(${trow}, ${item.ItemId}, ${item.ItemTyp}, ${item.Itm_Portion}, ${item.FID}, ${item.OrdNo})" class="btn btn-sm btn-success btn-rounded">
+                            customOfferBtn = `<button type="button" onclick="getCustomItems(${trow}, ${item.ItemId}, ${item.ItemTyp}, ${item.Itm_Portion}, ${item.FID}, ${item.OrdNo})" class="btn btn-sm btn-success btn-rounded" title="Custom Item">
                                 <i class="fas fa-gift" aria-hidden="true"></i>
+                            </button>`;
+                        }
+
+                        var recomBtn = ``;
+                        if(item.recom > 0){
+                            recomBtn = `<button type="button" onclick="recommendation(${trow}, ${item.ItemId}, ${item.OrdNo}, ${item.TableNo})" class="btn btn-sm btn-primary btn-rounded" title="Recommendation">
+                                <i class="fas fa-cart-plus" aria-hidden="true"></i>
                             </button>`;
                         }
 
@@ -780,6 +1086,9 @@
                             }   
 
                             template += `<tr >
+                                    <input type="hidden" class="ItemTyp" value="${item.ItemTyp}" />
+                                    <input type="hidden" id="tmp_rate_${trow}_${item.ItemId}" value="${item.tmpItmRate}" />
+                                    <input type="hidden" id="tmp_Origrate_${trow}_${item.ItemId}" value="${item.tmpOrigRate}" /><input type="hidden" value="${item.OrigRate}" id="orig_rate_${trow}_${item.ItemId}" class="origRates">
                                     <td>${item_name}</td>
                                     <td><select class="form-control form-control-sm item-portion" id="select_${trow}_${item.ItemId}" onchange="changePortion(${trow}, ${item.ItemId})" ${disabled}><option></option></select></td>
                                     <td style="width:50px;"><input type="text" class="form-control form-control-sm item-qty" min="1" value="${convertToUnicodeNo(item.Qty)}" onblur="calculateValue(this)" style="width:50px;" id="qty_${trow}_${item.ItemId}" ${readonly}></td>
@@ -807,6 +1116,9 @@
                             }
 
                             template += `<tr class="item-id trow_${trow}" data-id="${item.ItemId}" kitcd-id="${item.KitCd}" pckcharge ="${item.PckCharge}" Itm_Portion ="${item.Itm_Portion}" >
+                            <input type="hidden" class="ItemTyp" value="${item.ItemTyp}" />
+                            <input type="hidden" id="tmp_rate_${trow}_${item.ItemId}" value="${item.tmpItmRate}" />
+                            <input type="hidden" id="tmp_Origrate_${trow}_${item.ItemId}" value="${item.tmpOrigRate}" />
                                     <td><a id="offerAnchor_${item.ItemId}""><span id="itemName_${trow}_${item.ItemId}">${item_name}</span></a></td>
                                     <td><select class="form-control form-control-sm item-portion" id="select_${trow}_${item.ItemId}" onchange="changePortion(${trow}, ${item.ItemId})" ${disabled}><option></option></select></td>
                                     <td style="width:50px;"><input type="text" class="form-control form-control-sm item-qty" min="1" value="${convertToUnicodeNo(item.Qty)}" onblur="calculateValue(this)" style="width:50px;" id="qty_${trow}_${item.ItemId}" ${readonly}></td>
@@ -816,11 +1128,12 @@
                                     <td><input type="text" class="form-control form-control-sm item-remarks" style="width:100%;"></td>
                                     <td style=" text-align: center; ">
                                     ${customOfferBtn}
+                                    ${recomBtn}
                                     <button type="button" onclick="deleteItem(this, ${trow}, ${item.ItemId}, ${item.OrdNo})" class="btn btn-sm btn-danger btn-rounded">
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                     </button>
+                                    <input type="hidden" value="${item.OrigRate}" id="orig_rate_${trow}_${item.ItemId}" class="origRates">
                                     <input type="hidden" value="${item.ItmRate}" class="itemRates" >
-                                    <input type="hidden" value="${item.OrigRate}" class="origRates" >
                                     <input type="hidden" value="${item.TaxType}" class="taxtype">
                                     <input type="hidden" value="${item.PrepTime}" class="preptime">
                                     <input type="hidden" value="${item.DCd}" class="DCd">
@@ -832,16 +1145,28 @@
                                     </td>
                                 </tr>`; 
                         }
-
-                        
-
-                                // calculateValue(this);
+                            // calculateValue(this);
                     });
-// data[0]['CellNo']
+
                     $('#phone').val(phoneNo);
                     $("#order-table-body").html(template);
                     calculateTotal(); 
+                    if(orderType == 8){
+                        
+                    }else{
+                        $(`#btnBill`).attr('disabled', false);
+                        $(`#kot_bill`).attr('disabled', false);
+                    }
+                  }else{
+                    if(orderType == 8){
+                        
+                    }else{
+                        $(`#btnBill`).attr('disabled', true);
+                        $(`#kot_bill`).attr('disabled', true);
+                    }
 
+                    $("#order-table-body").empty();
+                    calculateTotal();
                   }
                          
                 }else{
@@ -850,7 +1175,7 @@
             });
         }
 
-        function itemSlected_new(itemId, disItemId, itemName, origValue, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, Qty, tableRow, FID, ItemSale, OrdNo) {
+        function itemSlected_new(itemId, disItemId, itemName, origValue, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, Qty, tableRow, FID, ItemSale, OrdNo, customizeItemId) {
 
             var TableNo = 0;
             var CellNo = $('#phone').val();
@@ -863,108 +1188,19 @@
                 TableNo = orderType;
             }
 
-            $.post('<?= base_url('restaurant/insert_temp_kitchen') ?>',{ ItemId:itemId, itemName:itemName, OrigRate:origValue, ItmRate:origValue, KitCd:itemKitCd,  ItemTyp:ItemTyp, PckCharge:PckCharge, Itm_Portion:Itm_Portion, TaxType:TaxType, PrepTime:PrepTime, DCd:DCd, CID:CID, MCatgId:MCatgId , TableNo:TableNo, CellNo:CellNo, orderType:orderType, FID:FID, Qty:Qty, SchCd:SchCd, SDetCd:SDetCd, OrdNo:OrdNo,customerAddress:customerAddress, ItemSale:ItemSale},function(res){
+            $.post('<?= base_url('restaurant/insert_temp_kitchen') ?>',{ ItemId:itemId, itemName:itemName, OrigRate:origValue, ItmRate:origValue, KitCd:itemKitCd,  ItemTyp:ItemTyp, PckCharge:PckCharge, Itm_Portion:Itm_Portion, TaxType:TaxType, PrepTime:PrepTime, DCd:DCd, CID:CID, MCatgId:MCatgId , TableNo:TableNo, CellNo:CellNo, orderType:orderType, FID:FID, Qty:Qty, SchCd:SchCd, SDetCd:SDetCd, OrdNo:OrdNo,customerAddress:customerAddress, ItemSale:ItemSale, customizeItemId:customizeItemId},function(res){
                 if(res.status == 'success'){
-                  // var data = res.response;
-                  $('#item-list-modal').modal('hide');
+                  
                   getTableData();
-
+                  $('#search-item').val('');
+                  $("#item-search-result").removeClass('addcss');
+                  $('#item-search-result').html('');
                 }else{
                   alert(res.response);
+                  getTableData();
                 }
             });
     
-        }
-
-        function itemSlected(itemId, disItemId, itemName, origValue, itemValue, itemKitCd, PckCharge,Itm_Portion, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, Qty, tableRow, FID) {
-
-            var TableNo = $('#table-id').val();
-            var CellNo = $('#phone').val();
-
-            $.post('<?= base_url('restaurant/insert_temp_kitchen') ?>',{ ItemId:itemId, itemName:itemName, OrigRate:origValue, ItmRate:origValue, KitCd:itemKitCd,  ItemTyp:ItemTyp, PckCharge:PckCharge, Itm_Portion:Itm_Portion, TaxType:TaxType, PrepTime:PrepTime, DCd:DCd, CID:CID, MCatgId:MCatgId , TableNo:TableNo, CellNo:CellNo, orderType:0 },function(res){
-                if(res.status == 'success'){
-                  // var data = res.response;
-                  $("#item-list-modal").modal('hide');
-                  getTableData();
-
-                }else{
-                  alert(res.response);
-                }
-            });
-
-            return false;
-            // old code 4 april
-            if(tableRow > 0){
-                trow  = tableRow;
-            }else{
-                trow  = trow + 1;
-            }
-            
-            var orderType = $('#order-type').val();
-            ch = '';
-            if(orderType != 8){
-                ch = 'checked disabled';
-            }
-            
-            getPortionLists(itemId, trow, Itm_Portion);
-            
-            if(SchCd < 1){
-                checkItemOffers(itemId, ItemTyp, CID, MCatgId, trow);
-            }
-
-            var customOfferBtn = ``;
-            if(ItemTyp > 0){
-                customOfferBtn = `<button type="button" onclick="getCustomItems(${trow}, ${itemId}, ${ItemTyp}, ${Itm_Portion}, ${FID})" class="btn btn-sm btn-success btn-rounded">
-                    <i class="fas fa-gift" aria-hidden="true"></i>
-                </button>`;
-            }
-
-            var readonly = '';
-            var disabled = '';
-            if(SchCd > 0){
-                readonly = 'readonly';
-                disabled = 'disabled';
-            }
-            
-            $("#item-search-result").html('');
-            $("#search-item").val('');
-            $("#item-list-modal").modal('hide');
-            var qty = (Qty > 0)?Qty:1;
-            
-            var template = `
-            <tr class="item-id trow_${trow}" data-id="${itemId}" kitcd-id="${itemKitCd}" pckcharge ="${PckCharge}" Itm_Portion ="${Itm_Portion}" trow="${trow}">
-                <td><a id="offerAnchor_${itemId}""><span id="itemName_${trow}_${itemId}">${itemName}</span></a></td>
-                <td><select class="form-control form-control-sm item-portion" id="select_${trow}_${itemId}" onchange="changePortion(${trow}, ${itemId})" ${disabled}><option></option></select></td>
-                <td style="width:50px;"><input type="text" class="form-control form-control-sm item-qty" min="1" value="${convertToUnicodeNo(qty)}" onblur="calculateValue(this)" style="width:50px;" id="qty_${trow}_${itemId}" ${readonly}></td>
-                <td class="item-rate" id="rate_${trow}_${itemId}">${convertToUnicodeNo(itemValue)}</td>
-                <td class="item-value" id="value_${trow}_${itemId}">${convertToUnicodeNo(origValue)}</td>
-                <td><input type="checkbox" value="1" class="is_take_away" `+ch+`></td>
-                <td><input type="text" class="form-control form-control-sm item-remarks" style="width:100%;"></td>
-                <td style=" text-align: center; ">
-                ${customOfferBtn}
-                <button type="button" onclick="deleteItem(this, ${trow}, ${itemId})" class="btn btn-sm btn-danger btn-rounded">
-                    <i class="fa fa-trash" aria-hidden="true"></i>
-                </button>
-                <input type="hidden" value="${TaxType}" class="taxtype">
-                <input type="hidden" value="${PrepTime}" class="preptime">
-                <input type="hidden" value="${DCd}" class="DCd">
-                <input type="hidden" value="${SchCd}" class="SchCd" id="SchCd_${trow}_${itemId}">
-                <input type="hidden" value="${SDetCd}" class="SDetCd" id="SDetCd_${trow}_${itemId}">
-
-                <input type="hidden" value="0" class="CustItem" id="CustItem_${trow}_${itemId}">
-                <input type="hidden" value="" class="CustItemDesc" id="CustItemDesc_${trow}_${itemId}">
-                
-                </td>
-            </tr>`;
-
-                // check if table is empty 
-            if (document.querySelectorAll('#tableData tbody tr').length == 0) {
-                $("#order-table-body").append(template);
-            }else{
-                $("#order-table-body").find('tr:first').before(template);
-            }
-
-            calculateTotal();
         }
 
         function getPortionLists(itemId, trow, Itm_Portion){
@@ -975,7 +1211,6 @@
 
             $.post('<?= base_url('restaurant/get_portions') ?>',{itemId:itemId, TableNo:TableNo},function(res){
                 if(res.status == 'success'){
-                  // alert(res.response);
                   var temp = ``;
                   res.response.forEach((item, index) => {
                     var select = '';
@@ -994,42 +1229,43 @@
         }
 
         checkItemOffersNew = (ItemId, ItemTyp, CID, MCatgId, trow, OrdNo, Itm_Portion,ItemSale) =>{
-            $.post('<?= base_url('restaurant/get_item_offer') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, CID:CID, MCatgId:MCatgId, Itm_Portion:Itm_Portion, ItemSale:ItemSale },function(res){
-                if(res.status == 'success'){
-                  var data = res.response;
-                  if(data.length> 0){
-                    
-                    // $('#offerAnchor').attr('data-toggle', "modal");
-                    // $('#offerAnchor').attr('data-animation', "bounce");
-                    // $('#offerAnchor').attr('data-target', ".bs-example-modal-center");
-                    $('#offerAnchor_'+ItemId).attr('onclick', "showOfferModalNew("+ItemId+","+ItemTyp+","+CID+", "+MCatgId+", "+trow+", "+OrdNo+", "+Itm_Portion+", "+ItemSale+")");
-                    // $('#offerAnchor_'+ItemId).attr('onclick', "showOfferModal("+ItemId+","+ItemTyp+","+CID+", "+MCatgId+", "+trow+")");
-                    $('#offerAnchor_'+ItemId).css({"background-color": "yellow", "cursor": "pointer"});
+            var OType = "<?= $OType; ?>";
+            var SchType = "<?= $this->session->userdata('SchType'); ?>";
+            if((OType == 101 || OType == 105 || OType == 110 || OType == 100) && tableOffer == 1){
+                if(SchType == 2 || SchType == 3){
+                    $.post('<?= base_url('restaurant/get_item_offer') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, CID:CID, MCatgId:MCatgId, Itm_Portion:Itm_Portion, ItemSale:ItemSale },function(res){
+                        if(res.status == 'success'){
+                          var data = res.response;
+                          if(data.length> 0){
+                            
+                            $('#offerAnchor_'+ItemId).attr('onclick', "showOfferModalNew("+ItemId+","+ItemTyp+","+CID+", "+MCatgId+", "+trow+", "+OrdNo+", "+Itm_Portion+", "+ItemSale+")");
+                            
+                            $('#offerAnchor_'+ItemId).css({"background-color": "yellow", "cursor": "pointer"});
 
-                  }
-                }else{
-                  alert(res.response);
+                          }
+                        }else{
+                          alert(res.response);
+                        }
+                    });
+                }    
+            }else{
+                if(SchType == 2 || SchType == 3){
+                    $.post('<?= base_url('restaurant/get_item_offer') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, CID:CID, MCatgId:MCatgId, Itm_Portion:Itm_Portion, ItemSale:ItemSale },function(res){
+                        if(res.status == 'success'){
+                          var data = res.response;
+                          if(data.length> 0){
+                            
+                            $('#offerAnchor_'+ItemId).attr('onclick', "showOfferModalNew("+ItemId+","+ItemTyp+","+CID+", "+MCatgId+", "+trow+", "+OrdNo+", "+Itm_Portion+", "+ItemSale+")");
+                            
+                            $('#offerAnchor_'+ItemId).css({"background-color": "yellow", "cursor": "pointer"});
+
+                          }
+                        }else{
+                          alert(res.response);
+                        }
+                    });
                 }
-            });
-        }
-
-        checkItemOffers = (ItemId, ItemTyp, CID, MCatgId, trow) =>{
-            $.post('<?= base_url('restaurant/get_item_offer') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, CID:CID, MCatgId:MCatgId},function(res){
-                if(res.status == 'success'){
-                  var data = res.response;
-                  if(data.length> 0){
-                    
-                    // $('#offerAnchor').attr('data-toggle', "modal");
-                    // $('#offerAnchor').attr('data-animation', "bounce");
-                    // $('#offerAnchor').attr('data-target', ".bs-example-modal-center");
-                    $('#offerAnchor_'+ItemId).attr('onclick', "showOfferModal("+ItemId+","+ItemTyp+","+CID+", "+MCatgId+", "+trow+")");
-                    $('#offerAnchor_'+ItemId).css({"background-color": "yellow", "cursor": "pointer"});
-
-                  }
-                }else{
-                  alert(res.response);
-                }
-            });
+            }
         }
 
         showOfferModalNew = (ItemId, ItemTyp, CID, MCatgId, trow, OrdNo, Itm_Portion, ItemSale) =>{
@@ -1037,10 +1273,10 @@
                 if(res.status == 'success'){
                   var data = res.response;
                   if(data.length> 0){
-                    var temp = `<select class="form-control" id="schemeOffer">`;
+                    var temp = `<select class="form-control" id="schemeOffer" onchange="changeOffer()">`;
 
                     data.forEach((item, index) => {
-                        temp += `<option value="${item.SchCd}" itemid="${ItemId}" disitemid="${item.Disc_ItemId}" itemname="${item.discName}" itemvalue="${item.itmVal}" itemkitcd="${item.KitCd}" pckcharge="${item.PckCharge}" itm_portion="${item.IPCd}" disc_ipcd="${item.Disc_IPCd}" taxtype="${item.TaxType}"  preptime="${item.PrepTime}" dcd="${item.DCd}"  itemtyp="${ItemTyp}" cid="${item.CID}" mcatgid="${item.MCatgId}" qty="${item.Qty}" disqty="${item.Disc_Qty}" sdetcd="${item.SDetCd}" rowid="${ItemId}" trow="${trow}" fid="${item.FID}" discitempcent="${item.DiscItemPcent}" schtyp="${item.SchTyp}" ordno="${OrdNo}" itemsale="${ItemSale}">${item.SchNm} - ${item.SchDesc} </option>`;
+                        temp += `<option value="${item.SchCd}" itemid="${ItemId}" disitemid="${item.Disc_ItemId}" itemname="${item.discName}" itemvalue="${item.itmVal}" itemkitcd="${item.KitCd}" pckcharge="${item.PckCharge}" itm_portion="${item.IPCd}" disc_ipcd="${item.Disc_IPCd}" taxtype="${item.TaxType}"  preptime="${item.PrepTime}" dcd="${item.DCd}"  itemtyp="${ItemTyp}" discitemtyp="${item.Disc_ItemTyp}" cid="${item.CID}" mcatgid="${item.MCatgId}" qty="${item.Qty}" disqty="${item.Disc_Qty}" sdetcd="${item.SDetCd}" rowid="${ItemId}" trow="${trow}" fid="${item.FID}" discitempcent="${item.DiscItemPcent}" schtyp="${item.SchTyp}" schcat="${item.SchCatg}" ordno="${OrdNo}" itemsale="${ItemSale}">${item.SchNm} - ${item.SchDesc} </option>`;
                     });
                     temp += `</select>`;
 
@@ -1054,26 +1290,37 @@
             });
         }
 
-        showOfferModal = (ItemId, ItemTyp, CID, MCatgId, trow) =>{
-            $.post('<?= base_url('restaurant/get_item_offer') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, CID:CID, MCatgId:MCatgId},function(res){
-                if(res.status == 'success'){
-                  var data = res.response;
-                  if(data.length> 0){
-                    var temp = `<select class="form-control" id="schemeOffer">`;
+        function changeOffer(){
+            var SchCd = $('#schemeOffer').val();
+            if(SchCd > 0){
+                var schcat = $('option:selected', $('#schemeOffer')).attr('schcat');
+                if(schcat == 75){
+                    var SDetCd = $('option:selected', $('#schemeOffer')).attr('sdetcd');
+                    var disc_itemtype = $('option:selected', $('#schemeOffer')).attr('discitemtyp');
+                    var disc_ipcd = $('option:selected', $('#schemeOffer')).attr('disc_ipcd');
 
-                    data.forEach((item, index) => {
-                        temp += `<option value="${item.SchCd}" itemid="${ItemId}" disitemid="${item.Disc_ItemId}" itemname="${item.discName}" itemvalue="${item.itmVal}" itemkitcd="${item.KitCd}" pckcharge="${item.PckCharge}" itm_portion="${item.IPCd}" disc_ipcd="${item.Disc_IPCd}" taxtype="${item.TaxType}"  preptime="${item.PrepTime}" dcd="${item.DCd}"  itemtyp="${ItemTyp}" cid="${item.CID}" mcatgid="${item.MCatgId}" qty="${item.Qty}" disqty="${item.Disc_Qty}" sdetcd="${item.SDetCd}" rowid="${ItemId}" trow="${trow}" fid="${item.FID}" discitempcent="${item.DiscItemPcent}" schtyp="${item.SchTyp}">${item.SchNm} - ${item.SchDesc} </option>`;
+                    $.post('<?= base_url('restaurant/get_customize_items') ?>',{SchCd:SchCd,SDetCd:SDetCd,ItemTyp:disc_itemtype, IPCd:disc_ipcd},function(res){
+                        if(res.status == 'success'){
+                            if(res.response.length > 0){
+                                var tempOpt = `<option value="0"><?= $this->lang->line('select'); ?></option>`;
+                                res.response.forEach((item, index) => {
+                                    tempOpt += `<option value="${item.ItemId}">${item.itemName} (${item.PortionName})</option>`;
+                                });
+                                $(`#customizeBlock`).show();
+                                $(`#customizeItem`).html(tempOpt);
+                            }else{
+                                $(`#customizeBlock`).hide();
+                            }
+
+                        }else{
+                          alert(res.response);
+                        }
                     });
-                    temp += `</select>`;
-
-                  }
-                  $('#offerBody').html(temp);
-                  $('.offersModal').modal('show');
-                  
                 }else{
-                  alert(res.response);
+                    $(`#customizeBlock`).hide();
                 }
-            });
+            }
+
         }
 
         $('#offerForm').on('submit', function(e){
@@ -1107,6 +1354,14 @@
             var trow = $('option:selected', $('#schemeOffer')).attr('trow');
 
             var OrdNo = $('option:selected', $('#schemeOffer')).attr('ordno');
+            var schcat = $('option:selected', $('#schemeOffer')).attr('schcat');
+            var customizeItemId = $('#customizeItem').val();
+            if(schcat == 75){
+                if(customizeItemId == 0){
+                    alert('Please select offer item.');
+                    return false;
+                }
+            }
 
             $(`#SchCd_${trow}_${rowid}`).val(SchCd);
             $(`#SDetCd_${trow}_${rowid}`).val(SDetCd);
@@ -1128,10 +1383,7 @@
 
             var tableRow = trow + 1;
 
-            itemSlected_new(itemId, disItemid, itemName, origVal, itemValue, itemKitCd, PckCharge, disc_ipcd, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, disQty, tableRow, FID, ItemSale, OrdNo);
-
-            // itemSlected(itemId, disItemid, itemName, origVal, itemValue, itemKitCd, PckCharge, disc_ipcd, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, disQty, tableRow, FID);
-
+            itemSlected_new(itemId, disItemid, itemName, origVal, itemValue, itemKitCd, PckCharge, disc_ipcd, TaxType, PrepTime, DCd, ItemTyp, CID, MCatgId, SchCd, SDetCd, disQty, tableRow, FID, ItemSale, OrdNo, customizeItemId);
         })
 
         changePortion =(trow, itemId) => {
@@ -1140,25 +1392,38 @@
 
             $(`#rate_${trow}_${itemId}`).text(rate);
             $(`#value_${trow}_${itemId}`).text(rate);
+            $(`#orig_rate_${trow}_${itemId}`).val(rate);
 
             calculateTotal();
         }
 
         var groupNameList = [];
         getCustomItems = (trow, ItemId, ItemTyp, Itm_Portion, FID, OrdNo) =>{
+            // 10-june
+            this.radioName = [];
+            this.checkboxName = [];
+            custOfferName = [];
+            this.radioRate = [];
+            this.checkboxRate= [];
+            custOfferTotal = 0;
+            OrigOfferTotal = 0;
+            // 10-june
+
             $.post('<?= base_url('restaurant/get_custom_items') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, Itm_Portion:Itm_Portion, FID:FID},function(res){
                 if(res.status == 'success'){
 
                   var customItem = res.response;
                         radioList = customItem;
-                        
+                        $('#radioOption').html('');
+                        $('#checkboxOption').html('');
+                        groupNameList = [];
                         for(i=0; i< customItem.length; i++){
                             // alert(customItem[i].ItemGrpName);
                             if(customItem[i].GrpType == 1){
                                 groupNameList.push(customItem[i].ItemGrpName);
                                 
                                 var tempRadio = '<h5 class="widget-header" id="radioHeader">'+customItem[i].ItemGrpName+'</h5>\
-                                        <ul class="category-list">';
+                                        <ul class="category-list" style="list-style:none;">';
                                 var details = customItem[i].Details;
                                 
                                 for(var r=0; r < details.length; r++){
@@ -1166,12 +1431,13 @@
                                     tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+details[r].Rate+')</span></li>';
                                 }
                                 tempRadio += '</ul>';
-                                $('#radioOption').html(tempRadio);
+
+                                $('#radioOption').append(tempRadio);
                                 $('#radioOption').show();
                             }else if(customItem[i].GrpType == 2){
                                 
                                 var tempCHK = '<h5 class="widget-header" id="radioHeader">'+customItem[i].ItemGrpName+'</h5>\
-                                        <ul class="category-list">';
+                                        <ul class="category-list" style="list-style:none;">';
 
                                 var details = customItem[i].Details;
                                 
@@ -1180,7 +1446,7 @@
                                     tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+details[c].Rate+')</span></li>';
                                 }
                                 tempCHK += '</ul>';
-                                $('#checkboxOption').html(tempCHK);
+                                $('#checkboxOption').append(tempCHK);
                                 $('#checkboxOption').show();
                             }
                         }
@@ -1189,8 +1455,10 @@
                 $("#custom_itemId").val(ItemId);
                 $("#custom_ordNo").val(OrdNo);
 
-                $('#custOfferAmount').val($(`#rate_${trow}_${ItemId}`).text());
-                $('#custOfferAmountView').text($(`#rate_${trow}_${ItemId}`).text());
+                $('#custOfferOrigAmount').val($(`#tmp_Origrate_${trow}_${ItemId}`).val());
+                $('#custOfferOrigAmountView').val($(`#tmp_Origrate_${trow}_${ItemId}`).val());
+                $('#custOfferAmount').val($(`#tmp_rate_${trow}_${ItemId}`).val());
+                $('#custOfferAmountView').text($(`#tmp_rate_${trow}_${ItemId}`).val());
                 $('.customOfferModal').modal('show');
                   
                 }else{
@@ -1199,19 +1467,8 @@
             });
         }
 
-        var radioRate = [];
-        var raidoGrpCd= [];
-        var radioName= [];
-        var checkboxVal= [];
-        var checkboxRate= [];
-        var checkboxItemCd= [];
-        var checkboxGrpCd= "";
-        var checkboxName= [];
-        var custOfferTotal = 0;
-        var custOfferName = [];
-
         function calculateTotalc(itemGrpCd, index, itemName, event) {
-
+            
             element = event.currentTarget;
             var rate = element.getAttribute('rate');
             // console.log('calc '+index, event.target.type, rate, itemName);
@@ -1233,9 +1490,9 @@
             getTotalc();
         }
 
-        getTotalc = () =>{
-            
+        getTotalc = () =>{            
             var itemAmount =  $('#custOfferAmount').val();
+            var itemOrigAmount =  $('#custOfferOrigAmount').val();
             var radioTotal = 0;
             this.radioRate.forEach(item => {
                 radioTotal += parseInt(item);
@@ -1247,8 +1504,11 @@
             });
 
             this.custOfferTotal = parseInt(itemAmount) + parseInt(radioTotal) + parseInt(checkTotal);
+
+            this.OrigOfferTotal = parseInt(itemOrigAmount) + parseInt(radioTotal) + parseInt(checkTotal);
             
             $('#custOfferAmountView').text(this.custOfferTotal);
+            $('#custOfferOrigAmountView').val(this.OrigOfferTotal);
         }
 
         $('#customOfferForm').on('submit', function(e){
@@ -1256,28 +1516,35 @@
             // mandatory radio options
             if(groupNameList.length > 0){
                 var mandatory = false;
-                //groupNameList
+                
+                var counter = 0;
+                var totalGroup = groupNameList.length;
                 for(var g=0; g<groupNameList.length;g++){ 
                     //comment on and check this code mandatory = false;
                     var groupName = document.getElementsByName(groupNameList[g]); 
                       for(var i=0; i<groupName.length;i++){ 
                           if(groupName[i].checked == true){ 
-                              mandatory = true;     
+                              mandatory = true;
+                              counter++;     
                           } 
                       } 
                   }
                    
-                  if(!mandatory){ 
-                      alert("Please Choose the Required Field!!"); 
-                      return false; 
-                  } 
+                  // if(!mandatory){ 
+                  //     alert("Please Choose the Required Field!!"); 
+                  //     return false; 
+                  // } 
+                if(totalGroup != counter){
+                    alert("Please Choose the Required Field!!"); 
+                    return false; 
+                }
             }
 
             var trow = $("#custom_trow").val();
             var ItemId = $("#custom_itemId").val();
             var ordNo = $("#custom_ordNo").val();
             var custOfferAmountView = $('#custOfferAmountView').text();
-
+            var kitOrigRate = $('#custOfferOrigAmountView').val();
 
             $(`#select_${trow}_${ItemId}`).attr('disabled', 'true');
             $(`#rate_${trow}_${ItemId}`).text(custOfferAmountView);
@@ -1303,7 +1570,7 @@
             
             customCalculateValue(trow, ItemId);
 
-            $.post('<?= base_url('restaurant/update_customItem_onTempKitchen') ?>',{ItemId:ItemId, OrdNo:ordNo, CustItemDesc:custOfferName.join(", "), OrigRates:custOfferAmountView},function(res){
+            $.post('<?= base_url('restaurant/update_customItem_onTempKitchen') ?>',{ItemId:ItemId, OrdNo:ordNo, CustItemDesc:custOfferName.join(", "), ItemRates:custOfferAmountView, OrigRates:kitOrigRate},function(res){
                 if(res.status == 'success'){
                     getTableData();
                     $('.customOfferModal').modal('hide');
@@ -1311,9 +1578,6 @@
 
                 }
             });
-
-
-
         });
 
         function calculateTotal() {
@@ -1323,7 +1587,6 @@
                 val = $(this).text();
                 val = convertDigitToEnglish(val);
                 totalValue += parseInt(val);
-                // totalValue += parseInt($(this).text());
             });
 
             $("#total-value").val(totalValue);
@@ -1374,6 +1637,7 @@
             }
             $('#seatNo').html(seatOption);
             $('#ccd').val(ccd);
+            $(`#search-item`).val('');
             getTableData();
             // changeSeatNo();
         }
@@ -1432,13 +1696,8 @@
         }
 
         function cashCollect(billId, oType, tableNo, mergeNo, cellNo, paidAmt, MCNo,EID){
-            var tbl = '<input type="hidden" name="BillId" value="'+billId+'"/><input type="hidden" name="oType" value="'+oType+'"/><input type="hidden" name="TableNo" value="'+tableNo+'"/><input type="hidden" name="MCNo" value="'+MCNo+'"/><input type="hidden" name="EID" value="'+EID+'"/><input type="hidden" name="MergeNo" value="'+mergeNo+'"/><input type="hidden" name="CellNo" value="'+cellNo+'"/><input type="hidden" name="TotBillAmt" value="'+paidAmt+'"/><input type="text" name="PaidAmt" value="'+convertToUnicodeNo(paidAmt)+'" required class="form-control form-control-sm" onblur="changeValue(this)" />'
+            var tbl = '<input type="hidden" id="cashBillId" name="BillId" value="'+billId+'" /><input type="hidden"  id="cashoType" name="oType" value="'+oType+'"/><input type="hidden" id="cashTableNo" name="TableNo" value="'+tableNo+'"/><input type="hidden" id="cashMCNo" name="MCNo" value="'+MCNo+'"/><input type="hidden" id="cashEID" name="EID" value="'+EID+'"/><input type="hidden" id="cashMergeNo" name="MergeNo" value="'+mergeNo+'"/><input type="hidden" id="cashCellNo" name="CellNo" value="'+cellNo+'"/><input type="hidden" id="cashTotBillAmt" name="TotBillAmt" value="'+paidAmt+'"/><input type="text" name="PaidAmt" value="'+convertToUnicodeNo(paidAmt)+'" required class="form-control form-control-sm" onblur="changeValue(this)" />';
 
-            // var temp ='<tr>\
-            //             <td>'+data.BillNo+'</td>\
-            //             <td>'+data.TableNo+'</td>\
-            //             <td>'+data.PaidAmt+'</td>\
-            //             <td>'+pm+'</td>';
             $('#cashBodyTd').html(tbl);
 
             $('#cashCollectModel').modal('show');
@@ -1447,13 +1706,12 @@
         function cashCollectData(){
             var data = $('#cashForm').serializeArray();
           
-            var TotBillAmt = data[7].value;
-            var PaidAmt = data[8].value;
+            var TotBillAmt = data[8].value;
+            var PaidAmt = data[9].value;
 
             PaidAmt = convertDigitToEnglish(PaidAmt);
-            data[8].value = PaidAmt;
+            data[9].value = PaidAmt;
 
-          // console.log(PaidAmt+' , '+TotBillAmt);
           if(parseFloat(PaidAmt) >= parseFloat(TotBillAmt)){
             $.post('<?= base_url('restaurant/collect_payment') ?>',data,function(res){
                 if(res.status == 'success'){
@@ -1470,19 +1728,18 @@
 
         const searchKOT = () => {
             var OType = "<?= $OType; ?>";
-            // console.log('hilll '+OType);
+            
             if(OType == 8){
                 var table = $('#table-id').val();
                 if(table != '' && table != '0'){
-                    $('#item-list-modal').modal('show');
+                    
                 }else{
                     alert('Please select table first.');
                 }
             }else{
-                $('#item-list-modal').modal('show');
+                
             }
         }
-
         // settle payments
         function setPaidAmount(billId , CNo , MergeNo , CustId, billNo, billAmt) {
 
@@ -1521,8 +1778,165 @@
                 $('.msgPhone').html('Enter Valid Phone');
                 $('#cust-address').val('');
             }
-            // console.log(phone);
-            
         }
+
+        function addMobile(BillId, CNo, EID){
+            $('#mobileBillId').val(BillId);
+            $('#mobileCNo').val(CNo);
+            $('#mobileEID').val(EID);
+            $('#mobileCountryCd').select2();
+            $('.mobileModal').modal('show');
+        }
+
+        $('#mobileForm').on('submit', function(e){
+            e.preventDefault();
+            var data = $('#mobileForm').serializeArray();
+
+            $.post('<?= base_url('restaurant/mobile_update_by_billid') ?>',data,function(res){
+                if(res.status == 'success'){
+                  alert(res.response);
+                }else{
+                  alert(res.response);
+                }
+                location.reload();
+            });
+
+        });
+
+        var mobile10 = '';
+
+        function changeModes(){
+            var billId = $('#cashBillId').val();
+            
+            var billAmount = $('#cashTotBillAmt').val();
+            mobile10 = $('#cashCellNo').val();
+            mobile10 = mobile10.substr(mobile10.length - 10);
+            var MergeNo = $('#cashMergeNo').val();
+            var MCNo    = $('#cashMCNo').val();
+            var pmode = $('#PymtType').val();
+            $('.OTPBlock').hide();
+            if( mobile10.toString().length < 10 && (pmode >= 20 && pmode <= 30)){
+                alert(`You can not select payment ${pmode} mode because invalid mobile no`);
+                $('#PymtType').val('');
+                return false;
+            }else if(mobile10.toString().length >= 10 && (pmode >= 20 && pmode <= 30)){
+                    
+                    $('#paymentBillId').val(billId);
+                    $('#paymentMobile').val(mobile10);
+                    $('#paymentAmount').val(billAmount);
+                    $('#paymentMode').val(pmode);
+                    $('#paymentCustId').val(0);
+                    $('#paymentMergeNo').val(MergeNo);
+                    $('#paymentMCNo').val(MCNo);
+                    $(`#cashBtn_${billId}`).prop("disabled", true);
+                    sendOTP();
+                    $('.OTPBlock').show();
+                }
+        }
+
+        function sendOTP(){
+            
+            if(mobile10.toString().length >= 10){
+                $.post('<?= base_url('restaurant/send_payment_otp') ?>',{mobile:mobile10},function(res){
+                        if(res.status == 'success'){
+                          $('#paymentSMS').html(res.response);  
+                        }else{ 
+                          alert(res.response);  
+                        }
+                });
+            }else{
+                alert('No Mobile No');
+            }
+        }
+
+        $('#paymentForm').on('submit', function(e){
+            e.preventDefault();
+            var data = $(this).serializeArray();
+
+            var billId = data[1]['value'];
+            
+            $.post('<?= base_url('restaurant/settle_bill_without_payment') ?>', data, function(res){
+                if(res.status == 'success'){
+                    $(`#cashBtn_${billId}`).prop("disabled", false);
+                    $('.OTPBlock').hide();
+                    $('#cashCollectModel').modal('hide');
+                    location.reload();
+                }else{ 
+                  $('#paymentSMS').html(res.response);
+                }
+            });
+        })
+
+        function recommendation(trow, itemId, ordNo, TableNo){
+            
+// itemName
+            $.post('<?= base_url('restaurant/get_recommendation') ?>',{itemId:itemId, TableNo:TableNo},function(res){
+                if(res.status == 'success'){
+                  var data = res.response;
+                  var temp = '';
+                  for(i=0; i<data.length; i++){
+                    temp += '<tr><input type="hidden" name="TableNo['+data[i].ItemId+'][]" value="'+TableNo+'"><input type="hidden" name="TblTyp['+data[i].ItemId+'][]" value="'+data[i].TblTyp+'"><input type="hidden" name="itemKitCd['+data[i].ItemId+'][]" value="'+data[i].KitCd+'"><input type="hidden" name="tax_type['+data[i].ItemId+'][]" value="'+data[i].TaxType+'"><input type="hidden" name="prepration_time['+data[i].ItemId+'][]" value="'+data[i].PrepTime+'"><input type="hidden" name="Itm_Portions['+data[i].ItemId+'][]" value="'+data[i].Itm_Portions+'"><input type="hidden" name="itemName['+data[i].ItemId+'][]" value="'+data[i].ItemNm+'">\
+                                <td><input type="hidden" name="itemArray[]" value="'+data[i].ItemId+'">'+data[i].ItemNm+'</td>\
+                                <td><div class="input-group" style="width: 94px;height: 28px;margin-left: 5px;"><span class="input-group-btn">\
+                                        <button type="button" id="minus-qty'+data[i].ItemId+'" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 25px;" disabled="" onclick="decQty('+data[i].ItemId+')">-\
+                                        </button>\
+                                    </span>\
+                                    <input type="text" readonly="" id="qty-val'+data[i].ItemId+'" class="form-control input-number" value="'+convertToUnicodeNo(0)+'" min="1" max="10" style="text-align: center;height:25px;" name="qty['+data[i].ItemId+'][]">\
+                                    <span class="input-group-btn">\
+                                        <button type="button" id="add-qty'+data[i].ItemId+'" class="btn btn-default btn-number" data-type="plus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px;    padding: 1px 7px;height: 25px;" onclick="incQty('+data[i].ItemId+')">+\
+                                        </button>\
+                                    </span></div></td>\
+                                <td><input type="hidden" name="rate['+data[i].ItemId+'][]" value="'+data[i].ItmRate+'">'+convertToUnicodeNo(data[i].ItmRate)+'</td>\
+                            </tr>';
+                  }
+                  // $('#item_name').html(itemName);
+                  $('#recom-body').html(temp);
+                }else{
+                  alert(res.response);
+                }
+            });
+            $('#RecommendationModal').modal();
+        }
+
+        function incQty(ord){
+            let val = parseInt($('#qty-val'+ord).val()) + 1;
+            $('#qty-val'+ord).val(val);
+            $('#qty-valView'+ord).val(convertToUnicodeNo(val));
+
+            $('#minus-qty'+ord).prop('disabled', false);
+            if ($('#qty-val'+ord).val() == 99) {
+                $('#add-qty'+ord).prop('disabled', true);
+            }
+        }
+
+        function decQty(ord){
+            var val = $('#qty-val'+ord).val();
+            if(val < 2){
+                $('#minus-qty'+ord).prop('disabled', true);
+            }else{
+                val = parseInt(val) - 1;
+            }
+            
+            $('#qty-val'+ord).val(val);
+            $('#qty-valView'+ord).val(convertToUnicodeNo(val));
+            $('#add-qty'+ord).prop('disabled', false);
+        }
+
+        $('#recomForm').on('submit', function(e){
+            e.preventDefault();
+            var data = $(this).serializeArray();
+
+            $.post('<?= base_url('restaurant/recomAddCart') ?>', data ,function(res){
+                if(res.status == 'success'){
+                    $(`#RecommendationModal`).modal('hide');
+                   getTableData();
+                }else{
+                  alert(res.response);
+                }
+            });
+
+        });
+
+        
 
     </script>

@@ -37,20 +37,21 @@
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('item'); ?> <?= $this->lang->line('type'); ?></label>
-                                                        <select name="ItemTyp" id="ItemTyp" class="form-control form-control-sm" required="">
+                                                        <select name="ItemTyp" id="ItemTyp" class="form-control form-control-sm" required="" onchange="changeItemType()">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php
-                                                            foreach ($itemTyp as $typ) {
+                                                            foreach ($itemTyp as $key) {
+                                                                if($key['TagTyp'] == 2){
                                                              ?>
-                                                             <option value="<?= $typ['ItmTyp']; ?>"><?= $typ['Name']; ?></option>
-                                                            <?php } ?>
+                                                             <option value="<?= $key['TagId']; ?>"><?= $key['TDesc']; ?></option>
+                                                            <?php } } ?>
                                                         </select>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label><?= $this->lang->line('item'); ?> <?= $this->lang->line('list'); ?></label>
+                                                        <label><?= $this->lang->line('item'); ?> <?= $this->lang->line('name'); ?></label>
                                                         <select name="ItemId" id="ItemId" class="form-control form-control-sm select2 custom-select" >
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php
@@ -236,5 +237,14 @@
 
         $('#saveBtn').hide();
         $('#updateBtn').show();
+    }
+
+    function changeItemType(){
+        var ItemTyp = $(`#ItemTyp`).val();
+        if(ItemTyp == 125){
+            $('#ItemId').prop('required', true);
+        }else{
+            $('#ItemId').prop('required', false);
+        }
     }
 </script>

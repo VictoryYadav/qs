@@ -48,7 +48,7 @@
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('mode'); ?></label>
                                                         <select name="pmode" id="" class="form-control form-control-sm">
-                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                            <option value=""><?= $this->lang->line('all'); ?></option>
                                                             <?php
                                                             foreach ($modes as $mode ) { ?>
                                                                 <option value="<?= $mode['PymtMode']; ?>" <?php if($mode['PymtMode'] == $pmode){ echo 'selected'; } ?> ><?= $mode['Name']; ?></option>

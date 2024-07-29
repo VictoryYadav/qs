@@ -23,9 +23,7 @@ body{
 
 <body>
 
-    <!-- Header Section Begin -->
     <?php $this->load->view('layouts/customer/top'); ?>
-    <!-- Header Section End -->
 
     <section class="common-section p-2 dashboard-container">
         <div class="container" id="showBlock">
@@ -156,12 +154,19 @@ body{
                             <tbody>
                                 <?php 
                                 if(!empty($billLinks)){
+                                    $count = 0;
                                     foreach ($billLinks as $key ) {
+                                        $count++;
                                 ?>
                                 <tr>
                                     <td><?= $key['billId']; ?></td>
                                     <td><?= $key['mobileNo']; ?></td>
-                                    <td><?= $key['link']; ?></td>
+                                    <td>
+                                        <input type="hidden" id="textToCopy<?= $count; ?>" value="<?= $key['link']; ?>">
+                                        <!-- <?= $key['link']; ?> -->
+                                        <span style="background: #000;color:#fff;padding: 3px;font-size: 11px;border-radius: 50px;cursor: pointer;" id="copyButton<?= $count; ?>" class="copyButtons" onclick="copyLink(<?= $count; ?>)">Bill Link</span>
+                                            
+                                        </td>
                                 </tr>
                             <?php } } ?>
                             </tbody>
@@ -175,7 +180,6 @@ body{
         </div>
     </section>
 
-
     <!-- payment OTP Modal -->
     <div class="modal" id="otpModal">
       <div class="modal-dialog">
@@ -183,7 +187,7 @@ body{
 
           <!-- Modal Header -->
           <div class="modal-header">
-            <h4 class="modal-title">OTP</h4>
+            <h4 class="modal-title"><?= $this->lang->line('OTP'); ?></h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
@@ -195,12 +199,12 @@ body{
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="">OTP</label>
+                            <label for=""><?= $this->lang->line('OTP'); ?></label>
                             <input type="number" name="otp" class="form-control form-control-sm" required="" placeholder="OTP">
                         </div>
                         <div class="form-group">
                             <input type="submit" class="btn btn-sm btn-success" value="Verify">
-                            <button type="button" class="btn btn-sm btn-danger" onclick="resendOTP()">Resend</button>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="resendOTP()"><?= $this->lang->line('resendOTP'); ?></button>
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -220,7 +224,7 @@ body{
 
           <!-- Modal Header -->
           <div class="modal-header">
-            <h4 class="modal-title">Loyalty</h4>
+            <h4 class="modal-title"><?= $this->lang->line('loyalty'); ?></h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
@@ -231,8 +235,8 @@ body{
                             <thead>
                                 <tr>
                                     <th><?= $this->lang->line('name'); ?></th>
-                                    <th>Earned Points</th>
-                                    <th>Used Points</th>
+                                    <th><?= $this->lang->line('earned'); ?> <?= $this->lang->line('points'); ?></th>
+                                    <th><?= $this->lang->line('used'); ?> <?= $this->lang->line('points'); ?></th>
                                 </tr>
                             </thead>
                             <tbody id="loyaltyBody">
@@ -248,10 +252,7 @@ body{
 
     <!-- footer section -->
     <?php $this->load->view('layouts/customer/footer'); ?>
-    <!-- end footer section -->
-
-
-    <!-- Js Plugins -->
+    
     <?php $this->load->view('layouts/customer/script'); ?>
     <!-- end Js Plugins -->
 
@@ -356,7 +357,6 @@ function goPay(val){
     var element = $('#mode'+val).find('option:selected'); 
     var payUrl  = element.attr("data-mode"); 
     var payable = $('#payableAmt').val();
-    console.log('val ='+val+' ,am = '+amount+' ,mode '+mode+' ,pble '+payable);
 
     if(amount < 0 || amount == ''){
         alert('Please enter amount');
@@ -370,14 +370,13 @@ function goPay(val){
 
     var payNo = 0;
 
-    console.log('call to ajax');
     // for cash
     if(mode == 1){
         $.post('<?= base_url('customer/multi_payment') ?>',{amount:amount,mode:mode, BillId:BillId,MCNo:MCNo,payable:payable},function(res){
             if(res.status == 'success'){
-              // alert(res.response);
+              
               payNo = res.response;
-              // for loading
+              
                 $('#showBlock').hide();
                 $('#loadBlock').show();
               setInterval(function() {
@@ -405,14 +404,20 @@ function goPay(val){
     if(mode == 35){
         var totAmt = 0;
         var tips = 0;
-        // var dd = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&totAmt='+btoa(totAmt)+'&tips='+btoa(tips);
-        // alert(dd);
+
         var pageurl = 'customer';
         amount = convertDigitToEnglish(amount);
         window.location = '<?= base_url();?>'+payUrl+'&payable='+btoa(amount)+'&billId='+btoa(BillId)+'&MCNo='+btoa(MCNo)+'&pageurl='+btoa(pageurl);
     }
-
-    // phoenpe = 34
+    // payu
+    if(mode == 51){
+        var totAmt = 0;
+        var tips = 0;
+        var pageurl = 'customer';
+        amount = convertDigitToEnglish(amount);
+        window.location = '<?= base_url();?>'+payUrl+'?payable='+btoa(amount)+'&billId='+btoa(BillId)+'&MCNo='+btoa(MCNo)+'&pageurl='+btoa(pageurl);
+    }
+    // phoenpe
     if(mode == 34){
 
         $.post('<?= base_url('phonepe/pay') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
@@ -423,7 +428,6 @@ function goPay(val){
             }
         });
     }
-
     // onAccount, RoomNo, MembershipNo, EmployeeId
     if(mode >=20 && mode <= 30){
         // for onaccount
@@ -434,24 +438,11 @@ function goPay(val){
                 $('#paymentAmount').val(amount);
                 $('#paymentMode').val(mode);
                 $('#otpModal').modal('show');
-                // window.location = res.response;  
+                
             }else{ 
               alert(res.response);  
             }
         });
-
-        // $.post('<?= base_url('customer/send_payment_otp') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
-        //     if(res.status == 'success'){
-        //         $('#paymentBillId').val(BillId);
-        //         $('#paymentMCNo').val(MCNo);
-        //         $('#paymentAmount').val(amount);
-        //         $('#paymentMode').val(mode);
-        //         $('#otpModal').modal('show');
-        //         // window.location = res.response;  
-        //     }else{ 
-        //       alert(res.response);  
-        //     }
-        // });
     }
 }
 
@@ -468,7 +459,7 @@ function resendOTP(){
 $('#paymentForm').on('submit', function(e){
     e.preventDefault();
     var data = $(this).serializeArray();
-    // console.log(data[1]['value']);
+    
     var BillId = data[1]['value'];
     
     $.post('<?= base_url('customer/settle_bill_without_payment') ?>', data, function(res){
@@ -484,7 +475,7 @@ $('#paymentForm').on('submit', function(e){
 function checkStatus(billId,payNo, serialNo){
     $.post('<?= base_url('customer/check_payment_status') ?>',{billId:billId,payNo:payNo},function(res){
         if(res.status == 'success'){
-          // alert(res.response);
+          
           $('#payStatus'+serialNo).html('<i class="fa fa-check" style="color:green;"></i>');    
           $('#go'+serialNo).attr("disabled",true);  
           $('#delBtn'+serialNo).attr("disabled",true); 
@@ -495,7 +486,7 @@ function checkStatus(billId,payNo, serialNo){
           $('#payStatus'+serialNo).html('<i class="fa fa-spinner" style="color:orange;">'); 
           $('#showBlock').hide();
           $('#loadBlock').show();
-          // $('#payStatus'+serialNo).html(res.response);  
+          
         }
     });
 }
@@ -514,7 +505,6 @@ function goToBill(){
         });
         
     }
-
     // setInterval(function(){ goToBill(); }, 3000);
 }
 
@@ -527,7 +517,6 @@ function calculateGrandTotal() {
 
     $(".item-value").each(function(index, el) {
         val = $(this).val();
-        // console.log(' v  = '+val);
         val = convertDigitToEnglish(val);
         grandTotal += parseInt(val);
         
@@ -557,6 +546,26 @@ function changeValue(input) {
     calculateGrandTotal();
 }
 
+function copyLink(counter){
+    const textToCopy = $(`#textToCopy${counter}`).val();
+    copyTextToClipboard(textToCopy, counter);
+}
+
+function copyTextToClipboard(text, counter) {
+
+    navigator.clipboard.writeText(text).then(() => {
+        $(`#copyButton${counter}`).html('Copied');
+    }).catch(error => {
+        console.error('Unable to copy text:', error);
+    });
+}
+
+// end copy text 
+function copied(){
+
+    $('.copyButtons').html('Bill Link');
+}
+setInterval(copied, 3000);
 
 </script>
 

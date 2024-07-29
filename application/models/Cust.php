@@ -57,7 +57,7 @@ class Cust extends CI_Model{
 	function getItemDetailLists($CID, $mcat, $fl){
 
 		$langId = $this->session->userdata('site_lang');
-        $lname = "mi.ItemNm$langId as itemName";
+        $lname = "mi.Name$langId as itemName";
         $iDesc = "mi.ItmDesc$langId as itemDescr";
         $ingeredients = "mi.Ingeredients$langId as Ingeredients";
         $Rmks = "mi.Rmks$langId as Rmks";
@@ -67,7 +67,7 @@ class Cust extends CI_Model{
 
 		$where = "mi.Stat = 0 and (DAYOFWEEK(CURDATE()) = mi.DayNo OR mi.DayNo = 8)  AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime)))";
 // et.TblTyp
-        $select_sql = "mc.TaxType, mc.DCd, mi.KitCd,mc.CTyp, mi.ItemId, mi.ItemTyp, mi.NV, mi.PckCharge, $lname, $iDesc, $ingeredients, $Rmks, mi.PrepTime, mi.AvgRtng, mi.FID,mi.ItemAttrib, mi.ItemSale, mi.ItemTag, mi.ItemNm1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,mi.videoLink,  (select mir.OrigRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = $tableNo AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId and mi.Stat = 0 ORDER BY mir.OrigRate ASC LIMIT 1) as ItmRate, (select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = $tableNo AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId and mi.Stat = 0 ORDER BY mir.OrigRate ASC LIMIT 1) as Itm_Portion, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$this->EID' and et1.TableNo = $tableNo) as TblTyp";
+        $select_sql = "mc.TaxType, mc.DCd, mi.KitCd,mc.CTyp, mi.ItemId, mi.ItemTyp, mi.NV, mi.PckCharge, $lname, $iDesc, $ingeredients, $Rmks, mi.PrepTime, mi.AvgRtng, mi.FID,mi.ItemAttrib, mi.ItemSale, mi.ItemTag, mi.Name1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,mi.videoLink,  (select mir.OrigRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = $tableNo AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId and mi.Stat = 0 ORDER BY mir.OrigRate ASC LIMIT 1) as ItmRate, (select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = $tableNo AND et.EID = '$this->EID' AND mir.EID = '$this->EID' AND mir.ItemId = mi.ItemId and mi.Stat = 0 ORDER BY mir.OrigRate ASC LIMIT 1) as Itm_Portion, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$this->EID' and et1.TableNo = $tableNo) as TblTyp";
         if(!empty($mcat)){
         	$this->session->set_userdata('f_mcat', $mcat);
             $this->db2->where('mc.MCatgId', $mcat);
@@ -1141,13 +1141,13 @@ class Cust extends CI_Model{
     	}
 
     	$langId = $this->session->userdata('site_lang');
-        $ItemGrpName = "mi.ItemNm$langId as ItemGrpName";
-        $ItemNm = "mii.ItemNm$langId as Name";
+        $ItemGrpName = "mi.Name$langId as ItemGrpName";
+        $ItemNm = "mii.Name$langId as Name";
 
         if($itemTyp == 1){
 
-        	$ItemGrpName = "mi.ItemNm$langId as ItemGrpName";
-        	$ItemNm = "mii.ItemNm$langId as Name";
+        	$ItemGrpName = "mi.Name$langId as ItemGrpName";
+        	$ItemNm = "mii.Name$langId as Name";
 
             return $this->db2->select("itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, $ItemGrpName, itd.ItemId, $ItemNm, mir.OrigRate as Rate, itg.Reqd")
             		->order_by('itg.Rank, itd.Rank', 'ASC')
@@ -1224,7 +1224,7 @@ class Cust extends CI_Model{
 	public function getOffers(){
 		$langId = $this->session->userdata('site_lang');
         
-        $lname = "mi.ItemNm$langId as LngName";
+        $lname = "mi.Name$langId as LngName";
         $cuiname = "c1.Name$langId as cuiName";
         $mname = "m.Name$langId as mcName";
         $ipname = "ip.Name$langId as portionName";
@@ -1268,10 +1268,10 @@ class Cust extends CI_Model{
 			$stat = ($EType == 5)?3:2;
 
             $langId = $this->session->userdata('site_lang');
-            $lname = "m.ItemNm$langId";
+            $lname = "m.Name$langId";
             $ipName = "ip.Name$langId as Portions";
 
-		return $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate, k.ItmRate,sum(k.OrigRate*k.Qty) as OrdAmt, (SELECT sum((k1.OrigRate-k1.ItmRate)*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.CNo=km.CNo and k1.EID=km.EID and k1.CNo =$CNo AND (k1.Stat = $stat) and ((k1.OrigRate-k1.ItmRate) * k1.Qty) > 0) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotPckCharge, $ipName, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name, k.TA  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and (k.CNo = km.CNo or k.MCNo = km.MCNo) AND (km.CNo = $CNo OR km.MCNo = $CNo) group by km.CNo, k.ItemId, k.Itm_Portion ,k.CustItemDesc order by TaxType, m.ItemNm1 Asc")->result_array();
+		return $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate, k.ItmRate,sum(k.OrigRate*k.Qty) as OrdAmt, (SELECT sum((k1.OrigRate-k1.ItmRate)*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.CNo=km.CNo and k1.EID=km.EID and k1.CNo =$CNo AND (k1.Stat = $stat) and ((k1.OrigRate-k1.ItmRate) * k1.Qty) > 0) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotPckCharge, $ipName, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name, k.TA  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and (k.CNo = km.CNo or k.MCNo = km.MCNo) AND (km.CNo = $CNo OR km.MCNo = $CNo) group by km.CNo, k.ItemId, k.Itm_Portion ,k.CustItemDesc order by TaxType, m.Name1 Asc")->result_array();
 		}
 	}
 
@@ -1281,10 +1281,10 @@ class Cust extends CI_Model{
 		$stat = ($EType == 5)?3:2; 
 
 		$langId = $this->session->userdata('site_lang');
-        $lname = "m.ItemNm$langId";
+        $lname = "m.Name$langId";
         $ipName = "ip.Name$langId as Portions";
 
-		return $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,sum(k.Qty * $per_cent) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty * $per_cent),(k.ItmRate*k.Qty * $per_cent))) as OrdAmt, km.OType, km.LoginCd, (SELECT sum((k1.OrigRate-k1.ItmRate)* k1.Qty * $per_cent) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty * $per_cent) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotPckCharge, $ipName, km.BillDiscAmt * $per_cent as BillDiscAmt, km.DelCharge * $per_cent as DelCharge, km.RtngDiscAmt * $per_cent as RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.MergeNo,km.TableNo, km.MCNo, km.CustId, km.CellNo, k.ItemId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.payRest = 0 and km.payRest = 0 and (k.CNo = km.CNo OR km.MCNo = k.MCNo) and (km.MCNo = $CNo and km.CNo = $CNo) and (km.MergeNo = k.MergeNo and km.MergeNo = '$MergeNo') group by km.MCNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.ItemNm1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by TaxType, m.ItemNm1 Asc")->result_array();
+		return $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,sum(k.Qty * $per_cent) as Qty ,k.ItmRate,  SUM(if (k.TA=1,((k.ItmRate+m.PckCharge)*k.Qty * $per_cent),(k.ItmRate*k.Qty * $per_cent))) as OrdAmt, km.OType, km.LoginCd, (SELECT sum((k1.OrigRate-k1.ItmRate)* k1.Qty * $per_cent) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty * $per_cent) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotPckCharge, $ipName, km.BillDiscAmt * $per_cent as BillDiscAmt, km.DelCharge * $per_cent as DelCharge, km.RtngDiscAmt * $per_cent as RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.MergeNo,km.TableNo, km.MCNo, km.CustId, km.CellNo, k.ItemId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.payRest = 0 and km.payRest = 0 and (k.CNo = km.CNo OR km.MCNo = k.MCNo) and (km.MCNo = $CNo and km.CNo = $CNo) and (km.MergeNo = k.MergeNo and km.MergeNo = '$MergeNo') group by km.MCNo, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.Name1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by TaxType, m.Name1 Asc")->result_array();
 	}
 
 	private function calculatTotalTax($total_tax, $new_tax){
@@ -1558,7 +1558,7 @@ class Cust extends CI_Model{
 		$stat = ($EType == 5)?3:2;
 
 		$whr = " k.CNo = km.CNo ";
-		return $this->db2->select('km.CustId, m.ItemId,m.ItemNm1,k.Qty ,k.ItmRate,  sum(k.OrigRate*k.Qty) as OrdAmt,km.CNo,km.CellNo, km.BillStat, k.Stat, km.MergeNo')
+		return $this->db2->select('km.CustId, m.ItemId,m.Name1,k.Qty ,k.ItmRate,  sum(k.OrigRate*k.Qty) as OrdAmt,km.CNo,km.CellNo, km.BillStat, k.Stat, km.MergeNo')
 						->order_by('km.CNo', 'asc')
 						->group_by('km.CNo, km.CellNo')
 						->join('Kitchen k', 'k.MergeNo = km.MergeNo', 'inner')
@@ -1751,6 +1751,12 @@ class Cust extends CI_Model{
 		return $this->db2->select("sum(billAmount) as billAmount")
 					->get_where('custAccounts', array('custId' => $custId, 'EID' => authuser()->EID, 'pymt_rcpt' => 0))
 					->row_array();
+	}
+
+	public function getTablesDetails(){
+		$EID = authuser()->EID;
+		$OType = $this->session->userdata('TableNo');
+		return $this->db2->select('offerValid')->get_where('Eat_tables', array('EID' => $EID, 'TableNo' => $OType))->row_array();
 	}
 
 	

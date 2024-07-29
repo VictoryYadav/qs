@@ -128,11 +128,14 @@
                             <form method="post" id="collectionForm">
                                 <input type="hidden" id="CustId" name="CustId">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <span>Total Payable : <b><span id="outstanding">0</span></b></span>
                                     </div>
+                                    <div class="col-md-6">
+                                        <span>Prepaid : <b><span id="prepaid_amt">0</span></b></span>
+                                    </div>
                                     <div class="col-md-3">
-                                        <input type="number" class="form-control form-control-sm" name="amount" required="" placeholder="Bill Amount">
+                                        <input type="number" class="form-control form-control-sm" name="amount" required="" placeholder="Bill Amount" id="paid_amt">
                                     </div>
                                     <div class="col-md-3">
                                         <select name="PaymtMode" id="PaymtMode" class="form-control form-control-sm" required="">
@@ -190,7 +193,7 @@
                     temp += `<tr>
                                 <td>${counter}</td>
                                 <td>${item.Fullname}</td>
-                                <td>${item.CellNo}</td>
+                                <td>${item.CellNo} <span class="badge badge-boxed  badge-success">${item.billType}</span></td>
                                 <td>${item.TotalAmt}</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-primary" onclick="getDetail(${item.CustId})">Detail</button>
@@ -209,7 +212,8 @@
             if(res.status == 'success'){
                 var temp = ``;
                 outstanding = 0;
-                res.response.forEach((item, index) => {
+                var details = res.response.details;
+                details.forEach((item, index) => {
                     outstanding = parseFloat(outstanding) + parseFloat(item.totalBillPaidAmt);
                     temp += `<tr>
                                 <td>${item.BillId}</td>
@@ -219,7 +223,13 @@
                                 <td>${item.billTime}</td>
                             <tr>`;
                 });
+                var paid_amt = outstanding;
+                if(outstanding > res.response.prePaid){
+                    paid_amt = parseInt(outstanding) - parseInt(res.response.prePaid);
+                }
                 $('#outstanding').html(outstanding);
+                $('#prepaid_amt').html(res.response.prePaid);
+                $('#paid_amt').val(paid_amt);
                 $('#CustId').val(CustId);
                 $('#detailBody').html(temp);
                 $('.billingModal').modal('show');

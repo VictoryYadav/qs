@@ -316,23 +316,7 @@
           return messaging.getToken();
         })
         .then(function(token) {
-          // $.ajax({
-          //       url: 'ajax/customer_landing_page_ajax.php',
-          //       type: 'POST',
-          //       dataType: 'json',
-          //       data: {
-          //           save_firebase_token: 1,
-          //           token: token
-          //       },
-          //       success: function(response) {
-          //        // alert(token);
-          //       },
-          //       error: function(xhr, status, error) {
-          //           console.log(xhr);
-          //           console.log(status);
-          //           console.log(error);
-          //       }
-          //   });
+          
           console.log('Token:'+token); // Display user token
         })
         .catch(function(err) { // Happen if user deney permission

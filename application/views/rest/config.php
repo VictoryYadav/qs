@@ -76,6 +76,16 @@
                                                     </div>
                                                 </div>
 
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for="">Rest Billing</label>
+                                                        <select name="restBilling" id="" class="form-control form-control-sm">
+                                                        <option value="1" <?php if($detail['restBilling'] == 1){ echo 'selected'; } ?> >BIll</option>
+                                                        <option value="2" <?php if($detail['restBilling'] == 2){ echo 'selected'; } ?> >BIll & KOT</option>
+                                                    </select>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                             <hr>
                                             <div class="row">
@@ -319,7 +329,22 @@
                                                     </div>
 
                                                 </div>
-                                                <div class="col-md-3 col-12"></div>
+                                                <div class="col-md-3 col-12">
+
+                                                    <div class="checkbox my-2">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck36" data-parsley-multiple="groups" data-parsley-mincheck="2" name="recommend" <?php if($detail['recommend'] == 1){ echo 'checked'; } ?> value="<?= $detail['recommend'];?>">
+                                                            <label class="custom-control-label" for="customCheck36">Recommendation</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="checkbox my-2">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck37" data-parsley-multiple="groups" data-parsley-mincheck="2" name="billSplitOpt" <?php if($detail['addItemLock'] == 1){ echo 'checked'; } ?> value="<?= $detail['addItemLock'];?>">
+                                                            <label class="custom-control-label" for="customCheck37">Add Item Lock</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
                                                 <div >
                                                     <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>" id="saveBtn">

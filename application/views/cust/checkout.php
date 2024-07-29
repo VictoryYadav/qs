@@ -149,7 +149,7 @@
 
                 <div class="row paybl" style="margin-left: 0px;margin-right: 0px;">
                     <div class="col-8">
-                        <label class="bill-ord-amt" style="margin-bottom: 7px;"><?php echo  $this->lang->line('payable'); ?></label>
+                        <label class="bill-ord-amt" style="margin-bottom: 7px;"><?php echo  $this->lang->line('payable'); ?><small>(<?php echo  $this->lang->line('roundedoff'); ?>)</small></label>
                     </div>
                     <div class="col-4">
                         <input type="hidden" name="payable" id="payableAmt">
@@ -200,25 +200,19 @@
 
     <!-- footer section -->
     <?php $this->load->view('layouts/customer/footer'); ?>
-    <!-- end footer section -->
-
-
-    <!-- Js Plugins -->
+    
     <?php $this->load->view('layouts/customer/script'); ?>
     <!-- end Js Plugins -->
 
 </body>
 
 <script>
-    // var objDiv = $(".order-list");
-    // var h = objDiv.get(0).scrollHeight;
-    // objDiv.animate({
-    //  scrollTop: h
-    // });
 
     window.onload = function() {
         // document.getElementById("tips").focus();
       }
+
+    var regular_discount = 0;
 
     function getBillAmount() {
         $.ajax({
@@ -229,258 +223,258 @@
                 getBillAmount: 1,
             },
             success: response => {
-                var template = ``;
-                var sub_total = 0;
-                var html = ``;
-                var html_body = ``;
-                var grand_total = 0;
-                var initil_value = response.kitcheData[0]['TaxType'];
-                var del_charge = response.kitcheData[0]['DelCharge'];
-                var pck_charge = response.kitcheData[0]['TotPckCharge'];
-                var ServChrg = response.kitcheData[0]['ServChrg'];
-                var discountDT = response.discountDT;
-                
-                var disc = parseInt(response.kitchen_main_data['BillDiscAmt']) + parseInt(response.kitcheData[0]['TotItemDisc']) + parseFloat(response.kitcheData[0]['RtngDiscAmt']);
-                
-                var hr_line = `<div style="border-bottom: 1px solid;margin-top: 5px; margin-bottom: 5px;color: #fff;"></div>`;
-
-                var itemAmount = 0;
-
-                response.kitcheData.forEach(item => {
+                if(response.status == 'success'){
+                    var template = ``;
+                    var sub_total = 0;
+                    var html = ``;
+                    var html_body = ``;
+                    var grand_total = 0;
+                    var initil_value = response.kitcheData[0]['TaxType'];
+                    var del_charge = response.kitcheData[0]['DelCharge'];
+                    var pck_charge = response.kitcheData[0]['TotPckCharge'];
+                    var ServChrg = response.kitcheData[0]['ServChrg'];
+                    var discountDT = response.discountDT;
                     
-                    var ta = '';
-                    if(item.TA != 0){
-                     ta = '[TA]';
-                    }
+                    var disc = parseFloat(response.kitchen_main_data['BillDiscAmt']) + parseFloat(response.kitcheData[0]['TotItemDisc']) + parseFloat(response.kitcheData[0]['RtngDiscAmt']);
                     
-                    if(initil_value == item.TaxType){
-                        html += `<tr>`;
-                        if(item.Itm_Portion > 4){
-                            html += `<td>${item.ItemNm} (${item.Portions}) ${ta} </td>`;
-                        }else{
-                            html += `<td>${item.ItemNm} ${ta} </td>`;
+                    var hr_line = `<div style="border-bottom: 1px solid;margin-top: 5px; margin-bottom: 5px;color: #fff;"></div>`;
+
+                    var itemAmount = 0;
+
+                    response.kitcheData.forEach(item => {
+                        
+                        var ta = '';
+                        if(item.TA != 0){
+                         ta = '[TA]';
                         }
                         
-                        html += `<td class="text-center">${convertToUnicodeNo(item.Qty)}</td>`;
-                        html += `<td class="text-center">${convertToUnicodeNo(item.OrigRate)}</td>`;
-                        html += `<td class="text-right">${convertToUnicodeNo(item.OrdAmt)}</td>`;
-                        html += `</tr>`;
-
-                        sub_total = sub_total +  parseInt(item.OrdAmt);
-                        initil_value = item.TaxType;
-
-                    }else{
-
-                        html += `<tr style="border-top: 1px solid white;">`;
-                        html += `<td><b><?= $this->lang->line('itemTotal'); ?> :</b> </td>`;
-                        html += `<td class="text-center"></td>`;
-                        html += `<td class="text-center"></td>`;
-                        html += `<td class="text-right"><b>${convertToUnicodeNo(sub_total)}</b></td>`;
-                        html += `</tr>`;
-
-                        var sub_total_temp = sub_total;
-                        
-                        for (let index = 0; index < response.TaxData[initil_value].length; index++) {
-                            const element = response.TaxData[initil_value][index];
-                            var total_percent = parseFloat(sub_total_temp) * (parseFloat(element['TaxPcent'])/100);
-                                if(element['Included'] != 0 ){
-
-                                    html += `<tr>`;
-                                    html += `<td>${element['ShortName']} ${convertToUnicodeNo(element['TaxPcent'])} % </td>`;
-                                    html += `<td class="text-center"></td>`;
-                                    html += `<td class="text-center"></td>`;
-                                    html += `<td class="text-right">${convertToUnicodeNo(parseFloat(element['SubAmtTax']).toFixed(2))}</td>`;
-
-                                    html += `</tr>`;
-                                    
-                                }
-
-                                if(element['Included'] >= 5){
-                                    sub_total = parseFloat(sub_total_temp) + parseFloat(element['SubAmtTax']);
-                                }
-                        }
-
-                        grand_total = grand_total + sub_total;
-                        itemAmount = parseFloat(itemAmount) + parseFloat(sub_total.toFixed(2));
-                        html += `<tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
-                        html += `<td><b><?= $this->lang->line('subTotal'); ?> :</b> </td>`;
-                        html += `<td class="text-center"></td>`;
-                        html += `<td class="text-center"></td>`;
-                        html += `<td class="text-right"><b style="color: orange;">${convertToUnicodeNo(sub_total.toFixed(2))}</b></td>`;
-                        html += `</tr> <tr style="height: 25px;"></tr>`;
-
-                        initil_value = item.TaxType;
-
-                        sub_total = 0;
-
-                        html += `<tr>`;
-                        html += `<td>${item.ItemNm} ${ta}</td>`;
-                        html += `<td class="text-center">${convertToUnicodeNo(item.Qty)}</td>`;
-                        html += `<td class="text-center">${convertToUnicodeNo(item.OrigRate)}</td>`;
-                        html += `<td class="text-right">${convertToUnicodeNo(item.OrdAmt)}</td>`;
-                        html += `</tr>`;
-
-                        sub_total = sub_total +  parseInt(item.OrdAmt);
-                    }
-                });
-
-                html += `<tr style="border-top: 1px solid white;">`;
-                html += `<td><b><?= $this->lang->line('itemTotal'); ?> :</b> </td>`;
-                html += `<td class="text-center"></td>`;
-                html += `<td class="text-center"></td>`;
-                html += `<td class="text-right"><b>${convertToUnicodeNo(sub_total)}</b></td>`;
-                html += `</tr>`;
-
-                var sub_total_temp = sub_total;
-                for (let index = 0; index < response.TaxData[initil_value].length; index++) {
-                    const element = response.TaxData[initil_value][index];
-                    
-                        if(element['Included'] != 0 ){
-
+                        if(initil_value == item.TaxType){
                             html += `<tr>`;
-                            html += `<td>${element['ShortName']} ${convertToUnicodeNo(element['TaxPcent'])} % </td>`;
-                            html += `<td class="text-center"></td>`;
-                            html += `<td class="text-center"></td>`;
-                            html += `<td class="text-right">${convertToUnicodeNo(parseFloat(element['SubAmtTax']).toFixed(2))}</td>`;
+                            if(item.Itm_Portion > 4){
+                                html += `<td>${item.ItemNm} (${item.Portions}) ${ta} </td>`;
+                            }else{
+                                html += `<td>${item.ItemNm} ${ta} </td>`;
+                            }
+                            
+                            html += `<td class="text-center">${convertToUnicodeNo(item.Qty)}</td>`;
+                            html += `<td class="text-center">${convertToUnicodeNo(item.OrigRate)}</td>`;
+                            html += `<td class="text-right">${convertToUnicodeNo(item.OrdAmt)}</td>`;
                             html += `</tr>`;
 
+                            sub_total = sub_total +  parseInt(item.OrdAmt);
+                            initil_value = item.TaxType;
+
+                        }else{
+
+                            html += `<tr style="border-top: 1px solid white;">`;
+                            html += `<td><b><?= $this->lang->line('itemTotal'); ?> :</b> </td>`;
+                            html += `<td class="text-center"></td>`;
+                            html += `<td class="text-center"></td>`;
+                            html += `<td class="text-right"><b>${convertToUnicodeNo(sub_total)}</b></td>`;
+                            html += `</tr>`;
+
+                            var sub_total_temp = sub_total;
+                            
+                            for (let index = 0; index < response.TaxData[initil_value].length; index++) {
+                                const element = response.TaxData[initil_value][index];
+                                var total_percent = parseFloat(sub_total_temp) * (parseFloat(element['TaxPcent'])/100);
+                                    if(element['Included'] != 0 ){
+
+                                        html += `<tr>`;
+                                        html += `<td>${element['ShortName']} ${convertToUnicodeNo(element['TaxPcent'])} % </td>`;
+                                        html += `<td class="text-center"></td>`;
+                                        html += `<td class="text-center"></td>`;
+                                        html += `<td class="text-right">${convertToUnicodeNo(parseFloat(element['SubAmtTax']).toFixed(2))}</td>`;
+
+                                        html += `</tr>`;
+                                        
+                                    }
+
+                                    if(element['Included'] >= 5){
+                                        sub_total = parseFloat(sub_total_temp) + parseFloat(element['SubAmtTax']);
+                                    }
+                            }
+
+                            grand_total = grand_total + sub_total;
+                            itemAmount = parseFloat(itemAmount) + parseFloat(sub_total.toFixed(2));
+                            html += `<tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
+                            html += `<td><b><?= $this->lang->line('subTotal'); ?> :</b> </td>`;
+                            html += `<td class="text-center"></td>`;
+                            html += `<td class="text-center"></td>`;
+                            html += `<td class="text-right"><b style="color: orange;">${convertToUnicodeNo(sub_total.toFixed(2))}</b></td>`;
+                            html += `</tr> <tr style="height: 25px;"></tr>`;
+
+                            initil_value = item.TaxType;
+
+                            sub_total = 0;
+
+                            html += `<tr>`;
+                            html += `<td>${item.ItemNm} ${ta}</td>`;
+                            html += `<td class="text-center">${convertToUnicodeNo(item.Qty)}</td>`;
+                            html += `<td class="text-center">${convertToUnicodeNo(item.OrigRate)}</td>`;
+                            html += `<td class="text-right">${convertToUnicodeNo(item.OrdAmt)}</td>`;
+                            html += `</tr>`;
+
+                            sub_total = sub_total +  parseInt(item.OrdAmt);
                         }
+                    });
 
-                        if(element['Included'] >= 5){
-                            sub_total = parseFloat(sub_total_temp) + parseFloat(element['SubAmtTax']);
-                        }
+                    html += `<tr style="border-top: 1px solid white;">`;
+                    html += `<td><b><?= $this->lang->line('itemTotal'); ?> :</b> </td>`;
+                    html += `<td class="text-center"></td>`;
+                    html += `<td class="text-center"></td>`;
+                    html += `<td class="text-right"><b>${convertToUnicodeNo(sub_total)}</b></td>`;
+                    html += `</tr>`;
 
-                        sub_total_temp = sub_total;
+                    var sub_total_temp = sub_total;
+                    for (let index = 0; index < response.TaxData[initil_value].length; index++) {
+                        const element = response.TaxData[initil_value][index];
+                        
+                            if(element['Included'] != 0 ){
 
-                }
-                grand_total = grand_total + sub_total;
-                html += `<tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
-                        html += `<td><b><?= $this->lang->line('subTotal'); ?> :</b> </td>`;
-                        html += `<td class="text-center"></td>`;
-                        html += `<td class="text-center"></td>`;
-                        html += `<td class="text-right"><b style="color: orange;">${convertToUnicodeNo(sub_total.toFixed(2))}</b></td>`;
-                        html += `</tr>`;
-                itemAmount = parseFloat(itemAmount) + parseFloat(sub_total.toFixed(2));
-                sub_total = 0;
+                                html += `<tr>`;
+                                html += `<td>${element['ShortName']} ${convertToUnicodeNo(element['TaxPcent'])} % </td>`;
+                                html += `<td class="text-center"></td>`;
+                                html += `<td class="text-center"></td>`;
+                                html += `<td class="text-right">${convertToUnicodeNo(parseFloat(element['SubAmtTax']).toFixed(2))}</td>`;
+                                html += `</tr>`;
 
-                html_body +=`<div class="order-list col-12">`;
-                html_body +=`<table class="fixed_headers" style="width:100%">`;
-                html_body +=`<thead>`;
-                html_body +=`<tr>`;
-                html_body +=`<th><?= $this->lang->line('menuItem'); ?></th>`;
-                html_body +=`<th class="text-center"><?= $this->lang->line('quantity'); ?></th>`;
-                html_body +=`<th class="text-center"><?= $this->lang->line('rate'); ?></th>`;
-                html_body +=`<th class="text-right"><?= $this->lang->line('amount'); ?></th>`;
-                html_body +=`</tr>`;
-                html_body +=`</thead>`;
-                html_body +=`<tbody id="order-amount-table-body">`;
-                html_body += html;
-                html_body +=`</tbody>`;
-                html_body +=`</table>`;
-                html_body +=`</div>`;
+                            }
+
+                            if(element['Included'] >= 5){
+                                sub_total = parseFloat(sub_total_temp) + parseFloat(element['SubAmtTax']);
+                            }
+
+                            sub_total_temp = sub_total;
+
+                    }
+                    grand_total = grand_total + sub_total;
+                    html += `<tr style="border-top: 1px solid white;border-bottom: 3px solid white;">`;
+                            html += `<td><b><?= $this->lang->line('subTotal'); ?> :</b> </td>`;
+                            html += `<td class="text-center"></td>`;
+                            html += `<td class="text-center"></td>`;
+                            html += `<td class="text-right"><b style="color: orange;">${convertToUnicodeNo(sub_total.toFixed(2))}</b></td>`;
+                            html += `</tr>`;
+                    itemAmount = parseFloat(itemAmount) + parseFloat(sub_total.toFixed(2));
+                    sub_total = 0;
+                    html_body +=`<div class="order-list col-12">`;
+                    html_body +=`<table class="fixed_headers" style="width:100%">`;
+                    html_body +=`<thead>`;
+                    html_body +=`<tr>`;
+                    html_body +=`<th><?= $this->lang->line('menuItem'); ?></th>`;
+                    html_body +=`<th class="text-center"><?= $this->lang->line('quantity'); ?></th>`;
+                    html_body +=`<th class="text-center"><?= $this->lang->line('rate'); ?></th>`;
+                    html_body +=`<th class="text-right"><?= $this->lang->line('amount'); ?></th>`;
+                    html_body +=`</tr>`;
+                    html_body +=`</thead>`;
+                    html_body +=`<tbody id="order-amount-table-body">`;
+                    html_body += html;
+                    html_body +=`</tbody>`;
+                    html_body +=`</table>`;
+                    html_body +=`</div>`;
+
+                    var serv = ServChrg/100*grand_total;
                 
-                var serv = ServChrg/100*grand_total;
-                
-                if(serv > 0){
-                    html_body +=`<div class="main-ammount">`;
-                    html_body +=`<table style="width:100%;">`;
-                    html_body +=`<tr>`;
-                    html_body +=`   <th><?= $this->lang->line('serviceCharge'); ?> @ `+convertToUnicodeNo(ServChrg)+` %</th>`;
-                    html_body +=`   <td class="text-right">`+convertToUnicodeNo(serv.toFixed(2))+`</td>`;
-                    html_body +=`</tr>`;
-                    html_body +=`</table>`;
-                    html_body +=`</div>`;
-                    grand_total = grand_total + serv;
-                }
-                
-                if(disc > 0){
-                    html_body +=`<div class="main-ammount">`;
-                    html_body +=`<table style="width:100%;">`;
-                    html_body +=`<tr>`;
-                    html_body +=`   <th style="font-style: italic"><?= $this->lang->line('totalDiscount'); ?></th>`;
-                    html_body +=`   <th class="text-right" style="font-style: italic" id="totalDiscount">`+convertToUnicodeNo(disc)+`</th>`;
-                    html_body +=`</tr>`;
-                    html_body +=`</table>`;
-                    html_body +=`</div>`;
-                    grand_total = grand_total - disc;
-                }
+                    if(serv > 0){
+                        html_body +=`<div class="main-ammount">`;
+                        html_body +=`<table style="width:100%;">`;
+                        html_body +=`<tr>`;
+                        html_body +=`   <th><?= $this->lang->line('serviceCharge'); ?> @ `+convertToUnicodeNo(ServChrg)+` %</th>`;
+                        html_body +=`   <td class="text-right">`+convertToUnicodeNo(serv.toFixed(2))+`</td>`;
+                        html_body +=`</tr>`;
+                        html_body +=`</table>`;
+                        html_body +=`</div>`;
+                        grand_total = grand_total + serv;
+                    }
 
-                if(del_charge > 0){
-                    html_body +=`<div class="main-ammount">`;
-                    html_body +=`<table style="width:100%;">`;
-                    html_body +=`<tr>`;
-                    html_body +=`   <th style="font-style: italic"><?= $this->lang->line('deliveryCharge'); ?></th>`;
-                    html_body +=`   <th class="text-right" style="font-style: italic">`+convertToUnicodeNo(del_charge)+`</th>`;
-                    html_body +=`</tr>`;
-                    html_body +=`</table>`;
-                    html_body +=`</div>`;
-                    grand_total = grand_total + parseInt(del_charge);
-                }
+                    if(disc > 0){
+                        html_body +=`<div class="main-ammount">`;
+                        html_body +=`<table style="width:100%;">`;
+                        html_body +=`<tr>`;
+                        html_body +=`   <th style="font-style: italic"><?= $this->lang->line('totalDiscount'); ?></th>`;
+                        html_body +=`   <th class="text-right" style="font-style: italic" id="totalDiscount">`+convertToUnicodeNo(disc.toFixed(2))+`</th>`;
+                        html_body +=`</tr>`;
+                        html_body +=`</table>`;
+                        html_body +=`</div>`;
+                        grand_total = grand_total - disc;
+                    }
 
-                if(pck_charge > 0){
-                    html_body +=`<div class="main-ammount">`;
-                    html_body +=`<table style="width:100%;">`;
-                    html_body +=`<tr>`;
-                    html_body +=`   <th style="font-style: italic"><?= $this->lang->line('packingCharge'); ?></th>`;
-                    html_body +=`   <th class="text-right" style="font-style: italic">`+convertToUnicodeNo(pck_charge)+`</th>`;
-                    html_body +=`</tr>`;
-                    html_body +=`</table>`;
-                    html_body +=`</div>`;
-                    grand_total = grand_total + parseInt(pck_charge);
-                }
+                    if(del_charge > 0){
+                        html_body +=`<div class="main-ammount">`;
+                        html_body +=`<table style="width:100%;">`;
+                        html_body +=`<tr>`;
+                        html_body +=`   <th style="font-style: italic"><?= $this->lang->line('deliveryCharge'); ?></th>`;
+                        html_body +=`   <th class="text-right" style="font-style: italic">`+convertToUnicodeNo(del_charge)+`</th>`;
+                        html_body +=`</tr>`;
+                        html_body +=`</table>`;
+                        html_body +=`</div>`;
+                        grand_total = grand_total + parseInt(del_charge);
+                    }
 
-                // var itemGrossAmt = (grand_total - serv - pck_charge).toFixed(2);
-                var itemGrossAmt = (grand_total).toFixed(2);
+                    if(pck_charge > 0){
+                        html_body +=`<div class="main-ammount">`;
+                        html_body +=`<table style="width:100%;">`;
+                        html_body +=`<tr>`;
+                        html_body +=`   <th style="font-style: italic"><?= $this->lang->line('packingCharge'); ?></th>`;
+                        html_body +=`   <th class="text-right" style="font-style: italic">`+convertToUnicodeNo(pck_charge)+`</th>`;
+                        html_body +=`</tr>`;
+                        html_body +=`</table>`;
+                        html_body +=`</div>`;
+                        grand_total = grand_total + parseInt(pck_charge);
+                    }
 
-                html_body +=`<div class="main-ammount">`;
-                html_body +=`<table style="width:100%;">`;
-                html_body +=`<tr class="">`;
-                html_body +=`   <th>Grand Total</th>`;
-                html_body +=`   <td class="text-right"><strong>${grand_total}</strong></td>`;
-                html_body +=`</tr>`;
-                html_body +=`</table>`;
-                html_body +=`</div>`;
-
-                if(discountDT.length != ''){
-
-                    var calc = (grand_total * discountDT.pcent) / 100;
+                    // var itemGrossAmt = (grand_total - serv - pck_charge).toFixed(2);
+                    var itemGrossAmt = (grand_total).toFixed(2);
 
                     html_body +=`<div class="main-ammount">`;
                     html_body +=`<table style="width:100%;">`;
                     html_body +=`<tr class="">`;
-                    html_body +=`   <th>${discountDT.name} Discount @ ${discountDT.pcent} % </th>`;
-                    html_body +=`   <td class="text-right"><strong>${calc.toFixed(2)}</strong></td>`;
+                    html_body +=`   <th><?= $this->lang->line('grandTotal'); ?></th>`;
+                    html_body +=`   <td class="text-right"><strong>`+convertToUnicodeNo(grand_total)+`</strong></td>`;
                     html_body +=`</tr>`;
                     html_body +=`</table>`;
                     html_body +=`</div>`;
 
-                    grand_total  = (grand_total - calc).toFixed(2);
+                    var calc = 0;
+                    if(discountDT.length != ''){
+
+                       calc = (grand_total * discountDT.pcent) / 100;
+                       regular_discount = calc.toFixed(2);
+                        html_body +=`<div class="main-ammount">`;
+                        html_body +=`<table style="width:100%;">`;
+                        html_body +=`<tr class="">`;
+                        html_body +=`   <th>${discountDT.name} Discount @ ${discountDT.pcent} % </th>`;
+                        html_body +=`   <td class="text-right"><strong>${calc.toFixed(2)}</strong><input type="hidden" id="regular_discount" value="${calc.toFixed(2)}" /></td>`;
+                        html_body +=`</tr>`;
+                        html_body +=`</table>`;
+                        html_body +=`</div>`;
+
+                        grand_total  = (grand_total - calc).toFixed(2);
+                    }
+
+                    var tt = '<?php echo $Tips?>';
+                    if(tt == 1){
+                        html_body +=`<div class="main-ammount">`;
+                        html_body +=`<table style="width:100%;">`;
+                        html_body +=`<tr class="<?= ($Tips == 0 ? 'hideDiv' : ''); ?>">`;
+                        html_body +=`   <th><?= $this->lang->line('tips'); ?></th>`;
+                        html_body +=`   <td><input id="tips" type="text" class="" value="0" onchange="change_tip()"></td>`;
+                        html_body +=`</tr>`;
+                        html_body +=`</table>`;
+                        html_body +=`</div>`;
+                    }
+
+                    $('.bill_box').html(html_body);
+                    grand_total = Math.round(grand_total);
+                    $("#payable").text(convertToUnicodeNo(grand_total));
+                    $("#payableAmt").val(grand_total);
+                    // $("#totalAmt").val(itemGrossAmt);
+                    $("#totalAmt").val(itemAmount);
+                    // getDiscountOffer();
+                }else{
+                    alert('Nothing Pending!! ');
+                    window.location = "<?php echo base_url('customer/cart'); ?>";
                 }
-
-                var tt = '<?php echo $Tips?>';
-                if(tt == 1){
-                    html_body +=`<div class="main-ammount">`;
-                    html_body +=`<table style="width:100%;">`;
-                    html_body +=`<tr class="<?= ($Tips == 0 ? 'hideDiv' : ''); ?>">`;
-                    html_body +=`   <th><?= $this->lang->line('tips'); ?></th>`;
-                    html_body +=`   <td><input id="tips" type="text" class="" value="0" onchange="change_tip()"></td>`;
-                    html_body +=`</tr>`;
-                    html_body +=`</table>`;
-                    html_body +=`</div>`;
-                }
-
-                // if(grand_total)
-
-                // check_bill_amount_offer(grand_total, disc);
-
-                $('.bill_box').html(html_body);
-
-                $("#payable").text(convertToUnicodeNo(grand_total));
-                $("#payableAmt").val(grand_total);
-                // $("#totalAmt").val(itemGrossAmt);
-                $("#totalAmt").val(itemAmount);
-                // getDiscountOffer();
-                
 
             },
             error: (xhr, status, error) => {
@@ -504,293 +498,58 @@
               alert(res.response); 
             }
         });        
+    }    
+
+    $("#tips").focusout(function() {
+        
+        var serveCharge = $("#serve-charge").val();
+        var orderAmount = $("#order-amount").val();
+      
+        var tips = $(this).val();
+        var string = $("#total-amount_loader").text();
+        var res = string.split(":");
+        var totalTemp = parseInt(tips) + parseFloat(res[1]) + (parseInt("<?= $ServChrg; ?>") * parseInt(orderAmount) / 100);
+        $("#payable").val(totalTemp);
+        $("#total-amount_loader").text('Cash : ' + totalTemp);
+      
+    });
+
+    function change_tip(){
+        var tips = $("#tips").val();
+        var payableAmt  = $('#payableAmt').val();
+        // tips = convertToUnicodeNo(tips);
+        var total =parseFloat( payableAmt ) + parseInt(tips);
+
+        $("#payable").text(convertToUnicodeNo(total));
+        $("#payableAmt").val(total);
+        $("#tips").val(convertToUnicodeNo(tips));
     }
-
-    function check_bill_amount_offer(payable, discount){
-
-    $.post('<?= base_url('customer/check_bill_offer') ?>',{payable:payable},function(res){
-            if(res.status == 'success'){
-                if(res.response.msg == 'found'){
-                    
-                    var disc = parseInt(discount) + parseInt(res.response.bill_based_saving);
-                    $('#totalDiscount').html(disc);
-
-                    if(res.response.grand_total > 0){
-                        $("#payable").text(res.response.grand_total);
-                    }
-                    // $("#payableAmt").val(grand_total);
-                }
-                else{
-                    // alert(res.response.msg);
-                }   
-            }else{
-              alert(res.response); 
-            }
-        });        
-    }
-    
-
-    function getTaxValue(initil_value,total){
-        $.ajax({
-            url: 'ajax/bill_cons_ajax.php',
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                getTax: 1,
-                tax_type:initil_value
-            },
-            success: response => {
-                var html ='';
-                response.TaxData.forEach(item => {
-
-                        var total_percent = parseFloat(total) * (parseFloat(item.TaxPcent)/100);
-                        console.log(total_percent.toFixed(2), total);
-                    
-                        html += `<tr>`;
-                        html += `<td>${item.ShortName} ${item.TaxPcent}</td>`;
-                        html += `<td class="text-center"></td>`;
-                        html += `<td class="text-center"></td>`;
-                        html += `<td class="text-right">${total_percent}</td>`;
-                        html += `</tr>`;
-
-                        return html;
-
-                });
-            }
-        });
-    }
-
-    function getPaymentModes(){
-
-        $.ajax({
-            url: "<?= base_url('customer/bill_ajax'); ?>",
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                get_payment_modes: 1
-            },
-            success: response => {
-                var t ='';
-                var n = 1;
-                response.payment_modes.forEach(item => {
-                    co = 6;
-                    if(response.payment_modes.length % 2 == 0){
-                        co = 6;
-                    }else{
-                        if(response.payment_modes.length == n){
-                            co = 12;
-                        }
-                    }
-                    if(item.Name == 'Cash'){
-                        t+='<div class="col-'+co+' text-center"><button id="cash" class="btn btn-primary pay-bill btn-sm" onclick="cash_payment()">Pay Cash</button></div>';
-                    }else{
-
-                        t+='<div class="col-'+co+' pay_online_section text-center"><button id="pay'+item.Name+'" class="btn btn-primary pay-bill btn-sm" onclick="start_payment(\''+item.CodePage1+'\')">'+item.Name+'</button></div>';
-                    }
-                    n++;
-                        
-
-                });
-
-                $('.remove-row-margin').append(t);
-            }
-        });
-    }
-
-    // for payment modes
-    // getPaymentModes();
-    function start_payment(p){
-        var a = parseFloat($('#payable').html());
-        var t = $('#tips').val();
-        var amt = $('#totalAmt').val();
-        // alert(t);
-        // alert(a);
-        if(t === undefined){
-            t = 0;
-        }
-        // alert(t);
-        // alert(btoa(t));
-        window.location = '<?= base_url();?>'+p+'&payable='+btoa(a)+'&totAmt='+btoa(amt)+'&tips='+btoa(t);
-    }
-    function checkCasherConfirm(billId) {
-        $.ajax({
-            url: "<?= base_url('customer/bill_ajax'); ?>",
-            type: "post",
-            data: {
-                checkCasherConfirm: 1,
-                billId: billId
-            },
-            dataType: "json",
-            success: response => {
-                console.log(response);
-                if (response.status == 1) {
-                    // window.location = `bill_rcpt.php?billId=${billId}`;
-                    window.location = "<?php echo base_url('customer/bill/'); ?>"+billId;
-                } else {
-                    return true;
-                }
-            },
-            error: (xhr, status, error) => {
-                console.log(xhr);
-                console.log(status);
-                console.log(error);
-            }
-        });
-    }
-$("#tips").focusout(function() {
-            // var totalAmount = $("#total-amount").text();
-            var serveCharge = $("#serve-charge").val();
-            var orderAmount = $("#order-amount").val();
-          
-            var tips = $(this).val();
-            var string = $("#total-amount_loader").text();
-            var res = string.split(":");
-            var totalTemp = parseInt(tips) + parseFloat(res[1]) + (parseInt("<?= $ServChrg; ?>") * parseInt(orderAmount) / 100);
-            // var newTotal = parseFloat(payAble) + parseInt(tips);
-            console.log(totalTemp);
-            $("#payable").val(totalTemp);
-            $("#total-amount_loader").text('Cash : ' + totalTemp);
-          
-        });
-
-        function change_tip(){
-            var tips = $("#tips").val();
-            var payableAmt  = $('#payableAmt').val();
-            // tips = convertToUnicodeNo(tips);
-            var total =parseFloat( payableAmt ) + parseInt(tips);
-
-            $("#payable").text(convertToUnicodeNo(total));
-            $("#payableAmt").val(total);
-            $("#tips").val(convertToUnicodeNo(tips));
-        }
 
     $(document).ready(function() {
         getBillAmount();
 
-
-        // For Payment Order
-        $("#pay").click(function(event) {
-            var tips = $("#tips").val();
-
-            $.ajax({
-                url: "<?= base_url('customer/bill_ajax'); ?>",
-                type: "post",
-                data: {
-                    pay: 1,
-                    tips: tips
-                },
-                dataType: "json",
-                success: response => {
-                    console.log(response);
-                    if (response.status == 100) {
-                        alert(response.msg);
-                        window.location.reload();
-                    } else if (response.status == 1) {
-                        window.location = response.location;
-                    } else {
-                        location.reload();
-                    }
-                },
-                error: (xhr, status, error) => {
-                    console.log(xhr);
-                    console.log(status);
-                    console.log(error);
-                }
-            });
-        });
-
-        // For confirm Order
-        $("#confirm").click(function(event) {
-            var tips = $("#tips").val();
-
-            $.ajax({
-                url: "<?= base_url('customer/bill_ajax'); ?>",
-                type: "post",
-                data: {
-                    confirm: 1,
-                    tips: tips
-                },
-                dataType: "json",
-                success: response => {
-                    console.log(response);
-                    if (response.status == 100) {
-                        alert(response.msg);
-                        window.location.reload();
-                    } else if (response.status == 1) {
-                        window.location = `bill_rcpt.php?billId=${response.billId}`;
-                    } else {
-                        location.reload();
-                    }
-                },
-                error: (xhr, status, error) => {
-                    console.log(xhr);
-                    console.log(status);
-                    console.log(error);
-                }
-            });
-        });
-
-        // For confirm Order
-
     });
-    function cash_payment() {
-            var tips = $("#tips").val();
-            var payableAmt = $("#payable").text();
-            var totalAmt = $("#totalAmt").val();
-            
-            // alert("Cash");
-            $.ajax({
-                url: "<?= base_url('customer/bill_ajax'); ?>",
-                type: "post",
-                data: {
-                    cash: 1,
-                    tips: tips,
-                    payableAmt:payableAmt,
-                    totalAmt:totalAmt
-                },
-                dataType: "json",
-                success: response => {
-                    console.log(response);
-                    if (response.status == 100) {
-                        alert(response.msg);
-                        window.location.reload();
-                    } else if (response.status == 1) {
-                        $('.bill-body').hide();
-                        $('#myOverlay').show();
-                        $('#loadingGIF').show();
-                        setInterval(function() {
-                            checkCasherConfirm(response.billId);
-                        }, 20000);
-                        // window.location = `bill_rcpt.php?billId=${response.billId}`;
-                    } else {
-                        alert(response.msg);
-                        location.reload();
-                    }
-                },
-                error: (xhr, status, error) => {
-                    console.log(xhr);
-                    console.log(status);
-                    console.log(error);
-                }
-            });
-        }
 
-        function payNow(){
-            var payable = parseFloat($('#payableAmt').val());
-            var tip = $('#tips').val();
-            var itemGrossAmt = $('#totalAmt').val();
-            tip = convertDigitToEnglish(tip);
 
-            $.post('<?= base_url('customer/checkout_pay') ?>',{payable:payable,itemGrossAmt:itemGrossAmt,tip:tip},function(res){
-                if(res.status == 'success'){
-                  var BillId = res.response.BillId;  
-                  var MCNo = res.response.MCNo;  
-                  window.location = '<?= base_url();?>customer/pay/'+BillId+'/'+MCNo;     
-                }else{
-                  alert(res.response); 
-                }
-            });
-        }
+    function payNow(){
+        var payable = parseFloat($('#payableAmt').val());
+        var tip = $('#tips').val();
+      
+        payable = parseFloat(payable) + parseFloat(regular_discount);
+        
+        var itemGrossAmt = $('#totalAmt').val();
+        tip = convertDigitToEnglish(tip);
+
+        $.post('<?= base_url('customer/checkout_pay') ?>',{payable:payable,itemGrossAmt:itemGrossAmt,tip:tip},function(res){
+            if(res.status == 'success'){
+              var BillId = res.response.BillId;  
+              var MCNo = res.response.MCNo;  
+              window.location = '<?= base_url();?>customer/pay/'+BillId+'/'+MCNo;     
+            }else{
+              alert(res.response); 
+            }
+        });
+    }
 
 </script>
 

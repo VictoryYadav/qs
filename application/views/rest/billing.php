@@ -28,16 +28,13 @@
     $address = $billData[0]['Addr'];
     $pincode = $billData[0]['Pincode'];
     $city = $billData[0]['City'];
-    $servicecharge = isset($billData[0]['ServChrg'])?$billData[0]['ServChrg']:"";
+    
     $bservecharge = $billData[0]['bservecharge'];
     $SerChargeAmt = $billData[0]['SerChargeAmt'];
 
     $tipamt = $billData[0]['Tip'];
-    $Stat = $billData[0]['Stat'];
-    $total = 0;
-    $sgstamt=0;
-    $cgstamt=0;
-    $grandTotal = $sgstamt + $cgstamt + $bservecharge + $tipamt;
+    $splitTyp = $billData[0]['splitTyp'];
+    
     $thankuline = isset($billData[0]['Tagline'])?$billData[0]['Tagline']:"";
 
     $total_discount_amount = $billData[0]['TotItemDisc'] + $billData[0]['BillDiscAmt'] + $billData[0]['custDiscAmt'];
@@ -46,18 +43,6 @@
 
 ?>
 <head>
-    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
-
-<!-- Add additional services that you want to use -->
-<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-firestore.js"></script>
-<!-- Load the Firebase SDK -->
-<!-- <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script> -->
-
-<!-- Load the Firebase Messaging module -->
-<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-messaging.js"></script>
-
 
 </head>
         <?php $this->load->view('layouts/admin/top'); ?>
@@ -71,11 +56,7 @@
                     <!-- Sidebar -->
                 </div>
             </div>
-            <!-- Left Sidebar End -->
-
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
+            
             <div class="main-content">
 
                 <div class="page-content">
@@ -118,7 +99,7 @@
                                                     <div class="col-6">
                                                         <p style="margin-bottom: unset;font-size: 15px !important;">Bill No: <b><?= $billno ?></b></p>
                                                     </div>
-                                                    <?php if($this->session->userdata('billPrintTableNo') > 0) { ?>
+                                                    <?php if($this->session->userdata('billPrintTableNo') > 0 && $TableNo < 100 && ($this->session->userdata('EType') == 5)) { ?>
                                                     <div class="col-6" style="text-align: right;">
                                                         <p style="margin-bottom: unset;font-size: 15px !important;">Table No: <b><?= $MergeNo ?></b></p>
                                                     </div>
@@ -145,6 +126,7 @@
                                                         $itemTotal = 0;
                                                         foreach ($billData as $keyData => $data) {
                                                             if($data['TaxType'] == $value['TaxType']){
+                                                                $qty = ($splitTyp == 0)?round($data['Qty'], 0):$data['Qty'];
                                                                     $ta = ($data['TA'] != 0)?'[TA]':'';
                                                                     $CustItemDesc = ($data['CustItemDesc'] !='Std')?'-'.$data['CustItemDesc']:'';
                                                                     $sameTaxType .= ' <tr> ';
@@ -158,9 +140,9 @@
 
                                                                     }
                                                                     
-                                                                    $sameTaxType .= ' <td style="text-align: right;"> '.$data['Qty'].' </td>';
+                                                                    $sameTaxType .= ' <td style="text-align: right;"> '.$qty.' </td>';
                                                                     $sameTaxType .= ' <td style="text-align: right;">'.$data['OrigRate'].'</td> ';
-                                                                    $sameTaxType .= ' <td style="text-align: right;">'.$data['ItemAmt'].'</td> ';
+                                                                    $sameTaxType .= ' <td style="text-align: right;">'.round($data['ItemAmt'], 2).'</td> ';
                                                                     $sameTaxType .= ' </tr> ';
                                                                     $itemTotal +=$data['ItemAmt'];
                                                             }
@@ -197,8 +179,6 @@
                                                         foreach ($value as $key1=> $dataTax) {
 
                                                             if($dataTax['TaxType'] == $TaxType && $dataTax['Included'] > 0){
-
-                                                                // $total_tax = calculatTotalTax($total_tax,number_format($dataTax['SubAmtTax'],2));
 
                                                                     $newTaxType .= ' <tr> ';
                                                                     $newTaxType .= ' <td style="text-align: left;"> <i> '.$dataTax['ShortName'].''.$dataTax['TaxPcent'].'% </i></td> ';
@@ -284,14 +264,7 @@
                                                                 </tr>
                                                         <?php   }?>
 
-                                                        <?php
-                                                            if($total_discount_amount != 0 || $total_packing_charge_amount || $total_delivery_charge_amount){?>
-                                                            <tr style=" border-bottom: 1px solid;">
-                                                                <th></th>
-                                                                <td></td>
-                                                            </tr>
-                                                        <?php   } 
-                                                        
+                                                        <?php  
                                                         if($billData[0]['discId'] > 0) { ?>
                                                         <tr style="border-bottom: 1px solid black;">
                                                             <td><?= $billData[0]['discountName']; ?> Discount @ <?= $billData[0]['discPcent']; ?>%</td>
@@ -300,7 +273,7 @@
                                                         <?php } ?>
                                                     
                                                         <tr>
-                                                            <td style="font-weight: bold;">GRAND TOTAL</td>
+                                                            <td style="font-weight: bold;">GRAND TOTAL <small>(<?= $this->lang->line('roundedoff'); ?>)</small></td>
                                                             <td style="text-align: right;font-weight: bold;"><?= $billData[0]['PaidAmt'] ?></td>
                                                         </tr>
                                                     </table>
@@ -311,7 +284,6 @@
                                                 <?php if(isset($_GET['ShowRatings']) && $_GET['ShowRatings'] == 1){
                                                     $ra = $this->db2->query("SELECT AVG(ServRtng) as serv, AVG(AmbRtng) as amb,avg(VFMRtng) as vfm, AVG(rd.ItemRtng) as itm FROM Ratings r, RatingDet rd WHERE r.BillId= $billId and r.EID=".$_GET['EID'])->result_array();
                                                     
-                                                    // print_r($ra);exit();
                                                     if(!empty($ra)){?>
                                                         <p><b>Group Rating : </b></p>
                                                         <table class="table table-bordered table-striped text-center">
@@ -335,9 +307,6 @@
                                                         <sub>* Value For Money</sub>
                                                     <?php }
                                                     ?>
-
-
-                                                    
                                                 <?php }?>
                                         </div>
                                     </div>

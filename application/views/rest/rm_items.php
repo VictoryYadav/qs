@@ -160,7 +160,6 @@
     });
 
     function editData(itemid,catid, rmname, ItemId){
-        console.log(itemid+' '+catid+' '+rmname);
         $('#RMCd').val(itemid);
         $('#RMCatg').val(catid);
         $('#RMName').val(rmname);   

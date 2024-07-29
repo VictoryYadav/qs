@@ -58,11 +58,7 @@ hr{
                     <!-- Sidebar -->
                 </div>
             </div>
-            <!-- Left Sidebar End -->
-
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
+            
             <div class="main-content">
 
                 <div class="page-content">
@@ -406,7 +402,6 @@ hr{
                     $('#menuBtnClr').val(data.menuBtnClr);
                     $('#successBtnClr').val(data.successBtnClr);
                     $('#orderBtnClr').val(data.orderBtnClr);
-
                     // preview
                     $(".headerSection").css('background-color', data.headerClr);
                     $(".mainSection").css('background-color', data.mainSection);
@@ -422,7 +417,6 @@ hr{
 
                     $(".footerSection").css('background-color', data.footerClr);
                     $(".footerSection").css('color', data.footerTxtClr);
-                
             }else{
               alert(res.response);
                 $('#ThemeId').val(0);

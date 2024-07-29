@@ -130,7 +130,7 @@
                                     $split_mobile[] = $ord['CellNo'];
                             ?>
 
-                            <tr onclick="getOrderDetails(<?= $ord['CNo']; ?>)">
+                            <tr onclick="getOrderDetails(<?= $ord['CNo']; ?>)" style="cursor: pointer;">
                                 <input type="hidden" name="mobile[]" value="<?= $ord['CellNo']; ?>">
                                 <input type="hidden" name="cust_id[]" value="<?= $ord['CustId']; ?>">
                                 <td>
@@ -172,15 +172,15 @@
                     <div style="border-bottom: 1px solid;margin-top: 5px;margin-bottom: 5px;color: #fff;"></div>
                     <table style="width:100%;" style="display:none">
                         <tr class="TotItemDisc_sec">
-                            <th style="font-weight: normal;" id="cgst-h"> Total Discount </th>
+                            <th style="font-weight: normal;" id="cgst-h"> <?= $this->lang->line('totalDiscount'); ?> </th>
                             <td class="text-right" id="TotItemDisc"></td>
                         </tr>
                         <tr class="TotPckCharge_sec" style="display:none">
-                            <th style="font-weight: normal;" id="sgst-h"> Packing Charge </th>
+                            <th style="font-weight: normal;" id="sgst-h"> <?= $this->lang->line('packingCharge'); ?> </th>
                             <td class="text-right" id="TotPckCharge"></td>
                         </tr>
                         <tr class="DelCharge_sec" style="display:none">
-                            <th style="font-weight: normal;" id="sgst-h"> Delivery Charge </th>
+                            <th style="font-weight: normal;" id="sgst-h"> <?= $this->lang->line('deliveryCharge'); ?> </th>
                             <td class="text-right" id="DelCharge"></td>
                         </tr>
                     </table>
@@ -191,7 +191,7 @@
 
                 <div class="row paybl" style="margin-left: 0px;margin-right: 0px;">
                     <div class="col-8">
-                        <label class="bill-ord-amt" style="margin-bottom: 7px;"><?= $this->lang->line('payable'); ?></label>
+                        <label class="bill-ord-amt" style="margin-bottom: 7px;"><?= $this->lang->line('payable'); ?> <small>(<?php echo  $this->lang->line('roundedoff'); ?>)</small></label>
                     </div>
                     <div class="col-4">
                         <input type="hidden" id="payableAmt">
@@ -210,7 +210,7 @@
                         <button class="btn btn-sm backbtn" type="submit" name="btnName" value="splitBill">
                         <?php echo  $this->lang->line('splitbill'); ?>
                         </button>
-                    <?php } ?>
+                        <?php } ?>
                          <button class="btn btn-sm paybtn" type="submit" name="btnName" value="payNow">
                             <?php echo  $this->lang->line('payNow'); ?>
                         </button>
@@ -227,7 +227,6 @@
     <!-- footer section -->
     <?php $this->load->view('layouts/customer/footer'); ?>
     <!-- end footer section -->
-
 
     <!-- offers modal -->
     <div class="modal" id="orderDetails">
@@ -526,6 +525,8 @@
                         html_body +=`</div>`;
                     }
 
+                    grand_total = Math.round(grand_total);
+
                     $('.bill_box').html(html_body);
                     $("#payable").text(convertToUnicodeNo(grand_total));
                     $("#payableAmt").val(grand_total);
@@ -566,7 +567,7 @@
     console.log('ff '+CNo);
         $.post('<?= base_url('customer/get_merge_order') ?>',{CNo:CNo},function(res){
             if(res.status == 'success'){
-              // alert(res.response);
+              
               var data = res.response;
               var temp = '';
               var total = 0;
@@ -600,7 +601,6 @@
    function splitBill(){
         var mobile = $('#splitForm').serializeArray();
         var payable = $('#payableAmt').val();
-        // console.log(mobile+' '+payable);
         $.post('<?= base_url('customer/splitBill') ?>',{mobile:mobile, payable:payable},function(res){
         }
         );

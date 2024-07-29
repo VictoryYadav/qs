@@ -219,7 +219,7 @@
                  ?>
                 <tr class="service">
                     <td class="tableitem">
-                      <?= $key['ItemNm'].$std.$portions; ?><br><?= $key['CustRmks']; ?><?= $ta ?>
+                      <?= $key['ItemNm'].$portions.$std; ?><br><?= $key['CustRmks']; ?><?= $ta ?>
                     </td>
                     <td class="tableitem"><?= convertToUnicodeNumber($key['Qty']); ?></td>
                 </tr>

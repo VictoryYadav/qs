@@ -16,11 +16,7 @@
                     <!-- Sidebar -->
                 </div>
             </div>
-            <!-- Left Sidebar End -->
-
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
+            
             <div class="main-content">
 
                 <div class="page-content">
@@ -82,9 +78,8 @@
                                                     <td><?php echo !empty($key['FrmDayNo'])?getDay($key['FrmDayNo']):'-'; ?></td>
                                                     <td><?php echo !empty($key['ToDayNo'])?getDay($key['ToDayNo']):'-'; ?></td>
                                                     <td>
-                                                        <a class="btn btn-sm btn-info" href="<?php echo base_url('restaurant/edit_offer/'.$key['SchCd']); ?>" title="Edit">
-                                                            <i class="fa fa-edit"></i>
-                                                        </a> 
+                                                        <button type="button" class="btn btn-success btn-sm" onclick="changeEdit(<?= $key['SchCd']; ?>, <?= $key['offer1']; ?>, <?= $key['offer2']; ?>)" title="Edit"><i class="fa fa-edit"></i></button>|
+                                                        <button type="button" class="btn btn-success btn-sm" onclick="changeState(<?= $key['SchCd']; ?>, <?= $key['Stat']; ?>)" title="Change Status"><i class="fab fa-stack-exchange"></i></button>
                                                     </td>
                                                 </tr>
                                                 <?php }
@@ -98,7 +93,6 @@
                             </div>
                         </div>
 
-                        
                     </div> <!-- container-fluid -->
                 </div>
                 <!-- End Page-content -->
@@ -124,5 +118,28 @@
     $(document).ready(function () {
         $('#offer_list_table').DataTable();
     });
+
+    function changeEdit(SchCd, offer1, offer2){
+        if(offer1 > 0 || offer2 > 0){
+            alert('Offer already used, can not edit!!');
+        }else{
+            window.location = "<?= base_url('restaurant/edit_offer/'); ?>"+SchCd;
+            return false;
+        }
+    }
+
+    function changeState(SchCd, Stat){
+
+        if (confirm("Are you sure change offer status")) {
+            $.post('<?= base_url('restaurant/update_status_of_offer') ?>',{SchCd:SchCd, Stat:Stat},function(res){
+                if(res.status == 'success'){
+                    location.reload();
+                }else{
+                    alert(res.response);
+                }
+            });
+        }
+
+    }
 
 </script>

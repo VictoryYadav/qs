@@ -79,11 +79,7 @@
                     <!-- Sidebar -->
                 </div>
             </div>
-            <!-- Left Sidebar End -->
-
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
+            
             <!-- <div class="Po_to_land" style="width:100%;height:100%;">
                 <img src="<?= base_url();?>assets/img/ptl.gif" alt="" width:33px; style="padding-left:29px;">
                 <span style="padding: 2px;">Screen Available only Landscape mode on Mobile Devices.</span>
@@ -91,7 +87,6 @@
             
             <div class="main-content">
                 <!-- <div class="main-content Po_to_land1"> -->
-
                 <div class="page-content">
                     <div class="container-fluid">
 
@@ -236,8 +231,6 @@
         $('#order_details').DataTable();
     });
 
-
-            
     getTableView();
 
     function getTableView1(){
@@ -265,7 +258,7 @@
                 success: response => {
                     var template = ``;
                     console.log(response);
-                    // alert(response.status);
+                    
                     if (response.status) {                        
                         response
                             .kitchenData
@@ -324,7 +317,7 @@
             }else{
               alert(res.response);
             }
-            // location.reload();
+            
         });
     }
 
@@ -365,7 +358,7 @@
         if(del_otp.length >= 4 ){
             $.post('<?= base_url('restaurant/verifyDelOTP') ?>',{otp:del_otp},function(res){
                 if(res.status == 'success'){
-                  // alert(res.response);
+                  
                   $('#deliveryModal').modal("hide"); 
                   deliveryAjax(CNo, billId, mobile, oType, dispCounter, DCd);
                 }else{
@@ -378,11 +371,9 @@
     }         
 
     function handleDetails(CNo) {
-        // alert(uKotNo);
+        
         var DispCd = $('#kitchen-code').val();
         if (CNo !== 0) {
-            // console.log(uKotNo);
-            // $("#order-detail-modal").modal('show');
             $.ajax({
                 url: "<?php echo base_url('restaurant/order_delivery'); ?>",
                 type: "post",
@@ -424,7 +415,6 @@
                             });
                     }
 
-                    // $("#order-list").html(template);
                     $("#item-view-tbody1").html(template);
                 },
                 error: (xhr, status, error) => {

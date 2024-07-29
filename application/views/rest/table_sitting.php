@@ -80,13 +80,6 @@
         background-color: lightgreen !important;
     }
 
-    /*thead, tbody { display: block; }
-
-.table-numbers tbody {
-max-height: 85px;
-overflow-y: auto;
-overflow-x: hidden;
-}*/
     #table-view {
         max-height: 500px;
         overflow-y: auto;
@@ -272,11 +265,7 @@ width: 100%;*/
                     <!-- Sidebar -->
                 </div>
             </div>
-            <!-- Left Sidebar End -->
-
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
+            
             <!-- <div class="Po_to_land" style="width:100%;height:100%;">
                 <img src="<?= base_url();?>assets/img/ptl.gif" alt="" width:33px; style="padding-left:29px;">
                 <span style="padding: 2px;">Screen Available only Landscape mode on Mobile Devices.</span>
@@ -452,167 +441,10 @@ width: 100%;*/
 
         <!-- Right Sidebar -->
         <?php $this->load->view('layouts/admin/color'); ?>
-        <!-- /Right-bar -->
-
-        <!-- Right bar overlay-->
+        
         <div class="rightbar-overlay"></div>
         
         <?php $this->load->view('layouts/admin/script'); ?>
-
-
-<!-- Modal -->
-    <div class="modal fade" id="meargeModel" role="dialog">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Merge / UnMerge</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        
-                        <label for="sel1">Select table:</label>
-                        <select onchange="selectParentTable()" class="form-control" id="mainTable">
-                            <option value="" hidden>Select Main Table No</option>
-                            <?php
-                            foreach ($selectMergeTable as $key => $value) {
-                                echo '  <option value="' . $value['TableNo'] . '">' . $value['TableNo'] . '</option>';
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <form id="meargeForm" method="post">
-                    </form>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-
-
-    <!-- The Modal -->
-    <div class="modal" id="allocate-item">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="modal-header text-center" style="background-color: rgb(243, 243, 103); padding: 5px; display: block;">
-                    <h4 class="modal-title">Item Auto-Assign</h4>
-                    <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                </div>
-                <!-- Modal body -->
-                <div class="modal-body">
-                    <div class="row form-group">
-                        <div class="col-md-8">
-                            <input readonly="" type="text" name="itemName" class="form-control" id="item-name">
-                        </div>
-                        <div class="col-md-2">
-                            <input readonly="" type="text" name="itemPortion" class="form-control" id="item-portion">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="number" name="itemQty" class="form-control" id="item-qty" min="1">
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-md-12">
-                            <input type="text" name="customerRemarks" readonly="" id="customer-remarks" class="form-control">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 text-center">
-                            <button type="button" class="btn btn-primary" id="auto-item-prepare" data-dismiss="modal">Auto Assign</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- The Modal -->
-    <div class="modal" id="manual-item">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Item</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <!-- Modal body -->
-                <div class="modal-body">
-                    Modal Body
-                </div>
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Reassign Modal -->
-    <!-- The Modal -->
-    <div class="modal" id="reassign-order-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Order Reassign</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <!-- Modal body -->
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>From Table</label>
-                        <select class="form-control" id="from-assign-table" read-only="">
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>To Table</label>
-                        <select class="form-control" id="to-assign-table" onchange="">
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Qty</label>
-                        <input id="from-reassign-qty" type="number" max="" min="1">
-                    </div>
-
-                    <div class="form-group">
-                        <button id="assign-order" class="btn btn-primary">Assign</button>
-                    </div>
-                </div>
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Decline reason Modal -->
-    <!-- The Modal -->
-    <div class="modal" id="decline-order-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title" id="decline-title">Decline Reason</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <!-- Modal body -->
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Select Decline Reason</label>
-                        <select class="form-control" id="decline-order" onchange="">
-                            <option value="0">Select</option>
-                            <option value="1">Out of stock</option>
-                            <option value="2">No longer Prepared</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="modal" id="new_orders" style="max-height: 600px;overflow: auto;">
         <div class="modal-dialog">
@@ -645,163 +477,163 @@ width: 100%;*/
         </div>
     </div>
 
+    <div class="modal" id="merge_table_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h6><?= $this->lang->line('tableJoinUnjoin'); ?></h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 500px;overflow: auto;">
 
-<div class="modal" id="merge_table_modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header text-center">
-                <h6><?= $this->lang->line('tableJoinUnjoin'); ?></h6>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" style="max-height: 500px;overflow: auto;">
+                    <ul class="nav nav-tabs nav-tabs-custom" id="myTab" role="tablist">
+                      <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><?= $this->lang->line('join'); ?></a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><?= $this->lang->line('unJoin'); ?></a>
+                      </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane p-3 active" id="home" role="tabpanel">
+                            <p class="font-size-13 mb-0">
+                                <form method="post">
+                                    <div id="unmerge_tables" class="row">
+                                    </div>
+                                    <div class="text-center">
+                                        <button id="merge-table" type="button" class="btn btn-success btn-rounded btn-sm mt-4"><?= $this->lang->line('joinTables'); ?></button>
+                                    </div>
+                                    <div class="col-md-12 text-center" id="notables" style="display: none;">
+                                        <h1><?= $this->lang->line('noTablesAreFree'); ?></h1>
+                                    </div>
+                                </form>
+                            </p>
+                        </div>
+                      
+                      <div class="tab-pane fade p-3 " id="profile" role="tabpanel">
+                        <form method="post">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <!-- onchange="get_each_table()" -->
+                                    <select class="form-control" id="merged_tables" >
+                                        <option value=""><?= $this->lang->line('selectTable'); ?></option>
+                                    </select>
+                                </div>
+                            </div>
 
-                <ul class="nav nav-tabs nav-tabs-custom" id="myTab" role="tablist">
-                  <li class="nav-item">
-                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><?= $this->lang->line('join'); ?></a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><?= $this->lang->line('unJoin'); ?></a>
-                  </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane p-3 active" id="home" role="tabpanel">
-                        <p class="font-size-13 mb-0">
-                            <form method="post">
-                                <div id="unmerge_tables" class="row">
-                                </div>
-                                <div class="text-center">
-                                    <button id="merge-table" type="button" class="btn btn-success btn-rounded btn-sm mt-4"><?= $this->lang->line('joinTables'); ?></button>
-                                </div>
-                                <div class="col-md-12 text-center" id="notables" style="display: none;">
-                                    <h1><?= $this->lang->line('noTablesAreFree'); ?></h1>
-                                </div>
-                            </form>
-                        </p>
+                            <div class="row mt-3" id="merged-table-body" style="display: none;">
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <input type="hidden" id="selected_merge_no">
+                                <button type="button" id="unmerge-table-btn" class="btn btn-danger btn-rounded btn-sm" ><?= $this->lang->line('unJoinTables'); ?></button>
+                            </div>
+
+                            <div class="col-md-12 text-center" id="no-tables" style="display: none;">
+                                <!-- <h1 style="margin-top: 30px;"><?= $this->lang->line('noTablesAreFree'); ?></h1> -->
+                            </div>
+
+                        </form>
+                      </div>
+                      
                     </div>
-                  
-                  <div class="tab-pane fade p-3 " id="profile" role="tabpanel">
-                    <form method="post">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="move_table_modal">
+        <div class="modal-dialog">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <h6><?= $this->lang->line('moveTable'); ?></h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 500px;overflow: auto;">
+                    <form method="post" action="ajax/sittin_table_view_ajax.php">
+                        <input type="hidden" name="move_table" value="1">
                         <div class="row">
-                            <div class="col-md-12">
-                                <select class="form-control" id="merged_tables" onchange="get_each_table()">
-                                    <option value=""><?= $this->lang->line('selectTable'); ?></option>
-                                </select>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><?= $this->lang->line('from'); ?></label>
+                                    <select class="form-control select2 custom-select" required="" name="from_table" id="from_table" onchange="get_phone_num()" style="width: 100%;">
+                                        <option value=""><?= $this->lang->line('tableNo'); ?></option>
+                                        <?php foreach($captured_tables as $key){?>
+                                            <option value="<?= $key['TableNo']?>"><?= convertToUnicodeNumber($key['TableNo']); ?></option>
+                                        <?php }?>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="row mt-3" id="merged-table-body">
-                        </div>
-
-                        <div class="text-center mt-4">
-                            <input type="hidden" id="selected_merge_no">
-                            <button type="button" id="unmerge-table-btn" class="btn btn-danger btn-rounded btn-sm" ><?= $this->lang->line('unJoinTables'); ?></button>
-                        </div>
-
-                        <div class="col-md-12 text-center" id="no-tables" style="display: none;">
-                            <!-- <h1 style="margin-top: 30px;"><?= $this->lang->line('noTablesAreFree'); ?></h1> -->
-                        </div>
-
-                    </form>
-                  </div>
-                  
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal" id="move_table_modal">
-    <div class="modal-dialog">
-        <div class="modal-content" >
-            <div class="modal-header">
-                <h6><?= $this->lang->line('moveTable'); ?></h6>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" style="max-height: 500px;overflow: auto;">
-                <form method="post" action="ajax/sittin_table_view_ajax.php">
-                    <input type="hidden" name="move_table" value="1">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label><?= $this->lang->line('from'); ?></label>
-                                <select class="form-control select2 custom-select" required="" name="from_table" id="from_table" onchange="get_phone_num()" style="width: 100%;">
-                                    <option value=""><?= $this->lang->line('tableNo'); ?></option>
-                                    <?php foreach($captured_tables as $key){?>
-                                        <option value="<?= $key['TableNo']?>"><?= convertToUnicodeNumber($key['TableNo']); ?></option>
-                                    <?php }?>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6" >
-                            <div class="form-group">
-                                <label><?= $this->lang->line('to'); ?></label>
-                                <select class="form-control select2 custom-select" required="" name="to_table" style="width: 100%;" id="to_table">
-                                    <option value=""><?= $this->lang->line('tableNo'); ?></option>
-                                    <?php foreach($available_tables as $key){?>
-                                        <option value="<?= $key['TableNo']?>"><?= convertToUnicodeNumber($key['TableNo']); ?></option>
-                                    <?php }?>
-                                </select>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="col-md-12 text-left" id="num_list">
                             
-                        </div>
+                            <div class="col-md-6" >
+                                <div class="form-group">
+                                    <label><?= $this->lang->line('to'); ?></label>
+                                    <select class="form-control select2 custom-select" required="" name="to_table" style="width: 100%;" id="to_table">
+                                        <option value=""><?= $this->lang->line('tableNo'); ?></option>
+                                        <?php foreach($available_tables as $key){?>
+                                            <option value="<?= $key['TableNo']?>"><?= convertToUnicodeNumber($key['TableNo']); ?></option>
+                                        <?php }?>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="col-md-12 text-left" id="num_list">
+                                
+                            </div>
 
-                        <div class="text-right p-4 col-md-12">
-                            <button type="submit" class="btn btn-sm btn-primary">
-                                <?= $this->lang->line('move'); ?>
-                            </button>
-                        </div>
+                            <div class="text-right p-4 col-md-12">
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    <?= $this->lang->line('move'); ?>
+                                </button>
+                            </div>
 
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="combine_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h6><?= $this->lang->line('tableAmount'); ?></h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 500px;overflow: auto;">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center">
+                            <thead>
+                                <tr style="background: #b5bbea;">
+                                    <th>#</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="combine_list">
+                            </tbody>
+                        </table>
                     </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal" id="combine_modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header text-center">
-                <h6><?= $this->lang->line('tableAmount'); ?></h6>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" style="max-height: 500px;overflow: auto;">
-                <div class="table-responsive">
-                    <table class="table table-bordered text-center">
-                        <thead>
-                            <tr style="background: #b5bbea;">
-                                <th>#</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody id="combine_list">
-                        </tbody>
-                    </table>
-                </div>
-                <div class="text-center mt-1">
-                    <h5 class="card-title mb-4" id="combine_list_title"></h5>
-                    <input type="hidden" name="update_mergeNo" id="update_mergeNo">
-                    <input type="hidden" name="update_MCNo" id="update_MCNo">
-                    <input type="hidden" name="update_tableFilter" id="update_tableFilter">
-                    <input type="hidden" name="update_custId" id="update_custId">
-                    
-                    <button class="btn btn-sm btn-success" onclick="updateMCNo()"><?= $this->lang->line('yes'); ?></button>
-                    <button class="btn btn-sm btn-danger" data-dismiss="modal" aria-label="Close"><?= $this->lang->line('no'); ?></button>
+                    <div class="text-center mt-1">
+                        <h5 class="card-title mb-4" id="combine_list_title"></h5>
+                        <input type="hidden" name="update_mergeNo" id="update_mergeNo">
+                        <input type="hidden" name="update_MCNo" id="update_MCNo">
+                        <input type="hidden" name="update_tableFilter" id="update_tableFilter">
+                        <input type="hidden" name="update_custId" id="update_custId">
+                        
+                        <button class="btn btn-sm btn-success" onclick="updateMCNo()"><?= $this->lang->line('yes'); ?></button>
+                        <button class="btn btn-sm btn-danger" data-dismiss="modal" aria-label="Close"><?= $this->lang->line('no'); ?></button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
     <div class="modal" id="help" style="width: 300px;height: 300px;position: absolute;left: 50%;top: 50%;margin-left: -150px; margin-top: -150px;">
         <div class="modal-dialog">
@@ -812,66 +644,6 @@ width: 100%;*/
                     
                 </div>
                
-            </div>
-        </div>
-    </div>
-    <div class="modal" id="print_kot">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="text-center pt-2">
-                    <div class="text-center"><h5 onclick="print_kots()" style="cursor: pointer;">Print KOT No <span id="kot_no"> </span></h5></div>
-                </div>
-                <!-- Modal body -->
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table text-center">
-                            <thead>
-                                <tr style="background-color: #51519a;color: #FFF;">
-                                    <th></th>
-                                    <th>Kitchen</th>
-                                </tr>
-                            </thead>
-                            <tbody id="print_kot_data">
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <!-- Modal footer -->
-            </div>
-        </div>
-    </div>
-    <div class="modal" id="settled_table">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <!-- <div class="text-center bg-success text-white" style="cursor: pointer;">
-                    <b>Confirm Settlements</b>
-                </div> -->
-                <div class="modal-header bg-success text-white">
-                    <h6 onclick="confirm_settle('all')" style="cursor: pointer;">Confirm All Settlements</h6>
-                    <button type="button" class="close text-white" style="background-color: #4407ff;" data-dismiss="modal">&times;</button>
-                </div>
-                <!-- Modal body -->
-                <div class="modal-body">
-                    <div class="table-responsive">
-                    <table class="table table-bordered text-center">
-                        <thead>
-                            <tr style="background: #b5bbea;">
-                                <th>Table No</th>
-                                <th>Bill No</th>
-                                <th>Amount</th>
-                                <!-- <th>Action</th> -->
-                            </tr>
-                        </thead>
-                        <tbody id="settled_table_data">
-                            
-                        </tbody>
-                    </table>
-                    </div>
-                </div>
-                <!-- Modal footer -->
             </div>
         </div>
     </div>
@@ -940,22 +712,18 @@ width: 100%;*/
             </div>
         </div>
     </div>
-    <!-- end bill option model -->
     <!-- cach collect -->
     <div class="modal" id="cashCollectModel">
         <div class="modal-dialog">
             <div class="modal-content" >
                 <div class="modal-header">
-                    <h6><?= $this->lang->line('cashCollect'); ?></h6>
+                    <h6><?= $this->lang->line('paymentCollection'); ?></h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" style="max-height: 500px;overflow: auto;">
                     <div class="row mb-2">
-                        <!-- <div class="col-md-3">
-                            <span id="fullname">vijay</span>
-                        </div> -->
                         <div class="col-md-6">
                             <i class="fas fa-phone-volume" style="color:green;"></i>&nbsp;&nbsp; <span id="mobileno"></span>
                         </div>
@@ -997,7 +765,7 @@ width: 100%;*/
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <input type="submit" class="btn btn-sm btn-success" value="Verify">
-                                        <button type="button" class="btn btn-sm btn-danger" onclick="sendOTP()">Send</button>
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="sendOTP()"><?= $this->lang->line('send'); ?></button>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -1016,7 +784,7 @@ width: 100%;*/
         <div class="modal-dialog">
             <div class="modal-content" >
                 <div class="modal-header">
-                    <h6>Bill Discount</h6>
+                    <h6><?= $this->lang->line('bill'); ?> <?= $this->lang->line('discount'); ?></h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
@@ -1030,7 +798,47 @@ width: 100%;*/
                                 <input type="number" name="billDiscPer" id="billDiscPer" class="form-control form-control-sm" required="" value="0" readonly="">
                             </div>
                             <div class="col-md-6 col-6">
-                                <button class="btn btn-sm btn-success" onclick="billCreateA()">Submit</button>
+                                <button class="btn btn-sm btn-success" onclick="billCreateA()"><?= $this->lang->line('submit'); ?></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="billBasedModal">
+        <div class="modal-dialog">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <h6><?= $this->lang->line('bill'); ?> <?= $this->lang->line('offers'); ?></h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 500px;overflow: auto;">
+                    <form method="post" id="billBasedForm">
+                        <input type="hidden" id="billBasedFlag" value="" name="flag">
+                        <input type="hidden" id="billBasedMCNo" value="0" name="MCNo">
+                        <input type="hidden" id="billBasedMergeNo" value="0" name="MergeNo">
+                        <input type="hidden" id="billBasedCustId" value="0" name="CustId">
+                        <input type="hidden" id="billBasedFilter" value="0" name="tableFilter">
+                        <input type="hidden" id="sdetcd" value="0" name="sdetcd">
+
+                        <div class="row">
+                            <div class="col-md-12 mt-2">
+                                <select name="SchCd" id="SchCd" class="form-control form-control-sm" onchange="changeOffer()" required="">
+                                    <option value=""><?= $this->lang->line('select'); ?></option>
+                                </select>
+                            </div>
+                            <div class="col-md-12 mt-2 itemidBlock" style="display: none;">
+                                <select name="ItemId" id="ItemId" class="form-control select2 custom-select form-control-sm">
+                                    <option value=""><?= $this->lang->line('select'); ?></option>
+                                </select>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <input type="submit" class="btn btn-sm btn-success btnyes" value="<?= $this->lang->line('yes'); ?>" />
+                                <button class="btn btn-sm btn-danger" onclick="gotoBillCreate()"><?= $this->lang->line('no'); ?></button>
                             </div>
                         </div>
                     </form>
@@ -1045,13 +853,9 @@ width: 100%;*/
     //     $('#item_table').DataTable();
     // });
 
-</script>
+    var tableFilter = 'orderWise';
 
-<script>
-
-var tableFilter = 'orderWise';
-// var tableFilter = 'tableWise';
-getTableView();
+    getTableView();
 
     $(document).ready(function () {
         $('#from_table, #to_table').select2();
@@ -1115,7 +919,7 @@ getTableView();
                             }
 
                             template += `<tr  id="${item.TableNo}" mergeNo="'${item.MergeNo}'" custId="${item.CustId}" mCNo="${item.MCNo}" billStat="${item.BillStat}" oTyp="${item.OType}"   style="background-color: ${bgcolor};" class="" >
-                            <td><input type="radio" name="selectOption" onchange="handleKot('${item.MergeNo}',${item.CustId},${item.MCNo},${item.BillStat},${item.OType})"> &nbsp;${convertToUnicodeNo(item.MergeNo)}
+                            <td><input type="radio" name="selectOption" onchange="handleKot('${item.MergeNo}',${item.CustId},${item.MCNo},${item.BillStat},${item.OType}, ${item.billSplit})"> &nbsp;${convertToUnicodeNo(item.MergeNo)}
                             <?php if($this->session->userdata('tableSharing') > 0){ ?>
                             -${convertToUnicodeNo(item.SeatNo)}
                         <?php } ?>
@@ -1133,11 +937,15 @@ getTableView();
                             template += `</tr>`;
                         });
 
-                            if(tableFilter == 'tableWise'){
-                                $("#table-view1").html(template);
-                            }else{
-                                $("#table-view").html(template);
-                            }
+                        if(tableFilter == 'tableWise'){
+                            $("#table-view1").html(template);
+                        }else{
+                            $("#table-view").html(template);
+                        }
+                    }else{
+                        $("#table-view1").empty();
+                        $("#table-view").empty();
+                        $('#item-detail-body1').empty();
                     }
                     
                 },
@@ -1150,7 +958,7 @@ getTableView();
 
             // set globle variable for paycash transaction.
             window.payCash_settle = $("#kitchen-code option:selected").attr("settle");
-            //coin hide/display section
+            
             if ($("#kitchen-code option:selected").attr("settle") == 0) {
                 $('#cashBill_settle').css('display', 'inline-block');
             } else {
@@ -1164,13 +972,18 @@ getTableView();
             getTableView();
         }
 
-        function handleKot(mergeNo, custId, MCNo, BillStat, oTyp) {
+        function handleKot(mergeNo, custId, MCNo, BillStat, oTyp, billSplit) {
             console.log(mergeNo, custId, MCNo, BillStat, oTyp);
             
             var eid = '<?= $_SESSION['EID']; ?>';
             var kotNo = "<?= $this->lang->line('kotNo'); ?>";
-            // console.log('SES_EID'+eid);
-            // $('#mydiv').show();
+            
+            $(`#btnCash`).prop("disabled", false);
+            $(`#btnBillOption`).prop("disabled", false);
+            if(billSplit > 0){
+                $(`#btnCash`).prop("disabled", true);
+                $(`#btnBillOption`).prop("disabled", true);
+            }
 
             $('#btnBillOption').hide();
             $('#btnCash').hide();
@@ -1193,8 +1006,7 @@ getTableView();
                 }
                 $('#billCreatebtn').show();
 
-                var url = "<?php echo base_url('restaurant/splitBill/'); ?>"+MCNo+'/'+mergeNo+'/'+tableFilter;
-                $('#billSplit').attr("href", url);
+                $('#billSplit').attr('onclick', "split_billing('"+mergeNo+"',"+custId+", '"+tableFilter+"', '"+MCNo+"')");
                 $('#billSplit').show();
             }
             $.ajax({
@@ -1215,19 +1027,13 @@ getTableView();
                     var new_head = 0;
                     if (response.status == 1) {
                         response.kots.forEach((item) => {
-                            // t1 = item. FKOTNo;
-                            // if(t != t1){
-                            //     t = item.FKOTNo;
-                            //     new_head = 1;
-                            // }
 
                             t1 = item.KOTNo;
                             if(t != t1){
                                 t = item.KOTNo;
                                 new_head = 1;
                             }
-                            // console.log(tr);
-                            // var tr = ${item.TableNo};
+                            
                             if (item.KOTPrintNo == 1) {
  
                                 if(new_head == 1){
@@ -1275,7 +1081,7 @@ getTableView();
         }
 
         function checkCNoForTable(MergeNo, tableFilter, MCNo, custId){
-            // console.log(mergeNo)
+            
             var title = "<?= $this->lang->line('CombineTheFollowingAmountsFromTable'); ?>";
             $.post('<?= base_url('restaurant/checkCNoForTable') ?>',{MergeNo:MergeNo},function(response){
 
@@ -1310,20 +1116,13 @@ getTableView();
             $.post('<?= base_url('restaurant/updateMCNoForTable') ?>',{MergeNo:MergeNo,MCNo:MCNo},function(response){
 
                 if(response.status == 'success') {
-                    // alert(response.status);
                     billCreate(MergeNo, custId, tableFilter);
                 }else {
                     alert(response.status);
                 }
                 // location.reload();
             });
-            
         }
-
-    </script>
-
-    <!-- handle Casher Action -->
-    <script>
 
         function acceptTable(tableNo, custId, cNo) {
 
@@ -1339,7 +1138,6 @@ getTableView();
                     },
                     dataType: "json",
                     success: (response) => {
-                        // console.log(response);
                         if (response.status == 1) {
                             destroyDataTableForOrder();
                             getTableView();
@@ -1355,8 +1153,7 @@ getTableView();
         }
 
         function rejectTable(tableNo, custId, cNo) {
-            // console.log("Table Rejected");
-
+            
             if (confirm(`Table No ${tableNo} is Rejected`)) {
                 $.ajax({
                     url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
@@ -1431,17 +1228,13 @@ getTableView();
         }
 
         function getKitchenData(MCNo, MergeNo, FKOTNo, KOTNo){
-            // window.location.href="<?= base_url('restaurant/kot_print/'); ?>"+MCNo+'/'+MergeNo+'/'+FKOTNo;
-
             window.open(
               "<?= base_url('restaurant/kot_print/'); ?>"+MCNo+'/'+MergeNo+'/'+FKOTNo+'/'+KOTNo,
               '_blank' 
             );
         }
 
-        
         function getAllItems(tableNo, custId, cNo) {
-            // console.log("TABLE_"+tableNo+"CUSTID_"+custId);
             $.ajax({
                 url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
                 type: "POST",
@@ -1453,7 +1246,7 @@ getTableView();
                 },
                 dataType: "json",
                 success: (response) => {
-                    // console.log(response);
+                    
                     var template = ``;
                     if (response.status == 1) {
                         response.itemDetails.forEach((item) => {
@@ -1503,7 +1296,7 @@ getTableView();
 
         function handleDelivery() {
             console.log(globalItemId, globalTableNo, globalCustId, globalAQty);
-            // Check row is Selected
+            
             if (globalItemId !== 0) {
                 // Check item is assigned
                 if (globalAQty !== 0) {
@@ -1519,7 +1312,7 @@ getTableView();
                         },
                         dataType: 'json',
                         success: response => {
-                            // console.log(response);
+                            
                             $.ajax({
                                 url: "<?php echo base_url('restaurant/sentNotification'); ?>",
                                 type: "GET",
@@ -1554,17 +1347,15 @@ getTableView();
         }
 
         function handleReassign() {
-            // Check row is Selected
+            
             if (globalItemId == 0) {
                 alert("Please Select Order Item");
             } else {
                 if (globalAQty == 0) {
                     alert("No items is assign to reassign");
                 } else {
-                    $("#reassign-order-modal").modal('show');
-                    var template = `
-                <option>${globalTableNo}</option>
-            `;
+                    
+                    var template = `<option>${globalTableNo}</option>`;
                     $("#from-assign-table").html(template);
 
                     $("#from-reassign-qty").val(globalAQty);
@@ -1614,7 +1405,6 @@ getTableView();
         $("#assign-order").click(function() {
             var assignToOrderId = $("#to-assign-table").val();
             var assignQty = $("#from-reassign-qty").val();
-            // console.log(assignToOrderId, assignQty);
 
             if (assignToOrderId == 0) {
                 alert("Please Select the Table Where You Want The Item Assigned");
@@ -1635,7 +1425,7 @@ getTableView();
                     success: (response) => {
                         console.log(response);
                         if (response.status) {
-                            $("#reassign-order-modal").modal('hide');
+                            
                             getAllItems(globalTableNo, globalCustId);
                         }
                     },
@@ -1647,125 +1437,6 @@ getTableView();
                 });
             }
         });
-
-        function handleDecline() {
-            if (globalItemId == 0) {
-                alert("Please Select Order Item");
-            } else {
-                // Check Item Stat
-                $.ajax({
-                    url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
-                    type: "post",
-                    data: {
-                        checkStatForDecline: 1,
-                        itemId: globalItemId,
-                        tableNo: globalTableNo,
-                        custId: globalCustId,
-                        cNo: globalCNo
-                    },
-                    dataType: 'json',
-                    success: (response) => {
-                        // console.log(response);
-                        if (response.status == 1) {
-                            $("#decline-title").text(`Decline - ${response.checkItemStat.ItemNm}`);
-                            $("#decline-order-modal").modal('show');
-                        } else {
-                            alert("Item already assigned or delivered on this table");
-                            if (confirm("Check For Item on other Tables")) {
-                                declineItemForEid();
-                            }
-                        }
-                    },
-                    error: (xhr, status, error) => {
-                        console.log(xhr);
-                        console.log(status);
-                        console.log(error);
-                    }
-                });
-            }
-        }
-
-        $("#decline-order").change(function() {
-            $("#decline-order-modal").modal('hide');
-            var declineReason = $("#decline-order").val();
-            $("#decline-order").val(0);
-            // console.log(declineReason);
-            // Decline Item
-            $.ajax({
-                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
-                type: "post",
-                data: {
-                    declineItem: 1,
-                    itemId: globalItemId,
-                    tableNo: globalTableNo,
-                    custId: globalCustId,
-                    declineReason: declineReason,
-                    cNo: globalCNo
-                },
-                dataType: "json",
-                success: (response) => {
-                    console.log(response);
-                    if (response.status) {
-                        if (confirm("Check For Item on other Tables")) {
-                            declineItemForEid();
-                        }
-                        // getAllItems(globalTableNo, globalCustId);
-                        refreshPage();
-                    }
-
-                    var name = response.msg;
-                    console.log(name);
-                    $.ajax({
-                        url: "<?php echo base_url('sentNotification'); ?>",
-                        type: "GET",
-                        data: {
-                            CustId: globalCustId,
-                            message: "Order for " + name + " has been Declined. Please raise alternate order",
-                            title: "Order Decline"
-                        },
-                        success: function(data) {
-                            console.log(data);
-                        },
-                        error: function(xhr, status, error) {
-                            console.log(xhr);
-                            console.log(status);
-                            console.log(error);
-                        }
-                    });
-                },
-                error: (xhr, status, error) => {
-                    console.log(xhr);
-                    console.log(status);
-                    console.log(error);
-                }
-            });
-        });
-
-        function declineItemForEid() {
-            $.ajax({
-                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
-                type: "post",
-                data: {
-                    declineItemForEid: 1,
-                    itemId: globalItemId,
-                },
-                dataType: 'json',
-                success: (response) => {
-                    console.log(response);
-                    if (response.status) {
-                        alert("Declined from all tables successfully");
-                        if (confirm("Disable from Menu")) {
-                            disableFromMenu();
-                        }
-                    }
-                },
-                error: (xhr, status, error) => {
-                    console.log(xhr);
-                    console.log(status);
-                    console.log(error);
-                }
-            });
-        }
 
         function disableFromMenu() {
             $.ajax({
@@ -1790,49 +1461,6 @@ getTableView();
             });
         }
 
-        
-    </script>
-    <script type="text/javascript">
-        function selectParentTable() {
-
-            $.ajax({
-                url: "<?php echo base_url('restaurant/mergetable_ajax'); ?>",
-                type: 'POST',
-                data: {
-                    tableNo: $('#mainTable').val()
-                },
-                success: function(response) {
-                    console.log(response);
-
-                    var html = response;
-                    html += '<button type="button" onclick="meargeTableCheckbox()" class="btn btn-success">Submit</button>';
-                    $('#meargeForm').html(html);
-                }
-            });
-        }
-
-
-        function alreadyMearge(event) {
-            console.log($(event).is(':checked'));
-            if ($(event).is(':checked')) {
-            alert('Already Merged');
-            } else {}
-        };
-
-        function meargeTableCheckbox() {
-
-            $.ajax({
-                type: 'post',
-                url: "<?php echo base_url('restaurant/savemergedata_ajax'); ?>",
-                data: $('#meargeForm').serialize(),
-                success: function(response) {
-                    //   if(response){
-                    alert(response + ' Tables merge to Table No - ' + $('#mainTable').val());
-                    $('#meargeModel').modal('hide');
-                    //   }
-                }
-            });
-        }
         function setPaidAmount(id , CNo , MergeNo , CustId, billNo, billAmt, pymtMode) {
 
             $.post('<?= base_url('restaurant/bill_settle') ?>',{billId:id,CNo:CNo,MergeNo:MergeNo,CustId:CustId,billNo:billNo,billAmt:billAmt},function(response){
@@ -1865,7 +1493,7 @@ getTableView();
                     list_id : list_id
                 },
                 success: function(data) {
-                    // alert(data.table_no);
+                    
                     data = JSON.parse(data);
                     console.log(data);
                     if(data != ''){
@@ -1878,8 +1506,7 @@ getTableView();
                             }
                             a += '<button class="btn btn-sm btn-'+sts+' btn-rounded" data-toggle="tooltip" data-placement="top" title="'+data[i].created_at+'" id="help_table_'+data[i].id+'" onclick="respond_call_help('+data[i].id+','+data[i].table_no+')">'+data[i].table_no+'</button> &nbsp;&nbsp;'
                         }
-                        // var a = '<button class="btn btn-sm btn-danger btn-rounded" data-toggle="tooltip" data-placement="top" title="'+data.created_at+'" id="help_table_'+help_table_id+'" onclick="respond_call_help('+help_table_id+')">'+data.table_no+'</button> &nbsp;&nbsp;';
-                        // $('#hlep_table_list').append(a);
+                        
                         $('#hlep_table_list').html(a);
                         if(data.viewed == 0){
                             // $('#help').modal('show');
@@ -1890,6 +1517,7 @@ getTableView();
                 }
             });
         }
+
         function view_help(){
             $.ajax({
                 url: "<?php echo base_url('restaurant/customer_landing_page_ajax'); ?>",
@@ -1899,16 +1527,15 @@ getTableView();
                     help_table_id :help_table_id
                 },
                 success: function(data) {
-                    // alert(data);
                     if(data == 1){
                         $('#help').modal('hide');
                     }else{
-                        // $('#help').modal('hide');
                         alert("Something went wrong");
                     }
                 }
             });
         }
+
         function respond_call_help(id, tblNo){
             $('#assistModal').modal('show');
             $('#help_table_text_id').val(id);
@@ -1925,114 +1552,45 @@ getTableView();
                     type: "post",
                     data: data,
                     success: function(data) {
-                        // alert(data);
                         $('#assistModal').modal('hide');
                     }
                 });            
         })
 
         function check_new_orders(){
-            // if(confirm("Assistance Provided?")){
-                var v = '<?= $TableAcceptReqd?>';
-                if(v == 0){
-                    $.ajax({
-                        url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
-                        type: "post",
-                        data: {
-                            check_new_orders: 1
-                        },
-                        success: function(data) {
-                            // alert(data);
-                            if(data != ''){
-                                $('#new_orders').modal('show');
-                                $('#new_order_list').html(data);
-                            }else{
-                                $('#new_orders').modal('hide');
-                            }
+            
+            var v = '<?= $TableAcceptReqd?>';
+            if(v == 0){
+                $.ajax({
+                    url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
+                    type: "post",
+                    data: {
+                        check_new_orders: 1
+                    },
+                    success: function(data) {
+                        if(data != ''){
+                            $('#new_orders').modal('show');
+                            $('#new_order_list').html(data);
+                        }else{
+                            $('#new_orders').modal('hide');
                         }
-                    });
-                }
-            // }
+                    }
+                });
+            }
         }
 
         function check_settled_table(){
-            // if(confirm("Assistance Provided?")){
-                // if(v == 0){
-                    $.ajax({
-                        url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
-                        type: "post",
-                        data: {
-                            check_settled_table: 1
-                        },
-                        success: function(data) {
-                            // alert(data);
-                            if(data != 0){
+            $.ajax({
+                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
+                type: "post",
+                data: {
+                    check_settled_table: 1
+                },
+                success: function(data) {
+                    if(data != 0){
 
-                                $('#settled_table').modal('show');
-                                $('#settled_table_data').html(data);
-                            }
-                            
-                        }
-                    });
-                //}
-            // }
-        }
-        function confirm_settle(cno){
-            // if(confirm("Assistance Provided?")){
-                // if(v == 0){
-                    $.ajax({
-                        url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
-                        type: "post",
-                        data: {
-                            confirm_settle: 1,
-                            CNo: cno
-                        },
-                        success: function(data) {
-                            // alert(data);
-                            if(data == 1){
-                                $('#settled_table').modal('hide');
-                                alert("Successfully Confirmed");
-                            }
-                        }
-                    });
-                //}
-            // }
-        }
-        function accept_order(id){
-            $.ajax({
-                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
-                type: "post",
-                data: {
-                    change_order_status: 1,
-                    cno:id,
-                    status: 1
-                },
-                success: function(data) {
-                    // alert(data);
-                    if(data == 1){
-                        alert("Order Accepted");
-                    }else{
-                        alert("Something went wrong");
-                    }
-                    
-                }
-            });
-        }
-        function reject_order(id){
-            $.ajax({
-                url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
-                type: "post",
-                data: {
-                    change_order_status: 1,
-                    cno: id,
-                    status: 4
-                },
-                success: function(data) {
-                    // alert(data);
-                    if(data == 1){
-                        alert("Order Rejected");
-                    }else{
-                        alert("Something went wrong");
+                        $('#settled_table').modal('show');
+                        $('#settled_table_data').html(data);
                     }
                     
                 }
@@ -2048,11 +1606,8 @@ getTableView();
         // $(function () {
           $('[data-toggle="tooltip"]').tooltip()
         // })
-    </script>
-
-
-    <script type="text/javascript">
-        function getUnmergeTables(){
+  
+    function getUnmergeTables(){
 
     $.ajax({
         url: '<?php echo base_url('restaurant/merge_table_ajax'); ?>',
@@ -2130,8 +1685,6 @@ function getMmergedTables(){
     });
 }
 
-
-
 $(document).ready(function() {
 
     getUnmergeTables();
@@ -2178,57 +1731,31 @@ $(document).ready(function() {
     });
     
 });
+
 $("#unmerge-table-btn").click(function(event) {
-        var selectedTables = [];
-        var deselectedTables = [];
-// alert("sss");
-        $(".form-check-inputt").each(function(index, el) {
-            if($(this).is(':checked')) {
-                selectedTables.push($(this).attr('id'));
-            }else{
-                deselectedTables.push($(this).attr('id'));
-            }
-        });
+        
+    $.ajax({
+        url: "<?php echo base_url('restaurant/merge_table_ajax'); ?>",
+        type: "post",
+        data: {
+            unmergeTables: 1,
+            MergeNo: $('#merged_tables').val()
+        },
 
-        // alert(selectedTables);
-        var check = true;
-        if(selectedTables.length < 2){
-            if(confirm("All the tables will get unmerged. Are you sure want to continue?")){
-                check = true;
-            }else{
-                check = false;
-            }
-        }
-        // alert(check);
-        if (deselectedTables.length > 0 && check) {
-            $.ajax({
-                url: "<?php echo base_url('restaurant/merge_table_ajax'); ?>",
-                type: "post",
-                data: {
-                    unmergeTables: 1,
-                    selectedTables: JSON.stringify(selectedTables),
-                    deselectedTables: JSON.stringify(deselectedTables),
-                    MergeNo: $('#selected_merge_no').val()
-                },
+        dataType: 'json',
+        success: function(response) {
+            location.reload();
+        },
 
-                dataType: 'json',
-                success: function(response) {
-                    
-                    get_each_table();
-                    location.reload();
-
-                },
-
-                error: function(xhr, status, error) {
-                    console.log(xhr);
-                    console.log(status);
-                    console.log(error);
-                }
-            });
-        }else {
-            // alert("You can select Min 2 and Max 4 Tables");
+        error: function(xhr, status, error) {
+            console.log(xhr);
+            console.log(status);
+            console.log(error);
         }
     });
+       
+});
+
 function get_each_table(){
     var v = $('#merged_tables').val();
     $('#selected_merge_no').val(v);
@@ -2272,8 +1799,6 @@ function get_each_table(){
 }
 
 function unmerge_table(el){
-    // alert(el.value);
-    // var v = $('#el.')
     $.ajax({
         url: '<?php echo base_url('restaurant/merge_table_ajax'); ?>',
         type: 'POST',
@@ -2289,7 +1814,7 @@ function unmerge_table(el){
 }
 
 function get_phone_num(){
-    // alert(el.value);
+    
     var v = $('#from_table').val();
     $.ajax({
         url: '<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>',
@@ -2307,32 +1832,36 @@ function get_phone_num(){
 }
 
 function billCreate(mergeNo, custId, tableFilter){
+    var SchType = "<?php echo  $this->session->userdata('SchType'); ?>";
     var mergeNo = "'"+mergeNo+"'";
-        // console.log(mergeNo);
-    var disc = "<?php echo $this->session->userdata('Discount'); ?>";
-    if(disc > 0){
-        if(custId > 0){
-            $.post('<?= base_url('restaurant/checkCustDiscount') ?>',{custId:custId},function(res){
-                if(res.status == 'success'){
-                    var data = res.response;
-                    if(data.Disc > 0){
-                        $('#billDiscPer').val(data.Disc);
-                        $('#billMergeNo').val(mergeNo);
-                        $('#tableFilter').val(tableFilter);
-                        $('#billDiscountModel').modal('show');
-                    }else{
-                        // alert('Bill Create Without Discount');
-                    billCreateWitoutDisc(mergeNo, tableFilter);
-                    }
-                }else{
-                  alert(res.response);
-                }
-            });
-        }else{
-            billCreateWitoutDisc(mergeNo, tableFilter);    
-        }
+
+    if(SchType == 1){
+        billBasedOffers(mergeNo, custId, tableFilter, 'normal', 0);
     }else{
-        billCreateWitoutDisc(mergeNo, tableFilter);
+        var disc = "<?php echo $this->session->userdata('Discount'); ?>";
+        if(disc > 0){
+            if(custId > 0){
+                $.post('<?= base_url('restaurant/checkCustDiscount') ?>',{custId:custId},function(res){
+                    if(res.status == 'success'){
+                        var data = res.response;
+                        if(data.Disc > 0){
+                            $('#billDiscPer').val(data.Disc);
+                            $('#billMergeNo').val(mergeNo);
+                            $('#tableFilter').val(tableFilter);
+                            $('#billDiscountModel').modal('show');
+                        }else{
+                            billCreateWitoutDisc(mergeNo, tableFilter);
+                        }
+                    }else{
+                      alert(res.response);
+                    }
+                });
+            }else{
+                billCreateWitoutDisc(mergeNo, tableFilter);    
+            }
+        }else{
+            billCreateWitoutDisc(mergeNo, tableFilter);
+        }
     }
 }
 
@@ -2387,7 +1916,9 @@ function cashCollect(custId, MCNo, mergeNo, oType){
                     $('#mobileno').html(data[0].CellNo);
                     var temp = '';
                     for(let j = 0; j < data.length; j++){
-                        var pm = `<select name='PymtType' id='PymtType' required='' class='form-control form-control-sm' onchange='changeModes(${data[j].BillId}, ${data[j].CustId}, ${data[j].PaidAmt}, ${data[j].CellNo}, ${data[j].MergeNo}, ${data[j].CNo})' >`;
+                        var merge_no = '"'+data[j].MergeNo+'"';
+
+                        var pm = `<select name='PymtType' id='PymtType' required='' class='form-control form-control-sm' onchange='changeModes(${data[j].BillId}, ${data[j].CustId}, ${data[j].PaidAmt}, ${data[j].CellNo}, ${merge_no}, ${data[j].CNo})' >`;
 
                           for (var i =0;  i< payModes.length; i++) {
                               pm +='<option value="'+payModes[i].PymtMode+'">'+payModes[i].Name+'</option>';
@@ -2450,6 +1981,7 @@ function cashCollect(custId, MCNo, mergeNo, oType){
             $('#paymentMergeNo').val(MergeNo);
             $('#paymentMCNo').val(MCNo);
             $(`#cashBtn_${billId}`).prop("disabled", true);
+            sendOTP();
             $('.OTPBlock').show();
         }
 }
@@ -2511,6 +2043,140 @@ function cashCollectData(){
 function changeValue(input) {
     var val = $(input).val();
     $(input).val(convertToUnicodeNo(val));
+}
+
+function split_billing(MergeNo, custId, tableFilter, MCNo){
+
+    var SchType = "<?php echo  $this->session->userdata('SchType'); ?>";
+
+    if(SchType == 1){
+        // var MergeNo = "'"+MergeNo+"'";
+        billBasedOffers(MergeNo, custId, tableFilter, 'split', MCNo);
+    }else{
+        window.location = "<?php echo base_url('restaurant/splitBill/'); ?>"+MCNo+'/'+MergeNo+'/'+tableFilter;
+        return false;
+    }
+
+}
+
+function billBasedOffers(MergeNo, custId, tableFilter, flag, MCNo){
+    $.post('<?= base_url('restaurant/check_bill_based_offer') ?>',{MergeNo:MergeNo},function(res){
+        if(res.status == 'success'){
+            var data = res.response;
+            if(data.length > 0){
+                var ss = "<option value='' ><?php echo $this->lang->line('select'); ?></option>";
+                var temp = `${ss}`;
+
+                data.forEach((item) => {
+                    var discpcent = 0;
+                    if(item.Disc_pcent > 0){
+                        discpcent = item.Disc_pcent;
+                    }else{
+                        discpcent = item.DiscItemPcent;
+                    }
+                    temp +=`<option value="${item.SchCd}" sdetcd="${item.SDetCd}" cid="${item.CID}" disccid="${item.Disc_CID}" mcatgid="${item.MCatgId}" discmcatgid="${item.Disc_MCatgId}" itemtyp="${item.ItemTyp}" discitemtyp="${item.Disc_ItemTyp}" itemid="${item.ItemId}" discitemid="${item.Disc_ItemId}" ipcd="${item.IPCd}" discipcd="${item.Disc_IPCd}" mergeno="${MergeNo}" minbillamt="${item.MinBillAmt}" offertype="${item.offerType}" >${item.MinBillAmt}-${item.SchNm}</option>`;
+                });
+                $(`#billBasedFlag`).val(flag);
+                $(`#billBasedMCNo`).val(MCNo);
+                $(`#billBasedMergeNo`).val(MergeNo);
+                $(`#billBasedCustId`).val(custId);
+                $(`#billBasedFilter`).val(tableFilter);
+                $(`#SchCd`).html(temp);
+                $(`#billBasedModal`).modal('show');
+            }else{
+                billCreateWitoutDisc(MergeNo, tableFilter);
+            }
+        }else{
+          alert(res.response);
+        }
+    });
+}
+
+$(`#billBasedForm`).on('submit', function(e){
+    e.preventDefault();
+    var ipcd = $('option:selected', $('#ItemId')).attr('ipcd');
+    var data = $(this).serializeArray();
+    var form = new FormData(document.getElementById("billBasedForm"));
+    form.append('ipcd', ipcd);
+
+    $.ajax({
+           url : '<?= base_url('restaurant/billBasedOfferUpdate') ?>',
+           type : 'POST',
+           data : form,
+           processData: false,  
+           contentType: false,  
+           success : function(res) {
+                if(res.status == 'success'){
+                    var MergeNo = $(`#billBasedMergeNo`).val();
+                    var custId = $(`#billBasedCustId`).val();
+                    var tableFilter = $(`#billBasedFilter`).val();
+                    var flag = $(`#billBasedFlag`).val();
+                    var MCNo = $(`#billBasedMCNo`).val();
+                    
+                    $(`#billBasedModal`).modal('hide');
+                    if(flag == 'split'){
+                        window.location = "<?php echo base_url('restaurant/splitBill/'); ?>"+MCNo+'/'+MergeNo+'/'+tableFilter;
+                        return false;
+                    }    
+                    billCreateWitoutDisc(MergeNo, tableFilter);
+                }else{
+                  alert(res.response);
+                }        
+           }
+    });
+})
+
+function gotoBillCreate(){
+    var MergeNo = $(`#billBasedMergeNo`).val();
+    var custId = $(`#billBasedCustId`).val();
+    var tableFilter = $(`#billBasedFilter`).val();
+
+    billCreateWitoutDisc(MergeNo, tableFilter);
+}
+
+function changeOffer(){
+    var SchCd = $(`#SchCd`).val(); 
+    var sdetcd = $('option:selected', $('#SchCd')).attr('sdetcd');
+    var cid = $('option:selected', $('#SchCd')).attr('cid');
+    var mcatgid = $('option:selected', $('#SchCd')).attr('mcatgid');
+    var itemid = $('option:selected', $('#SchCd')).attr('itemid');
+    var itemtyp = $('option:selected', $('#SchCd')).attr('itemtyp');
+    var ipcd = $('option:selected', $('#SchCd')).attr('ipcd');
+
+    var disccid = $('option:selected', $('#SchCd')).attr('disccid');
+    var discmcatgid = $('option:selected', $('#SchCd')).attr('discmcatgid');
+    var discitemid = $('option:selected', $('#SchCd')).attr('discitemid');
+    var discitemtyp = $('option:selected', $('#SchCd')).attr('discitemtyp');
+    var discipcd = $('option:selected', $('#SchCd')).attr('discipcd');
+
+    var MergeNo = $('option:selected', $('#SchCd')).attr('mergeno');
+    var minbillamt = $('option:selected', $('#SchCd')).attr('minbillamt');
+    var offerType = $('option:selected', $('#SchCd')).attr('offertype');
+
+    $(`#sdetcd`).val(sdetcd);
+    $(`#ItemId`).prop('required', false);
+    $(`.btnyes`).prop('disabled', false);
+    $(`.itemidBlock`).hide();
+    $.post('<?= base_url('restaurant/get_selection_offer') ?>', {SchCd:SchCd, sdetcd:sdetcd, cid:cid, mcatgid:mcatgid, itemid:itemid, itemtyp:itemtyp, ipcd:ipcd,disccid:disccid, discmcatgid:discmcatgid, discitemid:discitemid, discitemtyp:discitemtyp, discipcd:discipcd, MergeNo:MergeNo, minbillamt:minbillamt,offerType:offerType}, function(res){
+        if(res.status == 'success'){
+            var data = res.response;
+            if(data.length > 0){
+                var temp = `<option value="" ><?php echo $this->lang->line('select'); ?></option>`;
+                data.forEach((item) => {
+                    temp +=`<option value="${item.ItemId}" ipcd="${item.IPCd}">${item.itemName}-${item.portionName}</option>`;
+                });
+                $(`.itemidBlock`).show();
+                $('#ItemId').select2();
+                $(`#ItemId`).prop('required', true);
+                $(`#ItemId`).html(temp);
+            }
+                $(`#ItemId`).prop('required', false);
+        }else{
+            $(`.btnyes`).prop('disabled', true);
+            $(`.itemidBlock`).hide();
+          alert(res.response);
+        }
+    });  
 }
 
 </script>

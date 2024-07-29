@@ -31,19 +31,7 @@
                                 <div class="card">
                                     <div class="card-body" style="padding: 0.25rem;">
                                         <div id="app1">
-                                            <div class="row form-group">
-                                                <div class="col-md-5 col-12">
-                                                    <select class="form-control form-control-sm" name="RUserId" id="RUserId" onchange="getUser();">
-                                                        <option value=""><?= $this->lang->line('select'); ?></option>
-                                                        <?php
-                                                        foreach ($usersRestData as $key) {
-                                                         ?>
-                                                        <option value="<?php echo $key['RUserId']; ?>"><?php echo $key['MobileNo'].' ('.$key['FName'].' '.$key['LName'].'-'.$key['UTypName'].')'; ?></option>
-                                                    <?php } ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-
+                                            
                                             <div class="row form-group">
                                                 
                                                 <div class="col-md-5 col-5">
@@ -165,17 +153,15 @@ $(document).ready(function(){
     });
 });
 
-var RUserId = 0;
-getUser = () =>{
-    RUserId = $('#RUserId').val();
+getUser();
 
-    getAvailableRoles(RUserId);
-    getAssignedRoles(RUserId);
-    $('#RUserId').val(RUserId);
+function getUser(){
+    getAvailableRoles();
+    getAssignedRoles();
 }
 
-getAvailableRoles = (RUserId) =>{
-    $.post('<?= base_url('restaurant/user_access') ?>',{getAvailableRoles:1, userId:RUserId},function(res){
+function getAvailableRoles(){
+    $.post('<?= base_url('restaurant/language_access') ?>',{getAvailableRoles:1},function(res){
         if(res.status == 'success'){
           var data = res.response;
           var temp = '';
@@ -183,12 +169,12 @@ getAvailableRoles = (RUserId) =>{
             for (var i = 0; i < data.length; i++) {
                 temp += `<div class="ck-button"  style="margin-left:-40px;">
                            <label>
-                              <input type="checkbox" value="${data[i].RoleId}" class="selectedAvailableRoles">&nbsp;&nbsp;<span>${data[i].Name}</span>
+                              <input type="checkbox" value="${data[i].id}" class="selectedAvailableRoles">&nbsp;&nbsp;<span>${data[i].LangName}</span>
                            </label>
                         </div>`;
             }
           }else{
-            temp = 'No Roles Found!';
+            temp = 'No Cuisine Found!';
           }
           $('#availableRoles').html(temp);
         }else{
@@ -197,8 +183,8 @@ getAvailableRoles = (RUserId) =>{
     });
 }
 
-getAssignedRoles = (RUserId) =>{
-    $.post('<?= base_url('restaurant/user_access') ?>',{getAssignedRoles:1, userId:RUserId},function(res){
+function getAssignedRoles(){
+    $.post('<?= base_url('restaurant/language_access') ?>',{getAssignedRoles:1},function(res){
         if(res.status == 'success'){
           var data = res.response;
           var temp = '';
@@ -206,7 +192,7 @@ getAssignedRoles = (RUserId) =>{
             for (var i = 0; i < data.length; i++) {
                 temp += `<div class="ck-button"style="margin-left:-40px;">
                            <label>
-                              <input type="checkbox" value="${data[i].URNo}" class="selectedAssignedRoles">&nbsp;&nbsp;<span>${data[i].Name}</span>
+                              <input type="checkbox" value="${data[i].el.LangId}" class="selectedAssignedRoles">&nbsp;&nbsp;<span>${data[i].Name}</span>
                            </label>
                         </div>`;
             }
@@ -230,7 +216,7 @@ setRoles = () => {
     });
 
     if(roleIds.length > 0){
-        $.post('<?= base_url('restaurant/user_access') ?>',{setRestRoles:1, userId:RUserId, roles:roleIds},function(res){
+        $.post('<?= base_url('restaurant/language_access') ?>',{setRestRoles:1, roles:roleIds},function(res){
             if(res.status == 'success'){
                 alert(res.response);
                 getUser();
@@ -245,16 +231,16 @@ setRoles = () => {
 }
 
 removeRoles = () => {
-    var ur_no = [];
+    var cid = [];
 
     $(".selectedAssignedRoles").each(function(index, el) {
         if ($(this).prop('checked')==true){ 
-            ur_no.push($(this).val());    
+            cid.push($(this).val());    
         }    
     });
 
-    if(ur_no.length > 0){
-        $.post('<?= base_url('restaurant/user_access') ?>',{removeRestRoles:1, userId:RUserId, URNo:ur_no},function(res){
+    if(cid.length > 0){
+        $.post('<?= base_url('restaurant/language_access') ?>',{removeRestRoles:1, CID:cid},function(res){
             if(res.status == 'success'){
                 alert(res.response);
               getUser();

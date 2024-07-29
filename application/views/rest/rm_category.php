@@ -127,7 +127,6 @@
     });
 
     function editData(id, name){
-        // console.log(id+' '+name);
         $('#RMCatgCd').val(id);
         $('#RMCatgName').val(name);
     }

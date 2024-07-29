@@ -10,10 +10,7 @@
                     <!-- Sidebar -->
                 </div>
             </div>
-            <!-- Left Sidebar End -->
-
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
+            
             <!-- ============================================================== -->
             <div class="main-content">
 
@@ -32,8 +29,19 @@
                                             <div class="row">
                                                 <div class="form-group col-md-4">
                                                     <label for="schnm"><?= $this->lang->line('schemeName');?></label>
-                                                    <input type="text" id="schnm" name="SchNm" class="form-control form-control-sm" placeholder="Enter scheme name" required="" value="<?= $scheme['SchNm'];?>" />
+                                                    <input type="text" id="schnm" name="SchNm1" class="form-control form-control-sm" placeholder="Enter scheme name" required="" value="<?= $scheme['SchNm'];?>" />
                                                 </div>
+                                                <?php
+                                                for ($i = 1; $i < sizeof($languages); $i++) {
+                                                    $descc = 'SchNm'.$languages[$i]['LCd'];
+                                                 ?>
+                                                   <div class="col-md-4 col-6">
+                                                        <div class="form-group">
+                                                            <label for=""><?= $languages[$i]['LngName']; ?></label>
+                                                            <input type="text" id="schnm<?= $languages[$i]['LCd']; ?>" name="SchNm<?= $languages[$i]['LCd']; ?>" class="form-control form-control-sm"  value="<?= $scheme[$descc];?>" />
+                                                        </div>
+                                                   </div>
+                                                <?php } ?>
                                                 <div class="form-group col-md-4 col-6">
                                                     <label for="sch_typ"><?= $this->lang->line('schemeType');?></label>
                                                     <select class="form-control form-control-sm" id="sch_typ" name="SchTyp" required="" onchange="getCategoryl()" disabled="">
@@ -100,31 +108,22 @@
                                                 </div>
 
                                                 <div class="form-group col-md-3 col-6">
+                                                    <label for=""><?= $this->lang->line('offers');?> <?= $this->lang->line('type');?></label>
+                                                    <select name="offerType" class="form-control form-control-sm" id="offerType" required="">
+                                                        <option value=""><?= $this->lang->line('select');?></option>
+                                                        <option value="1" <?php if(($scheme['offerType'] == 1)){ echo 'selected'; } ?> >Only Food</option>
+                                                        <option value="2" <?php if(($scheme['offerType'] == 2)){ echo 'selected'; } ?>>Food & Bar</option>
+                                                        <option value="3" <?php if(($scheme['offerType'] == 3)){ echo 'selected'; } ?>>Only Bar</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group col-md-3 col-6">
                                                     <label for=""><?= $this->lang->line('mode');?></label>
                                                     <select name="Stat" class="form-control form-control-sm" id="Stat" required="">
                                                         <option value=""><?= $this->lang->line('select');?></option>
                                                         <option value="0" <?php if(($scheme['Stat'] == 0)){ echo 'selected'; } ?> ><?= $this->lang->line('active');?></option>
                                                         <option value="1" <?php if(($scheme['Stat'] == 1)){ echo 'selected'; } ?>><?= $this->lang->line('inactive');?></option>
                                                     </select>
-                                                </div>
-
-                                                <div class="col-md-3 col-6 billBased" style="display: none;">
-                                                    <div class="form-group">
-                                                        <label><?= $this->lang->line('minimumBillAmount');?></label>
-                                                        <input type="number" class="form-control form-control-sm" id="description_minbillamount" name="minbillamount" value="<?= $scheme['MinBillAmt']?>">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 col-6 billBased" style="display: none;">
-                                                    <div class="form-group">
-                                                        <label><?= $this->lang->line('discountPercentage');?></label>
-                                                        <input type="number" class="form-control form-control-sm" id="description_discountpercent" name="discountpercent" value="<?= $scheme['Disc_pcent']?>">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 col-6 billBased"  style="display: none;">
-                                                    <div class="form-group">
-                                                        <label for="description'+num_desc+'_discountamount"><?= $this->lang->line('discountAmount');?></label>
-                                                        <input type="number" class="form-control form-control-sm" id="description_discountamount" name="discountamount" value="<?= $scheme['Disc_Amt']?>">
-                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="offer_descriptions" id="offer_descriptions">
@@ -137,8 +136,21 @@
                                                         <div class="row">
                                                             <div class="form-group col-md-3 col-6">
                                                                 <label for="description1_description"><?= $this->lang->line('description');?></label>
-                                                                <input type="text" name="description[]" class="form-control form-control-sm" id="description<?= $n?>_description" maxlength="100" placeholder="Enter Scheme Description" value="<?= $key['SchDesc']?>" />
+                                                                <input type="text" name="SchDesc1[]" class="form-control form-control-sm" id="description<?= $n?>_description" maxlength="100" placeholder="Enter Scheme Description" value="<?= $key['SchDesc']?>" />
                                                             </div>
+
+                                                            <?php
+                                                            for ($i = 1; $i < sizeof($languages); $i++) {
+                                                                $descc = 'SchDesc'.$languages[$i]['LCd'];
+                                                             ?>
+                                                               <div class="col-md-3 col-6">
+                                                                    <div class="form-group">
+                                                                        <label for=""><?= $this->lang->line('description');?> <?= $languages[$i]['LngName']; ?></label>
+                                                                        <input type="text" id="description<?= $languages[$i]['LCd']; ?>" name="SchDesc<?= $languages[$i]['LCd']; ?>[]" class="form-control form-control-sm"  value="<?= $key[$descc];?>" />
+                                                                    </div>
+                                                               </div>
+                                                            <?php } ?>
+
                                                             <div class="form-group col-md-3 col-6">
                                                                 <label for="description1_image"><?= $this->lang->line('image');?></label>
                                                                 <input type="file" name="description_image[]" class="form-control form-control-sm" id="description<?= $n?>_image" />
@@ -146,11 +158,13 @@
 
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_itemtyp_div" style="display: block;">
                                                                 <label for="description<?= $n?>_itemtyp"><?= $this->lang->line('item');?> <?= $this->lang->line('type');?></label>
-                                                                <select class="form-control form-control-sm itemType" id="description<?= $n?>_itemtyp" name="description_itemtyp[]" onchange="getItems(<?= $n?>)">
+                                                                <select class="form-control form-control-sm itemType" id="description<?= $n?>_itemtyp" name="description_itemtyp[]" onchange="getPortionByItmTyp_edit(<?= $n?>)">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
-                                                                    <?php foreach($itemType as $it){?>
-                                                                        <option value="<?= $it['ItmTyp']?>" <?php if($it['ItmTyp'] == $key['ItemTyp']){echo 'selected';}?>><?= $it['Name']?></option>
-                                                                    <?php }?>
+                                                                    <?php foreach($menuTags as $it){
+                                                                        if($it['TagTyp'] == 2){
+                                                                        ?>
+                                                                        <option value="<?= $it['TagId']?>" <?php if($it['TagId'] == $key['ItemTyp']){echo 'selected';}?>><?= $it['TDesc']?></option>
+                                                                    <?php } } ?>
                                                                 </select>
                                                             </div>
 
@@ -159,10 +173,11 @@
                                                                 <select class="form-control form-control-sm itemSale" id="description<?= $n?>_itemsale" name="description_itemsales[]">
                                                                 <option value=""><?= $this->lang->line('all');?></option>
                                                                 <?php 
-                                                                    foreach($itmSales as $c){?>
+                                                                    foreach($menuTags as $c){
+                                                                        if($c['TagTyp'] == 3){
+                                                                        ?>
                                                                         <option value="<?= $c['TagId']?>" <?php if($key['ItemSale'] == $c['TagId']){echo 'selected';}?>><?= $c['TDesc']?></option>
-                                                                <?php }
-                                                                ?>
+                                                                <?php } } ?>
                                                                 </select>
                                                             </div>
 
@@ -182,6 +197,10 @@
                                                                 <input type="hidden" name="" id="mcatgid<?= $n?>" value="<?= $key['MCatgId']?>">
                                                                 <select class="form-control form-control-sm menuCategory" id="description<?= $n?>_mcatgid" name="description_mcatgid[]" onchange="getItems(<?= $n?>)">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
+
+                                                                    <?php foreach($menucat as $mn){?>
+                                                                            <option value="<?= $mn['MCatgId']?>" <?php if($key['MCatgId'] == $mn['MCatgId']){echo 'selected';}?>><?= $mn['MCatgNm']?></option>
+                                                                    <?php } ?>
                                                                     
                                                                 </select>
                                                             </div>
@@ -191,6 +210,10 @@
                                                                 <input type="hidden" name="" id="item_id<?= $n?>" value="<?= $key['ItemId']?>">
                                                                 <select class="form-control form-control-sm items" id="description<?= $n?>_item" name="description_item[]" onchange="getItemPortion(<?= $n?>)">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
+                                                                    <?php foreach($itemList as $item){ ?>
+                                                                            <option value="<?= $item['ItemId']; ?>" <?php if($item['ItemId']== $key['ItemId']) { echo 'selected'; } ?> ><?= $item['Name']?></option>
+                                                                    <?php } ?>
+
                                                                 </select>
                                                             </div>
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_itemportion_div" style="display: block;">
@@ -198,6 +221,9 @@
                                                                 <input type="hidden" name="" id="ipcd<?= $n?>" value="<?= $key['IPCd']?>">
                                                                 <select class="form-control form-control-sm itemPortion" id="description<?= $n?>_itemportion" name="description_itemportion[]">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
+                                                                    <?php foreach($portions as $ip){?>
+                                                                        <option value="<?= $ip['IPCd']?>" <?php if($key['IPCd'] == $ip['IPCd']){ echo 'selected'; } ?>><?= $ip['Name']?></option>\
+                                                                <?php } ?>
                                                                 </select>
                                                             </div>
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_quantity_div" style="display: block;">
@@ -230,19 +256,38 @@
                                                                 <input type="hidden" name="" id="disc_item_id<?= $n?>" value="<?= $key['Disc_ItemId']?>">
                                                                 <select class="form-control form-control-sm select2 custom-select discountItems" id="description<?= $n?>_discountitem" name="description_discountitem[]" onchange="getDiscItemPortion(<?= $n?>)">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
+                                                                    <?php foreach($itemList as $item){ ?>
+                                                                            <option value="<?= $item['ItemId']; ?>" <?php if($item['ItemId']== $key['Disc_ItemId']) { echo 'selected'; } ?> ><?= $item['Name']?></option>
+                                                                    <?php } ?>
                                                                 </select>
                                                             </div>
                                                             
+                                                            <div class="form-group col-md-3 col-6" id="description<?= $n?>_itemtyp_div" style="display: block;">
+                                                                <label for="description<?= $n?>_itemtyp"><?= $this->lang->line('discount');?> <?= $this->lang->line('item');?> <?= $this->lang->line('type');?></label>
+                                                                    <select class="form-control form-control-sm discitemType" id="description<?= $n?>_discitemtyp" name="description_discitemtyp[]" onchange="getDiscPortionByItmTyp_edit(<?= $n?>)">
+                                                                        <option value="0"><?= $this->lang->line('select');?></option>
+                                                                        <?php foreach($menuTags as $it){
+                                                                            if($it['TagTyp'] == 2){  ?>
+                                                                            <option value="<?= $it['TagId']?>" <?php if($key['Disc_ItemTyp'] == $it['TagId']){echo 'selected';}?>><?= $it['TDesc']?></option>
+                                                                        <?php } } ?>
+                                                                    </select>
+                                                            </div>
+
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_discountitemportion_div" style="display: block;">
                                                                 <label for="description<?= $n?>_discountitemportion"><?= $this->lang->line('discountItemPortion');?></label>
                                                                 <input type="hidden" name="" id="disc_ipcd<?= $n?>" value="<?= $key['Disc_IPCd']?>">
-                                                                <select class="form-control form-control-sm" id="description<?= $n?>_discountitemportion" name="description_discountitemportion[]">
+                                                                <select class="form-control form-control-sm discountItemPortion" id="description<?= $n?>_discountitemportion" name="description_discountitemportion[]">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
+                                                                    <?php 
+                                                                    foreach ($portions as $po) {
+                                                                    ?>
+                                                                    <option value="<?= $po['IPCd']; ?>" <?php if($key['Disc_IPCd'] == $po['IPCd']){ echo 'selected'; } ?>><?= $po['Name']; ?></option>
+                                                                <?php } ?>
                                                                 </select>
                                                             </div>
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_discountquantity_div" style="display: block;">
                                                                 <label for="description<?= $n?>_discountquantity"><?= $this->lang->line('discountItemQuantity');?></label>
-                                                                <input type="number" class="form-control form-control-sm" id="description<?= $n?>_discountquantity" name="description_discountquantity[]" value="<?= $key['Disc_Qty']?>">
+                                                                <input type="number" class="form-control form-control-sm discQty" id="description<?= $n?>_discountquantity" name="description_discountquantity[]" value="<?= $key['Disc_Qty']?>">
                                                             </div>
 
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_discountitempercentage_div" style="display: block;">
@@ -252,20 +297,20 @@
 
                                                             <div class="form-group col-md-3 col-6" id="description<?= $n?>_discountmaxamt_div" style="display: block;">
                                                                 <label for="description<?= $n?>discountmaxamt"><?= $this->lang->line('discount');?> <?= $this->lang->line('maximum');?> <?= $this->lang->line('amount');?></label>
-                                                                <input type="number" class="form-control form-control-sm" id="description<?= $n?>_disc_max_amt" name="description_disc_max_amt[]" value="<?= $key['DiscMaxAmt']; ?>">
+                                                                <input type="number" class="form-control form-control-sm discmaxamt" id="description<?= $n?>_disc_max_amt" name="description_disc_max_amt[]" value="<?= $key['DiscMaxAmt']; ?>">
                                                             </div>
 
-                                                            <div class="form-group col-md-3 col-6" id="description<?= $n?>_minbillamount_div" style="display: block;">
+                                                            <div class="form-group col-md-3 col-6 billBased" id="description<?= $n?>_minbillamount_div" style="display: block;">
                                                                 <label for="description<?= $n?>_minbillamount"><?= $this->lang->line('minimumBillAmount');?></label>
-                                                                <input type="number" class="form-control form-control-sm" id="description<?= $n?>_minbillamount" name="description_minbillamount[]" value="<?= $key['MinBillAmt']?>">
+                                                                <input type="number" class="form-control form-control-sm minbillamt" id="description<?= $n?>_minbillamount" name="description_minbillamount[]" value="<?= $key['MinBillAmt']?>">
                                                             </div>
-                                                            <div class="form-group col-md-3 col-6" id="description<?= $n?>_discountpercent_div" style="display: block;">
+                                                            <div class="form-group col-md-3 col-6 billBased" id="description<?= $n?>_discountpercent_div" style="display: block;">
                                                                 <label for="description<?= $n?>_discountpercent"><?= $this->lang->line('discountPercentage');?></label>
-                                                                <input type="number" class="form-control form-control-sm" id="description<?= $n?>_discountpercent" name="description_discountpercent[]" value="<?= $key['Disc_pcent']?>">
+                                                                <input type="number" class="form-control form-control-sm discpercent" id="description<?= $n?>_discountpercent" name="description_discountpercent[]" value="<?= $key['Disc_pcent']?>">
                                                             </div>
-                                                            <div class="form-group col-md-3 col-6" id="description<?= $n?>_discountamount_div" style="display: block;">
+                                                            <div class="form-group col-md-3 col-6 billBased" id="description<?= $n?>_discountamount_div" style="display: block;">
                                                                 <label for="description<?= $n?>_discountamount"><?= $this->lang->line('discountAmount');?> </label>
-                                                                <input type="number" class="form-control form-control-sm" id="description<?= $n?>_discountamount" name="description_discountamount[]" value="<?= $key['Disc_Amt']?>">
+                                                                <input type="number" class="form-control form-control-sm discamount" id="description<?= $n?>_discountamount" name="description_discountamount[]" value="<?= $key['Disc_Amt']?>">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -302,10 +347,12 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('.discountItems, .menuCategory, .discmenuCategory, .items, .itemPortion').select2();
+        // itemPortion
+        $('.discountItems, .menuCategory, .discmenuCategory, .items, .itemPortion, .discountItemPortion').select2();
     });
 
     function changeSchemeCategory(){
+        var schTyp = $(`#sch_typ`).val();
         var schCat = $('#schcatg').val();
         $('.cuisine').prop("disabled", false);
         $('.itemType').prop("disabled", false);
@@ -313,97 +360,216 @@
         $('.menuCategory').prop("disabled", false);
         $('.items').prop("disabled", false);
         $('.itemPortion').prop("disabled", false);
-
-        $('.billBased').hide();
+        // $('.billBased').hide();
         $('#add_more').show();
 
-        if(schCat > 0){
-            switch (schCat) {
-                // bill based
-                case '1':
-                    $('.billBased').show();
-                    $('#add_more').hide();
-                break;
-                // cuisine based
-              case '2':
-                    $('.itemType').prop("disabled", true);
-                    $('.itemSale').prop("disabled", true);
-                    $('.menuCategory').prop("disabled", true);
-                    $('.items').prop("disabled", true);
-                    $('.itemPortion').prop("disabled", true);
-                    // $('.cuisine').prop("disabled", true);
-                break;
-                // cuisine, portion based
-              case '7':
-                    $('.itemType').prop("disabled", true);
-                    $('.itemSale').prop("disabled", true);
-                    $('.menuCategory').prop("disabled", true);
-                    $('.items').prop("disabled", true);
-                    // $('.itemPortion').prop("disabled", true);
-                    // $('.cuisine').prop("disabled", true);
-                break;
-                // menu category based
-              case '3':
-                    $('.itemType').prop("disabled", true);
-                    $('.itemSale').prop("disabled", true);
-                    $('.items').prop("disabled", true);
-                    $('.itemPortion').prop("disabled", true);
-                    $('.cuisine').prop("disabled", true);
-                break;
-                 // menu category, portion based
-              case '8':
-                    $('.itemType').prop("disabled", true);
-                    $('.itemSale').prop("disabled", true);
-                    $('.items').prop("disabled", true);
-                    $('.cuisine').prop("disabled", true);
-                break;
-                // menu Item based
-              case '5':
-                    $('.itemType').prop("disabled", true);
-                    $('.itemSale').prop("disabled", true);
-                    $('.menuCategory').prop("disabled", true);
-                    $('.itemPortion').prop("disabled", true);
-                    $('.cuisine').prop("disabled", true);
-                break;
-                // menu Item, portion based
-              case '10':
-                    $('.itemType').prop("disabled", true);
-                    $('.itemSale').prop("disabled", true);
-                    $('.menuCategory').prop("disabled", true);
-                    $('.cuisine').prop("disabled", true);
-                break;
-               // portion based
-              case '6':
-                    $('.itemType').prop("disabled", true);
-                    $('.itemSale').prop("disabled", true);
-                    $('.cuisine').prop("disabled", true);
-                    $('.menuCategory').prop("disabled", true);
-                    $('.items').prop("disabled", true);
-                break;
-                 // item sale, must try, new item  based
-              case '22':
-              case '23':
-                    $('.itemType').prop("disabled", true);
-                    $('.cuisine').prop("disabled", true);
-                    $('.menuCategory').prop("disabled", true);
-                    $('.items').prop("disabled", true);
-                    $('.itemPortion').prop("disabled", true);
-                break;
-                // item type based
-              case '4':
-                    $('.itemSale').prop("disabled", true);
-                    $('.cuisine').prop("disabled", true);
-                    $('.menuCategory').prop("disabled", true);
-                    $('.items').prop("disabled", true);
-                    $('.itemPortion').prop("disabled", true);
-                break;
-                // itemtype, portion based
-                case '9':
-                    $('.itemSale').prop("disabled", true);
-                    $('.cuisine').prop("disabled", true);
-                    $('.menuCategory').prop("disabled", true);
-                    $('.items').prop("disabled", true);
-                break;
+        if(schTyp > 0){
+
+            $('.itemType').prop("disabled", false);
+            $('.itemSale').prop("disabled", false);
+            $('.cuisine').prop("disabled", false);
+            $('.menuCategory').prop("disabled", false);
+            $('.items').prop("disabled", false);
+            $('.itemPortion').prop("disabled", false);
+            
+            $('.disccuisine').prop("disabled", false);
+            $('.discmenuCategory').prop("disabled", false);
+            $('.discountItems').prop("disabled", false);
+            $('.discitemType').prop("disabled", false);
+
+            // bill based
+            if(schTyp == 1){
+                $('#add_desc').hide();
+
+                $('.minbillamt').prop("disabled", false);
+                $('.discmaxamt').prop("disabled", false);
+                $('.discpercent').prop("disabled", false);
+                $('.discamount').prop("disabled", false);
+
+                switch (schCat) {
+                    // discount amount
+                    case '1':
+                        $('.discmaxamt').prop("disabled", true);
+                        $('.discpercent').prop("disabled", true);
+
+                        $('.itemType').prop("disabled", true);
+                        $('.itemSale').prop("disabled", true);
+                        $('.cuisine').prop("disabled", true);
+                        $('.menuCategory').prop("disabled", true);
+                        $('.items').prop("disabled", true);
+
+                        $('.disccuisine').prop("disabled", true);
+                        $('.discmenuCategory').prop("disabled", true);
+                        $('.discountItems').prop("disabled", true);
+                        $('.itemPortion').prop("disabled", true);
+                        $('.discitemType').prop("disabled", true);
+
+                    break;
+                    // discount %
+                    case '2':
+                        $('.discmaxamt').prop("disabled", true);
+                        $('.discamount').prop("disabled", true);
+
+                        $('.itemType').prop("disabled", true);
+                        $('.itemSale').prop("disabled", true);
+                        $('.cuisine').prop("disabled", true);
+                        $('.disccuisine').prop("disabled", true);
+                        $('.menuCategory').prop("disabled", true);
+                        $('.discmenuCategory').prop("disabled", true);
+                        $('.items').prop("disabled", true);
+                        $('.discountItems').prop("disabled", true);
+                        $('.itemPortion').prop("disabled", true);
+                        $('.discitemType').prop("disabled", true);
+                    break;
+                    // discount % with max amount
+                    case '3':
+                        $('.discamount').prop("disabled", true);
+
+                        $('.itemType').prop("disabled", true);
+                        $('.itemSale').prop("disabled", true);
+                        $('.cuisine').prop("disabled", true);
+                        $('.disccuisine').prop("disabled", true);
+                        $('.menuCategory').prop("disabled", true);
+                        $('.discmenuCategory').prop("disabled", true);
+                        $('.items').prop("disabled", true);
+                        $('.discountItems').prop("disabled", true);
+                        $('.discitemType').prop("disabled", true);
+                        $('.itemPortion').prop("disabled", true);
+                    break;
+                    // discount itemtype with max price
+                    case '4':
+                        $('.discpercent').prop("disabled", true);
+                        $('.discamount').prop("disabled", true);
+
+                        $('.itemSale').prop("disabled", true);
+                        $('.cuisine').prop("disabled", true);
+                        $('.menuCategory').prop("disabled", true);
+                        $('.items').prop("disabled", true);
+
+                    break;
+                    // discount item %  with portion, from cuisine
+                  case '5':
+                        // $('.discmaxamt').prop("disabled", true);
+                        // $('.discpercent').prop("disabled", true);
+                        // $('.discamount').prop("disabled", true);
+
+                        $('.itemType').prop("disabled", true);
+                        $('.itemSale').prop("disabled", true);
+                        $('.menuCategory').prop("disabled", true);
+                        $('.items').prop("disabled", true);
+                    break;
+                    // discount item with max price from cuisine
+                  case '6':
+
+                        $('.itemType').prop("disabled", true);
+                        $('.itemSale').prop("disabled", true);
+                        $('.menuCategory').prop("disabled", true);
+                        $('.items').prop("disabled", true);
+
+                        // $('.discmenuCategory').prop("disabled", true);
+                        // $('.discountItems').prop("disabled", true);
+                        // $('.discitemType').prop("disabled", true);
+                        // $('.itemPortion').prop("disabled", true);
+                    break;
+                    // discount item %  with portion, from category
+                  case '7':
+
+                        $('.itemType').prop("disabled", true);
+                        $('.itemSale').prop("disabled", true);
+                        $('.cuisine').prop("disabled", true);
+                        $('.items').prop("disabled", true);
+
+                        // $('.disccuisine').prop("disabled", true);
+                        // $('.discountItems').prop("disabled", true);
+                        $('.discitemType').prop("disabled", true);
+                        
+                    break;
+                   // discount item with max price from category
+                  case '8':
+
+                        $('.itemType').prop("disabled", true);
+                        $('.itemSale').prop("disabled", true);
+                        $('.cuisine').prop("disabled", true);
+                        $('.items').prop("disabled", true);
+
+                        // $('.disccuisine').prop("disabled", true);
+                        // $('.discountItems').prop("disabled", true);
+                        // $('.discitemType').prop("disabled", true);
+                        // $('.itemPortion').prop("disabled", true);
+                    break;
+                     // discount itemtyp %  with portion
+                  case '9':
+                        // $('.discmaxamt').prop("disabled", true);
+                        // $('.discamount').prop("disabled", true);
+
+                        // $('.itemType').prop("disabled", true);
+                        $('.itemSale').prop("disabled", true);
+                        $('.cuisine').prop("disabled", true);
+                        $('.menuCategory').prop("disabled", true);
+                        $('.items').prop("disabled", true);
+
+                        // $('.disccuisine').prop("disabled", true);
+                        // $('.discmenuCategory').prop("disabled", true);
+                        // $('.discountItems').prop("disabled", true);
+
+                    break;
+                    // discount item with portion
+                  case '10':
+                        $('.discmaxamt').prop("disabled", true);
+                        $('.discpercent').prop("disabled", true);
+                        $('.discamount').prop("disabled", true);
+
+                        $('.itemType').prop("disabled", true);
+                        $('.itemSale').prop("disabled", true);
+                        $('.cuisine').prop("disabled", true);
+                        $('.menuCategory').prop("disabled", true);
+                        $('.items').prop("disabled", true);
+
+                        // $('.disccuisine').prop("disabled", true);
+                        // $('.discmenuCategory').prop("disabled", true);
+                    break;
+                }
+            }else{
+                $('.cuisine').prop("disabled", false);
+                $('.itemType').prop("disabled", false);
+                $('.itemSale').prop("disabled", false);
+                $('.menuCategory').prop("disabled", false);
+                $('.items').prop("disabled", false);
+                $('.itemPortion').prop("disabled", false);
+
+                //2 item based
+                switch (schCat) {
+                    // menu Item based
+                  case '21':
+                        $('.itemType').prop("disabled", true);
+                        $('.itemSale').prop("disabled", true);
+                        $('.menuCategory').prop("disabled", true);
+                        // $('.itemPortion').prop("disabled", true);
+                        $('.cuisine').prop("disabled", true);
+                     break;
+                    // menu Item, portion based
+                  case '22':
+                        $('.itemType').prop("disabled", true);
+                        $('.itemSale').prop("disabled", true);
+                        $('.menuCategory').prop("disabled", true);
+                        $('.cuisine').prop("disabled", true);
+                    break;
+                    // item type based
+                  case '25':
+                        $('.itemType').prop("disabled", true);
+                        $('.menuCategory').prop("disabled", true);
+                        $('.cuisine').prop("disabled", true);
+                    break;
+
+                  case '23':
+                  case '75':
+                        $('.itemSale').prop("disabled", true);
+                        $('.cuisine').prop("disabled", true);
+                        $('.menuCategory').prop("disabled", true);
+                        $('.items').prop("disabled", true);
+                        // $('.itemPortion').prop("disabled", true);
+                    break;
+                }
             }
         }
     }
@@ -414,6 +580,12 @@
 
         var SchTyp = $('#sch_typ').val();
         if(SchTyp > 0){
+
+            $('.billBased').hide();
+            if(SchTyp == 1){
+                $('.billBased').show();
+            }
+
             $.post('<?= base_url('restaurant/get_schemes') ?>',{SchTyp:SchTyp},function(res){
                 if(res.status == 'success'){
                     var dt = res.response;
@@ -440,8 +612,14 @@
     var num_desc = <?= sizeof($descriptions)?>;
     for(i=1;i<=num_desc;i++){
         getCategory(i);
-        getDiscountItems(i);
+        var schcatg = "<?php echo $scheme['SchCatg']; ?>";
+        if(schcatg !=4){
+            getDiscountItems(i);
+        }
+        getPortionByItmTyp_edit(i);
+        getDiscPortionByItmTyp_edit(i);
     }
+
     function add_description(){
         $('#description'+num_desc).show();
         $('.form-group').show();
@@ -467,20 +645,22 @@
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_itemtyp_div" style="display: block;">\
                             <label for="description'+num_desc+'_itemtyp"><?= $this->lang->line('item');?> <?= $this->lang->line('type');?></label>\
-                                <select class="form-control form-control-sm itemType" id="description'+num_desc+'_itemtyp" name="description_itemtyp[]" onchange="getItems2(this, '+num_desc+')">\
+                                <select class="form-control form-control-sm itemType" id="description'+num_desc+'_itemtyp" name="description_itemtyp[]" onchange="getPortionByItmTyp(this, '+num_desc+')">\
                                     <option value=""><?= $this->lang->line('select');?></option>\
-                                    <?php foreach($itemType as $key){?>
-                                        <option value="<?= $key['ItmTyp']?>"><?= $key['Name']?></option>\
-                                    <?php } ?>
+                                    <?php foreach($menuTags as $key){
+                                        if($key['TagTyp'] == 2){ ?>
+                                        <option value="<?= $key['TagId']?>"><?= $key['TDesc']?></option>\
+                                    <?php } } ?>
                                 </select>\
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_itemsales" style="display: block;">\
                             <label for="description'+num_desc+'_itemsales"><?= $this->lang->line('itemSale');?></label>\
                             <select class="form-control form-control-sm itemSale" id="description'+num_desc+'_itemsale" name="description_itemsales[]">\
                             <option value=""><?= $this->lang->line('all');?></option>\
-                                <?php foreach($itmSales as $key){?>
+                                <?php foreach($menuTags as $key){
+                                    if($key['TagTyp'] == 3){ ?>
                                         <option value="<?= $key['TagId']?>"><?= $key['TDesc']?></option>\
-                                <?php } ?>
+                                <?php } } ?>
                             </select>\
                         </div>\
                         <div class="form-group col-md-3 col-6">\
@@ -547,6 +727,16 @@
                                 <option value="0"><?= $this->lang->line('select'); ?></option>\
                             </select>\
                         </div>\
+                        <div class="form-group col-md-3 col-6" id="description'+num_desc+'_itemtyp_div" style="display: block;">\
+                            <label for="description'+num_desc+'_itemtyp"><?= $this->lang->line('discount');?> <?= $this->lang->line('item');?> <?= $this->lang->line('type');?></label>\
+                                <select class="form-control form-control-sm discitemType" id="description'+num_desc+'_discitemtyp" name="description_discitemtyp[]" onchange="getDiscPortionByItmTyp(this, '+num_desc+')">\
+                                    <option value="0"><?= $this->lang->line('select');?></option>\
+                                    <?php foreach($menuTags as $key){
+                                        if($key['TagTyp'] == 2){  ?>
+                                        <option value="<?= $key['TagId']?>"><?= $key['TDesc']?></option>\
+                                    <?php } } ?>
+                                </select>\
+                        </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_discountitemportion_div" style="display: block;">\
                             <label for="description'+num_desc+'_discountitemportion"><?= $this->lang->line('discountItemPortion');?></label>\
                             <select class="form-control form-control-sm" id="description'+num_desc+'_discountitemportion" name="description_discountitemportion[]">\
@@ -558,15 +748,15 @@
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_discountquantity_div" style="display: block;">\
                             <label for="description'+num_desc+'_discountquantity"><?= $this->lang->line('discountItemQuantity');?></label>\
-                            <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_discountquantity" name="description_discountquantity[]" value="0">\
+                            <input type="number" class="form-control form-control-sm discQty" id="description'+num_desc+'_discountquantity" name="description_discountquantity[]" value="0">\
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_discountitempercentage_div" style="display: block;">\
                             <label for="description'+num_desc+'_discountitempercentage"><?= $this->lang->line('discountItemPercentage');?></label>\
-                            <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_discountitempercentage" name="description_discountitempercentage[]" value="0">\
+                            <input type="number" class="form-control form-control-sm discpercent" id="description'+num_desc+'_discountitempercentage" name="description_discountitempercentage[]" value="0">\
                         </div>\
                         <div class="form-group col-md-3 col-6" id="description'+num_desc+'_discountmaxamt_div" style="display: block;">\
                             <label for="description'+num_desc+'discountmaxamt"><?= $this->lang->line('discount');?> <?= $this->lang->line('maximum');?> <?= $this->lang->line('amount');?></label>\
-                            <input type="number" class="form-control form-control-sm" id="description'+num_desc+'_disc_max_amt" name="description_disc_max_amt[]" value="0">\
+                            <input type="number" class="form-control form-control-sm discmaxamt" id="description'+num_desc+'_disc_max_amt" name="description_disc_max_amt[]" value="0">\
                         </div>\
                     </div>\
                 </div>';
@@ -575,6 +765,7 @@
         $('.discountItems').select2();
         getDiscountItems2(num_desc);
     }
+
     function getCategory(n){
         var cid = $('#description'+n+'_cid').val();
         var mcatgid = $('#mcatgid'+n).val();
@@ -587,19 +778,21 @@
             },
             success: function(response) {
                 var res = JSON.parse(response);
-                var b = '<option value="0"><?= $this->lang->line('all'); ?></option>';
-                for(i= 0;i<res.length;i++){
-                    var ch = '';
-                    if(mcatgid == res[i].MCatgId){
-                        ch = 'selected';
-                    }else{
-                        ch = '';
+                if(res.length > 0){
+                    var b = '<option value="0"><?= $this->lang->line('all'); ?></option>';
+                    for(i= 0;i<res.length;i++){
+                        var ch = '';
+                        if(mcatgid == res[i].MCatgId){
+                            ch = 'selected';
+                        }else{
+                            ch = '';
+                        }
+                        // alert(ch);
+                        b += '<option value="'+res[i].MCatgId+'" '+ch+'>'+res[i].MCatgNm+'</option>';
                     }
-                    // alert(ch);
-                    b += '<option value="'+res[i].MCatgId+'" '+ch+'>'+res[i].MCatgNm+'</option>';
+                    $('#description'+n+'_mcatgid').html(b);
+                    getItems(n);
                 }
-                $('#description'+n+'_mcatgid').html(b);
-                getItems(n);
             }
         })
     }
@@ -609,39 +802,41 @@
         var item = $('#item_id'+n).val();
         var item1 = $('#disc_item_id'+n).val();
         // alert(item);
-        if(cat != ''){
-            $.ajax({
-                url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
-                type: 'post',
-                data: {
-                    getItems: 1,
-                    item_typ: it,
-                    mcatgid: cat
-                },
-                success: function(response) {
-                    var res = JSON.parse(response);
-                    var b = '<option value="0"><?= $this->lang->line('all'); ?></option>';
-                    var b1 = '<option value="0"><?= $this->lang->line('all'); ?></option>';
-                    for(i= 0;i<res.length;i++){
-                        var ch = '';
-                        if(item == res[i].ItemId){
-                            ch = 'selected';
-                        }
-                        var ch1 = '';
-                        if(item1 == res[i].ItemId){
-                            ch1 = 'selected';
-                        }
-                        b += '<option value="'+res[i].ItemId+'" '+ch+'>'+res[i].ItemNm+'</option>';
-                        b1 += '<option value="'+res[i].ItemId+'" '+ch1+'>'+res[i].ItemNm+'</option>';
+        $.ajax({
+            url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
+            type: 'post',
+            data: {
+                getItems: 1,
+                item_typ: it,
+                mcatgid: cat
+            },
+            success: function(response) {
+                var res = JSON.parse(response);
+                var b = '<option value="0"><?= $this->lang->line('all'); ?></option>';
+                var b1 = '<option value="0"><?= $this->lang->line('all'); ?></option>';
+                for(i= 0;i<res.length;i++){
+                    var ch = '';
+                    if(item == res[i].ItemId){
+                        ch = 'selected';
                     }
-                    // $('#description'+n+'_item').append(b);
-                    $('#description'+n+'_item').html(b);
-                    // $('#description'+n+'_discountitem').html(b1);
-                    getItemPortion(n);
+                    var ch1 = '';
+                    if(item1 == res[i].ItemId){
+                        ch1 = 'selected';
+                    }
+                    b += '<option value="'+res[i].ItemId+'" '+ch+'>'+res[i].ItemNm+'</option>';
+                    b1 += '<option value="'+res[i].ItemId+'" '+ch1+'>'+res[i].ItemNm+'</option>';
+                }
+                // $('#description'+n+'_item').append(b);
+                $('#description'+n+'_item').html(b);
+                // $('#description'+n+'_discountitem').html(b1);
+                var schCatg = "<?php echo $scheme['SchCatg']; ?>";
+                if(schCatg !=4){
+                    getItemPortion(n);  
                     getDiscItemPortion(n);
                 }
-            })
-        }
+            }
+        })
+        
     }
 
     function getDiscountItems(n){
@@ -679,58 +874,34 @@
 
     function getItemPortion(n){
         var item_id = $('#description'+n+'_item').val();
-        var ip = $('#ipcd'+n).val();
-        // alert(item_id);
-        $.ajax({
-            url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
-            type: 'post',
-            data: {
-                getItemPortion: 1,
-                item_id: item_id
-            },
-            success: function(response) {
-                var res = JSON.parse(response);
-                var b = '<option value="0"><?= $this->lang->line('all'); ?></option>';
-                for(i= 0;i<res.length;i++){
-                    var ch = '';
-                    if(ip == res[i].IPCd){
-                        ch = 'selected';
-                    }
-                    b += '<option value="'+res[i].IPCd+'" '+ch+'>'+res[i].Name+'</option>';
-                }
-                $('#description'+n+'_itemportion').html(b);
-                // getDiscItemPortion(1);
-            }
-        })
+        var ipcd = $('#ipcd'+n).val();
+        if(item_id > 0){
+            portionCommon(ItemTyp=0 ,CID=0, MCatgId=0, item_id, n, 'itemid', ipcd);
+        }
     }
 
     function getDiscItemPortion(n){
-        var item_id = $('#description'+n+'_discountitem').val();
+        var ItemId = $('#description'+n+'_discountitem').val();
         var ip = $('#disc_ipcd'+n).val();
-        
-        $.ajax({
-            url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
-            type: 'post',
-            data: {
-                getItemPortion: 1,
-                item_id: item_id
-            },
-            success: function(response) {
-                var res = JSON.parse(response);
-                var b = '<option value="0"><?= $this->lang->line('all'); ?></option>';
-                for(i= 0;i<res.length;i++){
-                    var ch = '';
-                    
-                    if(ip == res[i].IPCd){
-                        ch = 'selected';
-                    }
-                    
-                    b += '<option value="'+res[i].IPCd+'" '+ch+'>'+res[i].Name+'</option>';
-                }
-                
-                $('#description'+n+'_discountitemportion').html(b);
-            }
-        })
+
+        if(ItemId> 0){
+            $('#description'+n+'_discountitemportion').attr('required', true);
+            $('#description'+n+'_discountquantity').attr('required', true);
+
+            $('.disccuisine').val('').trigger('change');
+            $('.discmenuCategory').val('').trigger('change');
+            $('.discitemType').val("");
+            // $('.discQty').val(1);
+            $(`'discountItemPortion`).prop('required', true);
+            $(`'discQty`).prop('required', true);
+
+            portionForCommon(ItemTyp=0 ,CID=0, MCatgId=0, ItemId, n, 'itemid');
+
+        }else{
+            $('#description'+n+'_discountitemportion').attr('required', false);
+            $('#description'+n+'_discountquantity').attr('required', false);
+        }
+
     }
 
     function getCategory2(el, n){
@@ -799,42 +970,22 @@
 
     function getItemPortion2(el, n){
         var item_id = el.value;
-        $.ajax({
-            url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
-            type: 'post',
-            data: {
-                getItemPortion: 1,
-                item_id: item_id
-            },
-            success: function(response) {
-                var res = JSON.parse(response);
-                var b = '';
-                for(i= 0;i<res.length;i++){
-                    b += '<option value="'+res[i].IPCd+'">'+res[i].Name+'</option>';
-                }
-                $('#description'+n+'_itemportion').append(b);
-            }
-        })
+        if(item_id > 0){
+            portionCommon(ItemTyp=0 ,CID=0, MCatgId=0, item_id, n, 'itemid', 0);
+        }
     }
     function getDiscItemPortion2(el, n){
         var item_id = el.value;
-        $.ajax({
-            url: '<?php echo base_url('restaurant/offer_ajax'); ?>',
-            type: 'post',
-            data: {
-                getItemPortion: 1,
-                item_id: item_id
-            },
-            success: function(response) {
-                var res = JSON.parse(response);
-                var b = '';
-                for(i= 0;i<res.length;i++){
-                    b += '<option value="'+res[i].IPCd+'">'+res[i].Name+'</option>';
-                }
-                // alert(b);
-                $('#description'+n+'_discountitemportion').append(b);
-            }
-        })
+
+        if(item_id> 0){
+            $('#description'+n+'_discountitemportion').attr('required', true);
+            $('#description'+n+'_discountquantity').attr('required', true);
+
+            portionForCommon(ItemTyp=0 ,CID=0, MCatgId=0, item_id, n, 'itemid');
+        }else{
+            $('#description'+n+'_discountitemportion').attr('required', false);
+            $('#description'+n+'_discountquantity').attr('required', false);
+        }
     }
     function delete_offer_description(id){
         if(confirm("Are you sure want to delete the scheme description?")){
@@ -856,6 +1007,129 @@
             });
         }
     }
-    
+
+    function getPortionByItmTyp_edit(n){
+
+        var schcatg = "<?php echo $scheme['SchCatg']; ?>";
+        // item type based =4
+        if(schcatg == 4){
+            var itemTyp = $(`#description${n}_itemtyp`).val();
+            var ip = $('#ipcd'+n).val();
+            
+            if(itemTyp > 0){
+                portionCommon(ItemTyp ,CID=0, MCatgId=0, ItemId=0, n, 'itemtype', ip)
+            }
+        }
+    }
+
+    function getDiscPortionByItmTyp_edit(n){
+        var schcatg = "<?php echo $scheme['SchCatg']; ?>";
+        var ip = $('#disc_ipcd'+n).val();
+
+        // item type based =4
+        if(schcatg == 4 || schcatg == 75){
+            var itemTyp = $(`#description${n}_discitemtyp`).val();
+            if(itemTyp > 0){
+                portionForCommon(itemTyp ,CID=0, MCatgId=0, ItemId=0, n, 'itemtype');
+            }
+        }
+    }
+
+
+    function getPortionByItmTyp(el, n){
+        var schcatg = $(`#schcatg`).val();
+        // item type based =4
+        if(schcatg == 4){
+            var itemTyp = $(`#description${n}_itemtyp`).val();
+            if(itemTyp > 0){
+                portionCommon(itemTyp ,CID=0, MCatgId=0, ItemId=0, n, 'itemtype', 0);
+            }
+        }
+    }
+
+    function getDiscPortionByItmTyp(el, n){
+        var schcatg = $(`#schcatg`).val();
+        var ItemTyp = $(`#description${n}_discitemtyp`).val();
+        
+        if(ItemTyp > 0){
+            $('.disccuisine').val('').trigger('change');
+            $('.discmenuCategory').val('').trigger('change');
+            $('.discountItems').val('').trigger('change');
+            // $('.discQty').val(1);
+            $(`'discountItemPortion`).prop('required', true);
+            $(`'discQty`).prop('required', true);
+        }
+
+        if(ItemTyp > 0){
+            portionForCommon(ItemTyp ,CID=0, MCatgId=0, ItemId=0, n, 'itemtype');
+        }
+    }
+
+    function getCategoryDisc(el, n){
+        var CID = el.value;
+
+        if(CID > 0){
+            $('.discmenuCategory').val('').trigger('change');
+            $('.discountItems').val('').trigger('change');
+            $('.discitemType').val("");
+            // $('.discQty').val(1);
+            $(`'discountItemPortion`).prop('required', true);
+            $(`'discQty`).prop('required', true);
+            
+            portionForCommon(ItemTyp=0 ,CID, MCatgId=0, ItemId=0, n, 'cid');
+        }
+
+    }
+
+    function getItemsDisc(el, n){
+        var MCatgId = $('#description'+n+'_disc_mcatgid').val();
+        if(MCatgId > 0){
+            $('.disccuisine').val('').trigger('change');
+            $('.discountItems').val('').trigger('change');
+            $('.discitemType').val("");
+            // $('.discQty').val(1);
+            $(`'discountItemPortion`).prop('required', true);
+            $(`'discQty`).prop('required', true);
+
+            portionForCommon(ItemTyp=0 ,CID=0, MCatgId, ItemId=0, n, 'cat');
+        }
+
+    }
+
+    function portionCommon(ItemTyp ,CID, MCatgId, ItemId, n, type, ipcd){
+
+        $.post('<?= base_url('restaurant/get_portion_itemtype') ?>',{ItemTyp:ItemTyp, CID:CID, MCatgId:MCatgId, ItemId:ItemId, type:type},function(res){
+            if(res.status == 'success'){
+                var opt = `<option value=""><?= $this->lang->line('select'); ?></option>`;
+              res.response.forEach((item, index) => {
+                if(ipcd > 0){
+                var ch = '';
+                    if(ipcd == item.IPCd){
+                        ch = 'selected';
+                    }
+                }
+
+                opt += `<option value="${item.IPCd}" ${ch}>${item.Portions}</option>`;
+              })
+              $(`#description${n}_itemportion`).html(opt);
+            }else{
+              alert(res.response);
+            }
+        });   
+    }
+
+    function portionForCommon(ItemTyp ,CID, MCatgId, ItemId, n, type){
+        $.post('<?= base_url('restaurant/get_portion_itemtype') ?>',{ItemTyp:ItemTyp, CID:CID, MCatgId:MCatgId, ItemId:ItemId, type:type},function(res){
+            if(res.status == 'success'){
+                var opt = `<option value=""><?= $this->lang->line('select'); ?></option>`;
+              res.response.forEach((item, index) => {
+                opt += `<option value="${item.IPCd}">${item.Portions}</option>`;
+              })
+              $(`#description${n}_discountitemportion`).html(opt);
+            }else{
+              alert(res.response);
+            }
+        });   
+    }
 
 </script>

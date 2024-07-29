@@ -109,11 +109,7 @@
 
   <script>
   window.console = window.console || function(t) {};
-</script>
 
-
-
-  <script>
   if (document.location.search.match(/type=embed/gi)) {
     window.parent.postMessage("resize", "*");
   }
@@ -157,7 +153,7 @@
         </tr>
         <?php } ?>
         <tr style="border-bottom: 1px solid black;">
-          <td style="text-align: left;">Bill No: <?= $billno ?> <?php if($this->session->userdata('billPrintTableNo') > 0) { echo " , Table No: ".$TableNo; } ?><br>
+          <td style="text-align: left;">Bill No: <?= $billno ?> <?php if($this->session->userdata('billPrintTableNo') > 0 && $TableNo < 100 && ($this->session->userdata('EType') == 5)) { echo " , Table No: ".$MergeNo; } ?><br>
             Date: <?= $dateOfBill ?>
           </td>
           <?php if ($CustNo != "0") : ?>
@@ -182,6 +178,7 @@
                             $sameTaxType  = '';
                             $itemTotal = 0;
                             foreach ($billData as $keyData => $data) {
+                              $qty = ($splitTyp == 0)?round($data['Qty'], 0):$data['Qty'];
                             $portions = '';
                             $std = '';
                               if($data['Portions'] != 'Std'){
@@ -204,9 +201,9 @@
 
                                         }
                                         
-                                        $sameTaxType .= ' <td>'.$data['Qty'].' </td>';
+                                        $sameTaxType .= ' <td>'.$qty.' </td>';
                                         $sameTaxType .= ' <td>'.$data['OrigRate'].'</td> ';
-                                        $sameTaxType .= ' <td>'.$data['ItemAmt'].'</td> ';
+                                        $sameTaxType .= ' <td>'.round($data['ItemAmt'], 2).'</td> ';
                                         $sameTaxType .= ' </tr> ';
                                         $itemTotal +=$data['ItemAmt'];
                                 }
@@ -243,8 +240,6 @@
                             foreach ($value as $key1=> $dataTax) {
 
                                 if($dataTax['TaxType'] == $TaxType && $dataTax['Included'] > 0){
-
-                                    // $total_tax = calculatTotalTax($total_tax,number_format($dataTax['SubAmtTax'],2));
 
                                         $newTaxType .= ' <tr class="service"> ';
                                         $newTaxType .= ' <td class="tableitem">'.$dataTax['ShortName'].''.$dataTax['TaxPcent'].'% </td> ';
@@ -330,16 +325,16 @@
                                     </tr>
                             <?php   }?>
 
-                            <?php
-                                if($total_discount_amount != 0 || $total_packing_charge_amount || $total_delivery_charge_amount){?>
-                                <tr style=" border-bottom: 2px solid;">
-                                    <th></th>
-                                    <td></td>
-                                </tr>
-                            <?php   } ?>
+                            <!-- regular discount section -->
+                            <?php if($billData[0]['discId'] > 0) { ?>
+                              <tr>
+                                  <td><?= $billData[0]['discountName']; ?> Discount @ <?= $billData[0]['discPcent']; ?>%</td>
+                                  <td><?= $billData[0]['autoDiscAmt']; ?></td>
+                              </tr>
+                            <?php } ?>
                         
                             <tr>
-                                <td style="font-weight: bold;">GRAND TOTAL</td>
+                                <td><b>Grand Total</b> (<?= $this->lang->line('roundedoff'); ?>)</td>
                                 <td style="font-weight: bold;"><?= $billData[0]['PaidAmt'] ?></td>
                             </tr>
                         </table>
@@ -349,16 +344,15 @@
                     <br>
                     <?php if(isset($_GET['ShowRatings']) && $_GET['ShowRatings'] == 1){
                         
-                        // print_r($ra);exit();
                         if(!empty($ra)){?>
                             <p><b>Group Rating : </b></p>
                             <table class="table table-bordered table-striped text-center">
                                 <thead>
                                     <tr>
-                                        <th>Ambience</th>
-                                        <th>Service</th>
-                                        <th>Food</th>
-                                        <th>VFM<sup>*</sup></th>
+                                        <th><?= $this->lang->line('ambience'); ?></th>
+                                        <th><?= $this->lang->line('service'); ?></th>
+                                        <th><?= $this->lang->line('food'); ?></th>
+                                        <th><?= $this->lang->line('vfm'); ?><sup>*</sup></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -370,22 +364,12 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <sub>* Value For Money</sub>
-                        <?php }
-                        ?>
-
-
-                        
-                    <?php }?>
+                            <sub>* <?= $this->lang->line('valueForMoney'); ?></sub>
+                        <?php } } ?>
         </div><!--End Table-->
 
     </div><!--End InvoiceBot-->
   </div><!--End Invoice-->
-
-
-
-
-
 
 </body>
 
