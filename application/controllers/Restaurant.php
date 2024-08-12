@@ -1923,11 +1923,13 @@ class Restaurant extends CI_Controller {
                             break;
 
                         case '4':
+                        // outword
                             $RMStock['FrmID'] = $_POST['FrmStore'];
                             $RMStock['ToID'] = 0;
                             break;
 
                         case '13':
+                        // inword
                             $RMStock['FrmID'] = 0;
                             $RMStock['ToID'] = $_POST['ToStore'];
                             break;

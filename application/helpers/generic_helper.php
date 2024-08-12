@@ -554,6 +554,12 @@ function rechargeHistory($data){
     return $CI->User->createRCHistory($data);	
 }
 
+function getNameFromMast($id){
+	$CI = & get_instance();
+    $CI->load->model('User');
+    return $CI->User->getingNameFromMast($id);	
+}
+
 
 
 

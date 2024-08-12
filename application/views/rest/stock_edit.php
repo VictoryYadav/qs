@@ -34,7 +34,6 @@ $RestName = authuser()->RestName;
                                     <div class="card-body">
                                         <input type="hidden" name="trans_id" value="<?= $TransId; ?>">
                                             <div class="row">
-                                                <?php $label = 'From';?>
                                                 <div class="col-2">
                                                     <label><?= $this->lang->line('transactionNo'); ?></label><br>
                                                     <b><?= $TransId?></b>
@@ -48,6 +47,11 @@ $RestName = authuser()->RestName;
                                                 <div class="col-2">
                                                     <label><span id="tr_date_label"></span><?= $this->lang->line('date'); ?></label><br>
                                                     <b><?= date('d-M-Y', strtotime($stock['TransDt']))?></b>
+                                                </div>
+
+                                                <div class="col-2">
+                                                    <label><?= $this->lang->line('name'); ?></label><br>
+                                                    <b><?= getNameFromMast($stock['FrmID']).' - '.getNameFromMast($stock['ToID']); ?></b>
                                                 </div>
                                                 
                                                 <div class="col-2">
