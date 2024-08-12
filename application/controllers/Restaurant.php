@@ -1374,7 +1374,7 @@ class Restaurant extends CI_Controller {
                         for ($i = 1; $i < sizeof($languages); $i++) { 
                             $LCd = $languages[$i]['LCd'];
                             $description = "SchDesc$LCd";
-                            $CustOffersDet[$description] = $_POST[$description];
+                            $CustOffersDet[$description] = $_POST[$description][$i];
                         } }
 
                         $CustOffersDet['CID'] = isset($_POST['description_cid'][$i])?$_POST['description_cid'][$i]:0;
@@ -1382,22 +1382,22 @@ class Restaurant extends CI_Controller {
                         $CustOffersDet['ItemTyp'] = isset($_POST['description_itemtyp'][$i])?$_POST['description_itemtyp'][$i]:0;
                         $CustOffersDet['ItemId'] = isset($_POST['description_item'][$i])?$_POST['description_item'][$i]:0;
                         $CustOffersDet['ItemSale'] = isset($_POST['description_itemsales'][$i])?$_POST['description_itemsales'][$i]:0;
-                        $CustOffersDet['IPCd'] = $_POST['description_itemportion'][$i];
-                        $CustOffersDet['Qty'] = $_POST['description_quantity'][$i];
+                        $CustOffersDet['IPCd'] = isset($_POST['description_itemportion'][$i])?$_POST['description_itemportion'][$i]:0;
+                        $CustOffersDet['Qty'] = isset($_POST['description_quantity'][$i])?$_POST['description_quantity'][$i]:0;
 
                         $CustOffersDet['Disc_CID'] = !empty($_POST['description_disc_cid'][$i])?$_POST['description_disc_cid'][$i]:0;
                         $CustOffersDet['Disc_MCatgId'] = !empty($_POST['description_disc_mcatgid'][$i])?$_POST['description_disc_mcatgid'][$i]:0;
-                        $CustOffersDet['Disc_ItemId'] = $_POST['description_discountitem'][$i];
-                        $CustOffersDet['Disc_IPCd'] = $_POST['description_discountitemportion'][$i];
-                        $CustOffersDet['Disc_Qty'] = $_POST['description_discountquantity'][$i];
+                        $CustOffersDet['Disc_ItemId'] = isset($_POST['description_discountitem'][$i])?$_POST['description_discountitem'][$i]:0;
+                        $CustOffersDet['Disc_IPCd'] = isset($_POST['description_discountitemportion'][$i])?$_POST['description_discountitemportion'][$i]:0;
+                        $CustOffersDet['Disc_Qty'] = isset($_POST['description_discountquantity'][$i])?$_POST['description_discountquantity'][$i]:0;
                         
-                        $CustOffersDet['DiscItemPcent'] = $_POST['description_discountitempercentage'][$i];
+                        $CustOffersDet['DiscItemPcent'] = isset($_POST['description_discountitempercentage'][$i])?$_POST['description_discountitempercentage'][$i]:0;
                         $CustOffersDet['Disc_ItemTyp'] = !empty($_POST['description_discitemtyp'][$i])?$_POST['description_discitemtyp'][$i]:0;
 
-                        $CustOffersDet['DiscMaxAmt'] = $_POST['description_disc_max_amt'][$i];
-                        $CustOffersDet['MinBillAmt'] = $_POST['description_minbillamount'][$i];
-                        $CustOffersDet['Disc_pcent'] = $_POST['description_discountpercent'][$i];
-                        $CustOffersDet['Disc_Amt'] = $_POST['description_discountamount'][$i];
+                        $CustOffersDet['DiscMaxAmt'] = !empty($_POST['description_disc_max_amt'][$i])?$_POST['description_disc_max_amt'][$i]:0;
+                        $CustOffersDet['MinBillAmt'] = !empty($_POST['description_minbillamount'][$i])?$_POST['description_minbillamount'][$i]:0;
+                        $CustOffersDet['Disc_pcent'] = !empty($_POST['description_discountpercent'][$i])?$_POST['description_discountpercent'][$i]:0;
+                        $CustOffersDet['Disc_Amt'] = !empty($_POST['description_discountamount'][$i])?$_POST['description_discountamount'][$i]:0;
 
                         $CustOffersDet['Rank'] = 1;
                         $CustOffersDet['Stat'] = 0;
@@ -1406,7 +1406,7 @@ class Restaurant extends CI_Controller {
                             $SDetCd = $_POST['SDetCd'][$i];
                             updateRecord('CustOffersDet',$CustOffersDet, array('SDetCd' => $SDetCd));
                         }else{
-                            recordInsert('CustOffersDet', $CustOffersDet);
+                            insertRecord('CustOffersDet', $CustOffersDet);
                         }
                     }
                 }
@@ -1892,39 +1892,75 @@ class Restaurant extends CI_Controller {
     }
 
     public function add_stock(){
-        $this->check_access();
+        // $this->check_access();
         if($this->input->method(true)=='POST'){
             
             if(isset($_POST['add_stock']) && $_POST['add_stock'] == 1){
                 if($_POST){
-                    
+
                     $RMStock['TransType'] = $_POST['trans_type'];
+                    $RMStock['TransDt'] = !empty($_POST['TransDt'])?$_POST['TransDt']:date('Y-m-d');
 
-                    $RMStock['FrmSuppCd'] = !empty($_POST['to_store']) && !empty($_POST['supplier'])?$_POST['supplier']:0;
-                    $RMStock['FrmEID'] = !empty($_POST['to_store']) && !empty($_POST['eatary'])?$_POST['eatary']:0;
-                    $RMStock['FrmKitCd'] = !empty($_POST['to_store']) && $_POST['kit']?$_POST['kit']:0;
+                    switch ($_POST['trans_type']) {
+                        case '10':
+                            $RMStock['FrmID'] = $_POST['FrmSupp'];
+                            $RMStock['ToID'] = $_POST['ToStore'];
+                            break;
 
-                    $RMStock['ToSuppCd'] = !empty($_POST['from_store']) && !empty($_POST['supplier'])?$_POST['supplier']:0;
-                    $RMStock['ToEID'] = !empty($_POST['from_store']) && !empty($_POST['eatary'])?$_POST['eatary']:0;
-                    $RMStock['ToKitCd'] = !empty($_POST['from_store']) && !empty($_POST['kit'])?$_POST['kit']:0;
-                    
-                    $RMStock['FrmStoreId'] = !empty($_POST['from_store'])?$_POST['from_store']:0;
-                    
-                    $RMStock['ToStoreId'] = !empty($_POST['to_store'])?$_POST['to_store']:0;
+                        case '1':
+                            $RMStock['FrmID'] = $_POST['FrmStore'];
+                            $RMStock['ToID'] = $_POST['ToSupp'];
+                            break;
 
-                    if($_POST['trans_type'] == 21){
-                        $RMStock['FrmKitCd'] = !empty($_POST['store_adjust'])?$_POST['store_adjust']:0;
+                        case '2':
+                            $RMStock['FrmID'] = $_POST['FrmStore'];
+                            $RMStock['ToID'] = $_POST['ToKit'];
+                            break;
+
+                        case '12':
+                            $RMStock['FrmID'] = $_POST['FrmKit'];
+                            $RMStock['ToID'] = $_POST['ToStore'];
+                            break;
+
+                        case '4':
+                            $RMStock['FrmID'] = $_POST['FrmStore'];
+                            $RMStock['ToID'] = 0;
+                            break;
+
+                        case '13':
+                            $RMStock['FrmID'] = 0;
+                            $RMStock['ToID'] = $_POST['ToStore'];
+                            break;
                     }
 
                     $RMStock['Stat'] = 0;
                     $RMStock['LoginId'] = authuser()->RUserId;
                     $RMStock['EID'] = authuser()->EID;
-                    $RMStock['TransDt'] = !empty($_POST['TransDt'])?$_POST['TransDt']:date('Y-m-d');
+                    
                     $TransId = insertRecord('RMStock', $RMStock);
                     if($TransId){
                         
                         $num = sizeof($_POST['ItemId']);
                         for($i = 0;$i<$num;$i++){
+                            $RMStockDet['TTyp'] = 1; // issued
+                            $RMStockDet['StoreId'] = $RMStock['FrmID'];
+                            $RMStockDet['TransId'] = $TransId;
+
+                            $RMStockDet['RMCd'] = !empty($_POST['ItemId'][$i])?$_POST['ItemId'][$i]:0;
+                            $RMStockDet['UOMCd'] = !empty($_POST['UOM'][$i])?$_POST['UOM'][$i]:0;
+                            $RMStockDet['Qty'] = !empty($_POST['Qty'][$i])?$_POST['Qty'][$i]:0;
+                            $RMStockDet['Rate'] = !empty($_POST['Rate'][$i])?$_POST['Rate'][$i]:0;
+                            $RMStockDet['Rmks'] = !empty($_POST['Remarks'][$i])?$_POST['Remarks'][$i]:"";
+
+                            if(!empty($RMStockDet['RMCd']) && !empty($RMStockDet['Qty']) && !empty($RMStockDet['UOMCd'])){
+
+                                insertRecord('RMStockDet',$RMStockDet);
+                            }
+                        }
+
+                        for($i = 0;$i<$num;$i++){
+                            $RMStockDet['TTyp'] = 2; // received
+                            $RMStockDet['StoreId'] = $RMStock['ToID'];
                             $RMStockDet['TransId'] = $TransId;
 
                             $RMStockDet['RMCd'] = !empty($_POST['ItemId'][$i])?$_POST['ItemId'][$i]:0;
@@ -1959,8 +1995,9 @@ class Restaurant extends CI_Controller {
         $data['items'] = $this->rest->getRMItemUOM();
         $data['trans_type'] = $this->rest->getTransactionType();
         $data['eatary'] = $this->rest->getRestaurantList();
-        $data['kit'] = $this->rest->get_kitchen();
-        $data['suppliers'] = $this->rest->getSupplierList();
+        $data['store'] = $this->rest->getFromMast(3);
+        $data['suppliers'] = $this->rest->getFromMast(2);
+        $data['kit'] = $this->rest->getFromMast(1);
 
         $this->load->view('rest/stock_add',$data);
     }
@@ -2005,19 +2042,18 @@ class Restaurant extends CI_Controller {
 
     public function stock_report(){
         // $this->check_access();
-        $data['title'] = $this->lang->line('stockReport');
+        $data['title'] = 'Summary Stock '.$this->lang->line('report');
         $data['report'] = $this->rest->getStockReport();
         $this->load->view('rest/stock_report',$data);
     }
 
     public function stock_consumption(){
         // $this->check_access();
-        $data['title'] = $this->lang->line('stockConsumption');
+        $data['title'] = $this->lang->line('finishedGoodsConsumption');
         $data['report'] = $this->rest->getStockConsumption();
         $this->load->view('rest/stock_consumptions',$data);   
     }
 
-// this is not completed
     public function itemstockreport(){
         // $this->check_access();
         $data['CheckOTP'] = $this->session->userdata('DeliveryOTP');
@@ -2026,13 +2062,45 @@ class Restaurant extends CI_Controller {
         $data['RestName'] = authuser()->RestName;
 
         $data['op_stock'] = 0;
+        $data['storeName'] = '';
+        $data['itemName'] = '';
+        $data['fromDate'] = '';
+        $data['toDate'] = '';
         if($this->input->method(true)=='POST'){
             $res = $this->rest->getItemStockReportList($_POST);
             $data['report'] = $res['report'];
             $data['op_stock'] = $res['op_stock'];
+            $data['storeName'] = $_POST['storeReport'];
+            $data['itemName'] = $_POST['itemReport'];
+            
+            $data['fromDate'] = date('d-M-Y', strtotime($_POST['from_date']));
+            $data['toDate'] = date('d-M-Y', strtotime($_POST['to_date']));
         }
-        $data['title'] = 'Item Stock Report';
+        $data['title'] = 'Detail Item Stock Report';
         $this->load->view('rest/itemstockreports',$data); 
+    }
+
+    public function detailstockreport(){
+        // $this->check_access();
+        $data['EID'] = authuser()->EID;
+
+        $data['op_stock'] = 0;
+        $data['fromDate'] = '';
+        $data['toDate'] = '';
+
+        if($this->input->method(true)=='POST'){
+            $res = $this->rest->getItemStockReportList($_POST);
+            $data['report'] = $res['report'];
+            $data['op_stock'] = $res['op_stock'];
+            
+            $data['fromDate'] = date('d-M-Y', strtotime($_POST['from_date']));
+            $data['toDate'] = date('d-M-Y', strtotime($_POST['to_date']));
+
+        }
+        $data['title'] = 'Detail Stock Report';
+        $data['stores'] = $this->rest->getFromMast(3);
+        $data['items'] =  $this->rest->getRMItemUOM();
+        $this->load->view('rest/detailstockreports',$data); 
     }
 
     public function rm_ajax(){
@@ -2207,7 +2275,7 @@ class Restaurant extends CI_Controller {
             
             $f = $_POST['FKOTNo'];
             $c = $_POST['CNo'];
-            $data = $this->db2->query("SELECT k.FKOTNo, ek.KitName, k.UKOTNo FROM Eat_Kit ek, Kitchen k, KitchenMain km WHERE ( k.Stat = 3) AND k.EID=km.EID AND k.CNo = km.CNo AND km.EID = $EID and (km.CNo = $c OR km.MCNo = $c) and k.FKOTNo = $f and k.MergeNo = km.MergeNo and ek.KitCd=k.KitCd and ek.EID=km.EID GROUP BY k.FKOTNo, ek.KitName, k.UKOTNo order by k.FKOTNo, ek.KitName, k.UKOTNo ASC")->result_array();
+            $data = $this->db2->query("SELECT k.FKOTNo, ek.Name1, k.UKOTNo FROM Eat_Kit ek, Kitchen k, KitchenMain km WHERE ( k.Stat = 3) AND k.EID=km.EID AND k.CNo = km.CNo AND km.EID = $EID and (km.CNo = $c OR km.MCNo = $c) and k.FKOTNo = $f and k.MergeNo = km.MergeNo and ek.KitCd=k.KitCd and ek.EID=km.EID GROUP BY k.FKOTNo, ek.Name1, k.UKOTNo order by k.FKOTNo, ek.Name1, k.UKOTNo ASC")->result_array();
             $response['status'] = 1;
             $response['data'] = $data;
             echo json_encode($response);
@@ -3275,15 +3343,15 @@ class Restaurant extends CI_Controller {
             }
 
             if(!empty($RMCatgCd)){
-                updateRecord('RMCatg', array('RMCatgName' => $_POST['RMCatgName']), array('RMCatgCd' => $RMCatgCd));
+                updateRecord('RMCatg', array('Name1' => $_POST['RMCatgName']), array('RMCatgCd' => $RMCatgCd));
                 $status = 'success';
                 $response = 'Category Updated.';
             }else{
-                $check = getRecords('RMCatg', array('RMCatgName' => $_POST['RMCatgName']));
+                $check = getRecords('RMCatg', array('Name1' => $_POST['RMCatgName']));
                 if(!empty($check)){
                     $response = 'Category Already Exists';
                 }else{
-                    $cat['RMCatgName'] = $_POST['RMCatgName'];
+                    $cat['Name1'] = $_POST['RMCatgName'];
                     $cat['Stat'] = 0;
                     $cat['EID'] = $EID;
                     insertRecord('RMCatg', $cat);
@@ -3312,6 +3380,7 @@ class Restaurant extends CI_Controller {
     public function rmitems_list(){
         $this->check_access();
         $langId = $this->session->userdata('site_lang');
+        $EID = authuser()->EID;
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -3323,11 +3392,11 @@ class Restaurant extends CI_Controller {
             }
 
             if(!empty($RMCd)){
-                updateRecord('RMItems', array("$RMName" => $_POST['RMName']), array('RMCd' => $RMCd));
+                updateRecord('RMItems', array("$RMName" => $_POST['RMName']), array('RMCd' => $RMCd, 'EID' => $EID));
                 $status = 'success';
                 $response = 'RMItem Updated.';
             }else{
-                $check = getRecords('RMItems', array("$RMName" => $_POST['RMName'], 'RMCatg' => $_POST['RMCatg']));
+                $check = getRecords('RMItems', array("$RMName" => $_POST['RMName'], 'RMCatg' => $_POST['RMCatg'], 'EID' => $EID));
 
                 if(!empty($check)){
                     $response = 'RMItem Already Exists';
@@ -3336,6 +3405,7 @@ class Restaurant extends CI_Controller {
                     $cat['RMCatg'] = $_POST['RMCatg'];
                     $cat['ItemId'] = $_POST['ItemId'];
                     $cat['Stat'] = 0;
+                    $cat['EID'] = $EID;
                     insertRecord('RMItems', $cat);
                     $status = 'success';
                     $response = 'RMItem Inserted';
@@ -3737,6 +3807,21 @@ class Restaurant extends CI_Controller {
         die;
         $data['title'] ='dd';
         $this->load->view('rest/blank',$data);
+
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+            
+            $response = $this->db2->get_where('city', array('phone_code' => $_POST['phone_code']) )->result_array();
+            $status = 'success';
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
     }
 
     public function billCreateRest(){
@@ -5895,9 +5980,9 @@ class Restaurant extends CI_Controller {
                                           $checker = 0;
                                         }
 
-                                        $kd['KitName1'] =  $csv_data[1];
+                                        $kd['Name1'] =  $csv_data[1];
 
-                                        if(empty($kd['KitName1'])){
+                                        if(empty($kd['Name1'])){
                                           $response = $csv_data[1]. " Field Required in row no: $count";
                                           $checker = 0;
                                         }
@@ -6261,7 +6346,7 @@ class Restaurant extends CI_Controller {
 
     private function checkKitchen($name, $EID){
         $KitCd = 0;
-        $data = $this->db2->select('KitCd')->like('KitName1', $name)->get_where('Eat_Kit', array('EID' => $EID))->row_array();
+        $data = $this->db2->select('KitCd')->like('Name1', $name)->get_where('Eat_Kit', array('EID' => $EID))->row_array();
         if(!empty($data)){
             $KitCd = $data['KitCd'];
         }
@@ -6839,7 +6924,7 @@ class Restaurant extends CI_Controller {
         $data['title'] = $this->lang->line('cuisine');
         $data['eatCuisine'] = $this->rest->getEatCuisineList();
         $data['kitchens'] = $this->rest->get_kitchen();
-        // echo "<pre>";print_r($data);die;
+        
         $this->load->view('rest/eat_cuisine', $data);    
     }
 
@@ -6890,6 +6975,7 @@ class Restaurant extends CI_Controller {
 
         $status = "error";
         $response = "Something went wrong! Try again later.";
+        $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
 
             $langId = $this->session->userdata('site_lang');
@@ -6897,13 +6983,23 @@ class Restaurant extends CI_Controller {
 
             $updateData[$lname] = $_POST['kitchen'];
             $updateData['Stat'] = $_POST['Stat'];
+            $updateData['EID'] = $EID;
 
             if($_POST['KitCd'] > 0){
-                updateRecord('Eat_Kit', $updateData, array('KitCd' => $_POST['KitCd']));
+                updateRecord('Eat_Kit', $updateData, array('KitCd' => $_POST['KitCd'], 'EID' => $EID));
+
+                updateRecord('Masts', array('Name' => $_POST['kitchen']), array('MCd' => $_POST['KitCd'], 'EID' => $EID, 'MstTyp' => 1));
+
                 $response = 'Updated Records'; 
             }else{
-                unset($updateData['KitCd']);
                 $updateData['EID'] = authuser()->EID;
+
+                $mast['Name'] = $_POST['kitchen'];
+                $mast['MstTyp'] = 1;
+                $mast['EID']  = $EID;
+                $KitCd = insertRecord('Masts', $mast);
+                
+                $updateData['KitCd'] = $KitCd;
                 insertRecord('Eat_Kit', $updateData);
                 $response = 'Insert Records'; 
             }
@@ -6957,6 +7053,54 @@ class Restaurant extends CI_Controller {
         $data['casherList'] = $this->rest->getCashier();
 
         $this->load->view('rest/cashier', $data);    
+    }
+
+    public function eat_store(){
+        // $this->check_access();
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+
+        $EID = authuser()->EID;
+        if($this->input->method(true)=='POST'){
+
+            $langId = $this->session->userdata('site_lang');
+            $lname = "Name$langId";
+
+            $updateData[$lname] = $_POST['name'];
+            $updateData['Stat'] = $_POST['Stat'];
+            $updateData['EID'] = $EID;
+
+            if($_POST['STId'] > 0){
+                updateRecord('Eat_Store', $updateData, array('STId' => $_POST['STId'], 'EID' => $EID));
+
+                updateRecord('Masts', array('Name' => $_POST['name']), array('MCd' => $_POST['STId'], 'EID' => $EID, 'MstTyp' => 3));
+
+                $response = 'Updated Records'; 
+            }else{
+
+                $mast['Name'] = $_POST['name'];
+                $mast['MstTyp'] = 3;
+                $mast['EID']  = $EID;
+                $STId = insertRecord('Masts', $mast);
+
+                $updateData['STId'] = $STId;
+                insertRecord('Eat_Store', $updateData);
+                $response = 'Insert Records'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('store');
+        $data['storeList'] = $this->rest->getEatStore();
+
+        $this->load->view('rest/eatStore', $data);    
     }
 
     public function dispense_outlet(){
@@ -7045,9 +7189,10 @@ class Restaurant extends CI_Controller {
 
             $updateData[$lname] = $_POST['menu'];
 
-            $updateData['pageUrl'] = $_POST['pageUrl'];
-            $updateData['Rank'] = $_POST['Rank'];
-            $updateData['Stat'] = $_POST['Stat'];
+            $updateData['pageUrl']      = $_POST['pageUrl'];
+            $updateData['Rank']         = $_POST['Rank'];
+            $updateData['roleGroup']    = $_POST['roleGroup'];
+            $updateData['Stat']         = $_POST['Stat'];
 
             if($_POST['RoleId'] > 0){
                 updateRecord('UserRoles', $updateData, array('RoleId' => $_POST['RoleId']));
@@ -7321,7 +7466,7 @@ class Restaurant extends CI_Controller {
             $ingeredients = "mi.Ingeredients$langId as Ingeredients";
             $Rmks = "mi.Rmks$langId as Rmks";
 
-            $select = "mc.TaxType, mc.KitCd, mi.ItemId, $lname, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, $iDesc, $ingeredients, $Rmks, mi.PrepTime, mi.AvgRtng, mi.FID, Name1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
+            $select = "mc.TaxType, mc.KitCd, mi.ItemId, $lname, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, $iDesc, $ingeredients, $Rmks, mi.PrepTime, mi.AvgRtng, mi.FID, mi.Name1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
             $rec = $this->db2->select($select)
                             ->join('MenuItem mi','mi.ItemId = mr.RcItemId', 'inner')
                             ->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')
@@ -7765,9 +7910,11 @@ class Restaurant extends CI_Controller {
     }
 
     public function suppliers(){
-        $this->check_access();
+        // $this->check_access();
         $status = "error";
         $response = "Something went wrong! Try again later.";
+
+        $EID = authuser()->EID;;
         if($this->input->method(true)=='POST'){
 
             $langId = $this->session->userdata('site_lang');
@@ -7777,12 +7924,22 @@ class Restaurant extends CI_Controller {
             $updateData['CreditDays']   = $_POST['CreditDays'];
             $updateData['Remarks']      = $_POST['Remarks'];
             $updateData['Stat']         = $_POST['Stat'];
+            $updateData['EID']          = $EID;
 
             if($_POST['SuppCd'] > 0){
                 updateRecord('RMSuppliers', $updateData, array('SuppCd' => $_POST['SuppCd']));
+
+                updateRecord('Masts', array('Name' => $_POST['name']), array('MCd' => $_POST['SuppCd'], 'EID' => $EID, 'MstTyp' => 2));
+
                 $response = 'Updated Records'; 
             }else{
-                unset($updateData['SuppCd']);
+            
+                $mast['Name'] = $_POST['name'];
+                $mast['MstTyp'] = 2;
+                $mast['EID']  = $EID;
+                $SuppCd = insertRecord('Masts', $mast);
+
+                $updateData['SuppCd'] = $SuppCd;
                 insertRecord('RMSuppliers', $updateData);
                 $response = 'Insert Records'; 
             }
@@ -10085,6 +10242,37 @@ class Restaurant extends CI_Controller {
         $data['title'] = $this->lang->line('language');
 
         $this->load->view('rest/languages', $data);    
+    }
+
+    public function checkStock(){
+
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+            $response = 0;
+
+                $selectedItem = $_POST['Item'];
+                $FrmId = $_POST['FrmId'];
+                $uom = $_POST['uom'];
+
+                $dt  = $this->db2->query("SELECT sum(case when rs.TransType < 10 && rs.ToID= $FrmId Then rsd.Qty ELSE 0 end) as issued, sum(case when rs.TransType >= 10 && rs.ToID= $FrmId Then rsd.Qty else 0 end) as rcvd FROM RMStockDet as rsd, RMStock as rs where rsd.TransId = rs.TransId and  rsd.RMCd = $selectedItem and rsd.UOMCd = $uom and rsd.Stat = 0 and rs.Stat = 0 group by rs.FrmID, rs.ToId ")
+                    ->row_array();
+
+                if(!empty($dt)){
+                    $total = $dt['rcvd'] - $dt['issued'];
+                    if($_POST['Qty'] >= $total){
+                        $response = 1;
+                    }
+                }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
     }
 
 

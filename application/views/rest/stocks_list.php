@@ -35,7 +35,7 @@ $RestName = authuser()->RestName;
                                                 <div class="col-md-2 col-6">
                                                     <label><?= $this->lang->line('transactionType'); ?></label>
                                                     <select class="form-control form-control-sm" name="trans_type">
-                                                        <option value="">Transaction Type</option>
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php foreach($trans_type as $key){?>
                                                             <option value="<?= $key['TagId']; ?>" <?php if($key['TagId'] == $trans_type_id){echo 'checked';}?>><?= $key['TDesc']; ?></option>
                                                         <?php }?>
@@ -58,14 +58,10 @@ $RestName = authuser()->RestName;
                                                 <div class="col-md-3 col-10">
                                                     <div class="d-none d-sm-block">
                                                     <label>&nbsp;</label><br>
-                                                    <a target="_blank" href="<?php echo base_url('restaurant/stock_consumption'); ?>" class="btn btn-info btn-sm"><?= $this->lang->line('consumption'); ?></a>
-                                                    <a target="_blank" href="<?php echo base_url('restaurant/stock_report'); ?>" class="btn btn-warning btn-sm"><?= $this->lang->line('report'); ?></a>
-                                                    <a href="<?php echo base_url('restaurant/add_stock'); ?>" class="btn btn-success btn-sm"><?= $this->lang->line('addStock'); ?></a>
+                                                    <a href="<?php echo base_url('restaurant/add_stock'); ?>" class="btn btn-primary btn-sm"><?= $this->lang->line('addStock'); ?></a>
                                                 </div>
                                                     <div class="d-sm-block d-md-none text-right">
                                                         <label>&nbsp;</label><br>
-                                                    <a target="_blank" href="<?php echo base_url('restaurant/stock_consumption'); ?>" class="btn btn-info btn-sm"><?= $this->lang->line('consumption'); ?></a>
-                                                    <a target="_blank" href="<?php echo base_url('restaurant/stock_report'); ?>" class="btn btn-warning btn-sm"><?= $this->lang->line('report'); ?></a>
                                                     <a href="<?php echo base_url('restaurant/add_stock'); ?>" class="btn btn-primary btn-sm"><?= $this->lang->line('addStock'); ?></a>
                                                     </div>
                                                 </div>
@@ -97,32 +93,8 @@ $RestName = authuser()->RestName;
                                                     <td><?= convertToUnicodeNumber($key['TransId']); ?></td>
                                                     <td><?= date('d-M-Y',strtotime($key['TransDt']));?></td>
                                                    <td><?= getTransType($key['TransType']) ?></td>
-                                                    <td>
-                                                        <?php 
-                                                            if($key['FromEID']){
-                                                                echo $key['FromEID'];
-                                                            }elseif($key['FromSupp']){
-                                                                echo $key['FromSupp'];
-                                                            }elseif($key['FromKit']) {
-                                                                echo $key['FromKit'];
-                                                            }elseif($key['FromMain']) {
-                                                                echo $key['FromMain'];
-                                                            }
-                                                        ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php 
-                                                            if($key['ToEID']){
-                                                                echo $key['ToEID'];
-                                                            }elseif($key['ToSupp']){
-                                                                echo $key['ToSupp'];
-                                                            }elseif($key['ToKit']) {
-                                                                echo $key['ToKit'];
-                                                            }elseif($key['ToMain']) {
-                                                                echo $key['ToMain'];
-                                                            }
-                                                        ?>
-                                                    </td>
+                                                    <td><?= $key['FName']; ?></td>
+                                                    <td><?= $key['TName']; ?></td>
                                                 </tr>
                                                   <?php } } ?>
                                                 </tbody>

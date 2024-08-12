@@ -37,14 +37,14 @@
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('credit'); ?> <?= $this->lang->line('day'); ?></label>
-                                                        <input type="number" class="form-control form-control-sm" name="CreditDays" placeholder="<?= $this->lang->line('name'); ?>" required="" id="CreditDays" autocomplete="off">
+                                                        <input type="number" class="form-control form-control-sm" name="CreditDays" placeholder="days" required="" id="CreditDays" autocomplete="off">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('remarks'); ?></label>
-                                                        <input type="text" class="form-control form-control-sm" name="Remarks" placeholder="<?= $this->lang->line('name'); ?>" required="" id="Remarks" autocomplete="off">
+                                                        <input type="text" class="form-control form-control-sm" name="Remarks" placeholder="<?= $this->lang->line('remark'); ?>" required="" id="Remarks" autocomplete="off">
                                                     </div>
                                                 </div>
 

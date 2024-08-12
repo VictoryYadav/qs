@@ -86,10 +86,7 @@ class Cust extends CI_Model{
                             'mi.EID' => $this->EID
                         ))
                         ->result_array();
-                        // print_r($this->db2->last_query());die;
-         // echo "<pre>";
-         // print_r($data);
-         // die;
+                      
          if(!empty($data)){
 	        foreach ($data as &$key) {
 				if ($this->ChainId > 0) {
@@ -116,9 +113,6 @@ class Cust extends CI_Model{
 
          return $data;
 
-        // echo "<pre>";
-        // print_r($data);
-        // die;
 	}
 
 	function strTruncate($str){
@@ -154,7 +148,7 @@ class Cust extends CI_Model{
 							'mir.EID' => $EID
 							))
 						->result_array();
-						// print_r($this->db2->last_query());die;
+						
 	}
 
 	public function getOfferCustAjax($postData){
@@ -171,11 +165,6 @@ class Cust extends CI_Model{
     		$scDesc = "cod.SchDesc$langId as SchDesc";
 
 			$GetOffer = $this->db2->query("SELECT $scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank, cod.Qty as FreeQty, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId from CustOffersDet as cod join CustOffers as c on c.SchCd=cod.SchCd and  (cod.CID = $cid or cod.MCatgId = $MCatgId or cod.ItemTyp = $itemTyp or cod.ItemId = $itemId) left outer join Cuisines as c1 on cod.CID=c1.CID   left outer join MenuCatg as m on cod.MCatgId = m.MCatgId  left outer join ItemTypes as i on cod.ItemTyp = i.ItmTyp  left outer join MenuItem as mi on mi.ItemId = cod.ItemId where c.EID=".$this->EID." and c.ChainId =".$this->ChainId."  and c.Stat=0 and c.Stat=0 and c.Stat=0 and (time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)  group by c.schcd, cod.sDetCd order by c.Rank, cod.Rank")->result_array();
-
-			// echo "<pre>";
-			// print_r($this->db2->last_query());
-			// print_r($GetOffer);
-			// die;
 
 		    if (count($GetOffer) == 0) {
 		        echo 0;
@@ -262,9 +251,6 @@ class Cust extends CI_Model{
         											)
         								)
         						->result_array();
-
-			$dd =  $this->db2->query("SELECT $scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank,cod.Disc_ItemId, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId from CustOffersDet as cod join CustOffers as c on c.SchCd=cod.SchCd and  (cod.CID = $cid or cod.MCatgId = $MCatgId or cod.ItemTyp = $itemTyp or cod.ItemId = $itemId) left outer join Cuisines as c1 on cod.CID=c1.CID left outer join MenuCatg as m on cod.MCatgId = m.MCatgId  left outer join ItemTypes as i on cod.ItemTyp = i.ItmTyp  left outer join MenuItem as mi on mi.ItemId = cod.ItemId left outer join MenuItemRates as mir on mir.ItemId = mi.ItemId where (mir.Itm_Portion = $itemPortion or mi.FID = $FID or mi.ItemSale = $itemsale) and mir.EID = ".$this->EID." and  c.EID=".$this->EID." and c.ChainId =".$this->ChainId."  and c.Stat=0 and cod.Stat=0 and c.SchTyp = 2 and (time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)  group by c.schcd, cod.sDetCd order by c.Rank, cod.Rank")->result_array();
-			print_r($this->db2->last_query());die;
 		}
 	}
 
@@ -685,6 +671,7 @@ class Cust extends CI_Model{
 
 				$schcd = !empty($postData['schcd'])?$postData['schcd']:0;
 				$sdetcd = 0;
+				$childOrdNo = 0;
 				if(!empty($schcd)){
 					
 					$sdetcd = !empty($postData['sdetcd'])?$postData['sdetcd']:0;
@@ -697,52 +684,104 @@ class Cust extends CI_Model{
 						$kitchenObj['Itm_Portion'] = $postData['itemPortionText'];
 						if($Offers['ItemId'] > 0){
 							$kitchenObj['ItemId'] = $Offers['ItemId'];
-							$kitchenObj['Itm_Portion'] = $Offers['IPCd'];
+							if($Offers['IPCd'] > 0){
+								$kitchenObj['Itm_Portion'] = $Offers['IPCd'];
+							}
 						}
 						$kitchenObj['Qty'] = $Offers['Qty'];
 						$kitchenObj['ItmRate'] = $itmrate;
-						$kitchenObj['OrigRate'] = $itmrate; 	//(m.Value)
+						$kitchenObj['OrigRate'] = $itmrate; 	
+						$kitchenObj['tmpOrigRate'] = $itmrate;
+						$kitchenObj['tmpItmRate'] = $itmrate;
 						// $kitchenObj['Itm_Portion'] = $postData['itemPortionText'];
 						
 						$kitchenObj['SchCd'] = $schcd;
 						$kitchenObj['SDetCd'] = $sdetcd;
 
-						insertRecord('Kitchen', $kitchenObj);
+						$childOrdNo = insertRecord('Kitchen', $kitchenObj);
+						updateRecord('Kitchen', array('childOrdNo' => $childOrdNo), array('OrdNo' => $childOrdNo, 'EID' => $EID));
 						// for offer 
 						$Disc_ItemId = $Offers['Disc_ItemId'];
 						$Disc_IPCd = $Offers['Disc_IPCd'];
 						$offerRate = $itmrate - ($itmrate * $Offers['Disc_pcent'] / 100);
+
 						if($Disc_ItemId > 0){
 							if($Disc_ItemId != $postData['itemId'] || $Disc_IPCd != $Offers['IPCd']){
-								$offerRates = $this->db2->query("select mi.OrigRate from MenuItemRates as mi where mi.EID = $this->EID and mi.ItemId = $Disc_ItemId and mi.Itm_Portion = $Disc_IPCd and mi.SecId = (select SecId from Eat_tables where TableNo = $TableNo and EID = $this->EID)")->row_array();
+								$offerRates = $this->db2->query("select mi.OrigRate, mi.ItmRate, mc.TaxType, mc.DCd, m.ItemTyp, m.PckCharge, m.KitCd from MenuItemRates as mi, MenuCatg as mc, MenuItem m where m.ItemId = mi.ItemId and mc.MCatgId = m.MCatgId  and m.EID = mc.EID and mi.EID=m.EID and  mi.EID = $this->EID and mi.ItemId = $Disc_ItemId and mi.Itm_Portion = $Disc_IPCd and mi.SecId = (select SecId from Eat_tables where TableNo = $TableNo and EID = $this->EID)")->row_array();
 
 								$offerRate = $offerRates['OrigRate'] -  ($offerRates['OrigRate'] * $Offers['Disc_pcent'] / 100);
 								$offerOrigRate = $offerRates['OrigRate'];
+								$kitchenObj['TaxType'] = $offerRates['TaxType'];
+								$kitchenObj['KitCd'] =	$offerRates['KitCd'];
+								$kitchenObj['DCd'] = $offerRates['DCd'];
+								$kitchenObj['ItemTyp'] = $offerRates['ItemTyp'];
+								if($kitchenObj['TA'] == 1){
+									$kitchenObj['PckCharge'] = $offerRates['PckCharge'];
+								}
+								$kitchenObj['OrigRate'] = $offerRates['OrigRate'];
+								$kitchenObj['ItmRate'] = $offerRates['ItmRate'];
+
+								$kitchenObj['tmpOrigRate'] = $offerRates['OrigRate'];
+								$kitchenObj['tmpItmRate'] = $offerRates['ItmRate'];
 							}
-						}
 
-						if($Offers['SchTyp'] > 1) {
-							$offerRate = $itmrate - ($itmrate * $Offers['DiscItemPcent'] / 100);
-							if($Disc_ItemId > 0){
-								if($Disc_ItemId != $postData['itemId'] || $Disc_IPCd != $Offers['IPCd']){
-									
-									$offerRate = $offerRates['OrigRate'] -  ($offerRates['OrigRate'] * $Offers['DiscItemPcent'] / 100);
-									$offerOrigRate = $offerRates['OrigRate'];
-								}	
-							}						
-						}
-
-						if($Disc_ItemId > 0){
 							$kitchenObj['ItemId'] = $Disc_ItemId;
 							$kitchenObj['Itm_Portion'] = $Offers['Disc_IPCd'];
+							
+							if($Offers['SchTyp'] > 1) {
+								$offerRate = $itmrate - ($itmrate * $Offers['DiscItemPcent'] / 100);
+								if($Disc_ItemId > 0){
+									if($Disc_ItemId != $postData['itemId'] || $Disc_IPCd != $Offers['IPCd']){
+										
+										$offerRate = $offerRates['OrigRate'] -  ($offerRates['OrigRate'] * $Offers['DiscItemPcent'] / 100);
+										$offerOrigRate = $offerRates['OrigRate'];
+									}	
+								}						
+							}
+							
+							$kitchenObj['Qty'] = $Offers['Disc_Qty'];
+							$kitchenObj['OrigRate'] = $offerOrigRate;
+							$kitchenObj['ItmRate'] = $offerRate;
+
+							$kitchenObj['tmpOrigRate'] = $offerOrigRate;
+							$kitchenObj['tmpItmRate'] = $offerRate;
+
+							$kitchenObj['SchCd'] = $schcd;
+							$kitchenObj['SDetCd'] = $sdetcd;
+							$kitchenObj['childOrdNo'] = $childOrdNo;
+							insertRecord('Kitchen', $kitchenObj);
+						}else if($Offers['DiscItemPcent'] > 0){
+                            $perc_Amt = ($offerOrigRate * $Offers['DiscItemPcent'] / 100);
+                            $perc_Amt = round($perc_Amt) * $Offers['Qty'];
+                            if($Offers['DiscMaxAmt'] > 0){
+                                if($perc_Amt <= $Offers['DiscMaxAmt']){
+                                    $itmrate = $offerOrigRate - $perc_Amt;
+                                }else{
+                                    $itmrate = $offerOrigRate - round($Offers['DiscMaxAmt']/$Offers['Qty']);
+                                }
+                            }else{
+                                $itmrate = $offerOrigRate - $perc_Amt;
+                            }
+                        }else if($Offers['DiscMaxAmt'] > 0){
+                            if($Offers['DiscMaxAmt'] > 0){
+                                $itmrate = $offerOrigRate - round($Offers['DiscMaxAmt']/$Offers['Qty']);
+                            }
+                        }
+                        updateRecord('Kitchen', array('ItmRate' => $itmrate, 'tmpItmRate' => $itmrate), array('OrdNo' => $childOrdNo, 'EID' => $EID));
+
+                        if($Offers['ItemTyp'] == 4){
+                        	$kt = getRecords('Kitchen', array('OrdNo' => $childOrdNo,  'EID' => $EID));
+                        	
+	                        if($Offers['Qty'] > 1){
+	                        	unset($kt['OrdNo']);
+	                            for ($i=0; $i < $Offers['Qty']-1; $i++) { 
+	                                $kt['childOrdNo'] = $childOrdNo;
+	                                $kt['Qty'] = 1;
+	                                insertRecord('Kitchen', $kt);
+	                            }
+	                            updateRecord('Kitchen', array('Qty' => 1), array('OrdNo' => $childOrdNo, 'EID' => $EID));
+	                        }
 						}
-						$kitchenObj['TaxType'] =$postData['tax_type'];
-						$kitchenObj['Qty'] = $Offers['Disc_Qty'];
-						$kitchenObj['ItmRate'] = $offerRate;
-						$kitchenObj['OrigRate'] = $offerOrigRate;
-						$kitchenObj['SchCd'] = $schcd;
-						$kitchenObj['SDetCd'] = $sdetcd;
-						insertRecord('Kitchen', $kitchenObj);
 					}
 				}else{
 					
@@ -750,7 +789,11 @@ class Cust extends CI_Model{
 					$kitchenObj['TaxType'] =$postData['tax_type'];
 					$kitchenObj['Qty'] = $postData['qty'];
 					$kitchenObj['ItmRate'] = $itmrate;
-					$kitchenObj['OrigRate'] = $itmrate; 	//(m.Value)
+					$kitchenObj['OrigRate'] = $itmrate; 
+
+					$kitchenObj['tmpOrigRate'] = $itmrate;
+					$kitchenObj['tmpItmRate'] = $itmrate;
+
 					$kitchenObj['Itm_Portion'] = $postData['itemPortionText'];
 					
 					$kitchenObj['SchCd'] = $schcd;
@@ -1111,7 +1154,7 @@ class Cust extends CI_Model{
     	$scName = "c.SchNm$langId as SchNm";
     	$scDesc = "cod.SchDesc$langId as SchDesc";
 
-		return $this->db2->select("$scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.SchCatg, c.Rank,cod.Disc_ItemId, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, cod.DiscItemPcent")
+		return $this->db2->select("$scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.SchCatg, c.Rank,cod.Disc_ItemId, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, cod.DiscItemPcent, cod.DiscMaxAmt, ")
 						->join('CustOffers c', 'c.SchCd = cod.SchCd', 'inner')
 						->get_where('CustOffersDet cod', array('c.SchCd' => $schcd,
 						 'cod.SDetCd' => $sdetcd,
@@ -1260,18 +1303,16 @@ class Cust extends CI_Model{
 		return $val;
 	}
 
-	// bill.repo.php
-
 	public function getBillAmount($EID, $CNo){
 		if($CNo > 0){
 			$EType = $this->session->userdata('EType');
 			$stat = ($EType == 5)?3:2;
 
             $langId = $this->session->userdata('site_lang');
-            $lname = "m.Name$langId";
+            $lname = "m.Name$langId as ItemNm";
             $ipName = "ip.Name$langId as Portions";
 
-		return $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate, k.ItmRate,sum(k.OrigRate*k.Qty) as OrdAmt, (SELECT sum((k1.OrigRate-k1.ItmRate)*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.CNo=km.CNo and k1.EID=km.EID and k1.CNo =$CNo AND (k1.Stat = $stat) and ((k1.OrigRate-k1.ItmRate) * k1.Qty) > 0) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotPckCharge, $ipName, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name, k.TA  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and (k.CNo = km.CNo or k.MCNo = km.MCNo) AND (km.CNo = $CNo OR km.MCNo = $CNo) group by km.CNo, k.ItemId, k.Itm_Portion ,k.CustItemDesc order by TaxType, m.Name1 Asc")->result_array();
+		return $this->db2->query("SELECT $lname, sum(k.Qty) as Qty ,k.OrigRate, k.ItmRate,sum(k.OrigRate*k.Qty) as OrdAmt, k.CustItemDesc, IFNULL((SELECT sum((k1.OrigRate-k1.ItmRate)*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.CNo=km.CNo and k1.EID=km.EID and k1.CNo =$CNo AND (k1.Stat = $stat) and ((k1.OrigRate-k1.ItmRate) * k1.Qty) > 0),0) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = $stat) GROUP BY k1.EID) as TotPckCharge, $ipName, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name, k.TA  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and (k.CNo = km.CNo or k.MCNo = km.MCNo) AND (km.CNo = $CNo OR km.MCNo = $CNo) group by km.MCNo, k.ItemId, k.Itm_Portion, k.TA, k.CustItemDesc order by TaxType, m.Name1 Asc")->result_array();
 		}
 	}
 
@@ -1402,7 +1443,7 @@ class Cust extends CI_Model{
                 $billingObj['COrgId'] = $COrgId;
                 $billingObj['CustNo'] = $CustNo;
                 $billingObj['TotAmt'] = $itemTotalGross;
-                $billingObj['PaidAmt'] = $totalAmount;
+                $billingObj['PaidAmt'] = round($totalAmount);
                 $billingObj['SerCharge'] = $kitcheData[0]['ServChrg'];
                 $billingObj['SerChargeAmt'] = round(($itemTotalGross * $kitcheData[0]['ServChrg']) /100 ,2);
                 $billingObj['Tip'] = $TipAmount;
@@ -1757,6 +1798,76 @@ class Cust extends CI_Model{
 		$EID = authuser()->EID;
 		$OType = $this->session->userdata('TableNo');
 		return $this->db2->select('offerValid')->get_where('Eat_tables', array('EID' => $EID, 'TableNo' => $OType))->row_array();
+	}
+
+	public function updateBillDiscountAmount($CNo){
+        $SchType = $this->session->userdata('SchType');
+        $EID = authuser()->EID;
+        if(in_array($SchType, array(1,3))){
+        	$EType = $this->session->userdata('EType');
+			$stat = ($EType == 5)?2:1;
+
+            $Offer = $this->db2->select("km.SchCd, km.SDetCd, sum(k.Qty * k.OrigRate) as orderAmount")
+            				->join('Kitchen k', 'k.MCNo = km.MCNo', 'inner')
+            				->get_where('KitchenMain km', array('km.EID' =>$EID, 'km.BillStat' => 0, 'k.Stat' => $stat, 'km.CNo' => $CNo))
+            				->row_array();
+			if(!empty($Offer)){
+				
+	            $billOffer = $this->db2->select('cod.DiscMaxAmt, cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent')
+	            					->join('CustOffersDet cod', 'cod.SchCd = c.SchCd', 'inner')
+	            					->get_where('CustOffers c', array('c.EID' => $EID, 'cod.SchCd' => $Offer['SchCd'], 'cod.SDetCd' => $Offer['SDetCd']))
+	            
+	            					->row_array();
+
+	            if(!empty($billOffer)){
+	                $dis = 0;
+	                if($Offer['orderAmount'] >= $billOffer['MinBillAmt']){
+	                	if($billOffer['DiscMaxAmt'] > 0){
+	                		$dis = $billOffer['DiscMaxAmt'];
+	                	}else if($billOffer['Disc_pcent'] > 0){
+	                        $amt = ($Offer['orderAmount'] * $billOffer['Disc_pcent']) / 100;
+	                        $amt  = round($amt);
+	                        if($amt > $billOffer['Disc_Amt']){
+	                        	$dis = $billOffer['Disc_Amt'];
+	                        }else{
+	                        	$dis = $amt;
+	                        }
+	                    }else{
+	                         if($billOffer['Disc_Amt'] > 0){
+	                            $dis = $billOffer['Disc_Amt'];
+	                        }   
+	                    }
+	                }
+
+	                updateRecord('KitchenMain', array('BillDiscAmt' => $dis), array('EID' => $EID, 'CNo' => $CNo));
+	            }
+			}            				
+        }
+            
+	}
+
+	public function get_customize_lists($dt){
+		$EID = authuser()->EID;
+		$langId = $this->session->userdata('site_lang');
+        $itemname = "mi.Name$langId as itemName";
+        $pname = "p.Name$langId as PortionName";
+
+        if(!empty($dt['IPCd'])){
+        	$this->db2->where('cod.IPCd', $dt['IPCd']);
+        	$this->db2->where('mir.Itm_Portion', $dt['IPCd']);
+        }
+
+        if(!empty($dt['ItemTyp'])){
+        	$this->db2->where('cod.ItemTyp', $dt['ItemTyp']);
+        }
+
+		return $this->db2->select("mi.ItemId, $itemname, $pname")
+					->join('CustOffersDet cod', 'cod.SchCd = c.SchCd', 'inner')
+					->join('MenuItem mi', 'mi.ItemId = cod.ItemId', 'inner')
+					->join('MenuItemRates mir', 'mir.ItemId = mi.ItemId', 'inner')
+					->join('ItemPortions p', 'p.IPCd = mir.Itm_Portion', 'inner')
+					->get_where('CustOffers c', array('c.EID' => $EID, 'cod.SchCd' => $dt['SchCd'], 'cod.SDetCd' => $dt['SDetCd']))
+					->result_array();
 	}
 
 	

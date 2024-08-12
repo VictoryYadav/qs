@@ -3,15 +3,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class AuthController extends CI_Controller {
 
-	public function __construct()
-	{
-		parent::__construct();
-		// $this->load->model('User', 'auth');
-	}
+    public function __construct()
+    {
+        parent::__construct();
+        // $this->load->model('User', 'auth');
+    }
 
-	public function index()
-	{
-		if($this->input->method(true)=='POST'){
+    public function index()
+    {
+        if($this->input->method(true)=='POST'){
             $data = $_POST;
             // echo "<pre>";print_r($data);die;
             if (($data['phone'] == "") && ($data['password']== "")) {
@@ -38,7 +38,7 @@ class AuthController extends CI_Controller {
 
                 if (!empty($login_check)) {
 
-                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, e.EType, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, e.CountryCd, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt, c.billSplitOpt, c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint, c.JoinTable, c.tableSharing, c.Bill_KOT_Print, c.SchType')
+                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, e.EType, e.aggEID, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, e.CountryCd, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt, c.billSplitOpt, c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint, c.JoinTable, c.tableSharing, c.Bill_KOT_Print, c.SchType, c.restBilling, c.recommend, c.addItemLock')
                             ->join('Eatary e',' u.EID = e.EID', 'inner')
                             ->join('Config c','u.EID = c.EID','inner')
                             // u.ChainId = c.ChainId 
@@ -85,6 +85,11 @@ class AuthController extends CI_Controller {
                         $this->session->set_userdata('SchType', $checkNumber['SchType']); 
                         $this->session->set_userdata('CountryCd', $checkNumber['CountryCd']);
                         $this->session->set_userdata('pCountryCd', 0);
+                        $this->session->set_userdata('aggEID', $checkNumber['aggEID']);
+
+                        $this->session->set_userdata('restBilling',$checkNumber['restBilling']); 
+                        $this->session->set_userdata('recommend',$checkNumber['recommend']);
+                        $this->session->set_userdata('addItemLock',$checkNumber['addItemLock']);
                         
                         $session_data = array(
                         'EID' => $checkNumber['EID'],
@@ -115,7 +120,7 @@ class AuthController extends CI_Controller {
                                                         )
                                                 ->row_array();
                     $url = base_url('restaurant').'/'.$userRolesAccessData['pageUrl'];
-                    
+
                     redirect($url);
                     
                 }else {
@@ -133,43 +138,43 @@ class AuthController extends CI_Controller {
         if ($this->session->userdata('logged_in')) {
             redirect(base_url('restaurant'));
         } else {
-    		if (!isset($_GET['o']) && !isset($_GET['c'])) {
-    			redirect(base_url('page_not_found'));
-    		}
+            if (!isset($_GET['o']) && !isset($_GET['c'])) {
+                redirect(base_url('page_not_found'));
+            }
 
             if($_GET['o'] > 0){
 
-        		$this->session->set_userdata('EID', $_GET['o']);
-        		$this->session->set_userdata('CatgID', $_GET['c']);
+                $this->session->set_userdata('EID', $_GET['o']);
+                $this->session->set_userdata('CatgID', $_GET['c']);
 
-        		$my_db = $_GET['o'].'e';
+                $my_db = $_GET['o'].'e';
                 $this->session->set_userdata('my_db', $my_db);
                 $data['o'] = $_GET['o'];
                 $data['c'] = $_GET['c'];
-        		$this->load->view('login',$data);
+                $this->load->view('login',$data);
             }else{
                 redirect(base_url('page_not_found'));
             }
 
         }
 
-	}
+    }
 
 
 
-	public function logout(){
-		// $this->session->unset_userdata('logged_in');
+    public function logout(){
+        // $this->session->unset_userdata('logged_in');
         $url = 'login?o='.$this->session->userdata('EID').'&c='.$this->session->userdata('CatgID');
-		$this->session->sess_destroy();
-		redirect(base_url() . $url, 'refresh');
-	}
+        $this->session->sess_destroy();
+        redirect(base_url() . $url, 'refresh');
+    }
 
-	public function getpost()
-	{
-		if (empty($_POST)) {
-			$this->load->view('errors/html/error_method');
-		} else {
-			return json_decode(json_encode($_POST));
-		}
-	}
+    public function getpost()
+    {
+        if (empty($_POST)) {
+            $this->load->view('errors/html/error_method');
+        } else {
+            return json_decode(json_encode($_POST));
+        }
+    }
 }

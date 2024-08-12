@@ -100,7 +100,7 @@
                                                          ?>
                                                     <tr>
                                                         <td><?= $i++; ?></td>
-                                                        <td><?= $row['Name1']; ?></td>
+                                                        <td><?= $row['Name']; ?></td>
                                                         <td><?= $row['pcent']; ?></td>
                                                         <td><?= $row['visitNo']; ?></td>
                                                         <td><span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span></td>

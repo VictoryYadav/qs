@@ -155,9 +155,11 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
     <div class="modal" id="RecommendationModal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header" style="background: #dbbd89;">
-                    <h6 class="modal-title text-white"><?= $this->lang->line('recommendation'); ?></h6>
-                    <p id="item_name" class="text-white"></p>
+                <div class="modal-header" style="background: #dbbd89;padding: 8px 5px 2px 12px;">
+                    <h6 class="modal-title text-white" id="item_name"><?= $this->lang->line('recommendation'); ?></h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -326,7 +328,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
 
                         var customOfferBtn = ``;
                         if(item.ItemTyp > 0){
-                            customOfferBtn = `<button type="button" onclick="getCustomItems(${item.ItemId}, ${item.ItemTyp}, ${item.Itm_Portion}, ${item.FID}, ${item.OrdNo})" style="border-radius:50px;background:#50e13c;color:#fff;border:1px solid #50e13c;">
+                            customOfferBtn = `<button type="button" onclick="getCustomItems(${item.ItemId}, ${item.ItemTyp}, ${item.Itm_Portion}, ${item.FID}, ${item.OrdNo})" style="border-radius:50px;background:#50e13c;color:#fff;border:1px solid #50e13c;" title="Customization">
                                         <i class="fa fa-gift" style="font-size:12px;"></i>
                                         </button>`;
                         }

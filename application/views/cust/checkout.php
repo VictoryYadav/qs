@@ -251,9 +251,9 @@
                         if(initil_value == item.TaxType){
                             html += `<tr>`;
                             if(item.Itm_Portion > 4){
-                                html += `<td>${item.ItemNm} (${item.Portions}) ${ta} </td>`;
+                                html += `<td>${item.ItemNm} ${item.CustItemDesc} (${item.Portions}) ${ta} </td>`;
                             }else{
-                                html += `<td>${item.ItemNm} ${ta} </td>`;
+                                html += `<td>${item.ItemNm} ${item.CustItemDesc} ${ta} </td>`;
                             }
                             
                             html += `<td class="text-center">${convertToUnicodeNo(item.Qty)}</td>`;
@@ -309,7 +309,7 @@
                             sub_total = 0;
 
                             html += `<tr>`;
-                            html += `<td>${item.ItemNm} ${ta}</td>`;
+                            html += `<td>${item.ItemNm} ${item.CustItemDesc} (${item.Portions}) ${ta}</td>`;
                             html += `<td class="text-center">${convertToUnicodeNo(item.Qty)}</td>`;
                             html += `<td class="text-center">${convertToUnicodeNo(item.OrigRate)}</td>`;
                             html += `<td class="text-right">${convertToUnicodeNo(item.OrdAmt)}</td>`;

@@ -184,12 +184,14 @@
                               if($data['Portions'] != 'Std'){
                                   $portions = ' ('.$data['Portions'].')';
                                 }
-                                if($data['CustItemDesc'] != 'Std'){
-                                  $std = ' - '.$data['CustItemDesc'];
+                                if(!empty($data['CustItemDesc'])){
+                                  if($data['CustItemDesc'] != 'Std'){
+                                    $std = ' - '.$data['CustItemDesc'];
+                                  }
                                 }
 
                                 if($data['TaxType'] == $value['TaxType']){
-                                  $ta = ($data['TA'] != 0)?'[TA]':'';
+                                  $ta = ($data['TA'] != 0)?' [TA]':'';
                                         $sameTaxType .= ' <tr class="service"> ';
                                         if($data['Itm_Portion'] > 4 ){
                                             

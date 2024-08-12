@@ -34,13 +34,10 @@ $RestName = authuser()->RestName;
                                         <div class="table-responsive">
                                             <table id="stock_report_table" class="table table-bordered">
                                                 <thead>
-                                                <!-- <th>Sl no</th> -->
                                                 <th><?= $this->lang->line('itemCd'); ?></th>
+                                                <th><?= $this->lang->line('store'); ?></th>
                                                 <th><?= $this->lang->line('item'); ?></th>
-                                                <th><?= $this->lang->line('category'); ?></th>
-                                                <!-- <th>Selled</th>
-                                                <th>Recieved</th> -->
-                                                <th><?= $this->lang->line('DifferenceRCVD_ISSUED'); ?></th>
+                                                <th><?= $this->lang->line('available'); ?></th>
                                                 </thead>
             
                                                 <tbody>
@@ -50,17 +47,10 @@ $RestName = authuser()->RestName;
                                                     foreach($report as $key){
                                                   ?>
                                                   <tr>
-                                                    <!-- <td><?= $i++; ?></td> -->
                                                     <td><?= $key['RMCd']?></td>
+                                                    <td><?= $key['StoreName']?></td>
                                                     <td><?= $key['RMName']?></td>
-                                                    <td>
-                                                        <?= $key['RMCatgName']?>
-                                                    </td>
-                                                    <!-- <td>
-                                                        <?= $key['sell']?>
-                                                    </td>
-                                                    <td><?= $key['rcvd']?></td> -->
-                                                    <td><span onclick="report_form(<?= $key['RMCd']?>)" style="color: blue;cursor: pointer;"><?= $key['rcvd'] - $key['sell']?></span></td>
+                                                    <td><span onclick="report_form(<?= $key['RMCd']?>, <?= $key['MCd']?>, '<?= $key['StoreName']?>', '<?= $key['RMName']?>')" style="color: blue;cursor: pointer;"><?= $key['rcvd'] - $key['issued'] - $key['sold']?></span></td>
                                                 </tr>
 
                                                   <?php } } ?>
@@ -102,13 +92,17 @@ $RestName = authuser()->RestName;
                 <div class="modal-content">
                     <!-- Modal Header -->
                     <div class="modal-header">
-                        <h4 class="modal-title" id="decline-title"><?= $this->lang->line('stockReport'); ?></h4>
+                        <h4 class="modal-title" id="decline-title"><?= $this->lang->line('stock'); ?> <?= $this->lang->line('details'); ?> <?= $this->lang->line('report'); ?></h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <!-- Modal body -->
                     <div class="modal-body">
                         <form method="post" action="<?php echo base_url('restaurant/itemstockreport'); ?>">
                             <input type="hidden" name="RMCd" id="RMCdReport">
+                            <input type="hidden" name="MCd" id="MCdReport">
+                            <input type="hidden" name="storeReport" id="storeReport">
+                            <input type="hidden" name="itemReport" id="itemReport">
+
                             <div class="form-group">
                                 <label><?= $this->lang->line('fromDate'); ?></label>
                                 <input class="form-control" type="date" name="from_date" id="from_date" value="<?php echo date('Y-m-d'); ?>">
@@ -132,8 +126,11 @@ $RestName = authuser()->RestName;
         $('#stock_report_table').DataTable();
     });
 
-    function report_form(id){
-        $('#RMCdReport').val(id);
+    function report_form(rmcd, mcd, storename, itemname){
+        $('#RMCdReport').val(rmcd);
+        $('#MCdReport').val(mcd);
+        $('#storeReport').val(storename);
+        $('#itemReport').val(itemname);
         $('#report_form').modal('show');
     }
     

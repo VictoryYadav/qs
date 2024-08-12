@@ -10,11 +10,7 @@
                     <!-- Sidebar -->
                 </div>
             </div>
-            <!-- Left Sidebar End -->
-
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
+            
             <div class="main-content">
 
                 <div class="page-content">
@@ -24,8 +20,60 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <div class="text-center"><p>Item Name: <?= $storeName.' - '.$itemName; ?>, Opening Stock: <?= $op_stock;?> </p>
-                                            <p>Date : <?= $fromDate .' to '. $toDate; ?></p></div>
+                                        <form method="post" id="filterForm" action="<?= base_url('restaurant/detailstockreport') ?>">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <label for=""><?= $this->lang->line('fromDate'); ?></label>
+                                                    <div class="form-group">
+                                                        <input type="date" class="form-control form-control-sm" value="<?= date('Y-m-d');?>" name="from_date" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <label for=""><?= $this->lang->line('toDate'); ?></label>
+                                                    <div class="form-group">
+                                                        <input type="date" class="form-control form-control-sm" value="<?= date('Y-m-d');?>" name="to_date" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <label for=""><?= $this->lang->line('store'); ?></label>
+                                                    <div class="form-group">
+                                                        <select class="form-control form-control-sm" name="MCd" required>
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                            <?php 
+                                                            foreach ($stores as $key) { ?>
+                                                                <option value="<?= $key['MCd']; ?>"><?= $key['Name']; ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <label for=""><?= $this->lang->line('item'); ?></label>
+                                                    <div class="form-group">
+                                                        <select class="form-control form-control-sm select2 custom-select" id="rmcd" name="RMCd" required>
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                            <?php 
+                                                            if(!empty($items)){
+                                                            foreach ($items as $key) { ?>
+                                                                <option value="<?= $key['RMCd']; ?>"><?= $key['RMName']; ?></option>
+                                                            <?php } } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="text-center">
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('search'); ?>">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
                                         <div class="table-responsive">
                                             <table id="stock_report_table" class="table table-bordered">
                                                 <thead>
@@ -99,6 +147,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $('#rmcd').select2();
         $('#stock_report_table').DataTable();
     });
 

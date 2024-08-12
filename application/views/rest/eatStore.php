@@ -24,44 +24,17 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form method="post" id="tableForm">
-                                            <input type="hidden" id="RoleId" name="RoleId" value="0">
+                                        <form method="post" id="kitchenForm">
+                                            <input type="hidden" id="CCd" name="STId" value="0">
                                             <div class="row">
-                                                <div class="col-md-4 col-6">
+                                                <div class="col-md-3 col-5">
                                                     <div class="form-group">
-                                                        <label><?= $this->lang->line('menu'); ?></label>
-                                                        <input type="text" class="form-control form-control-sm" name="menu" required="" id="menu" autocomplete="off">
+                                                        <label><?= $this->lang->line('store'); ?></label>
+                                                        <input type="text" class="form-control form-control-sm" name="name" placeholder="<?= $this->lang->line('name'); ?>" required="" id="cashier" autocomplete="off">
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4 col-6">
-                                                    <div class="form-group">
-                                                        <label><?= $this->lang->line('url'); ?></label>
-                                                        <input type="text" class="form-control form-control-sm" name="pageUrl" required="" id="pageUrl" autocomplete="off">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-4 col-6">
-                                                    <div class="form-group">
-                                                        <label><?= $this->lang->line('role'); ?></label>
-                                                        <select name="roleGroup" id="roleGroup" class="form-control form-control-sm" required="">
-                                                            <option value=""><?= $this->lang->line('select'); ?></option>
-
-                                                            <option value="1"><?= $this->lang->line('master'); ?></option>
-                                                            <option value="2"><?= $this->lang->line('operation'); ?></option>
-                                                            <option value="2"><?= $this->lang->line('report'); ?></option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-4 col-6">
-                                                    <div class="form-group">
-                                                        <label><?= $this->lang->line('rank'); ?></label>
-                                                        <input type="number" class="form-control form-control-sm" name="Rank" required="" id="Rank" autocomplete="off">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-4 col-6">
+                                                <div class="col-md-3 col-4">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('mode'); ?></label>
                                                         <select name="Stat" id="Stat" class="form-control form-control-sm" required="">
@@ -72,14 +45,19 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="">
-                                                <div class="form-group">
+                                                <div class="col-md-3 col-3">
+                                                    <div class="form-group">
+                                                        <label for="">&nbsp;</label>
+                                                        <br>
                                                     <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>" id="saveBtn">
                                                     <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('update'); ?>" id="updateBtn" style="display: none;">
+                                                    </div>
                                                 </div>
-                                                <div class="text-success" id="msgText"></div>
+
+                                                <div class="col-md-3">
+                                                    <div class="text-success" id="msgText"></div>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
@@ -87,38 +65,25 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table id="menutable" class="table table-bordered">
+                                            <table id="cashierTbl" class="table table-bordered">
                                                 <thead>
                                                 <tr >
                                                     <th>#</th>
-                                                    <th><?= $this->lang->line('menu'); ?></th>
-                                                    <th><?= $this->lang->line('url'); ?></th>
-                                                    <th><?= $this->lang->line('rank'); ?></th>
-                                                    <th><?= $this->lang->line('mode'); ?></th>
+                                                    <th><?= $this->lang->line('store'); ?></th>
                                                     <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
                                                 </thead>
             
                                                 <tbody>
                                                     <?php
-                                                    if(!empty($menus)){
+                                                    if(!empty($storeList)){
                                                         $i = 1;
-                                                        foreach ($menus as $row) {
-                                                            $sts = ($row['Stat'] == 0)? $this->lang->line('active'):$this->lang->line('inactive');
-
-                                                            $clr = ($row['Stat'] == 0)?'success':'danger';
-
-                                                         ?>
+                                                        foreach ($storeList as $row) { ?>
                                                     <tr>
                                                         <td><?= $i++; ?></td>
-                                                        <td><?= $row['LngName']; ?></td>
-                                                        <td><?= $row['pageUrl']; ?></td>
-                                                        <td><?= $row['Rank']; ?></td>
+                                                        <td><?= $row['Name']; ?></td>
                                                         <td>
-                                                            <span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['RoleId'] ?>,'<?= $row['LngName'] ?>','<?= $row['pageUrl'] ?>', <?= $row['Rank'] ?>,<?= $row['Stat'] ?>)">
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['STId'] ?>, '<?= $row['Name'] ?>', <?= $row['Stat'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
@@ -159,14 +124,14 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#menutable').DataTable();
+        $('#cashierTbl').DataTable();
     });
 
-    $('#tableForm').on('submit', function(e){
+    $('#kitchenForm').on('submit', function(e){
         e.preventDefault();
 
         var data = $(this).serializeArray();
-        $.post('<?= base_url('restaurant/menu_list') ?>',data,function(res){
+        $.post('<?= base_url('restaurant/eat_store') ?>',data,function(res){
             if(res.status == 'success'){
               $('#msgText').html(res.response);
             }else{
@@ -177,12 +142,10 @@
 
     });
 
-    function editData(RoleId, menu, url, rank, stat){
+    function editData(STId,name, stat){
         
-        $('#RoleId').val(RoleId);
-        $('#menu').val(menu);
-        $('#pageUrl').val(url);
-        $('#Rank').val(rank);
+        $('#CCd').val(STId);
+        $('#cashier').val(name);
         $('#Stat').val(stat);   
 
         $('#saveBtn').hide();

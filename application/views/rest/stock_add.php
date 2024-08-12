@@ -49,55 +49,60 @@ $RestName = authuser()->RestName;
 
                                                 <div class="transtype_details col-6" id="from_store_div" style="display: none;">
                                                     <label><?= $this->lang->line('from'); ?></label>
-                                                    <select class="form-control form-control-sm" id="from_store" name="from_store">
+                                                    <select class="form-control form-control-sm" id="from_store" name="FrmStore">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
-                                                        <?php foreach($kit as $key){?>
-                                                            <option value="<?= $key['KitCd']?>"><?= $key['KitName']?></option>
+                                                        <?php foreach($store as $key){?>
+                                                            <option value="<?= $key['MCd']?>"><?= $key['Name']?></option>
                                                         <?php }?>
                                                     </select>
                                                 </div>
-                                                <div class="transtype_details col-6" id="from_adjust_store_div" style="display: none;">
+
+                                                <div class=" transtype_details col-6" id="from_kitchen_div" style="display: none;">
                                                     <label><?= $this->lang->line('from'); ?></label>
-                                                    <select class="form-control form-control-sm" id="from_adjust_store" name="store_adjust">
+                                                    <select class="form-control form-control-sm" id="from_kitchen" name="FrmKit">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php foreach($kit as $key){?>
-                                                            <option value="<?= $key['KitCd']?>"><?= $key['KitName']?></option>
-                                                        <?php }?>
-                                                    </select>
-                                                </div>
-                                                <div class=" transtype_details col-6" id="eatary_div" style="display: none;">
-                                                    <label><span id="eid_label"></span><!-- Outlet --></label>
-                                                    <select class="form-control form-control-sm" id="eatary" name="eatary">
-                                                        <option value=""><?= $this->lang->line('select'); ?></option>
-                                                        <?php foreach($eatary as $key){?>
                                                             <option value="<?= $key['EID']?>"><?= $key['Name']?></option>
                                                         <?php }?>
                                                     </select>
                                                 </div>
-                                                <div class=" transtype_details col-6" id="kit_div" style="display: none;">
-                                                    <label><span id="kit_label"></span></label>
-                                                    <select class="form-control form-control-sm" id="kit" name="kit">
-                                                        <option value=""><?= $this->lang->line('select'); ?></option>
-                                                        <?php foreach($kit as $key){?>
-                                                            <option value="<?= $key['KitCd']?>"><?= $key['KitName']?></option>
-                                                        <?php }?>
-                                                    </select>
-                                                </div>
-                                                <div class=" transtype_details col-6" id="suppliers_div" style="display: none;">
-                                                    <label><span id="supp_label"></span><!-- Supplier --></label>
-                                                    <select class="form-control form-control-sm" id="suppliers" name="supplier">
+
+                                                <div class=" transtype_details col-6" id="from_suppliers_div" style="display: none;">
+                                                    <label><?= $this->lang->line('from'); ?></label>
+                                                    <select class="form-control form-control-sm" id="from_suppliers" name="FrmSupp">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php foreach($suppliers as $key){?>
-                                                            <option value="<?= $key['SuppCd']?>"><?= $key['SuppName']?></option>
+                                                            <option value="<?= $key['MCd']?>"><?= $key['Name']?></option>
                                                         <?php }?>
                                                     </select>
                                                 </div>
+
                                                 <div class="transtype_details col-6" id="to_store_div" style="display: none;">
                                                     <label><?= $this->lang->line('to'); ?></label>
-                                                    <select class="form-control form-control-sm" id="to_store" name="to_store">
+                                                    <select class="form-control form-control-sm" id="to_store" name="ToStore">
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <?php foreach($store as $key){?>
+                                                            <option value="<?= $key['MCd']?>"><?= $key['Name']?></option>
+                                                        <?php }?>
+                                                    </select>
+                                                </div>
+                                                
+                                                <div class=" transtype_details col-6" id="to_kitchen_div" style="display: none;">
+                                                    <label><?= $this->lang->line('to'); ?></label>
+                                                    <select class="form-control form-control-sm" id="to_kitchen" name="ToKit">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php foreach($kit as $key){?>
-                                                            <option value="<?= $key['KitCd']?>"><?= $key['KitName']?></option>
+                                                            <option value="<?= $key['MCd']?>"><?= $key['Name']?></option>
+                                                        <?php }?>
+                                                    </select>
+                                                </div>
+
+                                                <div class="transtype_details col-6" id="to_suppliers_div" style="display: none;">
+                                                    <label><?= $this->lang->line('to'); ?></label>
+                                                    <select class="form-control form-control-sm" id="from_suppliers" name="ToSupp">
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <?php foreach($suppliers as $key){?>
+                                                            <option value="<?= $key['MCd']?>"><?= $key['Name']?></option>
                                                         <?php }?>
                                                     </select>
                                                 </div>
@@ -115,12 +120,13 @@ $RestName = authuser()->RestName;
                                                                 <th><?= $this->lang->line('rate'); ?></th>
                                                                 <th><?= $this->lang->line('quantity'); ?></th>
                                                                 <th><?= $this->lang->line('remarks'); ?></th>
+                                                                <th></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody class="stock_list" id="stock_list">
                                                                 <tr>
                                                                     <td>
-                                                                        <select name="ItemId[]" class="items form-control form-control-sm" id="items1" onchange="getUOM(this, 1)" >
+                                                                        <select name="ItemId[]" class="items form-control form-control-sm select2 custom-select" id="items1" onchange="getUOM(this, 1)" >
                                                                             <option value="">SELECT ITEM</option>
                                                                             <?php foreach($items as $key){?>
                                                                                 <option value="<?= $key['RMCd']?>"><?= $key['RMName']?></option>
@@ -134,8 +140,11 @@ $RestName = authuser()->RestName;
                                                                         </select>
                                                                     </td>
                                                                     <td><input type="number" name="Rate[]" class="rate form-control form-control-sm" ></td>
-                                                                    <td><input type="number" name="Qty[]" class="form-control form-control-sm"></td>
+                                                                    <td><input type="number" name="Qty[]" class="form-control form-control-sm" onchange="checkQty(this,1);" id="qty_box1"></td>
                                                                     <td><input type="text" name="Remarks[]" class="form-control form-control-sm"></td>
+                                                                    <td>
+                                                                        <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash" ></i></button>
+                                                                    </td>
                                                                 </tr>
                                                         </tbody>
                                                     </table>
@@ -173,6 +182,10 @@ $RestName = authuser()->RestName;
 
 
 <script type="text/javascript">
+    $(document).ready(function() {
+        $('.items').select2();
+    });
+
 var cntr = 1;   
 function getUOM(el, n){
     var item_id = el.value;
@@ -181,17 +194,16 @@ function getUOM(el, n){
             type: "post",
             data: {'getUOM':1, 'RMCd':item_id},
             success: response => {
-                // console.log(response);
+                
                 var data = JSON.parse(response);
                 var b = '<option value="">SELECT UOM</option>';
-                // alert(data);
-                // alert(data.length);
+                
                 if (data != '') {
                     for(i = 0;i<data.length;i++){
-                        // alert(data[i].UOMCd);
+                        
                         b+='<option value="'+data[i].UOMCd+'">'+data[i].Name+'</option>';
                     }
-                    // alert(b);
+                    
                     $('#uom'+n).html(b);
                 } else {
                     alert(response);
@@ -206,7 +218,7 @@ function add_row(){
     cntr++;
     var b = '<tr>\
                 <td>\
-                    <select name="ItemId[]" class="items form-control form-control-sm" id="items1" onchange="getUOM(this, '+cntr+')">\
+                    <select name="ItemId[]" class="items form-control form-control-sm select2 custom-select" id="items'+cntr+'" onchange="getUOM(this, '+cntr+')">\
                         <option value=""><?= $this->lang->line('select'); ?></option>\
                         <?php foreach($items as $key){?>
                             <option value="<?= $key['RMCd']?>"><?= $key['RMName']?></option>\
@@ -222,14 +234,18 @@ function add_row(){
                     <input class="rate form-control form-control-sm" type="number" name="Rate[]" >\
                 </td>\
                 <td>\
-                    <input type="number" name="Qty[]" class="form-control form-control-sm">\
+                    <input type="number" name="Qty[]" class="form-control form-control-sm" id="qty_box'+cntr+'" onchange="checkQty(this, '+cntr+')">\
                 </td>\
                 <td>\
                     <input type="text" name="Remarks[]" class="form-control form-control-sm">\
                 </td>\
+                <td>\
+                    <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>\
+                </td>\
             </tr>';
 
     $('#stock_list').append(b);
+    $('.items').select2();
     var v = $('#trans_type').val();
     if(v == 20){
         // alert("sss");
@@ -237,56 +253,150 @@ function add_row(){
     }
 }
 
+// remove row
+   $("#stock_list").on('click','.removeRow',function(){
+    cntr--;
+        $(this).parent().parent().remove();
+    });
+
+   function checkQty(e, inc){
+    var qty = e.value;
+    var trans_type = $(`#trans_type`).val();
+    var uom = $(`#uom${inc}`).val();
+    if(uom > 0){
+        if(trans_type > 0){
+            if(trans_type == 1 || trans_type == 2 || trans_type == 12){
+                if(trans_type == 1){
+                    var frmId = $(`#from_store`).val();
+                    if(frmId > 0){
+                        var item = $(`#items${inc}`).val();
+                        var uom = $(`#uom${inc}`).val();
+                        calltoAjax(trans_type, frmId, item, uom, qty, inc);
+                    }else{
+                        alert('Please select store');
+                    }
+                }
+
+                if(trans_type == 2){
+                    var frmId = $(`#from_store`).val();
+                    if(frmId > 0){
+                        var item = $(`#items${inc}`).val();
+                        var uom = $(`#uom${inc}`).val();
+                        calltoAjax(trans_type, frmId, item, uom, qty, inc);
+                    }else{
+                        alert('Please select store');
+                    }
+                }
+
+                if(trans_type == 12){
+                    var frmId = $(`#from_kitchen`).val();
+                    if(frmId > 0){
+                        var item = $(`#items${inc}`).val();
+                        var uom = $(`#uom${inc}`).val();
+                        calltoAjax(trans_type, frmId, item, uom, qty, inc);
+                    }else{
+                        alert('Please select kitchen');
+                    }
+                }
+            }
+        }else{
+            alert('Please select Transaction Type');
+        }
+    }else{
+        alert('Please select UOM!!');
+    }
+   }
+
+   function calltoAjax(TransTyp, FrmId, Item, uom, Qty, inc){
+
+        $.post('<?= base_url('restaurant/checkStock') ?>',{TransTyp:TransTyp, FrmId:FrmId, Item:Item, uom:uom, Qty:Qty},function(res){
+            if(res.status == 'success'){
+                if(res.response > 0){
+                    alert('Insufficent Quantity');
+                    $(`#qty_box${inc}`).val(0);
+                }
+              
+            }else{
+              alert(res.response);
+            }
+        });
+   }
 
 function trans_typee(){
     var v = $('#trans_type').val();
     // alert(v);
     $('.transtype_details').hide();
-    if(v == 3){
-        // Transfer To EID
-        $('#eatary_div').show();
-        $('#eid_label').html('To');
-        $('#from_store_div').show();
-        $('.rate').attr('readonly', "")
-    }else if(v == 1){
+    if(v == 1){
         // Purchase Return
-        $('#suppliers_div').show();
-        $('#supp_label').html('To');
         $('#from_store_div').show();
-        $('.rate').attr('readonly', "")
-    }else if(v == 2){
-        // Issue to Kit
-        $('#kit_div').show();
-        $('#kit_label').html('To');
-        $('#from_store_div').show();
-        $('.rate').attr('readonly', "")
-    }else if(v == 11){
-        // Return From EID
-        $('#eatary_div').show();
-        $('#eid_label').html('From');
-        $('#to_store_div').show();
+        $('#to_suppliers_div').show();
+
+        $('#from_suppliers_div').hide();
+        $('#to_store_div').hide();
+
+        $('#from_kitchen_div').hide()
+        $('#to_kitchen_div').hide();
+
         $('.rate').attr('readonly', "")
     }else if(v == 10){
         // Purchase
-        $('#suppliers_div').show();
-        $('#supp_label').html('From');
+        $('#from_suppliers_div').show();
         $('#to_store_div').show();
+
+        $('#from_store_div').hide();
+        $('#from_kitchen_div').hide();
+
+        $('#to_suppliers_div').hide();
+        $('#to_kitchen_div').hide();
+        
         $('.rate').attr('readonly', false);
+    }else if(v == 2){
+        // Issue to Kit
+        $('#from_store_div').show();
+        $('#to_kitchen_div').show();
+
+        $('#to_suppliers_div').hide();
+        $('#from_suppliers_div').hide();
+        $('#to_store_div').hide();
+        $('#from_kitchen_div').hide()
+
+        $('.rate').attr('readonly', "")
     }else if(v == 12){
         // Return from Kit
-        $('#kit_div').show();
-        $('#kit_label').html('From');
+        $('#from_kitchen_div').show()
         $('#to_store_div').show();
+
+        $('#from_store_div').hide();
+        $('#to_kitchen_div').hide();
+
+        $('#to_suppliers_div').hide();
+        $('#from_suppliers_div').hide();
+
+        $('.rate').attr('readonly', "")
+    }else if(v == 4){
+        // outword Adjust
+        $('#from_store_div').show();
+
+        $('#to_store_div').hide();
+        $('#to_kitchen_div').hide();
+
+        $('#to_suppliers_div').hide();
+        $('#from_suppliers_div').hide();
+        $('#from_kitchen_div').hide()
+
         $('.rate').attr('readonly', "")
     }else if(v == 13){
         // Inward Adjust
-        // $('#eatary_div').show();
+        $('#to_store_div').show();
+        
+        $('#from_store_div').hide();
+        $('#to_kitchen_div').hide();
+
+        $('#to_suppliers_div').hide();
+        $('#from_suppliers_div').hide();
+        $('#from_kitchen_div').hide()
+
         $('.rate').attr('readonly', "")
-    }else if(v == 20){
-        // Stock Adjust
-        // alert("sss");
-        $('.rate').attr('readonly', "")
-        $('#from_adjust_store_div').show();
     }
 }
 </script>

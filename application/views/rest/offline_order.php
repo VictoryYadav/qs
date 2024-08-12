@@ -317,7 +317,7 @@
     <div class="modal fade bs-example-modal-center offersModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header" style="background: #b9f1ac;color: #000;">
                     <h5 class="modal-title align-self-center mt-0" id="exampleModalLabel"><?= $this->lang->line('offers'); ?></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -457,8 +457,9 @@
     <div class="modal" id="RecommendationModal">
         <div class="modal-dialog">
             <div class="modal-content" >
-                <div class="modal-header">
-                    <h6><?= $this->lang->line('recommendation'); ?></h6>
+                <div class="modal-header" style="background: #b9f1ac;color: #000;">
+                    <h6 id="recomTitle"><?= $this->lang->line('recommendation'); ?></h6>
+            
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
@@ -1063,7 +1064,7 @@
 
                         var recomBtn = ``;
                         if(item.recom > 0){
-                            recomBtn = `<button type="button" onclick="recommendation(${trow}, ${item.ItemId}, ${item.OrdNo}, ${item.TableNo})" class="btn btn-sm btn-primary btn-rounded" title="Recommendation">
+                            recomBtn = `<button type="button" onclick="recommendation(${trow}, ${item.ItemId}, ${item.OrdNo}, ${item.TableNo}, '${item.itemName}')" class="btn btn-sm btn-primary btn-rounded" title="Recommendation">
                                 <i class="fas fa-cart-plus" aria-hidden="true"></i>
                             </button>`;
                         }
@@ -1867,9 +1868,8 @@
             });
         })
 
-        function recommendation(trow, itemId, ordNo, TableNo){
-            
-// itemName
+        function recommendation(trow, itemId, ordNo, TableNo, itemName){
+
             $.post('<?= base_url('restaurant/get_recommendation') ?>',{itemId:itemId, TableNo:TableNo},function(res){
                 if(res.status == 'success'){
                   var data = res.response;
@@ -1895,6 +1895,8 @@
                   alert(res.response);
                 }
             });
+
+            $(`#recomTitle`).html(itemName);
             $('#RecommendationModal').modal();
         }
 

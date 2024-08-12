@@ -291,7 +291,7 @@ class Customer extends CI_Controller {
                     $lname = "mi.Name$langId";
                     $ipName = "ip.Name$langId as Portions";
 
-                    $kitcheData = $this->db2->query("SELECT k.OrdNo, k.ItemId, k.Qty, k.TA, k.Itm_Portion, (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname ))) as ItemNm,  k.ItmRate as Value, mi.PckCharge, k.OType, k.OrdTime , $ipName, k.Stat, k.SchCd, k.SDetCd, k.ItemTyp, mi.FID, k.tmpOrigRate, k.tmpItmRate from Kitchen k, MenuItem mi,ItemPortions ip where k.Itm_Portion = ip.IPCd and k.CustId = $CustId AND k.EID = $EID AND k.TableNo = $TableNo AND k.ItemId = mi.ItemId AND k.BillStat = 0 AND $qry and k.CNo = $CNo")
+                    $kitcheData = $this->db2->query("SELECT k.OrdNo, k.ItemId, k.Qty, k.TA, k.Itm_Portion, (if (k.ItemTyp > 0,(CONCAT($lname, ' ' , k.CustItemDesc)),($lname ))) as ItemNm,  k.ItmRate as Value, mi.PckCharge, k.OType, k.OrdTime , $ipName, k.Stat, k.SchCd, k.SDetCd, k.ItemTyp, mi.FID, k.tmpOrigRate, k.tmpItmRate from Kitchen k, MenuItem mi,ItemPortions ip where k.Itm_Portion = ip.IPCd and k.CustId = $CustId AND k.EID = $EID AND k.TableNo = $TableNo AND k.ItemId = mi.ItemId AND k.BillStat = 0 AND $qry and k.CNo = $CNo")
                     ->result_array();
                     $recommend = $this->session->userdata('recommend');
                     foreach ($kitcheData as &$key) {
@@ -423,7 +423,7 @@ class Customer extends CI_Controller {
             $ingeredients = "mi.Ingeredients$langId as Ingeredients";
             $Rmks = "mi.Rmks$langId as Rmks";
 
-            $select = "mc.TaxType, mc.KitCd, mi.ItemId, $lname, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, $iDesc, $ingeredients, $Rmks, mi.PrepTime, mi.AvgRtng, mi.FID, Name1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
+            $select = "mc.TaxType, mc.KitCd, mi.ItemId, $lname, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, $iDesc, $ingeredients, $Rmks, mi.PrepTime, mi.AvgRtng, mi.FID, mi.Name1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
             $rec = $this->db2->select($select)
                             ->join('MenuItem mi','mi.ItemId = mr.RcItemId', 'inner')
                             ->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')
@@ -1017,8 +1017,14 @@ class Customer extends CI_Controller {
 
             if (isset($_POST['goBill']) && $_POST['goBill']) {
 
-                if($this->session->userdata('SchType') == 1){
+                $SchType = $this->session->userdata('SchType');
+
+                if(in_array($SchType, array(1,3))){
                     $this->cust->updateBillDiscountAmount($CNo);
+                }else{
+                    $kd = $this->db2->select("sum((OrigRate - ItmRate) * Qty) as ItmDiscount")->get_where('Kitchen', array('CNo' => $CNo, 'EID' => $EID, 'Stat' => $stat, 'BillStat' => 0))->row_array();
+
+                    updateRecord('KitchenMain', array('BillDiscAmt' => $kd['ItmDiscount']), array('CNo' => $CNo, 'EID' => $EID));
                 }
 
                 $i=0;
@@ -1999,7 +2005,7 @@ class Customer extends CI_Controller {
                             // ->where($whr)
                             ->get_where('CustPymts cp', array('cp.CustId' => $CustId))
                             ->result_array();
-                            // print_r($genTblDb->last_query());die;
+                            
         $data['country']    = $this->cust->getCountries();
         $data['CountryCd']    = $this->session->userdata('CountryCd');
         $this->load->view('cust/transactions', $data);

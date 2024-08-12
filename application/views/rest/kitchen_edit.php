@@ -79,7 +79,6 @@
                                                     if(!empty($kitchens)){
                                                         $i = 1;
                                                         foreach ($kitchens as $row) {
-                                                            if($row['KitCd'] > 1){
                                                          ?>
                                                     <tr>
                                                         <td><?= $i++; ?></td>
@@ -90,7 +89,7 @@
                                                             </button>
                                                         </td>
                                                     </tr>
-                                                    <?php  }  }
+                                                    <?php  }
                                                     } 
                                                     ?>
                                                 </tbody>
