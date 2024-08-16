@@ -1922,6 +1922,26 @@ class Restaurant extends CI_Controller {
                             $RMStock['ToID'] = $_POST['ToStore'];
                             break;
 
+                        case '26':
+                            $RMStock['FrmID'] = $_POST['FrmKit'];
+                            $RMStock['ToID'] = $_POST['ToBOM'];
+                            break;
+
+                        case '27':
+                            $RMStock['FrmID'] = $_POST['FrmBOM'];
+                            $RMStock['ToID'] = $_POST['ToKit'];
+                            break;
+
+                        case '28':
+                            $RMStock['FrmID'] = $_POST['FrmKit'];
+                            $RMStock['ToID'] = $_POST['ToWaste'];
+                            break;
+
+                        case '29':
+                            $RMStock['FrmID'] = $_POST['FrmBOM'];
+                            $RMStock['ToID'] = $_POST['ToWaste'];
+                            break;
+
                         case '4':
                         // outword
                             $RMStock['FrmID'] = $_POST['FrmStore'];
@@ -1945,10 +1965,15 @@ class Restaurant extends CI_Controller {
                         $num = sizeof($_POST['ItemId']);
                         for($i = 0;$i<$num;$i++){
                             $RMStockDet['TTyp'] = 1; // issued
+                            $RMStockDet['ItemType'] = $_POST['itemtype'][$i];
+                            if($RMStockDet['ItemType']==1){
+                                $RMStockDet['RMCd'] = !empty($_POST['ItemId'][$i])?$_POST['ItemId'][$i]:0;
+                            }else{
+                                $RMStockDet['RMCd'] = !empty($_POST['MItemId'][$i])?$_POST['MItemId'][$i]:0;
+                            }
                             $RMStockDet['StoreId'] = $RMStock['FrmID'];
                             $RMStockDet['TransId'] = $TransId;
 
-                            $RMStockDet['RMCd'] = !empty($_POST['ItemId'][$i])?$_POST['ItemId'][$i]:0;
                             $RMStockDet['UOMCd'] = !empty($_POST['UOM'][$i])?$_POST['UOM'][$i]:0;
                             $RMStockDet['Qty'] = !empty($_POST['Qty'][$i])?$_POST['Qty'][$i]:0;
                             $RMStockDet['Rate'] = !empty($_POST['Rate'][$i])?$_POST['Rate'][$i]:0;
@@ -1962,10 +1987,16 @@ class Restaurant extends CI_Controller {
 
                         for($i = 0;$i<$num;$i++){
                             $RMStockDet['TTyp'] = 2; // received
+                            $RMStockDet['ItemType'] = $_POST['itemtype'][$i];
+                            if($RMStockDet['ItemType']==1){
+                                $RMStockDet['RMCd'] = !empty($_POST['ItemId'][$i])?$_POST['ItemId'][$i]:0;
+                            }else{
+                                $RMStockDet['RMCd'] = !empty($_POST['MItemId'][$i])?$_POST['MItemId'][$i]:0;
+                            }
+
                             $RMStockDet['StoreId'] = $RMStock['ToID'];
                             $RMStockDet['TransId'] = $TransId;
 
-                            $RMStockDet['RMCd'] = !empty($_POST['ItemId'][$i])?$_POST['ItemId'][$i]:0;
                             $RMStockDet['UOMCd'] = !empty($_POST['UOM'][$i])?$_POST['UOM'][$i]:0;
                             $RMStockDet['Qty'] = !empty($_POST['Qty'][$i])?$_POST['Qty'][$i]:0;
                             $RMStockDet['Rate'] = !empty($_POST['Rate'][$i])?$_POST['Rate'][$i]:0;
@@ -2000,6 +2031,9 @@ class Restaurant extends CI_Controller {
         $data['store'] = $this->rest->getFromMast(3);
         $data['suppliers'] = $this->rest->getFromMast(2);
         $data['kit'] = $this->rest->getFromMast(1);
+        $data['bomStore'] = $this->rest->getFromMast(4);
+        $data['wasteStore'] = $this->rest->getFromMast(5);
+        $data['menuItems'] = $this->rest->getAllItemsList();
 
         $this->load->view('rest/stock_add',$data);
     }
@@ -2029,7 +2063,7 @@ class Restaurant extends CI_Controller {
         $data['stock'] = getRecords('RMStock', array('TransId' => $TransId));
         if(!empty($data['stock'])){
             $data['items'] = $this->rest->getRMItemUOM();
-            $data['stock_details'] = $this->rest->getRMStockDetList($TransId);
+            $data['stock_details'] = $this->rest->getRMStockDetList($TransId, $data['stock']['ToID']);
             $data['eatary'] = $this->rest->getRestaurantList();
             $data['kit'] = $this->rest->get_kitchen();
             $data['suppliers'] = $this->rest->getSupplierList();
@@ -3433,29 +3467,54 @@ class Restaurant extends CI_Controller {
 
     public function bom_dish(){
         $this->check_access();
+
+        $data['boms'] = $this->rest->getBomDish();
+        $data['title'] = $this->lang->line('billOfMaterial');
+        $this->load->view('rest/bom_dish',$data);
+    }
+
+    public function add_bom_dish(){
         $status = "error";
         $response = "Something went wrong! Try again later.";
+        $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
 
-            $bom['ItemId'] = $_POST['ItemId'];
-            for ($i=0; $i < sizeof($_POST['RMCd']) ; $i++) { 
-                $BOMNo = 0;
-                if(isset($_POST['BOMNo'][$i]) && !empty($_POST['BOMNo'][$i])){
-                    $BOMNo = $_POST['BOMNo'][$i];
-                }
-                $bom['RMCd'] = $_POST['RMCd'][$i];
-                $bom['RMQty'] = unicodeToEnglish($_POST['RMQty'][$i]);
-                $bom['RMUOM'] = $_POST['RMUOM'][$i];
-                if(!empty($BOMNo)){
-                    updateRecord('BOM_Dish', $bom, array('BOMNo' => $BOMNo) );
-                    $response = 'Data updated.';
-                }else{
-                    insertRecord('BOM_Dish', $bom);
-                    $response = 'Data inserted.';
+            $bom['BOMDishTyp'] = $_POST['BOMDishTyp'];
+            if($bom['BOMDishTyp'] == 1){
+                $bom['ItemId'] = $_POST['ItemId'];
+                $bom['Name'] = $_POST['itemname'];
+            }else{
+                $bom['Name'] = $_POST['MItemId'];
+            }
+            $bom['IPCd'] = $_POST['IPCd'];
+            $bom['Qty'] = $_POST['Qty'];
+            $bom['Costing'] = $_POST['Costing'];
+            $bom['Stat'] = 0;
+            $bom['EID'] = $EID;
+            $BOMNo = insertRecord('BOM_Dish', $bom);
+            if(!empty($BOMNo)){
+                $response = 'Data updated.';
+                $status = 'success';
+                for ($i=0; $i < sizeof($_POST['RMCd']) ; $i++) { 
+                    $bomdet['BOMNo'] = $BOMNo;
+                    $bomdet['RMType'] = $_POST['itemtype'][$i];
+                    $bomdet['Costing'] = $_POST['itemCost'][$i];
+                    if($bomdet['RMType'] == 1){
+                        $bomdet['RMCd'] = $_POST['RMCd'][$i];
+                        $bomdet['RMQty'] = unicodeToEnglish($_POST['RMQty'][$i]);
+                        $bomdet['RMUOM'] = $_POST['RMUOM'][$i];
+                    }else if($bomdet['RMType'] == 2){
+                        $bomdet['RMCd'] = $_POST['BomNo'][$i];
+                        $bomdet['RMQty'] = unicodeToEnglish($_POST['RMQty'][$i]);
+                        $bomdet['RMUOM'] = $_POST['bomRMUOM'][$i];
+                    }else if($bomdet['RMType'] == 3){
+                        $bomdet['RMCd'] = $_POST['goods'][$i];
+                        $bomdet['RMQty'] = unicodeToEnglish($_POST['RMQty'][$i]);
+                        $bomdet['RMUOM'] = $_POST['RMUOM'][$i];
+                    }
+                    insertRecord('BOM_DishDet', $bomdet);
                 }
             }
-
-            $status = 'success';
             
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -3467,8 +3526,90 @@ class Restaurant extends CI_Controller {
 
         $data['cuisine'] = $this->rest->getCuisineList();
         $data['rm_items'] = $this->rest->getItemLists();
+        $data['items'] = $this->rest->getAllItemsList();
+        $data['portions'] = $this->rest->get_item_portion();
+        $data['intermediate'] = $this->rest->getIntermediatBom();
         $data['title'] = $this->lang->line('billOfMaterial');
-        $this->load->view('rest/bom_dish',$data);
+        $this->load->view('rest/add_bom_dish',$data);
+    }
+
+    public function edit_bom($BOMNo){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        $EID = authuser()->EID;
+        if($this->input->method(true)=='POST'){
+
+            $bom['BOMDishTyp'] = $_POST['BOMDishTyp'];
+            if($bom['BOMDishTyp'] == 1){
+                $bom['ItemId'] = $_POST['ItemId'];
+                $bom['Name'] = $_POST['itemname'];
+            }else{
+                $bom['Name'] = $_POST['MItemId'];
+            }
+            $bom['IPCd'] = $_POST['IPCd'];
+            $bom['Qty'] = $_POST['Qty'];
+            $bom['Costing'] = $_POST['Costing'];
+            $bom['Stat'] = 0;
+            $BOMNo = insertRecord('BOM_Dish', $bom);
+            if(!empty($BOMNo)){
+                $response = 'Data updated.';
+                $status = 'success';
+                for ($i=0; $i < sizeof($_POST['RMCd']) ; $i++) { 
+                    $bomdet['BOMNo'] = $BOMNo;
+                    $bomdet['RMType'] = $_POST['itemtype'][$i];
+                    $bomdet['Costing'] = $_POST['itemCost'][$i];
+                    if($bomdet['RMType'] == 1){
+                        $bomdet['RMCd'] = $_POST['RMCd'][$i];
+                        $bomdet['RMQty'] = unicodeToEnglish($_POST['RMQty'][$i]);
+                        $bomdet['RMUOM'] = $_POST['RMUOM'][$i];
+                    }else if($bomdet['RMType'] == 2){
+                        $bomdet['RMCd'] = $_POST['BomNo'][$i];
+                        $bomdet['RMQty'] = unicodeToEnglish($_POST['RMQty'][$i]);
+                        $bomdet['RMUOM'] = $_POST['bomRMUOM'][$i];
+                    }else if($bomdet['RMType'] == 3){
+                        $bomdet['RMCd'] = $_POST['goods'][$i];
+                        $bomdet['RMQty'] = unicodeToEnglish($_POST['RMQty'][$i]);
+                        $bomdet['RMUOM'] = $_POST['RMUOM'][$i];
+                    }
+                    insertRecord('BOM_DishDet', $bomdet);
+                }
+            }
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['boms'] = getRecords('BOM_Dish', array('BOMNo' => $BOMNo, 'EID' => $EID));
+        $data['bomDet'] = $this->rest->getBomDet($BOMNo, $EID);
+        $data['cuisine'] = $this->rest->getCuisineList();
+        $data['rm_items'] = $this->rest->getItemLists();
+        $data['items'] = $this->rest->getAllItemsList();
+        $data['portions'] = $this->rest->get_item_portion();
+        $data['intermediate'] = $this->rest->getIntermediatBom();
+        $data['title'] = $this->lang->line('billOfMaterial');
+        $this->load->view('rest/edit_bom_dish',$data);
+    }
+
+    public function delete_bom_det(){
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+            
+            deleteRecord('BOM_DishDet', array('BNo' => $_POST['BNo']));
+            $response = 'Dish Deleted!!';
+            $status = 'success';
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
     }
 
     public function getMenuItemList(){
@@ -9360,6 +9501,23 @@ class Restaurant extends CI_Controller {
         }        
     }
 
+    public function get_item_portionList(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $status = "success";
+            $response = $this->rest->get_item_portion();
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                    'status' => $status,
+                    'response' => $response
+                  ));
+            die; 
+        }        
+    }
+
 
     private function food_bar_separate_bill($postData){
         
@@ -10275,6 +10433,77 @@ class Restaurant extends CI_Controller {
               ));
              die;
         }
+    }
+
+    public function stock_trans_access(){
+        // $this->check_access();
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        $EID = authuser()->EID;
+        if($this->input->method(true)=='POST'){
+            $langId = $this->session->userdata('site_lang');
+            $UserId = $_POST['UserId'];
+            $status = 'success';
+
+            if (isset($_POST['getAvailableRoles']) && $_POST['getAvailableRoles']==1) {
+                $lname = "st.Name$langId as Name";
+                $response = $this->db2->query("SELECT st.TagId, $lname from stockTrans st where st.TagId not in (select TagId from stockTransAccess sta where sta.Stat = 0 and sta.EID = $EID and sta.UserId = $UserId) and st.Stat = 0 ")->result_array();
+            }
+
+            if (isset($_POST['getAssignedRoles']) && $_POST['getAssignedRoles']==1) {
+                $lname = "st.Name$langId as Name";
+                $response = $this->db2->select("sta.TagId, $lname")
+                                ->join('stockTrans st', 'st.TagId = sta.TagId', 'inner')
+                                ->get_where('stockTransAccess sta', array('sta.EID' => $EID, 'sta.Stat' => 0, 'sta.UserId' => $UserId))->result_array();
+            }
+
+            if (isset($_POST['setRestRoles']) && $_POST['setRestRoles']==1) {
+
+                $response = "Transaction Type are assigned";
+
+                $temp = [];
+                $cui = [];
+                $roles = $_POST['roles'];
+
+                foreach ($roles as $role) {
+                    $temp['EID'] = $EID;
+                    $temp['TagId'] = $role;
+                    $temp['UserId'] = $UserId;
+                    $temp['Stat'] = 0;
+                    $cui[] = $temp;
+                }
+
+                if(!empty($cui)){
+                        $this->db2->insert_batch('stockTransAccess', $cui); 
+                    }else{
+                        $response = "Failed to insert";
+                    }
+                }
+
+            if (isset($_POST['removeRestRoles']) && $_POST['removeRestRoles'] == 1) {
+                $TagId = $_POST['TagId'];
+                $TagId = implode(",",$TagId);
+
+                $deleteRoles = $this->db2->query("DELETE FROM stockTransAccess WHERE EID = $EID and UserId = $UserId AND TagId IN ($TagId)");
+
+                if ($deleteRoles) {
+                    $response = "Cuisine are Removed";
+                }else {
+                    $response = "Failed to delete in EatCuisine table";
+                }
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = 'Stock Transaction Access';
+        $data['usersRestData'] = $this->rest->getusersRestData();
+        $this->load->view('rest/stock_transaction_access', $data);    
     }
 
 

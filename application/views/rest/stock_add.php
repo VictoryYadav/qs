@@ -77,6 +77,26 @@ $RestName = authuser()->RestName;
                                                     </select>
                                                 </div>
 
+                                                <div class=" transtype_details col-6" id="from_bom_div" style="display: none;">
+                                                    <label><?= $this->lang->line('from'); ?></label>
+                                                    <select class="form-control form-control-sm" id="from_bom" name="FrmBOM">
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <?php foreach($bomStore as $key){?>
+                                                            <option value="<?= $key['MCd']?>"><?= $key['Name']?></option>
+                                                        <?php }?>
+                                                    </select>
+                                                </div>
+
+                                                <div class=" transtype_details col-6" id="from_waste_div" style="display: none;">
+                                                    <label><?= $this->lang->line('from'); ?></label>
+                                                    <select class="form-control form-control-sm" id="from_waste" name="FrmWaste">
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <?php foreach($wasteStore as $key){?>
+                                                            <option value="<?= $key['MCd']?>"><?= $key['Name']?></option>
+                                                        <?php }?>
+                                                    </select>
+                                                </div>
+
                                                 <div class="transtype_details col-6" id="to_store_div" style="display: none;">
                                                     <label><?= $this->lang->line('to'); ?></label>
                                                     <select class="form-control form-control-sm" id="to_store" name="ToStore">
@@ -106,6 +126,27 @@ $RestName = authuser()->RestName;
                                                         <?php }?>
                                                     </select>
                                                 </div>
+
+                                                <div class=" transtype_details col-6" id="to_bom_div" style="display: none;">
+                                                    <label><?= $this->lang->line('to'); ?></label>
+                                                    <select class="form-control form-control-sm" id="to_bom" name="ToBOM">
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <?php foreach($bomStore as $key){?>
+                                                            <option value="<?= $key['MCd']?>"><?= $key['Name']?></option>
+                                                        <?php }?>
+                                                    </select>
+                                                </div>
+
+                                                <div class=" transtype_details col-6" id="to_waste_div" style="display: none;">
+                                                    <label><?= $this->lang->line('to'); ?></label>
+                                                    <select class="form-control form-control-sm" id="to_waste" name="ToWaste">
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                        <?php foreach($wasteStore as $key){?>
+                                                            <option value="<?= $key['MCd']?>"><?= $key['Name']?></option>
+                                                        <?php }?>
+                                                    </select>
+                                                </div>
+
                                             </div>
 
 
@@ -115,6 +156,7 @@ $RestName = authuser()->RestName;
                                                     <table class="table table-bordered">
                                                         <thead>
                                                             <tr>
+                                                                <th><?= $this->lang->line('type'); ?></th>
                                                                 <th><?= $this->lang->line('item'); ?></th>
                                                                 <th><?= $this->lang->line('uom'); ?></th>
                                                                 <th><?= $this->lang->line('rate'); ?></th>
@@ -126,10 +168,24 @@ $RestName = authuser()->RestName;
                                                         <tbody class="stock_list" id="stock_list">
                                                                 <tr>
                                                                     <td>
+                                                                        <select name="itemtype[]" id="itemtype_1" class="form-control form-control-sm" required="" onchange="changeItemType(1)">
+                                                                            <option value="1">RM</option>
+                                                                            <option value="2">Finish Goods</option>
+                                                                </select>
+                                                                    </td>
+                                                                    <td id="rmTD1">
                                                                         <select name="ItemId[]" class="items form-control form-control-sm select2 custom-select" id="items1" onchange="getUOM(this, 1)" >
-                                                                            <option value="">SELECT ITEM</option>
+                                                                            <option value=""><?= $this->lang->line('select'); ?></option>
                                                                             <?php foreach($items as $key){?>
                                                                                 <option value="<?= $key['RMCd']?>"><?= $key['RMName']?></option>
+                                                                            <?php }?>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td id="menuTD1" style="display: none;">
+                                                                        <select name="MItemId[]" class="items form-control form-control-sm select2 custom-select" id="mitems1" onchange="getPortionItem(this, 1)" >
+                                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                                            <?php foreach($menuItems as $key){?>
+                                                                                <option value="<?= $key['ItemId']?>"><?= $key['Name']?></option>
                                                                             <?php }?>
                                                                         </select>
                                                                     </td>
@@ -186,7 +242,21 @@ $RestName = authuser()->RestName;
         $('.items').select2();
     });
 
-var cntr = 1;   
+var cntr = 1;
+
+function changeItemType(counter){
+    var type = $(`#itemtype_${counter}`).val();
+    if(type==1){
+        // RM
+        $(`#menuTD${counter}`).hide();
+        $(`#rmTD${counter}`).show();
+    }else if(type == 2){
+        // finish goods
+        $(`#rmTD${counter}`).hide();
+        $(`#menuTD${counter}`).show();
+    }
+}
+
 function getUOM(el, n){
     var item_id = el.value;
     $.ajax({
@@ -214,15 +284,47 @@ function getUOM(el, n){
             }
         });
 }
+
+function getPortionItem(el, n){
+    var ItemId = el.value;
+    if(ItemId > 0){
+        $.post('<?= base_url('restaurant/get_item_portion_by_itemId') ?>',{ItemId:ItemId},function(res){
+            if(res.status == 'success'){
+                var temp = `<option value=""><?= $this->lang->line('select'); ?></option>`;
+                res.response.forEach((item) => {
+                    temp +=`<option value="${item.Itm_Portion}">${item.Portion}</option>`;
+                });
+                $(`#uom${n}`).html(temp);
+            }else{
+              alert(res.response);
+            }
+        });
+    }
+}
+
 function add_row(){
     cntr++;
     var b = '<tr>\
                 <td>\
+                    <select name="itemtype[]" id="itemtype_'+cntr+'" class="form-control form-control-sm" required="" onchange="changeItemType('+cntr+')">\
+                                <option value="1">RM</option>\
+                                <option value="2">Finish Goods</option>\
+                    </select>\
+                </td>\
+                <td id="rmTD'+cntr+'">\
                     <select name="ItemId[]" class="items form-control form-control-sm select2 custom-select" id="items'+cntr+'" onchange="getUOM(this, '+cntr+')">\
                         <option value=""><?= $this->lang->line('select'); ?></option>\
                         <?php foreach($items as $key){?>
                             <option value="<?= $key['RMCd']?>"><?= $key['RMName']?></option>\
                             <?php }?>
+                    </select>\
+                </td>\
+                <td id="menuTD'+cntr+'" style="display: none;">\
+                    <select name="MItemId[]" class="items form-control form-control-sm select2 custom-select" id="mitems'+cntr+'" onchange="getPortionItem(this, '+cntr+')" >\
+                        <option value=""><?= $this->lang->line('select'); ?></option>\
+                        <?php foreach($menuItems as $key){?>
+                            <option value="<?= $key['ItemId']?>"><?= $key['Name']?></option>\
+                        <?php }?>
                     </select>\
                 </td>\
                 <td>\
@@ -395,6 +497,68 @@ function trans_typee(){
         $('#to_suppliers_div').hide();
         $('#from_suppliers_div').hide();
         $('#from_kitchen_div').hide()
+
+        $('.rate').attr('readonly', "")
+    }else if(v == 26){
+        // kitchen to bom
+        $('#from_kitchen_div').show()
+        $('#to_bom_div').show();
+
+        $('#to_store_div').hide();
+        $('#from_store_div').hide();
+        $('#to_kitchen_div').hide();
+
+        $('#to_suppliers_div').hide();
+        $('#from_suppliers_div').hide();
+
+        $('#from_bom_div').hide();
+        $('#from_waste_div').hide();
+        $('#to_waste_div').hide();
+
+        $('.rate').attr('readonly', "")
+    }else if(v == 27){
+        // bom to kitchen
+        $('#from_bom_div').show();
+        $('#to_kitchen_div').show();
+
+        $('#from_kitchen_div').hide()
+        $('#to_bom_div').hide();
+        $('#to_store_div').hide();
+        $('#from_store_div').hide();
+        $('#to_suppliers_div').hide();
+        $('#from_suppliers_div').hide();
+        $('#from_waste_div').hide();
+        $('#to_waste_div').hide();
+
+        $('.rate').attr('readonly', "")
+    }else if(v == 28){
+        // kitchen to waste
+        $('#from_kitchen_div').show()
+        $('#to_waste_div').show();
+
+        $('#from_bom_div').hide();
+        $('#to_kitchen_div').hide();
+        $('#to_bom_div').hide();
+        $('#to_store_div').hide();
+        $('#from_store_div').hide();
+        $('#to_suppliers_div').hide();
+        $('#from_suppliers_div').hide();
+        $('#from_waste_div').hide();
+
+        $('.rate').attr('readonly', "")
+    }else if(v == 29){
+        // bom to waste
+        $('#from_bom_div').show();
+        $('#to_waste_div').show();
+
+        $('#from_kitchen_div').hide()
+        $('#to_kitchen_div').hide();
+        $('#to_bom_div').hide();
+        $('#to_store_div').hide();
+        $('#from_store_div').hide();
+        $('#to_suppliers_div').hide();
+        $('#from_suppliers_div').hide();
+        $('#from_waste_div').hide();
 
         $('.rate').attr('readonly', "")
     }

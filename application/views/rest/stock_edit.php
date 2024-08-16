@@ -50,7 +50,7 @@ $RestName = authuser()->RestName;
                                                 </div>
 
                                                 <div class="col-2">
-                                                    <label><?= $this->lang->line('name'); ?></label><br>
+                                                    <label><?= $this->lang->line('from'); ?> - <?= $this->lang->line('to'); ?></label><br>
                                                     <b><?= getNameFromMast($stock['FrmID']).' - '.getNameFromMast($stock['ToID']); ?></b>
                                                 </div>
                                                 

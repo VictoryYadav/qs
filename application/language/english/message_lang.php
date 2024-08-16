@@ -454,6 +454,14 @@ $lang['month']			= 'Month';
 $lang['week']			= 'Week';
 $lang['english']		= 'English';
 
+$lang['finish']		= 'Finish';
+$lang['goods']		= 'Goods';
+$lang['intermediate']		= 'Intermediate';
+$lang['costing']		= 'Costing';
+
+
+
+
 
 
 

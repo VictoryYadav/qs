@@ -453,3 +453,9 @@ $lang['tag']			= 'टैग';
 $lang['month']			= 'माह';
 $lang['week']			= 'सप्ताह';
 $lang['english']		= 'इंग्लिश';
+
+$lang['finish']		= 'फिसिष';
+$lang['goods']		= 'गुड्स';
+$lang['intermediate']		= 'इंटरमीडिएट';
+$lang['costing']		= 'कॉस्टिंग';
+ 
