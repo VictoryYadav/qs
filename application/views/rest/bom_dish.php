@@ -37,6 +37,7 @@
                                                         <th><?= $this->lang->line('quantity'); ?></th>
                                                         <th><?= $this->lang->line('costing'); ?></th>
                                                         <th><?= $this->lang->line('type'); ?></th>
+                                                        <th><?= $this->lang->line('aciton'); ?></th>
                                                       </tr>
                                                     </thead>
                                                     <tbody>
@@ -45,12 +46,21 @@
                                                             foreach ($boms as $key) { 
                                                                 $type = ($key['BOMDishTyp'] == 1)?'Finish Goods':'Intermediate';
                                                                 ?>
-                                                                <tr onclick="edit(<?= $key['BOMNo']?>)">
+                                                                <tr>
                                                                     <td><?= $key['BOMNo']; ?></td>
                                                                     <td><?= $key['Name']; ?></td>
                                                                     <td><?= $key['Qty']; ?></td>
                                                                     <td><?= $key['Costing']; ?></td>
                                                                     <td><?= $type; ?></td>
+                                                                    <td>
+                                                                        <a href="<?php echo base_url('restaurant/edit_bom/'.$key['BOMNo']);?>" class="btn btn-sm btn-primary">
+                                                                            <i class="fa fa-edit"></i>
+                                                                        </a>
+
+                                                                        <button class="btn btn-sm btn-danger" onclick="deleteBom(<?= $key['BOMNo']?>)">
+                                                                            <i class="fa fa-trash"></i>
+                                                                        </a>
+                                                                    </td>
                                                                 </tr>
                                                         <?php } } ?>
                                                     </tbody>
@@ -88,8 +98,16 @@
         $('#bomDish').DataTable();
     });
 
-    function edit(id){
-        window.location.href="<?php echo base_url();?>restaurant/edit_bom/"+id;
+    function deleteBom(BOMNo){
+        var data = $(this).serializeArray();
+        $.post('<?= base_url('restaurant/delete_bom/') ?>', {BOMNo:BOMNo},function(res){
+            if(res.status == 'success'){
+              alert(res.response);
+            location.reload();
+            }else{
+              $('#msgText').html(res.response);
+            }
+        });
     }
     
 </script>

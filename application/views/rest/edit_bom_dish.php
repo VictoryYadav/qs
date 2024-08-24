@@ -25,6 +25,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <form method="post" id="bomForm">
+                                            <input type="hidden" name="BOMNo" value="<?= $boms['BOMNo']; ?>">
                                             <div class="row">
                                                 <div class="col-md-2 col-6">
                                                     <div class="form-group">
@@ -105,6 +106,8 @@
                                                          ?>
                                                             <tr>
                                                                 <td>
+                                                                <input type="hidden" name="BNo[]" value="<?= $key['BNo']; ?>">
+
                                                                 <select name="itemtype[]" id="itemtype_<?= $count; ?>" class="form-control form-control-sm" required="" onchange="changeItemType(<?= $count; ?>)">
                                                                     <?php
                                                                     foreach ($rmAr as $keyr => $val) { ?>
@@ -112,12 +115,12 @@
                                                                 <?php } ?>
                                                                 </select></td>
                                                             <td>
-                                                                <select name="RMCd[]" id="RMCd_<?= $count; ?>" class="form-control form-control-sm select2 custom-select" onchange="getRMItemsUOM(<?= $count; ?>)">
+                                                                <select name="RMCd[]" id="RMCd_<?= $count; ?>" class="form-control form-control-sm select2 custom-select" onchange="getRMItemsUOME(<?= $count; ?>)">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
                                                                     <?php
                                                             if(!empty($rm_items)){
                                                                 foreach ($rm_items as $row) { ?>
-                                                                    <option value="<?= $row['RMCd'] ?>" <?php if($row['RMCd'] == $key['RMCd']){ echo 'selected'; } ?> ><?= $row['RMName']; ?></option>
+                                                                    <option value="<?= $row['RMCd'] ?>" <?php if($row['RMCd'] == $key['RMCd']){ echo 'selected'; } ?> rmuom="<?= $key['RMUOM']; ?>"><?= $row['RMName']; ?></option>
                                                                 <?php } } ?>
                                                                 </select>
 
@@ -126,30 +129,30 @@
                                                                     <?php
                                                             if(!empty($intermediate)){
                                                                 foreach ($intermediate as $row) { ?>
-                                                                    <option value="<?= $row['BOMNo'] ?>" ipcd="<?= $row['IPCd'] ?>" <?php if($row['RMCd'] == $key['RMCd']){ echo 'selected'; } ?>><?= $row['Name']; ?></option>
+                                                                    <option value="<?= $row['BOMNo'] ?>" ipcd="<?= $row['IPCd'] ?>" rmuom="<?= $key['RMUOM']; ?>" <?php if($row['BOMNo'] == $key['RMCd']){ echo 'selected'; } ?>><?= $row['Name']; ?></option>
                                                                 <?php } } ?>
                                                                 </select>
 
-                                                                <select name="goods[]" id="goods_<?= $count; ?>" class="form-control form-control-sm select2 custom-select"  onchange="getGoodPortion(<?= $count; ?>)" style="display:none;">
+                                                                <select name="goods[]" id="goods_<?= $count; ?>" class="form-control form-control-sm select2 custom-select"  onchange="getGoodPortionE(<?= $count; ?>)" style="display:none;">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
                                                                     <?php
                                                             if(!empty($items)){
                                                                 foreach ($items as $row) { ?>
-                                                                    <option value="<?= $row['ItemId'] ?>" <?php if($row['RMCd'] == $key['RMCd']){ echo 'selected'; } ?>><?= $row['Name']; ?></option>
+                                                                    <option value="<?= $row['ItemId'] ?>" rmuom="<?= $key['RMUOM']; ?>" <?php if($row['ItemId'] == $key['RMCd']){ echo 'selected'; } ?>><?= $row['Name']; ?></option>
                                                                 <?php } } ?>
                                                                 </select>
                                                             </td>
                                                             <td>
-                                                            <input type="text" class="form-control form-control-sm" name="RMQty[]" required="" id="RMQty" onblur="changeValue(this)" value="<?= $key['RMQty']; ?>">
+                                                            <input type="text" class="form-control form-control-sm" name="RMQty[]" required="" id="RMQty" onblur="changeValue(this)" value="<?= $key['RMQty']; ?>" readonly>
                                                             </td>
                                                             <td>
                                                             <select name="RMUOM[]" id="RMUOM_<?= $count; ?>" class="form-control form-control-sm">
                                                                 <option value=""><?= $this->lang->line('select'); ?></option>
                                                             </select>
-                                                            <input type="text" readonly name="bomRMUOM[]" id="bomRMUOM_<?= $count; ?>" class="form-control form-control-sm" style="display:none;" />
+                                                            <input type="text" readonly name="bomRMUOM[]" id="bomRMUOM_<?= $count; ?>" class="form-control form-control-sm" style="display:none;" value="<?= $key['RMUOM']; ?>" />
                                                             </td>
                                                             <td>
-                                                            <input type="text" name="itemCost[]" id="itemCost_<?= $count; ?>" class="form-control form-control-sm" style="width:100px;" value="<?= $key['Costing']; ?>" />
+                                                            <input type="text" name="itemCost[]" id="itemCost_<?= $count; ?>" class="form-control form-control-sm" style="width:100px;" value="<?= $key['Costing']; ?>" readonly />
                                                             </td>
                                                             <td>
                                                                 <button class="btn btn-sm btn-danger btn-rounded" onclick="deleteItemByBom(<?= $key['BNo'] ?>)">
@@ -211,9 +214,6 @@
         var num_desc = <?= sizeof($bomDet)?>;
         for(i=1;i<=num_desc;i++){
             changeItemType(i);
-            getGoodPortion(i);
-            getRMItemsUOM(i);
-            getBomPortion(i);
         }
 
     });
@@ -297,12 +297,60 @@
             type: "post",
             data:{'RMCd': RMCd},
             success: function(data){
-                // alert(data);
+                
                 data = JSON.parse(data);
                 var selectUOM = "<?= $this->lang->line('selectRUOM'); ?>";
                 var b = '<option value = "">'+selectUOM+'</option>';
                 for(i = 0;i<data.length;i++){
                     b = b+'<option value="'+data[i].UOMCd+'">'+data[i].Name+'</option>';
+                }
+                
+                $('#RMUOM_'+count).html(b);
+            }
+        });
+    }
+
+    function getGoodPortionE(counter){
+        var ItemId = $(`#goods_${counter}`).val();
+        var rmuom = $('option:selected', $(`#goods_${counter}`)).attr('rmuom');
+        if(ItemId > 0){
+
+            $.post('<?= base_url('restaurant/get_item_portion_by_itemId') ?>',{ItemId:ItemId},function(res){
+                if(res.status == 'success'){
+                    var temp = `<option value=""><?= $this->lang->line('select'); ?></option>`;
+                    res.response.forEach((item) => {
+                        var slct = '';
+                        if(item.Itm_Portion == rmuom){
+                            slct = 'selected';
+                        }
+                        temp +=`<option value="${item.Itm_Portion}" ${slct}>${item.Portion}</option>`;
+                    });
+                    $(`#RMUOM_${counter}`).html(temp);
+                }else{
+                  alert(res.response);
+                }
+            });
+        }
+    }
+
+    function getRMItemsUOME(count){
+        var RMCd = $('#RMCd_'+count).val();
+        var rmuom = $('option:selected', $(`#RMCd_${count}`)).attr('rmuom');
+        $.ajax({
+            url: "<?php echo base_url('restaurant/getRMItemsUOMList'); ?>",
+            type: "post",
+            data:{'RMCd': RMCd},
+            success: function(data){
+                // alert(data);
+                data = JSON.parse(data);
+                var selectUOM = "<?= $this->lang->line('selectRUOM'); ?>";
+                var b = '<option value = "">'+selectUOM+'</option>';
+                for(i = 0;i<data.length;i++){
+                    var slct = '';
+                    if(data[i].UOMCd == rmuom){
+                        slct = 'selected';
+                    }
+                    b = b+'<option value="'+data[i].UOMCd+'" '+slct+' >'+data[i].Name+'</option>';
                 }
                 // alert(b);
                 $('#RMUOM_'+count).html(b);
@@ -319,6 +367,7 @@
 
         var template = '<tr>\
                             <td>\
+                            <input type="hidden" name="BNo[]" value="0">\
                             <select name="itemtype[]" id="itemtype_'+count+'" class="form-control form-control-sm" required="" onchange="changeItemType('+count+')">\
                                 <option value="1">RM</option>\
                                 <option value="2">Inter</option>\
@@ -378,6 +427,10 @@
     }
 
     function changeItemType(counter){
+        getGoodPortionE(counter);
+        getRMItemsUOME(counter);
+        getBomPortion(counter);
+
         var type = $(`#itemtype_${counter}`).val();
         if(type==1){
             // RM
@@ -413,11 +466,11 @@
 
     $('#bomForm').on('submit', function(e){
         e.preventDefault();
+        var BOMNo = "<?= $BOMNo; ?>";
 
         var data = $(this).serializeArray();
-        $.post('<?= base_url('restaurant/add_bom_dish') ?>',data,function(res){
+        $.post('<?= base_url('restaurant/edit_bom/') ?>'+BOMNo, data,function(res){
             if(res.status == 'success'){
-              // $('#msgText').html(res.response);
               alert(res.response);
             location.reload();
             }else{
@@ -428,8 +481,8 @@
     });
 
     changeValue = (input) => {
-            var val = $(input).val();
-            $(input).val(convertToUnicodeNo(val));
+        var val = $(input).val();
+        $(input).val(convertToUnicodeNo(val));
     }
 
     function deleteItemByBom(BNo){

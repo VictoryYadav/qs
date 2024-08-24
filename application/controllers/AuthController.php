@@ -38,7 +38,7 @@ class AuthController extends CI_Controller {
 
                 if (!empty($login_check)) {
 
-                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, e.EType, e.aggEID, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, e.CountryCd, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt, c.billSplitOpt, c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint, c.JoinTable, c.tableSharing, c.Bill_KOT_Print, c.SchType, c.restBilling, c.recommend, c.addItemLock')
+                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.Kitchen,  c.TableReservation, c.Ops, c.CustAddr, e.EType, e.aggEID, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, e.CountryCd, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt, c.billSplitOpt, c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint, c.JoinTable, c.tableSharing, c.Bill_KOT_Print, c.SchType, c.restBilling, c.recommend, c.addItemLock, c.AutoPrintKOT')
                             ->join('Eatary e',' u.EID = e.EID', 'inner')
                             ->join('Config c','u.EID = c.EID','inner')
                             // u.ChainId = c.ChainId 
@@ -49,6 +49,7 @@ class AuthController extends CI_Controller {
                         $this->session->set_userdata('COrgId', 0);
                         $this->session->set_userdata('CustNo', 0);
                         $this->session->set_userdata('CustId', 0);
+                        $this->session->set_userdata('AutoPrintKOT', $checkNumber['AutoPrintKOT']);
                         $this->session->set_userdata('UTyp', $checkNumber['UTyp']);
                         $this->session->set_userdata('Ops', $checkNumber['Ops']);
                         $this->session->set_userdata('EType', $checkNumber['EType']);

@@ -482,6 +482,38 @@ class Users extends CI_Controller {
         $data['EID'] = $EID;
         $this->load->view('create_rest_user', $data);
     }
+
+    public function ratchet(){
+        $this->load->view('user/chat');
+    }
+
+    public function kot_print($MCNo, $mergeNo, $FKOTNo, $KOTNo, $EID, $Stat){
+        $this->load->model('Common', 'common');
+        $data['kotList'] = $this->common->getKotList($MCNo, $mergeNo, $FKOTNo, $KOTNo, $EID, $Stat);
+
+        $langId = 1;
+
+        $group_arr = [];
+        foreach ($data['kotList'] as &$key ) {
+            $kot = $key['KitCd'];
+            if($langId != $key['langId']){
+                $text = $key['CustRmks'];
+                $currentLng = lngShortName($key['langId']);
+                $targetLng  = lngShortName($langId);
+                $key['CustRmks'] = translateText($text, $currentLng, $targetLng);
+            }
+
+            if(!isset($group_arr[$kot])){
+                $group_arr[$kot] = [];
+            }
+            array_push($group_arr[$kot], $key);
+        }
+
+        $data['kotList'] = $group_arr;
+
+        $data['title'] = 'KOT';
+        $this->load->view('rest/kots_print', $data);
+    }
   
 
 }

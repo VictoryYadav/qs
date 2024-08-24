@@ -14,6 +14,8 @@ class Cust extends CI_Model{
         $this->db2 = $this->load->database($my_db, TRUE);
         $this->EID = authuser()->EID;
         $this->ChainId = authuser()->ChainId;
+
+        // $this->load->library('websocketclientlibrary');
 	}
 
 	public function getCuisineList(){
@@ -1497,6 +1499,9 @@ class Cust extends CI_Model{
                     $genTblDb = $this->load->database('GenTableData', TRUE);
                     
                     if(!empty($lastInsertBillId)){
+                    	$nofify['BillId'] 	= $lastInsertBillId;
+                    	$nofify['EID'] 		= $EID;
+                    	// $this->notifyWebSocket($nofify);
                     	// gen db
                     	$kitchenSale = $this->db2->select("b.BillId, k.ItemId, k.Qty, k.Itm_Portion, k.OType, k.TA, k.EID, m.UItmCd")
                     				->join('KitchenMain km', '(km.CNo = b.CNo or km.MCNo = b.CNo)', 'inner')
@@ -1593,6 +1598,11 @@ class Cust extends CI_Model{
             
             return $response;
 	}
+
+	public function notifyWebSocket($data){
+        $message = "Hello, WebSocket Server vija!";
+        // $response = $this->websocketclientlibrary->sendMessage($message);
+    }
 
 	public function getOrderDetailsByTableNo($MergeNo){	
 		$EType = $this->session->userdata('EType');

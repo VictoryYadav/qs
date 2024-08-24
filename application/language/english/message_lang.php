@@ -37,6 +37,8 @@ $lang['offers'] = 'Offer';
 $lang['entertainment'] = 'Entertainment';
 $lang['outlet'] = 'Outlet';
 $lang['order'] = 'Order';
+$lang['complete'] = 'Complete';
+$lang['inprocess'] = 'In Process';
 
 $lang['menu'] = 'Menu';
 $lang['ok'] = 'Ok';

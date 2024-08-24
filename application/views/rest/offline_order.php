@@ -901,23 +901,29 @@
                     if (response.status) {
 
                         alert("<?= $this->lang->line('orderPlacedSuccessfully'); ?>");
-
-                        if (orderType != 8 ) {
-                            getTableData();
+                        
+                        var AutoPrintKOT = "<?= $this->session->userdata('AutoPrintKOT'); ?>";
+                        if(AutoPrintKOT > 0){
+                            window.open(response.data.url, '_blank');
+                            return false;
                         }else{
-                            var sitinKOTPrint = response.data.sitinKOTPrint;
-                                if(orderType == 8){
-                                    if(sitinKOTPrint > 0){
+                            if (orderType != 8 ) {
+                                getTableData();
+                            }else{
+                                var sitinKOTPrint = response.data.sitinKOTPrint;
+                                    if(orderType == 8){
+                                        if(sitinKOTPrint > 0){
+                                            window.location = `${response.data.url}`;
+                                         }else{
+                                            location.reload();
+                                         }
+                                    }else{
                                         window.location = `${response.data.url}`;
-                                     }else{
-                                        location.reload();
-                                     }
-                                }else{
-                                    window.location = `${response.data.url}`;
-                                }
-                                return false;
+                                    }
+                                    return false;
+                            }
                         }
-
+                        
                         // location.reload();
                     } else {
                         alert("Failed To Place Order");

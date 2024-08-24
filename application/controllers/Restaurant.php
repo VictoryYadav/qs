@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
+
 class Restaurant extends CI_Controller {
 
     private $db2;
@@ -16,6 +18,8 @@ class Restaurant extends CI_Controller {
 		$this->load->model('Rest', 'rest');
 
         $this->lang->load('message','english');
+
+        $this->load->library('websocketclientlibrary');
 
         $my_db = $this->session->userdata('my_db');
         $this->db2 = $this->load->database($my_db, TRUE);
@@ -43,6 +47,10 @@ class Restaurant extends CI_Controller {
         $this->load->view('dashboard/index',$data);
     }
 
+    public function summaries(){
+        $data['title'] = "Summary";
+        $this->load->view('rest/summary',$data);
+    }
 
     public function customer_graph(){
 
@@ -3493,7 +3501,7 @@ class Restaurant extends CI_Controller {
             $bom['EID'] = $EID;
             $BOMNo = insertRecord('BOM_Dish', $bom);
             if(!empty($BOMNo)){
-                $response = 'Data updated.';
+                $response = 'Data Inserted.';
                 $status = 'success';
                 for ($i=0; $i < sizeof($_POST['RMCd']) ; $i++) { 
                     $bomdet['BOMNo'] = $BOMNo;
@@ -3537,6 +3545,7 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         $EID = authuser()->EID;
+        $data['BOMNo'] = $BOMNo;
         if($this->input->method(true)=='POST'){
 
             $bom['BOMDishTyp'] = $_POST['BOMDishTyp'];
@@ -3549,12 +3558,14 @@ class Restaurant extends CI_Controller {
             $bom['IPCd'] = $_POST['IPCd'];
             $bom['Qty'] = $_POST['Qty'];
             $bom['Costing'] = $_POST['Costing'];
-            $bom['Stat'] = 0;
-            $BOMNo = insertRecord('BOM_Dish', $bom);
+
+            $BOMNo = $_POST['BOMNo'];
+            updateRecord('BOM_Dish', $bom, array('BOMNo' => $BOMNo, 'EID' => $EID));
             if(!empty($BOMNo)){
                 $response = 'Data updated.';
                 $status = 'success';
                 for ($i=0; $i < sizeof($_POST['RMCd']) ; $i++) { 
+                    $BNo = $_POST['BNo'][$i];
                     $bomdet['BOMNo'] = $BOMNo;
                     $bomdet['RMType'] = $_POST['itemtype'][$i];
                     $bomdet['Costing'] = $_POST['itemCost'][$i];
@@ -3571,7 +3582,12 @@ class Restaurant extends CI_Controller {
                         $bomdet['RMQty'] = unicodeToEnglish($_POST['RMQty'][$i]);
                         $bomdet['RMUOM'] = $_POST['RMUOM'][$i];
                     }
-                    insertRecord('BOM_DishDet', $bomdet);
+
+                    if($BNo > 0){
+                        updateRecord('BOM_DishDet', $bomdet, array('BNo' => $BNo));
+                    }else{
+                        insertRecord('BOM_DishDet', $bomdet);
+                    }
                 }
             }
             
@@ -3594,6 +3610,24 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/edit_bom_dish',$data);
     }
 
+    public function delete_bom(){
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+            
+            deleteRecord('BOM_Dish', array('BOMNo' => $_POST['BOMNo'], 'EID' => authuser()->EID));
+            $response = 'Dish Deleted!!';
+            $status = 'success';
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
     public function delete_bom_det(){
         $status = 'error';
         $response = 'Something went wrong plz try again!';
@@ -3610,6 +3644,60 @@ class Restaurant extends CI_Controller {
               ));
              die;
         }
+    }
+
+    public function bom_order(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        $EID = authuser()->EID;
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+
+            switch ($_POST['type']) {
+                case 'insert':
+                    $bom['KitCd']       = $_POST['KitCd'];
+                    $bom['BOMDishTyp']  = $_POST['BOMDishTyp'];
+                    if($bom['BOMDishTyp'] == 1){
+                        $bom['ItemId'] = $_POST['ItemId'];
+                        $bom['BOMNo'] = $_POST['itembomno'];
+                    }else{
+                        $bom['BOMNo'] = $_POST['BItemId'];
+                        $bom['ItemId'] = 0;
+                    }
+                    $bom['IPCd'] = $_POST['IPCd'];
+                    $bom['Qty'] = $_POST['Qty'];
+                    $bom['Stat'] = 0;
+                    $bom['EID'] = $EID;
+                    $bom['LoginId'] = authuser()->RUserId;
+                    insertRecord('BOM_Order', $bom);
+                    $response = "BOM Order Successfully.";
+                    break;
+
+                case 'update':
+                    $bom['Stat']    = 1;
+                    $bom['DelTime'] = date('Y-m-d H:i:s');
+                    
+                    updateRecord('BOM_Order', $bom, array('EID' => $EID, 'BOrdNo' => $_POST['BOrdNo']));
+                    $response = "Order Updated.";
+                    break;
+            }
+
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['items'] = $this->rest->getBOMItems();
+        $data['portions'] = $this->rest->get_item_portion();
+        $data['intermediate'] = $this->rest->getIntermediatBom();
+        $data['kitchen'] = $this->rest->getFromMastIn();
+        $data['orders'] = $this->rest->getBOMOrders();
+        $data['title'] = 'BOM Order';
+        $this->load->view('rest/bom_order',$data);
     }
 
     public function getMenuItemList(){
@@ -4575,6 +4663,62 @@ class Restaurant extends CI_Controller {
         $data['billId'] = $billId;
 
         $EID = authuser()->EID;
+
+        $detail = $this->db2->select('CustId,CustNo,CellNo')->get_where('Billing', array('BillId' => $billId, 'EID' => $EID))->row_array();
+        $CustId = $detail['CustId'];
+
+        $data['CustNo'] = $detail['CustNo'];
+
+        $dbname = $this->session->userdata('my_db');
+
+        $flag = 'rest';
+        $res = getBillData($dbname, $EID, $billId, $CustId, $flag);
+        if(!empty($res['billData'])){
+
+            $billData = $res['billData'];
+            $data['ra'] = $res['ra'];
+            $data['taxDataArray'] = $res['taxDataArray'];
+            
+            $data['hotelName'] = $billData[0]['Name'];
+            $data['TableNo'] = $billData[0]['TableNo'];
+            $data['MergeNo'] = $billData[0]['MergeNo'];
+            $data['Fullname'] = getName($billData[0]['CustId']);
+            $data['CellNo'] = $billData[0]['CellNo'];
+            $data['phone'] = $billData[0]['PhoneNos'];
+            $data['gstno'] = $billData[0]['GSTno'];
+            $data['fssaino'] = $billData[0]['FSSAINo'];
+            $data['cinno'] = $billData[0]['CINNo'];
+            $data['billno'] = $billData[0]['BillNo'];
+            $data['dateOfBill'] = date('d-M-Y @ H:i', strtotime($billData[0]['BillDt']));
+            $data['address'] = $billData[0]['Addr'];
+            $data['pincode'] = $billData[0]['Pincode'];
+            $data['city'] = $billData[0]['City'];
+            $data['servicecharge'] = isset($billData[0]['ServChrg'])?$billData[0]['ServChrg']:"";
+            $data['bservecharge'] = $billData[0]['bservecharge'];
+            $data['SerChargeAmt'] = $billData[0]['SerChargeAmt'];
+
+            $data['tipamt'] = $billData[0]['Tip'];
+            $data['splitTyp'] = $billData[0]['splitTyp'];
+            $Stat = $billData[0]['Stat'];
+            $total = 0;
+            $sgstamt=0;
+            $cgstamt=0;
+            $grandTotal = $sgstamt + $cgstamt + $data['bservecharge'] + $data['tipamt'];
+            $data['thankuline'] = isset($billData[0]['Tagline'])?$billData[0]['Tagline']:"";
+
+            $data['total_discount_amount'] = $billData[0]['TotItemDisc'] + $billData[0]['BillDiscAmt'] + $billData[0]['custDiscAmt'];
+            $data['total_packing_charge_amount'] = $billData[0]['TotPckCharge'];
+            $data['total_delivery_charge_amount'] = $billData[0]['DelCharge'];
+
+            $data['billData'] = $res['billData'];
+
+        }
+        $this->load->view('print', $data);
+    }
+
+    public function bill_print($billId, $EID){
+
+        $data['billId'] = $billId;
 
         $detail = $this->db2->select('CustId,CustNo,CellNo')->get_where('Billing', array('BillId' => $billId, 'EID' => $EID))->row_array();
         $CustId = $detail['CustId'];
@@ -9501,6 +9645,27 @@ class Restaurant extends CI_Controller {
         }        
     }
 
+    public function get_item_portion_by_bom(){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+            $langId = $this->session->userdata('site_lang');
+            $Portion = "ip.Name$langId as Portion";
+            $status = "success";
+            $response = $this->db2->select("ip.IPCd, $Portion")
+                            ->join('ItemPortions ip', 'ip.IPCd = bd.IPCd', 'inner')
+                            ->get_where('BOM_Dish bd', array('BOMNo' => $_POST['BItemId']))
+                            ->result_array();
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                    'status' => $status,
+                    'response' => $response
+                  ));
+            die; 
+        }        
+    }
+
     public function get_item_portionList(){
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -9688,6 +9853,7 @@ class Restaurant extends CI_Controller {
                     $genTblDb = $this->load->database('GenTableData', TRUE);
                     
                     if(!empty($lastInsertBillId)){
+
                         // gen db
                         $kitchenSale = $this->db2->select("b.BillId, k.ItemId, k.Qty, k.Itm_Portion, k.OType, k.TA, k.EID, m.UItmCd")
                                     ->join('KitchenMain km', '(km.CNo = b.CNo or km.MCNo = b.CNo)', 'inner')
@@ -10505,6 +10671,19 @@ class Restaurant extends CI_Controller {
         $data['usersRestData'] = $this->rest->getusersRestData();
         $this->load->view('rest/stock_transaction_access', $data);    
     }
+
+    public function ratchet(){
+        $this->load->view('user/chat');
+    }
+
+    public function notifyWebSocket(){
+
+        $message = "Hello, WebSocket Server vija!";
+        $response = $this->websocketclientlibrary->sendMessage($message);
+
+        // echo "Server Response: " . $response;
+    }
+
 
 
 
