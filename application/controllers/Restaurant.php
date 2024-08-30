@@ -19,8 +19,6 @@ class Restaurant extends CI_Controller {
 
         $this->lang->load('message','english');
 
-        $this->load->library('websocketclientlibrary');
-
         $my_db = $this->session->userdata('my_db');
         $this->db2 = $this->load->database($my_db, TRUE);
         
@@ -43,6 +41,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function index(){
+        
         $data['title'] = "Dashboard";
         $this->load->view('dashboard/index',$data);
     }
@@ -10675,16 +10674,6 @@ class Restaurant extends CI_Controller {
     public function ratchet(){
         $this->load->view('user/chat');
     }
-
-    public function notifyWebSocket(){
-
-        $message = "Hello, WebSocket Server vija!";
-        $response = $this->websocketclientlibrary->sendMessage($message);
-
-        // echo "Server Response: " . $response;
-    }
-
-
 
 
 }
