@@ -8630,10 +8630,10 @@ class Restaurant extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
             $EID = $_POST['EID'];
-            $folderPath = 'uploads/e'.$EID.'/csv';
+            $folderPath = '/var/www/html/eat_out_app/uploads/e'.$EID.'/csv';
             if (!file_exists($folderPath)) {
                 // Create the directory
-                mkdir($folderPath, 0777, true);
+                mkdir($folderPath, 0755, true);
             }
 
             $filesPath = glob($folderPath.'/*');
