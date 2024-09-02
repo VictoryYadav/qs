@@ -151,58 +151,6 @@ class Cust extends CI_Model{
 						
 	}
 
-	public function getOfferCustAjax($postData){
-		if (isset($postData['getOrderData']) && $postData['getOrderData'] == 1) {
-
-		    $itemId = $postData['itemId'];
-		    $cid = $postData['cid'];
-		    $itemTyp = $postData['itemTyp'];
-		    $MCatgId = $postData['MCatgId'];
-		    // print_r($itemId);exit();
-
-		    $langId = $this->session->userdata('site_lang');
-    		$scName = "c.SchNm$langId as SchNm";
-    		$scDesc = "cod.SchDesc$langId as SchDesc";
-
-			$GetOffer = $this->db2->query("SELECT $scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank, cod.Qty as FreeQty, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId from CustOffersDet as cod join CustOffers as c on c.SchCd=cod.SchCd and  (cod.CID = $cid or cod.MCatgId = $MCatgId or cod.ItemTyp = $itemTyp or cod.ItemId = $itemId) left outer join Cuisines as c1 on cod.CID=c1.CID   left outer join MenuCatg as m on cod.MCatgId = m.MCatgId  left outer join ItemTypes as i on cod.ItemTyp = i.ItmTyp  left outer join MenuItem as mi on mi.ItemId = cod.ItemId where c.EID=".$this->EID." and c.ChainId =".$this->ChainId."  and c.Stat=0 and c.Stat=0 and c.Stat=0 and (time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)  group by c.schcd, cod.sDetCd order by c.Rank, cod.Rank")->result_array();
-
-		    if (count($GetOffer) == 0) {
-		        echo 0;
-		    }
-		    $html = '';
-		    $tempArray = array();
-		    for ($i = 0; $i < count($GetOffer); $i++) {
-		        $currentValue = $GetOffer[$i]['SchCd'];
-		        $tempArray[$i] = $currentValue;
-		    }
-		    $temp = 0;
-		    $j = 0;
-		    $tempArray =  array_count_values($tempArray);
-		    $data = array();
-		    $b = false;
-		    $html.="<ul style='list-style-type:none;padding:0;'>";
-		    // echo "<pre>";print_r($tempArray);exit();
-		    foreach ($GetOffer as $key => $value) {
-		        $b = true;
-		        $GetOffer[$j]['ItemRate'] = 0;
-		        // if ($GetOffer[$j]['SchCd'] == $key) {
-		            $html.='<li><div class="row p-1"><div class="col-sm-1" style="padding-top: 10px;"><input type="radio" name="offer" schcd='.$GetOffer[$j]['SchCd'].' sdetcd='.$GetOffer[$j]['SDetCd'].' onchange="select_offer(this)"></div>';
-		            $html .= '<div class="col-sm-11"><span class="offer_name"><b>' . $GetOffer[$j]['SchNm'].'</b>'.'<br><p>' . $GetOffer[$j]['SchDesc'] . '</p>'.'</span></div>';
-		            // $html .= ;
-		            $html .= '</div></li>';
-		            $temp++;
-		        // }
-		        $j++;
-		    }
-		    $html.='</ul>';
-		    
-		    if(!$b) {
-		        $html = 0;
-		    }
-
-		    return $html;
-		}
-	}
 	public function getItemOfferAjax($postData){
 		if (isset($postData['getOrderData']) && $postData['getOrderData'] == 1) {
 
@@ -1273,7 +1221,7 @@ class Cust extends CI_Model{
         $ipname = "ip.Name$langId as portionName";
         $scName = "c.SchNm$langId as SchNm";
         $scDesc = "cod.SchDesc$langId as SchDesc";
-		return $this->db2->query("SELECT $scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank, cod.Qty as FreeQty, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.SchImg, $lname ,mi.ItemId, $mname, $cuiname, $ipname from CustOffersDet as cod join CustOffers as c on c.SchCd=cod.SchCd left outer join Cuisines as c1 on cod.CID=c1.CID left outer join MenuCatg as m on cod.MCatgId = m.MCatgId left outer join ItemPortions as ip on cod.IPCd = ip.IPCd left outer join ItemTypes as i on cod.ItemTyp = i.ItmTyp left outer join MenuItem as mi on mi.ItemId = cod.ItemId where (IF(c.ToTime < c.FrmTime, (CURRENT_TIME() >= c.FrmTime OR CURRENT_TIME() <= c.ToTime) ,(CURRENT_TIME() >= c.FrmTime AND CURRENT_TIME() <= c.ToTime)) OR IF(c.AltToTime < c.AltFrmTime, (CURRENT_TIME() >= c.AltFrmTime OR CURRENT_TIME() <= c.AltToTime) ,(CURRENT_TIME() >=c.AltFrmTime AND CURRENT_TIME() <= c.AltToTime))) and ((DAYOFWEEK(CURDATE()) >= c.FrmDayNo and DAYOFWEEK(CURDATE()) <= c.ToDayNo)  or DayNo = 0) and (DATE(CURDATE()) >= c.FrmDt and DATE(CURDATE()) <= c.ToDt) group by c.schcd, cod.sDetCd order by c.Rank, cod.Rank")->result_array();
+		return $this->db2->query("SELECT $scName, c.SchCd, cod.SDetCd, $scDesc, c.PromoCode, c.SchTyp, c.Rank, cod.Qty as FreeQty, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.SchImg, $lname ,mi.ItemId, $mname, $cuiname, $ipname from CustOffersDet as cod join CustOffers as c on c.SchCd=cod.SchCd left outer join Cuisines as c1 on cod.CID=c1.CID left outer join MenuCatg as m on cod.MCatgId = m.MCatgId left outer join ItemPortions as ip on cod.IPCd = ip.IPCd left outer join MenuTags as i on cod.ItemTyp = i.TagId left outer join MenuItem as mi on mi.ItemId = cod.ItemId where (IF(c.ToTime < c.FrmTime, (CURRENT_TIME() >= c.FrmTime OR CURRENT_TIME() <= c.ToTime) ,(CURRENT_TIME() >= c.FrmTime AND CURRENT_TIME() <= c.ToTime)) OR IF(c.AltToTime < c.AltFrmTime, (CURRENT_TIME() >= c.AltFrmTime OR CURRENT_TIME() <= c.AltToTime) ,(CURRENT_TIME() >=c.AltFrmTime AND CURRENT_TIME() <= c.AltToTime))) and ((DAYOFWEEK(CURDATE()) >= c.FrmDayNo and DAYOFWEEK(CURDATE()) <= c.ToDayNo)  or DayNo = 0) and (DATE(CURDATE()) >= c.FrmDt and DATE(CURDATE()) <= c.ToDt) group by c.schcd, cod.sDetCd order by c.Rank, cod.Rank")->result_array();
 	}
 
 	public function getEntertainmentList(){

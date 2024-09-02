@@ -440,7 +440,6 @@ class Support extends CI_Controller {
                     $db3->query("UPDATE Eat_tables SET EID = $EID");
                     $db3->query("UPDATE ConfigTheme SET EID = $EID");
                     $db3->query("UPDATE Eat_Lang SET EID = $EID");
-                    $db3->query("UPDATE ItemTypes SET EID = $EID");
                     $db3->query("UPDATE Masts SET EID = $EID");
                     
                     $user['PWDHash'] = md5($user['Passwd']);

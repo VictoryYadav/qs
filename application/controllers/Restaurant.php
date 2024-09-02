@@ -5810,82 +5810,6 @@ class Restaurant extends CI_Controller {
                       }
                 break;
 
-                case 'itemType':
-                    if(isset($_FILES['itemtype_file']['name']) && !empty($_FILES['itemtype_file']['name'])){ 
-                        $files = $_FILES['itemtype_file'];
-                        $allowed = array('csv');
-                        $filename_c = $_FILES['itemtype_file']['name'];
-                        $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
-                        if (!in_array($ext, $allowed)) {
-                            $flag = 1;
-                            $this->session->set_flashdata('error','Support only CSV format!');
-                        }
-                        // less than 1mb size upload
-                        if($files['size'] > 1048576){
-                            $flag = 1;
-                            $this->session->set_flashdata('error','File upload less than 1MB!');   
-                        }
-                        $_FILES['itemtype_file']['name']= $files['name'];
-                        $_FILES['itemtype_file']['type']= $files['type'];
-                        $_FILES['itemtype_file']['tmp_name']= $files['tmp_name'];
-                        $_FILES['itemtype_file']['error']= $files['error'];
-                        $_FILES['itemtype_file']['size']= $files['size'];
-                        $file = $files['name'];
-
-                        if($flag == 0){
-                            $res = do_upload('itemtype_file',$file,$folderPath,'*');
-                            if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
-                                $typeData = [];
-                                $temp = [];
-                                $count = 1;
-                                $checker = 0;
-                                while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
-                                    if($csv_data[0] !='RestName'){
-                                            
-                                            $temp['EID'] = $this->checkEatary($csv_data[0]);
-
-                                            $temp['Name1'] = $csv_data[1];
-                                            $checker = 1;
-                                            
-                                            if($temp['EID'] < 1){
-                                              $response = $csv_data[0]. " Not Found in row no: $count";
-                                              $checker = 0;
-                                            }
-
-                                            if(empty($temp['Name1'])){
-                                              $response = $csv_data[1]. " Field Required in row no: $count";
-                                              $checker = 0;
-                                            }
-
-                                            $temp['Stat'] = 0;
-
-                                            if($checker == 0){
-                                                $typeData = [];
-                                                header('Content-Type: application/json');
-                                                echo json_encode(array(
-                                                    'status' => $status,
-                                                    'response' => $response
-                                                  ));
-                                                 die; 
-                                            }
-
-                                            $typeData[] = $temp;
-                                    }
-                                    $count++;
-                                }
-
-                                if(!empty($typeData)){
-                                    $this->db2->insert_batch('ItemTypes', $typeData);
-                                    $status = 'success';
-                                    $response = 'Data Inserted.';
-                                }
-                                
-                                fclose($open);
-                            }
-                        }
-                      }
-                break;
-
                 case 'menuitem':
                     if(isset($_FILES['mitem_file']['name']) && !empty($_FILES['mitem_file']['name'])){ 
                         $files = $_FILES['mitem_file'];
@@ -5953,7 +5877,7 @@ class Restaurant extends CI_Controller {
                                             $mItem['Name1'] = $csv_data[5];
                                             $mItem['IMcCd'] = $csv_data[6];
                                             $mItem['PckCharge'] = $csv_data[7];
-                                            $mItem['ItemTyp'] = $this->checkItemType($csv_data[8], $mItem['EID']);
+                                            $mItem['ItemTyp'] = $this->checkItemType($csv_data[8], 2);
                                             if($mItem['ItemTyp'] == 0){
                                               $response = $csv_data[8]. " Not Found in row no: $count";
                                               $checker = 0;
@@ -6643,12 +6567,12 @@ class Restaurant extends CI_Controller {
         return $FID;
     }
 
-    private function checkItemType($name, $EID){
+    private function checkItemType($name, $TagTyp){
         $id = 0;
-        $data = $this->db2->select('ItmTyp')->like('Name1', $name)->get_where('ItemTypes', array('EID' => $EID))
+        $data = $this->db2->select('TagId')->like('Name1', $name)->get_where('MenuTags', array('TagTyp' => $TagTyp))
                     ->row_array();
         if(!empty($data)){
-            $id = $data['ItmTyp'];
+            $id = $data['TagId'];
         }
         return $id;   
     }
@@ -8250,15 +8174,14 @@ class Restaurant extends CI_Controller {
             $lname = "Name$langId";
 
             $updateData[$lname] = $_POST['item'];
-            $updateData['Stat'] = $_POST['Stat'];
+            $updateData['TagTyp'] = $_POST['TagTyp'];
 
-            if($_POST['ItmTyp'] > 0){
-                updateRecord('ItemTypes', $updateData, array('ItmTyp' => $_POST['ItmTyp']));
+            if($_POST['TagId'] > 0){
+                updateRecord('MenuTags', $updateData, array('TagId' => $_POST['TagId']));
                 $response = 'Updated Records'; 
             }else{
-                unset($updateData['ItmTyp']);
-                $updateData['EID'] = authuser()->EID;
-                insertRecord('ItemTypes', $updateData);
+                unset($updateData['TagId']);
+                insertRecord('MenuTags', $updateData);
                 $response = 'Insert Records'; 
             }
 
@@ -8747,7 +8670,7 @@ class Restaurant extends CI_Controller {
 
                 $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, 0 From Cuisines c, TempMenuItem t, FoodType f where c.Name1 = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
                 // t.DayNo = 
-                $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, Name1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, IFNULL((SELECT DayNo FROM WeekDays wd where wd.Name1 = t.DayNo),8), t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink From TempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
+                $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, Name1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink, ItemTyp)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, IFNULL((SELECT DayNo FROM WeekDays wd where wd.Name1 = t.DayNo),8), t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink,IFNULL((SELECT Tagid FROM MenuTags mt where mt.Name1 = t.ItemTyp),0)  From TempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
 
                 $this->db2->query("INSERT INTO MenuItemRates (EID, SecId, ItemId, Itm_Portion, ItmRate)  SELECT $EID,IFNULL((SELECT es.SecId From Eat_Sections es where es.Name1 = t.Section),1),  i.ItemId, ip.IPCd, t.Rate From TempMenuItem t, ItemPortions ip, MenuItem i where ip.Name1=t.Itm_Portion and i.Name1=t.ItemNm");
                 $status = 'success';

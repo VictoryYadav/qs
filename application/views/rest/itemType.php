@@ -25,7 +25,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <form method="post" id="kitchenForm">
-                                            <input type="hidden" id="ItmTyp" name="ItmTyp" value="0">
+                                            <input type="hidden" id="TagId" name="TagId" value="0">
                                             <div class="row">
                                                 <div class="col-md-3 col-5">
                                                     <div class="form-group">
@@ -36,12 +36,13 @@
 
                                                 <div class="col-md-3 col-4">
                                                     <div class="form-group">
-                                                        <label><?= $this->lang->line('mode'); ?></label>
-                                                        <select name="Stat" id="Stat" class="form-control form-control-sm" required="">
+                                                        <label><?= $this->lang->line('type'); ?></label>
+                                                        <select name="TagTyp" id="TagTyp" class="form-control form-control-sm" required="">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
 
-                                                            <option value="0"><?= $this->lang->line('active'); ?></option>
-                                                            <option value="1"><?= $this->lang->line('inactive'); ?></option>
+                                                            <option value="1">Attribute</option>
+                                                            <option value="2">Custom Item</option>
+                                                            <option value="3">Item Sale</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -81,9 +82,9 @@
                                                         foreach ($itemTyp as $row) { ?>
                                                     <tr>
                                                         <td><?= $i++; ?></td>
-                                                        <td><?= $row['Name']; ?></td>
+                                                        <td><?= $row['TDesc']; ?></td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['ItmTyp'] ?>, '<?= $row['Name'] ?>', <?= $row['Stat'] ?>)">
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['TagId'] ?>, '<?= $row['TDesc'] ?>', <?= $row['TagTyp'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
@@ -142,11 +143,11 @@
 
     });
 
-    function editData(ItmTyp,name, stat){
+    function editData(ItmTyp,name, type){
         
-        $('#ItmTyp').val(ItmTyp);
+        $('#TagId').val(ItmTyp);
         $('#item').val(name);
-        $('#Stat').val(stat);   
+        $('#TagTyp').val(type);   
 
         $('#saveBtn').hide();
         $('#updateBtn').show();
