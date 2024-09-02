@@ -183,14 +183,14 @@
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
                                                     <label><?= $this->lang->line('fromTime'); ?></label>
-                                                    <input type="time" name="StTime" id="StTime" class="form-control form-control-sm" value="<?= date('H:i:s') ?>">
+                                                    <input type="time" name="StTime" id="StTime" class="form-control form-control-sm" value="<?= date('H:i:s', strtotime('06:00:00')) ?>">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
                                                     <label><?= $this->lang->line('toTime'); ?></label>
-                                                    <input type="time" name="EndTime" id="EndTime" class="form-control form-control-sm" value="<?= date('H:i:s') ?>">
+                                                    <input type="time" name="EndTime" id="EndTime" class="form-control form-control-sm" value="<?= date('H:i:s', strtotime('23:59:00')) ?>">
                                                 </div>
                                             </div>
 

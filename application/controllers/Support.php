@@ -472,6 +472,10 @@ class Support extends CI_Controller {
                     $eatry['EID'] = $EID;
                     $eatry['aggEID'] = $EID;
                     $db3->update('Eatary', $eatry, array('EID' => 1));
+
+                    $configDT['StTime']     = date('H:i:s', strtotime($EIDData['StTime']));
+                    $configDT['CloseTime']  = date('H:i:s', strtotime($EIDData['EndTime']));
+                    $db3->update('Config', $configDT, array('EID' => $EID));
                     // end of update eatary table
 
                     $roles = $db3->get_where('UserRoles', array('Stat' => 0))->result_array();
