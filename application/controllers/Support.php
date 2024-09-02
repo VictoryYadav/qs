@@ -290,7 +290,7 @@ class Support extends CI_Controller {
             // $folderPath = 'uploads/e'.$CNo;
             $root = $_SERVER["DOCUMENT_ROOT"];
             // $folderPath = $root . "/uploads/e$CNo";
-            $folderPath = "/var/www/eo.vtrend.org/public_html/uploads/e$CNo";
+            $folderPath = "/var/www/html/eat_out_app/uploads/e$CNo";
             
             if (!file_exists($folderPath)) {
                 // Create the directory

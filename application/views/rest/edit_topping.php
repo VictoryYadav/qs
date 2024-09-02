@@ -188,7 +188,7 @@ $('#topingForm').on('submit', function(e){
         }else{
           $('#msgText').html(res.response);
         }
-        // location.reload();
+        location.reload();
     });
 });
 

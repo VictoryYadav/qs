@@ -344,6 +344,21 @@
                                                             <label class="custom-control-label" for="customCheck37">Add Item Lock</label>
                                                         </div>
                                                     </div>
+
+                                                    <div class="checkbox my-2">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck38" data-parsley-multiple="groups" data-parsley-mincheck="2" name="BOM" <?php if($detail['BOM'] == 1){ echo 'checked'; } ?> value="<?= $detail['BOM'];?>">
+                                                            <label class="custom-control-label" for="customCheck38">BOM</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="checkbox my-2">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck39" data-parsley-multiple="groups" data-parsley-mincheck="2" name="BOMStore" <?php if($detail['BOMStore'] == 1){ echo 'checked'; } ?> value="<?= $detail['BOMStore'];?>">
+                                                            <label class="custom-control-label" for="customCheck39">BOM Store</label>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
 
                                                 <div >

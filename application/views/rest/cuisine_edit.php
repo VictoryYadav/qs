@@ -143,7 +143,7 @@ $('#cuisineForm').on('submit', function(e){
         }else{
           alert(res.response);
         }
-          // location.reload();
+          location.reload();
     });
 });
 

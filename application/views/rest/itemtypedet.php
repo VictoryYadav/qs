@@ -270,13 +270,16 @@
         $.post('<?= base_url('restaurant/get_menu_list') ?>',{Stat:type},function(res){
             if(res.status == 'success'){
                 var temp = "<option value= ><?= $this->lang->line('select'); ?></option>";
-                res.response.forEach((item, index) => {
-                    var selc = '';
-                    if(cur_item_id == item.ItemId){
-                        selc = 'selected';
-                    }
-                    temp += `<option value="${item.ItemId}" ${selc}>${item.ItemName}</option>`;
-                });
+                if(res.response.length > 0){
+                    res.response.forEach((item, index) => {
+                        var selc = '';
+                        if(cur_item_id == item.ItemId){
+                            selc = 'selected';
+                        }
+                        temp += `<option value="${item.ItemId}" ${selc}>${item.ItemName}</option>`;
+                    });
+                }
+                
                 $('#ItemId').html(temp);
                 getProtions();
             }else{
