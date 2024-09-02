@@ -264,7 +264,7 @@ class Restaurant extends CI_Controller {
 
             $order_value_lunch = $this->db2->query("SELECT bp.PaymtMode, COUNT(b.BillId) as BillId, date(b.billTime) as billTime FROM Billing b, BillPayments bp where b.BillId = bp.BillId and b.EID = $EID and bp.EID = $EID and bp.PaymtMode != '' and b.billTime >='$last_days' and b.billTime <= '$today' group by bp.PaymtMode,$groupby ORDER BY date(b.billTime) DESC")
                 ->result_array();
-            // echo "<pre>";print_r($order_value_lunch);die;
+            
             $order_value_lunch_array_labal = [];
             $order_value_lunch_array_value = [];
             $order_value_dinner_array_value = [];
@@ -525,9 +525,7 @@ class Restaurant extends CI_Controller {
                 array_push($data, $a);
 
             }
-            
             echo json_encode($data);
-
             exit;
         }
     }
@@ -952,8 +950,6 @@ class Restaurant extends CI_Controller {
               ));
              die;
         }
-        
-        
     }
 
     public function add_user(){
@@ -7957,6 +7953,7 @@ class Restaurant extends CI_Controller {
 
             $updateData[$lname] = $_POST['name'];
             $updateData['Stat'] = $_POST['Stat'];
+            $updateData['EID'] = authuser()->EID;
 
             if($_POST['PymtMode'] > 0){
                 updateRecord('ConfigPymt', $updateData, array('PymtMode' => $_POST['PymtMode']));

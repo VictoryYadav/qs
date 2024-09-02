@@ -331,8 +331,7 @@ class Support extends CI_Controller {
                 $this->genDB->update('EIDDet',$upData, array('CNo' => $CNo));
                 // db creation
                 $destDB = $dbName;
-                // $sourceDatabase = "eatout";
-                $sourceDatabase = "51e";
+                $sourceDatabase = "eatout";
                 $destinationDatabase = $destDB;
                 
                 // Create connection
@@ -437,10 +436,12 @@ class Support extends CI_Controller {
                     $db3->query("UPDATE Eat_DispOutlets SET EID = $EID");
                     $db3->query("UPDATE UsersRest SET EID = $EID, DeputedEID = $EID");
                     $db3->query("UPDATE Config SET EID = $EID");
+                    $db3->query("UPDATE ConfigPymt SET EID = $EID");
                     $db3->query("UPDATE Eat_tables SET EID = $EID");
                     $db3->query("UPDATE ConfigTheme SET EID = $EID");
                     $db3->query("UPDATE Eat_Lang SET EID = $EID");
                     $db3->query("UPDATE ItemTypes SET EID = $EID");
+                    $db3->query("UPDATE Masts SET EID = $EID");
                     
                     $user['PWDHash'] = md5($user['Passwd']);
                     $user['Gender'] = 1;
