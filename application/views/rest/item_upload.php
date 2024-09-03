@@ -24,8 +24,7 @@
                             <div class="col-md-8">
                                 <div class="card">
                                     <div class="card-body">
-                                     Note : <span class="text-danger">Menu Setup </span> &nbsp;&nbsp;&nbsp;&nbsp;
-                                     <a href="<?= base_url('uploads/common/menuItem_temp.csv') ?>" class="btn btn-sm btn-success" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
+                                     <a href="<?= base_url('uploads/common/menuItem_temp.csv') ?>" class="btn btn-sm btn-success" download>CSV <?= $this->lang->line('file'); ?> <?= $this->lang->line('format'); ?> for Menu Item Upload</a>
                                         <form method="post" enctype="multipart/form-data" id="items_form">
                                             <input type="hidden" name="type" value="items">
                                             <div class="row">

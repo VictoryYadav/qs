@@ -7,7 +7,7 @@
 
         <?php
         $menuList = menuList();
-
+        
         if(!empty($menuList)){
             if($menuList[0]['roleGroup'] > 0){
                 ?>

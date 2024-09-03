@@ -1779,7 +1779,7 @@ class Restaurant extends CI_Controller {
                 $this->session->set_userdata('cur_password', $password);
                 $status = 'success';
                 // $res = "Password has been updated.";
-                $res = base_url('dashboard');
+                $res = base_url('restaurant');
                 $mItem = $this->db2->select('ItemId')->get_where('MenuItem', array('EID' => authuser()->EID))->row_array();
                 if(empty($mItem)){
                     $res = base_url('restaurant/data_upload');
@@ -7349,21 +7349,28 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
-            
+            $status = 'success';
+            $EID = authuser()->EID;
+
             $updateData = $_POST;
             $updateData['MergeNo'] = $updateData['TableNo'];
             if($_POST['TId'] > 0){
-                updateRecord('Eat_tables', $updateData, array('TId' => $_POST['TId']));
+                updateRecord('Eat_tables', $updateData, array('TId' => $_POST['TId'], 'EID' => $EID));
                 $response = 'Updated Records'; 
             }else{
-                unset($updateData['TId']);
-                $updateData['EID'] = authuser()->EID;
-                $updateData['LoginCd'] = authuser()->RUserId;
-                insertRecord('Eat_tables', $updateData);
-                $response = 'Insert Records'; 
+                $check = getRecords('Eat_tables', array('EID' => $EID, 'TableNo' => $updateData['TableNo']));
+                if(empty($check)){
+                    unset($updateData['TId']);
+                    $updateData['EID'] = $EID;
+                    $updateData['LoginCd'] = authuser()->RUserId;
+                    insertRecord('Eat_tables', $updateData);
+                    $response = 'Insert Records'; 
+                }else{
+                    $status = 'error';
+                    $response = 'Table No '.$updateData['TableNo'].' already exists!'; 
+                }
             }
 
-            $status = 'success';
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
@@ -10586,6 +10593,39 @@ class Restaurant extends CI_Controller {
 
     public function ratchet(){
         $this->load->view('user/chat');
+    }
+
+    public function tempmenu_export(){
+        $langId = $this->session->userdata('site_lang');
+        $Cuisine = "c.Name$langId as Cuisine";
+        $foodType = "fd.Name$langId as foodType";
+        $CTypUsedFor = "ct.Usedfor$langId as CTypUsedFor";
+        $MenuCatg = "mc.Name$langId as MenuCatg";
+        $ItemNm = "mi.Name$langId as ItemNm";
+        $Section = "et.Name$langId as Section";
+        $itemPortion = "ip.Name$langId as itemPortion";
+        $ItemTyp = "mt.Name$langId as ItemTyp";
+        $Day = "wd.Name$langId as Day";
+
+        $data = $this->db2->select("e.Name as RestName, $Cuisine, $foodType, mi.IMcCd, $MenuCatg, $CTypUsedFor, $ItemNm, $ItemTyp, mi.NV, $Section, mi.PckCharge, mir.OrigRate, mi.Rank, mi.ItmDesc1 as ItmDesc, mi.Ingeredients1 as Ingeredients, MaxQty, mi.Rmks1 as Rmks, mi.PrepTime, $Day, mi.FrmTime, mi.ToTime, mi.AltFrmTime, mi.AltToTime, mi.videoLink, $itemPortion")
+                            ->group_by('mi.ItemId, ip.IPCd')
+                            ->join('Eatary e', 'e.EID = mi.EID', 'inner')
+                            ->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')
+                            ->join('Cuisines c', 'c.CID = mi.CID', 'inner')
+                            ->join('FoodType fd', 'fd.FID = mi.FID', 'inner')
+                            ->join('FoodType ct', 'ct.CTyp = mi.CTyp', 'inner')
+                            ->join('MenuTags mt', 'mt.TagId = mi.ItemTyp', 'inner')
+                            ->join('WeekDays wd', 'wd.DayNo = mi.DayNo', 'inner')
+                            ->join('MenuItemRates mir', 'mir.ItemId = mi.ItemId', 'inner')
+                            ->join('ItemPortions ip', 'ip.IPCd = mir.Itm_Portion', 'inner')
+                            ->join('Eat_Sections et', 'et.SecId = mir.SecId', 'inner')
+                            ->get_where("MenuItem mi", array('mi.EID' => authuser()->EID))
+                            ->result_array();
+        $this->export_csv($data);
+        // echo "<pre>";
+        // print_r($this->db2->last_query());
+        // print_r($data);
+        // die;
     }
 
 
