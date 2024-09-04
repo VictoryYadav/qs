@@ -53,6 +53,13 @@
                                                     </div>
                                                 </div>
 
+                                                <div class="col-md-3 col-5">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('remarks'); ?></label>
+                                                        <input type="text" name="Remarks" id="Remarks" class="form-control form-control-sm" />
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-md-3 col-4">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('mode'); ?></label>
@@ -112,7 +119,7 @@
                                                             <span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span>
                                                         </td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['RecNo'] ?>,<?= $row['ItemId'] ?>,<?= $row['RcItemId'] ?>, <?= $row['Stat'] ?>)">
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['RecNo'] ?>,<?= $row['ItemId'] ?>,<?= $row['RcItemId'] ?>, <?= $row['Stat'] ?>, <?= $row['Remarks'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
@@ -172,12 +179,13 @@
 
     });
 
-    function editData(RecNo,itemid, RcItemId, stat){
+    function editData(RecNo,itemid, RcItemId, stat, Remarks){
         
         $('#RecNo').val(RecNo);
         $('#ItemId').val(itemid).trigger('change');
         $('#RcItemId').val(RcItemId).trigger('change');
-        $('#Stat').val(stat);   
+        $('#Stat').val(stat);
+        $('#Remarks').val(Remarks);   
 
         $('#saveBtn').hide();
         $('#updateBtn').show();
