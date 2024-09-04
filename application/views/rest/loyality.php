@@ -86,7 +86,7 @@
 
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
-                                                    <label>Currenct</label>
+                                                    <label>Currency</label>
                                                     <select name="Currency" id="Currency" class="form-control form-control-sm" required="" >
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php 

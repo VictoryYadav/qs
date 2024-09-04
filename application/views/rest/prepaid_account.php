@@ -23,6 +23,7 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
+                                        <a href="<?= base_url('uploads/common/prepaid_amount.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="prepaid_csv_form">
                                             <input type="hidden" name="type" value="file_data">
                                             <div class="row">

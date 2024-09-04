@@ -26,48 +26,24 @@
                                     <div class="card-body">
                                     <form method="post" id="cuisineForm" >
                                        <div class="row">
-                                           <div class="col-md-4 col-6">
-                                                <div class="form-group">
-                                                    <label for=""><?= $this->lang->line('restaurant'); ?></label>
-                                                    <input  type="text" value="<?php echo $eatCuisine[0]['restName']; ?>" class="form-control form-control-sm" readonly>
-                                                    <input  type="hidden" name="EID" id="EID" value="<?= $eatCuisine[0]['EID']; ?>">
-
-                                                    <input  type="hidden" name="ECID" id="ECID" >
-                                                    <input  type="hidden" name="CID" id="CID" >
-                                                </div>
-                                           </div>
-
+                                        
+                                            <input type="hidden" name="ECID" id="ECID" value="0">
                                            <div class="col-md-4 col-6">
                                                 <div class="form-group">
                                                     <label for=""><?= $this->lang->line('cuisine'); ?> <?= $this->lang->line('name'); ?></label>
-                                                    <input type="text" name="cuisineName" class="form-control form-control-sm" id="cuisineName" required="" autocomplete="off">
+                                                    <input type="text" name="cuisineName1" class="form-control form-control-sm" id="cuisineName1" required="" autocomplete="off">
                                                 </div>
                                            </div>
 
-                                           <div class="col-md-4 col-6">
-                                                <div class="form-group">
-                                                    <label for=""><?= $this->lang->line('kitchen'); ?></label>
-                                                    <select name="KitCd" id="KitCd" class="form-control form-control-sm" required="">
-                                                        <option value="">
-                                                            <?= $this->lang->line('select'); ?>
-                                                        </option>
-                                                        <?php
-                                                            foreach ($kitchens as $key) {
-                                                         ?>
-                                                         <option value="<?= $key['KitCd']; ?>">
-                                                            <?= $key['KitName']; ?>
-                                                        </option>
-                                                     <?php } ?>
-                                                    </select>   
-                                                </div>
-                                           </div>
-
-                                           <div class="col-md-4 col-6">
-                                                <div class="form-group">
-                                                    <label for=""><?= $this->lang->line('rank'); ?></label>
-                                                    <input type="number" name="Rank" class="form-control form-control-sm" id="Rank" required="">
-                                                </div>
-                                           </div>
+                                           <?php
+                                            for ($i = 1; $i < sizeof($languages); $i++) { ?>
+                                               <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('cuisine'); ?> <?= $languages[$i]['LngName']; ?></label>
+                                                        <input type="text" id="cuisineName<?= $languages[$i]['LCd']; ?>" name="cuisineName<?= $languages[$i]['LCd']; ?>" class="form-control form-control-sm"  />
+                                                    </div>
+                                               </div>
+                                           <?php } ?>
 
                                            <div class="col-md-4 col-6">
                                                 <div class="form-group">
@@ -100,8 +76,6 @@
                                                     <th>#</th>
                                                     <th><?= $this->lang->line('cuisine'); ?> <?= $this->lang->line('name'); ?></th>
                                                     <th><?= $this->lang->line('cuisine'); ?></th>
-                                                    <th><?= $this->lang->line('kitchen'); ?></th>
-                                                    <th><?= $this->lang->line('rank'); ?></th>
                                                     <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
                                                 </thead>
@@ -115,10 +89,8 @@
                                                         <td><?= $i++; ?></td>
                                                         <td><?= $row['ecuisineName']; ?></td>
                                                         <td><?= $row['cuisineName']; ?></td>
-                                                        <td><?= $row['kitchenName']; ?></td>
-                                                        <td><?= $row['Rank']; ?></td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['EID'] ?>,<?= $row['CID'] ?>,<?= $row['KitCd'] ?>, <?= $row['Rank'] ?>,<?= $row['ECID'] ?>,'<?= $row['ecuisineName'] ?>',<?= $row['Stat'] ?>)">
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['ECID'] ?>,'<?= $row['ecuisineName'] ?>',<?= $row['Stat'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
@@ -163,15 +135,12 @@ $(document).ready(function () {
     $('#CID').select2();
 });
 
-editData = (eid, cid, kitcd, rank, ECID, name, Stat) => {
+editData = (ECID, name1, Stat) => {
     
-    $('#cuisineName').val(name);
-    $('#Rank').val(rank);
-    $('#KitCd').val(kitcd);
+    $('#cuisineName1').val(name1);
 
-    $("#EID").val(eid);
     $("#ECID").val(ECID);
-    $("#CID").val(cid).trigger('change');
+    
     $("#Stat").val(Stat);
 
     $('#saveBtn').hide();

@@ -40,13 +40,16 @@
                                                 <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
                                             </div>
                                         </form>
-                                        <div>
+                                        <div id="processBlock" style="display: none;">
+                                          <p class="text-info">Processing...</p>
+                                        </div>
+                                        <div id="tableBlock" style="display: none;">
                                             <p>Files are Not uploaded in (more than 1
                                             MB).</p>
                                            <table class="table ">
                                                <tr>
                                                    <td>#</td>
-                                                   <td>Name</td>
+                                                   <td>Image(s) Not Uploaded</td>
                                                </tr>
                                                <tbody id="notUpload"></tbody>
                                            </table>
@@ -86,6 +89,8 @@ $('#menu_form').on('submit', function(e){
 });
 
 function callAjax(formData){
+  $(`#processBlock`).show();
+  $(`#tableBlock`).hide();
    $.ajax({
            url : '<?= base_url('restaurant/item_files_upload') ?>',
            type : 'POST',
@@ -106,6 +111,12 @@ function callAjax(formData){
                                  </tr>`;
                     });
                     $('#notUpload').html(temp);
+                    $(`#processBlock`).hide();
+                    $(`#tableBlock`).show();
+               }else{
+                alert(data.response);
+                $(`#processBlock`).hide();
+                $(`#tableBlock`).hide();
                }
                // location.reload();
            }

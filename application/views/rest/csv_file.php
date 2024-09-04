@@ -25,6 +25,8 @@
                                 <div class="card">
                                     <div class="card-body">
                                     <h5 class="card-title mb-3"><?= $this->lang->line('restaurant'); ?></h5>
+
+                                        <a href="<?= base_url('uploads/common/Eatary.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="eatary_form">
                                             <input type="hidden" name="type" value="eatary">
                                             <div class="row">
@@ -47,7 +49,8 @@
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
-                                    <h5 class="card-title mb-3"><?= $this->lang->line('cuisine'); ?></h5>
+                                    <h5 class="card-title mb-3"><?= $this->lang->line('cuisine'); ?></h5> (Support)
+                                    <a href="<?= base_url('uploads/common/Cuisines.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="cuisine_form">
                                             <input type="hidden" name="type" value="cuisine">
                                             <div class="row">
@@ -71,6 +74,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                     <h5 class="card-title mb-3"><?= $this->lang->line('menuCategory'); ?></h5>
+                                    <a href="<?= base_url('uploads/common/MenuCatg.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="menucatg_form">
                                             <input type="hidden" name="type" value="menucatg">
                                             <div class="row">
@@ -90,10 +94,11 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <!-- <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
                                     <h5 class="card-title mb-3"><?= $this->lang->line('item'); ?> <?= $this->lang->line('type'); ?></h5>
+                                    <a href="<?= base_url('uploads/common/aa.csv'); ?>" class="btn btn-sm btn-info"><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="item_types_form">
                                             <input type="hidden" name="type" value="itemType">
                                             <div class="row">
@@ -111,12 +116,13 @@
                                         </form>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
                                     <h5 class="card-title mb-3"><?= $this->lang->line('itemDetails'); ?></h5>
+                                    <a href="<?= base_url('uploads/common/MenuItem.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="menuitem_form">
                                             <input type="hidden" name="type" value="menuitem">
                                             <div class="row">
@@ -140,6 +146,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                     <h5 class="card-title mb-3"><?= $this->lang->line('item'); ?> <?= $this->lang->line('price'); ?></h5>
+                                    <a href="<?= base_url('uploads/common/MenuItemRates.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="itemRates_form">
                                             <input type="hidden" name="type" value="itemrates">
                                             <div class="row">
@@ -164,6 +171,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                     <h5 class="card-title mb-3"><?= $this->lang->line('item'); ?> <?= $this->lang->line('recommendation'); ?></h5>
+                                    <a href="<?= base_url('uploads/common/itemRecos.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="itemRecos_form">
                                             <input type="hidden" name="type" value="itemRecom">
                                             <div class="row">
@@ -187,7 +195,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                     <h5 class="card-title mb-3"><?= $this->lang->line('kitchen'); ?></h5>
-                                        
+                                        <a href="<?= base_url('uploads/common/eatKit.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="kitchen_form">
                                             <input type="hidden" name="type" value="kitchen">
                                             <div class="row">
@@ -211,7 +219,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                     <h5 class="card-title mb-3"><?= $this->lang->line('dispense'); ?> <?= $this->lang->line('outlet'); ?></h5>
-                                        
+                                        <a href="<?= base_url('uploads/common/dispenseOutlet.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="dispenseOutlet_form">
                                             <input type="hidden" name="type" value="dispenseOutlet">
                                             <div class="row">
@@ -235,7 +243,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                     <h5 class="card-title mb-3"><?= $this->lang->line('table'); ?></h5>
-                                        
+                                        <a href="<?= base_url('uploads/common/eatTables.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="table_form">
                                             <input type="hidden" name="type" value="table">
                                             <div class="row">
@@ -259,7 +267,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                     <h5 class="card-title mb-3"><?= $this->lang->line('cashier'); ?></h5>
-                                        
+                                        <a href="<?= base_url('uploads/common/cashier.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="cashier_form">
                                             <input type="hidden" name="type" value="cashier">
                                             <div class="row">

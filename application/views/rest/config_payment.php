@@ -33,12 +33,12 @@
                                                         <input type="text" class="form-control form-control-sm" name="name" placeholder="<?= $this->lang->line('name'); ?>" required="" id="name" autocomplete="off">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3 col-6">
+                                                <!-- <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('company'); ?></label>
                                                         <input type="text" class="form-control form-control-sm" name="Company" placeholder="<?= $this->lang->line('company'); ?>" required="" id="Company" autocomplete="off">
                                                     </div>
-                                                </div>
+                                                </div> -->
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
@@ -103,7 +103,6 @@
                                                 <tr >
                                                     <th>#</th>
                                                     <th><?= $this->lang->line('name'); ?></th>
-                                                    <th><?= $this->lang->line('company'); ?></th>
                                                     <th><?= $this->lang->line('test'); ?></th>
                                                     <th><?= $this->lang->line('live'); ?></th>
                                                     <th><?= $this->lang->line('url'); ?></th>
@@ -122,11 +121,9 @@
                                                      ?>
                                                     <tr>
                                                         <td><?= $i++; ?></td>
-                                                        <td><?= $row['Name']; ?></td>
-                                                        <td>
-                                                            <?= $row['Company']; ?><br>
+                                                        <td><?= $row['Name']; ?><br>
                                                             <span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span>
-                                                            </td>
+                                                        </td>
                                                         <td>
                                                             <?= $row['TKeyCd']; ?><br>
                                                             <small><?= $row['TSecretCd']; ?></small>

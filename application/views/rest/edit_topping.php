@@ -52,11 +52,14 @@
 
                                             <div class="row">
                                                 <div class="col-md-8">
-                                                    <button type="button" class="btn btn-info btn-sm btn-rounded" id="addrow"><i class="fa fa-plus"></i></button>
+                                                    
                                                     <div class="table-responsive">
                                                       <table class="table">
                                                         <thead>
                                                             <tr>
+                                                                <th>
+                                                                    <button type="button" class="btn btn-info btn-sm btn-rounded" id="addrow"><i class="fa fa-plus"></i></button>
+                                                                </th>
                                                                 <th><?= $this->lang->line('section'); ?></th>
                                                                 <th><?= $this->lang->line('portion'); ?></th>
                                                                 <th><?= $this->lang->line('rate'); ?></th>
@@ -68,6 +71,7 @@
                                                         if(!empty($itmRates)){
                                                             foreach ($itmRates as $iRate) { ?>
                                                         <tr>
+                                                            <td></td>
                                                             <td>
                                                                 <select name="sections[]" id="" class="form-control form-control-sm" required="">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
@@ -143,6 +147,7 @@
 $("#addrow").on("click", function () {
     
     var newRow = '<tr>\
+                        <td></td>\
                         <td>\
                             <select name="sections[]" id="" class="form-control form-control-sm" required="">\
                                 <option value=""><?= $this->lang->line('select'); ?></option>\

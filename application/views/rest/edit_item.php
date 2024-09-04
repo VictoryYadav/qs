@@ -189,7 +189,7 @@
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label for="item_attribute"><?= $this->lang->line('itemAttribute'); ?></label>
-                                                        <select class="form-control form-control-sm" name="ItemAttrib" required="">
+                                                        <select class="form-control form-control-sm" name="ItemAttrib" >
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php
                                                             foreach ($menuTags as $key) {
@@ -204,7 +204,7 @@
                                                  <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label for="item_sale"><?= $this->lang->line('itemSale'); ?></label>
-                                                        <select class="form-control form-control-sm" required="" name="ItemSale">
+                                                        <select class="form-control form-control-sm" name="ItemSale">
                                                             <option value="0"><?= $this->lang->line('select'); ?></option>
                                                             <?php
                                                             foreach ($menuTags as $key) {
@@ -219,14 +219,14 @@
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label for="item_tag"><?= $this->lang->line('itemTag'); ?></label>
-                                                        <select class="form-control form-control-sm" required="" name="ItemTag">
+                                                        <select class="form-control form-control-sm" name="ItemTag">
                                                             <option value="0"><?= $this->lang->line('select'); ?></option>
-                                                            <?php
+                                                            <!-- <?php
                                                             foreach ($menuTags as $key) {
                                                                 if($key['TagTyp'] == 2){
                                                              ?>
                                                             <option value="<?= $key['TagId']; ?>" <?php if($key['TagId'] == $detail['ItemTag']){ echo 'selected'; } ?>><?= $key['TDesc']; ?></option>
-                                                            <?php } } ?>
+                                                            <?php } } ?> -->
                                                         </select>
                                                     </div>
                                                 </div>
@@ -318,11 +318,13 @@
 
                                             <div class="row">
                                                 <div class="col-md-8">
-                                                    <button type="button" class="btn btn-success btn-sm btn-rounded" id="addrow"><i class="fa fa-plus"></i></button>
                                                     <div class="table-responsive">
                                                       <table class="table">
                                                         <thead>
                                                             <tr>
+                                                                <th>
+                                                                    <button type="button" class="btn btn-success btn-sm btn-rounded" id="addrow"><i class="fa fa-plus"></i></button>
+                                                                </th>
                                                                 <th><?= $this->lang->line('section'); ?></th>
                                                                 <th><?= $this->lang->line('portion'); ?></th>
                                                                 <th><?= $this->lang->line('rate'); ?></th>
@@ -334,6 +336,7 @@
                                                         if(!empty($itmRates)){
                                                             foreach ($itmRates as $iRate) { ?>
                                                         <tr>
+                                                            <td></td>
                                                             <td>
                                                                 <select name="sections[]" id="" class="form-control form-control-sm" required="">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
@@ -434,6 +437,7 @@ $("#item_name").keyup(function(){
 $("#addrow").on("click", function () {
     
     var newRow = '<tr>\
+                        <td></td>\
                         <td>\
                             <select name="sections[]" id="" class="form-control form-control-sm" required="">\
                                 <option value=""><?= $this->lang->line('select'); ?></option>\

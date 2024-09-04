@@ -88,7 +88,7 @@
                                                     <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>" id="saveBtn">
                                                     <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('update'); ?>" id="updateBtn" style="display: none;">
                                                 </div>
-                                                <div class="text-success" id="msgText"></div>
+                                                
                                             </div>
                                         </form>
                                     </div>
@@ -170,9 +170,9 @@
         var data = $(this).serializeArray();
         $.post('<?= base_url('restaurant/table_list') ?>',data,function(res){
             if(res.status == 'success'){
-              $('#msgText').html(res.response);
+              alert(res.response);
             }else{
-              $('#msgText').html(res.response);
+              alert(res.response);
             }
             location.reload();
         });

@@ -51,11 +51,14 @@
 
                                             <div class="row">
                                                 <div class="col-md-8">
-                                                    <button type="button" class="btn btn-info btn-sm btn-rounded" id="addrow"><i class="fa fa-plus"></i></button>
+                                                    
                                                     <div class="table-responsive">
                                                       <table class="table">
                                                         <thead>
                                                             <tr>
+                                                                <th>
+                                                                    <button type="button" class="btn btn-info btn-sm btn-rounded" id="addrow"><i class="fa fa-plus"></i></button>
+                                                                </th>
                                                                 <th><?= $this->lang->line('section'); ?></th>
                                                                 <th><?= $this->lang->line('portion'); ?></th>
                                                                 <th><?= $this->lang->line('rate'); ?></th>
@@ -64,6 +67,7 @@
                                                         </thead>
                                                         <tbody id="tblBody">
                                                         <tr>
+                                                            <td></td>
                                                             <td>
                                                                 <select name="sections[]" id="" class="form-control form-control-sm" required="">
                                                                     <option value=""><?= $this->lang->line('select'); ?></option>
@@ -124,7 +128,7 @@
                                                         <td><?= $row['ItemName']; ?></td>
                                                         <td><?= $row['Opt']; ?></td>
                                                         <td>
-                                                            <a href="<?= base_url('restaurant/edit_toppings/'.$row['ItemId']); ?>" class="btn btn-sm btn-warning"><i class="fa fa-eye"></i></a>
+                                                            <a href="<?= base_url('restaurant/edit_toppings/'.$row['ItemId']); ?>" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
                                                         </td>
                                                     </tr>
                                                     <?php  }  } ?>
@@ -167,6 +171,7 @@
 $("#addrow").on("click", function () {
     
     var newRow = '<tr>\
+                        <td></td>\
                         <td>\
                             <select name="sections[]" id="" class="form-control form-control-sm" required="">\
                                 <option value=""><?= $this->lang->line('select'); ?></option>\
