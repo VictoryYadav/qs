@@ -97,6 +97,7 @@
                                                     <th>#</th>
                                                     <th><?= $this->lang->line('item'); ?></th>
                                                     <th><?= $this->lang->line('recommendation'); ?></th>
+                                                    <th><?= $this->lang->line('remarks'); ?></th>
                                                     <th><?= $this->lang->line('mode'); ?></th>
                                                     <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
@@ -115,6 +116,7 @@
                                                         <td><?= $i++; ?></td>
                                                         <td><?= $row['ItemNm']; ?></td>
                                                         <td><?= $row['recName']; ?></td>
+                                                        <td><?= $row['Remarks']; ?></td>
                                                         <td>
                                                             <span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span>
                                                         </td>

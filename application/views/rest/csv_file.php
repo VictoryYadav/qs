@@ -10,11 +10,7 @@
                     <!-- Sidebar -->
                 </div>
             </div>
-            <!-- Left Sidebar End -->
-
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
+            
             <div class="main-content">
 
                 <div class="page-content">

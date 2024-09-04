@@ -1345,7 +1345,7 @@ class Restaurant extends CI_Controller {
             updateRecord('CustOffers',$CustOffers, array('SchCd' => $SchCd, 'EID' => $EID));
             if(!empty($_POST['SchDesc1'])){
                 for($i = 0;$i<sizeof($_POST['SchDesc1']);$i++){
-                    if(!empty($_POST['SchDesc1'][$i])){
+                    $SDetCd = $_POST['SDetCd'][$i];
                         if(isset($_FILES['description_image']['name']) && !empty($_FILES['description_image']['name'])){ 
 
                             $files = $_FILES['description_image'];
@@ -1362,20 +1362,20 @@ class Restaurant extends CI_Controller {
                                 mkdir($folderPath, 0777, true);
                             }
 
-                            $res = do_upload('description_image',$file, $folderPath,'*');
+                            do_upload('description_image',$file, $folderPath,'*');
                             $CustOffersDet['SchImg'] = $file;
                         }
 
                         $CustOffersDet['SchCd'] = $SchCd;
                         $CustOffersDet['SchDesc1'] = $_POST['SchDesc1'][$i];
 
-                        if(!empty($data['languages'])){
-                            $languages = $data['languages'];
-                        for ($i = 1; $i < sizeof($languages); $i++) { 
-                            $LCd = $languages[$i]['LCd'];
-                            $description = "SchDesc$LCd";
-                            $CustOffersDet[$description] = $_POST[$description][$i];
-                        } }
+                        // if(!empty($data['languages'])){
+                        //     $languages = $data['languages'];
+                        // for ($i = 1; $i < sizeof($languages); $i++) { 
+                        //     $LCd = $languages[$i]['LCd'];
+                        //     $description = "SchDesc$LCd";
+                        //     $CustOffersDet[$description] = $_POST[$description][$i];
+                        // } }
 
                         $CustOffersDet['CID'] = isset($_POST['description_cid'][$i])?$_POST['description_cid'][$i]:0;
                         $CustOffersDet['MCatgId'] = isset($_POST['description_mcatgid'][$i])?$_POST['description_mcatgid'][$i]:0;
@@ -1402,13 +1402,12 @@ class Restaurant extends CI_Controller {
                         $CustOffersDet['Rank'] = 1;
                         $CustOffersDet['Stat'] = 0;
 
-                        if(isset($_POST['SDetCd'][$i]) && !empty($_POST['SDetCd'][$i])){
-                            $SDetCd = $_POST['SDetCd'][$i];
+                        if(!empty($SDetCd)){
+                            
                             updateRecord('CustOffersDet',$CustOffersDet, array('SDetCd' => $SDetCd));
                         }else{
                             insertRecord('CustOffersDet', $CustOffersDet);
                         }
-                    }
                 }
             }
             $this->session->set_flashdata('success','Offer has been updated.'); 
@@ -5664,37 +5663,10 @@ class Restaurant extends CI_Controller {
 
                                 while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
                                     
-                                    if($csv_data[0] !='RestName'){
+                                    if($csv_data[0] !='Cuisine'){
                                         $checker = 1;
-                                        $temp['EID'] = $this->checkEatary($csv_data[0]);
-
-                                        if($temp['EID'] < 1){
-                                          $response = $csv_data[0]. " Not Found in row no: $count";
-                                          $checker = 0;
-                                        }
-
-                                        $temp['Name1'] =  $csv_data[1];
-
-                                        if(empty($temp['Name1'])){
-                                          $response = $csv_data[1]. " Field Required in row no: $count";
-                                          $checker = 0;
-                                        }
-
-                                        $temp['CID'] =  $this->checkCuisine($csv_data[2]);
-                                        if($temp['CID'] == 0){
-                                          $response = $csv_data[2]. " Not Found in row no: $count";
-                                          $checker = 0;
-                                        }
-
-                                        $temp['KitCd'] =  $this->checkKitchen($csv_data[3], $temp['EID']);
-                                        if($temp['KitCd'] == 0){
-                                          $response = $csv_data[3]. " Not Found in row no: $count";
-                                          $checker = 0;
-                                        }
-
-                                        $temp['Rank'] = $csv_data[4];
+                                        $temp['Name1'] = $csv_data[0];
                                         $temp['Stat'] = 0;
-                                        $temp['LoginId'] = authuser()->RUserId;
 
                                         if($checker == 0){
                                             $cuisineData = [];
@@ -5710,7 +5682,7 @@ class Restaurant extends CI_Controller {
                                 }
 
                                 if(!empty($cuisineData)){
-                                    $this->db2->insert_batch('EatCuisine', $cuisineData);
+                                    $this->db2->insert_batch('Cuisines', $cuisineData);
                                     $status = 'success';
                                     $response = 'Data Inserted.';
                                 }
@@ -5782,6 +5754,9 @@ class Restaurant extends CI_Controller {
                                               $response = $csv_data[5]. " Not Found in row no: $count";
                                               $checker = 0;
                                             }
+
+                                            $mc['TaxType']  = $this->checkTaxType($csv_data[6]);
+                                            $mc['DCd']      = $this->checkDCdCode($csv_data[7]);
 
                                             if($checker == 0){
                                                 $mcData = [];
@@ -5930,6 +5905,7 @@ class Restaurant extends CI_Controller {
                                               $checker = 0;
                                             }
                                             $mItem['videoLink'] = $csv_data[29];
+                                            $mItem['AvgRtng']   = $csv_data[30];
                                             $mItem['Stat'] = 0;
                                             $mItem['LoginCd'] = authuser()->RUserId;
                                         
@@ -6109,7 +6085,7 @@ class Restaurant extends CI_Controller {
                                           $checker = 0;
                                         }
 
-                                        $mc['Remarks'] = '-';
+                                        $mc['Remarks'] = $csv_data[3];
                                         $mc['Stat'] = 0;
                                         $mc['LoginCd'] = authuser()->RUserId;
 
@@ -6190,6 +6166,7 @@ class Restaurant extends CI_Controller {
                                         }
 
                                         $kd['PrinterName'] =  $csv_data[2];
+                                        $kd['PrinterIP']   =  $csv_data[3];
                                         $kd['Stat'] = 0;
 
                                         if($checker == 0){
@@ -6267,7 +6244,8 @@ class Restaurant extends CI_Controller {
                                           $checker = 0;
                                         }
 
-                                        $kd['PrinterName'] =  $csv_data[2];
+                                        $kd['PrinterName']  =  $csv_data[2];
+                                        $kd['PrinterIP']    =  $csv_data[3];
                                         $kd['Stat'] = 0;
 
                                         if($checker == 0){
@@ -6484,6 +6462,29 @@ class Restaurant extends CI_Controller {
         $data['title'] = 'CSV '.$this->lang->line('file').' '.$this->lang->line('upload');
         
         $this->load->view('rest/csv_file', $data);   
+    }
+
+    private function checkTaxType($name){
+        0-NA; 1-Bar; 2-Food; 3-... (from Tax table)
+        $tax = 0;
+        if($name == 'NA'){
+            $tax = 0;
+        }else if($name == 'Bar'){
+            $tax = 1;
+        } else if($name == 'Food'){
+            $tax = 2;
+        }
+        return $tax;
+    }
+
+    private function checkDCdCode($name){
+        $EID = authuser()->EID;
+        $DCd = 0;
+        $data = $this->db2->select('DCd')->like('Name1', $name)->get_where('Eat_DispOutlets', arrau('EID' => $EID))->row_array();
+        if(!empty($data)){
+            $DCd = $data['DCd'];
+        }
+        return $DCd;
     }
 
     private function checkEatary($name){

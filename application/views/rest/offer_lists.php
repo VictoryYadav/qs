@@ -78,7 +78,7 @@
                                                     <td><?php echo !empty($key['FrmDayNo'])?getDay($key['FrmDayNo']):'-'; ?></td>
                                                     <td><?php echo !empty($key['ToDayNo'])?getDay($key['ToDayNo']):'-'; ?></td>
                                                     <td>
-                                                        <button type="button" class="btn btn-success btn-sm" onclick="changeEdit(<?= $key['SchCd']; ?>, <?= $key['offer1']; ?>, <?= $key['offer2']; ?>)" title="Edit"><i class="fa fa-edit"></i></button>|
+                                                        <button type="button" class="btn btn-warning btn-sm" onclick="changeEdit(<?= $key['SchCd']; ?>, <?= $key['offer1']; ?>, <?= $key['offer2']; ?>)" title="Edit"><i class="fa fa-edit"></i></button> |
                                                         <button type="button" class="btn btn-success btn-sm" onclick="changeState(<?= $key['SchCd']; ?>, <?= $key['Stat']; ?>)" title="Change Status"><i class="fab fa-stack-exchange"></i></button>
                                                     </td>
                                                 </tr>

@@ -139,7 +139,7 @@
                                                                 <input type="text" name="SchDesc1[]" class="form-control form-control-sm" id="description<?= $n?>_description" maxlength="100" placeholder="Enter Scheme Description" value="<?= $key['SchDesc']?>" />
                                                             </div>
 
-                                                            <?php
+                                                            <!-- <?php
                                                             for ($i = 1; $i < sizeof($languages); $i++) {
                                                                 $descc = 'SchDesc'.$languages[$i]['LCd'];
                                                              ?>
@@ -149,7 +149,7 @@
                                                                         <input type="text" id="description<?= $languages[$i]['LCd']; ?>" name="SchDesc<?= $languages[$i]['LCd']; ?>[]" class="form-control form-control-sm"  value="<?= $key[$descc];?>" />
                                                                     </div>
                                                                </div>
-                                                            <?php } ?>
+                                                            <?php } ?> -->
 
                                                             <div class="form-group col-md-3 col-6">
                                                                 <label for="description1_image"><?= $this->lang->line('image');?></label>
@@ -635,9 +635,10 @@
                         <h3><?= $this->lang->line('offerDetails');?> - '+num_desc+'</h3>\
                     </div>\
                     <div class="row">\
+                    <input type="hidden" name="SDetCd[]" value="0">\
                         <div class="form-group col-md-3 col-6">\
                             <label for="description'+num_desc+'_description"><?= $this->lang->line('description');?></label>\
-                                <input type="text" name="description[]" class="form-control form-control-sm" id="description'+num_desc+'_description" maxlength="100" />\
+                                <input type="text" name="SchDesc1[]" class="form-control form-control-sm" id="description'+num_desc+'_description" maxlength="100" />\
                         </div>\
                         <div class="form-group col-md-3 col-6">\
                             <label for="description'+num_desc+'_image"><?= $this->lang->line('image');?></label>\
@@ -892,10 +893,10 @@
             $('.discmenuCategory').val('').trigger('change');
             $('.discitemType').val("");
             // $('.discQty').val(1);
-            $(`'discountItemPortion`).prop('required', true);
-            $(`'discQty`).prop('required', true);
+            $(`.discountItemPortion`).prop('required', true);
+            $(`.discQty`).prop('required', true);
 
-            portionForCommon(ItemTyp=0 ,CID=0, MCatgId=0, ItemId, n, 'itemid');
+            portionForCommon(ItemTyp=0 ,CID=0, MCatgId=0, ItemId, n, 'itemid', ip);
 
         }else{
             $('#description'+n+'_discountitemportion').attr('required', false);
@@ -981,7 +982,7 @@
             $('#description'+n+'_discountitemportion').attr('required', true);
             $('#description'+n+'_discountquantity').attr('required', true);
 
-            portionForCommon(ItemTyp=0 ,CID=0, MCatgId=0, item_id, n, 'itemid');
+            portionForCommon(ItemTyp=0 ,CID=0, MCatgId=0, item_id, n, 'itemid', 0);
         }else{
             $('#description'+n+'_discountitemportion').attr('required', false);
             $('#description'+n+'_discountquantity').attr('required', false);
@@ -1030,7 +1031,7 @@
         if(schcatg == 4 || schcatg == 75){
             var itemTyp = $(`#description${n}_discitemtyp`).val();
             if(itemTyp > 0){
-                portionForCommon(itemTyp ,CID=0, MCatgId=0, ItemId=0, n, 'itemtype');
+                portionForCommon(itemTyp ,CID=0, MCatgId=0, ItemId=0, n, 'itemtype', ip);
             }
         }
     }
@@ -1056,12 +1057,12 @@
             $('.discmenuCategory').val('').trigger('change');
             $('.discountItems').val('').trigger('change');
             // $('.discQty').val(1);
-            $(`'discountItemPortion`).prop('required', true);
-            $(`'discQty`).prop('required', true);
+            $(`.discountItemPortion`).prop('required', true);
+            $(`.discQty`).prop('required', true);
         }
 
         if(ItemTyp > 0){
-            portionForCommon(ItemTyp ,CID=0, MCatgId=0, ItemId=0, n, 'itemtype');
+            portionForCommon(ItemTyp ,CID=0, MCatgId=0, ItemId=0, n, 'itemtype', 0);
         }
     }
 
@@ -1073,10 +1074,10 @@
             $('.discountItems').val('').trigger('change');
             $('.discitemType').val("");
             // $('.discQty').val(1);
-            $(`'discountItemPortion`).prop('required', true);
-            $(`'discQty`).prop('required', true);
+            $(`.discountItemPortion`).prop('required', true);
+            $(`.discQty`).prop('required', true);
             
-            portionForCommon(ItemTyp=0 ,CID, MCatgId=0, ItemId=0, n, 'cid');
+            portionForCommon(ItemTyp=0 ,CID, MCatgId=0, ItemId=0, n, 'cid', 0);
         }
 
     }
@@ -1088,10 +1089,10 @@
             $('.discountItems').val('').trigger('change');
             $('.discitemType').val("");
             // $('.discQty').val(1);
-            $(`'discountItemPortion`).prop('required', true);
-            $(`'discQty`).prop('required', true);
+            $(`.discountItemPortion`).prop('required', true);
+            $(`.discQty`).prop('required', true);
 
-            portionForCommon(ItemTyp=0 ,CID=0, MCatgId, ItemId=0, n, 'cat');
+            portionForCommon(ItemTyp=0 ,CID=0, MCatgId, ItemId=0, n, 'cat', 0);
         }
 
     }
@@ -1118,12 +1119,18 @@
         });   
     }
 
-    function portionForCommon(ItemTyp ,CID, MCatgId, ItemId, n, type){
+    function portionForCommon(ItemTyp ,CID, MCatgId, ItemId, n, type, discIPCd){
         $.post('<?= base_url('restaurant/get_portion_itemtype') ?>',{ItemTyp:ItemTyp, CID:CID, MCatgId:MCatgId, ItemId:ItemId, type:type},function(res){
             if(res.status == 'success'){
                 var opt = `<option value=""><?= $this->lang->line('select'); ?></option>`;
               res.response.forEach((item, index) => {
-                opt += `<option value="${item.IPCd}">${item.Portions}</option>`;
+                var slct = '';
+                if(discIPCd > 0){
+                    if(item.IPCd == discIPCd){
+                        slct = 'selected';
+                    }
+                }
+                opt += `<option value="${item.IPCd}" ${slct}>${item.Portions}</option>`;
               })
               $(`#description${n}_discountitemportion`).html(opt);
             }else{
