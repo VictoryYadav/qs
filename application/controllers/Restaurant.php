@@ -5666,7 +5666,7 @@ class Restaurant extends CI_Controller {
                                     
                                     if($csv_data[0] !='Cuisine'){
                                         $checker = 1;
-                                        $temp['Name1'] = $csv_data[0];
+                                        $temp['Name'] = $csv_data[0];
                                         $temp['Stat'] = 0;
 
                                         if($checker == 0){
@@ -6532,7 +6532,7 @@ class Restaurant extends CI_Controller {
 
     private function checkCuisine($name){
         $cid = 0;
-        $cuisine = $this->db2->select('CID')->like('Name1', $name)->get('Cuisines')->row_array();
+        $cuisine = $this->db2->select('CID')->like('Name', $name)->get('Cuisines')->row_array();
         if(!empty($cuisine)){
             $cid = $cuisine['CID'];
         }
@@ -7063,10 +7063,7 @@ class Restaurant extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
 
-            $langId = $this->session->userdata('site_lang');
-            $lname = "Name$langId";
-
-            $updateData[$lname] = $_POST['cuisineName'];
+            $updateData['Name'] = $_POST['cuisineName'];
             $updateData['Stat'] = $_POST['Stat'];
 
             if($_POST['CID'] > 0){
@@ -7928,19 +7925,16 @@ class Restaurant extends CI_Controller {
         $response = "Something went wrong! Try again later.";
         if($this->input->method(true)=='POST'){
 
-            $langId = $this->session->userdata('site_lang');
-            $lname = "Name$langId";
-
-            $updateData[$lname] = $_POST['name'];
+            $updateData['Name'] = $_POST['name'];
             $updateData['Stat'] = $_POST['Stat'];
 
             if($_POST['SecId'] > 0){
-                updateRecord('Eat_Sections', $updateData, array('SecId' => $_POST['SecId']));
-                $response = 'Updated Records'; 
+                updateRecord('Sections', $updateData, array('SecId' => $_POST['SecId']));
+                $response = 'Section Updated'; 
             }else{
                 unset($updateData['SecId']);
-                insertRecord('Eat_Sections', $updateData);
-                $response = 'Insert Records'; 
+                insertRecord('Sections', $updateData);
+                $response = 'Section Added'; 
             }
 
             $status = 'success';
@@ -7954,7 +7948,6 @@ class Restaurant extends CI_Controller {
         
         $data['title'] = $this->lang->line('section');
         $data['lists'] = $this->rest->getSectionList();
-        $data['counter'] = $this->rest->countMenuItem();
 
         $this->load->view('rest/section', $data);    
     }
@@ -7970,8 +7963,7 @@ class Restaurant extends CI_Controller {
             $status = 'success';
 
             if (isset($_POST['getAvailableRoles']) && $_POST['getAvailableRoles']==1) {
-                $lname = "Name$langId as Name";
-                $response = $this->db2->query("SELECT CID, $lname from Cuisines where CID not in (select CID from EatCuisine where Stat = 0 and EID = $EID) ")->result_array();
+                $response = $this->db2->query("SELECT CID, Name from Cuisines where CID not in (select CID from EatCuisine where Stat = 0 and EID = $EID) ")->result_array();
             }
 
             if (isset($_POST['getAssignedRoles']) && $_POST['getAssignedRoles']==1) {
@@ -8025,8 +8017,79 @@ class Restaurant extends CI_Controller {
         }
         
         $data['title'] = $this->lang->line('cuisine');
+        $data['counter'] = $this->rest->countMenuItem();
 
         $this->load->view('rest/cuisine_access', $data);    
+    }
+
+    public function section_access(){
+        // $this->check_access();
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        $EID = authuser()->EID;
+        if($this->input->method(true)=='POST'){
+            $langId = $this->session->userdata('site_lang');
+            
+            $status = 'success';
+
+            if (isset($_POST['getAvailableRoles']) && $_POST['getAvailableRoles']==1) {
+                $response = $this->db2->query("SELECT SecId, Name from Sections where SecId not in (select SecId from Eat_Sections where Stat = 0 and EID = $EID) ")->result_array();
+            }
+
+            if (isset($_POST['getAssignedRoles']) && $_POST['getAssignedRoles']==1) {
+                $lname = "ec.Name$langId as Name";
+                $response = $this->db2->select("ec.SecId, $lname")
+                                ->join('Sections c', 'c.SecId = ec.SecId', 'inner')
+                                ->get_where('Eat_Sections ec', array('ec.EID' => $EID, 'ec.Stat' => 0))->result_array();
+            }
+
+            if (isset($_POST['setRestRoles']) && $_POST['setRestRoles']==1) {
+
+                $response = "Sections are assigned";
+
+                $temp = [];
+                $cui = [];
+                $roles = $_POST['roles'];
+                $eName = "Name$langId";
+                foreach ($roles as $role) {
+                    $temp['EID'] = $EID;
+                    $temp['SecId'] = $role;
+                    $temp[$eName] = $this->rest->getSectionName($temp['SecId']);
+                    $cui[] = $temp;
+                }
+
+                if(!empty($cui)){
+                        $this->db2->insert_batch('Eat_Sections', $cui); 
+                    }else{
+                        $response = "Failed to insert";
+                    }
+                }
+
+            if (isset($_POST['removeRestRoles']) && $_POST['removeRestRoles'] == 1) {
+                $SecId = $_POST['SecId'];
+                $SecId = implode(",",$SecId);
+
+                $deleteRoles = $this->db2->query("DELETE FROM Eat_Sections WHERE EID = $EID AND SecId IN ($SecId)");
+
+                if ($deleteRoles) {
+                    $response = "Section are Removed";
+                }else {
+                    $response = "Failed to delete in EatSection table";
+                }
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('section');
+        $data['counter'] = $this->rest->countMenuItem();
+
+        $this->load->view('rest/section_access', $data);    
     }
 
     public function entertainment(){
@@ -8695,7 +8758,7 @@ class Restaurant extends CI_Controller {
 
                 $this->db2->query("INSERT INTO EatCuisine (CID, Name1, EID) SELECT DISTINCT c.CID, c.Name1, $EID From Cuisines c, TempMenuItem t where c.Name1 = t.Cuisine");
 
-                $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, 0 From Cuisines c, TempMenuItem t, FoodType f where c.Name1 = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
+                $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, 0 From Cuisines c, TempMenuItem t, FoodType f where c.Name = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
                 // t.DayNo = 
                 $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, Name1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink, ItemTyp)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, IFNULL((SELECT DayNo FROM WeekDays wd where wd.Name1 = t.DayNo),8), t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink,IFNULL((SELECT Tagid FROM MenuTags mt where mt.Name1 = t.ItemTyp),0)  From TempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
 
@@ -10442,6 +10505,40 @@ class Restaurant extends CI_Controller {
         header("Connection: close");
     }
 
+    public function language(){
+        // $this->check_access();
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        if($this->input->method(true)=='POST'){
+
+            $updateData['LangName'] = $_POST['name'];
+            $updateData['LangCode'] = $_POST['LangCode'];
+            $updateData['Stat']     = $_POST['Stat'];
+
+            if($_POST['id'] > 0){
+                updateRecord('Languages', $updateData, array('id' => $_POST['id']));
+                $response = 'Language Updated'; 
+            }else{
+                unset($updateData['id']);
+                insertRecord('Languages', $updateData);
+                $response = 'Language Added'; 
+            }
+
+            $status = 'success';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = 'Language';
+        $data['lists'] = $this->rest->getLanguageList();
+
+        $this->load->view('rest/language', $data);    
+    }
+
     public function language_access(){
         // $this->check_access();
         $status = "error";
@@ -10453,7 +10550,7 @@ class Restaurant extends CI_Controller {
             $status = 'success';
 
             if (isset($_POST['getAvailableRoles']) && $_POST['getAvailableRoles']==1) {
-                $response = $this->db2->query("SELECT id, LangName from Languages where id not in (select LCd from Eat_Lang where Stat = 0 and EID = $EID) ")->result_array();
+                $response = $this->db2->query("SELECT id, LangName from Languages where id not in (select LangId from Eat_Lang where Stat = 0 and EID = $EID) ")->result_array();
             }
 
             if (isset($_POST['getAssignedRoles']) && $_POST['getAssignedRoles']==1) {
@@ -10471,27 +10568,29 @@ class Restaurant extends CI_Controller {
                 $cui = [];
                 $roles = $_POST['roles'];
 
+                $eName = "Name$langId";
                 foreach ($roles as $role) {
                     $temp['EID'] = $EID;
-                    $temp['CID'] = $role;
+                    $temp['LangId'] = $role;
+                    $temp[$eName] = $this->rest->getLanguageName($temp['LangId']);
                     $cui[] = $temp;
                 }
 
                 if(!empty($cui)){
-                        $this->db2->insert_batch('EatCuisine', $cui); 
+                        $this->db2->insert_batch('Eat_Lang', $cui); 
                     }else{
                         $response = "Failed to insert";
                     }
                 }
 
             if (isset($_POST['removeRestRoles']) && $_POST['removeRestRoles'] == 1) {
-                $CID = $_POST['CID'];
-                $CID = implode(",",$CID);
+                $LCd = $_POST['LCd'];
+                $LCd = implode(",",$LCd);
 
-                $deleteRoles = $this->db2->query("DELETE FROM EatCuisine WHERE EID = $EID AND CID IN ($CID)");
+                $deleteRoles = $this->db2->query("DELETE FROM Eat_Lang WHERE EID = $EID AND LCd IN ($LCd)");
 
                 if ($deleteRoles) {
-                    $response = "Cuisine are Removed";
+                    $response = "Language are Removed";
                 }else {
                     $response = "Failed to delete in EatCuisine table";
                 }
@@ -10506,6 +10605,7 @@ class Restaurant extends CI_Controller {
         }
         
         $data['title'] = $this->lang->line('language');
+        $data['counter'] = $this->rest->countMenuItem();
 
         $this->load->view('rest/languages', $data);    
     }
@@ -10618,7 +10718,7 @@ class Restaurant extends CI_Controller {
 
     public function tempmenu_export(){
         $langId = $this->session->userdata('site_lang');
-        $Cuisine = "c.Name$langId as Cuisine";
+        $Cuisine = "c.Name as Cuisine";
         $foodType = "fd.Name$langId as foodType";
         $CTypUsedFor = "ct.Usedfor$langId as CTypUsedFor";
         $MenuCatg = "mc.Name$langId as MenuCatg";

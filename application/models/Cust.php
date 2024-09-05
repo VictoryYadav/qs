@@ -18,9 +18,8 @@ class Cust extends CI_Model{
 
 	public function getCuisineList(){
 
-		$langId = $this->session->userdata('site_lang');
-        $lname = "c.Name$langId as Name";
-        $select_sql = "c.CID, $lname";
+        $lname = "c.Name as Name";
+        $select_sql = "c.CID, c.Name";
 
 		return $this->db2->select($select_sql)
 						->order_by('ec.Rank', 'ASC')
@@ -1216,7 +1215,7 @@ class Cust extends CI_Model{
 		$langId = $this->session->userdata('site_lang');
         
         $lname = "mi.Name$langId as LngName";
-        $cuiname = "c1.Name$langId as cuiName";
+        $cuiname = "c1.Name as cuiName";
         $mname = "m.Name$langId as mcName";
         $ipname = "ip.Name$langId as portionName";
         $scName = "c.SchNm$langId as SchNm";

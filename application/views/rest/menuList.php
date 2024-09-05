@@ -67,8 +67,9 @@
                                                         <select name="Stat" id="Stat" class="form-control form-control-sm" required="">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
 
-                                                            <option value="0"><?= $this->lang->line('active'); ?></option>
-                                                            <option value="1"><?= $this->lang->line('inactive'); ?></option>
+                                                            <option value="0"><?= $this->lang->line('user'); ?></option>
+                                                            <option value="0"><?= $this->lang->line('support'); ?></option>
+                                                            <option value="5"><?= $this->lang->line('inactive'); ?></option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -104,9 +105,15 @@
                                                     if(!empty($menus)){
                                                         $i = 1;
                                                         foreach ($menus as $row) {
-                                                            $sts = ($row['Stat'] == 0)? $this->lang->line('active'):$this->lang->line('inactive');
-
-                                                            $clr = ($row['Stat'] == 0)?'success':'danger';
+                                                            $sts = $this->lang->line('user');
+                                                            $clr = 'success';
+                                                            if(in_array($row['Stat'], array(1,2,3))){
+                                                                $sts = $this->lang->line('support');
+                                                                $clr = 'info';
+                                                            }else if($row['Stat'] == 5){
+                                                                $sts = $this->lang->line('inactive');
+                                                                $clr = 'danger';
+                                                            }
 
                                                          ?>
                                                     <tr>

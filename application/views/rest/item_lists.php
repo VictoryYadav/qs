@@ -92,10 +92,10 @@
                                                     <button type="button" class="btn btn-success btn-sm btnc" onclick="updateData('live');"><?= $this->lang->line('live'); ?></button>
                                                     <button type="button" class="btn btn-primary btn-sm btnc" onclick="updateData('enabled');"><?= $this->lang->line('enabled'); ?></button>
                                                     <button type="button" class="btn btn-danger btn-sm btnc" onclick="updateData('disabled');"><?= $this->lang->line('disabled'); ?></button>
-                                                    <?php if($counter == 0){ ?>
-                                                    <a href="<?= base_url('restaurant/config_payment'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-fast-backward"></i></a>
+                                                    <?php if($counter != 0){ ?>
+                                                    <a href="<?= base_url('restaurant/config_payment'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
 
-                                                    <a href="<?= base_url('restaurant'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-fast-forward"></i></a>
+                                                    <a href="<?= base_url('restaurant'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
                                                     <?php } ?>
                                                 </div>
                                             </div>

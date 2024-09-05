@@ -88,9 +88,9 @@
                                                     <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>" id="saveBtn">
                                                     <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('update'); ?>" id="updateBtn" style="display: none;">
                                                 </div>
-                                                <?php if($counter == 0){ ?>
-                                                <a href="<?= base_url('restaurant/dispense_outlet'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-fast-backward"></i></a>
-                                                <a href="<?= base_url('restaurant/data_upload'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-fast-forward"></i></a>
+                                                <?php if($counter != 0){ ?>
+                                                <a href="<?= base_url('restaurant/dispense_outlet'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
+                                                <a href="<?= base_url('restaurant/language_access'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
                                                 <?php } ?>
                                             </div>
                                         </form>

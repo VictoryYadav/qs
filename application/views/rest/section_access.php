@@ -82,8 +82,8 @@
 
                                 <?php if($counter != 0){ ?>
                                     <div>
-                                        <a href="<?= base_url('restaurant/table_list'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
-                                        <a href="<?= base_url('restaurant/data_upload'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
+                                        <a href="<?= base_url('restaurant/cuisine_access'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
+                                        <a href="<?= base_url('restaurant/kitchen'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
                                     </div>
                                 <?php } ?>
     
@@ -168,7 +168,7 @@ function getUser(){
 }
 
 function getAvailableRoles(){
-    $.post('<?= base_url('restaurant/language_access') ?>',{getAvailableRoles:1},function(res){
+    $.post('<?= base_url('restaurant/section_access') ?>',{getAvailableRoles:1},function(res){
         if(res.status == 'success'){
           var data = res.response;
           var temp = '';
@@ -176,12 +176,12 @@ function getAvailableRoles(){
             for (var i = 0; i < data.length; i++) {
                 temp += `<div class="ck-button"  style="margin-left:-40px;">
                            <label>
-                              <input type="checkbox" value="${data[i].id}" class="selectedAvailableRoles">&nbsp;&nbsp;<span>${data[i].LangName}</span>
+                              <input type="checkbox" value="${data[i].SecId}" class="selectedAvailableRoles">&nbsp;&nbsp;<span>${data[i].Name}</span>
                            </label>
                         </div>`;
             }
           }else{
-            temp = 'No Cuisine Found!';
+            temp = 'No Section Found!';
           }
           $('#availableRoles').html(temp);
         }else{
@@ -191,7 +191,7 @@ function getAvailableRoles(){
 }
 
 function getAssignedRoles(){
-    $.post('<?= base_url('restaurant/language_access') ?>',{getAssignedRoles:1},function(res){
+    $.post('<?= base_url('restaurant/section_access') ?>',{getAssignedRoles:1},function(res){
         if(res.status == 'success'){
           var data = res.response;
           var temp = '';
@@ -199,14 +199,13 @@ function getAssignedRoles(){
             for (var i = 0; i < data.length; i++) {
                 temp += `<div class="ck-button"style="margin-left:-40px;">
                            <label>
-                              <input type="checkbox" value="${data[i].LCd}" class="selectedAssignedRoles">&nbsp;&nbsp;<span>${data[i].Name}</span>
+                              <input type="checkbox" value="${data[i].SecId}" class="selectedAssignedRoles">&nbsp;&nbsp;<span>${data[i].Name}</span>
                            </label>
                         </div>`;
             }
           }else{
             temp = 'No Roles Found!';
           }
-
           $('#assignedRoles').html(temp);
         }else{
           alert(res.response);
@@ -224,7 +223,7 @@ setRoles = () => {
     });
 
     if(roleIds.length > 0){
-        $.post('<?= base_url('restaurant/language_access') ?>',{setRestRoles:1, roles:roleIds},function(res){
+        $.post('<?= base_url('restaurant/section_access') ?>',{setRestRoles:1, roles:roleIds},function(res){
             if(res.status == 'success'){
                 alert(res.response);
                 getUser();
@@ -239,16 +238,16 @@ setRoles = () => {
 }
 
 removeRoles = () => {
-    var lcd = [];
+    var secid = [];
 
     $(".selectedAssignedRoles").each(function(index, el) {
         if ($(this).prop('checked')==true){ 
-            lcd.push($(this).val());    
+            secid.push($(this).val());    
         }    
     });
 
-    if(lcd.length > 0){
-        $.post('<?= base_url('restaurant/language_access') ?>',{removeRestRoles:1, LCd:lcd},function(res){
+    if(secid.length > 0){
+        $.post('<?= base_url('restaurant/section_access') ?>',{removeRestRoles:1, SecId:secid},function(res){
             if(res.status == 'success'){
                 alert(res.response);
               getUser();

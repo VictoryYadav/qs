@@ -91,10 +91,10 @@
                                                 <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('update'); ?>" id="updateBtn" style="display: none;">
                                                 <div class="text-success" id="msgText"></div>
                                             </div>
-                                            <?php if($counter == 0){ ?>
+                                            <?php if($counter != 0){ ?>
                                             <div class="mt-2">
-                                                <a href="<?= base_url('restaurant/item_files_upload'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-fast-backward"></i></a>
-                                                <a href="<?= base_url('restaurant/item_list'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-fast-forward"></i></a>
+                                                <a href="<?= base_url('restaurant/item_files_upload'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
+                                                <a href="<?= base_url('restaurant/item_list'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
                                             </div>
                                           <?php } ?>
 

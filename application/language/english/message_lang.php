@@ -30,6 +30,7 @@ $lang['bookTable'] = 'Book Table';
 $lang['referOutlet'] = 'Refer Outlet';
 $lang['username'] = 'Username';
 $lang['user'] = 'User';
+$lang['support'] = 'Support';
 $lang['login'] = 'Login';
 $lang['logout'] = 'Logout';
 $lang['aboutus'] = 'About Us';

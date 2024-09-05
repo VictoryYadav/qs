@@ -61,9 +61,9 @@
                                             <div class="text-center">
 
                                                 <button type="button" class="btn btn-sm btn-primary" onclick="insertData()">Setup Menu</button>
-                                                <?php if($counter == 0){ ?>
-                                                <a href="<?= base_url('restaurant/table_list'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-fast-backward"></i></a>
-                                                <a href="<?= base_url('restaurant/item_files_upload'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-fast-forward"></i></a>
+                                                <?php if($counter != 0){ ?>
+                                                <a href="<?= base_url('restaurant/table_list'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
+                                                <a href="<?= base_url('restaurant/item_files_upload'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
                                                <?php } ?>
                                             </div>
                                         </form>

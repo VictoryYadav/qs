@@ -24,13 +24,20 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form method="post" id="kitchenForm">
-                                            <input type="hidden" id="KitCd" name="KitCd" value="0">
+                                        <form method="post" id="sectionForm">
+                                            <input type="hidden" id="langId" name="id" value="0">
                                             <div class="row">
-                                                <div class="col-md-3 col-5">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label><?= $this->lang->line('kitchen'); ?></label>
-                                                        <input type="text" class="form-control form-control-sm" name="kitchen" placeholder="<?= $this->lang->line('name'); ?>" required="" id="kitchen" autocomplete="off">
+                                                        <label><?= $this->lang->line('name'); ?></label>
+                                                        <input type="text" class="form-control form-control-sm" name="name" placeholder="<?= $this->lang->line('name'); ?>" required="" id="name" autocomplete="off">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('code'); ?></label>
+                                                        <input type="text" class="form-control form-control-sm" name="LangCode" placeholder="<?= $this->lang->line('code'); ?>" required="" id="LangCode" autocomplete="off">
                                                     </div>
                                                 </div>
 
@@ -57,49 +64,49 @@
 
                                                 <div class="col-md-3">
                                                     <div class="text-success" id="msgText"></div>
-                                                    <?php if($counter != 0){ ?>
-                                                    <div>
-                                                        <label for="">&nbsp;</label>
-                                                        <br>
-                                                        <a href="<?= base_url('restaurant/sections'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
-                                                        <a href="<?= base_url('restaurant/cashier'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
-                                                    </div>
-                                                <?php } ?>
+                                                    
                                                 </div>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
+
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table id="kitchenTbl" class="table table-bordered">
+                                            <table id="TableData" class="table table-bordered">
                                                 <thead>
                                                 <tr >
                                                     <th>#</th>
-                                                    <th><?= $this->lang->line('kitchen'); ?></th>
+                                                    <th><?= $this->lang->line('name'); ?></th>
+                                                    <th><?= $this->lang->line('code'); ?></th>
+                                                    <th><?= $this->lang->line('mode'); ?></th>
                                                     <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
                                                 </thead>
             
                                                 <tbody>
                                                     <?php
-                                                    if(!empty($kitchens)){
+                                                    if(!empty($lists)){
                                                         $i = 1;
-                                                        foreach ($kitchens as $row) {
-                                                         ?>
+                                                        foreach ($lists as $row) {
+                                                            $sts = ($row['Stat'] == 0)? $this->lang->line('active'):$this->lang->line('inactive');
+
+                                                            $clr = ($row['Stat'] == 0)?'success':'danger';
+                                                     ?>
                                                     <tr>
                                                         <td><?= $i++; ?></td>
-                                                        <td><?= $row['KitName']; ?></td>
+                                                        <td><?= $row['LangName']; ?></td>
+                                                        <td><?= $row['LangCode']; ?></td>
+                                                        <td><span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span>
+                                                        </td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['KitCd'] ?>, '<?= $row['KitName'] ?>', <?= $row['Stat'] ?>)">
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['id'] ?>, '<?= $row['LangName'] ?>', '<?= $row['LangCode'] ?>', <?= $row['Stat'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
                                                     </tr>
-                                                    <?php  }
-                                                    } 
-                                                    ?>
+                                                    <?php  }  } ?>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -133,14 +140,15 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#kitchenTbl').DataTable();
+        $('#TableData').DataTable();
     });
 
-    $('#kitchenForm').on('submit', function(e){
+    $('#sectionForm').on('submit', function(e){
         e.preventDefault();
 
         var data = $(this).serializeArray();
-        $.post('<?= base_url('restaurant/kitchen') ?>',data,function(res){
+        $.post('<?= base_url('restaurant/language') ?>',data,function(res){
+            
             if(res.status == 'success'){
               $('#msgText').html(res.response);
             }else{
@@ -151,10 +159,11 @@
 
     });
 
-    function editData(kitcd,name, stat){
+    function editData(id,name, code, stat){
         
-        $('#KitCd').val(kitcd);
-        $('#kitchen').val(name);
+        $('#langId').val(id);
+        $('#name').val(name);
+        $('#LangCode').val(code);
         $('#Stat').val(stat);   
 
         $('#saveBtn').hide();
