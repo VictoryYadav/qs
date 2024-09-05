@@ -1572,8 +1572,9 @@ class Restaurant extends CI_Controller {
 
         $data['menuItemData'] = $menuItemData;
         $data['sections'] = $this->rest->getSectionList();
-        
     	$data['title'] = 'Menu Rate Listing';
+        $data['counter'] = $this->rest->countMenuItem();
+
 		$this->load->view('rest/item_lists',$data);	
     }
 
@@ -6465,7 +6466,7 @@ class Restaurant extends CI_Controller {
     }
 
     private function checkTaxType($name){
-        0-NA; 1-Bar; 2-Food; 3-... (from Tax table)
+
         $tax = 0;
         if($name == 'NA'){
             $tax = 0;
@@ -6480,7 +6481,7 @@ class Restaurant extends CI_Controller {
     private function checkDCdCode($name){
         $EID = authuser()->EID;
         $DCd = 0;
-        $data = $this->db2->select('DCd')->like('Name1', $name)->get_where('Eat_DispOutlets', arrau('EID' => $EID))->row_array();
+        $data = $this->db2->select('DCd')->like('Name1', $name)->get_where('Eat_DispOutlets', array('EID' => $EID))->row_array();
         if(!empty($data)){
             $DCd = $data['DCd'];
         }
@@ -7222,6 +7223,8 @@ class Restaurant extends CI_Controller {
         
         $data['title'] = $this->lang->line('kitchen');
         $data['kitchens'] = $this->rest->get_kitchen();
+        $data['counter'] = $this->rest->countMenuItem();
+
         $this->load->view('rest/kitchen_edit', $data);    
     }
 
@@ -7258,6 +7261,7 @@ class Restaurant extends CI_Controller {
         
         $data['title'] = $this->lang->line('cashier');
         $data['casherList'] = $this->rest->getCashier();
+        $data['counter'] = $this->rest->countMenuItem();
 
         $this->load->view('rest/cashier', $data);    
     }
@@ -7344,6 +7348,8 @@ class Restaurant extends CI_Controller {
         
         $data['title'] = $this->lang->line('dispense').' '.$this->lang->line('outlet');
         $data['outlets'] = $this->rest->getDispenseOutletList();
+        $data['counter'] = $this->rest->countMenuItem();
+
         $this->load->view('rest/dispense_outlets', $data);    
     }
 
@@ -7387,6 +7393,7 @@ class Restaurant extends CI_Controller {
         $data['tables'] = $this->rest->getAllTables();
         $data['sections'] = $this->rest->get_eat_section();
         $data['casherList'] = $this->rest->getCashier();
+        $data['counter'] = $this->rest->countMenuItem();
         
         $this->load->view('rest/table_list', $data);    
     }
@@ -7910,6 +7917,8 @@ class Restaurant extends CI_Controller {
         
         $data['title'] = 'Config '.$this->lang->line('payment');
         $data['lists'] = $this->rest->getConfigPayment();
+        $data['counter'] = $this->rest->countMenuItem();
+
         $this->load->view('rest/config_payment', $data);    
     }
 
@@ -7945,6 +7954,8 @@ class Restaurant extends CI_Controller {
         
         $data['title'] = $this->lang->line('section');
         $data['lists'] = $this->rest->getSectionList();
+        $data['counter'] = $this->rest->countMenuItem();
+
         $this->load->view('rest/section', $data);    
     }
 
@@ -8299,7 +8310,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function item_files_upload(){
-        $this->check_access();
+        // $this->check_access();
         $EID = authuser()->EID;
         $status = "error";
         $response = "Something went wrong! Try again later.";
@@ -8358,6 +8369,7 @@ class Restaurant extends CI_Controller {
              die;
         }
         $data['title'] = $this->lang->line('item');
+        $data['counter'] = $this->rest->countMenuItem();
 
         $this->load->view('rest/item_files', $data);    
     }
@@ -8662,6 +8674,8 @@ class Restaurant extends CI_Controller {
         }
         $data['title'] = 'Items Upload';
         $data['rests'] = $this->rest->getRestaurantList();
+        $data['counter'] = $this->rest->countMenuItem();
+
         $this->load->view('rest/item_upload', $data);    
     }
 

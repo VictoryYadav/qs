@@ -38,6 +38,10 @@
                                             </div>
                                             <div class="text-center">
                                                 <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
+                                                <?php if($counter == 0){ ?>
+                                                <a href="<?= base_url('restaurant/data_upload'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-fast-backward"></i></a>
+                                                <a href="<?= base_url('restaurant/config_payment'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-fast-forward"></i></a>
+                                              <?php } ?>
                                             </div>
                                         </form>
                                         <div id="processBlock" style="display: none;">

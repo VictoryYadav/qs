@@ -57,6 +57,14 @@
 
                                                 <div class="col-md-3">
                                                     <div class="text-success" id="msgText"></div>
+                                                    <?php if($counter == 0){ ?>
+                                                    <div>
+                                                        <label for="">&nbsp;</label>
+                                                        <br>
+                                                        <a href="<?= base_url('restaurant/kitchen'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-fast-backward"></i></a>
+                                                        <a href="<?= base_url('restaurant/dispense_outlet'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-fast-forward"></i></a>
+                                                    </div>
+                                                <?php } ?>
                                                 </div>
                                             </div>
                                         </form>
