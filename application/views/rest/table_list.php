@@ -32,6 +32,33 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        
+                                        <form method="post" enctype="multipart/form-data" id="table_form">
+                                            <input type="hidden" name="type" value="table">
+                                            <div class="row">
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
+                                                        <input type="file" name="table_file" class="form-control" required="" accept=".csv">
+                                                        <small class="text-danger"><?= $this->lang->line('uploadOnlyCSVFile'); ?></small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label>&nbsp; </label><br>
+                                                        <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
+                                                        <a href="<?= base_url('uploads/common/eatTables.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                
                                 <div class="card">
                                     <div class="card-body">
                                         <form method="post" id="tableForm">
@@ -200,5 +227,26 @@
 
         $('#saveBtn').hide();
         $('#updateBtn').show();
+    }
+
+    $('#table_form').on('submit', function(e){
+        e.preventDefault();
+        var formData = new FormData(document.getElementById("table_form"));
+        callAjax(formData);
+        
+    });
+
+    function callAjax(formData){
+       $.ajax({
+               url : '<?= base_url('restaurant/csv_file_upload') ?>',
+               type : 'POST',
+               data : formData,
+               processData: false,  
+               contentType: false,  
+               success : function(data) {
+                   alert(data.response);
+                   location.reload();
+               }
+        }); 
     }
 </script>
