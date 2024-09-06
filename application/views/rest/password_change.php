@@ -146,7 +146,6 @@
             if(res.status == 'success'){
               alert(res.response);
               window.location = res.response;
-              // "<?php echo base_url('dashboard'); ?>";
               return false;
               // location.reload();
             }else{

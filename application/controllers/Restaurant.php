@@ -1780,9 +1780,9 @@ class Restaurant extends CI_Controller {
                 $status = 'success';
                 // $res = "Password has been updated.";
                 $res = base_url('restaurant');
-                $mItem = $this->db2->select('ItemId')->get_where('MenuItem', array('EID' => authuser()->EID))->row_array();
+                $mItem = $this->rest->countMenuItem();
                 if(empty($mItem)){
-                    $res = base_url('restaurant/data_upload');
+                    $res = base_url('restaurant/cuisine_access');
                 }
             }else{
                 $res = "OTP Doesn't Matched";
@@ -10550,7 +10550,7 @@ class Restaurant extends CI_Controller {
             $status = 'success';
 
             if (isset($_POST['getAvailableRoles']) && $_POST['getAvailableRoles']==1) {
-                $response = $this->db2->query("SELECT id, LangName from Languages where id not in (select LangId from Eat_Lang where Stat = 0 and EID = $EID) ")->result_array();
+                $response = $this->db2->query("SELECT id, LangName from Languages where Stat = 0 and id not in (select LangId from Eat_Lang where Stat = 0 and EID = $EID) ")->result_array();
             }
 
             if (isset($_POST['getAssignedRoles']) && $_POST['getAssignedRoles']==1) {

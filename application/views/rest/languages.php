@@ -38,14 +38,14 @@
                                                     <div class="card-header">  
                                                        <div class="row">
                                                            <div class="col-md-12">
-                                                            <input type="checkbox" name="allSelected" id="selectAll"> &nbsp;<?= $this->lang->line('selectAllAvailableRoles'); ?></div>
+                                                            <input type="checkbox" name="allSelected" id="selectAll"> &nbsp;Available Languages</div>
                                                        </div>
                                                     </div>
                                                     <div class="card-body" style="padding: 0.25rem;">
                                                         <ul style="height: 375px;overflow: auto;" id="availableRoles">
                                                             <div class="ck-button"  style="margin-left:-40px;">
                                                                <label>
-                                                                  &nbsp;&nbsp;<span>No Roles Found!</span>
+                                                                  &nbsp;&nbsp;<span>No Languages Available!</span>
                                                                </label>
                                                             </div>
                                                         </ul>
@@ -63,13 +63,13 @@
                                                     <div class="card-header">  
                                                        <div class="row">
                                                            <div class="col-md-12">
-                                                            <input type="checkbox" id="selectAll_A"> &nbsp;<?= $this->lang->line('selectAllAssignedRoles'); ?></div>
+                                                            <input type="checkbox" id="selectAll_A"> &nbsp;Assigned Languages</div>
                                                        </div>
                                                     </div>
                                                     <div class="card-body" style="padding: 0.25rem;">   
                                                         <ul style="height: 375px;overflow: auto;" id="assignedRoles">
                                                             <div class="ck-button"style="margin-left:-40px;">
-                                                               <label>&nbsp;&nbsp;<span>No Roles Found!</span>
+                                                               <label>&nbsp;&nbsp;<span>No Language Assigned!</span>
                                                                </label>
                                                             </div>
                                                         </ul>
@@ -160,6 +160,10 @@ $(document).ready(function(){
     });
 });
 
+var MultiLingual = "<?= $this->session->userdata('MultiLingual'); ?>";
+var availableLang = 0;
+var assignedLang = 0;
+
 getUser();
 
 function getUser(){
@@ -195,6 +199,9 @@ function getAssignedRoles(){
         if(res.status == 'success'){
           var data = res.response;
           var temp = '';
+
+          assignedLang = data.length;
+
           if(data.length > 0){
             for (var i = 0; i < data.length; i++) {
                 temp += `<div class="ck-button"style="margin-left:-40px;">
@@ -222,19 +229,30 @@ setRoles = () => {
             roleIds.push($(this).val());    
         }    
     });
+    // console.log('as = '+assignedLang+', av ' + roleIds.length+' m '+MultiLingual );
 
-    if(roleIds.length > 0){
-        $.post('<?= base_url('restaurant/language_access') ?>',{setRestRoles:1, roles:roleIds},function(res){
-            if(res.status == 'success'){
-                alert(res.response);
-                getUser();
+    if(MultiLingual > 1){
+        var lng = MultiLingual - 1;
+
+        var total = parseInt(assignedLang) + parseInt(roleIds.length);
+        if(lng >= total){
+            if(roleIds.length > 0){
+                $.post('<?= base_url('restaurant/language_access') ?>',{setRestRoles:1, roles:roleIds},function(res){
+                    if(res.status == 'success'){
+                        alert(res.response);
+                        getUser();
+                    }else{
+                      alert(res.response);
+                    }
+                });
             }else{
-              alert(res.response);
+                alert('Please select atleast one available roles');
             }
-        });
-    }else{
-        alert('Please select atleast one available roles');
+        }else{
+            alert(`You can assign ${lng} language(s)`);
+        }
     }
+
     getUser();
 }
 
