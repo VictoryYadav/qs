@@ -19,7 +19,13 @@
 
                 <div class="page-content">
                     <div class="container-fluid">
-
+                        <div class="text-right mb-2">
+                            <?php if($counter == 0){ ?>
+                                <a href="<?= base_url('restaurant/sections'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
+                                <a href="<?= base_url('restaurant/cashier'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
+                                
+                            <?php } ?>
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -27,14 +33,28 @@
                                         <form method="post" id="kitchenForm">
                                             <input type="hidden" id="KitCd" name="KitCd" value="0">
                                             <div class="row">
-                                                <div class="col-md-3 col-5">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('kitchen'); ?></label>
                                                         <input type="text" class="form-control form-control-sm" name="kitchen" placeholder="<?= $this->lang->line('name'); ?>" required="" id="kitchen" autocomplete="off">
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-3 col-4">
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('printer'); ?> <?= $this->lang->line('name'); ?></label>
+                                                        <input type="text" class="form-control form-control-sm" name="PrinterName" placeholder="<?= $this->lang->line('printer'); ?>" required="" id="PrinterName" autocomplete="off">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('printer'); ?> <?= $this->lang->line('ip'); ?></label>
+                                                        <input type="text" class="form-control form-control-sm" name="PrintIP" placeholder="<?= $this->lang->line('ip'); ?>" required="" id="PrintIP" autocomplete="off">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('mode'); ?></label>
                                                         <select name="Stat" id="Stat" class="form-control form-control-sm" required="">
@@ -45,28 +65,13 @@
                                                         </select>
                                                     </div>
                                                 </div>
-
-                                                <div class="col-md-3 col-3">
-                                                    <div class="form-group">
-                                                        <label for="">&nbsp;</label>
-                                                        <br>
+                                            </div>
+                                            <div class="">
                                                     <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>" id="saveBtn">
                                                     <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('update'); ?>" id="updateBtn" style="display: none;">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
+                                                    
                                                     <div class="text-success" id="msgText"></div>
-                                                    <?php if($counter != 0){ ?>
-                                                    <div>
-                                                        <label for="">&nbsp;</label>
-                                                        <br>
-                                                        <a href="<?= base_url('restaurant/sections'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
-                                                        <a href="<?= base_url('restaurant/cashier'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
-                                                    </div>
-                                                <?php } ?>
                                                 </div>
-                                            </div>
                                         </form>
                                     </div>
                                 </div>
@@ -78,6 +83,8 @@
                                                 <tr >
                                                     <th>#</th>
                                                     <th><?= $this->lang->line('kitchen'); ?></th>
+                                                    <th><?= $this->lang->line('printer'); ?></th>
+                                                    <th><?= $this->lang->line('ip'); ?></th>
                                                     <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
                                                 </thead>
@@ -91,8 +98,10 @@
                                                     <tr>
                                                         <td><?= $i++; ?></td>
                                                         <td><?= $row['KitName']; ?></td>
+                                                        <td><?= $row['PrinterName']; ?></td>
+                                                        <td><?= $row['PrintIP']; ?></td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['KitCd'] ?>, '<?= $row['KitName'] ?>', <?= $row['Stat'] ?>)">
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['KitCd'] ?>, '<?= $row['KitName'] ?>','<?= $row['PrinterName'] ?>', '<?= $row['PrintIP'] ?>', <?= $row['Stat'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
@@ -151,10 +160,12 @@
 
     });
 
-    function editData(kitcd,name, stat){
+    function editData(kitcd,name, printerName, ip, stat){
         
         $('#KitCd').val(kitcd);
         $('#kitchen').val(name);
+        $('#PrinterName').val(printerName);
+        $('#PrintIP').val(ip);
         $('#Stat').val(stat);   
 
         $('#saveBtn').hide();

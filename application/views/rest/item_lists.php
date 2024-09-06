@@ -16,7 +16,13 @@
 
                 <div class="page-content">
                     <div class="container-fluid">
+                        <div class="text-right mb-2">
+                            <?php if(empty($counter)){ ?>
+                            <a href="<?= base_url('restaurant/payment_mode_access'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
 
+                            <a href="<?= base_url('restaurant'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
+                            <?php } ?>
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -92,11 +98,7 @@
                                                     <button type="button" class="btn btn-success btn-sm btnc" onclick="updateData('live');"><?= $this->lang->line('live'); ?></button>
                                                     <button type="button" class="btn btn-primary btn-sm btnc" onclick="updateData('enabled');"><?= $this->lang->line('enabled'); ?></button>
                                                     <button type="button" class="btn btn-danger btn-sm btnc" onclick="updateData('disabled');"><?= $this->lang->line('disabled'); ?></button>
-                                                    <?php if($counter != 0){ ?>
-                                                    <a href="<?= base_url('restaurant/config_payment'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
-
-                                                    <a href="<?= base_url('restaurant'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
-                                                    <?php } ?>
+                                                    
                                                 </div>
                                             </div>
                                         </form>

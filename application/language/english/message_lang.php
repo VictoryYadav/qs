@@ -462,6 +462,9 @@ $lang['goods']		= 'Goods';
 $lang['intermediate']		= 'Intermediate';
 $lang['costing']		= 'Costing';
 
+$lang['printer']		= 'Printer';
+$lang['ip']				= 'IP';
+
 
 
 

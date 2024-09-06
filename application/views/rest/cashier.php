@@ -19,7 +19,13 @@
 
                 <div class="page-content">
                     <div class="container-fluid">
-
+                        <div class="text-right mb-2">
+                            <?php if($counter == 0){ ?>
+                                    <a href="<?= base_url('restaurant/kitchen'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
+                                    <a href="<?= base_url('restaurant/dispense_outlet'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
+                                
+                            <?php } ?>
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -27,14 +33,28 @@
                                         <form method="post" id="kitchenForm">
                                             <input type="hidden" id="CCd" name="CCd" value="0">
                                             <div class="row">
-                                                <div class="col-md-3 col-5">
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('cashier'); ?></label>
                                                         <input type="text" class="form-control form-control-sm" name="cashier" placeholder="<?= $this->lang->line('name'); ?>" required="" id="cashier" autocomplete="off">
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-3 col-4">
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('printer'); ?> <?= $this->lang->line('name'); ?></label>
+                                                        <input type="text" class="form-control form-control-sm" name="PrinterName" placeholder="<?= $this->lang->line('printer'); ?>" required="" id="PrinterName" autocomplete="off">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('printer'); ?> <?= $this->lang->line('ip'); ?></label>
+                                                        <input type="text" class="form-control form-control-sm" name="PrintIP" placeholder="<?= $this->lang->line('ip'); ?>" required="" id="PrintIP" autocomplete="off">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('mode'); ?></label>
                                                         <select name="Stat" id="Stat" class="form-control form-control-sm" required="">
@@ -45,27 +65,13 @@
                                                         </select>
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                                <div class="col-md-3 col-3">
-                                                    <div class="form-group">
-                                                        <label for="">&nbsp;</label>
-                                                        <br>
-                                                    <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>" id="saveBtn">
-                                                    <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('update'); ?>" id="updateBtn" style="display: none;">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="text-success" id="msgText"></div>
-                                                    <?php if($counter != 0){ ?>
-                                                    <div>
-                                                        <label for="">&nbsp;</label>
-                                                        <br>
-                                                        <a href="<?= base_url('restaurant/kitchen'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
-                                                        <a href="<?= base_url('restaurant/dispense_outlet'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
-                                                    </div>
-                                                <?php } ?>
-                                                </div>
+                                            <div class="">
+                                                <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>" id="saveBtn">
+                                                <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('update'); ?>" id="updateBtn" style="display: none;">
+                                                <div class="text-success" id="msgText"></div>
+                                                
                                             </div>
                                         </form>
                                     </div>
@@ -79,6 +85,8 @@
                                                     <th>#</th>
                                                     <th><?= $this->lang->line('cashier'); ?></th>
                                                     <th><?= $this->lang->line('action'); ?></th>
+                                                    <th><?= $this->lang->line('printer'); ?></th>
+                                                    <th><?= $this->lang->line('ip'); ?></th>
                                                 </tr>
                                                 </thead>
             
@@ -90,8 +98,10 @@
                                                     <tr>
                                                         <td><?= $i++; ?></td>
                                                         <td><?= $row['Name']; ?></td>
+                                                        <td><?= $row['PrinterName']; ?></td>
+                                                        <td><?= $row['PrintIP']; ?></td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['CCd'] ?>, '<?= $row['Name'] ?>', <?= $row['Stat'] ?>)">
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['CCd'] ?>, '<?= $row['Name'] ?>','<?= $row['PrinterName'] ?>', '<?= $row['PrintIP'] ?>', <?= $row['Stat'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
@@ -150,10 +160,12 @@
 
     });
 
-    function editData(ccd,name, stat){
+    function editData(ccd,name, printerName, ip, stat){
         
         $('#CCd').val(ccd);
         $('#cashier').val(name);
+        $('#PrinterName').val(printerName);
+        $('#PrintIP').val(ip);
         $('#Stat').val(stat);   
 
         $('#saveBtn').hide();

@@ -25,7 +25,12 @@
 
                 <div class="page-content">
                     <div class="container-fluid">
-
+                        <div class="text-right mb-2">
+                            <?php if($counter == 0){ ?>
+                                    <a href="<?= base_url('restaurant/cuisine_access'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
+                                    <a href="<?= base_url('restaurant/kitchen'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
+                            <?php } ?>
+                        </div>
                         <div class="row">
                             <div class="col-md-10 mx-auto">
                                 <div class="card">
@@ -79,13 +84,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <?php if($counter != 0){ ?>
-                                    <div>
-                                        <a href="<?= base_url('restaurant/cuisine_access'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
-                                        <a href="<?= base_url('restaurant/kitchen'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
-                                    </div>
-                                <?php } ?>
     
                             </div>
                         </div>

@@ -19,7 +19,15 @@
 
                 <div class="page-content">
                     <div class="container-fluid">
-
+                        <div class="text-right mb-2">
+                            <?php if($counter == 0){ ?>
+                                <a href="<?= base_url('restaurant/cashier'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
+                                <?php if($this->session->userdata('EType') == 5){ ?>
+                                <a href="<?= base_url('restaurant/table_list'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
+                                <?php }else{ ?>
+                                    <a href="<?= base_url('restaurant/language_access'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
+                            <?php } } ?>
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -57,14 +65,6 @@
 
                                                 <div class="col-md-3">
                                                     <div class="text-success" id="msgText"></div>
-                                                    <?php if($counter != 0){ ?>
-                                                    <div>
-                                                        <label for="">&nbsp;</label>
-                                                        <br>
-                                                        <a href="<?= base_url('restaurant/cashier'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
-                                                        <a href="<?= base_url('restaurant/table_list'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
-                                                    </div>
-                                                <?php } ?>
                                                 </div>
                                             </div>
                                         </form>

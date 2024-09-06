@@ -19,7 +19,12 @@
 
                 <div class="page-content">
                     <div class="container-fluid">
-
+                      <div class="text-right mb-2">
+                        <?php if(empty($counter)){ ?>
+                            <a href="<?= base_url('restaurant/data_upload'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
+                            <a href="<?= base_url('restaurant/payment_mode_access'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
+                          <?php } ?>
+                      </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="card">
@@ -38,10 +43,6 @@
                                             </div>
                                             <div class="text-center">
                                                 <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
-                                                <?php if($counter != 0){ ?>
-                                                <a href="<?= base_url('restaurant/data_upload'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
-                                                <a href="<?= base_url('restaurant/config_payment'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
-                                              <?php } ?>
                                             </div>
                                         </form>
                                         <div id="processBlock" style="display: none;">

@@ -144,7 +144,7 @@
         var data = $(this).serializeArray();
         $.post('<?= base_url('restaurant/verifyOTP') ?>',data,function(res){
             if(res.status == 'success'){
-              alert(res.response);
+              // alert(res.response);
               window.location = res.response;
               return false;
               // location.reload();

@@ -1572,8 +1572,8 @@ class Restaurant extends CI_Controller {
 
         $data['menuItemData'] = $menuItemData;
         $data['sections'] = $this->rest->getSectionList();
-    	$data['title'] = 'Menu Rate Listing';
-        $data['counter'] = $this->rest->countMenuItem();
+    	$data['title'] = 'Menu List';
+        $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0))->row_array();
 
 		$this->load->view('rest/item_lists',$data);	
     }
@@ -1728,15 +1728,15 @@ class Restaurant extends CI_Controller {
                         $this->session->set_userdata('new_pwd', $data['password']);
                         $this->session->set_userdata('old_pwd', $data['old_password']);
                         $otp = generateOTP(authuser()->mobile, 'Change Password');
-                        $res = "OTP has been send.";
+                        $res = "OTP has been sent";
                     }else{
-                        $res = "OLD Password does not matched.";
+                        $res = "OLD Password does not match";
                     }
                  }else{
                     $res = "Failed to Validate User";
                  }
             }else{
-                $res = "Passwords Don't Match";
+                $res = "New Passwords Don't Match";
             }
 
             header('Content-Type: application/json');
@@ -7186,9 +7186,11 @@ class Restaurant extends CI_Controller {
             $langId = $this->session->userdata('site_lang');
             $lname = "Name$langId";
 
-            $updateData[$lname] = $_POST['kitchen'];
-            $updateData['Stat'] = $_POST['Stat'];
-            $updateData['EID'] = $EID;
+            $updateData[$lname]         = $_POST['kitchen'];
+            $updateData['PrinterName']  = $_POST['PrinterName'];
+            $updateData['PrintIP']      = $_POST['PrintIP'];
+            $updateData['Stat']         = $_POST['Stat'];
+            $updateData['EID']          = $EID;
 
             if($_POST['KitCd'] > 0){
                 updateRecord('Eat_Kit', $updateData, array('KitCd' => $_POST['KitCd'], 'EID' => $EID));
@@ -7235,6 +7237,8 @@ class Restaurant extends CI_Controller {
             $lname = "Name$langId";
 
             $updateData[$lname] = $_POST['cashier'];
+            $updateData['PrinterName']  = $_POST['PrinterName'];
+            $updateData['PrintIP']      = $_POST['PrintIP'];
             $updateData['Stat'] = $_POST['Stat'];
 
             if($_POST['CCd'] > 0){
@@ -7914,9 +7918,79 @@ class Restaurant extends CI_Controller {
         
         $data['title'] = 'Config '.$this->lang->line('payment');
         $data['lists'] = $this->rest->getConfigPayment();
-        $data['counter'] = $this->rest->countMenuItem();
 
         $this->load->view('rest/config_payment', $data);    
+    }
+
+    public function payment_mode_access(){
+        // $this->check_access();
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        $EID = authuser()->EID;
+        if($this->input->method(true)=='POST'){
+            $langId = $this->session->userdata('site_lang');
+            $pname ="Name$langId as Name" ;
+            $status = 'success';
+
+            if (isset($_POST['getAvailableRoles']) && $_POST['getAvailableRoles']==1) {
+                $response = $this->db2->query("SELECT PymtMode, $pname from ConfigPymt where Stat = 0 and PymtMode not in (select PymtMode from PymtModes where Stat = 0 and EID = $EID) ")->result_array();
+            }
+
+            if (isset($_POST['getAssignedRoles']) && $_POST['getAssignedRoles']==1) {
+                $lname = "pm.Name$langId as Name";
+                $response = $this->db2->select("pm.PMNo, pm.PymtMode, $lname")
+                                ->join('ConfigPymt cp', 'cp.PymtMode = pm.PymtMode', 'inner')
+                                ->get_where('PymtModes pm', array('pm.EID' => $EID, 'pm.Stat' => 0))->result_array();
+            }
+
+            if (isset($_POST['setRestRoles']) && $_POST['setRestRoles']==1) {
+
+                $response = "Payment mode are assigned";
+
+                $temp = [];
+                $cui = [];
+                $roles = $_POST['roles'];
+
+                $eName = "Name$langId";
+                foreach ($roles as $role) {
+                    $temp['EID'] = $EID;
+                    $temp['PymtMode'] = $role;
+                    $temp[$eName] = $this->rest->getConfigPaymentName($temp['PymtMode']);
+                    $cui[] = $temp;
+                }
+
+                if(!empty($cui)){
+                        $this->db2->insert_batch('PymtModes', $cui); 
+                    }else{
+                        $response = "Failed to insert";
+                    }
+                }
+
+            if (isset($_POST['removeRestRoles']) && $_POST['removeRestRoles'] == 1) {
+                $PymtMode = $_POST['PymtMode'];
+                $PymtMode = implode(",",$PymtMode);
+
+                $deleteRoles = $this->db2->query("DELETE FROM PymtModes WHERE EID = $EID AND PymtMode IN ($PymtMode)");
+
+                if ($deleteRoles) {
+                    $response = "Payment mode are Removed";
+                }else {
+                    $response = "Failed to delete in EatCuisine table";
+                }
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = $this->lang->line('payment').' '.$this->lang->line('mode');
+        $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0))->row_array();
+
+        $this->load->view('rest/payment_access', $data);    
     }
 
     public function sections(){
@@ -8432,7 +8506,7 @@ class Restaurant extends CI_Controller {
              die;
         }
         $data['title'] = $this->lang->line('item');
-        $data['counter'] = $this->rest->countMenuItem();
+        $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0))->row_array();
 
         $this->load->view('rest/item_files', $data);    
     }
@@ -8737,7 +8811,7 @@ class Restaurant extends CI_Controller {
         }
         $data['title'] = 'Items Upload';
         $data['rests'] = $this->rest->getRestaurantList();
-        $data['counter'] = $this->rest->countMenuItem();
+        $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0))->row_array();
 
         $this->load->view('rest/item_upload', $data);    
     }
@@ -8756,7 +8830,7 @@ class Restaurant extends CI_Controller {
                 $this->db2->query("DELETE From MenuItem where EID=$EID");
                 $this->db2->query("DELETE From MenuItemRates where EID=$EID");
 
-                $this->db2->query("INSERT INTO EatCuisine (CID, Name1, EID) SELECT DISTINCT c.CID, c.Name1, $EID From Cuisines c, TempMenuItem t where c.Name1 = t.Cuisine");
+                $this->db2->query("INSERT INTO EatCuisine (CID, Name1, EID) SELECT DISTINCT c.CID, c.Name, $EID From Cuisines c, TempMenuItem t where c.Name = t.Cuisine");
 
                 $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, 0 From Cuisines c, TempMenuItem t, FoodType f where c.Name = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
                 // t.DayNo = 
