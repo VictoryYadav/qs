@@ -176,6 +176,7 @@
         $.post('<?= base_url('restaurant/menu_list') ?>',data,function(res){
             if(res.status == 'success'){
               $('#msgText').html(res.response);
+              location.reload();
             }else{
               $('#msgText').html(res.response);
             }

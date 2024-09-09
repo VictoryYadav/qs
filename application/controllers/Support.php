@@ -474,6 +474,7 @@ class Support extends CI_Controller {
 
                     $configDT['StTime']     = date('H:i:s', strtotime($EIDData['StTime']));
                     $configDT['CloseTime']  = date('H:i:s', strtotime($EIDData['EndTime']));
+                    $configDT['EType']      = $EIDData['EType'];
                     $db3->update('Config', $configDT, array('EID' => $EID));
                     // end of update eatary table
 

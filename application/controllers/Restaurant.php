@@ -9159,6 +9159,9 @@ class Restaurant extends CI_Controller {
 
     public function config(){
         $EID = authuser()->EID;
+        $data['title'] = 'Config';
+        $data['detail'] = getRecords('Config',array('EID' => $EID));
+
         if($this->input->method(true)=='POST'){
             $status = "success";
             
@@ -9177,20 +9180,6 @@ class Restaurant extends CI_Controller {
             $configDt['MultiPayment'] = !isset($_POST['MultiPayment'])?0:1;
             $configDt['Tips'] = !isset($_POST['Tips'])?0:1;
 
-            $configDt['MultiLingual'] = !isset($_POST['MultiLingual'])?0:1;
-            updateRecord('UserRoles', array('Stat' => $configDt['MultiLingual']), array('RoleId' => 80));
-
-            $configDt['SchPop'] = !isset($_POST['SchPop'])?0:1;
-            $this->db2->where_in('RoleId', array(31, 49, 60));
-            $this->db2->update('UserRoles', array('Stat' => $configDt['SchPop']) );
-
-            $configDt['Discount'] = !isset($_POST['Discount'])?0:1;
-            $this->db2->where_in('RoleId', array(73, 81));
-            $this->db2->update('UserRoles', array('Stat' => $configDt['Discount']) );
-
-            $configDt['CustLoyalty'] = !isset($_POST['CustLoyalty'])?0:1;
-            updateRecord('UserRoles', array('Stat' => $configDt['CustLoyalty']), array('RoleId' => 80));
-
             $configDt['RtngDisc'] = !isset($_POST['RtngDisc'])?0:1;
             $configDt['TableAcceptReqd'] = !isset($_POST['TableAcceptReqd'])?0:1;
             $configDt['AutoSettle'] = !isset($_POST['AutoSettle'])?0:1;
@@ -9204,9 +9193,6 @@ class Restaurant extends CI_Controller {
             $configDt['Bill_KOT_Print'] = !isset($_POST['Bill_KOT_Print'])?0:1;
             $configDt['sitinKOTPrint'] = !isset($_POST['sitinKOTPrint'])?0:1;
             $configDt['Ing_Cals'] = !isset($_POST['Ing_Cals'])?0:1;
-            $configDt['Ent'] = !isset($_POST['Ent'])?0:1;
-            $this->db2->where_in('RoleId', array(66, 107));
-            $this->db2->update('UserRoles', array('Stat' => $configDt['Ent']) );
 
             $configDt['GSTInclusiveRates'] = !isset($_POST['GSTInclusiveRates'])?0:1;
             $configDt['Seatwise'] = !isset($_POST['Seatwise'])?0:1;
@@ -9217,11 +9203,33 @@ class Restaurant extends CI_Controller {
             $configDt['IMcCdOpt'] = !isset($_POST['IMcCdOpt'])?0:1;
             $configDt['tableSharing'] = !isset($_POST['tableSharing'])?0:1;
             $configDt['addItemLock'] = !isset($_POST['addItemLock'])?0:1;
+            $configDt['BOMStore'] = !isset($_POST['BOMStore'])?0:1;
+            
+            $configDt['SchPop'] = !isset($_POST['SchPop'])?0:1;
+            $this->db2->where_in('RoleId', array(31, 60));
+            $this->db2->update('UserRoles', array('Stat' => $configDt['SchPop']) );
+
+            $configDt['MultiLingual'] = !isset($_POST['MultiLingual'])?0:1;
+            $this->db2->where_in('RoleId', array(116));
+            $this->db2->update('UserRoles', array('Stat' => $configDt['MultiLingual']) );
+
+            $configDt['Ent'] = !isset($_POST['Ent'])?0:1;
+            $this->db2->where_in('RoleId', array(66, 107));
+            $this->db2->update('UserRoles', array('Stat' => $configDt['Ent']) );
+
             $configDt['recommend'] = !isset($_POST['recommend'])?0:1;
             updateRecord('UserRoles', array('Stat' => $configDt['recommend']), array('RoleId' => 61));
 
+            $configDt['Discount'] = !isset($_POST['Discount'])?0:1;
+            $this->db2->where_in('RoleId', array(73, 81));
+            $this->db2->update('UserRoles', array('Stat' => $configDt['Discount']) );
+
+            $configDt['CustLoyalty'] = !isset($_POST['CustLoyalty'])?0:1;
+            updateRecord('UserRoles', array('Stat' => $configDt['CustLoyalty']), array('RoleId' => 80));
+
             $configDt['BOM'] = !isset($_POST['BOM'])?0:1;
-            $configDt['BOMStore'] = !isset($_POST['BOMStore'])?0:1;
+            $this->db2->where_in('RoleId', array(113, 35));
+            $this->db2->update('UserRoles', array('Stat' => $configDt['BOM']) );
 
             $configDt['kds'] = !isset($_POST['kds'])?0:1;
             $this->db2->where_in('RoleId', array(43, 44));
@@ -9230,10 +9238,11 @@ class Restaurant extends CI_Controller {
             $configDt['custItems'] = !isset($_POST['custItems'])?0:1;
             $this->db2->where_in('RoleId', array(69, 70, 86));
             $this->db2->update('UserRoles', array('Stat' => $configDt['custItems']) );
-
+            if($data['detail']['EType'] == 1){
+                updateRecord('UserRoles', array('Stat' => 1), array('RoleId' => 17));
+            }
             updateRecord('Config', $configDt, array('EID' => $EID) );
             
-
             $response = 'Config Upadated';
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -9242,8 +9251,7 @@ class Restaurant extends CI_Controller {
               ));
              die;
         }
-        $data['title'] = 'Config';
-        $data['detail'] = getRecords('Config',array('EID' => $EID));
+        
         $this->load->view('rest/config', $data);
     }
 
@@ -10668,6 +10676,11 @@ class Restaurant extends CI_Controller {
                 $roles = $_POST['roles'];
 
                 $eName = "Name$langId";
+
+                $temp['EID'] = $EID;
+                $temp['LangId'] = 1;
+                $temp[$eName] = $this->rest->getLanguageName(1);
+                $cui[] = $temp;
                 foreach ($roles as $role) {
                     $temp['EID'] = $EID;
                     $temp['LangId'] = $role;
@@ -10676,6 +10689,7 @@ class Restaurant extends CI_Controller {
                 }
 
                 if(!empty($cui)){
+                        $this->db2->query('TRUNCATE Eat_Lang');
                         $this->db2->insert_batch('Eat_Lang', $cui); 
                     }else{
                         $response = "Failed to insert";
