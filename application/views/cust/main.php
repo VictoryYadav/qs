@@ -369,7 +369,7 @@
                             </i>
                             <span id="item-rating-modal" class="rating-no">0</span>
 				    	</li>
-                        <?php if($this->session->userdata('Ing_cals') == 1){ ?>
+                        <?php if($this->session->userdata('NV') == 1){ ?>
 				    	<li class="list-inline-item">
 				    		<i class="fa fa-heartbeat" style="color:green;"></i>
 				    		<span class="" id="nvRating">000</span>
@@ -773,7 +773,7 @@
 									<div class="thumb-content">\
                                         '+sale+'\
 										'+attrib+'\
-                                        <?php if($this->session->userdata('Ing_cals') == 1){ ?>
+                                        <?php if($this->session->userdata('Ingredients') == 1){ ?>
                                         <div class="forRightIcon">\
                                             <ul class="social-circle-icons list-inline">\
                                               <li class="list-inline-item text-center" style="display:block;margin-bottom:1px;"><a class="fa fa-joomla" href="#" onclick="imgPOPUP('+itemName+','+imgUrl+')"></a></li>\
@@ -798,7 +798,7 @@
                                             <li class="list-inline-item">\
                                                 <i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+convertToUnicodeNo(data[i].AvgRtng)+'\
                                             </li>\
-                                            <?php if($this->session->userdata('Ing_cals') == 1){ ?>
+                                            <?php if($this->session->userdata('NV') == 1){ ?>
                                             <li class="list-inline-item">\
                                                 <i class="fa fa-heartbeat" style="color:green;"></i> '+convertToUnicodeNo(data[i].NV)+'\
                                             </li>\
@@ -834,7 +834,7 @@
 			                            <li class="list-inline-item">\
 								    		<i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+data[i].AvgRtng+'\
 								    	</li>\
-                                        <?php if($this->session->userdata('Ing_cals') == 1){ ?>
+                                        <?php if($this->session->userdata('NV') == 1){ ?>
 								    	<li class="list-inline-item">\
 								    		<i class="fa fa-heartbeat" style="color:green;"></i> '+data[i].NV+'\
 								    	</li>\
@@ -844,7 +844,7 @@
 								    	</li>\
 			                        </ul>\
                                     <p>'+data[i].short_Desc+'</p>\
-                                    <?php if($this->session->userdata('Ing_cals') == 1){ ?>
+                                    <?php if($this->session->userdata('Ingredients') == 1){ ?>
                                     <ul class="social-circle-icons list-inline">\
                                       <li class="list-inline-item text-center"><a class="fa fa-joomla" href="#" onclick="imgPOPUP('+itemName+','+imgUrl+')"></a></li>\
                                       '+ing_l+'\

@@ -29,6 +29,9 @@ body[data-topbar=dark] .header-item {
     -webkit-box-shadow: 0 0 24px 0 rgba(0,0,0,.06), 0 1px 0 0 rgba(0,0,0,.02);
     box-shadow: 0 0 24px 0 rgba(0,0,0,.06), 0 1px 0 0 rgba(0,0,0,.02);
 }
+.active{
+    background: #b1c9e1 !important;
+}
 </style>
 <body data-topbar="dark">
 <input type="hidden" id="base_url" value="<?php echo base_url(); ?>">
@@ -101,16 +104,21 @@ body[data-topbar=dark] .header-item {
                                 <a class="dropdown-item" href="#"><i class="dripicons-wallet d-inlne-block text-muted mr-2"></i> My Wallet</a>
                                 <a class="dropdown-item d-block" href="#"><i class="dripicons-gear d-inlne-block text-muted mr-2"></i> Settings</a> -->
                                 <?php 
-                                $langId = $this->session->userdata('site_lang');
+                                    $langId = $this->session->userdata('site_lang');
                                     $langs = langMenuList();
                                     $name = '';
+                                    $active = '';
                                     foreach ($langs as $key) {
                                         $name = $key['LngName'];
                                         if($langId == 1){
                                             $name = ucwords($key['LngName']);
                                         }
+
+                                        if($langId == $key['langId']){
+                                            $active = ' active';
+                                        }
                                 ?>
-                                <a class="dropdown-item" href="#" onclick="set_lang(<?= $key['LCd']; ?>,'<?= $key['Name1']; ?>')"><?= $name; ?></a>
+                                <a class="dropdown-item <?= $active; ?>" href="#" onclick="set_lang(<?= $key['LCd']; ?>,'<?= $key['Name1']; ?>')"><?= $name; ?></a>
 
                                 <?php } ?>
 

@@ -359,6 +359,20 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="checkbox my-2">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck40" data-parsley-multiple="groups" data-parsley-mincheck="2" name="custItems" <?php if($detail['custItems'] == 1){ echo 'checked'; } ?> value="<?= $detail['custItems'];?>">
+                                                            <label class="custom-control-label" for="customCheck40"><?= $this->lang->line('custom'); ?> <?= $this->lang->line('item'); ?></label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="checkbox my-2">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck41" data-parsley-multiple="groups" data-parsley-mincheck="2" name="kds" <?php if($detail['kds'] == 1){ echo 'checked'; } ?> value="<?= $detail['kds'];?>">
+                                                            <label class="custom-control-label" for="customCheck41"><?= $this->lang->line('kitchen'); ?></label>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
 
                                                 <div >
