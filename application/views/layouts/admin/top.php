@@ -95,14 +95,10 @@ body[data-topbar=dark] .header-item {
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img class="rounded-circle header-profile-user" src="<?= base_url('uploads/'.$folderName.'/'.$EID.'_logo.jpg') ?>"
                                     alt="<?php echo authuser()->RestName; ?>" style="width: auto;">
-                                <!-- <span class="d-none d-xl-inline-block ml-1"><?php echo authuser()->RestName; ?></span> -->
                                 <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <!-- item-->
-                                <!-- <a class="dropdown-item" href="<?= base_url('student/profile') ?>"><i class="dripicons-user d-inlne-block text-muted mr-2"></i> Profile</a>
-                                <a class="dropdown-item" href="#"><i class="dripicons-wallet d-inlne-block text-muted mr-2"></i> My Wallet</a>
-                                <a class="dropdown-item d-block" href="#"><i class="dripicons-gear d-inlne-block text-muted mr-2"></i> Settings</a> -->
+                                
                                 <?php 
                                     $langId = $this->session->userdata('site_lang');
                                     $langs = langMenuList();
@@ -127,12 +123,6 @@ body[data-topbar=dark] .header-item {
                                 <a class="dropdown-item" href="<?php echo base_url('logout'); ?>"><i class="dripicons-exit d-inlne-block text-muted mr-2"></i> <?= $this->lang->line('logout');?></a>
                             </div>
                         </div>
-
-                        <!-- <div class="dropdown d-inline-block">
-                            <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect">
-                                <i class="mdi mdi-spin mdi-settings"></i>
-                            </button>
-                        </div> -->
             
                     </div>
                 </div>
