@@ -10825,6 +10825,56 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/stock_transaction_access', $data);    
     }
 
+    public function table_update(){
+
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+
+        if($this->input->method(true)=='POST'){
+            
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+
+            $destinationDatabase = $this->session->userdata('my_db');
+            $sourceDatabase = 'GenTableData';
+            // $tableName = $_POST['table'];
+            $table = 'ai_items';
+            
+
+            $this->db2->query("DROP TABLE $table");
+
+            // $conn = new mysqli('139.59.28.122', 'developer', 'pqowie321*');
+            // $conn = new mysqli('localhost', 'root', '');
+            // Check connection
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+            // Select source and destination databases
+            $conn->select_db($destinationDatabase);
+
+            $conn->query("CREATE TABLE IF NOT EXISTS $table LIKE $sourceDatabase.$table");
+                            // Copy data from source table to destination table
+            $conn->query("INSERT INTO $destinationDatabase.$table SELECT * FROM $sourceDatabase.$table");
+
+                // Close connection
+                $conn->close();
+
+            $status = 'success';
+            $response = "Table $table updated";
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] ='Table Update';
+        $this->load->view('rest/tables_update',$data);
+    }
+
     public function ratchet(){
         $this->load->view('user/chat');
     }

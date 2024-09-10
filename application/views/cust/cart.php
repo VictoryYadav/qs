@@ -352,8 +352,11 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                         // for italic
                         var italicItem = `${itemName}`;
                         if(item.Stat == 0){
-                            
                             italicItem = `<i>${itemName}</i>`;
+                        }
+
+                        if(item.CustItemDesc != 'Std' && item.CustItemDesc != ''){
+                            italicItem = italicItem+' - '+item.CustItemDesc;
                         }
 
                         template += ` <tr> `;

@@ -18,6 +18,7 @@ class AuthController extends CI_Controller {
                 $this->session->set_flashdata('error','Enter Phone or Password'); 
                 $this->load->view('login');
             } else {
+
                 $data = $this->security->xss_clean(array(
                     'phone' => trim($data['phone']),
                     'password' => trim($data['password'])
@@ -141,36 +142,49 @@ class AuthController extends CI_Controller {
         if ($this->session->userdata('logged_in')) {
             redirect(base_url('restaurant'));
         } else {
-            if (!isset($_GET['o']) && !isset($_GET['c'])) {
-                redirect(base_url('page_not_found'));
+            if (!isset($_GET['o'])) {
+                redirect(base_url('error'));
             }
 
             if($_GET['o'] > 0){
 
                 $this->session->set_userdata('EID', $_GET['o']);
-                $this->session->set_userdata('CatgID', $_GET['c']);
+                $this->session->set_userdata('CatgID', 0);
 
-                $my_db = $_GET['o'].'e';
-                $this->session->set_userdata('my_db', $my_db);
-                $data['o'] = $_GET['o'];
-                $data['c'] = $_GET['c'];
-                $this->load->view('login',$data);
+                $EID = $_GET['o'];
+                $genTblDb = $this->load->database('GenTableData', TRUE);
+                $checkDB =  $genTblDb->select('EID, CNo')
+                            ->get_where('EIDDet', array('EID' => $EID))
+                            ->row_array();
+                if(!empty($checkDB)){
+                    $my_db = $_GET['o'].'e';
+                    $this->session->set_userdata('my_db', $my_db);
+                    $data['o'] = $_GET['o'];
+                    $this->load->view('login',$data);
+                }else{
+                    redirect(base_url('error'));    
+                }
+
             }else{
-                redirect(base_url('page_not_found'));
+                redirect(base_url('error'));
             }
 
         }
 
     }
 
-
-
     public function logout(){
         // $this->session->unset_userdata('logged_in');
-        $url = 'login?o='.$this->session->userdata('EID').'&c='.$this->session->userdata('CatgID');
+        $url = 'login?o='.$this->session->userdata('EID');
         $this->session->sess_destroy();
         redirect(base_url() . $url, 'refresh');
     }
+
+    public function error(){
+        $data['title'] = "Error!";
+        $this->load->view('error',$data);
+    }
+
 
     public function getpost()
     {

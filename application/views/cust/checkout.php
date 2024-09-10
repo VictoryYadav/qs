@@ -247,13 +247,18 @@
                         if(item.TA != 0){
                          ta = '[TA]';
                         }
+
+                        var CustItemDesc = '';
+                        if(item.CustItemDesc != 'Std' && item.CustItemDesc != ''){
+                            CustItemDesc = item.CustItemDesc;
+                        }
                         
                         if(initil_value == item.TaxType){
                             html += `<tr>`;
                             if(item.Itm_Portion > 4){
-                                html += `<td>${item.ItemNm} ${item.CustItemDesc} (${item.Portions}) ${ta} </td>`;
+                                html += `<td>${item.ItemNm} ${CustItemDesc} (${item.Portions}) ${ta} </td>`;
                             }else{
-                                html += `<td>${item.ItemNm} ${item.CustItemDesc} ${ta} </td>`;
+                                html += `<td>${item.ItemNm} ${CustItemDesc} ${ta} </td>`;
                             }
                             
                             html += `<td class="text-center">${convertToUnicodeNo(item.Qty)}</td>`;

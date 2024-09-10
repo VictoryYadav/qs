@@ -1,6 +1,3 @@
-<?php
-	$page = "login.php";
-?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,7 +18,7 @@
 				<div style="margin-bottom: 30px;">
 					<img src="theme/images/Eat-out-Final-1.png" style="width: 120px; height: auto; border-radius: 7px;" alt="Title" />
 				</div>
-				<form class="m-t" role="form" action="<?=base_url('login?o='.$_GET['o'].'&c='.$_GET['c']) ?>" method="POST">
+				<form class="m-t" role="form" action="<?=base_url('login?o='.$_GET['o']) ?>" method="POST">
 					<div class="form-group">
 						<input type="text" class="form-control" placeholder="Phone / Email" name="phone" required="" autocomplete="off" />
 					</div>

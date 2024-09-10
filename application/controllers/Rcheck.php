@@ -33,22 +33,35 @@ class Rcheck extends CI_Controller {
                                 $this->session->set_userdata('aggEID', $e_data[1]);
                                 $this->session->set_userdata('qr_code', $_REQUEST['qr_data']);
                             }
+                        }else{
+                            redirect(base_url('/page_not_found'));
                         }
                     }
+                }else{
+                    redirect(base_url('/page_not_found'));
                 }
                 
                 if(isset($req[2])){
                     $t_data = explode("=", $req[2]);
                     if($t_data[0] == 't'){
                         $_REQUEST['t'] = $t_data[1];
+                    }else{
+                        redirect(base_url('/page_not_found'));
                     }
                 }
+                
                 if(isset($req[3])){
                     $o_data = explode("=", $req[3]);
                     if($o_data[0] == 'o'){
                         $_REQUEST['o'] = $o_data[1];
+                    }else{
+                        redirect(base_url('/page_not_found'));
                     }
+                }else{
+                    redirect(base_url('/page_not_found'));
                 }
+            }else{
+                redirect(base_url('/page_not_found'));
             }
 
             if (!isset($_REQUEST['e']) && !isset($_REQUEST['c']) && !isset($_REQUEST['t']) && !isset($_REQUEST['o'])) {
@@ -57,8 +70,9 @@ class Rcheck extends CI_Controller {
             }
 
         }else{
-            echo "<h1>Please Scan QR Code again.</h1>";
-            die;
+            // echo "<h1>Please Scan QR Code again.</h1>";
+            // die;
+            redirect(base_url('/page_not_found'));
         }
 
         $this->session->set_userdata('EID', $_REQUEST['e']);

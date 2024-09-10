@@ -10,7 +10,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="error-content text-center">
-                                            <h3 class="text-primary">Incorrect Details !</br></br> Please Scan QR Code again.</h3><br>
+                                            <h3 class="text-primary">Incorrect Details !</br></br> Please Login Again!!</h3><br>
                                             
                                         </div>
                                     </div>

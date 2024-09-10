@@ -59,6 +59,7 @@ $route['member/checklogin'] = 'AuthController/checklogin';
 
 $route['admin/add-form'] = 'DashboardController/form';
 
+$route['error'] = 'AuthController/error';
 $route['logout'] = 'AuthController/logout';
 
 // restaurant

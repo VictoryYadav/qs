@@ -144,9 +144,9 @@ class Customer extends CI_Controller {
              ->row_array();
 
             $langId = $this->session->userdata('site_lang');
-            $lname = "Name$langId as LngName";
+            $lname = "Name$langId";
 
-            $select_sql = "FID, Rank, $lname";
+            $select_sql = "(case when $lname != '-' Then $lname ELSE Name1 end) as LngName, FID, Rank, $lname";
             $filter_list = $this->db2->select($select_sql)
                                 ->order_by('Rank', 'ASC')
                                 ->get_where('FoodType', array('CTyp' => $mcat_ctyp['CTyp'], 'Stat' => 0))
@@ -225,13 +225,13 @@ class Customer extends CI_Controller {
         if (isset($_POST['searchItemCust']) && $_POST['searchItemCust']) {
             $itemName = $_POST['itemName'];
 
-            $lname = "mi.Name$langId ItemNm";
-            $ItmDesc = "mi.ItmDesc$langId ItmDesc";
-            $ingeredients = "mi.Ingeredients$langId as Ingeredients";
-            $Rmks = "mi.Rmks$langId as Rmks";
-            $ipname = "ip.Name$langId as portionName";
+            $lname = "mi.Name$langId";
+            $ItmDesc = "mi.ItmDesc$langId";
+            $ingeredients = "mi.Ingeredients$langId";
+            $Rmks = "mi.Rmks$langId";
+            $ipname = "ip.Name$langId";
            
-            $items = $this->db2->query("SELECT mc.TaxType, mc.DCd, mi.KitCd, mc.CTyp, mi.ItemId, mi.ItemTyp, mi.NV, mi.PckCharge, $lname, $ItmDesc , $ingeredients, $Rmks, $ipname, mir.Itm_Portion, mi.PrepTime, mi.AvgRtng, mi.FID, mi.ItemAttrib, mi.ItemSale, mi.ItemTag, mi.Name1 as imgSrc, mi.UItmCd, mi.CID, mi.MCatgId, mi.videoLink, mir.OrigRate,  et.TblTyp FROM MenuItem mi, MenuCatg mc, ItemPortions ip, MenuItemRates mir, Eat_tables et  where  mi.MCatgId = mc.MCatgId and ip.IPCd = mir.Itm_Portion and mir.ItemId = mi.ItemId and et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = $tableNo AND et.EID = $EID AND mir.EID = $EID AND mir.ItemId = mi.ItemId and mi.Stat = 0 and mi.Name1 like '%$itemName%'  and (DAYOFWEEK(CURDATE()) = mi.DayNo OR mi.DayNo = 8)  AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) AND mc.EID= $EID AND mi.EID=$EID ORDER BY mi.Name1 ASC,mir.OrigRate ASC")->result_array();
+            $items = $this->db2->query("SELECT mc.TaxType, mc.DCd, mi.KitCd, mc.CTyp, mi.ItemId, mi.ItemTyp, mi.NV, mi.PckCharge, (case when $lname != '-' Then $lname ELSE mi.Name1 end) as ItemNm, (case when $ItmDesc != '-' Then $ItmDesc ELSE mi.ItmDesc1 end) as ItmDesc , (case when $ingeredients != '-' Then $ingeredients ELSE mi.Ingeredients1 end) as Ingeredients, (case when $Rmks != '-' Then $Rmks ELSE mi.Rmks1 end) as Rmks, (case when $ipname != '-' Then $ipname ELSE ip.Name1 end) as portionName, mir.Itm_Portion, mi.PrepTime, mi.AvgRtng, mi.FID, mi.ItemAttrib, mi.ItemSale, mi.ItemTag, mi.Name1 as imgSrc, mi.UItmCd, mi.CID, mi.MCatgId, mi.videoLink, mir.OrigRate,  et.TblTyp FROM MenuItem mi, MenuCatg mc, ItemPortions ip, MenuItemRates mir, Eat_tables et  where  mi.MCatgId = mc.MCatgId and ip.IPCd = mir.Itm_Portion and mir.ItemId = mi.ItemId and et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = $tableNo AND et.EID = $EID AND mir.EID = $EID AND mir.ItemId = mi.ItemId and mi.Stat = 0 and mi.Name1 like '%$itemName%'  and (DAYOFWEEK(CURDATE()) = mi.DayNo OR mi.DayNo = 8)  AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) AND mc.EID= $EID AND mi.EID=$EID ORDER BY mi.Name1 ASC,mir.OrigRate ASC")->result_array();
             
             if (!empty($items)) {
 
@@ -289,9 +289,9 @@ class Customer extends CI_Controller {
 
                     $langId = $this->session->userdata('site_lang');
                     $lname = "mi.Name$langId";
-                    $ipName = "ip.Name$langId as Portions";
+                    $ipName = "ip.Name$langId";
 
-                    $kitcheData = $this->db2->query("SELECT k.OrdNo, k.ItemId, k.Qty, k.TA, k.Itm_Portion, (if (k.ItemTyp > 0,(CONCAT($lname, ' ' , k.CustItemDesc)),($lname ))) as ItemNm,  k.ItmRate as Value, mi.PckCharge, k.OType, k.OrdTime , $ipName, k.Stat, k.SchCd, k.SDetCd, k.ItemTyp, mi.FID, k.tmpOrigRate, k.tmpItmRate from Kitchen k, MenuItem mi,ItemPortions ip where k.Itm_Portion = ip.IPCd and k.CustId = $CustId AND k.EID = $EID AND k.TableNo = $TableNo AND k.ItemId = mi.ItemId AND k.BillStat = 0 AND $qry and k.CNo = $CNo")
+                    $kitcheData = $this->db2->query("SELECT k.OrdNo, k.ItemId, k.Qty, k.TA, k.Itm_Portion, (case when $lname != '-' Then $lname ELSE mi.Name1 end) as ItemNm, k.CustItemDesc,  k.ItmRate as Value, mi.PckCharge, k.OType, k.OrdTime , (case when $ipName != '-' Then $ipName ELSE ip.Name1 end) as Portions, k.Stat, k.SchCd, k.SDetCd, k.ItemTyp, mi.FID, k.tmpOrigRate, k.tmpItmRate from Kitchen k, MenuItem mi,ItemPortions ip where k.Itm_Portion = ip.IPCd and k.CustId = $CustId AND k.EID = $EID AND k.TableNo = $TableNo AND k.ItemId = mi.ItemId AND k.BillStat = 0 AND $qry and k.CNo = $CNo")
                     ->result_array();
                     $recommend = $this->session->userdata('recommend');
                     foreach ($kitcheData as &$key) {
@@ -418,12 +418,12 @@ class Customer extends CI_Controller {
             $itemId = $_POST['itemId'];
 
             $langId = $this->session->userdata('site_lang');
-            $lname = "mi.Name$langId as ItemNm";
-            $iDesc = "mi.ItmDesc$langId as ItmDesc";
-            $ingeredients = "mi.Ingeredients$langId as Ingeredients";
-            $Rmks = "mi.Rmks$langId as Rmks";
+            $lname = "mi.Name$langId";
+            $ItmDesc = "mi.ItmDesc$langId";
+            $Ingeredients = "mi.Ingeredients$langId";
+            $Rmks = "mi.Rmks$langId";
 
-            $select = "mc.TaxType, mc.KitCd, mi.ItemId, $lname, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, $iDesc, $ingeredients, $Rmks, mi.PrepTime, mi.AvgRtng, mi.FID, mi.Name1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
+            $select = "mc.TaxType, mc.KitCd, mi.ItemId, (case when $lname != '-' Then $lname ELSE mi.Name1 end) as ItemNm, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, (case when $ItmDesc != '-' Then $ItmDesc ELSE mi.ItmDesc1 end) as ItmDesc, (case when $ingeredients != '-' Then $ingeredients ELSE mi.Ingeredients1 end) as Ingeredients, (case when $Rmks != '-' Then $Rmks ELSE mi.Rmks1 end) as Rmks, mi.PrepTime, mi.AvgRtng, mi.FID, mi.Name1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
             $rec = $this->db2->select($select)
                             ->join('MenuItem mi','mi.ItemId = mr.RcItemId', 'inner')
                             ->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')
@@ -1066,9 +1066,9 @@ class Customer extends CI_Controller {
                                                                 'BillStat' => 0,'EID' => $EID)
                                                             )->row_array();
                         $langId = $this->session->userdata('site_lang');
-                        $scName = "c.SchNm$langId as SchNm";
+                        $scName = "c.SchNm$langId";
 
-                        $billOfferAmt = $this->db2->select("$scName, c.offerType, cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.DiscItemPcent, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, cod.IPCd, cod.Disc_CID, cod.Disc_MCatgId, cod.Disc_ItemId, cod.Disc_ItemTyp, cod.Disc_IPCd, if(cod.Disc_ItemId > 0,(select Name1 from MenuItem where ItemId = cod.Disc_ItemId),'-') as itemName, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent ")
+                        $billOfferAmt = $this->db2->select("(case when $scName != '-' Then $scName ELSE c.SchNm1 end) as SchNm, c.offerType, cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.DiscItemPcent, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, cod.IPCd, cod.Disc_CID, cod.Disc_MCatgId, cod.Disc_ItemId, cod.Disc_ItemTyp, cod.Disc_IPCd, if(cod.Disc_ItemId > 0,(select Name1 from MenuItem where ItemId = cod.Disc_ItemId),'-') as itemName, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent ")
                                     ->order_by('cod.MinBillAmt', 'DESC')
                                     ->join('CustOffers c', 'c.SchCd = cod.SchCd', 'inner')
                                     ->get_where('CustOffersDet cod', 
@@ -1109,7 +1109,7 @@ class Customer extends CI_Controller {
 
             $langId = $this->session->userdata('site_lang');
             $scName = "c.SchNm$langId as SchNm";
-            $billOfferAmt = $this->db2->select("$scName, cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent, cod.DiscItemPcent")
+            $billOfferAmt = $this->db2->select("(case when $scName != '-' Then $scName ELSE c.SchNm1 end) as SchNm, cod.SchCd, cod.SDetCd , cod.MinBillAmt, cod.Disc_Amt, cod.Disc_pcent, cod.Disc_ItemId, cod.Disc_IPCd, cod.Disc_Qty, cod.Bill_Disc_pcent, cod.DiscItemPcent")
                         ->order_by('cod.MinBillAmt', 'DESC')
                         ->join('CustOffers c', 'c.SchCd = cod.SchCd')
                         ->get_where('CustOffersDet cod', 
@@ -1553,9 +1553,9 @@ class Customer extends CI_Controller {
             $CNo = $_POST['CNo'];
 
             $langId = $this->session->userdata('site_lang');
-            $lname = "m.Name$langId as ItemNm";
+            $lname = "m.Name$langId";
 
-            $res = $this->db2->select("m.ItemId, $lname, k.Qty, k.ItmRate, k.CellNo")
+            $res = $this->db2->select("m.ItemId, (case when $lname != '-' Then $lname ELSE m.Name1 end) as ItemNm, k.Qty, k.ItmRate, k.CellNo")
                         ->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
                         ->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
                         ->get_where('KitchenMain km', array('km.MergeNo' => $TableNo,'km.CNo' => $CNo))
@@ -1584,9 +1584,9 @@ class Customer extends CI_Controller {
 
             $langId = $this->session->userdata('site_lang');
             $lname = "m.Name$langId";
-            $ipName = "ip.Name$langId as Portions";
+            $ipname = "ip.Name$langId";
 
-            $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate,k.ItmRate,  SUM(if (k.TA=1,((k.OrigRate)*k.Qty),(k.OrigRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty) from Kitchen k1 where k1.MergeNo = km.MergeNo and k1.MergeNo = $MergeNo  and k1.EID=km.EID AND (k1.Stat = 3) and k1.BillStat = km.BillStat GROUP BY k1.EID) as TotPckCharge, $ipName, km.CNo,km.MergeNo, km.MCNo,sum(km.BillDiscAmt) as totBillDiscAmt, sum(km.DelCharge) as totDelCharge, sum(km.RtngDiscAmt) as totRtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType, k.TA,  c.ServChrg, c.Tips,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = 3) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND km.MergeNo = $MergeNo group by km.CNo, k.TA,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.Name1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by TaxType, m.Name1 Asc")->result_array();
+            $kitcheData = $this->db2->query("SELECT (if (k.ItemTyp > 0,(CONCAT($lname, ' - ' , k.CustItemDesc)),($lname))) as ItemNm,sum(k.Qty) as Qty ,k.OrigRate,k.ItmRate,  SUM(if (k.TA=1,((k.OrigRate)*k.Qty),(k.OrigRate*k.Qty))) as OrdAmt, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.CNo) and k1.CNo=km.CNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID) as TotItemDisc,(SELECT sum(k1.PckCharge * k1.Qty) from Kitchen k1 where k1.MergeNo = km.MergeNo and k1.MergeNo = $MergeNo  and k1.EID=km.EID AND (k1.Stat = 3) and k1.BillStat = km.BillStat GROUP BY k1.EID) as TotPckCharge, (case when $ipname != '-' Then $ipname ELSE ip.Name1 end) as Portions, km.CNo,km.MergeNo, km.MCNo,sum(km.BillDiscAmt) as totBillDiscAmt, sum(km.DelCharge) as totDelCharge, sum(km.RtngDiscAmt) as totRtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType, k.TA,  c.ServChrg, c.Tips,e.Name  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = 3) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.CNo AND km.MergeNo = $MergeNo group by km.CNo, k.TA,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.Name1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by TaxType, m.Name1 Asc")->result_array();
 
             $taxDataArray = array();
             if(!empty($kitcheData)){
@@ -3068,8 +3068,8 @@ class Customer extends CI_Controller {
         if($this->input->method(true)=='POST'){
             $response = "Selected Offer Does Not Satisfy Criteria!!";
             $langId = $this->session->userdata('site_lang');
-            $scName = "c.SchNm$langId as SchNm";
-            $scDesc = "cod.SchDesc$langId as SchDesc";
+            // $scName = "c.SchNm$langId as SchNm";
+            // $scDesc = "cod.SchDesc$langId as SchDesc";
             
             $EType = $this->session->userdata('EType');
             $stat = ($EType == 5)?2:1;
@@ -3144,9 +3144,9 @@ class Customer extends CI_Controller {
                 $response = [];
                 if($flag > 0){
                     $langId = $this->session->userdata('site_lang');
-                    $itemName = "mi.Name$langId as itemName";
-                    $ipName = "ip.Name$langId as portionName";
-                    $response = $this->db2->select("mi.ItemId, $itemName, ip.IPCd, $ipName")
+                    $itemName = "mi.Name$langId";
+                    $ipName = "ip.Name$langId";
+                    $response = $this->db2->select("mi.ItemId, (case when $itemName != '-' Then $itemName ELSE mi.Name1 end) as itemName, ip.IPCd, (case when $ipName != '-' Then $ipName ELSE ip.Name1 end) as portionName")
                                     ->join('MenuItemRates mir', 'mir.ItemId = mi.ItemId', 'inner')
                                     ->join('ItemPortions ip', 'ip.IPCd = mir.Itm_Portion')
                                     ->get_where('MenuItem mi', array('mi.EID' => $EID, 'mir.EID' => $EID, 'mi.Stat' => 0, 'mir.OrigRate >' => 0))->result_array();
