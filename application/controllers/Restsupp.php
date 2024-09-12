@@ -55,7 +55,7 @@ class Restsupp extends CI_Controller {
 
         $langId = $this->session->userdata('site_lang');
         $Name = "Name$langId as Name";
-        $data['roles'] = $this->db2->select("*, $Name")->get('UserRoles')->result_array();
+        $data['roles'] = $this->db2->select("*, (case when $Name != '-' Then $Name ELSE Name1 end) as Name")->get('UserRoles')->result_array();
         $data['ECategory'] = $this->db2->get('ECategory')->result_array();
         $data['Category'] = $this->db2->get('Category')->result_array();
 
