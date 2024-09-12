@@ -10764,9 +10764,8 @@ class Restaurant extends CI_Controller {
             
             $destinationDatabase = $this->session->userdata('my_db');
             $sourceDatabase = 'eatout';
-            $table = $_POST['table'];
+            $table = $_POST['tables'];
 
-            $this->db2->query("DROP TABLE $table");
 
             $conn = new mysqli('139.59.28.122', 'developer', 'pqowie321*');
             // $conn = new mysqli('localhost', 'root', '');
@@ -10776,8 +10775,10 @@ class Restaurant extends CI_Controller {
             }
             // Select source and destination databases
             $conn->select_db($destinationDatabase);
-
+            $tbl = '';
             foreach ($_POST['tables'] as $table) {
+                $tbl .= $table.', ';
+                $this->db2->query("DROP TABLE $table");
 
                 $conn->query("CREATE TABLE IF NOT EXISTS $table LIKE $sourceDatabase.$table");
                  // Copy data from source table to destination table
@@ -10789,7 +10790,7 @@ class Restaurant extends CI_Controller {
             $conn->close();
 
             $status = 'success';
-            $response = "Table $table updated";
+            $response = "Table $tbl updated";
 
             header('Content-Type: application/json');
             echo json_encode(array(

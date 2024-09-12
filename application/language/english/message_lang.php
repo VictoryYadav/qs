@@ -465,6 +465,9 @@ $lang['costing']		= 'Costing';
 $lang['printer']		= 'Printer';
 $lang['ip']				= 'IP';
 
+$lang['accountNotCreated']	= 'Account Not Created';
+$lang['haveAnAccount']		= 'Have an account';
+
 
 
 

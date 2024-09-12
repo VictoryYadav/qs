@@ -140,7 +140,7 @@
           
               <div class="mt-4">
                 <div class="d-flex justify-content-center links">
-                  Don't have an account?&nbsp;&nbsp;<a href="<?= base_url('customer/signup');?>"><span style="font-size: 12px;color: #dd3b2a;"><?= $this->lang->line('signup'); ?></span></a>
+                  <span style="font-size: 12px;"><?= $this->lang->line('accountNotCreated'); ?>?&nbsp;&nbsp;<a href="<?= base_url('customer/signup');?>" style="color: #dd3b2a;"><?= $this->lang->line('signup'); ?></a></span>
                 </div>
                 <!-- <div class="d-flex justify-content-center links">
                   <a href="#">Forgot your password?</a>

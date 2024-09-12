@@ -113,9 +113,9 @@ $lang['manualAmount'] = 'मैन्युअल रुपया';
 $lang['percent'] 		= 'परसेंट';
 
 // text box leble
-$lang['enterMobile'] = 'मोबाइल नंबर दर्ज करें';
-$lang['enterOTP'] = 'ओटीपी दर्ज करें';
-$lang['enterRemarks'] = 'टिप्पणी दर्ज करें';
+$lang['enterMobile'] = 'मोबाइल नंबर';
+$lang['enterOTP'] = 'ओटीपी';
+$lang['enterRemarks'] = 'टिप्पणी';
 
 // message display
 $lang['kitchen_msg'] = 'ऑर्डर सफलतापूर्वक रसोई में भेजा गया';
@@ -464,4 +464,7 @@ $lang['costing']		= 'कॉस्टिंग';
 
 $lang['printer']		= 'प्रिंटर';
 $lang['ip']				= 'आई पी';
+
+$lang['accountNotCreated']	= 'अकाउंट नहीं है';
+$lang['haveAnAccount']		= 'अकाउंट है';
  

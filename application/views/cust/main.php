@@ -491,40 +491,44 @@
         <?php } ?>
     </div>
 
-    <!-- ingrediants Modal -->
-    <div class="modal product-modal" id="ingrediants">
-        <div class="modal-dialog" style="vertical-align: middle;">
-            <div class="modal-content">
-                <div class="modal-body" style="padding-top: 0px;">
-                    <h4 id="ingTitle" style="font-size:14px;"></h4>
-                    <p id="ingText">
-                    </p>
-                </div>
-            </div>
+    <div class="modal fade" id="ingrediants" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background: #e1af75; padding: 7px 7px !important;">
+            <h6 class="modal-title text-white" id="ingTitle"><?= $this->lang->line('name'); ?></h6>
+          </div>
+          <div class="modal-body">
+            <p id="ingText"></p>
+          </div>
+            
         </div>
+      </div>
     </div>
 
-    <!-- img Modal -->
-    <div class="modal product-modal" id="imgModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body text-center" style="padding-top: 0px;">
-                    <h4 id="imgTitle" style="font-size:14px;"></h4>
-                    <img src="" id="imgpop" style="height: 300px;width: 100%;">
-                </div>
-            </div>
+    <div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background: #e1af75; padding: 7px 7px !important;">
+            <h6 class="modal-title text-white" id="imgTitle"><?= $this->lang->line('name'); ?></h6>
+          </div>
+          <div class="modal-body">
+            <img src="" id="imgpop" style="height: 300px;width: 100%;">
+          </div>
         </div>
+      </div>
     </div>
 
-    <!-- img Modal -->
-    <div class="modal product-modal" id="youtubeModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body text-center" style="padding-top: 0px;">
-                    <iframe width="100%" src="https://www.youtube.com/embed/-y9FOb8CQoM?si=i_Qst60Hf9gMQ6jn" allow="autoplay" frameborder="0" allowfullscreen></iframe>
-                </div>
-            </div>
+    <div class="modal fade" id="youtubeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background: #e1af75; padding: 7px 7px !important;">
+            <h6 class="modal-title text-white" id="youtubeTitle"><?= $this->lang->line('name'); ?></h6>
+          </div>
+          <div class="modal-body">
+            <iframe width="100%" src="https://www.youtube.com/embed/-y9FOb8CQoM?si=i_Qst60Hf9gMQ6jn" allow="autoplay" frameborder="0" allowfullscreen></iframe>
+          </div>
         </div>
+      </div>
     </div>
 
 <?php $this->load->view('layouts/customer/script'); ?>
@@ -720,16 +724,17 @@
                     var ing_l = '';
                     var ytube_g = '';
                     var ytube_l = '';
+                    var itemNameStr = "'"+data[i].itemName+"'";
                     if(data[i].Ingeredients != "" && data[i].Ingeredients != "-"){
-                        ing_g = '<li class="list-inline-item text-center" style="display:block;margin-bottom:1px;"><a class="fa fa-database" href="#" onclick="ingerediants('+itemName+','+ingrediant+')"></a></li>';
+                        ing_g = '<li class="list-inline-item text-center" style="display:block;margin-bottom:1px;"><a class="fa fa-database" href="#" onclick="ingerediants('+itemNameStr+','+ingrediant+')"></a></li>';
 
-                        ing_l = '<li class="list-inline-item text-center"><a class="fa fa-database" href="#" onclick="ingerediants('+itemName+','+ingrediant+')"></a></li>';
+                        ing_l = '<li class="list-inline-item text-center"><a class="fa fa-database" href="#" onclick="ingerediants('+itemNameStr+','+ingrediant+')"></a></li>';
                     }
                     
                     if(data[i].videoLink != '-'){
-                        ytube_g = '<li class="list-inline-item text-center" style="display:block;margin-bottom:1px;"><a class="fa fa-play" href="#" onclick="youtubeOpen()"></a></li>';
+                        ytube_g = '<li class="list-inline-item text-center" style="display:block;margin-bottom:1px;"><a class="fa fa-play" href="#" onclick="youtubeOpen('+itemNameStr+')"></a></li>';
 
-                        ytube_l = '<li class="list-inline-item text-center"><a class="fa fa-play" href="#" onclick="youtubeOpen()"></a></li>';
+                        ytube_l = '<li class="list-inline-item text-center"><a class="fa fa-play" href="#" onclick="youtubeOpen('+itemNameStr+')"></a></li>';
                     }
 
                     if(data[i].ItemTyp > 0 )
@@ -776,7 +781,7 @@
                                         <?php if($this->session->userdata('Ingredients') == 1){ ?>
                                         <div class="forRightIcon">\
                                             <ul class="social-circle-icons list-inline">\
-                                              <li class="list-inline-item text-center" style="display:block;margin-bottom:1px;"><a class="fa fa-joomla" href="#" onclick="imgPOPUP('+itemName+','+imgUrl+')"></a></li>\
+                                              <li class="list-inline-item text-center" style="display:block;margin-bottom:1px;"><a class="fa fa-joomla" href="#" onclick="imgPOPUP('+itemNameStr+','+imgUrl+')"></a></li>\
                                               '+ing_g+'\
                                               '+ytube_g+'\
                                             </ul>\
@@ -832,21 +837,21 @@
 			                        </div>\
 			                        <ul class="list-inline mt-2">\
 			                            <li class="list-inline-item">\
-								    		<i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+data[i].AvgRtng+'\
+								    		<i class="fa fa-star ratings text-warning" aria-hidden="true"></i> '+convertToUnicodeNo(data[i].AvgRtng)+'\
 								    	</li>\
                                         <?php if($this->session->userdata('NV') == 1){ ?>
 								    	<li class="list-inline-item">\
-								    		<i class="fa fa-heartbeat" style="color:green;"></i> '+data[i].NV+'\
+								    		<i class="fa fa-heartbeat" style="color:green;"></i> '+convertToUnicodeNo(data[i].NV)+'\
 								    	</li>\
                                     <?php } ?>
 								    	<li class="list-inline-item">\
-								    		<i class="fa fa-handshake-o " aria-hidden="true" style="color:blue;"></i> '+data[i].ItmRate+'\
+								    		<i class="fa fa-handshake-o " aria-hidden="true" style="color:blue;"></i> '+convertToUnicodeNo(data[i].ItmRate)+'\
 								    	</li>\
 			                        </ul>\
-                                    <p>'+data[i].short_Desc+'</p>\
+                                    <p>'+data[i].itemDescr+'</p>\
                                     <?php if($this->session->userdata('Ingredients') == 1){ ?>
                                     <ul class="social-circle-icons list-inline">\
-                                      <li class="list-inline-item text-center"><a class="fa fa-joomla" href="#" onclick="imgPOPUP('+itemName+','+imgUrl+')"></a></li>\
+                                      <li class="list-inline-item text-center"><a class="fa fa-joomla" href="#" onclick="imgPOPUP('+itemNameStr+','+imgUrl+')"></a></li>\
                                       '+ing_l+'\
                                       '+ytube_l+'\
                                     </ul>\
@@ -1499,6 +1504,7 @@
         }
 
         function ingerediants(itemName, ingerediants){
+
             $('#ingTitle').html(itemName);
             $('#ingText').html(ingerediants);
             $('#ingrediants').modal('show');
@@ -1510,7 +1516,8 @@
             $('#imgModal').modal('show');
         }
 
-        function youtubeOpen(){
+        function youtubeOpen(itemName){
+            $('#youtubeTitle').html(itemName);
             $('#youtubeModal').modal('show');
         }
 

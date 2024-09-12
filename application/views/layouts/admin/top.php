@@ -105,18 +105,21 @@ body[data-topbar=dark] .header-item {
                                     $name = '';
                                     $active = '';
                                     foreach ($langs as $key) {
+                                        $sname = strtolower($key['Name1']);
                                         $name = $key['LngName'];
                                         if($langId == 1){
                                             $name = ucwords($key['LngName']);
                                         }
 
-                                        if($langId == $key['langId']){
+                                        if($langId == $key['LCd']){
                                             $active = ' active';
                                         }
                                 ?>
-                                <a class="dropdown-item <?= $active; ?>" href="#" onclick="set_lang(<?= $key['LCd']; ?>,'<?= $key['Name1']; ?>')"><?= $name; ?></a>
+                                <a class="dropdown-item <?= $active; ?>" href="#" onclick="set_lang(<?= $key['LCd']; ?>,'<?= $sname; ?>')"><?= $name; ?></a>
 
-                                <?php } ?>
+                                <?php 
+                                    $active = '';
+                                } ?>
 
                                 <a class="dropdown-item" href="<?php echo base_url('restaurant/change_password'); ?>"><i class="dripicons-lock d-inlne-block text-muted mr-2"></i><?= $this->lang->line('changePassword');?></a>
                                 <div class="dropdown-divider"></div>

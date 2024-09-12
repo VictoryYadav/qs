@@ -243,7 +243,7 @@
             }else{
               alert(res.response);
             }
-            // location.reload();
+            location.reload();
         });
 
     });

@@ -9,6 +9,9 @@ $folder = 'e'.$EID;
     .header-section{
         background: <?php echo $this->session->userdata('headerClr'); ?>;
     }
+    .selected{
+        background: #b1ebac;
+    }
 </style>
 
 <section class="header-section">
@@ -55,14 +58,20 @@ $folder = 'e'.$EID;
                                     $langId = $this->session->userdata('site_lang');
                                     $langs = langMenuList();
                                     $name = '';
+                                    $active = '';
                                     foreach ($langs as $key) {
+                                        $sname = strtolower($key['Name1']);
                                         $name = $key['LngName'];
                                         if($langId == 1){
                                             $name = ucwords($key['LngName']);
                                         }
+
+                                        if($langId == $key['LCd']){
+                                            $active = ' selected';
+                                        }
                                 ?>
-                                <li><a class="dropdown-item" href="#" onclick="set_lang(<?= $key['LCd']; ?>,'<?= $key['Name1']; ?>')"><?= $name; ?></a></li>
-                            <?php } ?>
+                                <li><a class="dropdown-item <?= $active; ?>" href="#" onclick="set_lang(<?= $key['LCd']; ?>,'<?= $sname; ?>')"><?= $name; ?></a></li>
+                            <?php $active = ''; } ?>
                             </ul>
                     </li>
                     <?php } ?>

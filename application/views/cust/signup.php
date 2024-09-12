@@ -136,21 +136,21 @@
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-envelope"></i></span>
                     </div>
-                    <input type="email" name="email" class="form-control" placeholder="Enter Email (Bills will be sent on this Email)" autocomplete="off">
+                    <input type="email" name="email" class="form-control" placeholder="<?= $this->lang->line('email'); ?>" autocomplete="off">
                   </div>
 
                   <div class="input-group mb-3">
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-user"></i></span>
                     </div>
-                    <input type="text" name="FName" class="form-control" placeholder="Enter Firstname">
+                    <input type="text" name="FName" class="form-control" placeholder="<?= $this->lang->line('firstName'); ?>">
                   </div>
 
                   <div class="input-group mb-3">
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-user"></i></span>
                     </div>
-                    <input type="text" name="LName" class="form-control" placeholder="Enter Lastname">
+                    <input type="text" name="LName" class="form-control" placeholder="<?= $this->lang->line('lastName'); ?>">
                   </div>
 
                   <div class="input-group mb-3">
@@ -181,7 +181,7 @@
           
               <div class="mt-4">
                 <div class="d-flex justify-content-center links">
-                  Have an account?&nbsp;&nbsp;<a href="<?= base_url('customer/login');?>"><span style="font-size: 12px;color: red;"><?= $this->lang->line('log_in'); ?></span></a>
+                  <span style="font-size: 12px;"><?= $this->lang->line('haveAnAccount'); ?>?&nbsp;&nbsp;<a href="<?= base_url('customer/login');?>" style="color:red;"><?= $this->lang->line('log_in'); ?></a></span>
                 </div>
               </div>
             </div>
