@@ -3,10 +3,6 @@
 
     .order-details-page {
         padding-bottom: 70px;
-        /*background-color: #0a88ff;*/
-        /*background-color: <?php echo isset($body_bg)?$body_bg:"#000"?> !important;*/
-        /*color: <?php echo isset($body_text)?$body_text:"#000"?> !important;*/
-        /*padding-top: 65px;*/
         height: -webkit-fill-available;
     }
 

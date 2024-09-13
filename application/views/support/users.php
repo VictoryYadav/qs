@@ -31,8 +31,9 @@
                                                     <th>#</th>
                                                     <th><?= $this->lang->line('name'); ?></th>
                                                     <th><?= $this->lang->line('mobile'); ?></th>
-                                                    <th><?= $this->lang->line('email'); ?></th>
+                                                    <th><?= $this->lang->line('restaurant'); ?></th>
                                                     <th><?= $this->lang->line('type'); ?></th>
+                                                    <th><?= $this->lang->line('language'); ?></th>
                                                     <th><?= $this->lang->line('mode'); ?></th>
                                                 </tr>
                                                 </thead>
@@ -54,12 +55,14 @@
                                                     <td><?php echo $key['fullname']; ?>
                                                     </td>
                                                     <td>
-                                                        <?php echo $key['mobileNo']; ?>
-                                                        </td>
-                                                    <td><?php echo $key['email']; ?>
+                                                        <?php echo $key['mobileNo']; ?><br>
+                                                        <?php echo $key['email']; ?>
                                                     </td>
-                                                    <td><?php echo $usertype; ?>
+                                                    <td>Main : <?php echo $key['main']; ?><br>
+                                                        Alternate : <?php echo $key['alternate']; ?>
                                                     </td>
+                                                    <td><?php echo $usertype; ?></td>
+                                                    <td><?= getMultiLangName($key['langId']); ?></td>
                                                     <td>
                                                         <?php if($key['stat'] == 0){ ?>
                                                         <span class="badge badge-boxed  badge-<?= $clr; ?>" style="cursor: pointer;" onclick="changeStatus(<?= $key['userId']; ?>, <?= $key['stat']; ?>, <?= $key['mobileNo']; ?>);"><?= $sts; ?></span>

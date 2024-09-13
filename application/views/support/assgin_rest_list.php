@@ -32,7 +32,8 @@
                                                     <th><?= $this->lang->line('name'); ?></th>
                                                     <th><?= $this->lang->line('country'); ?></th>
                                                     <th><?= $this->lang->line('city'); ?></th>
-                                                    <th>Access</th>
+                                                    <th><?= $this->lang->line('username'); ?></th>
+                                                    <th><?= $this->lang->line('language'); ?></th>
                                                 </tr>
                                                 </thead>
             
@@ -46,17 +47,6 @@
                                                             $EID = $key['EID'];
                                                             $CatgId = $key['CatgId'];
                                                             
-                                                            if($key['suppUserId'] > 0){
-                                                                $type = 'Main';
-                                                            }
-
-                                                            if($key['suppUserIdAlt'] > 0){
-                                                                $type = 'Alternate';
-                                                            }
-
-                                                            if($key['suppUserId'] > 0 && $key['suppUserIdAlt'] > 0){
-                                                                $type = 'Both';
-                                                            }
                                                      ?>
                                                     
                                                 <tr>
@@ -67,8 +57,11 @@
                                                     </td>
                                                     <td><?= $key['city_name']; ?></a>
                                                     </td>
-                                                    <td>
-                                                        <?= $type; ?>
+                                                    <td>Main : <?= !empty($key['mainUser'])?$key['mainUser']:'-'; ?><br>
+                                                        StandBy : <?= !empty($key['alterUser'])?$key['alterUser']:'-'; ?>
+                                                    </td>
+                                                    <td>1 : <?= !empty($key['mainLang'])?$key['mainLang']:'-'; ?><br>
+                                                        2 : <?= !empty($key['alterLang'])?$key['alterLang']:'-'; ?>
                                                     </td>
                                                 </tr>
                                                 <?php }

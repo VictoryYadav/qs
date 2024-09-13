@@ -560,6 +560,12 @@ function getNameFromMast($id){
     return $CI->User->getingNameFromMast($id);	
 }
 
+function getMultiLangName($id_in){
+	$CI = & get_instance();
+    $CI->load->model('Supp');
+    return $CI->Supp->getingMultiLangName($id_in);	
+}
+
 
 
 

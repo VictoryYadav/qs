@@ -33,6 +33,7 @@ class Support extends CI_Controller {
             $this->session->set_userdata('signup', $_POST);
 
             $supp = $_POST;
+            $supp['langId'] = implode(',', $_POST['langId']);
             $supp['pwdHash'] = md5($supp['pwd']);
 
             $userId = $this->genDB->insert('usersSupport', $supp);
@@ -56,8 +57,9 @@ class Support extends CI_Controller {
               ));
              die;
         }
-        $data['title'] = 'New User';
+        $data['title'] = 'Support User';
         $data['country'] = $this->genDB->get_where('countries', array('Stat' => 0))->result_array();
+        $data['languages'] = $this->genDB->get_where('Languages', array('Stat' => 0))->result_array();
         $this->load->view('support/add_user', $data);
     }
 
@@ -402,6 +404,7 @@ class Support extends CI_Controller {
 
         $data['ECategory'] = $this->genDB->get('ECategory')->result_array();
         $data['Category'] = $this->genDB->get('Category')->result_array();
+        $data['languages'] = $this->genDB->get_where('Languages', array('Stat' => 0))->result_array();
         
         $this->load->view('support/new_customer', $data); 
     }
@@ -599,7 +602,7 @@ class Support extends CI_Controller {
     public function rest_login($EID, $CatgId)
     {
         $this->session->sess_destroy();
-        $url = base_url('login?o='.$EID.'&c='.$CatgId);
+        $url = base_url('login?o='.$EID);
         redirect($url);
     }
 
@@ -646,7 +649,12 @@ class Support extends CI_Controller {
         }
         
         $data['title'] = 'Support Users';
-        $data['users'] = $this->genDB->get('usersSupport')->result_array();
+        $data['users'] = $this->genDB->select("us.*, (select count(ed.CNo) from EIDDet ed where ed.suppUserId = us.userId) as main, (select count(ed.CNo) from EIDDet ed where ed.suppUserIdAlt = us.userId) as alternate")
+                            // ->select()
+                            ->get('usersSupport us')->result_array();
+                            // echo "<pre>";
+                            // print_r($data['users']);
+                            // die;
         $this->load->view('support/users', $data); 
     }
 
@@ -657,26 +665,51 @@ class Support extends CI_Controller {
         if($this->input->method(true)=='POST'){
 
             if ($_POST['type'] == 'available') {
+                // echo "<pre>";print_r($_POST);die;
+
                 $userId =  $_POST['userId'];
-                $city = $_POST['city'];
-                $country = $_POST['countryCd'];
+                $langid =  $_POST['langid'];
+                
+                if(!empty($_POST['countryCd'])){
+                    $this->genDB->where('ed.CountryCd',  $_POST['countryCd']);
+                }
+
+                if(!empty($_POST['city'])){
+                    $this->genDB->where('ed.city_id',  $_POST['city']);
+                }
+                if(!empty($langid)){
+                    $langid_in = explode(',', $langid);
+                    $this->genDB->where_in('ed.langId',  $langid_in);
+                }
 
                 $status = 'success';
+
                 $response = $this->genDB->select("ed.EID, ed.Name")
-                                ->order_by('Name', 'ASC')
-                                ->get_where("EIDDet ed", array('suppUserId' => 0, 'Stat' => 0, 'city_id' => $city, 'CountryCd' => $country))
+                                ->order_by('ed.Name', 'ASC')
+                                ->get_where("EIDDet ed", array('ed.suppUserId' => 0, 'ed.Stat' => 0))
                                 ->result_array();
             }
 
             if ($_POST['type'] == 'assigned') {
                 $userId =  $_POST['userId'];
-                $city = $_POST['city'];
-                $country = $_POST['countryCd'];
+                $langid =  $_POST['langid'];
+                
+                if(!empty($_POST['countryCd'])){
+                    $this->genDB->where('ed.CountryCd',  $_POST['countryCd']);
+                }
+
+                if(!empty($_POST['city'])){
+                    $this->genDB->where('ed.city_id',  $_POST['city']);
+                }
+                if(!empty($langid)){
+                    $langid_in = explode(',', $langid);
+                    $this->genDB->where_in('ed.langId',  $langid_in);
+                }
 
                 $status = 'success';
                 $response = $this->genDB->select("ed.EID, ed.Name")
                                 ->order_by('Name', 'ASC')
-                                ->get_where("EIDDet ed", array('ed.suppUserId' => $userId, 'city_id' => $city, 'CountryCd' => $country))
+                                ->get_where("EIDDet ed", array('ed.suppUserId' => $userId))
                                 ->result_array();
             }
 
@@ -736,6 +769,119 @@ class Support extends CI_Controller {
         $data['users'] = $this->genDB->get('usersSupport')->result_array();
         $data['country'] = $this->genDB->get_where('countries', array('Stat' => 0))->result_array(); 
         $this->load->view('support/supp_user_access', $data); 
+    }
+
+    public function alter_user_access(){
+
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+
+            if ($_POST['type'] == 'available') {
+                // echo "<pre>";print_r($_POST);die;
+
+                $userId =  $_POST['userId'];
+                $langid =  $_POST['langid'];
+                
+                if(!empty($_POST['countryCd'])){
+                    $this->genDB->where('ed.CountryCd',  $_POST['countryCd']);
+                }
+
+                if(!empty($_POST['city'])){
+                    $this->genDB->where('ed.city_id',  $_POST['city']);
+                }
+                if(!empty($langid)){
+                    $langid_in = explode(',', $langid);
+                    $this->genDB->where_in('ed.langId',  $langid_in);
+                }
+
+                $status = 'success';
+
+                $response = $this->genDB->select("ed.EID, ed.Name")
+                                ->order_by('ed.Name', 'ASC')
+                                ->get_where("EIDDet ed", array('ed.suppUserIdAlt' => 0, 'ed.Stat' => 0))
+                                ->result_array();
+            }
+
+            if ($_POST['type'] == 'assigned') {
+                $userId =  $_POST['userId'];
+                $langid =  $_POST['langid'];
+                
+                if(!empty($_POST['countryCd'])){
+                    $this->genDB->where('ed.CountryCd',  $_POST['countryCd']);
+                }
+
+                if(!empty($_POST['city'])){
+                    $this->genDB->where('ed.city_id',  $_POST['city']);
+                }
+                if(!empty($langid)){
+                    $langid_in = explode(',', $langid);
+                    $this->genDB->where_in('ed.langId',  $langid_in);
+                }
+
+                $status = 'success';
+                $response = $this->genDB->select("ed.EID, ed.Name")
+                                ->order_by('Name', 'ASC')
+                                ->get_where("EIDDet ed", array('ed.suppUserIdAlt' => $userId))
+                                ->result_array();
+            }
+
+            if ($_POST['type'] == 'setRest') {
+                $userId =  $_POST['userId'];
+                
+                foreach ($_POST['EID'] as $key) {
+                $this->genDB->update('EIDDet', array('suppUserIdAlt' => $userId), array('EID' => $key));
+                    
+                    $suppUser = $this->getSuppUserDetail($userId);
+                    $dbName = $key.'e';
+                    $db3 = $this->load->database($dbName, TRUE);
+                    $check = $db3->select('MobileNo')->get_where('UsersRest', array('EID' => $key, 'MobileNo'  => $suppUser['mobileNo']))->row_array();
+                    if(empty($check)){
+                        $restUser = array(
+                                        'FName'     => $suppUser['fullname'],
+                                        'MobileNo'  => $suppUser['mobileNo'],
+                                        'Passwd'    => $suppUser['pwd'],
+                                        'PWDHash'   => md5($suppUser['pwd']),
+                                        'Gender'    => $suppUser['gender'],
+                                        'DOB'       => $suppUser['DOB'],
+                                        'PEmail'    => $suppUser['email'],
+                                        'EID'       => $key,
+                                        'UTyp'      => 10,
+                                        'RestRole'  => 10
+                                    );
+                        $db3->insert('UsersRest', $restUser);
+                    }
+                }
+
+                $status = 'success';
+                $response = 'Restaurant Assigned.';
+            }
+            
+            if ($_POST['type'] == 'removeRest') {
+                $userId =  $_POST['userId'];
+                
+                foreach ($_POST['EID'] as $key) {
+                $this->genDB->update('EIDDet', array('suppUserIdAlt' => 0), array('EID' => $key, 'suppUserId' => $userId));
+                    
+                }
+
+                $status = 'success';
+                $response = 'Restaurant Assigned.';
+            }
+            
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = 'Support User Access';
+        $data['users'] = $this->genDB->get('usersSupport')->result_array();
+        $data['country'] = $this->genDB->get_where('countries', array('Stat' => 0))->result_array(); 
+        $this->load->view('support/supp_user_access_alt', $data); 
     }
 
     public function get_city_by_country(){
@@ -860,20 +1006,25 @@ class Support extends CI_Controller {
 
     public function rest_list(){
         $userId = authuser()->userId;
-        $data['title'] = 'Assign Rest List';
+        $data['title'] = 'Access Restaurant(s)';
         $data['rests'] = $this->getRestLists($userId);
         
         $this->load->view('support/assgin_rest_list', $data);    
     }
 
     private function getRestLists($userId){
-        return $this->genDB->select("ed.EID, ed.Name, ed.CatgId, ed.suppUserId, ed.suppUserIdAlt, c.country_name, ct.city_name")
+        $userType = authuser()->userType;
+        if($userType > 0){
+            if($userType != 9){
+                $this->genDB->group_start() 
+                    ->where('ed.suppUserId', $userId)
+                    ->or_where('ed.suppUserIdAlt',$userId)
+                ->group_end();
+            }
+        }
+        return $this->genDB->select("ed.EID, ed.Name, ed.CatgId, ed.suppUserId, ed.suppUserIdAlt, c.country_name, ct.city_name, (select us.fullname from usersSupport us where us.userId = ed.suppUserId) as mainUser, (select us.fullname from usersSupport us where us.userId = ed.suppUserIdAlt) as alterUser, (select l.LangName from Languages l where l.id = ed.langId) as mainLang, (select l.LangName from Languages l where l.id = ed.altLangId) as alterLang")
                             ->join('countries c', 'c.phone_code = ed.CountryCd', 'left')
                             ->join('city ct', 'ct.city_id = ed.city_id', 'left')
-                                ->group_start() 
-                                    ->where('ed.suppUserId', $userId)
-                                    ->or_where('ed.suppUserIdAlt',$userId)
-                                ->group_end()
                             ->get('EIDDet ed')
                             ->result_array();
     }

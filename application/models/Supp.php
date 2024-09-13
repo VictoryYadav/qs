@@ -63,5 +63,20 @@ class Supp extends CI_Model{
 	// 	return $this->db2->get('LoyaltyConfig')->result_array();
 	// }
 
+	public function getingMultiLangName($idin){
+		$name = '';
+		if(!empty($idin)){
+			$dt = $this->genDB->query("SELECT LangName FROM Languages WHERE id IN ($idin)")->result_array();
+
+			if(!empty($dt)){
+				foreach ($dt as $key) {
+					$name .= $key['LangName'].", ";
+				}
+				$name = rtrim($name,", ");
+			}
+		}
+		return $name;
+	}
+
 
 }

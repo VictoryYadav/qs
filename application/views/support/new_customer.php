@@ -207,6 +207,32 @@
                                                     <input type="text" name="Lng" id="Lng" class="form-control form-control-sm" >
                                                 </div>
                                             </div>
+
+                                            <div class="col-md-3 col-6">
+                                                <div class="form-group">
+                                                    <label><?= $this->lang->line('language'); ?></label>
+                                                    <select name="langId" id="langId" class="form-control form-control-sm" required="">
+                                                    <option value=""><?= $this->lang->line('select'); ?></option>
+                                                <?php foreach ($languages as $key) { ?> 
+                                                    <option value="<?= $key['id']; ?>" ><?= $key['LangName']; ?></option>
+                                                <?php } ?>
+                                                    </select>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 col-6">
+                                                <div class="form-group">
+                                                    <label><?= $this->lang->line('alternate'); ?> <?= $this->lang->line('language'); ?></label>
+                                                    <select name="altLangId" id="altLangId" class="form-control form-control-sm" required="">
+                                                    <option value=""><?= $this->lang->line('select'); ?></option>
+                                                <?php foreach ($languages as $key) { ?> 
+                                                    <option value="<?= $key['id']; ?>" ><?= $key['LangName']; ?></option>
+                                                <?php } ?>
+                                                        </select>
+
+                                                </div>
+                                            </div>
                                             
                                         </div>
 

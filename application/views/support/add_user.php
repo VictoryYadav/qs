@@ -103,6 +103,19 @@
 
                                                 </div>
                                             </div>
+
+                                            <div class="col-md-3 col-6">
+                                                <div class="form-group">
+                                                    <label><?= $this->lang->line('language'); ?></label>
+                                                    <select name="langId[]" id="langId" class="form-control form-control-sm select2 custom-select" multiple="multiple" required="">
+                                                    <option value=""><?= $this->lang->line('select'); ?></option>
+                                                <?php foreach ($languages as $key) { ?> 
+                                                    <option value="<?= $key['id']; ?>" ><?= $key['LangName']; ?></option>
+                                                <?php } ?>
+                                                    </select>
+
+                                                </div>
+                                            </div>
                                             
                                         </div>
                                         <div>
@@ -142,6 +155,7 @@
 
     $(document).ready(function () {
         $('#CountryCd').select2();
+        $('#langId').select2();
     });
 
     $('#signupForm').on('submit', function(e){
@@ -155,7 +169,7 @@
             }else{
               alert(res.response);
             }
-            location.reload();
+            // location.reload();
         });
     });
 </script>

@@ -240,7 +240,7 @@ getUser = () =>{
 }
 // console.log(RUserId);
 getAvailableRestaurant = (userId, country, city, langid) =>{
-    $.post('<?= base_url('support/user_access') ?>',{type:'available', userId:userId, countryCd:country, city:city, langid:langid},function(res){
+    $.post('<?= base_url('support/alter_user_access') ?>',{type:'available', userId:userId, countryCd:country, city:city, langid:langid},function(res){
         if(res.status == 'success'){
           var temp = '';
           if(res.response.length > 0){
@@ -263,7 +263,7 @@ getAvailableRestaurant = (userId, country, city, langid) =>{
 }
 
 getAssignedRestaurant = (userId, country, city, langid) =>{
-    $.post('<?= base_url('support/user_access') ?>',{type:'assigned', userId:userId, countryCd:country, city:city, langid:langid},function(res){
+    $.post('<?= base_url('support/alter_user_access') ?>',{type:'assigned', userId:userId, countryCd:country, city:city, langid:langid},function(res){
         if(res.status == 'success'){
           
           var temp = '';
@@ -296,7 +296,7 @@ setRoles = () => {
     });
 
     if(eids.length > 0){
-        $.post('<?= base_url('support/user_access') ?>',{type:'setRest', userId:userId, EID:eids},function(res){
+        $.post('<?= base_url('support/alter_user_access') ?>',{type:'setRest', userId:userId, EID:eids},function(res){
             if(res.status == 'success'){
                 alert(res.response);
                 getUser();
@@ -321,7 +321,7 @@ removeRoles = () => {
     });
 
     if(eids.length > 0){
-        $.post('<?= base_url('support/user_access') ?>',{type:'removeRest', userId:userId, EID:eids},function(res){
+        $.post('<?= base_url('support/alter_user_access') ?>',{type:'removeRest', userId:userId, EID:eids},function(res){
             if(res.status == 'success'){
                 alert(res.response);
               // location.reload();

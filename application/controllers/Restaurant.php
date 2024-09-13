@@ -3537,7 +3537,7 @@ class Restaurant extends CI_Controller {
         if($this->input->method(true)=='POST'){
             
             deleteRecord('BOM_Dish', array('BOMNo' => $_POST['BOMNo'], 'EID' => authuser()->EID));
-            $response = 'Dish Deleted!!';
+            $response = 'Data Deleted!!';
             $status = 'success';
 
             header('Content-Type: application/json');
@@ -5299,7 +5299,7 @@ class Restaurant extends CI_Controller {
             }
 
             $status = "success";
-            $response = 'Data Inserted';
+            $response = 'Data Added';
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -5344,7 +5344,7 @@ class Restaurant extends CI_Controller {
             deleteRecord('tempKitchen', array('ItemId' => $_POST['ItemId'], 'OrdNo' => $_POST['OrdNo'], 'EID' => $EID));
             
             $status = "success";
-            $response = 'Item has been removed.';
+            $response = 'Item deleted.';
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -5553,7 +5553,7 @@ class Restaurant extends CI_Controller {
 
                         if(!empty($eatary_id)){
                             $status = 'success';
-                            $response = 'Data Inserted';
+                            $response = 'Data added';
                             $this->session->set_flashdata('success','Data Inserted.');
                         }
                       }
@@ -5614,7 +5614,7 @@ class Restaurant extends CI_Controller {
                                 if(!empty($cuisineData)){
                                     $this->db2->insert_batch('Cuisines', $cuisineData);
                                     $status = 'success';
-                                    $response = 'Data Inserted.';
+                                    $response = 'Data added.';
                                 }
 
                                 fclose($open);
@@ -6966,7 +6966,7 @@ class Restaurant extends CI_Controller {
                         $updateData = $_POST;
                         unset($updateData['type']);
                         updateRecord('Eatary', $updateData, array('EID' => $_POST['EID']));
-                        $res = 'Updated Records';
+                        $res = 'Data updated';
                     break;
             }
 
@@ -7527,7 +7527,7 @@ class Restaurant extends CI_Controller {
                     for ($i=0; $i <sizeof($_POST['SecId']) ; $i++) { 
                         updateRecord('MenuItemRates', array('ItmRate'=> $_POST['itemRate'][$i]), array('EID' => $EID, 'ItemId' => $_POST['ItemId'], 'SecId' => $_POST['SecId'][$i], 'Itm_Portion' => $_POST['Itm_Portion'][$i]));
                     }
-                    $response = 'Rate has been updated.';
+                    $response = 'Item Rate updated.';
                     break;
             }
             header('Content-Type: application/json');
@@ -7903,8 +7903,6 @@ class Restaurant extends CI_Controller {
 
                 if ($deleteRoles) {
                     $response = "Payment mode are Removed";
-                }else {
-                    $response = "Failed to delete in EatCuisine table";
                 }
             }
 
@@ -7933,11 +7931,11 @@ class Restaurant extends CI_Controller {
 
             if($_POST['SecId'] > 0){
                 updateRecord('Sections', $updateData, array('SecId' => $_POST['SecId']));
-                $response = 'Section Updated'; 
+                $response = 'Data Updated'; 
             }else{
                 unset($updateData['SecId']);
                 insertRecord('Sections', $updateData);
-                $response = 'Section Added'; 
+                $response = 'Data Added'; 
             }
 
             $status = 'success';
@@ -8006,8 +8004,6 @@ class Restaurant extends CI_Controller {
 
                 if ($deleteRoles) {
                     $response = "Cuisine are Removed";
-                }else {
-                    $response = "Failed to delete in EatCuisine table";
                 }
             }
 
@@ -9403,7 +9399,6 @@ class Restaurant extends CI_Controller {
             $dt['prePaidAmt'] = $acc['prePaidAmt'] + $_POST['prePaidAmt'];
             updateRecord('CustList', $dt, array('CustId' => $_POST['CustId']));
             
-                
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
@@ -9764,7 +9759,7 @@ class Restaurant extends CI_Controller {
         if (empty($kitcheData)) {
                 $response = [
                     "status" => 0,
-                    "msg" => "NO BILL CREATION REQUIRED "
+                    "msg" => "NO BILL CREATION REQUIRED"
                 ];
             } else {
                 // order amt
@@ -10634,8 +10629,6 @@ class Restaurant extends CI_Controller {
 
                 if ($deleteRoles) {
                     $response = "Language are Removed";
-                }else {
-                    $response = "Failed to delete in EatCuisine table";
                 }
             }
 
