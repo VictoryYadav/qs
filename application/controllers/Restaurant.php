@@ -42,12 +42,12 @@ class Restaurant extends CI_Controller {
 
     public function index(){
         
-        $data['title'] = "Dashboard";
+        $data['title'] = $this->lang->line('dashboard');
         $this->load->view('dashboard/index',$data);
     }
 
     public function summaries(){
-        $data['title'] = "Summary";
+        $data['title'] = $this->lang->line('summary');
         $this->load->view('rest/summary',$data);
     }
 
@@ -774,7 +774,7 @@ class Restaurant extends CI_Controller {
     public function csv_report(){
         $EID = authuser()->EID;
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $langId = $this->session->userdata('site_lang');
@@ -919,10 +919,10 @@ class Restaurant extends CI_Controller {
             if(!empty($data)){
                 
                 $this->export_csv($data, $file_name);
-                $response = 'Reports Downloaded'; 
+                $response = $this->lang->line('reportDownloaded'); 
                 // redirect(base_url('dashboard/'));
             }else{
-                $response = 'Record Not Found!';
+                $response = $this->lang->line('noRecordFound');
                 // $this->session->set_flashdata('error',$response);  
                 $data[] = array('title' => 'Record Not Found');
                 $this->export_csv($data, $file_name);
@@ -933,7 +933,7 @@ class Restaurant extends CI_Controller {
     function switchLang() {
         // https://www.codexworld.com/multi-language-implementation-in-codeigniter/
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             extract($_POST);
@@ -955,7 +955,7 @@ class Restaurant extends CI_Controller {
     public function add_user(){
         // $this->check_access();
         $status = 'error';
-        $response = 'Something went wrong please try again!!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             
@@ -982,10 +982,10 @@ class Restaurant extends CI_Controller {
                     $genDB->insert('UsersRest', $udata);
                 }
 
-                $res = 'Records Updated';
+                $res = $this->lang->line('dataUpdated');
             }else{
                 $this->rest->addUser($_POST);
-                $res = 'User Created.';
+                $res = $this->lang->line('userCreate');
             }
 
             header('Content-Type: application/json');
@@ -1025,7 +1025,7 @@ class Restaurant extends CI_Controller {
     public function role_assign(){
         $this->check_access();
         $staus = 'error';
-        $response = 'Something went wrong please try again!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $status = 'success';
@@ -1042,10 +1042,10 @@ class Restaurant extends CI_Controller {
             if(!empty($check)){
                 unset($data['RUserId']);
                 updateRecord('UsersRoleDaily', $data, array('RUserId' => $RUserId));
-                $res = 'Role Assigned Updated.';
+                $res = $this->lang->line('roleUpdated');
             }else{
                 insertRecord('UsersRoleDaily',$data);
-                $res = 'Role Assigned Successfully.';
+                $res = $this->lang->line('assignedRoles');
             }
             redirect(base_url('restaurant/role_assign'));
             header('Content-Type: application/json');
@@ -1066,7 +1066,7 @@ class Restaurant extends CI_Controller {
     public function getRoleData(){
         $EID = authuser()->EID;
         $status = 'error';
-        $response = 'Some thing went wrong Please try again!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             $RUserId = $_POST['RUserId'];
@@ -1567,7 +1567,7 @@ class Restaurant extends CI_Controller {
 
         $data['menuItemData'] = $menuItemData;
         $data['sections'] = $this->rest->getSectionList();
-    	$data['title'] = 'Menu List';
+    	$data['title'] = $this->lang->line('menuList');
         $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0))->row_array();
 
 		$this->load->view('rest/item_lists',$data);	
@@ -1649,7 +1649,7 @@ class Restaurant extends CI_Controller {
                 if (empty($kitchenData)) {
                     $response = [
                         "status" => 0,
-                        "msg" => "No Item Pending"
+                        "msg" => $this->lang->line('noItemPending')
                     ];
                 } else {
                     $response = [
@@ -1696,7 +1696,7 @@ class Restaurant extends CI_Controller {
                 } else {
                     $response = [
                         "status" => 0,
-                        "msg" => "No results"
+                        "msg" => $this->lang->line('noResult')
                     ];
                 }
 
@@ -1710,7 +1710,7 @@ class Restaurant extends CI_Controller {
         // $this->check_access();
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $res = '';
@@ -1723,15 +1723,15 @@ class Restaurant extends CI_Controller {
                         $this->session->set_userdata('new_pwd', $data['password']);
                         $this->session->set_userdata('old_pwd', $data['old_password']);
                         $otp = generateOTP(authuser()->mobile, 'Change Password');
-                        $res = "OTP has been sent";
+                        $res = $this->lang->line('OTPSentToYourMobileNo');
                     }else{
-                        $res = "OLD Password does not match";
+                        $res = $this->lang->line('oldPasswordDoesNotMatch');
                     }
                  }else{
-                    $res = "Failed to Validate User";
+                    $res = $this->lang->line('failedtoValidateUser');
                  }
             }else{
-                $res = "New Passwords Don't Match";
+                $res = $this->lang->line('passwordDoesNotMatch');
             }
 
             header('Content-Type: application/json');
@@ -1742,7 +1742,7 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        $data['title'] = 'Change Password';
+        $data['title'] = $this->lang->line('changePassword');
         $this->load->view('rest/password_change',$data);   
     }
 
@@ -1764,7 +1764,7 @@ class Restaurant extends CI_Controller {
 
     public function verifyOTP(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $otp = $this->session->userdata('cust_otp');
             if($_POST['otp'] == $otp){
@@ -1780,7 +1780,7 @@ class Restaurant extends CI_Controller {
                     $res = base_url('restaurant/cuisine_access');
                 }
             }else{
-                $res = "OTP Doesn't Matched";
+                $res = $this->lang->line('OTPDoesNotMatch');
             }
 
             header('Content-Type: application/json');
@@ -1810,7 +1810,7 @@ class Restaurant extends CI_Controller {
         $data['EID'] = $EID;
 
         $status = 'error';
-        $response = 'Something went wrong!!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $status = 'success';
@@ -1826,11 +1826,11 @@ class Restaurant extends CI_Controller {
                     $this->db2->query("UPDATE ConfigTheme set Stat = 1 where ThemeId = 1 and EID = $EID");
                 }
                 updateRecord('ConfigTheme', $pData, array('ThemeId' => $ThemeId, 'EID' => $EID));
-                $response = 'Theme Updated.';
+                $response = $this->lang->line('themeUpdated');
             }else{
                 $pData['EID'] = $data['EID'];
                 insertRecord('ConfigTheme', $pData);
-                $response = 'New Theme Added.';
+                $response = $this->lang->line('newThemeAdded');
             }
 
             header('Content-Type: application/json');
@@ -1850,7 +1850,7 @@ class Restaurant extends CI_Controller {
 
     public function get_theme_data(){
         $status = 'error';
-        $response = 'Something went wrong!!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $res = $this->rest->getThemeData($_POST['ThemeId']);
@@ -1858,7 +1858,7 @@ class Restaurant extends CI_Controller {
                 $status = 'success';
                 $response = $res;
             }else{
-                $response = 'No Theme Found!!';
+                $response = $this->lang->line('themeNotFound');
             }
 
             header('Content-Type: application/json');
@@ -2005,7 +2005,6 @@ class Restaurant extends CI_Controller {
                     }
                     redirect(base_url('restaurant/stock_list'));
                 }
-
             }
             
             if(isset($_POST['delete_details'])){
@@ -2073,7 +2072,7 @@ class Restaurant extends CI_Controller {
 
     public function stock_report(){
         // $this->check_access();
-        $data['title'] = 'Summary Stock '.$this->lang->line('report');
+        $data['title'] = $this->lang->line('summaryStock').' '.$this->lang->line('report');
         $data['report'] = $this->rest->getStockReport();
         $this->load->view('rest/stock_report',$data);
     }
@@ -2107,7 +2106,7 @@ class Restaurant extends CI_Controller {
             $data['fromDate'] = date('d-M-Y', strtotime($_POST['from_date']));
             $data['toDate'] = date('d-M-Y', strtotime($_POST['to_date']));
         }
-        $data['title'] = 'Detail Item Stock Report';
+        $data['title'] = $this->lang->line('detailItemStockReport');
         $this->load->view('rest/itemstockreports',$data); 
     }
 
@@ -2128,7 +2127,7 @@ class Restaurant extends CI_Controller {
             $data['toDate'] = date('d-M-Y', strtotime($_POST['to_date']));
 
         }
-        $data['title'] = 'Detail Stock Report';
+        $data['title'] = $this->lang->line('detailStockReport');
         $data['stores'] = $this->rest->getFromMast(3);
         $data['items'] =  $this->rest->getRMItemUOM();
         $this->load->view('rest/detailstockreports',$data); 
@@ -2161,7 +2160,7 @@ class Restaurant extends CI_Controller {
         }
         $data['bills'] = $this->rest->getBillingData($data['from_date'] , $data['to_date'] );
 
-        $data['title'] = $this->lang->line('billView');'Bill View';
+        $data['title'] = $this->lang->line('billView');
         $this->load->view('rest/bill_view',$data);
     }
 
@@ -2216,7 +2215,7 @@ class Restaurant extends CI_Controller {
             if (empty($kitchenData)) {
                 $response = [
                     "status" => 0,
-                    "msg" => "No Tables Occupied"
+                    "msg" => $this->lang->line('noTablesOccupied')
                 ];
             } else {
                 $response = [
@@ -2253,7 +2252,7 @@ class Restaurant extends CI_Controller {
 
             $response = [
                 "status" => 1,
-                "msg" => "Table Accepted"
+                "msg" => $this->lang->line('tableAccepted')
             ];
 
             echo json_encode($response);
@@ -2273,7 +2272,7 @@ class Restaurant extends CI_Controller {
 
             $response = [
                 "status" => 1,
-                "msg" => "Table Rejected"
+                "msg" => $this->lang->line('TableRejected')
             ];
 
             echo json_encode($response);
@@ -2304,7 +2303,7 @@ class Restaurant extends CI_Controller {
             if (empty($kots)) {
                 $response = [
                     "status" => 0,
-                    "msg" => "No Kot Founds"
+                    "msg" => $this->lang->line('KOTNotFound')
                 ];
             } else {
                 $response = [
@@ -2329,7 +2328,7 @@ class Restaurant extends CI_Controller {
             if (empty($itemDetails)) {
                 $response = [
                     "status" => 0,
-                    "msg" => "No Items Founds"
+                    "msg" => $this->lang->line('noItemFound')
                 ];
             } else {
                 $response = [
@@ -2352,7 +2351,7 @@ class Restaurant extends CI_Controller {
 
             $response = [
                 "status" => 1,
-                "msg" => "Updated"
+                "msg" => $this->lang->line('dataUpdated')
             ];
 
             echo json_encode($response);
@@ -2383,7 +2382,7 @@ class Restaurant extends CI_Controller {
             } else {
                 $response = [
                     "status" => 0,
-                    "msg" => "No tables Found"
+                    "msg" => $this->lang->line('noTableFound')
                 ];
             }
 
@@ -2412,7 +2411,7 @@ class Restaurant extends CI_Controller {
 
             $response = [
                 "status" => 1,
-                "msg" => "Update Success"
+                "msg" => $this->lang->line('dataUpdated')
             ];
 
             echo json_encode($response);
@@ -2430,7 +2429,7 @@ class Restaurant extends CI_Controller {
             if (empty($checkItemStat)) {
                 $response = [
                     "status" => 0,
-                    "msg" => "Item can not be declined"
+                    "msg" => $this->lang->line('noItemFound')
                 ];
             } else {
                 $response = [
@@ -2534,7 +2533,7 @@ class Restaurant extends CI_Controller {
             }else {
                 $response = [
                     "status" => 0,
-                    "msg" => "All Tables are Allocated"
+                    "msg" => $this->lang->line('allTablesAllocated')
                 ];
             }
             echo json_encode($response);
@@ -2559,19 +2558,19 @@ class Restaurant extends CI_Controller {
                     if($result){
                         $response = [
                             "status" => 1,
-                            "msg" => "ok"
+                            "msg" => $this->lang->line('dataUpdated')
                         ];
                     }else{
                         $response = [
                             "status" => 3,
-                            "msg" => "Fail to update in  Eat_tables table"
+                            "msg" => $this->lang->line('failtoUpdateTable')
                         ];
                     }
 
             }else {
                 $response = [
                     "status" => 0,
-                    "msg" => "You can select Min 2 and Max 4 Tables"
+                    "msg" => $this->lang->line('youCanSelectMin2andMax4Tables')
                 ];
             }
 
@@ -2589,7 +2588,7 @@ class Restaurant extends CI_Controller {
             }else {
                 $response = [
                     "status" => 0,
-                    "msg" => "No table is merged"
+                    "msg" => $this->lang->line('noTablesMerged')
                 ];
             }
             
@@ -2610,7 +2609,7 @@ class Restaurant extends CI_Controller {
             }else {
                 $response = [
                     "status" => 0,
-                    "msg" => "No table is merged"
+                    "msg" => $this->lang->line('noTablesMerged')
                 ];
             }
 
@@ -2628,7 +2627,7 @@ class Restaurant extends CI_Controller {
             $this->db2->query("UPDATE Kitchen set MergeNo = TableNo where MergeNo = '$old_merge_no'");
             $response = [
                 "status" => 1,
-                "msg" => "Tables are unmerged."
+                "msg" => $this->lang->line('noTablesMerged')
             ];
 
             echo json_encode($response);
@@ -2663,7 +2662,7 @@ class Restaurant extends CI_Controller {
             if (empty($eatCuisineData)) {
                 $response = [
                     "status" => 0,
-                    "msg" => "No Cuisines Defined"
+                    "msg" => $this->lang->line('noCuisinesDefined')
                 ];
             } else {
 
@@ -2748,12 +2747,7 @@ class Restaurant extends CI_Controller {
 
             echo json_encode($check);
         }
-        if(isset($_POST['save_firebase_token'])){
-            $this->session->set_userdata('FirebaseToken', $_POST['token']);
-            $Firebase['Token'] = $_POST['token'];
-            $id = insertRecord('FirebaseTokens', $Firebase);
-            echo $id;
-        }
+        
         if(!empty($_POST['set_lang']) && !empty($_POST['lang'])){
             $lang = $_POST['lang'];
             setcookie('lang', $lang, time() + (3600 * 24 * 365), "/");
@@ -2808,7 +2802,7 @@ class Restaurant extends CI_Controller {
             } else {
                 $response = [
                     "status" => 0,
-                    "msg" => "NO Item Found"
+                    "msg" => $this->lang->line('noItemFound')
                 ];
             }
             echo json_encode($response);
@@ -3089,7 +3083,7 @@ class Restaurant extends CI_Controller {
                     }else{
                         $response = [
                             "status" => 0,
-                            "msg" => "Fail to insert to Billing"
+                            "msg" => $this->lang->line('billingError')
                         ];
                     }
                 }
@@ -3180,13 +3174,13 @@ class Restaurant extends CI_Controller {
                     if($res['status'] > 0){  
                         $response = [
                             "status" => 1,
-                            "msg" => "Bill Created.",
+                            "msg" => $this->lang->line('billGenerated'),
                             "data" => array('billId' => $res['billId'], 'MergeNo' => $kitcheData[0]['MergeNo'], 'MCNo' => $kitcheData[0]['MCNo'], 'FKOTNo' => $kitcheData[0]['FKOTNo'], 'KOTNo' => $kitcheData[0]['KOTNo'])
                         ];      
                     }else{
                         $response = [
                             "status" => 0,
-                            "msg" => "Fail to insert to Billing"
+                            "msg" => $this->lang->line('noBillCreation')
                         ];
                     }
                 }
@@ -3278,7 +3272,7 @@ class Restaurant extends CI_Controller {
 
     public function tokenGenerate(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $data['token'] = $_POST['token']; 
@@ -3299,7 +3293,7 @@ class Restaurant extends CI_Controller {
         $this->check_access();
         $EID = authuser()->EID;
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $RMCatgCd = 0;
@@ -3310,18 +3304,18 @@ class Restaurant extends CI_Controller {
             if(!empty($RMCatgCd)){
                 updateRecord('RMCatg', array('Name1' => $_POST['RMCatgName']), array('RMCatgCd' => $RMCatgCd));
                 $status = 'success';
-                $response = 'Category Updated.';
+                $response = $this->lang->line('categoryUpdated');
             }else{
                 $check = getRecords('RMCatg', array('Name1' => $_POST['RMCatgName']));
                 if(!empty($check)){
-                    $response = 'Category Already Exists';
+                    $response = $this->lang->line('categoryAlreadyExists');
                 }else{
                     $cat['Name1'] = $_POST['RMCatgName'];
                     $cat['Stat'] = 0;
                     $cat['EID'] = $EID;
                     insertRecord('RMCatg', $cat);
                     $status = 'success';
-                    $response = 'Category Inserted';
+                    $response = $this->lang->line('CategoryAdded');
                 }
             }
             
@@ -3338,7 +3332,7 @@ class Restaurant extends CI_Controller {
         $RMCatgName = "Name$langId as RMCatgName";
 
         $data['catList'] = $this->db2->select("*, $RMCatgName")->get_where('RMCatg', array('EID' => $EID))->result_array();
-        $data['title'] ='RMCategory';
+        $data['title'] = 'RM'.$this->lang->line('category');
         $this->load->view('rest/rm_category',$data);
     }
 
@@ -3348,7 +3342,7 @@ class Restaurant extends CI_Controller {
         $EID = authuser()->EID;
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $RMName = "Name$langId";
             $RMCd = 0;
@@ -3359,12 +3353,12 @@ class Restaurant extends CI_Controller {
             if(!empty($RMCd)){
                 updateRecord('RMItems', array("$RMName" => $_POST['RMName']), array('RMCd' => $RMCd, 'EID' => $EID));
                 $status = 'success';
-                $response = 'RMItem Updated.';
+                $response = $this->lang->line('RMItemUpdated');
             }else{
                 $check = getRecords('RMItems', array("$RMName" => $_POST['RMName'], 'RMCatg' => $_POST['RMCatg'], 'EID' => $EID));
 
                 if(!empty($check)){
-                    $response = 'RMItem Already Exists';
+                    $response = $this->lang->line('RMItemAlreadyExists');
                 }else{
                     $cat["$RMName"] = $_POST['RMName'];
                     $cat['RMCatg'] = $_POST['RMCatg'];
@@ -3373,7 +3367,7 @@ class Restaurant extends CI_Controller {
                     $cat['EID'] = $EID;
                     insertRecord('RMItems', $cat);
                     $status = 'success';
-                    $response = 'RMItem Inserted';
+                    $response = $this->lang->line('RMItemAdded');
                 }
             }
             
@@ -3390,7 +3384,7 @@ class Restaurant extends CI_Controller {
         $data['catList'] = $this->db2->select("*, (case when $RMCatgName != '-' Then $RMCatgName ELSE Name1 end) as RMCatgName")->get('RMCatg')->result_array();
         $data['rm_items'] = $this->rest->getItemLists();
         $data['itemList'] = $this->rest->getAllItemsList();
-        $data['title'] ='RMItems List';
+        $data['title'] = $this->lang->line('RMItemLists');
         $this->load->view('rest/rm_items',$data);
     }
 
@@ -3404,7 +3398,7 @@ class Restaurant extends CI_Controller {
 
     public function add_bom_dish(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
 
@@ -3422,7 +3416,7 @@ class Restaurant extends CI_Controller {
             $bom['EID'] = $EID;
             $BOMNo = insertRecord('BOM_Dish', $bom);
             if(!empty($BOMNo)){
-                $response = 'Data Inserted.';
+                $response = $this->lang->line('dataAdded');
                 $status = 'success';
                 for ($i=0; $i < sizeof($_POST['RMCd']) ; $i++) { 
                     $bomdet['BOMNo'] = $BOMNo;
@@ -3464,7 +3458,7 @@ class Restaurant extends CI_Controller {
 
     public function edit_bom($BOMNo){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         $EID = authuser()->EID;
         $data['BOMNo'] = $BOMNo;
         if($this->input->method(true)=='POST'){
@@ -3483,7 +3477,7 @@ class Restaurant extends CI_Controller {
             $BOMNo = $_POST['BOMNo'];
             updateRecord('BOM_Dish', $bom, array('BOMNo' => $BOMNo, 'EID' => $EID));
             if(!empty($BOMNo)){
-                $response = 'Data updated.';
+                $response = $this->lang->line('dataUpdated');
                 $status = 'success';
                 for ($i=0; $i < sizeof($_POST['RMCd']) ; $i++) { 
                     $BNo = $_POST['BNo'][$i];
@@ -3533,11 +3527,11 @@ class Restaurant extends CI_Controller {
 
     public function delete_bom(){
         $status = 'error';
-        $response = 'Something went wrong plz try again!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             deleteRecord('BOM_Dish', array('BOMNo' => $_POST['BOMNo'], 'EID' => authuser()->EID));
-            $response = 'Data Deleted!!';
+            $response = $this->lang->line('dataDeleted');
             $status = 'success';
 
             header('Content-Type: application/json');
@@ -3551,11 +3545,11 @@ class Restaurant extends CI_Controller {
 
     public function delete_bom_det(){
         $status = 'error';
-        $response = 'Something went wrong plz try again!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             deleteRecord('BOM_DishDet', array('BNo' => $_POST['BNo']));
-            $response = 'Dish Deleted!!';
+            $response = $this->lang->line('dataDeleted');
             $status = 'success';
 
             header('Content-Type: application/json');
@@ -3569,7 +3563,7 @@ class Restaurant extends CI_Controller {
 
     public function bom_order(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
             $status = "success";
@@ -3591,7 +3585,7 @@ class Restaurant extends CI_Controller {
                     $bom['EID'] = $EID;
                     $bom['LoginId'] = authuser()->RUserId;
                     insertRecord('BOM_Order', $bom);
-                    $response = "BOM Order Successfully.";
+                    $response = $this->lang->line('orderAdded');
                     break;
 
                 case 'update':
@@ -3599,10 +3593,9 @@ class Restaurant extends CI_Controller {
                     $bom['DelTime'] = date('Y-m-d H:i:s');
                     
                     updateRecord('BOM_Order', $bom, array('EID' => $EID, 'BOrdNo' => $_POST['BOrdNo']));
-                    $response = "Order Updated.";
+                    $response = $this->lang->line('orderUpdated');
                     break;
             }
-
             
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -3617,7 +3610,7 @@ class Restaurant extends CI_Controller {
         $data['intermediate'] = $this->rest->getIntermediatBom();
         $data['kitchen'] = $this->rest->getFromMastIn();
         $data['orders'] = $this->rest->getBOMOrders();
-        $data['title'] = 'BOM Order';
+        $data['title'] = $this->lang->line('bomOrder');
         $this->load->view('rest/bom_order',$data);
     }
 
@@ -3645,7 +3638,7 @@ class Restaurant extends CI_Controller {
 
     public function get_bom_dish(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
            
             $response = '';
@@ -3711,7 +3704,7 @@ class Restaurant extends CI_Controller {
     
     public function get_billing_details(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             extract($_POST);
             $data = $this->rest->getBillDetailsForSettle($custId, $MCNo, $mergeNo);
@@ -3728,7 +3721,7 @@ class Restaurant extends CI_Controller {
 
     function get_cash_collect(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             extract($_POST);
@@ -3763,7 +3756,7 @@ class Restaurant extends CI_Controller {
     public function settle_bill_without_payment(){
         $EID = authuser()->EID;
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $otp = $this->session->userdata('payment_otp');
@@ -3806,10 +3799,10 @@ class Restaurant extends CI_Controller {
                     updateRecord('Billing', array('Stat' => $_POST['paymentMode']), array('BillId' => $billId, 'EID' => $EID));
 
                     $status = "success";
-                    $response = "Bill Settled.";
+                    $response = $this->lang->line('billSettled');
                 }
             }else{
-                $response = "OTP Doesn't Matched!!";
+                $response = $this->lang->line('OTPDoesNotMatch');
             }
 
             header('Content-Type: application/json');
@@ -3824,7 +3817,7 @@ class Restaurant extends CI_Controller {
     public function collect_payment()
     {
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $pay = $_POST;
@@ -3898,7 +3891,7 @@ class Restaurant extends CI_Controller {
 
     public function send_payment_otp(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $mobileNO = $_POST['mobile'];
@@ -3910,7 +3903,7 @@ class Restaurant extends CI_Controller {
             saveOTP($mobileNO, $otp, 'payNow');
 
             $status = "success";
-            $response = "OTP send on your mobile no.";
+            $response = $this->lang->line('OTPSentToYourMobileNo');
             
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -3923,7 +3916,7 @@ class Restaurant extends CI_Controller {
 
     public function resend_payment_OTP(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $mobileNO = $_POST['mobile'];
@@ -3935,7 +3928,7 @@ class Restaurant extends CI_Controller {
             saveOTP($mobileNO, $otp, 'table view');
 
             $status = "success";
-            $res = 'Resend OTP Successfully.';
+            $res = $this->lang->line('resendOTP');
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -3961,7 +3954,7 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/blank',$data);
 
         $status = 'error';
-        $response = 'Something went wrong plz try again!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $response = $this->db2->get_where('city', array('phone_code' => $_POST['phone_code']) )->result_array();
@@ -3978,7 +3971,7 @@ class Restaurant extends CI_Controller {
 
     public function billCreateRest(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
 
         $EType = $this->session->userdata('EType');
         if($this->input->method(true)=='POST'){
@@ -4066,7 +4059,7 @@ class Restaurant extends CI_Controller {
                         $response = $res['billId'];         
                     }
                 }else{
-                    $response = 'Bill Already Generated.';
+                    $response = $this->lang->line('billAlreadyGenerated');
                 }
             
             header('Content-Type: application/json');
@@ -4210,7 +4203,6 @@ class Restaurant extends CI_Controller {
             ]
         ];
 
-
         $headers = [
             'Authorization: Bearer ' . $apiKey,
             'Content-Type: application/json'
@@ -4325,14 +4317,14 @@ class Restaurant extends CI_Controller {
 
     function remove_qr_code(){
         $status = 'error';
-        $response = 'Something went wrong please try again!!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             $EID = authuser()->EID;
             $qId = $_POST['qid'];
             $TableNo = $_POST['TableNo'];
 
-            $response = "QR Code for $TableNo Deleted.";
+            $response = $this->lang->line('QRCodeDeletedFor')." $TableNo";
             $dt = getRecords('QRCodes', array('EID' => $EID, 'qId' => $qId));
 
             deleteRecord('QRCodes', array('EID' => $EID, 'qId' => $qId) );
@@ -4557,7 +4549,7 @@ class Restaurant extends CI_Controller {
                 $this->session->set_flashdata('success','Record Updated.');
             }
         }
-        $data['title'] = 'Edit Item';
+        $data['title'] = $this->lang->line('item');
         $data['ItemId'] = $ItemId;
         $data['MCatgIds'] = $this->rest->get_MCatgId();
         $data['CuisineList'] = $this->rest->getCuisineList();
@@ -4815,7 +4807,7 @@ class Restaurant extends CI_Controller {
 
     public function updateKotStat(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
            
             extract($_POST);
@@ -4823,7 +4815,7 @@ class Restaurant extends CI_Controller {
             $today = date('Y-m-d H:i:s');
             $this->db2->query("UPDATE Kitchen set KStat = 5, DelTime = '$today' where EID = $EID and OrdNo in ($ordNo) ");
             $status = 'success';
-            $response = 'KOT is closed.';
+            $response = $this->lang->line('KOTisClosed');
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
@@ -4852,7 +4844,7 @@ class Restaurant extends CI_Controller {
 
     public function checkCustDiscount(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             $custId = $_POST['custId'];
@@ -4941,7 +4933,7 @@ class Restaurant extends CI_Controller {
         $data['payModes'] = $this->rest->getPaymentType();
         $data['country']    = $this->rest->getCountries();
         $data['CountryCd']    = $this->session->userdata('CountryCd');
-        $data['title'] = 'McDonalds';
+        $data['title'] = $this->lang->line('McDonalds');
         $data['OType'] = 100;
 
         $currentTable = $this->rest->getTablesDetails($EID, $data['OType']);
@@ -4973,7 +4965,7 @@ class Restaurant extends CI_Controller {
 
     public function get_portions(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $status = "success";
@@ -4990,7 +4982,7 @@ class Restaurant extends CI_Controller {
 
     public function get_item_offer(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $status = "success";
@@ -5007,7 +4999,7 @@ class Restaurant extends CI_Controller {
 
     public function get_customize_items(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $status = 'success';
@@ -5025,7 +5017,7 @@ class Restaurant extends CI_Controller {
     public function insert_temp_kitchen(){
         $EID = authuser()->EID;
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $thirdParty = 0;
@@ -5133,7 +5125,7 @@ class Restaurant extends CI_Controller {
                                 }
                             }else{
                                 $status = 'error';
-                                $response = 'Offer details do not exist for this item!!';
+                                $response = $this->lang->line('offerDetailsDoNotExistForThisItem');
                                 header('Content-Type: application/json');
                                 echo json_encode(array(
                                     'status' => $status,
@@ -5299,7 +5291,7 @@ class Restaurant extends CI_Controller {
             }
 
             $status = "success";
-            $response = 'Data Added';
+            $response = $this->lang->line('dataUpdated');
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -5312,7 +5304,7 @@ class Restaurant extends CI_Controller {
 
     public function get_temp_kitchen_data(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $status = "success";
@@ -5329,7 +5321,7 @@ class Restaurant extends CI_Controller {
 
     public function delete_temp_kitchen(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
 
@@ -5344,7 +5336,7 @@ class Restaurant extends CI_Controller {
             deleteRecord('tempKitchen', array('ItemId' => $_POST['ItemId'], 'OrdNo' => $_POST['OrdNo'], 'EID' => $EID));
             
             $status = "success";
-            $response = 'Item deleted.';
+            $response = $this->lang->line('itemAdded');
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -5373,7 +5365,7 @@ class Restaurant extends CI_Controller {
     
     public function get_custom_items(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $customDetails = $this->rest->getCustomItemsList($_POST);
@@ -5424,7 +5416,7 @@ class Restaurant extends CI_Controller {
                 
                 $response =  $returnData;
             }else{
-              $response =  'No customization available!!';  
+              $response =  $this->lang->line('noCustomizationAvailable');  
             }
 
             header('Content-Type: application/json');
@@ -5438,7 +5430,7 @@ class Restaurant extends CI_Controller {
 
      public function update_customItem_onTempKitchen(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $updateData['CustItem'] = 1;
@@ -5448,7 +5440,7 @@ class Restaurant extends CI_Controller {
 
             updateRecord('tempKitchen', $updateData, array('EID' => authuser()->EID, 'OrdNo' => $_POST['OrdNo'], 'ItemId' => $_POST['ItemId']));
             $status = 'success';
-            $response = "Item rate updated";
+            $response = $this->lang->line('itemRateUpdated');
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -5464,7 +5456,7 @@ class Restaurant extends CI_Controller {
         $EID = $this->session->userdata('EID');
         
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $folderPath = 'uploads/e'.$EID.'/csv';
             if (!file_exists($folderPath)) {
@@ -5553,7 +5545,7 @@ class Restaurant extends CI_Controller {
 
                         if(!empty($eatary_id)){
                             $status = 'success';
-                            $response = 'Data added';
+                            $response = $this->lang->line('dataUpdated');
                             $this->session->set_flashdata('success','Data Inserted.');
                         }
                       }
@@ -5614,7 +5606,7 @@ class Restaurant extends CI_Controller {
                                 if(!empty($cuisineData)){
                                     $this->db2->insert_batch('Cuisines', $cuisineData);
                                     $status = 'success';
-                                    $response = 'Data added.';
+                                    $response = $this->lang->line('dataAdded');
                                 }
 
                                 fclose($open);
@@ -5666,22 +5658,22 @@ class Restaurant extends CI_Controller {
                                             $checker = 1;
                                             
                                             if($mc['EID'] == 0){
-                                              $response = $csv_data[0]. " Not Found in row no: $count";
+                                              $response = $csv_data[0]. $this->lang->line('notFoundinRowNo')." $count";
                                               $checker = 0;
                                             }
 
                                             if($mc['CID'] == 0){
-                                              $response = $csv_data[1]. " Not Found in row no: $count";
+                                              $response = $csv_data[1]. $this->lang->line('notFoundinRowNo')." $count";
                                               $checker = 0;
                                             }
 
                                             if(empty($mc['Name1'])){
-                                              $response = $csv_data[2]. " Field Required in row no: $count";
+                                              $response = $csv_data[2]. $this->lang->line('fieldRequiredinRowNo')." $count";
                                               $checker = 0;
                                             }
 
                                             if($mc['KitCd'] == 0){
-                                              $response = $csv_data[5]. " Not Found in row no: $count";
+                                              $response = $csv_data[5]. $this->lang->line('notFoundinRowNo')." $count";
                                               $checker = 0;
                                             }
 
@@ -5706,7 +5698,7 @@ class Restaurant extends CI_Controller {
                                 if(!empty($mcData)){
                                     $this->db2->insert_batch('MenuCatg', $mcData);
                                     $status = 'success';
-                                    $response = 'Data Inserted.';
+                                    $response = $this->lang->line('dataAdded');
                                 }
                                 
                                 fclose($open);
@@ -5754,20 +5746,20 @@ class Restaurant extends CI_Controller {
                                         $mItem['EID'] = $this->checkEatary($csv_data[0]);
 
                                         if($mItem['EID'] < 1){
-                                          $response = $csv_data[0]. " Not Found in row no: $count";
+                                          $response = $csv_data[0]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
                                             $mItem['CID'] = $this->checkCuisine($csv_data[1]);
 
                                             if($mItem['CID'] == 0){
-                                              $response = $csv_data[1]. " Not Found in row no: $count";
+                                              $response = $csv_data[1]. $this->lang->line('notFoundinRowNo')." $count";
                                               $checker = 0;
                                             }
 
                                             $mItem['MCatgId'] = $this->checkMenuCatg($mItem['EID'], $csv_data[2]);
 
                                             if($mItem['MCatgId'] == 0){
-                                              $response = $csv_data[2]. " Not Found in row no: $count";
+                                              $response = $csv_data[2]. $this->lang->line('notFoundinRowNo')." $count";
                                               $checker = 0;
                                             }
 
@@ -5776,7 +5768,7 @@ class Restaurant extends CI_Controller {
                                             $mItem['FID'] = $this->checkFoodType($csv_data[4]);
 
                                             if($mItem['FID'] == 0){
-                                              $response = $csv_data[4]. " Not Found in row no: $count";
+                                              $response = $csv_data[4]. $this->lang->line('notFoundinRowNo')." $count";
                                               $checker = 0;
                                             }
                                             $mItem['Name1'] = $csv_data[5];
@@ -5784,27 +5776,27 @@ class Restaurant extends CI_Controller {
                                             $mItem['PckCharge'] = $csv_data[7];
                                             $mItem['ItemTyp'] = $this->checkItemType($csv_data[8], 2);
                                             if($mItem['ItemTyp'] == 0){
-                                              $response = $csv_data[8]. " Not Found in row no: $count";
+                                              $response = $csv_data[8]. $this->lang->line('notFoundinRowNo')." $count";
                                               $checker = 0;
                                             }
 
                                             $mItem['ItemAttrib'] = $this->checkType($csv_data[9], 1);
 
                                             if($mItem['ItemAttrib'] == 0){
-                                              $response = $csv_data[9]. " Not Found in row no: $count";
+                                              $response = $csv_data[9]. $this->lang->line('notFoundinRowNo')." $count";
                                               $checker = 0;
                                             }
                                             $mItem['ItemSale'] = $this->checkType($csv_data[10], 3);
 
                                             if($mItem['ItemSale'] == 0){
-                                              $response = $csv_data[10]. " Not Found in row no: $count";
+                                              $response = $csv_data[10]. $this->lang->line('notFoundinRowNo')." $count";
                                               $checker = 0;
                                             }
 
                                             $mItem['ItemTag'] = $this->checkType($csv_data[11], 2);
 
                                             if($mItem['ItemTag'] == 0){
-                                              $response = $csv_data[11]. " Not Found in row no: $count";
+                                              $response = $csv_data[11]. $this->lang->line('notFoundinRowNo')." $count";
                                               $checker = 0;
                                             }
                                             $mItem['NV'] = $csv_data[12];
@@ -5825,13 +5817,13 @@ class Restaurant extends CI_Controller {
                                             $mItem['DayNo'] = getDayNo($csv_data[27]);
 
                                             if($mItem['DayNo'] == 0){
-                                              $response = $csv_data[27]. " Not Found in row no: $count";
+                                              $response = $csv_data[27]. $this->lang->line('notFoundinRowNo')." $count";
                                               $checker = 0;
                                             }
                                             $mItem['KitCd'] = $this->checkKitchen($csv_data[28], $mItem['EID']);
 
                                             if($mItem['KitCd'] == 0){
-                                              $response = $csv_data[28]. " Not Found in row no: $count";
+                                              $response = $csv_data[28]. $this->lang->line('notFoundinRowNo')." $count";
                                               $checker = 0;
                                             }
                                             $mItem['videoLink'] = $csv_data[29];
@@ -5859,7 +5851,7 @@ class Restaurant extends CI_Controller {
 
                                     $this->db2->insert_batch('MenuItem', $mItemData);
                                     $status = 'success';
-                                    $response = 'Data Inserted.';
+                                    $response = $this->lang->line('dataAdded');
                                 }
                              
                                 fclose($open);
@@ -5904,28 +5896,28 @@ class Restaurant extends CI_Controller {
                                         $mc['EID'] = $this->checkEatary($csv_data[0]);
 
                                         if($mc['EID'] == 0){
-                                          $response = $csv_data[0]. " Not Found in row no: $count";
+                                          $response = $csv_data[0]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
                                         $mc['ItemId'] = $this->getItemId($mc['EID'], $csv_data[1]);
 
                                         if($mc['ItemId'] == 0){
-                                          $response = $csv_data[1]. " Not Found in row no: $count";
+                                          $response = $csv_data[1]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
                                         $mc['SecId'] = $this->checkSection($csv_data[2]);
 
                                         if($mc['SecId'] == 0){
-                                          $response = $csv_data[2]. " Not Found in row no: $count";
+                                          $response = $csv_data[2]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
                                         $mc['Itm_Portion'] = $this->checkPortion($csv_data[3]);
 
                                         if($mc['Itm_Portion'] == 0){
-                                          $response = $csv_data[3]. " Not Found in row no: $count";
+                                          $response = $csv_data[3]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
@@ -5950,7 +5942,7 @@ class Restaurant extends CI_Controller {
 
                                     $this->db2->insert_batch('MenuItemRates', $mRatesData);
                                     $status = 'success';
-                                    $response = 'Data Inserted.';
+                                    $response = $this->lang->line('dataAdded');
                                 }
 
                                 fclose($open);
@@ -5997,21 +5989,21 @@ class Restaurant extends CI_Controller {
                                         $mc['EID'] = $this->checkEatary($csv_data[0]);
 
                                         if($mc['EID'] == 0){
-                                          $response = $csv_data[0]. " Not Found in row no: $count";
+                                          $response = $csv_data[0]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
                                         $mc['ItemId'] = $this->getItemId($mc['EID'], $csv_data[1]);
 
                                         if($mc['ItemId'] == 0){
-                                          $response = $csv_data[1]. " Not Found in row no: $count";
+                                          $response = $csv_data[1]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
                                         $mc['RcItemId'] = $this->getItemId($mc['EID'], $csv_data[2]);
 
                                         if($mc['RcItemId'] == 0){
-                                          $response = $csv_data[2]. " Not Found in row no: $count";
+                                          $response = $csv_data[2]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
@@ -6037,7 +6029,7 @@ class Restaurant extends CI_Controller {
 
                                     $this->db2->insert_batch('MenuItem_Recos', $mRatesData);
                                     $status = 'success';
-                                    $response = 'Data Inserted.';
+                                    $response = $this->lang->line('dataAdded');
                                 }
 
                                 fclose($open);
@@ -6084,14 +6076,14 @@ class Restaurant extends CI_Controller {
                                         $kd['EID'] = $this->checkEatary($csv_data[0]);
 
                                         if($kd['EID'] == 0){
-                                          $response = $csv_data[0]. " Not Found in row no: $count";
+                                          $response = $csv_data[0]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
                                         $kd['Name1'] =  $csv_data[1];
 
                                         if(empty($kd['Name1'])){
-                                          $response = $csv_data[1]. " Field Required in row no: $count";
+                                          $response = $csv_data[1]. $this->lang->line('fieldRequiredinRowNo')." $count";
                                           $checker = 0;
                                         }
 
@@ -6116,7 +6108,7 @@ class Restaurant extends CI_Controller {
                                 if(!empty($kitchenData)){
                                     $this->db2->insert_batch('Eat_Kit', $kitchenData);
                                     $status = 'success';
-                                    $response = 'Data Inserted.';
+                                    $response = $this->lang->line('dataAdded');
                                 }
 
                                 fclose($open);
@@ -6163,14 +6155,14 @@ class Restaurant extends CI_Controller {
                                         $kd['EID'] = $this->checkEatary($csv_data[0]);
 
                                         if($kd['EID'] < 1){
-                                          $response = $csv_data[0]. " Not Found in row no: $count";
+                                          $response = $csv_data[0]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
                                         $kd['Name1'] =  $csv_data[1];
 
                                         if(empty($kd['Name1'])){
-                                          $response = $csv_data[1]. " Field Required in row no: $count";
+                                          $response = $csv_data[1]. $this->lang->line('fieldRequiredinRowNo')." $count";
                                           $checker = 0;
                                         }
 
@@ -6242,14 +6234,14 @@ class Restaurant extends CI_Controller {
                                         $temp['EID'] = $this->checkEatary($csv_data[0]);
 
                                         if($temp['EID'] == 0){
-                                          $response = $csv_data[0]. " Not Found in row no: $count";
+                                          $response = $csv_data[0]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
                                         $temp['Name1'] =  $csv_data[1];
 
                                         if(empty($temp['Name1'])){
-                                          $response = $csv_data[1]. " Field Required in row no: $count";
+                                          $response = $csv_data[1]. $this->lang->line('fieldRequiredinRowNo')." $count";
                                           $checker = 0;
                                         }
                                         $temp['Stat'] = 0;
@@ -6270,7 +6262,7 @@ class Restaurant extends CI_Controller {
                                 if(!empty($dispData)){
                                     $this->db2->insert_batch('Eat_DispOutlets', $dispData);
                                     $status = 'success';
-                                    $response = 'Data Inserted.';
+                                    $response = $this->lang->line('dataAdded');
                                 }
 
                                 fclose($open);
@@ -6317,39 +6309,39 @@ class Restaurant extends CI_Controller {
                                         $temp['EID'] = $this->checkEatary($csv_data[0]);
 
                                         if($temp['EID'] == 0){
-                                          $response = $csv_data[0]. " Not Found in row no: $count";
+                                          $response = $csv_data[0]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
                                         $temp['TableNo'] =  $csv_data[1];
 
                                         if(empty($temp['TableNo'])){
-                                          $response = $csv_data[1]. " Field Required in row no: $count";
+                                          $response = $csv_data[1]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
                                         $temp['MergeNo'] = $temp['TableNo'];
                                         $temp['TblTyp'] =  $csv_data[2];
                                         if(empty($temp['TblTyp'])){
-                                          $response = $csv_data[2]. " Field Required in row no: $count";
+                                          $response = $csv_data[2]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
                                         $temp['Capacity'] =  $csv_data[3];
                                         if(empty($temp['Capacity'])){
-                                          $response = $csv_data[3]. " Field Required in row no: $count";
+                                          $response = $csv_data[3]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
                                         $temp['SecId'] =  $this->checkSection($csv_data[4]);
                                         if($temp['SecId'] == 0){
-                                          $response = $csv_data[4]. " Not Found in row no: $count";
+                                          $response = $csv_data[4]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
                                         $temp['CCd'] =  $this->checkCashier($temp['EID'], $csv_data[5]);
                                         if($temp['CCd'] == 0){
-                                          $response = $csv_data[5]. " Not Found in row no: $count";
+                                          $response = $csv_data[5]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
@@ -6372,7 +6364,7 @@ class Restaurant extends CI_Controller {
                                 if(!empty($tableData)){
                                     $this->db2->insert_batch('Eat_tables', $tableData);
                                     $status = 'success';
-                                    $response = 'Data Inserted.';
+                                    $response = $this->lang->line('dataAdded');
                                 }
 
                                 fclose($open);
@@ -6565,7 +6557,7 @@ class Restaurant extends CI_Controller {
 
     public function checkCNoForTable(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $status = 'success';
@@ -6594,7 +6586,7 @@ class Restaurant extends CI_Controller {
 
     function updateMCNoForTable(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             extract($_POST);
@@ -6616,7 +6608,7 @@ class Restaurant extends CI_Controller {
 
     public function dispense_notification(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             extract($_POST);
 
@@ -6660,7 +6652,7 @@ class Restaurant extends CI_Controller {
 
     public function delivery_notification(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             extract($_POST);
 
@@ -6701,7 +6693,7 @@ class Restaurant extends CI_Controller {
 
     public function verifyDelOTP(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $response = $this->lang->line('OTPNotVerified');
@@ -6723,9 +6715,9 @@ class Restaurant extends CI_Controller {
 
     public function get_cust_details(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
-            $response = "Records Not Found!";
+            $response = $this->lang->line('noRecordFound');
             $mobile = $_POST['CountryCd'].$_POST['phone'];
             $data = $this->db2->select("uId, FName, LName, DelAddress")->get_where('Users', array('MobileNo' => $mobile))->row_array();
             if(!empty($data)){
@@ -6744,7 +6736,7 @@ class Restaurant extends CI_Controller {
 
     public function updateDataItem(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
                
@@ -6762,15 +6754,15 @@ class Restaurant extends CI_Controller {
                     $this->db2->query("UPDATE MenuItemRates mir, MenuItem mi set mir.OrigRate = mir.ItmRate where mi.EID = $EID and mir.ItemId IN $itemIdIn ");
 
                     // $this->db2->query("UPDATE MenuItemRates mir, MenuItem mi set mir.OrigRate = mir.ItmRate where mi.EID = $EID and mir.ItemId = mi.ItemId and mir.IRNo IN $irnoIn ");
-                $response = "Selected items are Live";
+                $response = $this->lang->line('selectedItemsAreLive');
                     break;
                 case 'enabled':
                     $this->db2->query("UPDATE MenuItem set Stat = 0 where EID = $EID and ItemId IN $itemIdIn ");
-                    $response = "Items are Enabled";
+                    $response = $this->lang->line('itemsAreEnabled');
                     break;
                 case 'disabled':
                     $this->db2->query("UPDATE MenuItem set Stat = 1 where EID = $EID and ItemId IN $itemIdIn ");
-                    $response = "Items are Disabled!";
+                    $response = $this->lang->line('itemsAreDisabled');
                     break;
             }
 
@@ -6951,7 +6943,7 @@ class Restaurant extends CI_Controller {
     public function eatary(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $res = [];
             switch ($_POST['type']) {
@@ -6966,7 +6958,7 @@ class Restaurant extends CI_Controller {
                         $updateData = $_POST;
                         unset($updateData['type']);
                         updateRecord('Eatary', $updateData, array('EID' => $_POST['EID']));
-                        $res = 'Data updated';
+                        $res = $this->lang->line('dataUpdated');
                     break;
             }
 
@@ -6989,7 +6981,7 @@ class Restaurant extends CI_Controller {
     public function cuisine(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $updateData['Name'] = $_POST['cuisineName'];
@@ -6997,11 +6989,11 @@ class Restaurant extends CI_Controller {
 
             if($_POST['CID'] > 0){
                 updateRecord('Cuisines', $updateData, array('CID' => $_POST['CID']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['CID']);
                 insertRecord('Cuisines', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }                    
 
             $status = 'success';
@@ -7022,7 +7014,7 @@ class Restaurant extends CI_Controller {
         // $this->check_access();
         $data['languages'] = langMenuList();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $updateData['EID'] = authuser()->EID;
@@ -7040,11 +7032,11 @@ class Restaurant extends CI_Controller {
 
             if($_POST['ECID'] > 0){
                 updateRecord('EatCuisine', $updateData, array('ECID' => $_POST['ECID']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['ECID']);
                 insertRecord('EatCuisine', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -7065,7 +7057,7 @@ class Restaurant extends CI_Controller {
     public function menu_category(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $langId = $this->session->userdata('site_lang');
@@ -7080,12 +7072,12 @@ class Restaurant extends CI_Controller {
 
             if($_POST['MCatgId'] > 0){
                 updateRecord('MenuCatg', $updateData, array('MCatgId' => $_POST['MCatgId']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['MCatgId']);
                 $updateData['EID'] = authuser()->EID;
                 insertRecord('MenuCatg', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -7108,7 +7100,7 @@ class Restaurant extends CI_Controller {
         // $this->check_access();
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
 
@@ -7126,7 +7118,7 @@ class Restaurant extends CI_Controller {
 
                 updateRecord('Masts', array('Name' => $_POST['kitchen']), array('MCd' => $_POST['KitCd'], 'EID' => $EID, 'MstTyp' => 1));
 
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 $updateData['EID'] = authuser()->EID;
 
@@ -7137,7 +7129,7 @@ class Restaurant extends CI_Controller {
                 
                 $updateData['KitCd'] = $KitCd;
                 insertRecord('Eat_Kit', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -7159,7 +7151,7 @@ class Restaurant extends CI_Controller {
     public function cashier(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $langId = $this->session->userdata('site_lang');
@@ -7172,12 +7164,12 @@ class Restaurant extends CI_Controller {
 
             if($_POST['CCd'] > 0){
                 updateRecord('Eat_Casher', $updateData, array('CCd' => $_POST['CCd']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['CCd']);
                 $updateData['EID'] = authuser()->EID;
                 insertRecord('Eat_Casher', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -7199,7 +7191,7 @@ class Restaurant extends CI_Controller {
     public function eat_store(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
 
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
@@ -7216,7 +7208,7 @@ class Restaurant extends CI_Controller {
 
                 updateRecord('Masts', array('Name' => $_POST['name']), array('MCd' => $_POST['STId'], 'EID' => $EID, 'MstTyp' => 3));
 
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated'); 
             }else{
 
                 $mast['Name'] = $_POST['name'];
@@ -7226,7 +7218,7 @@ class Restaurant extends CI_Controller {
 
                 $updateData['STId'] = $STId;
                 insertRecord('Eat_Store', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -7248,7 +7240,7 @@ class Restaurant extends CI_Controller {
         // $this->check_access();
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $langId = $this->session->userdata('site_lang');
@@ -7259,12 +7251,12 @@ class Restaurant extends CI_Controller {
 
             if($_POST['DCd'] > 0){
                 updateRecord('Eat_DispOutlets', $updateData, array('DCd' => $_POST['DCd']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['DCd']);
                 $updateData['EID'] = authuser()->EID;
                 insertRecord('Eat_DispOutlets', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -7287,7 +7279,7 @@ class Restaurant extends CI_Controller {
         // $this->check_access();
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             $EID = authuser()->EID;
@@ -7296,7 +7288,7 @@ class Restaurant extends CI_Controller {
             $updateData['MergeNo'] = $updateData['TableNo'];
             if($_POST['TId'] > 0){
                 updateRecord('Eat_tables', $updateData, array('TId' => $_POST['TId'], 'EID' => $EID));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 $check = getRecords('Eat_tables', array('EID' => $EID, 'TableNo' => $updateData['TableNo']));
                 if(empty($check)){
@@ -7304,10 +7296,10 @@ class Restaurant extends CI_Controller {
                     $updateData['EID'] = $EID;
                     $updateData['LoginCd'] = authuser()->RUserId;
                     insertRecord('Eat_tables', $updateData);
-                    $response = 'Table No '.$updateData['TableNo'].' Added.'; 
+                    $response = $this->lang->line('dataAdded');
                 }else{
                     $status = 'error';
-                    $response = 'Table No '.$updateData['TableNo'].' already exists!'; 
+                    $response = $this->lang->line('tableNoAlreadyExists'); 
                 }
             }
 
@@ -7332,7 +7324,7 @@ class Restaurant extends CI_Controller {
         // $this->check_access();
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $langId = $this->session->userdata('site_lang');
@@ -7347,11 +7339,11 @@ class Restaurant extends CI_Controller {
 
             if($_POST['RoleId'] > 0){
                 updateRecord('UserRoles', $updateData, array('RoleId' => $_POST['RoleId']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['RoleId']);
                 insertRecord('UserRoles', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -7380,7 +7372,7 @@ class Restaurant extends CI_Controller {
     public function scheme_category(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $langId = $this->session->userdata('site_lang');
@@ -7392,11 +7384,11 @@ class Restaurant extends CI_Controller {
 
             if($_POST['SchCatg'] > 0){
                 updateRecord('CustOfferTypes', $updateData, array('SchCatg' => $_POST['SchCatg']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['SchCatg']);
                 insertRecord('CustOfferTypes', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -7418,7 +7410,7 @@ class Restaurant extends CI_Controller {
         // $this->check_access();
         $EID = authuser()->EID;
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             switch ($_POST['type']) {
@@ -7473,14 +7465,14 @@ class Restaurant extends CI_Controller {
                                         $temp['EID'] = $this->checkEatary($csv_data[0]);
 
                                         if($temp['EID'] < 1){
-                                          $response = $csv_data[0]. " Not Found in row no: $count";
+                                          $response = $csv_data[0]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
                                         $temp['ItemId'] = $this->getItemId($temp['EID'], $csv_data[1]);
 
                                         if($temp['ItemId'] < 1){
-                                          $response = $csv_data[1]. " Not Found in row no: $count";
+                                          $response = $csv_data[1]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
@@ -7508,7 +7500,7 @@ class Restaurant extends CI_Controller {
                                 if(!empty($ratesData)){
                                     $this->db2->insert_batch('MenuItemRates', $ratesData);
                                     $status = 'success';
-                                    $response = 'Data Inserted.';
+                                    $response = $this->lang->line('dataAdded');
                                 }
 
                                 fclose($open);
@@ -7527,7 +7519,7 @@ class Restaurant extends CI_Controller {
                     for ($i=0; $i <sizeof($_POST['SecId']) ; $i++) { 
                         updateRecord('MenuItemRates', array('ItmRate'=> $_POST['itemRate'][$i]), array('EID' => $EID, 'ItemId' => $_POST['ItemId'], 'SecId' => $_POST['SecId'][$i], 'Itm_Portion' => $_POST['Itm_Portion'][$i]));
                     }
-                    $response = 'Item Rate updated.';
+                    $response = $this->lang->line('itemRateUpdated');
                     break;
             }
             header('Content-Type: application/json');
@@ -7545,12 +7537,12 @@ class Restaurant extends CI_Controller {
 
             if($_POST['KitCd'] > 0){
                 updateRecord('Eat_Kit', $updateData, array('KitCd' => $_POST['KitCd']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated'); 
             }else{
                 unset($updateData['KitCd']);
                 $updateData['EID'] = authuser()->EID;
                 insertRecord('Eat_Kit', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -7562,7 +7554,7 @@ class Restaurant extends CI_Controller {
              die;
         }
         
-        $data['title'] = 'Menu Item Rates';
+        $data['title'] = $this->lang->line('menuItemRates');
         $data['itemList'] = $this->rest->getAllItemsList();
         $this->load->view('rest/item_rates', $data);    
     }
@@ -7570,19 +7562,19 @@ class Restaurant extends CI_Controller {
     public function recommendation(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $updateData = $_POST;
 
             if($updateData['RecNo'] > 0){
                 updateRecord('MenuItem_Recos', $updateData, array('RecNo' => $_POST['RecNo']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['RecNo']);
                 $updateData['EID'] = authuser()->EID;
                 insertRecord('MenuItem_Recos', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -7602,7 +7594,7 @@ class Restaurant extends CI_Controller {
 
     public function get_recommendation(){
         $status = 'error';
-        $response = 'Something went wrong plz try again!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $EID = authuser()->EID;
@@ -7639,7 +7631,7 @@ class Restaurant extends CI_Controller {
 
     public function recomAddCart(){
         $status = 'error';
-        $response = 'Something went wrong plz try again!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $EID = authuser()->EID;
@@ -7732,11 +7724,11 @@ class Restaurant extends CI_Controller {
                 }
             }
             
-            $response = 'Please add atleast one Item';
+            $response = $this->lang->line('pleaseAddAtleastOneItem');
             if($flag > 0){
                 $this->db2->insert_batch('tempKitchen', $data);
                 $status = 'success';
-                $response = 'Item Added';
+                $response = $this->lang->line('itemAdded');
             }
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -7750,19 +7742,19 @@ class Restaurant extends CI_Controller {
     public function paymentMode(){
         $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $updateData = $_POST;
 
             if($updateData['PMNo'] > 0){
                 updateRecord('PymtModes', $updateData, array('PMNo' => $_POST['PMNo']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['PMNo']);
                 $updateData['EID'] = authuser()->EID;
                 insertRecord('PymtModes', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -7782,7 +7774,7 @@ class Restaurant extends CI_Controller {
     public function third_party_list(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $langId = $this->session->userdata('site_lang');
@@ -7793,11 +7785,11 @@ class Restaurant extends CI_Controller {
 
             if($_POST['PId'] > 0){
                 updateRecord('3POrders', $updateData, array('3PId' => $_POST['PId']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['PId']);
                 insertRecord('3POrders', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -7817,7 +7809,7 @@ class Restaurant extends CI_Controller {
     public function config_payment(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $langId = $this->session->userdata('site_lang');
@@ -7829,11 +7821,11 @@ class Restaurant extends CI_Controller {
 
             if($_POST['PymtMode'] > 0){
                 updateRecord('ConfigPymt', $updateData, array('PymtMode' => $_POST['PymtMode']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['PymtMode']);
                 insertRecord('ConfigPymt', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -7845,7 +7837,7 @@ class Restaurant extends CI_Controller {
              die;
         }
         
-        $data['title'] = 'Config '.$this->lang->line('payment');
+        $data['title'] = $this->lang->line('config').' '.$this->lang->line('payment');
         $data['lists'] = $this->rest->getConfigPayment();
 
         $this->load->view('rest/config_payment', $data);    
@@ -7854,7 +7846,7 @@ class Restaurant extends CI_Controller {
     public function payment_mode_access(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
             $langId = $this->session->userdata('site_lang');
@@ -7874,7 +7866,7 @@ class Restaurant extends CI_Controller {
 
             if (isset($_POST['setRestRoles']) && $_POST['setRestRoles']==1) {
 
-                $response = "Payment mode are assigned";
+                $response = $this->lang->line('paymentModesAssigned');
 
                 $temp = [];
                 $cui = [];
@@ -7891,7 +7883,7 @@ class Restaurant extends CI_Controller {
                 if(!empty($cui)){
                         $this->db2->insert_batch('PymtModes', $cui); 
                     }else{
-                        $response = "Failed to insert";
+                        $response = $this->lang->line('failedtoSave');
                     }
                 }
 
@@ -7902,7 +7894,7 @@ class Restaurant extends CI_Controller {
                 $deleteRoles = $this->db2->query("DELETE FROM PymtModes WHERE EID = $EID AND PymtMode IN ($PymtMode)");
 
                 if ($deleteRoles) {
-                    $response = "Payment mode are Removed";
+                    $response = $this->lang->line('paymentModesRemoved');
                 }
             }
 
@@ -7923,7 +7915,7 @@ class Restaurant extends CI_Controller {
     public function sections(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $updateData['Name'] = $_POST['name'];
@@ -7931,11 +7923,11 @@ class Restaurant extends CI_Controller {
 
             if($_POST['SecId'] > 0){
                 updateRecord('Sections', $updateData, array('SecId' => $_POST['SecId']));
-                $response = 'Data Updated'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['SecId']);
                 insertRecord('Sections', $updateData);
-                $response = 'Data Added'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -7956,7 +7948,7 @@ class Restaurant extends CI_Controller {
     public function cuisine_access(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
             $langId = $this->session->userdata('site_lang');
@@ -7976,7 +7968,7 @@ class Restaurant extends CI_Controller {
 
             if (isset($_POST['setRestRoles']) && $_POST['setRestRoles']==1) {
 
-                $response = "Cuisines are assigned";
+                $response = $this->lang->line('cuisinesAssigned');
 
                 $temp = [];
                 $cui = [];
@@ -7992,7 +7984,7 @@ class Restaurant extends CI_Controller {
                 if(!empty($cui)){
                         $this->db2->insert_batch('EatCuisine', $cui); 
                     }else{
-                        $response = "Failed to insert";
+                        $response = $this->lang->line('failedtoSave');
                     }
                 }
 
@@ -8003,7 +7995,7 @@ class Restaurant extends CI_Controller {
                 $deleteRoles = $this->db2->query("DELETE FROM EatCuisine WHERE EID = $EID AND CID IN ($CID)");
 
                 if ($deleteRoles) {
-                    $response = "Cuisine are Removed";
+                    $response = $this->lang->line('cuisinesRemoved');
                 }
             }
 
@@ -8024,7 +8016,7 @@ class Restaurant extends CI_Controller {
     public function section_access(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
             $langId = $this->session->userdata('site_lang');
@@ -8044,7 +8036,7 @@ class Restaurant extends CI_Controller {
 
             if (isset($_POST['setRestRoles']) && $_POST['setRestRoles']==1) {
 
-                $response = "Sections are assigned";
+                $response = $this->lang->line('sectionsAssigned');
 
                 $temp = [];
                 $cui = [];
@@ -8060,7 +8052,7 @@ class Restaurant extends CI_Controller {
                 if(!empty($cui)){
                         $this->db2->insert_batch('Eat_Sections', $cui); 
                     }else{
-                        $response = "Failed to insert";
+                        $response = $this->lang->line('failedtoSave');
                     }
                 }
 
@@ -8071,9 +8063,7 @@ class Restaurant extends CI_Controller {
                 $deleteRoles = $this->db2->query("DELETE FROM Eat_Sections WHERE EID = $EID AND SecId IN ($SecId)");
 
                 if ($deleteRoles) {
-                    $response = "Section are Removed";
-                }else {
-                    $response = "Failed to delete in EatSection table";
+                    $response = $this->lang->line('sectionsRemoved');;
                 }
             }
 
@@ -8094,7 +8084,7 @@ class Restaurant extends CI_Controller {
     public function entertainment(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $langId = $this->session->userdata('site_lang');
@@ -8106,11 +8096,11 @@ class Restaurant extends CI_Controller {
 
             if($_POST['EntId'] > 0){
                 updateRecord('Entertainment', $updateData, array('EntId' => $_POST['EntId']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['EntId']);
                 insertRecord('Entertainment', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -8130,7 +8120,7 @@ class Restaurant extends CI_Controller {
     public function eat_ent(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $EID = authuser()->EID;
             $langId = $this->session->userdata('site_lang');
@@ -8183,7 +8173,7 @@ class Restaurant extends CI_Controller {
               }
 
             $status = 'success';
-            $response = 'Record Inserted';
+            $response = $this->lang->line('dataAdded');
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
@@ -8202,7 +8192,7 @@ class Restaurant extends CI_Controller {
     public function suppliers(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
 
         $EID = authuser()->EID;;
         if($this->input->method(true)=='POST'){
@@ -8221,7 +8211,7 @@ class Restaurant extends CI_Controller {
 
                 updateRecord('Masts', array('Name' => $_POST['name']), array('MCd' => $_POST['SuppCd'], 'EID' => $EID, 'MstTyp' => 2));
 
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
             
                 $mast['Name'] = $_POST['name'];
@@ -8231,7 +8221,7 @@ class Restaurant extends CI_Controller {
 
                 $updateData['SuppCd'] = $SuppCd;
                 insertRecord('RMSuppliers', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -8251,7 +8241,7 @@ class Restaurant extends CI_Controller {
     public function itemType(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $langId = $this->session->userdata('site_lang');
@@ -8262,11 +8252,11 @@ class Restaurant extends CI_Controller {
 
             if($_POST['TagId'] > 0){
                 updateRecord('MenuTags', $updateData, array('TagId' => $_POST['TagId']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['TagId']);
                 insertRecord('MenuTags', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -8287,7 +8277,7 @@ class Restaurant extends CI_Controller {
     public function item_type_group(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $langId = $this->session->userdata('site_lang');
@@ -8299,12 +8289,12 @@ class Restaurant extends CI_Controller {
             unset($updateData['name']);
             if($_POST['ItemGrpCd'] > 0){
                 updateRecord('ItemTypesGroup', $updateData, array('ItemGrpCd' => $_POST['ItemGrpCd']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['ItemGrpCd']);
                 $updateData['EID'] = authuser()->EID;
                 insertRecord('ItemTypesGroup', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -8316,7 +8306,7 @@ class Restaurant extends CI_Controller {
              die;
         }
         
-        $data['title'] = 'Custom '.$this->lang->line('item').' '.$this->lang->line('group');
+        $data['title'] = $this->lang->line('custom').' '.$this->lang->line('item').' '.$this->lang->line('group');
         $data['itemTyp'] = $this->rest->getMenuTagList();
         $data['itemList'] = $this->rest->getAllItemsList();
         $data['lists'] = $this->rest->getItemTypesGroupList();
@@ -8326,19 +8316,19 @@ class Restaurant extends CI_Controller {
     public function item_type_det(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $updateData = $_POST;
 
             if($_POST['ItemOptCd'] > 0){
                 updateRecord('ItemTypesDet', $updateData, array('ItemOptCd' => $_POST['ItemOptCd']));
-                $response = 'Updated Records'; 
+                $response = $this->lang->line('dataUpdated');
             }else{
                 unset($updateData['ItemOptCd']);
                 $updateData['EID'] = authuser()->EID;
                 insertRecord('ItemTypesDet', $updateData);
-                $response = 'Insert Records'; 
+                $response = $this->lang->line('dataAdded');
             }
 
             $status = 'success';
@@ -8350,7 +8340,7 @@ class Restaurant extends CI_Controller {
              die;
         }
         
-        $data['title'] = 'Custom Item Details';
+        $data['title'] = $this->lang->line('customItemDetails');
         $data['itemGroup'] = $this->rest->getItemTypesGroup();
         $data['lists'] = $this->rest->getItemTypesDet();
         $this->load->view('rest/itemtypedet', $data);    
@@ -8358,7 +8348,7 @@ class Restaurant extends CI_Controller {
 
     public function get_menu_list(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             $response = $this->rest->get_menu_list_by_stat($_POST['Stat']);
@@ -8375,7 +8365,7 @@ class Restaurant extends CI_Controller {
         // $this->check_access();
         $EID = authuser()->EID;
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         $data['notUpload'] = [];
         if($this->input->method(true)=='POST'){
 
@@ -8413,7 +8403,7 @@ class Restaurant extends CI_Controller {
                 } 
             }
             $status = 'success';
-            $response = 'Files are uploaded.';
+            $response = $this->lang->line('filesUploaded');
             if(!empty($notUpload)){
                 $status = 'pending';
                 $response = $notUpload;
@@ -8440,7 +8430,7 @@ class Restaurant extends CI_Controller {
         // $this->check_access();
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
             $status = "success";
@@ -8463,7 +8453,7 @@ class Restaurant extends CI_Controller {
     public function get_itemList_by_mcatgId(){
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
             $status = "success";
@@ -8483,7 +8473,7 @@ class Restaurant extends CI_Controller {
         $this->check_access();
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
             $status = "success";
@@ -8547,7 +8537,7 @@ class Restaurant extends CI_Controller {
     public function income_report(){
         $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
             $status = "success";
@@ -8569,7 +8559,7 @@ class Restaurant extends CI_Controller {
     public function stock_statement(){
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
             $status = "success";
@@ -8593,7 +8583,7 @@ class Restaurant extends CI_Controller {
         // $this->check_access();
         $EID = authuser()->EID;
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
 
@@ -8611,7 +8601,7 @@ class Restaurant extends CI_Controller {
 
             updateRecord('Users', $upData, array('EID' => $EID, 'CustId' => $userId));
 
-            $response = 'Discount Updated';
+            $response = $this->lang->line('discountUpdated');
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -8621,7 +8611,7 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        $data['title'] = 'Discount User';
+        $data['title'] = $this->lang->line('discount').' '.$this->lang->line('user');
         $data['discounts'] = $this->rest->getUserDiscount();
         $data['country'] = $this->rest->getCountries();
         $data['users'] = $this->rest->discountUserList();
@@ -8633,7 +8623,7 @@ class Restaurant extends CI_Controller {
         // $this->check_access();
         
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $EID = $_POST['EID'];
             $folderPath = 'uploads/e'.$EID.'/csv';
@@ -8718,7 +8708,7 @@ class Restaurant extends CI_Controller {
                                    $this->db2->insert_batch('TempMenuItem', $itemData);
                                     
                                     $status = 'success';
-                                    $response = 'Data Inserted.';
+                                    $response = $this->lang->line('dataAdded');
                                 }
                                 fclose($open);
                             }
@@ -8734,7 +8724,7 @@ class Restaurant extends CI_Controller {
               ));
              die; 
         }
-        $data['title'] = 'Items Upload';
+        $data['title'] = $this->lang->line('itemUpload');
         $data['rests'] = $this->rest->getRestaurantList();
         $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0))->row_array();
 
@@ -8743,7 +8733,7 @@ class Restaurant extends CI_Controller {
 
     public function insert_temp_menu_item(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $EID = $_POST['EID'];
@@ -8763,9 +8753,9 @@ class Restaurant extends CI_Controller {
 
                 $this->db2->query("INSERT INTO MenuItemRates (EID, SecId, ItemId, Itm_Portion, ItmRate)  SELECT $EID,IFNULL((SELECT es.SecId From Eat_Sections es where es.Name1 = t.Section),1),  i.ItemId, ip.IPCd, t.Rate From TempMenuItem t, ItemPortions ip, MenuItem i where ip.Name1=t.Itm_Portion and i.Name1=t.ItemNm");
                 $status = 'success';
-                $response = 'Basic Menu Item has been Setup.';
+                $response = $this->lang->line('basicMenuItemSetup');
             }else{
-                $response = 'No Data Found!!';
+                $response = $this->lang->line('noDataFound');
             }
 
 
@@ -8783,7 +8773,7 @@ class Restaurant extends CI_Controller {
         $data['EID'] = authuser()->EID;
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             $response = $this->rest->getSettledBillNotCollectPymnt($_POST);
@@ -8796,7 +8786,7 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        $data['title'] = 'Payment Collection';
+        $data['title'] = $this->lang->line('paymentCollection');
         $data['pymtModes'] = $this->rest->getPaymentModes();
         $this->load->view('rest/payment_collection', $data);
     }
@@ -8804,7 +8794,7 @@ class Restaurant extends CI_Controller {
     public function getBillByCustId(){
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             $dt['details'] = $this->rest->getBillingByCustId($_POST['CustId']);
@@ -8826,7 +8816,7 @@ class Restaurant extends CI_Controller {
     public function save_group_payment(){
         $EID = authuser()->EID;
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $totalAmount = $_POST['amount'];
@@ -8936,7 +8926,7 @@ class Restaurant extends CI_Controller {
         $this->check_access();
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
             $status = "success";
@@ -8957,7 +8947,7 @@ class Restaurant extends CI_Controller {
     public function item_sales_report(){
         $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
             $status = "success";
@@ -8971,14 +8961,14 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        $data['title'] = 'Item Sales '.$this->lang->line('report');
+        $data['title'] = $this->lang->line('itemSale').' '.$this->lang->line('report');
         $this->load->view('report/itemSalesReport', $data);    
     }
 
     public function contribution_report(){
         $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
             $status = "success";
@@ -8994,14 +8984,14 @@ class Restaurant extends CI_Controller {
         }
         $data['cuisine'] = $this->rest->getCuisineList();
         $data['otypes'] = $this->rest->getOTypeList();
-        $data['title'] = 'Contribution '.$this->lang->line('report');
+        $data['title'] = $this->lang->line('contribution').' '.$this->lang->line('report');
         $this->load->view('report/contributionReport', $data);    
     }
 
     public function sale_summary(){
         $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
             $status = "success";
@@ -9015,14 +9005,14 @@ class Restaurant extends CI_Controller {
              die;
         }
         $data['cuisine'] = $this->rest->getCuisineList();
-        $data['title'] = 'Sale Summary';
+        $data['title'] = $this->lang->line('sale').' '.$this->lang->line('summary');
         $this->load->view('report/saleSummary', $data);    
     }
 
     public function onaccount_sale_summary(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
             $status = "success";
@@ -9036,7 +9026,7 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        $data['title'] = 'Pending Collection Reports';
+        $data['title'] = $this->lang->line('pendingCollectionReports');
         $this->load->view('report/onAccountSaleSummary', $data);    
     }
 
@@ -9062,7 +9052,7 @@ class Restaurant extends CI_Controller {
 
     public function get_schemes(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
             $status = "success";
@@ -9078,13 +9068,13 @@ class Restaurant extends CI_Controller {
     }
 
     public function access_denied(){
-        $data['title'] = 'Access';
+        $data['title'] = $this->lang->line('access');
         $this->load->view('page403', $data);
     }
 
     public function config(){
         $EID = authuser()->EID;
-        $data['title'] = 'Config';
+        $data['title'] = $this->lang->line('config');
         $data['detail'] = getRecords('Config',array('EID' => $EID));
 
         if($this->input->method(true)=='POST'){
@@ -9168,7 +9158,7 @@ class Restaurant extends CI_Controller {
             }
             updateRecord('Config', $configDt, array('EID' => $EID) );
             
-            $response = 'Config Upadated';
+            $response = $this->lang->line('configUpdated');
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
@@ -9182,7 +9172,7 @@ class Restaurant extends CI_Controller {
 
     public function prepaid_account(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
             $EID = authuser()->EID;
@@ -9210,14 +9200,14 @@ class Restaurant extends CI_Controller {
                         $chk = getRecords('CustList', array('EID' => $EID, 'CustId' => $cusList['CustId']));
                         if(empty($chk)){
                             insertRecord('CustList', $cusList);
-                            $response = 'Prepaid Account Inserted.';
+                            $response = $this->lang->line('prepaidAccountAdded');
                             $RC['CustId'] = $cusList['CustId'];
                             $RC['Amount'] = $cusList['prePaidAmt'];
                             $RC['Remarks'] = 'Added';
                             rechargeHistory($RC);
                         }else{
                             $status = 'error';
-                            $response = 'User already exists!!';
+                            $response = $this->lang->line('userAlreadyExists');
                         }
                     }
 
@@ -9342,7 +9332,7 @@ class Restaurant extends CI_Controller {
                                         }
                                     }
 
-                                    $response = 'Data inserted successfully.';
+                                    $response = $this->lang->line('dataAdded');
                                     if(!empty($eList)){
                                         $d = '';
                                         foreach ($eList as $key) {
@@ -9372,7 +9362,7 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        $data['title'] = 'Customer Types';
+        $data['title'] = $this->lang->line('customer').' '.$this->lang->line('type');
         $data['prepaids'] = $this->db2->get('CustList')->result_array();
         $data['country'] = $this->rest->getCountries();
         $this->load->view('rest/prepaid_account', $data);
@@ -9380,7 +9370,7 @@ class Restaurant extends CI_Controller {
 
     public function prepaid_recharge(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
             $EID = authuser()->EID;
@@ -9392,7 +9382,7 @@ class Restaurant extends CI_Controller {
             $RC['Amount']   = $_POST['prePaidAmt'];
             $RC['Remarks']  = 'Added';
             rechargeHistory($RC);
-            $response = 'Prepaid Recharge Inserted.';
+            $response = $this->lang->line('prepaidRechargeAdded');
 
             $acc = $this->db2->get_where('CustList', array('CustId' => $_POST['CustId']))->row_array();
             
@@ -9407,14 +9397,14 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        $data['title'] = 'Prepaid Recharge';
+        $data['title'] = $this->lang->line('prepaidRecharge');
         $data['users'] = $this->db2->get('CustList')->result_array();
         $this->load->view('rest/prepaid_recharge', $data);
     }
 
     public function mobile_update_by_billid(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
         if($this->input->method(true)=='POST'){
 
@@ -9432,7 +9422,7 @@ class Restaurant extends CI_Controller {
             logHistory($logs);
 
             $status = 'success';
-            $response = 'Mobile No Updated.';
+            $response = $this->lang->line('mobileNoUpdated');
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -9447,19 +9437,19 @@ class Restaurant extends CI_Controller {
         // $this->check_access();
         $data['languages'] = langMenuList();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $updateData = $_POST;
 
             if($_POST['discId'] > 0){
                 updateRecord('discounts', $updateData, array('discId' => $_POST['discId']));
-                $response = 'Discount Updated'; 
+                $response = $this->lang->line('discountUpdated');
             }else{
                 unset($updateData['discId']);
                 $updateData['EID'] = authuser()->EID;
                 insertRecord('discounts', $updateData);
-                $response = 'Discount Added'; 
+                $response = $this->lang->line('discountAdded');
             }
 
             $status = 'success';
@@ -9480,7 +9470,7 @@ class Restaurant extends CI_Controller {
 // not used, use in support
     public function loyalty(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $loyal['Name'] = $_POST['Name'];
@@ -9502,7 +9492,7 @@ class Restaurant extends CI_Controller {
                      insertRecord('LoyaltyConfigDet', $loyalDet);
                 }
                 $status = 'success';
-                $response = 'Loyality Added.';
+                $response = $this->lang->line('loyaltyAdded');
             }
 
             header('Content-Type: application/json');
@@ -9512,7 +9502,7 @@ class Restaurant extends CI_Controller {
               ));
              die; 
         }
-        $data['title'] = 'Loyality';
+        $data['title'] = $this->lang->line('loyalty');
         $data['modes'] = $this->rest->getPaymentModes();
         $data['lists'] = $this->rest->getLoyalities();
         $data['currency'] = $this->rest->getCurrency();
@@ -9522,7 +9512,7 @@ class Restaurant extends CI_Controller {
 
     public function get_rest_list(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = "success";
             $response = $this->supp->getRestList();
@@ -9538,13 +9528,13 @@ class Restaurant extends CI_Controller {
 
     public function updateLoyalityStats(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $stat = ($_POST['Stat'] == 1)?0:1;
             updateRecord('LoyaltyConfig', array('Stat' => $stat), array('LNo' => $_POST['LNo']));
             
             $status = "success";
-            $response = 'Status Updated.';
+            $response = $this->lang->line('statusUpdated');
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -9557,7 +9547,7 @@ class Restaurant extends CI_Controller {
 
     public function getfood_by_ctype(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $status = "success";
@@ -9574,7 +9564,7 @@ class Restaurant extends CI_Controller {
 
     public function toppings(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $mi['Name1'] = $_POST['itemName'];
             $mi['Name2'] = $_POST['itemName'];
@@ -9602,7 +9592,7 @@ class Restaurant extends CI_Controller {
             }
 
             $status = "success";
-            $response = 'Topping added.';
+            $response = $this->lang->line('toppingsAdded');
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -9612,7 +9602,7 @@ class Restaurant extends CI_Controller {
             die; 
         }
 
-        $data['title'] = 'Custom Group Items';
+        $data['title'] = $this->lang->line('custom').' '.$this->lang->line('group').' '.$this->lang->line('item');
         $data['EatSections'] = $this->rest->get_eat_section();
         $data['ItemPortions'] = $this->rest->get_item_portion();
         $data['toppings'] = $this->rest->getToppings();
@@ -9623,7 +9613,7 @@ class Restaurant extends CI_Controller {
     public function edit_toppings($ItemId){
         $data['ItemId'] = $ItemId;
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             if(!empty($ItemId)){
@@ -9649,7 +9639,7 @@ class Restaurant extends CI_Controller {
             }
 
             $status = "success";
-            $response = 'Topping updated.';
+            $response = $this->lang->line('toppingsUpdated');
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -9659,7 +9649,7 @@ class Restaurant extends CI_Controller {
             die; 
         }
 
-        $data['title'] = 'Edit Toppings';
+        $data['title'] = $this->lang->line('toppings');
         $data['EatSections'] = $this->rest->get_eat_section();
         $data['ItemPortions'] = $this->rest->get_item_portion();
         $data['toppings'] = $this->rest->getToppingDetail($ItemId);
@@ -9670,7 +9660,7 @@ class Restaurant extends CI_Controller {
 
     public function get_item_portion_by_itemId(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $status = "success";
@@ -9687,7 +9677,7 @@ class Restaurant extends CI_Controller {
 
     public function get_item_portion_by_bom(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = "success";
 
@@ -9709,7 +9699,7 @@ class Restaurant extends CI_Controller {
 
     public function get_item_portionList(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $status = "success";
@@ -9759,7 +9749,7 @@ class Restaurant extends CI_Controller {
         if (empty($kitcheData)) {
                 $response = [
                     "status" => 0,
-                    "msg" => "NO BILL CREATION REQUIRED"
+                    "msg" => $this->lang->line('noBillCreation')
                 ];
             } else {
                 // order amt
@@ -9972,7 +9962,7 @@ class Restaurant extends CI_Controller {
                 }
                 $response = [
                     "status" => 1,
-                    "msg" => "Bill Generated",
+                    "msg" => $this->lang->line('billGenerated'),
                     "billId" => $lastInsertBillId
                 ];
 
@@ -9983,7 +9973,7 @@ class Restaurant extends CI_Controller {
 
     public function get_portion_itemtype(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = "success";
             $response = $this->rest->get_portion_item_type($_POST);
@@ -9999,7 +9989,7 @@ class Restaurant extends CI_Controller {
 
     public function check_bill_based_offer(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $MergeNo = $_POST['MergeNo'];
             $EID = authuser()->EID;
@@ -10166,9 +10156,9 @@ class Restaurant extends CI_Controller {
 
     public function get_selection_offer(){
         $status = 'error';
-        $response = "Something went wrong please try agian!";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
-            $response = "Selected Offer Does Not Satisfy Criteria!!";
+            $response = $this->lang->line('selectedOfferDoesNotSatisfyCriteria');
             $langId = $this->session->userdata('site_lang');
             $scName = "c.SchNm$langId as SchNm";
             $scDesc = "cod.SchDesc$langId as SchDesc";
@@ -10267,7 +10257,7 @@ class Restaurant extends CI_Controller {
 
     public function update_status_of_offer(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $status = "success";
@@ -10289,7 +10279,7 @@ class Restaurant extends CI_Controller {
     public function get_city_by_country(){
 
         $status = 'error';
-        $response = 'Something went wrong plz try again!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $response = $this->db2->get_where('city', array('phone_code' => $_POST['phone_code']) )->result_array();
@@ -10307,7 +10297,7 @@ class Restaurant extends CI_Controller {
     public function multi_lang_upload(){
 
         $status = 'error';
-        $response = 'Something went wrong plz try again!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             
@@ -10365,7 +10355,7 @@ class Restaurant extends CI_Controller {
                         }
                         fclose($open);
                         $status = 'success';
-                        $response = 'Data Updated.';
+                        $response = $this->lang->line('dataAdded');
                         $this->session->set_flashdata('success','Data Updated.');
                     }
                 }
@@ -10380,14 +10370,14 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        $data['title'] = 'Multi Language Name';
+        $data['title'] = $this->lang->line('multi').' '.$this->lang->line('language').' '.$this->lang->line('name');
         $this->load->view('rest/multi_lang_name', $data);
     }
 
     public function menu_lang_upload(){
 
         $status = 'error';
-        $response = 'Something went wrong plz try again!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             
@@ -10461,7 +10451,7 @@ class Restaurant extends CI_Controller {
                         }
                         fclose($open);
                         $status = 'success';
-                        $response = 'Data Updated.';
+                        $response = $this->lang->line('dataUpdated');
                         $this->session->set_flashdata('success','Data Updated.');
                     }
                 }
@@ -10476,7 +10466,7 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        $data['title'] = 'Multi Language Name';
+        $data['title'] = $this->lang->line('multi').' '.$this->lang->line('language').' '.$this->lang->line('name');
         $this->load->view('rest/multi_lang_name', $data);
     }
 
@@ -10540,7 +10530,7 @@ class Restaurant extends CI_Controller {
     public function language(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $updateData['LangName'] = $_POST['name'];
@@ -10549,11 +10539,11 @@ class Restaurant extends CI_Controller {
 
             if($_POST['id'] > 0){
                 updateRecord('Languages', $updateData, array('id' => $_POST['id']));
-                $response = 'Language Updated'; 
+                $response = $this->lang->line('languagesUpdated');
             }else{
                 unset($updateData['id']);
                 insertRecord('Languages', $updateData);
-                $response = 'Language Added'; 
+                $response = $this->lang->line('languagesAdded');
             }
 
             $status = 'success';
@@ -10565,7 +10555,7 @@ class Restaurant extends CI_Controller {
              die;
         }
         
-        $data['title'] = 'Language';
+        $data['title'] = $this->lang->line('language');
         $data['lists'] = $this->rest->getLanguageList();
 
         $this->load->view('rest/language', $data);    
@@ -10574,7 +10564,7 @@ class Restaurant extends CI_Controller {
     public function language_access(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
             $langId = $this->session->userdata('site_lang');
@@ -10594,7 +10584,7 @@ class Restaurant extends CI_Controller {
 
             if (isset($_POST['setRestRoles']) && $_POST['setRestRoles']==1) {
 
-                $response = "Language are assigned";
+                $response = $this->lang->line('languagesAssigned');
 
                 $temp = [];
                 $cui = [];
@@ -10617,7 +10607,7 @@ class Restaurant extends CI_Controller {
                         $this->db2->query('TRUNCATE Eat_Lang');
                         $this->db2->insert_batch('Eat_Lang', $cui); 
                     }else{
-                        $response = "Failed to insert";
+                        $response = $this->lang->line('failedtoSave');
                     }
                 }
 
@@ -10628,7 +10618,7 @@ class Restaurant extends CI_Controller {
                 $deleteRoles = $this->db2->query("DELETE FROM Eat_Lang WHERE EID = $EID AND LCd IN ($LCd)");
 
                 if ($deleteRoles) {
-                    $response = "Language are Removed";
+                    $response = $this->lang->line('languagesRemoved');
                 }
             }
 
@@ -10649,7 +10639,7 @@ class Restaurant extends CI_Controller {
     public function checkStock(){
 
         $status = 'error';
-        $response = 'Something went wrong plz try again!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             $response = 0;
@@ -10680,7 +10670,7 @@ class Restaurant extends CI_Controller {
     public function stock_trans_access(){
         // $this->check_access();
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
             $langId = $this->session->userdata('site_lang');
@@ -10701,7 +10691,7 @@ class Restaurant extends CI_Controller {
 
             if (isset($_POST['setRestRoles']) && $_POST['setRestRoles']==1) {
 
-                $response = "Transaction Type are assigned";
+                $response = $this->lang->line('transactionTypeAssigned');
 
                 $temp = [];
                 $cui = [];
@@ -10729,9 +10719,7 @@ class Restaurant extends CI_Controller {
                 $deleteRoles = $this->db2->query("DELETE FROM stockTransAccess WHERE EID = $EID and UserId = $UserId AND TagId IN ($TagId)");
 
                 if ($deleteRoles) {
-                    $response = "Transaction are Removed";
-                }else {
-                    $response = "Failed to delete in EatCuisine table";
+                    $response = $this->lang->line('transactionTypeRemoved');
                 }
             }
 
@@ -10743,7 +10731,7 @@ class Restaurant extends CI_Controller {
              die;
         }
         
-        $data['title'] = 'Stock Transaction Access';
+        $data['title'] = $this->lang->line('stock').' '.$this->lang->line('transactions').' '.$this->lang->line('access');
         $data['usersRestData'] = $this->rest->getusersRestData();
         $this->load->view('rest/stock_transaction_access', $data);    
     }
@@ -10751,7 +10739,7 @@ class Restaurant extends CI_Controller {
     public function table_update(){
 
         $status = 'error';
-        $response = 'Something went wrong plz try again!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
 
         if($this->input->method(true)=='POST'){
             

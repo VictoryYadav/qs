@@ -26,7 +26,7 @@ class Customer extends CI_Controller {
     function switchLang() {
         // https://www.codexworld.com/multi-language-implementation-in-codeigniter/
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             extract($_POST);
@@ -73,7 +73,7 @@ class Customer extends CI_Controller {
     public function gotoOutlet(){
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             $qr_code = $this->session->userdata('qr_code');
@@ -98,7 +98,7 @@ class Customer extends CI_Controller {
         $this->session->set_userdata('f_fid',0);
         
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $data['ffid'] = 0;
             $this->session->set_userdata('f_fid',0);
@@ -117,7 +117,7 @@ class Customer extends CI_Controller {
              die;
         }
 
-        $data['title'] = $this->lang->line('main');
+        $data['title'] = $this->lang->line('itemDetails');
         $data['EType'] = $this->session->userdata('EType');
         $data['Charity'] = $this->session->userdata('Charity');
         $data['Itm_Portion'] = 1;
@@ -131,7 +131,7 @@ class Customer extends CI_Controller {
     public function getFoodTypeList(){
         $this->session->set_userdata('f_fid',0);
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $this->session->set_userdata('f_fid',0);
             $status = 'success';
@@ -167,7 +167,7 @@ class Customer extends CI_Controller {
 
     public function getItemDetailsData(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             extract($_POST);
@@ -252,7 +252,7 @@ class Customer extends CI_Controller {
             } else {
                 $response = [
                     "status" => 0,
-                    "msg" => "NO Item Found"
+                    "msg" => $this->lang->line('noItemFound')
                 ];
             }
             echo json_encode($response);
@@ -263,7 +263,7 @@ class Customer extends CI_Controller {
     // cart details
     public function cart(){
         $sts = 'error';
-        $response = 'Something went wrong';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         $EID = authuser()->EID;
         $EType = $this->session->userdata('EType');
         if($this->input->method(true)=='POST'){
@@ -305,7 +305,7 @@ class Customer extends CI_Controller {
                     if(empty($kitcheData)){
                         $response = [
                             "status" => 0,
-                            "msg" => "No Categary is available"
+                            "msg" => $this->lang->line('noCategoryAvailable')
                         ];
                     }else {
                         $response = [
@@ -334,7 +334,7 @@ class Customer extends CI_Controller {
 
                     $response = [
                         "status" => 1,
-                        "msg" => "Order Cancelled"
+                        "msg" => $this->lang->line('orderCancelled')
                     ];
                     echo json_encode($response);
                     die();
@@ -357,7 +357,7 @@ class Customer extends CI_Controller {
                         $this->session->set_userdata('KOTNo', 0);
                         $response = [
                             "status" => 1,
-                            "msg" => "Order Sent To Kitchen Successfully"
+                            "msg" => $this->lang->line('orderSentToKitchen')
                         ];
                         echo json_encode($response);
                         die();
@@ -379,7 +379,7 @@ class Customer extends CI_Controller {
                 
                 $response = [
                     "status" => "100",
-                    "msg" => "Session Expire Please Rescan QR Code"
+                    "msg" => $this->lang->line('pleaseRescanQRCode')
                 ];
 
                 echo json_encode($response);
@@ -407,7 +407,7 @@ class Customer extends CI_Controller {
 
     public function recommendation(){
         $status = 'error';
-        $response = 'Something went wrong plz try again!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $EID = authuser()->EID;
@@ -446,7 +446,7 @@ class Customer extends CI_Controller {
 
     public function recomAddCart(){
         $status = 'error';
-        $response = 'Something went wrong plz try again!';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $CustId = $this->session->userdata('CustId');
@@ -628,11 +628,11 @@ class Customer extends CI_Controller {
                 }
             }
             
-            $response = 'Please add atleast one Item';
+            $response = $this->lang->line('pleaseAddAtleastOneItem');
             if($flag > 0){
                 $this->db2->insert_batch('Kitchen', $data);
                 $status = 'success';
-                $response = 'Item Added';
+                $response = $this->lang->line('itemAdded');
             }
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -649,7 +649,7 @@ class Customer extends CI_Controller {
             redirect(base_url('customer'));
         } else {
             $status = 'error';
-            $response = 'Something went wrong plz try again!';
+            $response = $this->lang->line('SomethingSentWrongTryAgainLater');
             if($this->input->method(true)=='POST'){
                 
                 $emailMobile = $_POST['emailMobile'];
@@ -662,7 +662,7 @@ class Customer extends CI_Controller {
                     // $otp = 1;
                     $otp = generateOTP($emailMobile, 'login');
                     $status = 'success';
-                    $response = "Your otp is ";
+                    $response = $this->lang->line('yourOTPIs');
                     $this->session->set_userdata('emailMobile', $emailMobile);
                 }else{
                     
@@ -670,7 +670,7 @@ class Customer extends CI_Controller {
                     if(!empty($genData)){
                         $otp = generateOTP($emailMobile, 'login');
                         $status = 'success';
-                        $response = "Your otp is ";
+                        $response = $this->lang->line('yourOTPIs');
                         $this->session->set_userdata('emailMobile', $emailMobile);
 
                         $CustId = $genData['CustId'];
@@ -685,7 +685,7 @@ class Customer extends CI_Controller {
                         $data1['PWDHash']   = md5('eatout246');
                         insertRecord('Users',$data1);
                     }else{
-                        $response = "Username is not found!";
+                        $response = $this->lang->line('usernameNotFound');
                     }
                 }
 
@@ -707,11 +707,11 @@ class Customer extends CI_Controller {
 
     public function loginVerify(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $otp = $this->session->userdata('cust_otp');
             if($_POST['otp'] == $otp){
-                $resp['msg'] = "OTP Matched!";
+                $resp['msg'] = $this->lang->line('OTPMatched');
                 $status = 'success';
                 $ses_data = $this->session->userdata('emailMobile');
 
@@ -792,7 +792,7 @@ class Customer extends CI_Controller {
                 }
                 $response = $resp;
             }else{
-                $response = "OTP Doesn't Matched";
+                $response = $this->lang->line('OTPDoesNotMatch');
             }
 
             header('Content-Type: application/json');
@@ -810,7 +810,7 @@ class Customer extends CI_Controller {
             redirect(base_url('customer'));
         }else{
             $status = 'error';
-            $response = 'Something went wrong plz try again!';
+            $response = $this->lang->line('SomethingSentWrongTryAgainLater');
             if($this->input->method(true)=='POST'){
                 $this->session->set_userdata('signup', $_POST);
 
@@ -819,11 +819,11 @@ class Customer extends CI_Controller {
                                 ->get('Users')
                                 ->row_array();
                 if(!empty($checkUser)){
-                    $response = "User Already Exists!";
+                    $response = $this->lang->line('userAlreadyExists');
                 }else{
                     $otp = generateOTP($_POST['MobileNo'], 'signup');
                     $status = 'success';
-                    $response = "Your otp is ";
+                    $response = $this->lang->line('yourOTPIs');
                 }
 
                 header('Content-Type: application/json');
@@ -843,11 +843,11 @@ class Customer extends CI_Controller {
 
     public function verifyOTP(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $otp = $this->session->userdata('cust_otp');
             if($_POST['otp'] == $otp){
-                $res = "OTP Matched!";
+                $res = $this->lang->line('OTPMatched');
                 $status = 'success';
                 $ses_data = $_SESSION['signup'];
                 $this->session->set_userdata('CellNo', $ses_data['MobileNo']);
@@ -937,7 +937,7 @@ class Customer extends CI_Controller {
                 }
 
             }else{
-                $res = "OTP Doesn't Matched";
+                $res = $this->lang->line('OTPDoesNotMatch');
             }
 
             header('Content-Type: application/json');
@@ -951,15 +951,15 @@ class Customer extends CI_Controller {
 
     public function resendOTP(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = "success";
-            $res = 'OTP Not Send.';
+            $res = $this->lang->line('OTPNotSent');
 
             extract($_POST);
             if($mobile){
                 $otp  = generateOTP($mobile, $page);
-                $res = 'Resend OTP Successfully.';
+                $res = $this->lang->line('resendOTP');
             }
 
             header('Content-Type: application/json');
@@ -973,7 +973,7 @@ class Customer extends CI_Controller {
 
     public function resend_payment_OTP(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $mobileNO = $this->session->userdata('CellNo');
@@ -985,7 +985,7 @@ class Customer extends CI_Controller {
             saveOTP($mobileNO, $otp, 'payNow');
 
             $status = "success";
-            $res = 'Resend OTP Successfully.';
+            $res = $this->lang->line('resendOTP');
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -997,8 +997,8 @@ class Customer extends CI_Controller {
     }
 
     public function order_details_ajax(){
-        $resp1 = 'Something went wrong please try again!!';
         $statuss = 'error';
+        $resp1 = $this->lang->line('SomethingSentWrongTryAgainLater');
 
         $CustId = $this->session->userdata('CustId');
         $TempCustId = $this->session->userdata('TempCustId');
@@ -1340,7 +1340,7 @@ class Customer extends CI_Controller {
         } else {
             $response = [
                 "status" => "100",
-                "msg" => "Session Expired, Please Rescan QR Code"
+                "msg" => $this->lang->line('pleaseRescanQRCode')
             ];
 
             echo json_encode($response);
@@ -1443,7 +1443,7 @@ class Customer extends CI_Controller {
             
             $this->load->view('cust/billing', $data);
         }else{
-            $data['title'] = 'Bills';
+            $data['title'] = $this->lang->line('billing');
             $this->load->view('cust/billing_not', $data);
         }
     }
@@ -1545,7 +1545,7 @@ class Customer extends CI_Controller {
 
     public function get_merge_order(){
         $status = 'error';
-        $res = 'Something went wrong plz try again!';
+        $res = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             $strTableNo = authuser()->TableNo;
@@ -1926,7 +1926,7 @@ class Customer extends CI_Controller {
 
     public function genOTPRating(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
             
@@ -1944,7 +1944,7 @@ class Customer extends CI_Controller {
     }
     function verifyOTPRating(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $otp = $this->session->userdata('ratOTP');
             if($_POST['otp'] == $otp){
@@ -1959,7 +1959,7 @@ class Customer extends CI_Controller {
                 $response = $resp;
 
             }else{
-                $response = "OTP Doesn't Matched";
+                $response = $this->lang->line('OTPDoesNotMatch');
             }
 
             header('Content-Type: application/json');
@@ -2013,7 +2013,7 @@ class Customer extends CI_Controller {
 
     public function getCityList(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = "success";
             $response = $this->cust->getCityListByCountry($_POST['phone_code']);
@@ -2029,7 +2029,7 @@ class Customer extends CI_Controller {
     public function reserve_table(){
         
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $TblRsv['GuestNos'] = $_POST['GuestNos'];
@@ -2051,7 +2051,7 @@ class Customer extends CI_Controller {
             }
 
             $status = 'success';
-            $res = 'Record has been inserted.';
+            $res = $this->lang->line('dataAdded');
            
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -2113,7 +2113,7 @@ class Customer extends CI_Controller {
 
     public function checkout_pay(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
 
         if($this->input->method(true)=='POST'){
 
@@ -2188,7 +2188,7 @@ class Customer extends CI_Controller {
 
     public function multi_payment(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $pay['BillId'] = $_POST['BillId'];
@@ -2226,7 +2226,7 @@ class Customer extends CI_Controller {
 
     public function check_payment_status(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $response = 'Pending';
@@ -2247,7 +2247,7 @@ class Customer extends CI_Controller {
 
     public function check_onaccount_cust(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $mobileNO = $this->session->userdata('CellNo');
@@ -2265,9 +2265,9 @@ class Customer extends CI_Controller {
                         sendSMS($mobileNO, $msgText);
                         saveOTP($mobileNO, $otp, 'payNow');
                         $status = "success";
-                        $response = "OTP send on your mobile no.";
+                        $response = $this->lang->line('OTPSentToYourMobileNo');
                     }else{
-                        $response = "Out of Limit!!";
+                        $response = $this->lang->line('outOfLimit');
                     }
                 }else{
                     $total = $_POST['amount'];
@@ -2278,13 +2278,13 @@ class Customer extends CI_Controller {
                         sendSMS($mobileNO, $msgText);
                         saveOTP($mobileNO, $otp, 'payNow');
                         $status = "success";
-                        $response = "OTP send on your mobile no.";
+                        $response = $this->lang->line('OTPSentToYourMobileNo');
                     }else{
-                        $response = "Out of Limit!!";
+                        $response = $this->lang->line('outOfLimit');
                     }
                 }
             }else{
-                $response = "Dont't have account on onAccount!!";
+                $response = $this->lang->line('accountNotCreated');
             }
 
             header('Content-Type: application/json');
@@ -2298,7 +2298,7 @@ class Customer extends CI_Controller {
     
     public function send_payment_otp(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $mobileNO = $this->session->userdata('CellNo');
@@ -2310,7 +2310,7 @@ class Customer extends CI_Controller {
             saveOTP($mobileNO, $otp, 'payNow');
 
             $status = "success";
-            $response = "OTP send on your mobile no.";
+            $response = $this->lang->line('OTPSentToYourMobileNo');
             
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -2324,7 +2324,7 @@ class Customer extends CI_Controller {
     public function settle_bill_without_payment(){
         $EID = authuser()->EID;
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $otp = $this->session->userdata('payment_otp');
@@ -2360,10 +2360,10 @@ class Customer extends CI_Controller {
                     updateRecord('Billing', array('Stat' => 25), array('BillId' => $billId, 'EID' => $EID));
 
                     $status = "success";
-                    $response = "Bill Settled.";
+                    $response = $this->lang->line('billSettled');
                 }
             }else{
-                $response = "OTP Doesn't Matched!!";
+                $response = $this->lang->line('OTPDoesNotMatch');
             }
 
             header('Content-Type: application/json');
@@ -2377,7 +2377,7 @@ class Customer extends CI_Controller {
 
     public function get_custom_item(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             // echo "<pre>";
             // print_r($_POST);
@@ -2456,7 +2456,7 @@ class Customer extends CI_Controller {
         $TableNo = authuser()->TableNo;
 
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $i=0;
@@ -2475,7 +2475,7 @@ class Customer extends CI_Controller {
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
-                'response' => 'Order Sent To Kitchen Successfully'
+                'response' => $this->lang->line('orderSentToKitchen')
               ));
              die;
         }    
@@ -2560,7 +2560,7 @@ class Customer extends CI_Controller {
 
     public function tokenGenerate(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $data['token'] = $_POST['token']; 
@@ -2580,7 +2580,7 @@ class Customer extends CI_Controller {
 
     public function getDiscounts(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $mobile = $this->session->userdata('CellNo');
             $CustId = $this->session->userdata('CustId');
@@ -2602,7 +2602,7 @@ class Customer extends CI_Controller {
     
     public function get_loyality(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $status = 'success';
@@ -2619,7 +2619,7 @@ class Customer extends CI_Controller {
 
     public function update_loyalty_point(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $EID = authuser()->EID;
@@ -2646,7 +2646,7 @@ class Customer extends CI_Controller {
             $genTblDb->insert('Loyalty', $loyalties);
 
             $status = 'success';
-            $response = 'Loyality Points Added';
+            $response = $this->lang->line('loyaltyPointsAdded');
             
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -2659,7 +2659,7 @@ class Customer extends CI_Controller {
 
     public function get_loyalty_points(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $CustId = $this->session->userdata('CustId');
 
@@ -2677,7 +2677,7 @@ class Customer extends CI_Controller {
 
     public function loyalty_pay(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $pay['BillId'] = $_POST['BillId'];
@@ -2717,7 +2717,7 @@ class Customer extends CI_Controller {
 
             if(!empty($payNo)){
                 $status = 'success';
-                $response = 'Loyalty payment is successfull.';
+                $response = $this->lang->line('loyaltyPayment');
             }
             
             header('Content-Type: application/json');
@@ -2731,7 +2731,7 @@ class Customer extends CI_Controller {
 
     public function loyalty(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $CustId = $this->session->userdata('CustId');
@@ -2762,7 +2762,7 @@ class Customer extends CI_Controller {
     private function food_bar_separate_bill($postData){
         $dt = [
                 "status" => 'error',
-                "response" => "No Bill Created"
+                "response" => $this->lang->line('noBillCreation')
             ];
 
         $MergeNo    = $postData['MergeNo'];
@@ -2795,7 +2795,7 @@ class Customer extends CI_Controller {
         if (empty($kitcheData)) {
                 $dt = [
                     "status" => 'error',
-                    "response" => "NO BILL CREATION REQUIRED"
+                    "response" => $this->lang->line('noBillCreationRequired')
                 ];
                 
             } else {
@@ -3024,7 +3024,7 @@ class Customer extends CI_Controller {
 
     public function update_customItem_onKitchen(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $updateData['CustItem'] = 1;
@@ -3034,7 +3034,7 @@ class Customer extends CI_Controller {
 
             updateRecord('Kitchen', $updateData, array('EID' => authuser()->EID, 'OrdNo' => $_POST['OrdNo'], 'ItemId' => $_POST['ItemId']));
             $status = 'success';
-            $response = "Item rate updated";
+            $response = $this->lang->line('itemRateUpdated');
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -3047,7 +3047,7 @@ class Customer extends CI_Controller {
 
     public function get_customize_items(){
         $status = "error";
-        $response = "Something went wrong! Try again later.";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             
             $status = 'success';
@@ -3064,9 +3064,9 @@ class Customer extends CI_Controller {
 
     public function get_selection_offer(){
         $status = 'error';
-        $response = "Something went wrong please try agian!";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
-            $response = "Selected Offer Does Not Satisfy Criteria!!";
+            $response = $this->lang->line('selectedOfferDoesNotSatisfyCriteria');
             $langId = $this->session->userdata('site_lang');
             // $scName = "c.SchNm$langId as SchNm";
             // $scDesc = "cod.SchDesc$langId as SchDesc";

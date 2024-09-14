@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-$lang['main'] 			= 'आइटम विवरण';
+$lang['itemDetails'] 	= 'आइटम विवरण';
 $lang['cart'] 			= 'ऑर्डर का विवरण';
 $lang['log_in']	 		= 'लॉग इन करें';
 $lang['signup'] 		= 'साइन अप करें';
