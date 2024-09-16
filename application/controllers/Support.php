@@ -878,10 +878,133 @@ class Support extends CI_Controller {
              die;
         }
         
-        $data['title'] = 'Support User Access';
+        $data['title'] = 'Stand By User Access';
         $data['users'] = $this->genDB->get('usersSupport')->result_array();
         $data['country'] = $this->genDB->get_where('countries', array('Stat' => 0))->result_array(); 
         $this->load->view('support/supp_user_access_alt', $data); 
+    }
+
+    public function transfer_rest_to_user(){
+
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+
+            if ($_POST['type'] == 'getRest') {
+                
+                $status = 'success';
+
+                $userId =  $_POST['userId'];
+
+
+                $response = $this->genDB->select("ed.EID, ed.Name, IFNULL((select l.LangName from Languages l where l.id = ed.langId and ed.langId > 1), '') as mainLang, IFNULL((select l.LangName from Languages l where l.id = ed.altLangId),'') as alterLang")
+                                ->order_by('ed.Name', 'ASC')
+                                ->get_where("EIDDet ed", array('ed.suppUserId' => $userId, 'ed.Stat' => 0))
+                                ->result_array();
+            }
+
+            if ($_POST['type'] == 'setRest') {
+                $olduserId =  $_POST['olduserId'];
+                $newUserId =  $_POST['newUserId'];
+                
+                foreach ($_POST['EID'] as $key) {
+                $this->genDB->update('EIDDet', array('suppUserId' => $newUserId), array('EID' => $key, 'suppUserId' => $olduserId));
+                }
+
+                $status = 'success';
+                $response = 'Restaurant Assigned.';
+            }
+            
+            if ($_POST['type'] == 'removeRest') {
+                $olduserId =  $_POST['olduserId'];
+                $newUserId =  $_POST['newUserId'];
+                
+                foreach ($_POST['EID'] as $key) {
+                $this->genDB->update('EIDDet', array('suppUserId' => $olduserId), array('EID' => $key, 'suppUserId' => $newUserId));
+                    
+                }
+
+                $status = 'success';
+                $response = 'Restaurant Removed.';
+            }
+            
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = 'Restaurant Transfer (Main)';
+        $data['users'] = $this->genDB->select("us.userId, us.fullname")
+                                ->get_where('usersSupport us', array('us.Stat' => 0))
+                                ->result_array();
+
+        // echo "<pre>";print_r($data);die;
+        $this->load->view('support/transfer_rest', $data); 
+    }
+
+    public function transfer_rest_to_user_alter(){
+
+        $status = 'error';
+        $response = 'Something went wrong plz try again!';
+        if($this->input->method(true)=='POST'){
+
+            if ($_POST['type'] == 'getRest') {
+                // echo "<pre>";print_r($_POST);die;
+                $status = 'success';
+
+                $userId =  $_POST['userId'];
+
+
+                $response = $this->genDB->select("ed.EID, ed.Name")
+                                ->order_by('ed.Name', 'ASC')
+                                ->get_where("EIDDet ed", array('ed.suppUserId' => $userId, 'ed.Stat' => 0))
+                                ->result_array();
+            }
+
+            if ($_POST['type'] == 'setRest') {
+                $olduserId =  $_POST['olduserId'];
+                $newUserId =  $_POST['newUserId'];
+                
+                foreach ($_POST['EID'] as $key) {
+                $this->genDB->update('EIDDet', array('suppUserIdAlt' => $newUserId), array('EID' => $key, 'suppUserIdAlt' => $olduserId));
+                }
+
+                $status = 'success';
+                $response = 'Restaurant Assigned.';
+            }
+            
+            if ($_POST['type'] == 'removeRest') {
+                $olduserId =  $_POST['olduserId'];
+                $newUserId =  $_POST['newUserId'];
+                
+                foreach ($_POST['EID'] as $key) {
+                $this->genDB->update('EIDDet', array('suppUserIdAlt' => $olduserId), array('EID' => $key, 'suppUserIdAlt' => $newUserId));
+                    
+                }
+
+                $status = 'success';
+                $response = 'Restaurant Removed.';
+            }
+            
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $data['title'] = 'Restaurant Transfer (Stand By)';
+        $data['users'] = $this->genDB->select("us.userId, us.fullname")
+                                ->get_where('usersSupport us', array('us.Stat' => 0))
+                                ->result_array();
+
+        $this->load->view('support/transfer_rest_alter', $data); 
     }
 
     public function get_city_by_country(){
