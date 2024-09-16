@@ -765,7 +765,7 @@ class Support extends CI_Controller {
              die;
         }
         
-        $data['title'] = 'Support User Access';
+        $data['title'] = 'Outlet to User (Main)';
         $data['users'] = $this->genDB->get('usersSupport')->result_array();
         $data['country'] = $this->genDB->get_where('countries', array('Stat' => 0))->result_array(); 
         $this->load->view('support/supp_user_access', $data); 
@@ -878,7 +878,7 @@ class Support extends CI_Controller {
              die;
         }
         
-        $data['title'] = 'Stand By User Access';
+        $data['title'] = 'Outlet to User (Stand By)';
         $data['users'] = $this->genDB->get('usersSupport')->result_array();
         $data['country'] = $this->genDB->get_where('countries', array('Stat' => 0))->result_array(); 
         $this->load->view('support/supp_user_access_alt', $data); 
@@ -937,7 +937,7 @@ class Support extends CI_Controller {
              die;
         }
         
-        $data['title'] = 'Restaurant Transfer (Main)';
+        $data['title'] = 'Outlet User Change (Main)';
         $data['users'] = $this->genDB->select("us.userId, us.fullname")
                                 ->get_where('usersSupport us', array('us.Stat' => 0))
                                 ->result_array();
@@ -999,7 +999,7 @@ class Support extends CI_Controller {
              die;
         }
         
-        $data['title'] = 'Restaurant Transfer (Stand By)';
+        $data['title'] = 'Outlet User Change (Stand By)';
         $data['users'] = $this->genDB->select("us.userId, us.fullname")
                                 ->get_where('usersSupport us', array('us.Stat' => 0))
                                 ->result_array();
