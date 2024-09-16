@@ -191,7 +191,8 @@
                                 }
 
                                 if($data['TaxType'] == $value['TaxType']){
-                                  $ta = ($data['TA'] != 0)?' [TA]':'';
+                                  $ta = ($data['TA'] == 1)?' [TA]':'';
+                                  $ta = ($data['TA'] == 2)?' [Charity]':'';
                                         $sameTaxType .= ' <tr class="service"> ';
                                         if($data['Itm_Portion'] > 4 ){
                                             

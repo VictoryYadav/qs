@@ -178,7 +178,8 @@
                                     
                                     $qty = ($splitTyp == 0)?round($data['Qty'], 0):$data['Qty'];
                                     
-                                    $ta = ($data['TA'] != 0)?' [TA]':'';
+                                    $ta = ($data['TA'] == 1)?' [TA]':'';
+                                    $ta = ($data['TA'] == 2)?' [Charity]':'';
                                     $CustItemDesc = '';
                                     if(!empty($data['CustItemDesc'])){
                                         $CustItemDesc = ($data['CustItemDesc'] !='Std')?'-'.$data['CustItemDesc']:'';

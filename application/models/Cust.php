@@ -1423,8 +1423,10 @@ class Cust extends CI_Model{
 	                if(!empty($discountDT)){
 	                	$billingObj['discPcent'] = $discountDT['pcent'];
 	                	$billingObj['discId'] = $discountDT['discId'];
-	                	$gt = $totalAmount / (100 - $discountDT['pcent']) * 100;
-	                	$billingObj['autoDiscAmt'] = ($gt * $discountDT['pcent'])/100;
+	                	// $gt = $totalAmount / (100 - $discountDT['pcent']) * 100;
+	                	// $billingObj['autoDiscAmt'] = ($gt * $discountDT['pcent'])/100;
+	                	$billingObj['autoDiscAmt'] = ($totalAmount * $discountDT['pcent'])/100;
+	                	$billingObj['PaidAmt'] = round($totalAmount - $billingObj['autoDiscAmt']);
 	                }
                 }
                 
