@@ -333,9 +333,12 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                                         </button>`;
                         }
 
-                        if (item.TA != 0) {
+                        if (item.TA == 1) {
                             var rate = parseInt(item.Value);
                             var itemName = item.ItemNm + ` (TA)`;
+                        }else if (item.TA == 2) {
+                            var rate = parseInt(item.Value);
+                            var itemName = item.ItemNm + ` (Charity)`;
                         } else {
                             var rate = item.Value;
                             var itemName = item.ItemNm;

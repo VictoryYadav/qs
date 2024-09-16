@@ -244,8 +244,12 @@
                     response.kitcheData.forEach(item => {
                         
                         var ta = '';
-                        if(item.TA != 0){
+                        if(item.TA == 1){
                          ta = '[TA]';
+                        }
+
+                        if(item.TA == 2){
+                         ta = '[Charity]';
                         }
 
                         var CustItemDesc = '';
@@ -253,10 +257,11 @@
                             CustItemDesc = item.CustItemDesc;
                         }
                         
+                        var portionss = (item.Portions != 'Std')?'('+item.Portions+')':'';
                         if(initil_value == item.TaxType){
                             html += `<tr>`;
                             if(item.Itm_Portion > 4){
-                                html += `<td>${item.ItemNm} ${CustItemDesc} (${item.Portions}) ${ta} </td>`;
+                                html += `<td>${item.ItemNm} ${CustItemDesc} ${portionss} ${ta} </td>`;
                             }else{
                                 html += `<td>${item.ItemNm} ${CustItemDesc} ${ta} </td>`;
                             }
@@ -314,7 +319,7 @@
                             sub_total = 0;
 
                             html += `<tr>`;
-                            html += `<td>${item.ItemNm} ${item.CustItemDesc} (${item.Portions}) ${ta}</td>`;
+                            html += `<td>${item.ItemNm} ${item.CustItemDesc} ${portionss} ${ta}</td>`;
                             html += `<td class="text-center">${convertToUnicodeNo(item.Qty)}</td>`;
                             html += `<td class="text-center">${convertToUnicodeNo(item.OrigRate)}</td>`;
                             html += `<td class="text-right">${convertToUnicodeNo(item.OrdAmt)}</td>`;
