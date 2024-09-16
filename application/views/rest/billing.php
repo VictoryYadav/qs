@@ -127,7 +127,14 @@
                                                         foreach ($billData as $keyData => $data) {
                                                             if($data['TaxType'] == $value['TaxType']){
                                                                 $qty = ($splitTyp == 0)?round($data['Qty'], 0):$data['Qty'];
-                                                                    $ta = ($data['TA'] != 0)?' [TA]':'';
+
+                                                                    $ta = '';
+                                                                     if($data['TA'] == 1){
+                                                                      $ta = '[TA]';
+                                                                    }else if($data['TA'] == 2){
+                                                                      $ta = '[Charity]';
+                                                                    }
+
                                                                     $CustItemDesc = '';
                                                                     if(!empty($data['CustItemDesc'])){
                                                                         $CustItemDesc = ($data['CustItemDesc'] !='Std')?'-'.$data['CustItemDesc']:'';
