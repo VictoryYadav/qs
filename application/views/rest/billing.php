@@ -130,9 +130,9 @@
 
                                                                     $ta = '';
                                                                      if($data['TA'] == 1){
-                                                                      $ta = '[TA]';
+                                                                      $ta = ' [TA]';
                                                                     }else if($data['TA'] == 2){
-                                                                      $ta = '[Charity]';
+                                                                      $ta = ' [Charity]';
                                                                     }
 
                                                                     $CustItemDesc = '';
@@ -235,7 +235,7 @@
                                                         <?php if ($tipamt > 0) : ?>
                                                             <tr>
                                                                 <td>TIP Amount</td>
-                                                                <td style="text-align: right;"><?= $tipamt ?></td>
+                                                                <td style="text-align: right;"><?= round($tipamt, 2); ?></td>
                                                             </tr>
                                                         <?php endif; ?>
                                                         

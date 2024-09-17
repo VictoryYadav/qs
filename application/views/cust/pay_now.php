@@ -9,7 +9,7 @@ body{
 }
 
 .item-value{
-    width: 60px;
+    width: 95px;
 }
 
 .btn-success{

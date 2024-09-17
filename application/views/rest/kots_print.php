@@ -203,8 +203,10 @@
                   }
                   
                   if(in_array($kot[0]['OType'], array(1,7,8))){
-                    if($key['TA'] > 0){
-                      $ta = '(TA)';
+                    if($key['TA'] == 1){
+                      $ta = ' (TA)';
+                    }else if($key['TA'] == 2){
+                      $ta = ' (Charity)';
                     }
                   }
                   $edt = '';
@@ -219,7 +221,7 @@
                  ?>
                 <tr class="service">
                     <td class="tableitem">
-                      <?= $key['ItemNm'].$portions.$std; ?><br><?= $key['CustRmks']; ?><?= $ta ?>
+                      <?= $key['ItemNm'].$portions.$std; ?><?= $ta ?> <?= $key['CustRmks']; ?>
                     </td>
                     <td class="tableitem"><?= convertToUnicodeNumber($key['Qty']); ?></td>
                 </tr>

@@ -576,8 +576,10 @@ class Cust extends CI_Model{
 					$kitchenObj['PckCharge'] = $postData['PckCharge'];
 				}
 
-				if($this->session->userdata('CharityCharge') == 1){
-					$kitchenObj['PckCharge'] = $postData['PckCharge'];
+				if($kitchenObj['TA'] == 2){
+					if($this->session->userdata('CharityCharge') == 1){
+						$kitchenObj['PckCharge'] = $postData['PckCharge'];
+					}
 				}
 
 				$kitchenObj['Stat'] = $stat;

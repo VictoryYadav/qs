@@ -506,7 +506,7 @@ $folder = 'e'.$EID;
                             <?php if ($tipamt > 0) : ?>
                                 <tr>
                                     <th>TIP Amount</th>
-                                    <td style="text-align: right;"><?= $tipamt ?></td>
+                                    <td style="text-align: right;"><?= round($tipamt, 2); ?></td>
                                 </tr>
                             <?php endif; ?>
                             

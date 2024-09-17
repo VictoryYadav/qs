@@ -2205,12 +2205,15 @@ class Restaurant extends CI_Controller {
 
             $stat = ($EType == 5)?3:2;
 
-            $groupby = ' GROUP BY km.MCNo';    
+             
             if($_POST['filter'] == 'tableWise'){
-                $groupby = ' GROUP BY km.MergeNo';
+                
+                $kitchenData = $this->db2->query("SELECT ((k.Qty) - (k.DQty)) as AllDelivered, km.CNo, km.CustId,  sum(k.OrigRate * k.Qty) as Amt, TIME_FORMAT(km.LstModDt,'%H:%i') as StTime,   km.MergeNo, km.MCNo, km.BillStat,  km.EID, km.CNo, km.CellNo, IF(km.CellNo > 0,(select count(km2.CellNo) from KitchenMain km2 where km2.CellNo=km.CellNo and km2.EID = km.EID group by km2.CellNo),0) as visitNo, km.TableNo,km.SeatNo, km.OType, km.payRest, km.custPymt, km.CnfSettle, km.billSplit FROM Kitchen k, KitchenMain km WHERE km.payRest=0 and km.CnfSettle=0 AND (k.Stat = $stat) AND (k.OType = 7 OR k.OType = 8) and (km.CNo = k.CNo) AND k.EID = km.EID AND k.MergeNo = km.MergeNo AND km.EID = $EID GROUP BY k.MergeNo order by km.MergeNo ASC")->result_array();
+
+            }else{
+                $kitchenData = $this->db2->query("SELECT ((k.Qty) - (k.DQty)) as AllDelivered, km.CNo, km.CustId,  (k.OrigRate * k.Qty) as Amt, TIME_FORMAT(km.LstModDt,'%H:%i') as StTime,   km.MergeNo, km.MCNo, km.BillStat,  km.EID, km.CNo, km.CellNo, IF(km.CellNo > 0,(select count(km2.CellNo) from KitchenMain km2 where km2.CellNo=km.CellNo and km2.EID = km.EID group by km2.CellNo),0) as visitNo, km.TableNo,km.SeatNo, km.OType, km.payRest, km.custPymt, km.CnfSettle, km.billSplit FROM Kitchen k, KitchenMain km WHERE km.payRest=0 and km.CnfSettle=0 AND (k.Stat = $stat) AND (k.OType = 7 OR k.OType = 8) and (km.CNo = k.CNo) AND k.EID = km.EID AND k.MergeNo = km.MergeNo AND km.EID = $EID  GROUP BY km.CNo order by km.MergeNo ASC")->result_array();
             }
             
-            $kitchenData = $this->db2->query("SELECT (SUM(k.Qty) - SUM(k.DQty)) as AllDelivered, km.CNo, km.CustId,  SUM(k.OrigRate * k.Qty) as Amt, TIME_FORMAT(km.LstModDt,'%H:%i') as StTime,   km.MergeNo, km.MCNo, km.BillStat,  km.EID, km.CNo, km.CellNo, IF(km.CellNo > 0,(select count(km2.CellNo) from KitchenMain km2 where km2.CellNo=km.CellNo and km2.EID = km.EID group by km2.CellNo),0) as visitNo, km.TableNo,km.SeatNo, km.OType, km.payRest, km.custPymt, km.CnfSettle, km.billSplit FROM Kitchen k, KitchenMain km, Eat_tables et WHERE km.payRest=0 and km.CnfSettle=0 AND (k.Stat = $stat) AND (k.OType = 7 OR k.OType = 8) and (km.CNo = k.CNo) AND k.EID = km.EID AND k.MergeNo = km.MergeNo AND km.EID = $EID $ccd_qry $groupby order by km.MergeNo ASC")->result_array();
 
             if (empty($kitchenData)) {
                 $response = [
@@ -2522,8 +2525,9 @@ class Restaurant extends CI_Controller {
         $ChainId = authuser()->ChainId;
 
         if (isset($_POST['getUnmergeTables']) && $_POST['getUnmergeTables']) {
+            $ccd = $_POST['ccd'];
 
-            $tables = $this->db2->query("SELECT et.TableNo, et.MergeNo from Eat_tables et where et.TableNo = et.MergeNo and et.TableNo < 100 or (et.TableNo in (select km.TableNo from KitchenMain km where km.BillStat = 0 and km.TableNo = km.MergeNo and km.EID = $EID) and et.EID = $EID) order by et.TableNo ASC")->result_array();
+            $tables = $this->db2->query("SELECT et.TableNo, et.MergeNo from Eat_tables et where et.TableNo = et.MergeNo and et.CCd = $ccd and et.TableNo < 100 or (et.TableNo in (select km.TableNo from KitchenMain km where km.BillStat = 0 and km.TableNo = km.MergeNo and km.EID = $EID) and et.EID = $EID) order by et.TableNo ASC")->result_array();
 
             if (!empty($tables)) {
                 $response = [
@@ -2578,7 +2582,10 @@ class Restaurant extends CI_Controller {
             die;
         }
         if (isset($_POST['getMergedTables']) && $_POST['getMergedTables']) {
-            $tables = $this->db2->query("SELECT MergeNo from Eat_tables where TableNo != MergeNo and EID = $EID group by MergeNo order by MergeNo ASC ")->result_array();
+
+            $ccd = $_POST['ccd'];
+
+            $tables = $this->db2->query("SELECT MergeNo from Eat_tables where TableNo != MergeNo and EID = $EID and CCd = $ccd group by MergeNo order by MergeNo ASC ")->result_array();
 
             if (!empty($tables)) {
                 $response = [
@@ -2792,7 +2799,7 @@ class Restaurant extends CI_Controller {
                 $order_by = " mi.IMcCd";
             }
 
-            $items = $this->db2->query("SELECT mc.TaxType, mc.DCd, mi.KitCd, mc.CTyp, mi.ItemId, mi.ItemTyp, mi.NV, mi.PckCharge, (case when $itemName1 != '-' Then $itemName1 ELSE mi.Name1 end) as LngName, (case when $ItmDesc != '-' Then $ItmDesc ELSE mi.ItmDesc1 end) as ItmDesc, (case when $ingeredients != '-' Then $ingeredients ELSE mi.Ingeredients1 end) as Ingeredients, (case when $Rmks != '-' Then $Rmks ELSE mi.Rmks1 end) as Rmks, (case when $ipname != '-' Then $ipname ELSE ip.Name1 end) as portionName, mir.Itm_Portion, mi.PrepTime, mi.AvgRtng, mi.FID, mi.ItemAttrib, mi.ItemSale, mi.ItemTag, mi.Name1 as imgSrc, mi.UItmCd, mi.IMcCd, mi.CID, mi.MCatgId, mi.videoLink, mir.OrigRate,  et.TblTyp FROM MenuItem mi, MenuCatg mc, ItemPortions ip, MenuItemRates mir, Eat_tables et  where  mi.MCatgId = mc.MCatgId and ip.IPCd = mir.Itm_Portion and mir.ItemId = mi.ItemId and et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = $tableNo AND et.EID = $EID AND mir.EID = $EID AND mir.ItemId = mi.ItemId and mi.Stat = 0 and $likeQry  and (DAYOFWEEK(CURDATE()) = mi.DayNo OR mi.DayNo = 8)  AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) AND mc.EID= $EID AND mi.EID=$EID ORDER BY $order_by")->result_array();
+            $items = $this->db2->query("SELECT mc.TaxType, mc.DCd, mi.KitCd, mc.CTyp, mi.ItemId, mi.ItemTyp, mi.NV, mi.PckCharge, (case when $itemName1 != '-' Then $itemName1 ELSE mi.Name1 end) as LngName, (case when $ItmDesc != '-' Then $ItmDesc ELSE mi.ItmDesc1 end) as ItmDesc, (case when $ingeredients != '-' Then $ingeredients ELSE mi.Ingeredients1 end) as Ingeredients, (case when $Rmks != '-' Then $Rmks ELSE mi.Rmks1 end) as Rmks, (case when $ipname != '-' Then $ipname ELSE ip.Name1 end) as portionName, mir.Itm_Portion, mi.PrepTime, mi.AvgRtng, mi.FID, mi.ItemAttrib, mi.ItemSale, mi.ItemTag, mi.Name1 as imgSrc, mi.UItmCd, mi.IMcCd, mi.CID, mi.MCatgId, mi.videoLink, mir.OrigRate,  et.TblTyp FROM MenuItem mi, MenuCatg mc, ItemPortions ip, MenuItemRates mir, Eat_tables et  where  mi.MCatgId = mc.MCatgId and ip.IPCd = mir.Itm_Portion and mir.ItemId = mi.ItemId and et.SecId = mir.SecId and mir.OrigRate > 0 and et.MergeNo = '$tableNo' AND et.EID = $EID AND mir.EID = $EID AND mir.ItemId = mi.ItemId and mi.Stat = 0 and $likeQry  and (DAYOFWEEK(CURDATE()) = mi.DayNo OR mi.DayNo = 8)  AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) AND mc.EID= $EID AND mi.EID=$EID group by mi.ItemId, ip.IPCd, mi.EID ORDER BY $order_by")->result_array();
             
             if (!empty($items)) {
                 $response = [
@@ -2810,7 +2817,7 @@ class Restaurant extends CI_Controller {
         }
 
         if (isset($_POST['sendToKitchen']) && $_POST['sendToKitchen']) {
-
+            // echo "<pre>";print_r($_POST);die;
             $thirdParty = 0;
             $thirdPartyRef = 0;
 
@@ -2917,7 +2924,7 @@ class Restaurant extends CI_Controller {
                     }
                     if ($oldKitCd != $itemKitCds[$i]) {
                         // $itemKitCd = $itemKitCds[$i];
-                        $getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID=$EID AND KitCd = $itemKitCd and TableNo = $tableNo and Stat = 3")->result_array();
+                        $getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID=$EID AND KitCd = $itemKitCd and MergeNo = '$tableNo' and Stat = 3")->result_array();
                         $fKotNo = $getFKOT[0]['FKOTNO'];
                         $fKotNo = $fKotNo + 1;
                         $fkotArray[$i] = $fKotNo;
@@ -3003,7 +3010,8 @@ class Restaurant extends CI_Controller {
             // end of billbased offer
 
             // delete from temp kitchen
-            deleteRecord('tempKitchen', array('TableNo' => $tableNo, 'EID' => $EID));
+            // deleteRecord('tempKitchen', array('TableNo' => $tableNo, 'EID' => $EID));
+            $this->db2->query("DELETE FROM tempKitchen where MergeNo = '$tableNo' and EID = '$EID'");
             // end delete from temp kitchen
 
             $url = base_url('restaurant/kot_print/').$CNo.'/'.$tableNo.'/'.$fKotNo.'/'.$kotNo;
@@ -3726,13 +3734,15 @@ class Restaurant extends CI_Controller {
 
             extract($_POST);
             $whr = '';
-            if($custId > 0){
-                $whr = " and b.CustId = $custId";
-            }
+            // if($custId > 0){
+            //     $whr = " and b.CustId = $custId";
+            // }
+            // have to where condition based on billid
             
             $bill = array();
             $EID = authuser()->EID;
              $bills = $this->db2->query("SELECT b.TableNo, b.MergeNo, b.BillId, b.BillNo, b.CNo, b.TotAmt, b.PaidAmt, b.CustId, b.EID, b.MergeNo, b.CellNo, b.CustId from Billing b where b.EID = $EID and b.MergeNo = '$mergeNo' and b.CNo = $MCNo $whr and b.payRest = 0")->result_array();
+
             $data['sts'] = 0;
             if(!empty($bills)){
                 $bill = $bills;
@@ -6934,7 +6944,7 @@ class Restaurant extends CI_Controller {
     }
 
     public function split_bills(){
-        $data['title'] = 'Split Bills';
+        $data['title'] = 'Split Bill Receipt';
         $data['bills'] = $this->rest->getSplitBills();
         $data['payModes'] = $this->rest->getPaymentModes();
         $this->load->view('rest/split_bill_list', $data);

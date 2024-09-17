@@ -193,9 +193,9 @@
                                 if($data['TaxType'] == $value['TaxType']){
                                     $ta = '';
                                      if($data['TA'] == 1){
-                                      $ta = '[TA]';
+                                      $ta = ' [TA]';
                                     }else if($data['TA'] == 2){
-                                      $ta = '[Charity]';
+                                      $ta = ' [Charity]';
                                     }
                                   
                                         $sameTaxType .= ' <tr class="service"> ';

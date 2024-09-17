@@ -902,6 +902,7 @@ width: 100%;*/
                             var template = '';
                             var bgcolor = '';
                         response.kitchenData.forEach((item, index) =>{
+
                             if(item.BillStat == 0 && item.OType == 8){
                                 bgcolor = '#d5d2d2'; // grey
                             }else if(item.BillStat == 1 && item.custPymt == 0 && item.payRest == 0){
@@ -1608,12 +1609,14 @@ width: 100%;*/
         // })
   
     function getUnmergeTables(){
+        var cashierCode = $(`#kitchen-code`).val();
 
     $.ajax({
         url: '<?php echo base_url('restaurant/merge_table_ajax'); ?>',
         type: 'POST',
         data:{
-            getUnmergeTables: 1
+            getUnmergeTables: 1,
+            ccd:cashierCode
         },
         dataType: 'json',
         success: function(response) {
@@ -1644,11 +1647,14 @@ width: 100%;*/
 }
 
 function getMmergedTables(){
+    var cashierCode = $(`#kitchen-code`).val();
+
     $.ajax({
         url: '<?php echo base_url('restaurant/merge_table_ajax'); ?>',
         type: 'POST',
         data:{
-            getMergedTables: 1
+            getMergedTables: 1,
+            ccd:cashierCode
         },
         dataType: 'json',
         success: function(response) {
