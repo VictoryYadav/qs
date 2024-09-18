@@ -2947,7 +2947,7 @@ class Restaurant extends CI_Controller {
                 $kitchenObj['KOTNo'] = $kotNo;
                 $kitchenObj['UKOTNo'] = $newUKOTNO;       
                 $kitchenObj['TableNo'] = $tableNo;
-                $kitchenObj['MergeNo'] = $tableNo;
+                $kitchenObj['MergeNo'] = $this->rest->getMergeNoByCNo($CNo);
                 $kitchenObj['ItemId'] = $itemIds[$i];
                 $kitchenObj['Qty'] = $itemQty[$i];
                 $kitchenObj['TA'] = $take_away[$i];
