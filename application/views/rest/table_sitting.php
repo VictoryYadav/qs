@@ -313,14 +313,14 @@ width: 100%;*/
                                                  }
                                                 if (($EType == 5) && ($this->session->userdata('Move') > 0)) {
                                                     ?>
-                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#move_table_modal" title="Move Table">
+                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#move_table_modal" title="Move Table" id="moveTable">
                                                     <i class="far fa-user"></i>
                                                 </button>
                                                 <?php } ?>
                                                 <?php
                                                 if (($EType == 5) && ($this->session->userdata('JoinTable') > 0)) {
                                                     ?>
-                                                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#merge_table_modal" title="Join Table">
+                                                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#merge_table_modal" title="Join Table" id="joinTable">
                                                         <i class="dripicons-network-3"></i>.
                                                     </button>
                                                 <?php } ?>
@@ -554,8 +554,7 @@ width: 100%;*/
                     </button>
                 </div>
                 <div class="modal-body" style="max-height: 500px;overflow: auto;">
-                    <form method="post" action="ajax/sittin_table_view_ajax.php">
-                        <input type="hidden" name="move_table" value="1">
+                    <form method="post" id="move_table">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -579,10 +578,6 @@ width: 100%;*/
                                         <?php }?>
                                     </select>
                                 </div>
-                            </div>
-                            <br>
-                            <div class="col-md-12 text-left" id="num_list">
-                                
                             </div>
 
                             <div class="text-right p-4 col-md-12">
@@ -996,6 +991,8 @@ width: 100%;*/
                 $('#btnCash').attr('onclick', "cashCollect("+custId+","+MCNo+",'"+mergeNo+"',"+oTyp+")");
                 $('#btnCash').show();
                 $('#billCreatebtn').hide();
+                $('#moveTable').hide();
+                $('#joinTable').hide();
                 $('#billSplit').hide();
             }else{
                 
@@ -1006,6 +1003,8 @@ width: 100%;*/
                     $('#billCreatebtn').attr('onclick', "billCreate('"+mergeNo+"',"+custId+", '"+tableFilter+"', '"+MCNo+"')");    
                 }
                 $('#billCreatebtn').show();
+                $('#moveTable').show();
+                $('#joinTable').show();
 
                 $('#billSplit').attr('onclick', "split_billing('"+mergeNo+"',"+custId+", '"+tableFilter+"', '"+MCNo+"')");
                 $('#billSplit').show();
@@ -2184,5 +2183,21 @@ function changeOffer(){
         }
     });  
 }
+
+$(`#move_table`).on('submit', function(e){
+    e.preventDefault();
+    var from_table = $(`#from_table`).val();
+    var to_table = $(`#to_table`).val();
+
+    $.post('<?= base_url('restaurant/move_table') ?>',{MergeNo:MergeNo},function(response){
+
+        if(response.status == 'success') {
+            alert(response.status);
+        }else {
+            alert(response.status);
+        }
+    });
+    
+})
 
 </script>

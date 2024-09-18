@@ -2482,24 +2482,6 @@ class Restaurant extends CI_Controller {
             }
         }
 
-        if(isset($_POST['move_table']) && !empty($_POST['move_table'])){
-            $from = $_POST['from_table'];
-            $to = $_POST['to_table'];
-            $phone = implode(",", $_POST['cell_no']);
-            $q1 = "UPDATE KitchenMain set TableNo = '".$to."', Mergeno ='".$to."' where EID = ".$EID." and (TableNo = '".$from."' or MergeNo = '".$from."') and CellNo in(".$phone.")";
-            
-            $update_kitchen_main = $this->db2->query($q1);
-            $q2 = "UPDATE Kitchen set TableNo = '".$to."', Mergeno =".$to." where EID = ".$EID." and (TableNo = '".$from."' or MergeNo = '".$from."') and CellNo in(".$phone.")";
-            
-            $update_kitchen = $this->db2->query($q2);
-            $q3 = "UPDATE Eat_tables set Stat = 0 where EID = ".$EID." and TableNo = ".$from;
-            
-            $update_et = $this->db2->query($q3);
-            $update_et = $this->db2->query("UPDATE Eat_tables set Stat = 1 where EID = ".$EID." and TableNo = ".$to);
-            
-            redirect(base_url('restaurant/sitting_table'));
-        }
-
         if(isset($_POST['get_phone_num']) && !empty($_POST['get_phone_num'])){
 
             $from = $_POST['from_table'];
@@ -2650,6 +2632,59 @@ class Restaurant extends CI_Controller {
             $tables = $this->db2->query($q1);
         }
 
+    }
+
+    public function move_table(){
+
+        $status = 'error';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        if($this->input->method(true)=='POST'){
+
+            $EID = authuser()->EID;
+            $from_table = $_POST['from_table'];
+            $to_table = $_POST['to_table'];
+
+            $kmDT = $this->db2->query("SELECT TableNo, MergeNo from KitchenMain where EID = $EID and TableNo = '$from_table' and BillStat = 0")->row_array();
+
+            if(!empty($kmDT)){
+                $text = $kmDT['MergeNo'];
+                $word = "~";
+
+                if (strpos($text, $word) !== false) {
+
+                    $res = explode("~", $text);
+                    $temp[] = $to_table;
+                    foreach ($res as $key) {
+                        if($key != $from_table){
+                            $temp[] = $key;         
+                        }
+                    }
+                    sort($temp);
+                    $MergeNo = implode('~', $temp);
+                } else {
+                    $MergeNo = $to_table;
+                }
+
+                $this->db2->query("UPDATE KitchenMain set TableNo = $to_table, MergeNo ='$MergeNo', OldTableNo = $from_table where EID = $EID and TableNo = $from_table and  MergeNo = '$text'");
+
+                $this->db2->query("UPDATE Kitchen set TableNo = $to_table, MergeNo ='$MergeNo' where EID = $EID and TableNo = $from_table and  MergeNo = '$text'");
+
+                $this->db2->query("UPDATE Eat_tables set MergeNo =$from_table, Stat=0 where EID = $EID and TableNo = $from_table and  MergeNo = '$text'");
+
+                $this->db2->query("UPDATE Eat_tables set MergeNo =$MergeNo, Stat=1 where EID = $EID and TableNo = $to_table");
+
+            }
+
+            $status = 'success';
+            $response = 'Table are moved';
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
     }
 
     public function customer_landing_page_ajax(){
@@ -4002,7 +4037,7 @@ class Restaurant extends CI_Controller {
             $groupby = ' km.MCNo';
             $whr = " and km.MCNo = $MCNo";
             if($_POST['tableFilter'] == 'tableWise'){
-                $whr = " and km.MergeNo = '$MergeNo'";
+                $whr = " and km.MergeNo = $MergeNo";
 
                 $characterToFind = '~';
                 $count = substr_count($MergeNo, $characterToFind);
