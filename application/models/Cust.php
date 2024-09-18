@@ -1523,9 +1523,9 @@ class Cust extends CI_Model{
                     // check for customer split bill 9-jan-24
                     if($splitTyp == 0){
 
-                    	$this->db2->query("UPDATE Kitchen SET BillStat = $billingObjStat  WHERE EID = $EID and (MCNo = $CNo or MergeNo = $strMergeNo) AND BillStat = 0 and Stat = $kstat ");
+                    	$this->db2->query("UPDATE Kitchen SET BillStat = $billingObjStat  WHERE EID = $EID and (MCNo = $CNo and MergeNo = $strMergeNo) AND BillStat = 0 and Stat = $kstat ");
 
-                    	$this->db2->query("UPDATE KitchenMain SET BillStat = $billingObjStat WHERE (MCNo = $CNo or MergeNo = $strMergeNo) AND BillStat = 0 AND EID = $EID ");
+                    	$this->db2->query("UPDATE KitchenMain SET BillStat = $billingObjStat WHERE (MCNo = $CNo and MergeNo = $strMergeNo) AND BillStat = 0 AND EID = $EID ");
                     }
 
                 $this->db2->trans_complete();

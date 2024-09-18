@@ -1003,7 +1003,7 @@ width: 100%;*/
                     // $('#billCreatebtn').attr('onclick', "billMerge('"+mergeNo+"',"+custId+", '"+tableFilter+"')");
                     checkCNoForTable(mergeNo,tableFilter, MCNo, custId);
                 }else{
-                    $('#billCreatebtn').attr('onclick', "billCreate('"+mergeNo+"',"+custId+", '"+tableFilter+"')");    
+                    $('#billCreatebtn').attr('onclick', "billCreate('"+mergeNo+"',"+custId+", '"+tableFilter+"', '"+MCNo+"')");    
                 }
                 $('#billCreatebtn').show();
 
@@ -1117,7 +1117,7 @@ width: 100%;*/
             $.post('<?= base_url('restaurant/updateMCNoForTable') ?>',{MergeNo:MergeNo,MCNo:MCNo},function(response){
 
                 if(response.status == 'success') {
-                    billCreate(MergeNo, custId, tableFilter);
+                    billCreate(MergeNo, custId, tableFilter, MCNo);
                 }else {
                     alert(response.status);
                 }
@@ -1837,12 +1837,12 @@ function get_phone_num(){
     });
 }
 
-function billCreate(mergeNo, custId, tableFilter){
+function billCreate(mergeNo, custId, tableFilter, MCNo){
     var SchType = "<?php echo  $this->session->userdata('SchType'); ?>";
     var mergeNo = "'"+mergeNo+"'";
 
     if(SchType == 1){
-        billBasedOffers(mergeNo, custId, tableFilter, 'normal', 0);
+        billBasedOffers(mergeNo, custId, tableFilter, 'normal', MCNo);
     }else{
         var disc = "<?php echo $this->session->userdata('Discount'); ?>";
         if(disc > 0){
@@ -1856,24 +1856,24 @@ function billCreate(mergeNo, custId, tableFilter){
                             $('#tableFilter').val(tableFilter);
                             $('#billDiscountModel').modal('show');
                         }else{
-                            billCreateWitoutDisc(mergeNo, tableFilter);
+                            billCreateWitoutDisc(mergeNo, tableFilter, MCNo);
                         }
                     }else{
                       alert(res.response);
                     }
                 });
             }else{
-                billCreateWitoutDisc(mergeNo, tableFilter);    
+                billCreateWitoutDisc(mergeNo, tableFilter, MCNo);    
             }
         }else{
-            billCreateWitoutDisc(mergeNo, tableFilter);
+            billCreateWitoutDisc(mergeNo, tableFilter, MCNo);
         }
     }
 }
 
-function billCreateWitoutDisc(mergeNo, tableFilter){
+function billCreateWitoutDisc(mergeNo, tableFilter, MCNo){
     var custDiscPer = 0;
-    $.post('<?= base_url('restaurant/billCreateRest') ?>',{mergeNo:mergeNo,custDiscPer:custDiscPer, tableFilter:tableFilter},function(res){
+    $.post('<?= base_url('restaurant/billCreateRest') ?>',{mergeNo:mergeNo,custDiscPer:custDiscPer, tableFilter:tableFilter, MCNo:MCNo},function(res){
         if(res.status == 'success'){
             var billId = res.response;
           window.location = "<?php echo base_url('restaurant/bill/'); ?>"+billId;
