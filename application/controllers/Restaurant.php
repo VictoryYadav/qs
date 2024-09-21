@@ -53,7 +53,6 @@ class Restaurant extends CI_Controller {
 
     public function customer_graph(){
 
-        $ChainId    = authuser()->ChainId;
         $EID        = authuser()->EID;
 
         $today = date('Y-m-d');
@@ -323,7 +322,6 @@ class Restaurant extends CI_Controller {
     }
 
     public function rest_graph(){
-        $ChainId    = authuser()->ChainId;
         $EID        = authuser()->EID;
 
         $today = date('Y-m-d');
@@ -531,7 +529,6 @@ class Restaurant extends CI_Controller {
     }
 
     public function food_graph(){
-        $ChainId    = authuser()->ChainId;
         $EID        = authuser()->EID;
 
         $today = date('Y-m-d');
@@ -1591,7 +1588,6 @@ class Restaurant extends CI_Controller {
         $data['RUserId'] = authuser()->RUserId;
         $data['Cash'] = $this->session->userdata('Cash');
         $data['EType'] = $this->session->userdata('EType');
-        $Fest = $this->session->userdata('Fest');
         $data['CheckOTP'] = $this->session->userdata('DeliveryOTP');
         $data['EID'] = authuser()->EID;
         $data['DispenseAccess'] = $this->rest->getDispenseAccess();
@@ -1601,12 +1597,8 @@ class Restaurant extends CI_Controller {
     }
 
     public function order_delivery(){
-        $Fest = $this->session->userdata('Fest');
         $langId = $this->session->userdata('site_lang');
         if($this->input->method(true) == 'POST'){
-            $AutoAllot = $this->session->userdata('AutoAllot');
-            $AutoDeliver = $this->session->userdata('AutoDeliver');
-            $EType = $this->session->userdata('EType');
             
             $EID = authuser()->EID;
 
@@ -1708,7 +1700,6 @@ class Restaurant extends CI_Controller {
 
     public function change_password(){
         // $this->check_access();
-
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
@@ -1758,7 +1749,6 @@ class Restaurant extends CI_Controller {
               'vibrate' => 1,
               'sound'   => 1
             );
-            // firebaseNotification($check['token'], $message);
         }
     }
 
@@ -1790,18 +1780,6 @@ class Restaurant extends CI_Controller {
               ));
              die;
         }
-    }
-
-    public function merge_table(){
-        if($this->input->method(true)=='POST'){
-
-            $res = $this->rest->mergeTables($_POST);
-            echo json_encode($res);
-            die;
-        }
-
-        $data['title'] = 'Table - Join/Unjoin';
-        $this->load->view('rest/table_merge',$data);   
     }
 
     public function set_theme(){
@@ -2230,6 +2208,7 @@ class Restaurant extends CI_Controller {
             echo json_encode($response);
             die();
         }
+
         if(isset($_POST['getKitchenData']) && $_POST['getKitchenData']){
             
             $f = $_POST['FKOTNo'];
@@ -2244,6 +2223,7 @@ class Restaurant extends CI_Controller {
             echo json_encode($response);
             die();
         }
+
         if (isset($_POST['acceptTable']) && $_POST['acceptTable']) {
             $tableNo = $_POST['tableNo'];
             $custId = $_POST['custId'];
@@ -2421,30 +2401,6 @@ class Restaurant extends CI_Controller {
             die();
         }
 
-        if (isset($_POST['checkStatForDecline'])) {
-            $itemId = $_POST['itemId'];
-            $tableNo = $_POST['tableNo'];
-            $custId = $_POST['custId'];
-            $cNo = $_POST['cNo'];
-
-            $checkItemStat = $this->db2->query("SELECT SUM(k.Qty - (k.AQty + k.DQty)) as DeclineQty, k.ItemId, k.Stat, i.Name1 From Kitchen k, MenuItem i WHERE i.ItemId = k.ItemId AND i.EID = k.EID AND k.ItemId = $itemId AND k.TableNo = '$tableNo' AND k.CustId = $custId AND k.EID = $EID AND k.Stat = 1 GROUP BY k.ItemId, k.Stat")->result_array();
-
-            if (empty($checkItemStat)) {
-                $response = [
-                    "status" => 0,
-                    "msg" => $this->lang->line('noItemFound')
-                ];
-            } else {
-                $response = [
-                    "status" => 1,
-                    "checkItemStat" => $checkItemStat[0]
-                ];
-            }
-
-            echo json_encode($response);
-            die();
-        }
-
         if(!empty($_POST['check_new_orders'])){
             $q = "SELECT * from KitchenMain where (Stat = 0 or Stat = 10) and EID = ".$EID." and ChainId = ".$ChainId." and BillStat = 0 order by CNo asc";
             $data = $this->db2->query($q)->result_array();
@@ -2497,7 +2453,6 @@ class Restaurant extends CI_Controller {
                 echo 0;
             }
         }
-
     }
 
     public function merge_table_ajax(){
@@ -2584,6 +2539,7 @@ class Restaurant extends CI_Controller {
             echo json_encode($response);
             die;
         }
+
         if (isset($_POST['getEachTable']) && $_POST['getEachTable']) {
             $merge_no = $_POST['MergeNo'];
             
@@ -2623,6 +2579,7 @@ class Restaurant extends CI_Controller {
             die;
             
         }
+
         if(isset($_POST['UnmergeTable']) && $_POST['UnmergeTable']){
             
             $mergeNo = $_POST['MergeNo'];
@@ -2665,18 +2622,22 @@ class Restaurant extends CI_Controller {
                     $MergeNo = $to_table;
                 }
 
-                $this->db2->query("UPDATE KitchenMain set TableNo = $to_table, MergeNo ='$MergeNo', OldTableNo = $from_table where EID = $EID and TableNo = $from_table and  MergeNo = '$text'");
+                $this->db2->query("UPDATE KitchenMain set MergeNo ='$MergeNo' where EID = $EID and BillStat = 0 and  MergeNo = '$text'");
 
-                $this->db2->query("UPDATE Kitchen set TableNo = $to_table, MergeNo ='$MergeNo' where EID = $EID and TableNo = $from_table and  MergeNo = '$text'");
+                $this->db2->query("UPDATE KitchenMain set TableNo = $to_table where EID = $EID and BillStat = 0 and  TableNo = $from_table");
 
-                $this->db2->query("UPDATE Eat_tables set MergeNo =$from_table, Stat=0 where EID = $EID and TableNo = $from_table and  MergeNo = '$text'");
+                $this->db2->query("UPDATE Kitchen set MergeNo ='$MergeNo' where EID = $EID and BillStat = 0 and  MergeNo = '$text'");
 
-                $this->db2->query("UPDATE Eat_tables set MergeNo =$MergeNo, Stat=1 where EID = $EID and TableNo = $to_table");
+                $this->db2->query("UPDATE Kitchen set TableNo = $to_table where EID = $EID and BillStat = 0 and TableNo = $from_table");
+
+                $this->db2->query("UPDATE Eat_tables set MergeNo =$from_table, Stat=0 where EID = $EID and  MergeNo = '$text'");
+
+                $this->db2->query("UPDATE Eat_tables set MergeNo ='$MergeNo', Stat=1 where EID = $EID and TableNo = $to_table");
 
             }
 
             $status = 'success';
-            $response = 'Table are moved';
+            $response = $this->lang->line('tableChanged');
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
@@ -2690,48 +2651,7 @@ class Restaurant extends CI_Controller {
     public function customer_landing_page_ajax(){
 
         $EID = authuser()->EID;
-        $ChainId = authuser()->ChainId;
         $EType = $this->session->userdata('EType');
-
-        if (isset($_POST['getCuisine']) && $_POST['getCuisine']) {
-
-            if ($ChainId == 0) {
-                $eatCuisineData = $this->db2->query("SELECT ec.ECID, ec.CID, c.Name, c.CTyp, f.FID, f.fIdA, f.Opt, f.AltOpt, ec.CID as imgSrc FROM `EatCuisine` ec, Cuisines c, Food f, Eatary e WHERE e.EID=ec.EID and ec.CID = c.CID AND c.CTyp = f.CTyp AND ec.EID = $EID AND e.Stat = 0 AND ec.Stat = 0 ORDER BY Rank")->result_array();
-            } else {
-                $eatCuisineData = $this->db2->query("SELECT ec.ECID, ec.CID, c.Name, c.CTyp, f.FID, f.fIdA, f.Opt, f.AltOpt, ec.CID as imgSrc FROM `EatCuisine` ec, Cuisines c, Food f, Eatary e WHERE e.EID=ec.EID and ec.CID = c.CID AND c.CTyp = f.CTyp AND  e.ChainId = $ChainId AND e.Stat = 0 AND ec.Stat = 0 ORDER BY Rank")->result_array();
-            }
-
-            if (empty($eatCuisineData)) {
-                $response = [
-                    "status" => 0,
-                    "msg" => $this->lang->line('noCuisinesDefined')
-                ];
-            } else {
-
-                foreach ($eatCuisineData as $key => $data) {
-                    
-                    if ($ChainId > 0) {
-                        $imgSrc = "uploads/c" . $ChainId . "/" . $data['imgSrc'] . ".jpg";
-                    } else {
-                        $imgSrc = "uploads/e" . $EID . "/" . $data['imgSrc'] . ".jpg";
-                    }
-
-                    if (!file_exists("../$imgSrc")) {
-                        $imgSrc = "uploads/general/" . $data['imgSrc'] . ".jpg";
-                    }
-
-                    $eatCuisineData[$key]['imgSrc'] = ltrim($imgSrc);
-                }
-
-                $response = [
-                    "status" => 1,
-                    "eatCuisineData" => $eatCuisineData
-                ];
-            }
-
-            echo json_encode($response);
-            die();
-        }
 
         if(isset($_POST['call_help'])){
             
@@ -2739,6 +2659,7 @@ class Restaurant extends CI_Controller {
             $insert_help = insertRecord('call_bell', $dd);
             echo $insert_help;
         }
+
         if(isset($_POST['check_call_help'])){
             $list_id = $_POST['list_id'];
             $check = '';
@@ -2756,6 +2677,7 @@ class Restaurant extends CI_Controller {
             }
             echo json_encode($check);
         }
+
         if(isset($_POST['view_call_help'])){
             
             $id = $_POST['help_table_id'];
@@ -2766,6 +2688,7 @@ class Restaurant extends CI_Controller {
             $check = 1;
             echo $check;
         }
+
         if(isset($_POST['respond_call_help'])){
 
             $datas['respond_time']    = date('Y-m-d H:i:s');
@@ -2776,24 +2699,12 @@ class Restaurant extends CI_Controller {
             $check = 1;
             echo $check;
         }
-        if(isset($_POST['check_help'])){
-            
-            $check = '';
-            $q = "SELECT * from call_bell where id = '$id'";
-            $data = $this->exec($q);
-            if(!empty($data)){
-                $check = $data[0];
-            }else{
-                $check = array();
-            }
-
-            echo json_encode($check);
-        }
         
         if(!empty($_POST['set_lang']) && !empty($_POST['lang'])){
             $lang = $_POST['lang'];
             setcookie('lang', $lang, time() + (3600 * 24 * 365), "/");
         }
+
     }
 
     public function order_ajax_3p(){
@@ -3313,25 +3224,6 @@ class Restaurant extends CI_Controller {
         }
     }
 
-    public function tokenGenerate(){
-        $status = "error";
-        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
-        if($this->input->method(true)=='POST'){
-            
-            $data['token'] = $_POST['token']; 
-            $data['LstModDt'] = date('Y-m-d H:i:s'); 
-            updateRecord('UsersRest', $data, array('RUserId' => authuser()->RUserId) );
-            $status = 'success';
-            $response = 'Token Generated.';
-            header('Content-Type: application/json');
-            echo json_encode(array(
-                'status' => $status,
-                'response' => $response
-              ));
-             die;
-        }
-    }
-
     public function rmcat(){
         $this->check_access();
         $EID = authuser()->EID;
@@ -3762,7 +3654,7 @@ class Restaurant extends CI_Controller {
         }
     }
 
-    function get_cash_collect(){
+    public function get_cash_collect(){
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
@@ -3859,8 +3751,7 @@ class Restaurant extends CI_Controller {
         }
     }
 
-    public function collect_payment()
-    {
+    public function collect_payment(){
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
@@ -6633,7 +6524,7 @@ class Restaurant extends CI_Controller {
         }
     }
 
-    function updateMCNoForTable(){
+    public function updateMCNoForTable(){
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){

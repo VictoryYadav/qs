@@ -599,6 +599,7 @@ $lang['sale']		= 'Sale';
 $lang['pendingCollectionReports']		= 'Pending Collection Reports';
 $lang['access']		= 'Access';
 $lang['multi']		= 'Multi';
+$lang['tableChanged']		= 'Table Changed';
 
 
 

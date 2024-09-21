@@ -28,7 +28,7 @@
                                             <input type="hidden" id="order-type" value="<?= $OType; ?>">
                                             <?php if($OType == 8) { ?>
                                             <div class="col-md-3 form-group col-6">
-                                                <label><?= $this->lang->line('tableNo'); ?></label>
+                                                <label><?= $this->lang->line('mergeNo'); ?></label>
                                                 <select class="form-control form-control-sm" id="table-id" onchange="get_table_order_items(this)">
                                                     <option value="0" capacity="0"><?= $this->lang->line('select'); ?></option>
                                                     <?php foreach ($tablesAlloted as $data) : ?>
@@ -698,7 +698,8 @@
         if (orderType != 8 ) {
             var tableNo = orderType;
         } else {
-            var tableNo = $("#table-id").val();
+            // var tableNo = $("#table-id").val();
+            var tableNo = $('option:selected', $('#table-id')).attr('tableno');
             seatNo = $('#seatNo').val();
             oldSeatNo = $('#seatNoOld').val();
         }

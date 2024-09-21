@@ -270,13 +270,9 @@ class Customer extends CI_Controller {
 
             $CustId = $this->session->userdata('CustId');
             $TempCustId = $this->session->userdata('TempCustId');
-            $ChainId = authuser()->ChainId;
             $CNo = $this->session->userdata('CNo');
             
             $TableNo = authuser()->TableNo;
-            $KOTNo = $this->session->userdata('KOTNo');
-            $MultiKitchen = $this->session->userdata('MultiKitchen');
-            $Kitchen = $this->session->userdata('Kitchen');
 
             if ($CustId != '') {
 
@@ -299,7 +295,6 @@ class Customer extends CI_Controller {
                         if($recommend == 1){
                             $key['recom'] = $this->cust->checkRecommendation($key['ItemId']);
                         }
-
                     }
 
                     if(empty($kitcheData)){
@@ -411,7 +406,6 @@ class Customer extends CI_Controller {
         if($this->input->method(true)=='POST'){
 
             $EID = authuser()->EID;
-            $ChainId = authuser()->ChainId;
             $TableNo = $this->session->userdata('TableNo');
 
             $status = 'success';
@@ -429,8 +423,7 @@ class Customer extends CI_Controller {
                             ->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')
                             ->get_where('MenuItem_Recos mr', 
                                         array('mr.ItemId' => $itemId, 
-                                            'mr.EID' => $EID,
-                                            'mr.ChainId' => $ChainId, 
+                                            'mr.EID' => $EID, 
                                             'mr.Stat' => 0
                                         )
                             )->result_array();
@@ -543,7 +536,6 @@ class Customer extends CI_Controller {
                             }else{
                                 $stat = 2;
                             }
-                            //$newUKOTNO = date('dmy_') . $KOTNo;
 
                             // Check entry is already inserted in ETO
                             $checkTableEntry = $this->db2->query("SELECT TNo FROM Eat_tables_Occ WHERE EID = $EID AND CNo = $CNo")->row_array();
@@ -1288,22 +1280,12 @@ class Customer extends CI_Controller {
     public function bill_ajax(){
 
         $EID = authuser()->EID;
-        $ChainId = authuser()->ChainId;
         $CustId = $this->session->userdata('CustId');
         $ONo = $this->session->userdata('ONo');
         $EType = $this->session->userdata('EType');
         $CNo = $this->session->userdata('CNo');
-        $Cash = $this->session->userdata('Cash');
-        $ServChrg = $this->session->userdata('ServChrg');
-        $Tips = $this->session->userdata('Tips');
-        $PymtOpt = $this->session->userdata('PymtOpt');
-        $KOTNo = $this->session->userdata('KOTNo');
         $TableNo = authuser()->TableNo;
         $MergeNo = $this->session->userdata('MergeNo');
-        $COrgId = $this->session->userdata('COrgId');
-        $CustNo = $this->session->userdata('CustNo');
-        $Fest = $this->session->userdata('Fest');
-        $CellNo = $this->session->userdata('CellNo');
 
         if ($CustId != '') {
 
@@ -1342,29 +1324,6 @@ class Customer extends CI_Controller {
                 "status" => "100",
                 "msg" => $this->lang->line('pleaseRescanQRCode')
             ];
-
-            echo json_encode($response);
-            die();
-        }
-
-        if (isset($_POST['checkCasherConfirm'])){
-            $billId = $_POST['billId'];
-
-            $checkCasherConfirm = $this->db2->select('CnfSettle')
-                                            ->get_where('KitchenMain', array('BillStat' => $billId, 'EID' => $EID, 'CnfSettle >' => 0))
-                                            ->row_array();
-
-            if (empty($checkCasherConfirm)) {
-                $response = [
-                    "status" => 0,
-                    "msg" => "Bill is Not Paid"
-                ];
-            } else {
-                $response = [
-                    "status" => 1,
-                    "msg" => "Bill is confirmed"
-                ];
-            }
 
             echo json_encode($response);
             die();
@@ -1789,9 +1748,6 @@ class Customer extends CI_Controller {
 
         $EID = authuser()->EID;
         $ChainId = authuser()->ChainId;
-        $cId = $this->session->userdata('cId');
-        $cType = $this->session->userdata('cType');
-        $mCatgId = $this->session->userdata('mCatgId');
         $EType = $this->session->userdata('EType');
         $CustId = $this->session->userdata('CustId');
         $CellNo = $this->session->userdata('CellNo');
@@ -2555,26 +2511,6 @@ class Customer extends CI_Controller {
             }else{
                 redirect(base_url('customer'));
             }
-        }
-    }
-
-    public function tokenGenerate(){
-        $status = "error";
-        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
-        if($this->input->method(true)=='POST'){
-            
-            $data['token'] = $_POST['token']; 
-            $data['updated_token_time'] = date('Y-m-d H:i:s'); 
-            $CustId = $this->session->userdata('CustId');
-            updateRecord('Users', $data, array('CustId' => $CustId) );
-            $status = 'success';
-            $response = 'Token Generated.';
-            header('Content-Type: application/json');
-            echo json_encode(array(
-                'status' => $status,
-                'response' => $response
-              ));
-             die;
         }
     }
 

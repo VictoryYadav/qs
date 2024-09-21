@@ -2189,13 +2189,14 @@ $(`#move_table`).on('submit', function(e){
     var from_table = $(`#from_table`).val();
     var to_table = $(`#to_table`).val();
 
-    $.post('<?= base_url('restaurant/move_table') ?>',{MergeNo:MergeNo},function(response){
+    $.post('<?= base_url('restaurant/move_table') ?>',{from_table:from_table, to_table:to_table},function(response){
 
         if(response.status == 'success') {
-            alert(response.status);
+            alert(response.response);
         }else {
-            alert(response.status);
+            alert(response.response);
         }
+        location.reload();
     });
     
 })

@@ -599,4 +599,5 @@ $lang['sale']		= 'सेल';
 $lang['pendingCollectionReports']	= 'पेंडिंग कलेक्शन रिपोर्ट';
 $lang['access']		= 'एक्सेस';
 $lang['multi']		= 'मल्टी';
+$lang['tableChanged']		= 'टेबल चेंज हुआ';
  
