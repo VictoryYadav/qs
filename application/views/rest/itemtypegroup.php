@@ -90,8 +90,8 @@
                                                         <label><?= $this->lang->line('calculation'); ?> <?= $this->lang->line('type'); ?></label>
                                                         <select name="CalcType" id="CalcType" class="form-control form-control-sm" required="">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <option value="0"><?= $this->lang->line('increment').' '.$this->lang->line('price'); ?></option>
-                                                            <option value="1"><?= $this->lang->line('ReplaceOriginalPriceWithItemPrice'); ?></option>
+                                                            <option value="0"><?= $this->lang->line('increment').' '.$this->lang->line('item').' '.$this->lang->line('price'); ?></option>
+                                                            <option value="1"><?= $this->lang->line('fixed').' '.$this->lang->line('item').' '.$this->lang->line('price'); ?></option>
                                                         </select>
                                                     </div>
                                                 </div>

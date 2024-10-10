@@ -1436,7 +1436,7 @@
                                 
                                 for(var r=0; r < details.length; r++){
                                     var name = "'"+details[r].Name+"'";
-                                    tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+details[r].Rate+')</span></li>';
+                                    tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+','+details[r].CalcType+', '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+details[r].Rate+')</span></li>';
                                 }
                                 tempRadio += '</ul>';
 
@@ -1451,7 +1451,7 @@
                                 
                                 for(var c=0; c < details.length; c++){
                                     var name = "'"+details[c].Name+"'";
-                                    tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+details[c].Rate+')</span></li>';
+                                    tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+details[r].CalcType+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+details[c].Rate+')</span></li>';
                                 }
                                 tempCHK += '</ul>';
                                 $('#checkboxOption').append(tempCHK);
@@ -1475,27 +1475,36 @@
             });
         }
 
-        function calculateTotalc(itemGrpCd, index, itemName, event) {
+        function calculateTotalc(itemGrpCd, CalcType, index, itemName, event) {
             
             element = event.currentTarget;
             var rate = element.getAttribute('rate');
             // console.log('calc '+index, event.target.type, rate, itemName);
             if (event.target.type == "radio") {
-                this.radioRate[index] = parseInt(rate);
+                if(CalcType == 0){
+                    this.radioRate[index] = parseInt(rate);
+                }else{
+                    this.checkboxRate[index] = 0;
+                }
                 this.raidoGrpCd[index] = itemGrpCd;
                 this.radioName[index] = itemName;
             } else {
                 // console.log(event.target.checked);
                 if (event.target.checked) {
-                    this.checkboxRate[index] = parseInt(rate);
+                    if(CalcType == 0){
+                        this.checkboxRate[index] = parseInt(rate);
+                    }else{
+                        this.checkboxRate[index] = 0;
+                    }
                     this.checkboxName[index] = itemName;
                 } else {
                     this.checkboxRate[index] = 0;
                     this.checkboxName[index] = 0;
                 }
             }
-
+            
             getTotalc();
+            
         }
 
         getTotalc = () =>{            

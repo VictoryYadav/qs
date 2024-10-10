@@ -88,7 +88,8 @@ class Customer extends CI_Controller {
     }
 
     public function index(){
-       $data['cuisinList'] = $this->cust->getCuisineList();
+
+        $data['cuisinList'] = $this->cust->getCuisineList();
         $this->session->set_userdata('cuisine', $data['cuisinList'][0]['CID']);
         $cid = $data['cuisinList'][0]['CID'];
 

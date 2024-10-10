@@ -11,8 +11,8 @@
       width: 350px;
       margin-top: 60px;
       margin-bottom: auto;
-      background: #f9d99e;
-      /*background: #dbbd89;*/
+      /*background: #f9d99e;*/
+      background: #ffebc6;
       position: relative;
       display: flex;
       justify-content: center;
@@ -78,7 +78,7 @@
 
     /*select2*/
     .select2-container--default .select2-selection--single {
-      background-color: #f9d99e;
+      background-color: #ffebc6;
       border: 1px solid #ced4da;
       border-radius: 2px;
     }

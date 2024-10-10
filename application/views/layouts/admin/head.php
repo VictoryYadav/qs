@@ -11,6 +11,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="Eat-Out" name="description" />
         <meta content="Eat-Out" name="author" />
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
         <!-- App favicon -->
         <!-- <link rel="shortcut icon" href="<?= base_url() ?>assets_admin/images/QSLogo.png"> -->
         <link href="<?= base_url(); ?>theme/images/Eat-Out-Icon.png" rel="shortcut icon">

@@ -601,6 +601,8 @@ $lang['access']		= 'Access';
 $lang['multi']		= 'Multi';
 $lang['tableChanged']		= 'Table Changed';
 
+$lang['fixed']		= 'Fixed';
+
 
 
 

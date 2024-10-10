@@ -92,6 +92,8 @@
 
         <li><a href="<?= base_url('support/loyality'); ?>">Loyalty</a></li>
         <?php } ?>
+
+        <li><a href="<?= base_url('restaurant/rprint'); ?>">RPrint</a></li>
     </ul>
 </div>
 

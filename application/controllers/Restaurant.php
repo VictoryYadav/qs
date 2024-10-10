@@ -5332,6 +5332,7 @@ class Restaurant extends CI_Controller {
                             "Name" => $value['Name'],
                             "Rate" => $value['Rate'],
                             "ItemOptCd" => $value['ItemOptCd'],
+                            "CalcType" => $value['CalcType'],
                         ];
                     } else {
                         $returnData[] = $temp;
@@ -5348,6 +5349,7 @@ class Restaurant extends CI_Controller {
                             "Name" => $value['Name'],
                             "Rate" => $value['Rate'],
                             "ItemOptCd" => $value['ItemOptCd'],
+                            "CalcType" => $value['CalcType'],
                         ];
                     }
                 }
@@ -9542,7 +9544,7 @@ class Restaurant extends CI_Controller {
             die; 
         }
 
-        $data['title'] = $this->lang->line('custom').' '.$this->lang->line('group').' '.$this->lang->line('item');
+        $data['title'] = $this->lang->line('custom').' '.$this->lang->line('item');
         $data['EatSections'] = $this->rest->get_eat_section();
         $data['ItemPortions'] = $this->rest->get_item_portion();
         $data['toppings'] = $this->rest->getToppings();
@@ -10729,6 +10731,11 @@ class Restaurant extends CI_Controller {
         $this->load->view('user/chat');
     }
 
+    public function rprint(){
+        $data['title'] = 'Print';
+        $this->load->view('rest/chat_print', $data);
+    }
+
     public function tempmenu_export(){
         $langId = $this->session->userdata('site_lang');
         $Cuisine = "c.Name as Cuisine";
@@ -10760,6 +10767,26 @@ class Restaurant extends CI_Controller {
         // print_r($this->db2->last_query());
         // print_r($data);
         // die;
+    }
+
+    public function custom_item_view(){
+        $data['title'] = 'Custom Item View';
+        $data['menuItem'] = $this->rest->getCustomMenuItems();
+        $this->load->view('rest/customitemview', $data);
+    }
+
+    public function get_customItem_details(){
+        $status = 'error';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+
+        if($this->input->method(true)=='POST'){
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
     }
 
 

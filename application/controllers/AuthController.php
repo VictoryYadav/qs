@@ -11,6 +11,7 @@ class AuthController extends CI_Controller {
 
     public function index()
     {
+        // print_r(base_url());die;
         if($this->input->method(true)=='POST'){
             $data = $_POST;
             // echo "<pre>";print_r($data);die;
@@ -174,7 +175,6 @@ class AuthController extends CI_Controller {
     }
 
     public function logout(){
-        // $this->session->unset_userdata('logged_in');
         $url = 'login?o='.$this->session->userdata('EID');
         $this->session->sess_destroy();
         redirect(base_url() . $url, 'refresh');

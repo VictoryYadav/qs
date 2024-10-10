@@ -600,4 +600,6 @@ $lang['pendingCollectionReports']	= 'पेंडिंग कलेक्शन
 $lang['access']		= 'एक्सेस';
 $lang['multi']		= 'मल्टी';
 $lang['tableChanged']		= 'टेबल चेंज हुआ';
+
+$lang['fixed']		= 'फिक्स्ड';
  

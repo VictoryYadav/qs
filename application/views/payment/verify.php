@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
     <title>Razorpay Verify</title>
 </head>
 
@@ -60,7 +61,7 @@
             <script src="<?php echo base_url(); ?>assets/js/jquery-3.3.1.min.js"></script>
             <script>
                 var form = $(document.createElement('form'));
-                $(form).attr("action", "<?php echo base_url('razorpay/handle_payment'); ?>");
+                $(form).attr("action", "<?= base_url('razorpay/handle_payment'); ?>");
                 $(form).attr("method", "POST");
                 $(form).css("display", "none");
 
