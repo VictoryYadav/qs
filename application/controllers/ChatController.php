@@ -8,18 +8,10 @@ class ChatController extends CI_Controller {
         $status = 'error';
         $response = 'Something went wrong plz try again!';
         if($this->input->method(true)=='POST'){
-            
-            $messageData = array(
-                'Name2' => 1,
-                'Stat' => 0,
-                'Name1' => 'how r u'
-            );
 
-            // Save the message to the database
-            $messageId = insertRecord('3porders', $messageData);
-
-            $data = array('EID' => 51, 'BillId' => 1);
-            $data = json_encode($data);
+            $data = '51_1_2_3';
+            // $data = array('EID' => 51, 'BillId' => 1);
+            // $data = json_encode($data);
 
             $status = 'success';
             // $response = $messageId;

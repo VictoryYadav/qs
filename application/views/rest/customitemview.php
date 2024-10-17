@@ -44,7 +44,7 @@
                                                     <tr>
                                                         <td><?= $i++; ?></td>
                                                         <td><?= $row['Name']; ?></td>
-                                                        <td><button class="btn btn-sm btn-success" onclick="customizeDetail(<?= $row['ItemId']; ?>, <?= $row['FID']; ?>, <?= $row['ItemTyp']; ?>)">
+                                                        <td><button class="btn btn-sm btn-success" onclick="customizeDetail('<?= $row['Name']; ?>',<?= $row['ItemId']; ?>, <?= $row['FID']; ?>, <?= $row['ItemTyp']; ?>)">
                                                             <i class="fa fa-eye" aria-hidden="true"></i>
                                                         </button></td>
                                                     </tr>
@@ -112,7 +112,7 @@
         $('#TableData').DataTable();
     });
 
-    function customizeDetail(ItemId, FID, ItemTyp){
+    function customizeDetail(Itemname, ItemId, FID, ItemTyp){
         $.post('<?= base_url('restaurant/get_custom_items') ?>',{ItemId:ItemId, FID:FID, ItemTyp:ItemTyp, Itm_Portion:1},function(res){
             
             if(res.status == 'success'){
@@ -132,7 +132,7 @@
                                 
                                 for(var r=0; r < details.length; r++){
                                     var name = "'"+details[r].Name+"'";
-                                    tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'"  /> '+details[r].Name+' <span class="float-right">('+details[r].Rate+')</span></li>';
+                                    tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'"  /> '+details[r].Name+'</li>';
                                 }
                                 tempRadio += '</ul>';
 
@@ -147,7 +147,7 @@
                                 
                                 for(var c=0; c < details.length; c++){
                                     var name = "'"+details[c].Name+"'";
-                                    tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" /> '+details[c].Name+' <span class="float-right">('+details[c].Rate+')</span></li>';
+                                    tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" /> '+details[c].Name+'</li>';
                                 }
                                 tempCHK += '</ul>';
                                 $('#checkboxOption').append(tempCHK);
@@ -157,6 +157,7 @@
                         
                 
                     $("#custom_itemId").val(ItemId);
+                    $(`#exampleModalLabel`).html(Itemname);
                     $('.customOfferModal').modal('show');
                   
                 }else{

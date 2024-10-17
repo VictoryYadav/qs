@@ -3101,4 +3101,30 @@ class Customer extends CI_Controller {
         }   
     }
 
+    public function kot_print_data(){
+
+        $status = 'error';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+            $CNo = $this->session->userdata('CNo');
+            $EID = $this->session->userdata('EID');
+            $EType = $this->session->userdata('EType');
+            $kstat = ($EType == 5)?3:2;
+
+            $response = $this->db2->select("MCNo, MergeNo, KOTNo, FKOTNo")
+                        ->group_by('KOTNo, FKOTNo')
+                        ->get_where('Kitchen', array('EID' => $EID, 'CNo' => $CNo, 'BillStat' => 0, 'Stat' => $kstat))
+                        ->result_array();
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+    }
+
 }

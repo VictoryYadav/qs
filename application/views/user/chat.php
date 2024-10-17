@@ -21,10 +21,14 @@ socket.onopen = function(event) {
 
 socket.onmessage = function(event) {
     var data = event.data;
-    // var myJSON = JSON.parse(data);
-    // console.log("Data received from server: ", myJSON.EID);
-    dd(51, 1);
-    // dd(myJSON.EID, myJSON.BillId);
+    const result = data.split('_');
+
+    var MCNo = result[0]; 
+    var mergeNo = result[1]; 
+    var FKOTNo = result[2];
+    var KOTNo = result[3];
+
+    kot_print(MCNo, mergeNo, FKOTNo, KOTNo);
 };
 
 socket.onclose = function(event) {
@@ -35,8 +39,8 @@ socket.onerror = function(event) {
     console.error("WebSocket error observed: ", event);
 };
 
-function dd(EID, BillId){
-    var url = "<?php echo base_url('restaurant/bill_print/') ?>"+BillId+"/"+EID;
+function kot_print(MCNo, mergeNo, FKOTNo, KOTNo){
+    var url = "<?php echo base_url('restaurant/kot_print/') ?>"+MCNo+"/"+mergeNo+"/"+FKOTNo+"/"+KOTNo;
     window.open(url, "_blank");
     return false;
 }

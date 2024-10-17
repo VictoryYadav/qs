@@ -259,8 +259,6 @@
     <?php $this->load->view('layouts/customer/top'); ?>
 <!-- Header Section End -->
 
-<button id="sendButton" class="btn btn-sm">Send</button>
-
 <section class="common-section cuisineColor">
 	<div class="container">
 		<div class="row">
@@ -535,19 +533,6 @@
 
 </body>
 <script type="text/javascript">
-
-     const socket = new WebSocket('ws://localhost:8080');
-
-    socket.onopen = function(event) {
-        console.log("Connected to WebSocket server");
-        // socket.send("Your message"); // You can send a message to the server if needed
-    };
-
-    $('#sendButton').click(function() {
-    
-        socket.send("Your message");
-
-    });
 
     $(`#customizeItemBlock`).hide();
     
