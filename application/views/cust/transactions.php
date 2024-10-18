@@ -25,7 +25,7 @@
     <section class="common-section p-2 dashboard-container">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12" style="margin-bottom: 40px;">
                     <form method="post">
                         <div class="row">
                             <div class="col-md-4 col-5">

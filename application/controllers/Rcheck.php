@@ -174,6 +174,7 @@ class Rcheck extends CI_Controller {
          $this->session->set_userdata('menuBtnClr', $colors['menuBtnClr']);
          $this->session->set_userdata('successBtnClr', $colors['successBtnClr']);
          $this->session->set_userdata('orderBtnClr', $colors['orderBtnClr']);
+         $this->session->set_userdata('splitType', 0);
          
          
         // end for theme color

@@ -1473,6 +1473,14 @@ class Customer extends CI_Controller {
         }else{
             $this->db2->query("UPDATE KitchenMain km, Billing b SET km.custPymt = 1, km.payRest = 1 WHERE b.BillId = $billId and km.EID=b.EID and km.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo) and km.MergeNo = b.MergeNo");
         }
+
+        if($this->session->userdata('splitType')==1){
+            $bd = $this->db2->select("BillId")
+                                ->get_where('Billing', array('EID' =>$EID, 'CNo' => $MCNo, 'splitTyp' => 1, 'payRest' => 0))->row_array();
+            $billId = $bd['BillId'];
+            autoSettlePayment($billId, $MergeNo, $MCNo);
+        }
+        $this->session->set_userdata('splitType', 0);
     }
 
     public function merge_order($MergeNo){
