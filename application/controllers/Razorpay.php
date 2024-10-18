@@ -147,26 +147,51 @@ class Razorpay extends CI_Controller {
 
         if ($txStatus == "SUCCESS") {
 
-            $pay['BillId'] = $_POST['billId'];
-            $pay['MCNo'] = $CNo;
-            $pay['MergeNo'] = $this->session->userdata('TableNo');
-            $pay['TotBillAmt'] = $totalAmount;
-            $pay['CellNo'] = $this->session->userdata('CellNo');
-            $pay['SplitTyp'] = 0;
-            $pay['SplitAmt'] = 0;
-            $pay['PymtId'] = 0;
-            $pay['PaidAmt'] = $totalAmount;
-            $pay['OrderRef'] = $orderId;
-            $pay['PaymtMode'] = 5;
-            $pay['PymtType'] = 0;
-            $pay['PymtRef'] = $referenceId;
-            $pay['Stat'] = 1;
-            $pay['EID'] = $EID;
-            $pay['billRef'] = $_POST['billRef'];
-            // echo "<pre>";
-            // print_r($pay);
-            // die;
-            $payNo = insertRecord('BillPayments', $pay);
+            if($this->session->userdata('splitType')==1){
+                $bd = $this->db2->select("BillId, PaidAmt")
+                                ->get_where('Billing', array('EID' =>$EID, 'CNo' => $CNo, 'splitTyp' => 1, 'payRest' => 0))
+                                ->result_array();
+                if(!empty($bd)){
+                    foreach ($bd as $key) {
+                        $pay['BillId'] = $bd['BillId'];
+                        $pay['MCNo'] = $CNo;
+                        $pay['MergeNo'] = $this->session->userdata('TableNo');
+                        $pay['TotBillAmt'] = $bd['PaidAmt'];
+                        $pay['CellNo'] = $this->session->userdata('CellNo');
+                        $pay['SplitTyp'] = $this->session->userdata('splitType');
+                        $pay['SplitAmt'] = 0;
+                        $pay['PymtId'] = 0;
+                        $pay['PaidAmt'] = $bd['PaidAmt'];
+                        $pay['OrderRef'] = $orderId;
+                        $pay['PaymtMode'] = 5;
+                        $pay['PymtType'] = 0;
+                        $pay['PymtRef'] = $referenceId;
+                        $pay['Stat'] = 1;
+                        $pay['EID'] = $EID;
+                        $pay['billRef'] = $_POST['billRef'];
+                        $payNo = insertRecord('BillPayments', $pay);
+                    }
+                }
+            }else{
+                $pay['BillId'] = $_POST['billId'];
+                $pay['MCNo'] = $CNo;
+                $pay['MergeNo'] = $this->session->userdata('TableNo');
+                $pay['TotBillAmt'] = $totalAmount;
+                $pay['CellNo'] = $this->session->userdata('CellNo');
+                $pay['SplitTyp'] = $this->session->userdata('splitType');
+                $pay['SplitAmt'] = 0;
+                $pay['PymtId'] = 0;
+                $pay['PaidAmt'] = $totalAmount;
+                $pay['OrderRef'] = $orderId;
+                $pay['PaymtMode'] = 5;
+                $pay['PymtType'] = 0;
+                $pay['PymtRef'] = $referenceId;
+                $pay['Stat'] = 1;
+                $pay['EID'] = $EID;
+                $pay['billRef'] = $_POST['billRef'];
+                $payNo = insertRecord('BillPayments', $pay);
+            }
+
             $pageurl = $this->session->userdata('pageurl');
             if($pageurl == 'user'){
                 redirect(base_url('users/pay/'.$pay['BillId'].'/'.$pay['MCNo']));    

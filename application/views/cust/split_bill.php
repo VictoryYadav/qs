@@ -168,7 +168,7 @@ body{
                         <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>
                     </td>
                 </tr>`;
-        $('#addBody').append(row) 
+        $('#addBody').append(row); 
         $('#splitType').val(0);
 
         $('.percentRow').removeAttr("readonly");
@@ -200,14 +200,40 @@ body{
         console.log(val+' ,row '+rowCount+', amt= '+totalAmt);
         if(val > 0){
             if(val == 1){
-                if(rowCount == 1){
+                    var CellNo = "<?php echo $this->session->userdata('CellNo'); ?>";
+                    var CustId = "<?php echo $this->session->userdata('CustId'); ?>";
                     
+                    var cd = CellNo.substring(0, 2);
+                    var mobile10 = CellNo.substring(2,14);
+
+                    var row = `<tr>
+                                <td>
+                                    <input type="text" value="${cd}" placeholder="Mobile" class="form-control" required name="CountryCd[]" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" value="${mobile10}" placeholder="Mobile" class="form-control" required name="mobile[]" readonly>
+                                    <input type="hidden" value="${CustId}" class="form-control" name="custid[]">
+                                </td>
+                                
+                                <td>
+                                    <input type="text" class="form-control grossAmtRow" name="totItemAmt[]" id="grossAmtRow_1" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" placeholder="Percent" class="form-control percentRow" id="percentRow_1" onchange="calcPerAmt(1)" name="percent[]">
+                                </td>
+                                <td>
+                                    <input type="text" placeholder="Amount" class="form-control amountRow" id="amountRow_1" onchange="calcAmt(1)" required name="amount[]">
+                                </td>
+                                <td>
+                                    <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>
+                                </td>
+                            </tr>`;
+                    $('#addBody').html(row);
+
                     $('.percentRow').val(100);
                     $('.amountRow').val(totalAmt);
                     $('.grossAmtRow').val(grossAmt);
-                }else if(rowCount > 1){
-                    alert('Bill for this option can be generated only for one Contact.');
-                }
+                
             }else if(val == 2){
                 var per = 0;
                 var amt = 0;

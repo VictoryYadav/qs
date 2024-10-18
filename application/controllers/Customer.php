@@ -1640,6 +1640,7 @@ class Customer extends CI_Controller {
         $pBillId = 0;
         $linkData = array();
         if($this->input->method(true)=='POST'){
+            $this->session->set_userdata('splitType', $_POST['splitType']);
 
             if($_POST['splitType'] == 1){
                 $billResp = $this->food_bar_separate_bill($_POST);
@@ -2134,6 +2135,9 @@ class Customer extends CI_Controller {
         $bills = getRecords('Billing', array('BillId' => $BillId, 'EID' => $EID));
         if(!empty($bills)){
             $data['payable'] = $bills['PaidAmt'];
+            if($this->session->userdata('splitType') == 1){
+                $data['payable'] = $this->session->userdata('food_bar_amt');
+            }
         }else{
             redirect(base_url('customer/checkout'));    
         }
@@ -2697,11 +2701,14 @@ class Customer extends CI_Controller {
     }
 
     private function food_bar_separate_bill($postData){
+
         $dt = [
                 "status" => 'error',
                 "response" => $this->lang->line('noBillCreation')
             ];
 
+        $payableAmount = $postData['payableAmount'];
+        $this->session->set_userdata('food_bar_amt', $payableAmount);
         $MergeNo    = $postData['MergeNo'];
         $CNo        = $postData['MCNo'];
         $per_cent   = 1;
@@ -2719,7 +2726,7 @@ class Customer extends CI_Controller {
         $postData['CustId'] = $CustId;
         $EType = $this->session->userdata('EType');
         $ChainId = authuser()->ChainId;
-        // $ONo = $this->session->userdata('ONo');
+
         $CustNo = $this->session->userdata('CustNo');
         $COrgId = $this->session->userdata('COrgId');
 

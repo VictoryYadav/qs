@@ -7,7 +7,7 @@
 
     }
     label{
-      color: #fff;
+      color: #000;
     }
 
     .user_card {
