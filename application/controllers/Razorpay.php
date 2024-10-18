@@ -141,7 +141,7 @@ class Razorpay extends CI_Controller {
         $referenceId = $_POST["referenceId"];
         $txStatus = $_POST["txStatus"];
         $paymentMode = $_POST["paymentMode"];
-        $txMsg = $_POST["txMsg"];
+        // $txMsg = $_POST["txMsg"];
         $txTime = $_POST["txTime"];
         $signature = $_POST["signature"];
 
@@ -153,7 +153,7 @@ class Razorpay extends CI_Controller {
                                 ->result_array();
                 if(!empty($bd)){
                     foreach ($bd as $key) {
-                        $pay['BillId'] = $bd['BillId'];
+                        $pay['BillId'] = $key['BillId'];
                         $pay['MCNo'] = $CNo;
                         $pay['MergeNo'] = $this->session->userdata('TableNo');
                         $pay['TotBillAmt'] = $bd['PaidAmt'];
@@ -161,7 +161,7 @@ class Razorpay extends CI_Controller {
                         $pay['SplitTyp'] = $this->session->userdata('splitType');
                         $pay['SplitAmt'] = 0;
                         $pay['PymtId'] = 0;
-                        $pay['PaidAmt'] = $bd['PaidAmt'];
+                        $pay['PaidAmt'] = $key['PaidAmt'];
                         $pay['OrderRef'] = $orderId;
                         $pay['PaymtMode'] = 5;
                         $pay['PymtType'] = 0;
