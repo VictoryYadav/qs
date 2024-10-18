@@ -156,7 +156,7 @@ class Razorpay extends CI_Controller {
                         $pay['BillId'] = $key['BillId'];
                         $pay['MCNo'] = $CNo;
                         $pay['MergeNo'] = $this->session->userdata('TableNo');
-                        $pay['TotBillAmt'] = $bd['PaidAmt'];
+                        $pay['TotBillAmt'] = $key['PaidAmt'];
                         $pay['CellNo'] = $this->session->userdata('CellNo');
                         $pay['SplitTyp'] = $this->session->userdata('splitType');
                         $pay['SplitAmt'] = 0;
@@ -178,7 +178,7 @@ class Razorpay extends CI_Controller {
                 $pay['MergeNo'] = $this->session->userdata('TableNo');
                 $pay['TotBillAmt'] = $totalAmount;
                 $pay['CellNo'] = $this->session->userdata('CellNo');
-                $pay['SplitTyp'] = $this->session->userdata('splitType');
+                $pay['SplitTyp'] = 0;
                 $pay['SplitAmt'] = 0;
                 $pay['PymtId'] = 0;
                 $pay['PaidAmt'] = $totalAmount;
@@ -193,10 +193,13 @@ class Razorpay extends CI_Controller {
             }
 
             $pageurl = $this->session->userdata('pageurl');
-            if($pageurl == 'user'){
-                redirect(base_url('users/pay/'.$pay['BillId'].'/'.$pay['MCNo']));    
+            if($_POST['billId'] > 0){
+                if($pageurl == 'user'){
+                    redirect(base_url('users/pay/'.$_POST['billId'].'/'.$_POST["MCNo"]));    
+                }
+                redirect(base_url('customer/pay/'.$_POST['billId'].'/'.$_POST["MCNo"]));
             }
-            redirect(base_url('customer/pay/'.$pay['BillId'].'/'.$pay['MCNo']));
+            redirect(base_url('customer'));
 
         } else {
             echo "Payment Fail";

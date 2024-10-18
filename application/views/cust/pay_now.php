@@ -496,7 +496,7 @@ function goToBill(){
     var payable = $('#payableAmt').val();
     var total = $('#sum').val();
 
-    if(payable == total){
+    if(payable >= total){
 
         $.post('<?= base_url('customer/updateCustPayment') ?>',{BillId:BillId, MCNo:MCNo, billAmount : payable},function(res){
         
