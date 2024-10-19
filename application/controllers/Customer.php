@@ -1964,12 +1964,12 @@ class Customer extends CI_Controller {
         }
         // $whr = "cp.BillId = rt.BillId";
         $data['custPymt'] = $genTblDb->select('date(cp.BillDt) as billdt , cp.BillId, cp.BillNo, cp.EID , cp.PaidAmt , cp.CustId , ed.Name , ed1.DBName, ed.DBPasswd, rt.avgBillRtng')
-                            ->order_by('cp.BillDt', 'DESC')
+                            ->order_by('cp.BNo', 'DESC')
                             ->join('EIDDet ed', 'ed.EID = cp.EID', 'inner')
                             ->join('EIDDet ed1', 'ed1.EID = cp.aggEID', 'inner')
                             ->join('Ratings rt', 'rt.EID = cp.EID', 'left')
                             // ->where($whr)
-                            ->get_where('CustPymts cp', array('cp.CustId' => $CustId))
+                            ->get_where('CustPymts cp', array('cp.CustId' => $CustId, 'rt.CustId' => $CustId))
                             ->result_array();
                             
         $data['country']    = $this->cust->getCountries();
@@ -2140,9 +2140,11 @@ class Customer extends CI_Controller {
         $url = "https://eo.vtrend.org/users/print_api/$CustId/$BillId/$EID";
         file_get_contents_curl($url);
         $data['MCNo'] = $MCNo;
+        $data['billAmt'] = 0;
         $bills = getRecords('Billing', array('BillId' => $BillId, 'EID' => $EID));
         if(!empty($bills)){
             $data['payable'] = $bills['PaidAmt'];
+            $data['billAmt'] = $bills['PaidAmt'];
             if($this->session->userdata('splitType') == 1){
                 $data['payable'] = $this->session->userdata('food_bar_amt');
             }

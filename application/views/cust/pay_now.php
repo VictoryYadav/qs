@@ -496,14 +496,29 @@ function goToBill(){
     var payable = $('#payableAmt').val();
     var total = $('#sum').val();
 
-    if(payable >= total){
+    var splitype = "<?php echo $this->session->userdata('splitType'); ?>";
+    payable = parseInt(payable);
+    total = parseInt(total);
+    if(splitype != 1){
+        if(payable == total){
 
-        $.post('<?= base_url('customer/updateCustPayment') ?>',{BillId:BillId, MCNo:MCNo, billAmount : payable},function(res){
-        
-            window.location = '<?= base_url();?>customer/bill/'+BillId;   
-            return false;
-        });
-        
+            $.post('<?= base_url('customer/updateCustPayment') ?>',{BillId:BillId, MCNo:MCNo, billAmount : payable},function(res){
+            
+                window.location = '<?= base_url();?>customer/bill/'+BillId;   
+                return false;
+            });
+            
+        }
+    }else{
+        payable = "<?php echo $billAmt; ?>";
+        payable = parseInt(payable);
+        if(payable == total){
+            $.post('<?= base_url('customer/updateCustPayment') ?>',{BillId:BillId, MCNo:MCNo, billAmount : payable},function(res){
+            
+                window.location = '<?= base_url();?>customer/bill/'+BillId;   
+                return false;
+            });
+        }
     }
     // setInterval(function(){ goToBill(); }, 3000);
 }

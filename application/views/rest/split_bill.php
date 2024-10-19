@@ -25,7 +25,7 @@
                                 <form action="<?= base_url('restaurant/splitBill/'.$MCNo.'/'.$MergeNo.'/'.$tableFilter); ?>" method="post">
                                     <input type="hidden" name="payableAmount" value="<?= round($payable); ?>">
                                     <input type="hidden" name="grossAmount" value="<?= round($grossItemAmt); ?>">
-                                    <input type="hidden" name="MergeNo" value="<?= round($MergeNo); ?>">
+                                    <input type="hidden" name="MergeNo" value="<?= $MergeNo; ?>">
                                     <input type="hidden" name="MCNo" value="<?= round($MCNo); ?>">
                                     <div class="card">
                                         <div class="card-body">
