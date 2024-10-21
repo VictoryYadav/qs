@@ -926,9 +926,9 @@
                             }
                         }
                         
-                        // location.reload();
                     } else {
                         alert("Failed To Place Order");
+                        location.reload();
                     }
                 },
                 error: (xhr, status, error) => {

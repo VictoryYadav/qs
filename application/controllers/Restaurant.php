@@ -2782,7 +2782,7 @@ class Restaurant extends CI_Controller {
         }
 
         if (isset($_POST['sendToKitchen']) && $_POST['sendToKitchen']) {
-            echo "<pre>";print_r($_POST);die;
+            // echo "<pre>";print_r($_POST);die;
             $thirdParty = 0;
             $thirdPartyRef = 0;
 
@@ -2992,7 +2992,7 @@ class Restaurant extends CI_Controller {
 
             // delete from temp kitchen
             // deleteRecord('tempKitchen', array('TableNo' => $tableNo, 'EID' => $EID));
-            $this->db2->query("DELETE FROM tempKitchen where MergeNo = '$tableNo' and EID = '$EID'");
+            $this->db2->query("DELETE FROM tempKitchen where TableNo = '$tableNo' or MergeNo = '$MergeNo' and EID = '$EID'");
             // end delete from temp kitchen
 
             $url = base_url('restaurant/kot_print/').$CNo.'/'.$tableNo.'/'.$fKotNo.'/'.$kotNo;
@@ -3238,6 +3238,10 @@ class Restaurant extends CI_Controller {
             $kitchenMainObj['TPRefNo'] = $thirdPartyRef;
             $kitchenMainObj['TableNo'] = $TableNo;
             $kitchenMainObj['MergeNo'] = $MergeNo;
+            $eatDT = $this->rest->getEatTablesDetails($TableNo);
+            if(!empty($eatDT)){
+                $kitchenMainObj['MergeNo'] = $eatDT['MergeNo'];
+            }
             $kitchenMainObj['OldTableNo'] = $TableNo;
             $kitchenMainObj['Stat'] = 2;
             $kitchenMainObj['LoginCd'] = authuser()->RUserId;
