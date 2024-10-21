@@ -691,7 +691,7 @@
     })
 
     function send_to_kitchen(data_type){
-        
+        var MergeNo = $(`#table-id`).val();
         var orderType = $("#order-type").val();
         var seatNo = 0;
         var oldSeatNo = 0;
@@ -864,6 +864,7 @@
                     sendToKitchen: 1,
                     orderType: orderType,
                     tableNo: tableNo,
+                    MergeNo: MergeNo,
                     thirdParty: thirdParty,
                     thirdPartyRef: thirdPartyRef,
                     totalValue: totalValue,

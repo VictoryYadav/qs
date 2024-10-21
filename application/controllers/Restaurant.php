@@ -2782,12 +2782,13 @@ class Restaurant extends CI_Controller {
         }
 
         if (isset($_POST['sendToKitchen']) && $_POST['sendToKitchen']) {
-            // echo "<pre>";print_r($_POST);die;
+            echo "<pre>";print_r($_POST);die;
             $thirdParty = 0;
             $thirdPartyRef = 0;
 
             $orderType = $_POST['orderType'];
             $tableNo = $_POST['tableNo'];
+            $MergeNo = $_POST['MergeNo'];
             if($orderType == 101){
                 $thirdParty = !empty($_POST['thirdParty'])?$_POST['thirdParty']:0;
                 $thirdPartyRef = !empty($_POST['thirdParty'])?$_POST['thirdParty']:0;
@@ -2838,7 +2839,7 @@ class Restaurant extends CI_Controller {
                     $this->db2->update('Users');
                 }
 
-                $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo,$data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd);
+                $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo, $MergeNo, $data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd);
                 if($orderType == 8){
                     updateRecord('Eat_tables', array('Stat' => 1), array('TableNo' => $tableNo, 'EID' => $EID));
                 }
@@ -2846,7 +2847,7 @@ class Restaurant extends CI_Controller {
                 $oldSeatNo = getSeatNo($CNo);
                 if($oldSeatNo != $seatNo){
                     $CNo = 0;
-                    $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo,$data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd);
+                    $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo, $MergeNo, $data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd);
                 }    
             }
 
@@ -2918,7 +2919,7 @@ class Restaurant extends CI_Controller {
                 $word = "~";
                 if (strpos($text, $word) !== false) {
                     $mergeNo = $kitchenObj['MergeNo'];
-                    $whr = "MergeNo = '$mergeNo'";
+                    $whr = "MergeNo = '$mergeNo' and CNo = $CNo";
                     $kmd = $this->db2->select("CNo, MCNo")
                                 ->where($whr)
                                 ->get_where('KitchenMain', array('BillStat' => 0, 'EID' => $EID))
@@ -3216,7 +3217,7 @@ class Restaurant extends CI_Controller {
         }
     }
 
-    private function insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $CellNo, $EID, $ChainId, $ONo, $TableNo,$data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd)
+    private function insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $CellNo, $EID, $ChainId, $ONo, $TableNo, $MergeNo, $data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd)
     {
         if ($CNo == 0) {
 
@@ -3236,7 +3237,7 @@ class Restaurant extends CI_Controller {
             $kitchenMainObj['TPId'] = $thirdParty;
             $kitchenMainObj['TPRefNo'] = $thirdPartyRef;
             $kitchenMainObj['TableNo'] = $TableNo;
-            $kitchenMainObj['MergeNo'] = $TableNo;
+            $kitchenMainObj['MergeNo'] = $MergeNo;
             $kitchenMainObj['OldTableNo'] = $TableNo;
             $kitchenMainObj['Stat'] = 2;
             $kitchenMainObj['LoginCd'] = authuser()->RUserId;
@@ -3251,22 +3252,6 @@ class Restaurant extends CI_Controller {
             if (!empty($CNo)) {
 
                 updateRecord('KitchenMain', array('MCNo' => $CNo), array('CNo' => $CNo, 'EID' => $EID));
-
-                $text = $kitchenMainObj['MergeNo'];
-                $word = "~";
-                if (strpos($text, $word) !== false) {
-
-                    $whr = "MergeNo = '$mergeNo'";
-                    $kmd = $this->db2->select("CNo, MCNo")
-                                ->where($whr)
-                                ->get_where('KitchenMain', array('BillStat' => 0, 'EID' => $EID))
-                                ->row_array();
-                    if(!empty($kmd)){
-                        $MCNo = $kmd['MCNo'];
-
-                        $this->db2->query("UPDATE KitchenMain km set km.MCNo = $MCNo where km.CNo =$CNo and km.BillStat = 0 and EID = $EID");
-                    }
-                }
 
                 $this->session->set_userdata('CNo', $CNo);
                 return $CNo;

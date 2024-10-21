@@ -55,7 +55,7 @@
                                                             <a href="<?php echo base_url('restaurant/print/'.$key['BillId']); ?>" class='btn btn-warning btn-sm tippy-btn' title=" Print" data-tippy-placement="top">
                                                                 <i class="fas fa-print"></i>
                                                             </a>
-                                                            <button class="btn btn-sm btn-info tippy-btn" title="Cash Collect" data-tippy-placement="top" id="btnCash" onclick="cashCollect(<?= $key['BillId']; ?>,<?= $key['OType']; ?>,<?= $key['TableNo']; ?>,<?= $key['MergeNo']; ?>,'<?= $key['CellNo']; ?>',<?= $key['PaidAmt']; ?>,<?= $key['CNo']; ?>,<?= $key['EID']; ?>)"><i class="fas fa-money-check"></i>
+                                                            <button class="btn btn-sm btn-info tippy-btn" title="Cash Collect" data-tippy-placement="top" id="btnCash" onclick="cashCollect(<?= $key['BillId']; ?>,<?= $key['OType']; ?>,<?= $key['TableNo']; ?>,'<?= $key['MergeNo']; ?>','<?= $key['CellNo']; ?>',<?= $key['PaidAmt']; ?>,<?= $key['CNo']; ?>,<?= $key['EID']; ?>)"><i class="fas fa-money-check"></i>
                                                 </button>
                                                 <?php if($this->session->userdata('AutoSettle') == 0){ ?>
 
