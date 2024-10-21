@@ -2490,11 +2490,30 @@ class Restaurant extends CI_Controller {
                 
                     $selectedTablesString = implode(',', $selectedTables); 
 
-                    $result = $this->db2->query("UPDATE Eat_tables set MergeNo = '$mergeNo', Stat = 1 where TableNo in ($selectedTablesString)");
+                    $result = $this->db2->query("UPDATE Eat_tables set MergeNo = '$mergeNo', Stat = 1 where TableNo in ($selectedTablesString) and EID = $EID");
                     
-                    $result1 = $this->db2->query("UPDATE KitchenMain km set km.MergeNo = '$mergeNo' where km.TableNo in ($selectedTablesString) and km.BillStat = 0");
+                    $result1 = $this->db2->query("UPDATE KitchenMain km set km.MergeNo = '$mergeNo' where km.TableNo in ($selectedTablesString) and km.BillStat = 0 and EID = $EID");
 
-                    $this->db2->query("UPDATE Kitchen k set k.MergeNo = '$mergeNo' where k.TableNo in ($selectedTablesString) and k.BillStat = 0");
+                    $this->db2->query("UPDATE Kitchen k set k.MergeNo = '$mergeNo' where k.TableNo in ($selectedTablesString) and k.BillStat = 0 and EID = $EID");
+
+                    $text = $mergeNo;
+                    $word = "~";
+
+                    if (strpos($text, $word) !== false) {
+
+                        $whr = "MergeNo = '$mergeNo'";
+                        $kmd = $this->db2->select("CNo, MCNo")
+                                    ->where($whr)
+                                    ->get_where('KitchenMain', array('BillStat' => 0, 'EID' => $EID))
+                                    ->row_array();
+                        if(!empty($kmd)){
+                            $MCNo = $kmd['MCNo'];
+
+                            $this->db2->query("UPDATE KitchenMain km set km.MCNo = $MCNo where km.TableNo in ($selectedTablesString) and km.BillStat = 0 and EID = $EID");
+
+                            $this->db2->query("UPDATE Kitchen k set k.MCNo = $MCNo where k.TableNo in ($selectedTablesString) and k.BillStat = 0 and EID = $EID");
+                        }
+                    }
 
                     if($result){
                         $response = [
@@ -2568,8 +2587,8 @@ class Restaurant extends CI_Controller {
 
             $this->db2->query("UPDATE Eat_tables set MergeNo = TableNo, stat=0 where MergeNo = '$old_merge_no'");
 
-            $this->db2->query("UPDATE KitchenMain set MergeNo = TableNo where MergeNo = '$old_merge_no'");
-            $this->db2->query("UPDATE Kitchen set MergeNo = TableNo where MergeNo = '$old_merge_no'");
+            $this->db2->query("UPDATE KitchenMain set MergeNo = TableNo, MCNo = CNo where MergeNo = '$old_merge_no'");
+            $this->db2->query("UPDATE Kitchen set MergeNo = TableNo, MCNo = CNo where MergeNo = '$old_merge_no'");
             $response = [
                 "status" => 1,
                 "msg" => $this->lang->line('noTablesMerged')
@@ -2894,6 +2913,21 @@ class Restaurant extends CI_Controller {
                 $kitchenObj['UKOTNo'] = $newUKOTNO;       
                 $kitchenObj['TableNo'] = $tableNo;
                 $kitchenObj['MergeNo'] = $this->rest->getMergeNoByCNo($CNo);
+
+                $text = $kitchenObj['MergeNo'];
+                $word = "~";
+                if (strpos($text, $word) !== false) {
+                    $mergeNo = $kitchenObj['MergeNo'];
+                    $whr = "MergeNo = '$mergeNo'";
+                    $kmd = $this->db2->select("CNo, MCNo")
+                                ->where($whr)
+                                ->get_where('KitchenMain', array('BillStat' => 0, 'EID' => $EID))
+                                ->row_array();
+                    if(!empty($kmd)){
+                        $kitchenObj['MCNo'] = $kmd['MCNo'];
+                    }
+                }
+
                 $kitchenObj['ItemId'] = $itemIds[$i];
                 $kitchenObj['Qty'] = $itemQty[$i];
                 $kitchenObj['TA'] = $take_away[$i];
@@ -3215,7 +3249,25 @@ class Restaurant extends CI_Controller {
            
             $CNo = insertRecord('KitchenMain', $kitchenMainObj);
             if (!empty($CNo)) {
+
                 updateRecord('KitchenMain', array('MCNo' => $CNo), array('CNo' => $CNo, 'EID' => $EID));
+
+                $text = $kitchenMainObj['MergeNo'];
+                $word = "~";
+                if (strpos($text, $word) !== false) {
+
+                    $whr = "MergeNo = '$mergeNo'";
+                    $kmd = $this->db2->select("CNo, MCNo")
+                                ->where($whr)
+                                ->get_where('KitchenMain', array('BillStat' => 0, 'EID' => $EID))
+                                ->row_array();
+                    if(!empty($kmd)){
+                        $MCNo = $kmd['MCNo'];
+
+                        $this->db2->query("UPDATE KitchenMain km set km.MCNo = $MCNo where km.CNo =$CNo and km.BillStat = 0 and EID = $EID");
+                    }
+                }
+
                 $this->session->set_userdata('CNo', $CNo);
                 return $CNo;
             }

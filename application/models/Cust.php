@@ -269,7 +269,7 @@ class Cust extends CI_Model{
 							die;
 					}
 					$this->session->set_userdata('CNo' , $CNo);
-							$this->session->set_userdata('MergeNo' , $TableNo);
+					$this->session->set_userdata('MergeNo' , $TableNo);
 				}
 				else{
 					$billData = $this->db2->select('b.BillId, b.Stat, b.CNo, b.PaidAmt, b.payRest')
@@ -393,10 +393,10 @@ class Cust extends CI_Model{
 						$kitchenMainObj['COrgId'] = $COrgId;
 						$kitchenMainObj['CustNo'] = $CustNo;
 						$kitchenMainObj['CellNo'] = $CellNo;
-						$kitchenMainObj['EID'] = $EID;
-						$kitchenMainObj['ChainId'] = $ChainId;
-						$kitchenMainObj['ONo'] = $ONo;
-						$kitchenMainObj['OType'] = $OType;
+						$kitchenMainObj['EID'] 	  = $EID;
+						$kitchenMainObj['ChainId']= $ChainId;
+						$kitchenMainObj['ONo'] 	  = $ONo;
+						$kitchenMainObj['OType']  = $OType;
 						// delivery charge for deliver = 110
 						if($OType == 110){
 							$kitchenMainObj['DelCharge'] = $this->session->userdata('DelCharge');
