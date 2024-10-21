@@ -2919,8 +2919,9 @@ class Restaurant extends CI_Controller {
                 $word = "~";
                 if (strpos($text, $word) !== false) {
                     $mergeNo = $kitchenObj['MergeNo'];
-                    $whr = "MergeNo = '$mergeNo' and CNo = $CNo";
+                    $whr = "MergeNo = '$mergeNo'";
                     $kmd = $this->db2->select("CNo, MCNo")
+                                ->order_by('CNo', 'ASC')
                                 ->where($whr)
                                 ->get_where('KitchenMain', array('BillStat' => 0, 'EID' => $EID))
                                 ->row_array();
@@ -3254,8 +3255,26 @@ class Restaurant extends CI_Controller {
            
             $CNo = insertRecord('KitchenMain', $kitchenMainObj);
             if (!empty($CNo)) {
-
                 updateRecord('KitchenMain', array('MCNo' => $CNo), array('CNo' => $CNo, 'EID' => $EID));
+
+                $mergeNo = $kitchenMainObj['MergeNo'];
+                $text = $mergeNo;
+                $word = "~";
+
+                if (strpos($text, $word) !== false) {
+
+                    $whr = "MergeNo = '$mergeNo'";
+                    $kmd = $this->db2->select("CNo, MCNo")
+                                ->order_by('CNo', 'ASC')
+                                ->where($whr)
+                                ->get_where('KitchenMain', array('BillStat' => 0, 'EID' => $EID))
+                                ->row_array();
+                    if(!empty($kmd)){
+                        $MCNo = $kmd['MCNo'];
+
+                        $this->db2->query("UPDATE KitchenMain km set km.MCNo = $MCNo where km.CNo = $CNo and km.BillStat = 0 and EID = $EID");
+                    }
+                }
 
                 $this->session->set_userdata('CNo', $CNo);
                 return $CNo;
