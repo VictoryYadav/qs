@@ -282,11 +282,11 @@
 <section class="common-section filterColor" id="filterBlock">
 	<div class="container text-center">
 		<div class="row">
-			<div class="col-md-6 col-6">
+			<div class="col-md-9 col-8">
 				<div class="sec2-radio-grp btn-group btn-group-toggle" data-toggle="buttons" id="filters" style="width: 100%;">
 		        </div>
 			</div>
-			<div class="col-md-6 col-6 text-right">
+			<div class="col-md-3 col-4 text-right">
 		        <ul class="list-inline view-switcher">
 					<li class="list-inline-item">
 						<i class="fa fa-th-large" onclick="showProdct('grid');" style="cursor: pointer;"></i>

@@ -2220,10 +2220,21 @@ class Customer extends CI_Controller {
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
-
+            
+            $mode = $_POST['mode'];
+            // corporate
+            $custType = 3;
+            if($mode == 25){
+                // onaccount
+                $custType = 1;   
+            }else if($mode == 26){
+                // prepaid
+                $custType = 2;   
+            }
+            
             $mobileNO = $this->session->userdata('CellNo');
             $CustId = $this->session->userdata('CustId');
-            $onAccount = checkOnAccountCust($CustId);
+            $onAccount = checkOnAccountCust($CustId, $custType);
             if(!empty($onAccount)){
                 $custAcc = $this->cust->getCustAccount($CustId);
                 if(!empty($custAcc)){
@@ -2424,7 +2435,7 @@ class Customer extends CI_Controller {
         $CustId = $this->session->userdata('CustId');
         $EID = authuser()->EID;
         $CNo = $this->session->userdata('CNo');
-        $TableNo = authuser()->TableNo;
+        $TableNo = $this->session->userdata('TableNo');
 
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
@@ -2567,6 +2578,23 @@ class Customer extends CI_Controller {
              die;
         }
     }
+    
+    public function get_onaccount_details(){
+        $status = "error";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        if($this->input->method(true)=='POST'){
+            $CustId = $this->session->userdata('CustId');
+            $status = 'success';
+            $response = $this->cust->getOnAccountDetails($CustId, $_POST['pMode']);
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
 
     public function update_loyalty_point(){
         $status = "error";
@@ -2644,10 +2672,10 @@ class Customer extends CI_Controller {
             $pay['PaymtMode'] = $_POST['mode'];
             $pay['PymtType'] = 0;
             $pay['PymtRef'] = 0;
-            $pay['Stat'] = 0;
+            $pay['Stat'] = 1;
             $pay['EID'] = authuser()->EID;
 
-            insertRecord('BillPayments', $pay);
+            $payNo = insertRecord('BillPayments', $pay);
             
             $loyalties = array(
                      'LId'          => 0,
@@ -2655,10 +2683,11 @@ class Customer extends CI_Controller {
                      'EID'          => $pay['EID'],
                      'billId'       => $pay['BillId'],
                      'billDate'     => date('Y-m-d H:i:s'),
-                     'billAmount'   => $_POST['billAmount'],
+                     'billAmount'   => $_POST['payable'],
                      'MobileNo'     => $this->session->userdata('CellNo'),
                      'OTP'          => 0,
-                     'Points'       => $pay['PaidAmt'],
+                     'Points'       => $_POST['usedPointsAmt'],
+                     'PointsValue'  => $_POST['usedPointsValue'],
                      'earned_used'  => 1
                     );
             insertLoyalty($loyalties);

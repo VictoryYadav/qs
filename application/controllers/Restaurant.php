@@ -8781,7 +8781,7 @@ class Restaurant extends CI_Controller {
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
-            $response = $this->rest->getSettledBillNotCollectPymnt($_POST);
+        $response = $this->rest->getSettledBillNotCollectPymnt($_POST);
             
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -8803,7 +8803,7 @@ class Restaurant extends CI_Controller {
         if($this->input->method(true)=='POST'){
             $status = 'success';
             $dt['details'] = $this->rest->getBillingByCustId($_POST['CustId']);
-            $custList = checkOnAccountCust($_POST['CustId']);
+            $custList = checkOnAccountCust($_POST['CustId'], $_POST['custType']);
             $dt['prePaid'] = 0;
             if(!empty($custList)){
                 $dt['prePaid'] = $custList['prePaidAmt'];
@@ -8831,7 +8831,7 @@ class Restaurant extends CI_Controller {
                 $extraAmount = 0;
                 $counter = 1;
                 foreach ($bData as $bill) {
-                    $onAccDetail = checkOnAccountCust($_POST['CustId']);
+                    $onAccDetail = checkOnAccountCust($_POST['CustId'], $_POST['custType']);
                     if(!empty($onAccDetail)){
                         if($onAccDetail['prePaidAmt'] > 0){
                             $totalAmount = $totalAmount + $onAccDetail['prePaidAmt'];

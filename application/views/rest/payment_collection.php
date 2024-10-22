@@ -127,6 +127,7 @@
                         <div class="col-md-12 mt-4">
                             <form method="post" id="collectionForm">
                                 <input type="hidden" id="CustId" name="CustId">
+                                <input type="hidden" id="custType" name="custType">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <span>Total Payable : <b><span id="outstanding">0</span></b></span>
@@ -190,13 +191,21 @@
                 var counter = 0;
                 res.response.forEach((item, index) => {
                     counter++;
+                    custType = ``;
+                    if(item.custType == 1){
+                        custType = `OnAccount`;
+                    }else if(item.custType == 2){
+                        custType = `Prepaid`;
+                    }else if(item.custType == 1){
+                        custType = `Corporate`;
+                    }
                     temp += `<tr>
                                 <td>${counter}</td>
                                 <td>${item.Fullname}</td>
-                                <td>${item.CellNo} <span class="badge badge-boxed  badge-success">${item.billType}</span></td>
+                                <td>${item.CellNo} <span class="badge badge-boxed  badge-success">${custType}</span></td>
                                 <td>${item.TotalAmt}</td>
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-primary" onclick="getDetail(${item.CustId})">Detail</button>
+                                    <button type="button" class="btn btn-sm btn-primary" onclick="getDetail(${item.CustId}, ${item.custType})">Detail</button>
                                 </td>
                             <tr>`;
                 });
@@ -207,8 +216,8 @@
         });
     }
 
-    getDetail = (CustId) =>{
-        $.post('<?= base_url('restaurant/getBillByCustId') ?>',{CustId:CustId},function(res){  
+    getDetail = (CustId, custType) =>{
+        $.post('<?= base_url('restaurant/getBillByCustId') ?>',{CustId:CustId, custType:custType},function(res){  
             if(res.status == 'success'){
                 var temp = ``;
                 outstanding = 0;
@@ -231,6 +240,7 @@
                 $('#prepaid_amt').html(res.response.prePaid);
                 $('#paid_amt').val(paid_amt);
                 $('#CustId').val(CustId);
+                $('#custType').val(custType);
                 $('#detailBody').html(temp);
                 $('.billingModal').modal('show');
             }else{

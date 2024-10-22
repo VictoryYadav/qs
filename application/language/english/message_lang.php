@@ -602,6 +602,8 @@ $lang['multi']		= 'Multi';
 $lang['tableChanged']		= 'Table Changed';
 
 $lang['fixed']		= 'Fixed';
+$lang['maxLimit']	= 'Max Limit';
+$lang['beforeCurrentTransaction']	= 'Before Current Transaction';
 
 
 

@@ -1420,7 +1420,7 @@ class Cust extends CI_Model{
 		}
 		return $this->db2->select("lc.Name, Sum(Case When l.earned_used = 0 
          Then l.Points Else 0 End) EarnedPoints, Sum(Case When l.earned_used = 1 
-         Then l.Points Else 0 End) UsedPoints, lc.MaxPointsUsage, lc.billUsagePerc")
+         Then l.Points Else 0 End) UsedPoints, lc.MaxPointsUsage, lc.billUsagePerc, lc.PointsValue")
 					->group_by('lc.LNo')
 					->join('LoyaltyConfig lc', 'lc.LNo = l.LNo', 'inner')
 					->get_where('Loyalty l', 
@@ -1511,6 +1511,14 @@ class Cust extends CI_Model{
 					->join('ItemPortions p', 'p.IPCd = mir.Itm_Portion', 'inner')
 					->get_where('CustOffers c', array('c.EID' => $EID, 'cod.SchCd' => $dt['SchCd'], 'cod.SDetCd' => $dt['SDetCd']))
 					->result_array();
+	}
+
+	public function getOnAccountDetails($CustId, $CustType){
+		$EID = authuser()->EID;
+		return $this->db2->query("SELECT IFNULL(c.MaxLimit, 0) as MaxLimit, IFNULL(sum((b.PaidAmt ) - sum(bp.PaidAmt)), 0) as balance 
+			FROM Billing b, BillPayments bp, CustList c
+			WHERE b.Stat = 25 AND b.EID = $EID AND b.CustId = $CustId and c.CustId = $CustId
+            and bp.BillId = b.BillId and bp.EID=b.EID and c.EID=b.EID")->row_array();
 	}
 
 	

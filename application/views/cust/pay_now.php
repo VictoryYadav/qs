@@ -132,7 +132,7 @@ body{
                                     <?php echo  $this->lang->line('total'); ?>: <span id="grandtotal"><?= convertToUnicodeNumber(round($payable)); ?></span>
                                 </td>
                                 <td colspan="2">
-                                    <?php echo  $this->lang->line('balance'); ?>: <b><span id="balance"><?= convertToUnicodeNumber(0); ?></span></b>
+                                    <!-- <?php echo  $this->lang->line('balance'); ?>: <b><span id="balance"><?= convertToUnicodeNumber(0); ?></span></b> -->
                                 </td>
                             </tr>
                         </tfoot>
@@ -250,6 +250,37 @@ body{
       </div>
     </div>
 
+    <div class="modal" id="onaccountModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title"><?= $this->lang->line('beforeCurrentTransaction'); ?></h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                        <table class="table order-list" id="splitTable">
+                            <thead>
+                                <tr>
+                                    <th><?= $this->lang->line('maxLimit'); ?></th>
+                                    <th><?= $this->lang->line('balance'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody id="accountBody">
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- footer section -->
     <?php $this->load->view('layouts/customer/footer'); ?>
     
@@ -262,7 +293,10 @@ body{
 
     var BillId = $('#BillId').val();
     var MCNo = $('#MCNo').val();
-    var totalPayable ='<?= round($payable); ?>';
+    var totalPayable = '<?= round($payable); ?>';
+    var usedPointsAmt = 0;
+    var usedPointsValue = 0;
+    var balance = 0;
 
     $(document).ready(function () {
         calculateGrandTotal();
@@ -271,7 +305,7 @@ body{
     var counter = 1;
 
     $("#addrow").on("click", function () {
-        var balance = calculateGrandTotal();
+        // calculateGrandTotal();
         counter++;
 
         var newRow = '<tr>\
@@ -307,14 +341,16 @@ body{
 function changeMode(serialNo){
     var pMode = $(`#mode${serialNo}`).val();
     var billAmount = $('#payableAmt').val();
+    $(`#go${serialNo}`).attr("disabled",false);  
     // loyalty
-    if(pMode == 31 || pMode == 32){
+    if(pMode == 28 || pMode == 29){
 
         $.post('<?= base_url('customer/get_loyalty_points') ?>',{EatOutLoyalty : pMode},function(res){
             if(res.status == 'success'){
                 if(res.response.length > 0){
                     var temp = ``;
-                    var usedPointsAmt = 0;
+                    var usedAmt = 0;
+                    usedPointsValue = res.response[0].PointsValue;
                     var billPerc = (billAmount * res.response[0].billUsagePerc) / 100;
                     billPerc = Math.round(billPerc);
                     if(parseInt(billPerc) > parseInt(res.response[0].MaxPointsUsage)){
@@ -327,7 +363,10 @@ function changeMode(serialNo){
                         usedPointsAmt = availPoints;
                     }
 
-                    $(`#amount${serialNo}`).val(usedPointsAmt);
+                    // rupees calculate
+                    usedAmt = parseInt(usedPointsAmt) * parseInt(res.response[0].PointsValue); 
+
+                    $(`#amount${serialNo}`).val(usedAmt);
                     res.response.forEach((item, index) => {
                         temp += `<tr>
                                     <td>${item.Name}</td>
@@ -342,6 +381,20 @@ function changeMode(serialNo){
                 }
                 $('#loyaltyBody').html(temp);
                 $('#loyaltyModal').modal('show');
+            }else{ 
+              alert(res.response);  
+            }
+        });
+    }else if(pMode == 25 || pMode == 26){
+        $.post('<?= base_url('customer/get_onaccount_details') ?>',{pMode : pMode},function(res){
+            if(res.status == 'success'){
+
+               var temp =  `<tr>
+                                <td>${res.response.MaxLimit}</td>
+                                <td>${res.response.balance}</td>
+                            </tr>`;
+                $('#accountBody').html(temp);
+                $('#onaccountModal').modal('show');
             }else{ 
               alert(res.response);  
             }
@@ -390,9 +443,9 @@ function goPay(val){
     }
 
     // loyalty
-    if(mode == 31 || mode == 32){
+    if(mode == 28 || mode == 29){
 
-        $.post('<?= base_url('customer/loyalty_pay') ?>',{amount:amount,mode:mode, BillId:BillId,MCNo:MCNo,payable:payable},function(res){
+        $.post('<?= base_url('customer/loyalty_pay') ?>',{amount:amount,mode:mode, BillId:BillId,MCNo:MCNo,payable:payable, usedPointsAmt: usedPointsAmt, usedPointsValue:usedPointsValue},function(res){
             if(res.status == 'success'){
                 location.reload();
             }else{ 
@@ -429,7 +482,7 @@ function goPay(val){
         });
     }
     // onAccount, RoomNo, MembershipNo, EmployeeId
-    if(mode >=20 && mode <= 30){
+    if(mode >=20 && mode <= 27){
         // for onaccount
         $.post('<?= base_url('customer/check_onaccount_cust') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
             if(res.status == 'success'){
@@ -526,17 +579,17 @@ function goToBill(){
 function calculateGrandTotal() {
 
     var payable = $('#payableAmt').val();
-    var balance = 0;
     var grandTotal = 0;
     var countRow = 0;
 
     $(".item-value").each(function(index, el) {
         val = $(this).val();
         val = convertDigitToEnglish(val);
-        grandTotal += parseInt(val);
-        
-    });
+        console.log('vv '+val)
+        grandTotal = parseInt(grandTotal) + parseInt(val);
     
+    });
+
     if(grandTotal > payable){
         Swal.fire({
           text: 'Total amount has exceeded the payable amount.',
@@ -544,15 +597,17 @@ function calculateGrandTotal() {
           confirmButtonColor: "red",
         });
     }
+
+    // balance = parseInt(payable) - parseInt(grandTotal);
+
     $("#grandtotal").text(convertToUnicodeNo(grandTotal));
-    balance = parseFloat(payable) - parseFloat(grandTotal);
-    $("#balance").text(convertToUnicodeNo(balance));
+    // $("#balance").text(convertToUnicodeNo(balance));
     
-    $('#addrow').prop("disabled", false);
-    if(balance < 1){
-        $('#addrow').attr("disabled", "disabled");
-    }
-    return balance;
+    // $('#addrow').prop("disabled", false);
+    // if(balance < 1){
+    //     $('#addrow').attr("disabled", "disabled");
+    // }
+    // return balance;
 }
 
 function changeValue(input) {

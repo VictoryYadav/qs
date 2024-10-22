@@ -602,4 +602,6 @@ $lang['multi']		= 'मल्टी';
 $lang['tableChanged']		= 'टेबल चेंज हुआ';
 
 $lang['fixed']		= 'फिक्स्ड';
+$lang['maxLimit']	= 'मैक्स लिमिट';
+$lang['beforeCurrentTransaction']	= 'वर्तमान लेनदेन से पहले';
  
