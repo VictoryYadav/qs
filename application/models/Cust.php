@@ -1515,11 +1515,54 @@ class Cust extends CI_Model{
 
 	public function getOnAccountDetails($CustId, $CustType){
 		$EID = authuser()->EID;
-		return $this->db2->query("SELECT IFNULL(c.MaxLimit, 0) as MaxLimit, IFNULL(sum((b.PaidAmt ) - sum(bp.PaidAmt)), 0) as balance 
-			FROM Billing b, BillPayments bp, CustList c
-			WHERE b.Stat = 25 AND b.EID = $EID AND b.CustId = $CustId and c.CustId = $CustId
-            and bp.BillId = b.BillId and bp.EID=b.EID and c.EID=b.EID")->row_array();
+		$data['MaxLimit'] = 0;
+		$data['balance'] = 0;
+		$data['BillAmt'] = 0;
+		$data['PaidAmt'] = 0;
+
+		$billDt = $this->db2->select("IFNULL(c.MaxLimit, 0) as MaxLimit, sum(b.PaidAmt) as BillAmt")
+								->join('CustList c', 'c.EID = b.EID', 'inner')
+								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'c.CustId' => $CustId, 'b.Stat' => $CustType))
+								->row_array();
+		$paymentDt = $this->db2->select("IFNULL(sum(bp.PaidAmt),0) as PaidAmt")
+								->join('BillPayments bp', 'bp.BillId = b.BillId', 'inner')
+								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'bp.EID' => $EID, 'b.Stat' => $CustType))
+								->row_array();
+		if(!empty($billDt)){
+			$data['MaxLimit'] 	= $billDt['MaxLimit'];
+			$data['balance'] 	= $billDt['BillAmt'] - $paymentDt['PaidAmt'];
+			$data['BillAmt'] 	= $billDt['BillAmt'];
+			$data['PaidAmt'] 	= $paymentDt['PaidAmt'];
+		}
+		return $data;
 	}
+
+	public function getPrepaidDetails($CustId, $CustType){
+		$EID = authuser()->EID;
+		$data['MaxLimit'] = 0;
+		$data['balance'] = 0;
+		$data['BillAmt'] = 0;
+		$data['PaidAmt'] = 0;
+		$data['prePaidAmt'] = 0;
+
+		$billDt = $this->db2->select("IFNULL(c.MaxLimit, 0) as MaxLimit, c.prePaidAmt, sum(b.PaidAmt) as BillAmt")
+								->join('CustList c', 'c.EID = b.EID', 'inner')
+								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'c.CustId' => $CustId, 'b.Stat' => $CustType))
+								->row_array();
+		$paymentDt = $this->db2->select("IFNULL(sum(bp.PaidAmt),0) as PaidAmt")
+								->join('BillPayments bp', 'bp.BillId = b.BillId', 'inner')
+								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'bp.EID' => $EID, 'b.Stat' => $CustType))
+								->row_array();
+		if(!empty($billDt)){
+			$data['MaxLimit'] 	= $billDt['MaxLimit'];
+			$data['balance'] 	= $billDt['prePaidAmt'] - $paymentDt['PaidAmt'];
+			$data['BillAmt'] 	= $billDt['BillAmt'];
+			$data['PaidAmt'] 	= $paymentDt['PaidAmt'];
+			$data['prePaidAmt'] = $billDt['prePaidAmt'];
+		}
+		return $data;
+	}
+	
 
 	
 }

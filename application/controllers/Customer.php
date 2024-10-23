@@ -2277,6 +2277,88 @@ class Customer extends CI_Controller {
              die;
         }
     }
+
+    public function get_prepaid_details(){
+        $status = "error";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        if($this->input->method(true)=='POST'){
+            $CustId = $this->session->userdata('CustId');
+            $status = 'success';
+            $response = $this->cust->getPrepaidDetails($CustId, $_POST['pMode']);
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function check_prepaid_cust(){
+        $status = "error";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        if($this->input->method(true)=='POST'){
+            
+            $mode = $_POST['mode'];
+            // corporate
+            $custType = 3;
+            if($mode == 26){
+                // prepaid
+                $custType = 2;   
+            }
+            
+            $mobileNO = $this->session->userdata('CellNo');
+            $CustId = $this->session->userdata('CustId');
+            $onAccount = checkOnAccountCust($CustId, $custType);
+            if(!empty($onAccount)){
+                $custAcc = $this->cust->getPrepaidDetails($CustId, $mode);
+                if(!empty($custAcc)){
+                    $total = $custAcc['balance'] + $_POST['amount'];
+                    
+                    if($total <= $onAccount['MaxLimit']){
+                        if($custAcc['prePaidAmt'] >= $_POST['amount']){
+                            $otp = rand(9999,1000);
+                            $this->session->set_userdata('payment_otp', $otp);
+                            $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+                            sendSMS($mobileNO, $msgText);
+                            saveOTP($mobileNO, $otp, 'payNow');
+                            $status = "success";
+                            $response = $this->lang->line('OTPSentToYourMobileNo');
+                        }else{
+                            $response = $this->lang->line('outOfLimit');    
+                        }
+                    }else{
+                        $response = $this->lang->line('outOfLimit');
+                    }
+                }else{
+                    $total = $_POST['amount'];
+                    if($total <= $onAccount['MaxLimit']){
+                        if($custAcc['prePaidAmt'] >= $_POST['amount']){
+                            $otp = rand(9999,1000);
+                            $this->session->set_userdata('payment_otp', $otp);
+                            $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+                            sendSMS($mobileNO, $msgText);
+                            saveOTP($mobileNO, $otp, 'payNow');
+                            $status = "success";
+                            $response = $this->lang->line('OTPSentToYourMobileNo');
+                        }
+                    }else{
+                        $response = $this->lang->line('outOfLimit');
+                    }
+                }
+            }else{
+                $response = $this->lang->line('accountNotCreated');
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
     
     public function send_payment_otp(){
         $status = "error";

@@ -253,8 +253,6 @@ body{
     <div class="modal" id="onaccountModal">
       <div class="modal-dialog">
         <div class="modal-content">
-
-          <!-- Modal Header -->
           <div class="modal-header">
             <h4 class="modal-title"><?= $this->lang->line('beforeCurrentTransaction'); ?></h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -267,10 +265,40 @@ body{
                             <thead>
                                 <tr>
                                     <th><?= $this->lang->line('maxLimit'); ?></th>
-                                    <th><?= $this->lang->line('balance'); ?></th>
+                                    <th><?= $this->lang->line('payable'); ?></th>
                                 </tr>
                             </thead>
                             <tbody id="accountBody">
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="prepaidModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title"><?= $this->lang->line('beforeCurrentTransaction'); ?></h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                        <table class="table order-list" id="splitTable">
+                            <thead>
+                                <tr>
+                                    <th><?= $this->lang->line('maxLimit'); ?></th>
+                                    <th><?= $this->lang->line('prepaidAmount'); ?></th>
+                                    <th><?= $this->lang->line('payable'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody id="prepaidBody">
                             </tbody>
                         </table>
                     </div>
@@ -385,7 +413,7 @@ function changeMode(serialNo){
               alert(res.response);  
             }
         });
-    }else if(pMode == 25 || pMode == 26){
+    }else if(pMode == 25){
         $.post('<?= base_url('customer/get_onaccount_details') ?>',{pMode : pMode},function(res){
             if(res.status == 'success'){
 
@@ -395,6 +423,21 @@ function changeMode(serialNo){
                             </tr>`;
                 $('#accountBody').html(temp);
                 $('#onaccountModal').modal('show');
+            }else{ 
+              alert(res.response);  
+            }
+        });
+    }else if(pMode == 26){
+        $.post('<?= base_url('customer/get_prepaid_details') ?>',{pMode : pMode},function(res){
+            if(res.status == 'success'){
+
+               var temp =  `<tr>
+                                <td>${res.response.MaxLimit}</td>
+                                <td>${res.response.prePaidAmt}</td>
+                                <td>${res.response.balance}</td>
+                            </tr>`;
+                $('#prepaidBody').html(temp);
+                $('#prepaidModal').modal('show');
             }else{ 
               alert(res.response);  
             }
@@ -482,9 +525,25 @@ function goPay(val){
         });
     }
     // onAccount, RoomNo, MembershipNo, EmployeeId
-    if(mode >=20 && mode <= 27){
+    if(mode >=20 && mode <= 25){
         // for onaccount
         $.post('<?= base_url('customer/check_onaccount_cust') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
+            if(res.status == 'success'){
+                $('#paymentBillId').val(BillId);
+                $('#paymentMCNo').val(MCNo);
+                $('#paymentAmount').val(amount);
+                $('#paymentMode').val(mode);
+                $('#otpModal').modal('show');
+                
+            }else{ 
+              alert(res.response);  
+            }
+        });
+    }
+
+    if(mode == 26){
+        // for prepaid
+        $.post('<?= base_url('customer/check_prepaid_cust') ?>',{billId:BillId,MCNo:MCNo,amount:amount,mode:mode},function(res){
             if(res.status == 'success'){
                 $('#paymentBillId').val(BillId);
                 $('#paymentMCNo').val(MCNo);
