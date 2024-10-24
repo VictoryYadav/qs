@@ -134,8 +134,8 @@
                                     <div class="card-body">
                                         <div class="table-responsive">
                                             <div class="items-data" id="order-view-parent">
-                                                <table class="display" id="order-view-table" style="width: 100%;">
-                                                    <thead>
+                                                <table class="display table" id="order-view-table" style="width: 100%;">
+                                                    <thead style="background-color: #ecc176;">
                                                         <tr>
                                                             <th><?= $this->lang->line('billNo'); ?></th>
                                                             <th><?= $this->lang->line('packs'); ?></th>
@@ -158,7 +158,7 @@
                                     <div class="card-body">
                                         <div class="table-responsive">
                                             <table class="table" >
-                                                <thead>
+                                                <thead style="background-color: #a1aff3;">
                                                     <tr>
                                                         <th><?= $this->lang->line('itemName'); ?></th>
                                                         <th><?= $this->lang->line('quantity'); ?></th>
@@ -227,7 +227,6 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#order-view-table').DataTable();
         $('#order_details').DataTable();
     });
 
@@ -282,6 +281,7 @@
                 });
                     }
                     $("#table-view").html(template);
+                    $('#order-view-table').DataTable();
                     $('#mydiv').hide();
                 },
                 error: (xhr, status, error) => {

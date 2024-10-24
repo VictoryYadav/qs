@@ -2133,6 +2133,7 @@ class Customer extends CI_Controller {
         $data['title'] = $this->lang->line('payNow');
         $EID = authuser()->EID;
         $data["modes"] = $this->cust->getPaymentModes();
+        $data['EType'] = $this->session->userdata('EType');
         $data['BillId'] = $BillId;
         $data['EID'] = $EID;
         $CustId = $this->session->userdata('CustId');

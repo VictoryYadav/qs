@@ -216,21 +216,23 @@ socket.onopen = function(event) {
     window.onload = function() {
         // document.getElementById("tips").focus();
       }
-
-      kotPrint();
-      function kotPrint(){
-        $.post('<?= base_url('customer/kot_print_data') ?>',function(res){
-            if(res.status == 'success'){
-                var data = res.response;
-                var str = ``;
-                data.forEach(item => {
-                    str = `${item.MCNo}_${item.MergeNo}_${item.FKOTNo}_${item.KOTNo}`;
-                    socket.send(str);
-                });
-            }else{
-              alert(res.response); 
-            }
-        });
+      var EType = "<?php echo $EType; ?>";
+      if(EType == 5){
+        kotPrint();
+        function kotPrint(){
+            $.post('<?= base_url('customer/kot_print_data') ?>',function(res){
+                if(res.status == 'success'){
+                    var data = res.response;
+                    var str = ``;
+                    data.forEach(item => {
+                        str = `${item.MCNo}_${item.MergeNo}_${item.FKOTNo}_${item.KOTNo}`;
+                        socket.send(str);
+                    });
+                }else{
+                  alert(res.response); 
+                }
+            });
+          }
       }
 
     var regular_discount = 0;

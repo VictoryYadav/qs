@@ -95,6 +95,7 @@ class AuthController extends CI_Controller {
                         $this->session->set_userdata('restBilling',$checkNumber['restBilling']); 
                         $this->session->set_userdata('recommend',$checkNumber['recommend']);
                         $this->session->set_userdata('addItemLock',$checkNumber['addItemLock']);
+                        $this->session->set_userdata('kds',$checkNumber['kds']);
                         
                         $session_data = array(
                         'EID' => $checkNumber['EID'],

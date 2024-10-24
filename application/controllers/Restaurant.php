@@ -1616,7 +1616,8 @@ class Restaurant extends CI_Controller {
                     $this->db2->where('km.OType', $dispMode);
                 }
 
-                $partyName = "p.Name$langId as thirdPartyName";
+                $partyName = "p.Name$langId";
+                $kstat = ($this->session->userdata('kds') > 0)?5:0; 
 
                 $kitchenData = $this->db2->select("b.BillId, b.BillNo, sum(k.Qty) as Qty, k.OType, k.TPRefNo, k.TPId, km.CustId, k.CellNo, k.EID, k.DCd, km.CNo, (case when $partyName != '-' Then $partyName ELSE p.Name1 end) as thirdPartyName, (SELECT IF(min(k1.KStat)=0,0,5) FROM Kitchen k1 where k1.CNo=km.CNo and k1.DCd=k.DCd and k1.EID=km.EID group by k1.CNo) as KStat")
                                     ->order_by('b.BillId', 'Asc')
@@ -1633,6 +1634,7 @@ class Restaurant extends CI_Controller {
                                                 'k.DCd' => $DCd,
                                                 'k.DStat' => 0,
                                                 'k.Stat' => 3,
+                                                'k.KStat' => 3,
                                                 'k.OType >=' => 100,
                                                 )
                                             )
