@@ -605,4 +605,5 @@ $lang['fixed']		= 'फिक्स्ड';
 $lang['maxLimit']	= 'मैक्स लिमिट';
 $lang['beforeCurrentTransaction']	= 'वर्तमान लेनदेन से पहले';
 $lang['prepaidAmount']	= 'प्रीपेड अमाउंट';
+$lang['insufficentBalance']	= 'बैलेंस कम है';
  

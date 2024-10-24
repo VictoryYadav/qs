@@ -163,7 +163,7 @@ class Razorpay extends CI_Controller {
                         $pay['PymtId'] = 0;
                         $pay['PaidAmt'] = $key['PaidAmt'];
                         $pay['OrderRef'] = $orderId;
-                        $pay['PaymtMode'] = 5;
+                        $pay['PaymtMode'] = 35;
                         $pay['PymtType'] = 0;
                         $pay['PymtRef'] = $referenceId;
                         $pay['Stat'] = 1;
@@ -183,7 +183,7 @@ class Razorpay extends CI_Controller {
                 $pay['PymtId'] = 0;
                 $pay['PaidAmt'] = $totalAmount;
                 $pay['OrderRef'] = $orderId;
-                $pay['PaymtMode'] = 5;
+                $pay['PaymtMode'] = 35;
                 $pay['PymtType'] = 0;
                 $pay['PymtRef'] = $referenceId;
                 $pay['Stat'] = 1;

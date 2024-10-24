@@ -606,6 +606,7 @@ $lang['maxLimit']	= 'Max Limit';
 $lang['beforeCurrentTransaction']	= 'Before Current Transaction';
 
 $lang['prepaidAmount']	= 'Prepaid Amt';
+$lang['insufficentBalance']	= 'Insufficent Balance';
 
 
 

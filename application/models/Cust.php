@@ -1262,11 +1262,15 @@ class Cust extends CI_Model{
 	public function getPaymentModes(){
 		$langId = $this->session->userdata('site_lang');
         $lname = "Name$langId";
-		return $this->db2->select("PymtMode, (case when $lname != '-' Then $lname ELSE Name1 end) as Name ,Company, CodePage1")->get_where('ConfigPymt', array('Stat' => 1))->result_array();
+		return $this->db2->select("PymtMode, (case when $lname != '-' Then $lname ELSE Name1 end) as Name ,Company, CodePage1, repeatable")->get_where('ConfigPymt', array('Stat' => 1))->result_array();
 	}
 
 	public function getSplitPayments($billId){
 		return $this->db2->get_where('BillPayments', array('BillId' => $billId,'Stat' => 1,'EID' => $this->EID))->result_array();
+	}
+
+	public function getModesFromBillPayment($billId){
+		return $this->db2->select("PaymtMode")->get_where('BillPayments', array('BillId' => $billId,'Stat' => 1,'EID' => $this->EID))->result_array();	
 	}
 
 	public function getShareDetails($billId, $MCNo){
@@ -1413,9 +1417,14 @@ class Cust extends CI_Model{
 	}
 	
 	public function getLoyaltiPoints($CustId, $RestEID){
-		if($RestEID == 32){
+		$lno = '';
+		if($RestEID == 29){
+			// rest
+			$lno = '2';
 			$this->db2->where('lc.EatOutLoyalty', $this->EID);
 		}else{
+			$lno = '1';
+			// eatout
 			$this->db2->where('lc.EatOutLoyalty', 0);
 		}
 		return $this->db2->select("lc.Name, Sum(Case When l.earned_used = 0 
@@ -1425,7 +1434,8 @@ class Cust extends CI_Model{
 					->join('LoyaltyConfig lc', 'lc.LNo = l.LNo', 'inner')
 					->get_where('Loyalty l', 
 										array('l.EID' => $this->EID, 
-												'l.custId' => $CustId)
+												'l.custId' => $CustId,
+												'l.LNo' => $lno)
 								)
 					->result_array();
 	}
@@ -1521,12 +1531,12 @@ class Cust extends CI_Model{
 		$data['PaidAmt'] = 0;
 
 		$billDt = $this->db2->select("IFNULL(c.MaxLimit, 0) as MaxLimit, sum(b.PaidAmt) as BillAmt")
-								->join('CustList c', 'c.EID = b.EID', 'inner')
-								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'c.CustId' => $CustId, 'b.Stat' => $CustType))
+								->join('CustList c', 'c.EID = b.EID', 'left')
+								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'c.CustId' => $CustId, 'b.Stat' => 25))
 								->row_array();
 		$paymentDt = $this->db2->select("IFNULL(sum(bp.PaidAmt),0) as PaidAmt")
 								->join('BillPayments bp', 'bp.BillId = b.BillId', 'inner')
-								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'bp.EID' => $EID, 'b.Stat' => $CustType))
+								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'bp.EID' => $EID, 'b.Stat' => 25))
 								->row_array();
 		if(!empty($billDt)){
 			$data['MaxLimit'] 	= $billDt['MaxLimit'];
@@ -1545,20 +1555,26 @@ class Cust extends CI_Model{
 		$data['PaidAmt'] = 0;
 		$data['prePaidAmt'] = 0;
 
-		$billDt = $this->db2->select("IFNULL(c.MaxLimit, 0) as MaxLimit, c.prePaidAmt, sum(b.PaidAmt) as BillAmt")
-								->join('CustList c', 'c.EID = b.EID', 'inner')
-								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'c.CustId' => $CustId, 'b.Stat' => $CustType))
+		$custDT = $this->db2->select("IFNULL(MaxLimit, 0) as MaxLimit, IFNULL(prePaidAmt, 0) as prePaidAmt")
+			->get_where('CustList', array('CustId' => $CustId, 'custType' => 2))
+			->row_array();
+		if(!empty($custDT)){
+			$data['prePaidAmt'] = $custDT['prePaidAmt'];
+			$data['MaxLimit'] 	= $custDT['MaxLimit'];
+		}
+
+		$billDt = $this->db2->select("IFNULL(sum(b.PaidAmt),0) as BillAmt")
+								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'b.Stat' => 26))
 								->row_array();
+
 		$paymentDt = $this->db2->select("IFNULL(sum(bp.PaidAmt),0) as PaidAmt")
 								->join('BillPayments bp', 'bp.BillId = b.BillId', 'inner')
-								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'bp.EID' => $EID, 'b.Stat' => $CustType))
+								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'bp.EID' => $EID, 'b.Stat' => 26))
 								->row_array();
 		if(!empty($billDt)){
-			$data['MaxLimit'] 	= $billDt['MaxLimit'];
-			$data['balance'] 	= $billDt['prePaidAmt'] - $paymentDt['PaidAmt'];
+			$data['balance'] 	= $billDt['BillAmt'] - $paymentDt['PaidAmt'];
 			$data['BillAmt'] 	= $billDt['BillAmt'];
 			$data['PaidAmt'] 	= $paymentDt['PaidAmt'];
-			$data['prePaidAmt'] = $billDt['prePaidAmt'];
 		}
 		return $data;
 	}

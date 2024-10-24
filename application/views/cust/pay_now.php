@@ -293,9 +293,9 @@ body{
                         <table class="table order-list" id="splitTable">
                             <thead>
                                 <tr>
-                                    <th><?= $this->lang->line('maxLimit'); ?></th>
                                     <th><?= $this->lang->line('prepaidAmount'); ?></th>
-                                    <th><?= $this->lang->line('payable'); ?></th>
+                                    <th><?= $this->lang->line('used').' '.$this->lang->line('amount'); ?></th>
+                                    <th><?= $this->lang->line('available'); ?></th>
                                 </tr>
                             </thead>
                             <tbody id="prepaidBody">
@@ -318,7 +318,12 @@ body{
 </body>
 
 <script type="text/javascript">
+    const socket = new WebSocket('ws://localhost:8080');
+    socket.onopen = function(event) {
+        // console.log("Connected to WebSocket server");
+    };
 
+    var EType = "<?php echo $EType; ?>";
     var BillId = $('#BillId').val();
     var MCNo = $('#MCNo').val();
     var totalPayable = '<?= round($payable); ?>';
@@ -341,10 +346,10 @@ body{
                             <input type="text" placeholder="Amount" class="form-control item-value" required name="amount'+counter+'" id="amount'+counter+'" onblur="changeValue(this)" value="'+convertToUnicodeNo(balance)+'">\
                         </td>\
                         <td>\
-                            <select name="mode'+counter+'" id="mode'+counter+'" class="form-control selectMode" required>\
+                            <select name="mode'+counter+'" id="mode'+counter+'" class="form-control selectMode" required onchange="changeMode('+counter+')">\
                                 <option value=""><?= $this->lang->line('chooseMode'); ?></option>\
                                 <?php
-                                    foreach ($modes as $key) {
+                                    foreach ($modes1 as $key) {
                                     ?>
                                     <option value="<?= $key['PymtMode'];?>" data-mode="<?= $key['CodePage1'];?>"><?= $key['Name'];?></option>\
                                 <?php } ?>
@@ -432,9 +437,9 @@ function changeMode(serialNo){
             if(res.status == 'success'){
 
                var temp =  `<tr>
-                                <td>${res.response.MaxLimit}</td>
                                 <td>${res.response.prePaidAmt}</td>
                                 <td>${res.response.balance}</td>
+                                <td>${parseInt(res.response.prePaidAmt) - parseInt(res.response.balance)}</td>
                             </tr>`;
                 $('#prepaidBody').html(temp);
                 $('#prepaidModal').modal('show');
@@ -487,8 +492,9 @@ function goPay(val){
 
     // loyalty
     if(mode == 28 || mode == 29){
+        var LNo = (mode == 28)?1:2;
 
-        $.post('<?= base_url('customer/loyalty_pay') ?>',{amount:amount,mode:mode, BillId:BillId,MCNo:MCNo,payable:payable, usedPointsAmt: usedPointsAmt, usedPointsValue:usedPointsValue},function(res){
+        $.post('<?= base_url('customer/loyalty_pay') ?>',{amount:amount,mode:mode, BillId:BillId,MCNo:MCNo,payable:payable, usedPointsAmt: usedPointsAmt, usedPointsValue:usedPointsValue, LNo:LNo},function(res){
             if(res.status == 'success'){
                 location.reload();
             }else{ 
@@ -604,6 +610,7 @@ function checkStatus(billId,payNo, serialNo){
 }
 
 // goto bill page
+
 function goToBill(){
     var payable = $('#payableAmt').val();
     var total = $('#sum').val();
@@ -613,6 +620,9 @@ function goToBill(){
     total = parseInt(total);
     if(splitype != 1){
         if(payable == total){
+            if(EType == 1){
+                kotPrint();
+            }
 
             $.post('<?= base_url('customer/updateCustPayment') ?>',{BillId:BillId, MCNo:MCNo, billAmount : payable},function(res){
             
@@ -625,6 +635,10 @@ function goToBill(){
         payable = "<?php echo $billAmt; ?>";
         payable = parseInt(payable);
         if(payable == total){
+            if(EType == 1){
+                kotPrint();
+            }
+
             $.post('<?= base_url('customer/updateCustPayment') ?>',{BillId:BillId, MCNo:MCNo, billAmount : payable},function(res){
             
                 window.location = '<?= base_url();?>customer/bill/'+BillId;   
@@ -633,6 +647,24 @@ function goToBill(){
         }
     }
     // setInterval(function(){ goToBill(); }, 3000);
+}
+
+
+function kotPrint(){
+    if(EType == 1){
+        $.post('<?= base_url('customer/kot_print_data') ?>',function(res){
+            if(res.status == 'success'){
+                var data = res.response;
+                var str = ``;
+                data.forEach(item => {
+                    str = `${item.MCNo}_${item.MergeNo}_${item.FKOTNo}_${item.KOTNo}`;
+                    socket.send(str);
+                });
+            }else{
+              alert(res.response); 
+            }
+        });
+    }
 }
 
 function calculateGrandTotal() {

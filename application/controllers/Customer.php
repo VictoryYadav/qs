@@ -2152,9 +2152,47 @@ class Customer extends CI_Controller {
             redirect(base_url('customer/checkout'));    
         }
         $data["splitBills"] = $this->cust->getSplitPayments($BillId);
+        $data["pmodes"] = $this->cust->getModesFromBillPayment($BillId);
+        $parray = [];
+        $data["modes1"] = [];
+        if(!empty($data["pmodes"])){
+            foreach ($data["pmodes"] as $key) {
+                $parray[] = $key['PaymtMode'];
+            }
+
+        // for unique modes
+            $temp = [];
+            foreach ($data["modes"] as $pay ) {
+                if($pay['repeatable'] == 0 && in_array($pay['PymtMode'], $parray)){
+                    continue;
+                }
+                $temp[] = $pay;
+            }
+            $data["modes1"] = $temp;
+        }
+
         $data["billLinks"] = $this->cust->getBillLinks($BillId, $MCNo);
 
         $this->load->view('cust/pay_now', $data);
+    }
+
+    // $this->remove_duplicateKeys("PymtMode",$temp);
+    private function remove_duplicateKeys($key,$data){
+
+        $_data = array();
+
+        foreach ($data as $v) {
+          if (isset($_data[$v[$key]])) {
+            // found duplicate
+            continue;
+          }
+          // remember unique item
+          $_data[$v[$key]] = $v;
+        }
+        // if you need a zero-based array
+        // otherwise work with $_data
+        $data = array_values($_data);
+        return $data;
     }
 
     public function multi_payment(){
@@ -2311,13 +2349,20 @@ class Customer extends CI_Controller {
             $mobileNO = $this->session->userdata('CellNo');
             $CustId = $this->session->userdata('CustId');
             $onAccount = checkOnAccountCust($CustId, $custType);
+
             if(!empty($onAccount)){
                 $custAcc = $this->cust->getPrepaidDetails($CustId, $mode);
+                
                 if(!empty($custAcc)){
+                    
                     $total = $custAcc['balance'] + $_POST['amount'];
                     
                     if($total <= $onAccount['MaxLimit']){
-                        if($custAcc['prePaidAmt'] >= $_POST['amount']){
+
+                        $balance = $custAcc['prePaidAmt'] - $custAcc['PaidAmt'];
+                        
+                        if($balance >= $_POST['amount']){
+                            
                             $otp = rand(9999,1000);
                             $this->session->set_userdata('payment_otp', $otp);
                             $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
@@ -2326,7 +2371,7 @@ class Customer extends CI_Controller {
                             $status = "success";
                             $response = $this->lang->line('OTPSentToYourMobileNo');
                         }else{
-                            $response = $this->lang->line('outOfLimit');    
+                            $response = $this->lang->line('insufficentBalance');    
                         }
                     }else{
                         $response = $this->lang->line('outOfLimit');
@@ -2421,7 +2466,7 @@ class Customer extends CI_Controller {
                     insertRecord('BillPayments', $pay);
 
                     autoSettlePayment($billId, $MergeNo, $MCNo);
-                    updateRecord('Billing', array('Stat' => 25), array('BillId' => $billId, 'EID' => $EID));
+                    updateRecord('Billing', array('Stat' => $_POST['paymentMode']), array('BillId' => $billId, 'EID' => $EID));
 
                     $status = "success";
                     $response = $this->lang->line('billSettled');
@@ -2761,6 +2806,7 @@ class Customer extends CI_Controller {
             
             $loyalties = array(
                      'LId'          => 0,
+                     'LNo'          => $_POST['LNo'],
                      'custId'       => $this->session->userdata('CustId'),
                      'EID'          => $pay['EID'],
                      'billId'       => $pay['BillId'],
@@ -3238,11 +3284,10 @@ class Customer extends CI_Controller {
             $CNo = $this->session->userdata('CNo');
             $EID = $this->session->userdata('EID');
             $EType = $this->session->userdata('EType');
-            $kstat = ($EType == 5)?3:2;
 
             $response = $this->db2->select("MCNo, MergeNo, KOTNo, FKOTNo")
                         ->group_by('KOTNo, FKOTNo')
-                        ->get_where('Kitchen', array('EID' => $EID, 'CNo' => $CNo, 'BillStat' => 0, 'Stat' => $kstat))
+                        ->get_where('Kitchen', array('EID' => $EID, 'CNo' => $CNo, 'BillStat' => 0, 'Stat' => 3))
                         ->result_array();
 
             header('Content-Type: application/json');
