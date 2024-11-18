@@ -44,14 +44,14 @@
                                                     <div class="card-header">  
                                                        <div class="row">
                                                            <div class="col-md-12">
-                                                            <input type="checkbox" name="allSelected" id="selectAll"> &nbsp;<?= $this->lang->line('selectAllAvailableRoles'); ?></div>
+                                                            <input type="checkbox" name="allSelected" id="selectAll"> &nbsp;<?= $this->lang->line('selectAllAvailableCuisines'); ?></div>
                                                        </div>
                                                     </div>
                                                     <div class="card-body" style="padding: 0.25rem;">
                                                         <ul style="height: 375px;overflow: auto;" id="availableRoles">
                                                             <div class="ck-button"  style="margin-left:-40px;">
                                                                <label>
-                                                                  &nbsp;&nbsp;<span>No Roles Found!</span>
+                                                                  &nbsp;&nbsp;<span>No Cuisines Found!</span>
                                                                </label>
                                                             </div>
                                                         </ul>
@@ -69,13 +69,13 @@
                                                     <div class="card-header">  
                                                        <div class="row">
                                                            <div class="col-md-12">
-                                                            <input type="checkbox" id="selectAll_A"> &nbsp;<?= $this->lang->line('selectAllAssignedRoles'); ?></div>
+                                                            <input type="checkbox" id="selectAll_A"> &nbsp;<?= $this->lang->line('selectAllAssignedCuisines'); ?></div>
                                                        </div>
                                                     </div>
                                                     <div class="card-body" style="padding: 0.25rem;">   
                                                         <ul style="height: 375px;overflow: auto;" id="assignedRoles">
                                                             <div class="ck-button"style="margin-left:-40px;">
-                                                               <label>&nbsp;&nbsp;<span>No Roles Found!</span>
+                                                               <label>&nbsp;&nbsp;<span>No Cuisines Found!</span>
                                                                </label>
                                                             </div>
                                                         </ul>
@@ -203,7 +203,7 @@ function getAssignedRoles(){
                         </div>`;
             }
           }else{
-            temp = 'No Roles Found!';
+            temp = 'No Cuisine Found!';
           }
           $('#assignedRoles').html(temp);
         }else{

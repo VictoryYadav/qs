@@ -41,7 +41,7 @@
 
                 <div class="page-content">
                     <div class="container-fluid">
-                        <?php if($this->session->userdata('EDT') == 1){ ?>
+                        
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="card">
@@ -81,7 +81,7 @@
                                 </div>
                             </div>
                         </div>
-                        <?php } ?>
+                        
                         <div class="row">
                             <?php
                             $group_arr = [];

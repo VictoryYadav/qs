@@ -187,9 +187,6 @@
     <div class="modal-content">
       <div class="modal-header" style="background: #e1af75;">
         <h6 class="modal-title text-white" id="labelName"><?= $this->lang->line('name'); ?></h6>
-        <button type="button" class="close" onclick="goHome()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
         <p>Your earlier visits to this outlet : <b><span id="lableVisit">0</span></b></p>

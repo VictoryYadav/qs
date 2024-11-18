@@ -40,6 +40,7 @@ $lang['offers'] 		= 'ऑफर्स';
 $lang['entertainment'] 	= 'एंटरटेनमेंट';
 $lang['outlet'] 		= 'आउटलेट';
 $lang['order'] 			= 'आर्डर';
+$lang['reOrder'] 		= 'पुनः आर्डर करे';
 
 $lang['menu'] = 'मेनू';
 $lang['ok'] = 'ठीक है';
@@ -157,6 +158,13 @@ $lang['disabled'] 			= 'डिसेबल्ड';
 $lang['userAccess'] 		= 'यूजर एक्सेस';
 $lang['selectAllAvailableRoles'] = 'सभी उपलब्ध भूमिकाएँ चुनें';
 $lang['selectAllAssignedRoles'] = 'सभी निर्दिष्ट भूमिकाएँ चुनें';
+
+$lang['selectAllAvailableCuisines'] = 'सभी उपलब्ध कुजीन चुनें';
+$lang['selectAllAssignedCuisines'] = 'सभी निर्दिष्ट कुजीन चुनें';
+
+$lang['selectAllAvailableSections'] = 'सभी उपलब्ध सेक्शन चुनें';
+$lang['selectAllAssignedSections'] = 'सभी निर्दिष्ट सेक्शन चुनें';
+
 $lang['roleAssignment'] 	= 'रोल असाइनमेंट';
 $lang['sitIn'] 				= 'सीट इन';
 $lang['tableNo'] 			= 'टेबल न.';

@@ -1204,6 +1204,7 @@ class Cust extends CI_Model{
                     $custPymtObj['CustId'] 		= $CustId;
                     $custPymtObj['BillNo'] 		= $lastInsertBillId;
                     $custPymtObj['EID'] 		= $EID;
+                    $custPymtObj['aggEID'] 		= $this->session->userdata('aggEID');
                     $custPymtObj['PaidAmt'] 	= $totalAmount;
                     $custPymtObj['PaymtMode'] 	= $paymentMode;
                     $genTblDb->insert('CustPymts', $custPymtObj);
@@ -1577,6 +1578,33 @@ class Cust extends CI_Model{
 			$data['PaidAmt'] 	= $paymentDt['PaidAmt'];
 		}
 		return $data;
+	}
+
+	public function getItemListForReorder(){
+		// 'mi.CID' => 10 = Bar Cuisine
+		$EID  = authuser()->EID;
+        $CNo = $this->session->userdata('CNo');
+        $CustId = $this->session->userdata('CustId');
+
+		$stat = ($this->session->userdata('EType') == 5)?3:2;
+		return $this->db2->select("k.*")
+					->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
+					->join('MenuItem mi', 'mi.ItemId = k.ItemId', 'inner')
+					->get_where('KitchenMain km', array('k.Stat' => $stat, 'k.BillStat' => 0, 'km.BillStat' => 0, 'k.EID' => $EID, 'km.EID' => $EID, 'km.CustId' => $CustId, 'km.CNo' => $CNo, 'mi.CID' => 10))
+					->result_array();
+	}
+
+	public function getOfferItemsForReorder($OrdNo, $SchCd, $SDetCd){
+		$EID  = authuser()->EID;
+        $CNo = $this->session->userdata('CNo');
+        $CustId = $this->session->userdata('CustId');
+
+		$stat = ($this->session->userdata('EType') == 5)?3:2;
+		return $this->db2->select("k.*")
+					->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
+					->join('MenuItem mi', 'mi.ItemId = k.ItemId', 'inner')
+					->get_where('KitchenMain km', array('k.Stat' => $stat, 'k.BillStat' => 0, 'km.BillStat' => 0, 'k.EID' => $EID, 'km.EID' => $EID, 'km.CustId' => $CustId, 'km.CNo' => $CNo, 'k.SchCd' => $SchCd, 'k.SDetCd' => $SDetCd, 'k.OrdNo !=' => $OrdNo))
+					->result_array();	
 	}
 	
 

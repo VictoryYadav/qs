@@ -103,6 +103,8 @@ h6{
             <?php }else{ ?>
             <a class="dropdown-item" href="<?= base_url('customer/checkout'); ?>"><?= $this->lang->line('checkout'); ?></a>
             <?php } ?>
+
+            <a class="dropdown-item" href="<?= base_url('customer/reorder'); ?>"><?= $this->lang->line('reOrder'); ?></a>
         </div>
     </div>
 </div>

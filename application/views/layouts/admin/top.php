@@ -43,7 +43,7 @@ body[data-topbar=dark] .header-item {
                     <div class="d-flex">
                         <!-- LOGO -->
                         <div class="navbar-brand-box">
-                            <a href="<?php echo base_url('dashboard'); ?>" class="logo logo-dark">
+                            <a href="<?php echo base_url('restaurant'); ?>" class="logo logo-dark">
                                 <span class="logo-sm">
                                     <img src="<?= base_url(); ?>theme/images/Eat-out-Final-1.png" alt="" height="22">
                                 </span>
@@ -52,7 +52,7 @@ body[data-topbar=dark] .header-item {
                                 </span>
                             </a>
 
-                            <a href="<?php echo base_url('dashboard'); ?>" class="logo logo-light">
+                            <a href="<?php echo base_url('restaurant'); ?>" class="logo logo-light">
                                 <span class="logo-sm">
                                     <img src="<?= base_url(); ?>theme/images/Eat-out-Final-1.png" alt="" height="22">
                                 </span>

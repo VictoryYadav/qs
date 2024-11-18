@@ -114,7 +114,7 @@
                                             <div class="col-md-6">
                                                 
                                                 <button class="btn btn-success btn-sm send-to-kitchen" data_type="save_to_kitchen" id="btnOrder" onclick="send_to_kitchen('save_to_kitchen')"><?= $this->lang->line('order'); ?></button>
-                                                
+
                                                 <?php if($OType != 8){ 
                                                     if($this->session->userdata('restBilling') == 1){
                                                     ?>
@@ -691,15 +691,18 @@
     })
 
     function send_to_kitchen(data_type){
-        var MergeNo = $(`#table-id`).val();
+        var MergeNo = '';
+        var tableNo = 0;
+        MergeNo = $(`#table-id`).val();
         var orderType = $("#order-type").val();
         var seatNo = 0;
         var oldSeatNo = 0;
         if (orderType != 8 ) {
-            var tableNo = orderType;
+            tableNo = orderType;
+            MergeNo = tableNo;
         } else {
             // var tableNo = $("#table-id").val();
-            var tableNo = $('option:selected', $('#table-id')).attr('tableno');
+            tableNo = $('option:selected', $('#table-id')).attr('tableno');
             seatNo = $('#seatNo').val();
             oldSeatNo = $('#seatNoOld').val();
         }

@@ -188,7 +188,7 @@ function getAvailableRoles(){
                         </div>`;
             }
           }else{
-            temp = 'No Cuisine Found!';
+            temp = 'No Language Found!';
           }
           $('#availableRoles').html(temp);
         }else{
@@ -214,7 +214,7 @@ function getAssignedRoles(){
                         </div>`;
             }
           }else{
-            temp = 'No Roles Found!';
+            temp = 'No Language Found!';
           }
 
           $('#assignedRoles').html(temp);

@@ -1955,23 +1955,27 @@ class Customer extends CI_Controller {
 
         $CustId = $this->session->userdata('CustId');
         $genTblDb = $this->load->database('GenTableData', TRUE);
-        
+
+        $whr = "";
         if(!empty($data['country'])){
-         $genTblDb->where('ed.CountryCd',$data['country']);
+         // $genTblDb->where('ed.CountryCd',$data['country']);
+            $whr .= " and ed.CountryCd = ".$data['country'];
         }
         if(!empty($data['city'])){
-         $genTblDb->where('ed.city_id',$data['city']);
+         // $genTblDb->where('ed.city_id',$data['city']);
+         $whr .= " and ed.city_id = ".$data['city'];
         }
-        // $whr = "cp.BillId = rt.BillId";
-        $data['custPymt'] = $genTblDb->select('date(cp.BillDt) as billdt , cp.BillId, cp.BillNo, cp.EID , cp.PaidAmt , cp.CustId , ed.Name , ed1.DBName, ed.DBPasswd, rt.avgBillRtng')
-                            ->order_by('cp.BNo', 'DESC')
-                            ->join('EIDDet ed', 'ed.EID = cp.EID', 'inner')
-                            ->join('EIDDet ed1', 'ed1.EID = cp.aggEID', 'inner')
-                            ->join('Ratings rt', 'rt.EID = cp.EID', 'left')
-                            // ->where($whr)
-                            ->get_where('CustPymts cp', array('cp.CustId' => $CustId, 'rt.CustId' => $CustId))
-                            ->result_array();
-                            
+        
+        $data['custPymt'] = $genTblDb->query("SELECT DISTINCT cp.BillId, date(cp.BillDt) as billdt, `cp`.`BillNo`, `cp`.`EID`, `cp`.`PaidAmt`, `cp`.`CustId`, `ed`.`Name`, `ed1`.`DBName`, `ed`.`DBPasswd`, `rt`.`avgBillRtng` FROM `CustPymts` `cp` INNER JOIN `EIDDet` `ed` ON `ed`.`EID` = `cp`.`EID` INNER JOIN `EIDDet` `ed1` ON `ed1`.`EID` = `cp`.`aggEID` LEFT JOIN `Ratings` `rt` ON `rt`.`EID` = `cp`.`EID` WHERE `cp`.`CustId` = '6' AND `rt`.`CustId` = '6' $whr ORDER BY `cp`.`BNo` DESC")->result_array();
+        // $data['custPymt'] = $genTblDb->select("cp.BillId, date(cp.BillDt) as billdt , cp.BillNo, cp.EID , cp.PaidAmt , cp.CustId , ed.Name , ed1.DBName, ed.DBPasswd, rt.avgBillRtng")
+        //                     ->order_by('cp.BNo', 'DESC')
+        //                     ->join('EIDDet ed', 'ed.EID = cp.EID', 'inner')
+        //                     ->join('EIDDet ed1', 'ed1.EID = cp.aggEID', 'inner')
+        //                     ->join('Ratings rt', 'rt.EID = cp.EID', 'left')
+        //                     // ->where($whr)
+        //                     ->get_where('CustPymts cp', array('cp.CustId' => $CustId, 'rt.CustId' => $CustId))
+        //                     ->result_array();
+        
         $data['country']    = $this->cust->getCountries();
         $data['CountryCd']    = $this->session->userdata('CountryCd');
         $this->load->view('cust/transactions', $data);
@@ -3299,6 +3303,43 @@ class Customer extends CI_Controller {
              die;
         }
 
+    }
+
+    public function reorder(){
+        $EID  = authuser()->EID;
+        $TableNo = $this->session->userdata('TableNo');
+        $CNo = $this->session->userdata('CNo');
+        $stat = ($this->session->userdata('EType') == 5)?2:1;
+        if($CNo > 0){
+            $orders = $this->cust->getItemListForReorder();
+            
+            $kit = [];
+            if(!empty($orders)){
+                foreach ($orders as &$key) {
+                    $OrdNo = $key['OrdNo'];
+                    unset($key['OrdNo']);
+                    $key['Stat']    = $stat;
+                    $key['reOrder'] = 1;
+                    $kit[] = $key;
+                    if($key['SchCd'] > 0){
+                        $offerDt = $this->cust->getOfferItemsForReorder($OrdNo, $key['SchCd'], $key['SDetCd']);
+                        if(!empty($offerDt)){
+                            foreach ($offerDt as &$offer) {
+                                unset($offer['OrdNo']);
+                                $offer['Stat']      = $stat;
+                                $offer['reOrder']   = 1;
+                                $kit[] = $offer;
+                            }
+                        }
+                    }
+                }
+            }
+            if(!empty($kit)){
+                $this->db2->insert_batch('Kitchen', $kit); 
+            }
+
+            redirect(base_url('customer/cart'));
+        }
     }
 
 }

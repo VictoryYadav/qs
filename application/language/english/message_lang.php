@@ -38,6 +38,7 @@ $lang['offers'] = 'Offer';
 $lang['entertainment'] = 'Entertainment';
 $lang['outlet'] = 'Outlet';
 $lang['order'] = 'Order';
+$lang['reOrder'] = 'Reorder';
 $lang['complete'] = 'Complete';
 $lang['inprocess'] = 'In Process';
 
@@ -156,6 +157,13 @@ $lang['disabled'] 			= 'Disabled';
 $lang['userAccess'] 		= 'User Access';
 $lang['selectAllAvailableRoles'] = 'Select All Available Roles';
 $lang['selectAllAssignedRoles'] = 'Select All Assigned Roles';
+
+$lang['selectAllAvailableCuisines'] = 'Select All Available Cuisines';
+$lang['selectAllAssignedCuisines'] = 'Select All Assigned Cuisines';
+
+$lang['selectAllAvailableSections'] = 'Select All Available Sections';
+$lang['selectAllAssignedSections'] = 'Select All Assigned Sections';
+
 $lang['roleAssignment'] 	= 'Role Assignment';
 $lang['tableNo'] 			= 'Table No';
 $lang['select'] 			= 'Select';

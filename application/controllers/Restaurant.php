@@ -1619,7 +1619,7 @@ class Restaurant extends CI_Controller {
                 $partyName = "p.Name$langId";
                 $kstat = ($this->session->userdata('kds') > 0)?5:0; 
 
-                $kitchenData = $this->db2->select("b.BillId, b.BillNo, sum(k.Qty) as Qty, k.OType, k.TPRefNo, k.TPId, km.CustId, k.CellNo, k.EID, k.DCd, km.CNo, (case when $partyName != '-' Then $partyName ELSE p.Name1 end) as thirdPartyName, (SELECT IF(min(k1.KStat)=0,0,5) FROM Kitchen k1 where k1.CNo=km.CNo and k1.DCd=k.DCd and k1.EID=km.EID group by k1.CNo) as KStat")
+                $kitchenData = $this->db2->select("b.BillId, b.BillNo, sum(k.Qty) as Qty, k.OType, k.TPRefNo, k.TPId, km.CustId, k.CellNo, k.EID, k.DCd, km.CNo, (case when $partyName != '-' Then $partyName ELSE p.Name1 end) as thirdPartyName, k.KStat")
                                     ->order_by('b.BillId', 'Asc')
                                     ->group_by('b.BillId, k.DCd')
                                     ->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
@@ -1634,7 +1634,7 @@ class Restaurant extends CI_Controller {
                                                 'k.DCd' => $DCd,
                                                 'k.DStat' => 0,
                                                 'k.Stat' => 3,
-                                                'k.KStat' => 3,
+                                                'k.KStat' => $kstat,
                                                 'k.OType >=' => 100,
                                                 )
                                             )
@@ -10580,7 +10580,7 @@ class Restaurant extends CI_Controller {
             $status = 'success';
 
             if (isset($_POST['getAvailableRoles']) && $_POST['getAvailableRoles']==1) {
-                $response = $this->db2->query("SELECT id, LangName from Languages where Stat = 0 and id not in (select LangId from Eat_Lang where Stat = 0 and EID = $EID) ")->result_array();
+                $response = $this->db2->query("SELECT id, LangName from Languages where Stat = 0 and id not in (select LangId from Eat_Lang where Stat = 0 and EID = $EID) order by LangName ASC ")->result_array();
             }
 
             if (isset($_POST['getAssignedRoles']) && $_POST['getAssignedRoles']==1) {
