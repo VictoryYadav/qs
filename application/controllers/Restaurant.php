@@ -4802,6 +4802,7 @@ class Restaurant extends CI_Controller {
         $data['minutes'] = $minutes;
         $data['kitcd'] = $kitcd;
         $data['kds'] = $this->rest->getPendingKOTLIST($minutes, $kitcd);
+        // echo "<pre>";print_r($data['kds']);die;
 
         $data['kitchen'] = $this->rest->getKitchenList();
         $this->load->view('rest/kds', $data);
@@ -4811,8 +4812,29 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
-           
             extract($_POST);
+            $EID = authuser()->EID;
+            $today = date('Y-m-d H:i:s');
+            $this->db2->query("UPDATE Kitchen set KStat = 5, DelTime = '$today' where EID = $EID and OrdNo in ($ordNo) ");
+            $status = 'success';
+            $response = $this->lang->line('KOTisClosed');
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function updateKotStat5(){
+        $status = "error";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        if($this->input->method(true)=='POST'){
+            $ordNo = '';
+            if(!empty($_POST['ord'])){
+                $ordNo = implode(',', $_POST['ord']);
+            }
             $EID = authuser()->EID;
             $today = date('Y-m-d H:i:s');
             $this->db2->query("UPDATE Kitchen set KStat = 5, DelTime = '$today' where EID = $EID and OrdNo in ($ordNo) ");

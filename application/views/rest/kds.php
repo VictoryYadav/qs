@@ -1,4 +1,6 @@
-<?php $this->load->view('layouts/admin/head'); ?>
+<?php $this->load->view('layouts/admin/head'); 
+$etype = $this->session->userdata('EType');
+?>
 <style>
     .select_option{
         background: white;
@@ -118,19 +120,22 @@
                                             <?php } ?>
                                             </tr>
                                         </table>
-                                        <table style="border-bottom: 1px solid black;" width="100%;">
+                                        <?php if($etype == 1){ ?>
+                                            <table style="border-bottom: 1px solid black;" width="100%;">
                                             <tr class="tabletitle">
                                                 <th class="item" style="text-align: left;"><?= $this->lang->line('menuItem'); ?></th>
                                                 <th class="Hours" style="text-align: left;"><?= $this->lang->line('quantity'); ?></th>
                                             </tr>
                                             <?php 
                                             $ordNoArr = [];
+                                            $counter = 0;
                                             foreach ($fkot as $item) {
+                                                $counter++;
                                             $portions = '';
                                             $std = '';
                                                 $fkotno = $item['FKOTNo'];
                                                 $ordNoArr[] = $item['OrdNo'];
-                                    $etype = $this->session->userdata('EType');
+                                    
                                             if($item['Portions'] != 'Std'){
                                                     $portions = ' ('.$item['Portions'].')';
                                                   }
@@ -144,7 +149,9 @@
                                                 }
                                             ?>
                                             <tr class="service">
-                                                <td class="tableitem" style="color:<?= $clr; ?>"><?= $item['ItemNm'].$std.$portions; ?><br><i><?= $item['CustRmks']; ?></i></td>
+                                                <td class="tableitem" style="color:<?= $clr; ?>">
+                                                    <?= $item['ItemNm'].$std.$portions; ?><br><i><?= $item['CustRmks']; ?></i>
+                                                    </td>
                                                 <td class="tableitem"><?= convertToUnicodeNumber($item['Qty']); ?></td>
                                             </tr>
                                             <?php }
@@ -159,6 +166,59 @@
                                                 <option value="5">Done</option>
                                             </select> -->
                                         </div>
+                                        <?php }else{ ?>
+
+                                        <form method="post" id="kotForm">
+                                        <table style="border-bottom: 1px solid black;" width="100%;">
+                                            <tr class="tabletitle">
+                                                <th class="item" style="text-align: left;"><?= $this->lang->line('menuItem'); ?></th>
+                                                <th class="Hours" style="text-align: left;"><?= $this->lang->line('quantity'); ?></th>
+                                            </tr>
+                                            <?php 
+                                            $ordNoArr = [];
+                                            $counter = 0;
+                                            foreach ($fkot as $item) {
+                                                $counter++;
+                                            $portions = '';
+                                            $std = '';
+                                                $fkotno = $item['FKOTNo'];
+                                                $ordNoArr[] = $item['OrdNo'];
+                                    
+                                            if($item['Portions'] != 'Std'){
+                                                    $portions = ' ('.$item['Portions'].')';
+                                                  }
+                                                  if($item['CustItemDesc'] != 'Std'){
+                                                    $std = ' - '.$item['CustItemDesc'];
+                                                  }
+
+                                                $clr = '';
+                                                if($item['TA'] > 0 && $etype == 5 && ($item['OType'] == 7 || $item['OType'] == 8)){
+                                                    $clr = 'blue';
+                                                }
+                                            ?>
+                                            <tr class="service">
+                                                <td class="tableitem" style="color:<?= $clr; ?>">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" id="customCheck<?= $counter; ?>" value="<?= $item['OrdNo']; ?>" name="ord[]">
+                                                        <label class="custom-control-label" for="customCheck<?= $counter; ?>" style="font-weight: normal !important;"><?= $item['ItemNm'].$std.$portions; ?><br><i><?= $item['CustRmks']; ?></i></label>
+                                                    </div>
+                                                    </td>
+                                                <td class="tableitem"><?= convertToUnicodeNumber($item['Qty']); ?></td>
+                                            </tr>
+                                            <?php }
+                                            $ordNoArr = implode(',',$ordNoArr);
+                                             ?>
+                                            
+                                        </table>
+                                        <div class="text-center mt-2">
+                                            <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('closeKOT'); ?>" />
+                                            <!-- <select name="kotStat" id="kotStat<?= $fkotno?>" class="form-control form-control-sm" onchange="">
+                                                <option value="1">WIP</option>
+                                                <option value="5">Done</option>
+                                            </select> -->
+                                        </div>
+                                        </form>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
@@ -188,6 +248,7 @@
 
 
 <script type="text/javascript">
+
 function changeKOT(fkot,ordNo) {
 
     if(confirm('Assign Items shown in KOTNo: '+fkot)) {
@@ -206,5 +267,18 @@ changeValue = (input) =>{
     var val = $(input).val();
     $(input).val(convertToUnicodeNo(val));   
 }
+
+$(`#kotForm`).on('submit', function(e){
+    e.preventDefault();
+    var data = $(this).serializeArray();
+    $.post('<?= base_url('restaurant/updateKotStat5') ?>',data,function(res){
+            if(res.status == 'success'){
+              alert(res.response);
+              location.reload();
+            }else{
+              alert(res.response);
+            }
+        });
+})
 
 </script>
