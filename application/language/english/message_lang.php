@@ -615,6 +615,8 @@ $lang['beforeCurrentTransaction']	= 'Before Current Transaction';
 
 $lang['prepaidAmount']	= 'Prepaid Amt';
 $lang['insufficentBalance']	= 'Insufficent Balance';
+$lang['selectedItemsDelivered']	= 'Selected Items Delivered';
+
 
 
 

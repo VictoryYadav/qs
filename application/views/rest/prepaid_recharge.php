@@ -28,7 +28,7 @@
                                             <input type="hidden" name="type" value="pdata">
                                             <input type="hidden" id="acNo" name="acNo" value="0">
                                             <div class="row">
-                                                <div class="col-md-3 col-5">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('mobile'); ?></label>
                                                         <select class="form-control form-control-sm select2 custom-select" name="CustId" id="CustId" required="">
@@ -43,7 +43,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-3 col-4">
+                                                <div class="col-md-3 ">
                                                     <div class="form-group">
                                                         <label>Pre Paidamount</label>
                                                         <input type="number" class="form-control form-control-sm" name="prePaidAmt" placeholder="prePaidAmt" id="prePaidAmt" required="">

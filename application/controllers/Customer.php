@@ -3317,20 +3317,33 @@ class Customer extends CI_Controller {
             if(!empty($orders)){
                 foreach ($orders as &$key) {
                     $OrdNo = $key['OrdNo'];
+                    $LastReOrders = $key['LastReOrders'];
                     unset($key['OrdNo']);
+                    unset($key['LastReOrders']);
                     $key['Stat']    = $stat;
-                    $key['reOrder'] = 1;
-                    $kit[] = $key;
+                    $key['reOrder'] = $LastReOrders + 1;
+                    
                     if($key['SchCd'] > 0){
+
                         $offerDt = $this->cust->getOfferItemsForReorder($OrdNo, $key['SchCd'], $key['SDetCd']);
                         if(!empty($offerDt)){
+                            $kit[] = $key;
                             foreach ($offerDt as &$offer) {
+                                $LastReOrders = $key['LastReOrders'];
                                 unset($offer['OrdNo']);
+                                unset($offer['LastReOrders']);
                                 $offer['Stat']      = $stat;
-                                $offer['reOrder']   = 1;
+                                $offer['reOrder'] = $LastReOrders + 1;
+                                
                                 $kit[] = $offer;
                             }
+                        }else{
+                            $key['SchCd'] = 0;
+                            $key['SDetCd'] = 0;
+                            $kit[] = $key;
                         }
+                    }else{
+                        $kit[] = $key;
                     }
                 }
             }

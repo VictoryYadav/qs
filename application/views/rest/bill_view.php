@@ -22,12 +22,12 @@
                                     <div class="card-body">
                                         <form method="post">
                                         <div class="row">
-                                            <div class="col-md-4 col-4">
+                                            <div class="col-md-4 col-6">
                                                 <div class="form-group">
                                                     <input type="date" class="form-control form-control-sm" name="from_date" required="" value="<?php echo date('Y-m-d', strtotime($from_date)); ?>">
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 col-4">
+                                            <div class="col-md-4 col-6">
                                                 <div class="form-group">
                                                     <input type="date" class="form-control form-control-sm" name="to_date" required="" value="<?php echo date('Y-m-d', strtotime($to_date)); ?>">
                                                 </div>

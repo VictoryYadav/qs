@@ -4831,15 +4831,18 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
+            
             $ordNo = '';
             if(!empty($_POST['ord'])){
                 $ordNo = implode(',', $_POST['ord']);
             }
             $EID = authuser()->EID;
             $today = date('Y-m-d H:i:s');
+            
             $this->db2->query("UPDATE Kitchen set KStat = 5, DelTime = '$today' where EID = $EID and OrdNo in ($ordNo) ");
+            
             $status = 'success';
-            $response = $this->lang->line('KOTisClosed');
+            $response = $this->lang->line('selectedItemsDelivered');
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,

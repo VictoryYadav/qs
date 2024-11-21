@@ -1587,10 +1587,13 @@ class Cust extends CI_Model{
         $CustId = $this->session->userdata('CustId');
 
 		$stat = ($this->session->userdata('EType') == 5)?3:2;
-		return $this->db2->select("k.*")
+		return $this->db2->select("k.*, (select max(k1.reOrder) from Kitchen k1 where k1.EID=k.EID and k1.CNo = k.CNo) as LastReOrders")
+					->order_by('k.OrdNo', 'DESC')
+					->group_by('k.EID, k.ItemId, k.Itm_Portion')
 					->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
 					->join('MenuItem mi', 'mi.ItemId = k.ItemId', 'inner')
-					->get_where('KitchenMain km', array('k.Stat' => $stat, 'k.BillStat' => 0, 'km.BillStat' => 0, 'k.EID' => $EID, 'km.EID' => $EID, 'km.CustId' => $CustId, 'km.CNo' => $CNo, 'mi.CID' => 10))
+					->where_in('mi.CTyp', array(1, 3))
+					->get_where('KitchenMain km', array('k.Stat' => $stat, 'k.BillStat' => 0, 'km.BillStat' => 0, 'k.EID' => $EID, 'km.EID' => $EID, 'km.CustId' => $CustId, 'km.CNo' => $CNo))
 					->result_array();
 	}
 
@@ -1600,9 +1603,14 @@ class Cust extends CI_Model{
         $CustId = $this->session->userdata('CustId');
 
 		$stat = ($this->session->userdata('EType') == 5)?3:2;
-		return $this->db2->select("k.*")
+
+        $whr = "(time(Now()) BETWEEN c.FrmTime and c.ToTime OR time(Now()) BETWEEN c.AltFrmTime AND c.AltToTime) and (date(Now()) BETWEEN c.FrmDt and c.ToDt)";
+		return $this->db2->select("k.*, (select max(k1.reOrder) from Kitchen k1 where k1.EID=k.EID and k1.CNo = k.CNo) as LastReOrders")
 					->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
 					->join('MenuItem mi', 'mi.ItemId = k.ItemId', 'inner')
+					->join('CustOffers c', 'c.SchCd = k.SchCd', 'inner')
+					->join('CustOffersDet cod', 'cod.SchCd = c.SchCd', 'inner')
+					->where($whr)
 					->get_where('KitchenMain km', array('k.Stat' => $stat, 'k.BillStat' => 0, 'km.BillStat' => 0, 'k.EID' => $EID, 'km.EID' => $EID, 'km.CustId' => $CustId, 'km.CNo' => $CNo, 'k.SchCd' => $SchCd, 'k.SDetCd' => $SDetCd, 'k.OrdNo !=' => $OrdNo))
 					->result_array();	
 	}
