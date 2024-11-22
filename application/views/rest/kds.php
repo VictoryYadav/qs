@@ -88,7 +88,7 @@
                             $group_arr = [];
                             if(!empty($kds)){
                                 foreach ($kds as $key ) {
-                                    $fkot = $key['FKOTNo'];
+                                    $fkot = $key['FKOTNo'].$key['CNo'];
                                     if(!isset($group_arr[$fkot])){
                                         $group_arr[$fkot] = [];
                                     }

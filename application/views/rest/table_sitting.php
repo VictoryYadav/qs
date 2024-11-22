@@ -859,12 +859,7 @@ width: 100%;*/
         if ($("#kitchen-code option:selected").attr("settle") == 0) {
             $('#cashBill_settle').css('display', 'inline-block');
         }
-        // not completed
-        function printReport() {
-            $.ajax({
-                url: 'ajax/printReport.php'
-            });
-        }
+        
         //Global Variables
         var globalItemId = 0;
         var globalTableNo = 0;
@@ -1482,7 +1477,7 @@ width: 100%;*/
         }
 
         function rejectBill(id, index, CNo, TableNo, CustId) {
-           
+           // not completed
         }
 
         var help_table_id = '';

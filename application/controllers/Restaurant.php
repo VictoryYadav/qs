@@ -1599,7 +1599,7 @@ class Restaurant extends CI_Controller {
     public function order_delivery(){
         $langId = $this->session->userdata('site_lang');
         if($this->input->method(true) == 'POST'){
-            
+            // echo "<pre>";print_r($_POST);die;
             $EID = authuser()->EID;
 
             if (isset($_POST['getOrderDetails']) && !empty($_POST['getOrderDetails'])) {
@@ -2892,7 +2892,7 @@ class Restaurant extends CI_Controller {
                     }
                     if ($oldKitCd != $itemKitCds[$i]) {
                         // $itemKitCd = $itemKitCds[$i];
-                        $getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID=$EID AND KitCd = $itemKitCd and MergeNo = '$tableNo' and Stat = 3")->result_array();
+                        $getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID=$EID AND KitCd = $itemKitCd and MergeNo = '$tableNo' and Stat = $stat")->result_array();
                         $fKotNo = $getFKOT[0]['FKOTNO'];
                         $fKotNo = $fKotNo + 1;
                         $fkotArray[$i] = $fKotNo;
@@ -3443,11 +3443,9 @@ class Restaurant extends CI_Controller {
               ));
              die;
         }
-
-        $data['cuisine'] = $this->rest->getCuisineList();
+        
         $data['rm_items'] = $this->rest->getItemLists();
         $data['items'] = $this->rest->getAllItemsList();
-        $data['portions'] = $this->rest->get_item_portion();
         $data['intermediate'] = $this->rest->getIntermediatBom();
         $data['title'] = $this->lang->line('billOfMaterial');
         $this->load->view('rest/add_bom_dish',$data);
@@ -3513,10 +3511,10 @@ class Restaurant extends CI_Controller {
 
         $data['boms'] = getRecords('BOM_Dish', array('BOMNo' => $BOMNo, 'EID' => $EID));
         $data['bomDet'] = $this->rest->getBomDet($BOMNo, $EID);
-        $data['cuisine'] = $this->rest->getCuisineList();
+        // $data['cuisine'] = $this->rest->getCuisineList();
         $data['rm_items'] = $this->rest->getItemLists();
         $data['items'] = $this->rest->getAllItemsList();
-        $data['portions'] = $this->rest->get_item_portion();
+        // $data['portions'] = $this->rest->get_item_portion();
         $data['intermediate'] = $this->rest->getIntermediatBom();
         $data['title'] = $this->lang->line('billOfMaterial');
         $this->load->view('rest/edit_bom_dish',$data);
@@ -5380,7 +5378,7 @@ class Restaurant extends CI_Controller {
         $scName = "c.SchNm$langId";
         $scDesc = "cod.SchDesc$langId";
 
-        return $this->db2->select("(case when $scName != '-' Then $scName ELSE c.SchNm1 end) as SchNm, c.SchCd, cod.SDetCd, (case when $scDesc != '-' Then $scDesc ELSE cod.SchDesc end) as SchDesc, c.PromoCode, c.SchTyp, c.SchCatg, c.Rank,cod.Disc_ItemId, cod.Qty, cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, cod.DiscItemPcent, cod.DiscMaxAmt, cod.Disc_ItemTyp")
+        return $this->db2->select("(case when $scName != '-' Then $scName ELSE c.SchNm1 end) as SchNm, c.SchCd, cod.SDetCd, (case when $scDesc != '-' Then $scDesc ELSE cod.SchDesc1 end) as SchDesc, c.PromoCode, c.SchTyp, c.SchCatg, c.Rank,cod.Disc_ItemId, cod.Qty, cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, cod.DiscItemPcent, cod.DiscMaxAmt, cod.Disc_ItemTyp")
                         ->join('CustOffers c', 'c.SchCd = cod.SchCd', 'inner')
                         ->get_where('CustOffersDet cod', array('c.SchCd' => $schcd,
                          'cod.SDetCd' => $sdetcd,
