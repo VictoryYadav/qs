@@ -418,25 +418,6 @@
         }
     }
 
-    function getOTP(){
-        var mobile = $('#mobile').val();
-        if(mobile.length >= 10){
-            $.post('<?= base_url('customer/genOTPRating') ?>',{mobile:mobile},function(res){
-                if(res.status == 'success'){
-                  
-                  $('#verifyBlock').show();
-                  
-                }else{
-                  alert(res.response);
-                  $('#verifyBlock').hide();
-                  $('#mobileBlock').show();
-                }
-            });
-        }else{
-            alert('Enter Mobile No');
-        }
-    }
-
     function verifyOTP(){
         var otp = $('#otp').val();
         var mobile = $('#mobile').val();

@@ -292,7 +292,7 @@ function getPortionItem(el, n){
             if(res.status == 'success'){
                 var temp = `<option value=""><?= $this->lang->line('select'); ?></option>`;
                 res.response.forEach((item) => {
-                    temp +=`<option value="${item.Itm_Portion}">${item.Portion}</option>`;
+                    temp +=`<option value="${item.Itm_Portion}">${item.Portions}</option>`;
                 });
                 $(`#uom${n}`).html(temp);
             }else{

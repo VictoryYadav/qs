@@ -57,6 +57,10 @@
                                                                             <i class="fa fa-edit"></i>
                                                                         </a>
 
+                                                                        <a href="<?php echo base_url('restaurant/bom_view/'.$key['BOMNo']);?>" class="btn btn-sm btn-secondary">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a>
+
                                                                         <button class="btn btn-sm btn-danger" onclick="deleteBom(<?= $key['BOMNo']?>)">
                                                                             <i class="fa fa-trash"></i>
                                                                         </a>

@@ -40,11 +40,14 @@ $folder = 'e'.$EID;
                         </a>
                     </li>
                 <?php } ?>
-                    <?php if($this->session->userdata('CustAssist') == 1){ ?>
+                    <?php if($this->session->userdata('CustAssist') == 1 && $this->session->userdata('CustId') > 0){ ?>
                     <li class="list-inline-item">
-                        <a onclick="call_help()" id="yellow_bell">
+                        <span id="yellow_bell" onclick="call_help()" style="cursor: pointer;">
                             <img src="<?= base_url() ?>assets/img/yellow_bell.jpg" style="height: 28px;">
-                        </a>
+                        </span>
+                        <span id="red_bell" style="display: none;">
+                            <img src="<?= base_url() ?>assets/img/red_bell1.png" style="height: 30px;">
+                        </span>
                     </li>
                     <?php } ?>
                     <?php if($this->session->userdata('MultiLingual') > 0){ ?>
@@ -76,9 +79,6 @@ $folder = 'e'.$EID;
                     </li>
                     <?php } ?>
                     <li class="list-inline-item">
-                        <span id="red_bell" style="display: none;">
-                            <img src="<?= base_url() ?>assets/img/red_bell1.png" style="height: 30px;">
-                        </span>
                         <img src="<?= base_url('uploads/'.$folder.'/'.$EID.'_logo.jpg') ?>" width="auto" height="28px;" alt="<?= $this->session->userdata('restName'); ?>">
                     </li>
                 </ul>
@@ -89,6 +89,7 @@ $folder = 'e'.$EID;
 
 <script>
     
+    window.onload = get_call_help;
     function set_lang(langId, langName){
         $.post('<?= base_url('customer/switchLang') ?>',{langId:langId, langName:langName},function(res){
             if(res.status == 'success'){
@@ -111,4 +112,31 @@ $folder = 'e'.$EID;
             }
         });
     }
+
+    function call_help(){
+        $.post('<?= base_url('customer/call_assist') ?>',{type:'post'}, function(res){
+            if(res.status == 'success'){
+                if(res.response > 0){
+                    $(`#red_bell`).show();
+                    $(`#yellow_bell`).hide();
+                }
+            }else{
+              alert(res.response);
+            }
+        });
+    }
+
+    function get_call_help(){
+        $.post('<?= base_url('customer/call_assist') ?>',{type:'get'}, function(res){
+            if(res.status == 'success'){
+                if(res.response > 0){
+                    $(`#red_bell`).show();
+                    $(`#yellow_bell`).hide();
+                }
+            }else{
+              alert(res.response);
+            }
+        });
+    }
+
 </script>

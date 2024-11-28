@@ -248,7 +248,7 @@
                 $('.discamount').prop("disabled", false);
 
                 switch (schCat) {
-                    // discount amount
+                    // bill discount amount
                     case '1':
                         $('.discmaxamt').prop("disabled", true);
                         $('.discpercent').prop("disabled", true);

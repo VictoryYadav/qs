@@ -143,7 +143,7 @@
                                                                 </select>
                                                             </td>
                                                             <td>
-                                                            <input type="text" class="form-control form-control-sm" name="RMQty[]" required="" id="RMQty" onblur="changeValue(this)" value="<?= $key['RMQty']; ?>" readonly>
+                                                            <input type="text" class="form-control form-control-sm" name="RMQty[]" required="" id="RMQty" onblur="changeValue(this)" value="<?= $key['RMQty']; ?>">
                                                             </td>
                                                             <td>
                                                             <select name="RMUOM[]" id="RMUOM_<?= $count; ?>" class="form-control form-control-sm">
@@ -152,7 +152,7 @@
                                                             <input type="text" readonly name="bomRMUOM[]" id="bomRMUOM_<?= $count; ?>" class="form-control form-control-sm" style="display:none;" value="<?= $key['RMUOM']; ?>" />
                                                             </td>
                                                             <td>
-                                                            <input type="text" name="itemCost[]" id="itemCost_<?= $count; ?>" class="form-control form-control-sm" style="width:100px;" value="<?= $key['Costing']; ?>" readonly />
+                                                            <input type="text" name="itemCost[]" id="itemCost_<?= $count; ?>" class="form-control form-control-sm costing" style="width:100px;" value="<?= $key['Costing']; ?>" onchange="sumOfCost()" />
                                                             </td>
                                                             <td>
                                                                 <button class="btn btn-sm btn-danger btn-rounded" onclick="deleteItemByBom(<?= $key['BNo'] ?>)">
@@ -163,6 +163,16 @@
                                                     $count++;
                                                         } ?>
                                                     </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                          <td></td>
+                                                          <td></td>
+                                                          <td></td>
+                                                          <td></td>
+                                                          <td><input type="text" id="sumCost" class="form-control form-control-sm" readonly=""></td>
+                                                          <td></td>
+                                                        </tr>
+                                                    </tfoot>
                                                   </table>
                                                   </div>
 
@@ -216,6 +226,8 @@
             changeItemType(i);
         }
 
+        sumOfCost();
+
     });
 
     function changeType(){
@@ -262,7 +274,7 @@
                 if(res.status == 'success'){
                     var temp = `<option value=""><?= $this->lang->line('select'); ?></option>`;
                     res.response.forEach((item) => {
-                        temp +=`<option value="${item.Itm_Portion}">${item.Portion}</option>`;
+                        temp +=`<option value="${item.Itm_Portion}">${item.Portions}</option>`;
                     });
                     $('#IPCd').html(temp);
                 }else{
@@ -409,7 +421,7 @@
                             <input type="text" readonly name="bomRMUOM[]" id="bomRMUOM_'+count+'" class="form-control form-control-sm" style="display:none;" />\
                             </td>\
                             <td>\
-                            <input type="text" name="itemCost[]" id="itemCost_'+count+'" class="form-control form-control-sm" style="width:100px;" />\
+                            <input type="text" name="itemCost[]" id="itemCost_'+count+'" class="form-control form-control-sm costing" style="width:100px;" onchange="sumOfCost()"/>\
                             </td>\
                             <td>\
                                 <button class="btn btn-sm btn-danger btn-rounded" onclick="deleteItem(this)">\
@@ -494,6 +506,15 @@
               alert(res.response);
             }
         });
+    }
+
+    function sumOfCost(){
+        var sum = 0;
+        $(".costing").each(function(){
+            sum = parseInt(sum) + parseInt($(this).val());
+        });
+
+        $(`#sumCost`).val(sum);
     }
 
   

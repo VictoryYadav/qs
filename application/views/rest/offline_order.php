@@ -751,7 +751,17 @@
                 alert("Please Enter 3rd Party Ref Number");
             }
 
-        } else if (orderType == 110) {
+            if (CountryCd == "") {
+                formFill = false;
+                alert("Enter Country Code");
+            }
+
+            if (customerPhone == "") {
+                formFill = false;
+                alert("Enter Customer Phone Number");
+            }
+
+        } else if (orderType >= 100) {
             if (CountryCd == "") {
                 formFill = false;
                 alert("Enter Country Code");

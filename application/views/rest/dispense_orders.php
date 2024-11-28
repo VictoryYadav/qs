@@ -201,9 +201,9 @@
             <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="padding: 1.3rem;">
-            <form class="form-inline" style="margin-bottom: 1px;place-content: center;">
+            <form style="margin-bottom: 1px;place-content: center;" method="post" id="otpForm">
                 <div class="form-group">
-                    <input type="number" class="form-control form-control-sm" id="delivery_otp" placeholder="Please Enter OTP">
+                    <input type="number" class="form-control form-control-sm" id="delivery_otp" placeholder="Please Enter OTP" required="" width="100%" name="otp">
                 </div>
                 <input type="hidden" name="del_cno" id="del_cno">
                 <input type="hidden" name="del_billid" id="del_billid">
@@ -211,11 +211,12 @@
                 <input type="hidden" name="del_otype" id="del_otype">
                 <input type="hidden" name="del_dispcounter" id="del_dispcounter">
                 <input type="hidden" name="del_dcd" id="del_dcd">
+
+                <div class="text-center mb-4">
+                <input type="submit" class="btn btn-primary btn-sm form-control" value="<?= $this->lang->line('verifyOTP'); ?>" />
+                </div>
             </form>
             <small class="text-danger del_msg"></small>
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-primary btn-sm" style="width: 100%;" onclick="checkDelOTP()"><?= $this->lang->line('verifyOTP'); ?></button>
             </div>
         </div>
         </div>
@@ -238,6 +239,7 @@
     }
 
     function getTableView() {
+        $('#showActionBtn').hide();
         $('#item-view-tbody1').empty();
         
         var DispCd = $('#kitchen-code').val();
@@ -297,12 +299,13 @@
         dispCounter = "'"+dispCounter+"'";
         var btn = '';
         var url = "<?= base_url('restaurant/print/');?>"+BillId;
-        btn += '<a onclick="dispenseNotification('+BillId+','+mobile+','+oType+','+dispCounter+')" class="btn btn-sm btn-danger btn-rounded tippy-btn" title="Send Message" data-tippy-placement="top"><i class="fa fa-bullhorn"></i></a>\
+        btn += '<button onclick="dispenseNotification('+CNo+', '+BillId+','+mobile+','+oType+','+dispCounter+', '+DCd+')" class="btn btn-sm btn-danger btn-rounded tippy-btn" title="Dispense" data-tippy-placement="top"><i class="fa fa-bullhorn"></i></button>\
             | <button onclick="deliveryNotification('+CNo+','+BillId+','+mobile+','+oType+','+dispCounter+', '+DCd+')" class="btn btn-sm btn-primary btn-rounded" title="Deliver"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>\
             | <a href="'+url+'" class="btn btn-sm btn-warning btn-rounded" title="Print"><i class="fa fa-print" aria-hidden="true"></i></a>\
             | <button class="btn btn-sm btn-danger btn-rounded tippy-btn" title="Refresh" data-tippy-placement="top" onclick="refreshPage()" > <i class="mdi mdi-speedometer-slow"></i></button>';
 
         $('#showActionBtn').html(btn);
+        $('#showActionBtn').show();
         handleDetails(CNo);   
     }
 
@@ -310,65 +313,53 @@
         getTableView();
     }
 
-    function dispenseNotification(billId, mobile, oType, dispCounter){
+    function dispenseNotification(CNo, billId, mobile, oType, dispCounter, DCd){
         $.post('<?= base_url('restaurant/dispense_notification') ?>',{billId:billId, mobile:mobile, oType:oType, dispCounter:dispCounter},function(res){
             if(res.status == 'success'){
-              alert(res.response);
+                alert(res.response);
+                getTableView();
             }else{
               alert(res.response);
             }
-            
         });
     }
 
     function deliveryNotification(CNo, billId, mobile, oType, dispCounter, DCd){
-        var del_otp = "<?php echo $this->session->userdata('Dispense_OTP'); ?>";
-        if(del_otp > 0){
-            $('#del_cno').val(CNo);
-            $('#del_billid').val(billId);
-            $('#del_mobile').val(mobile);
-            $('#del_otype').val(oType);
-            $('#del_dispcounter').val(dispCounter);
-            $('#del_dcd').val(DCd);
-            $('#deliveryModal').modal("show"); 
-        }else{
-            deliveryAjax(CNo, billId, mobile, oType, dispCounter, DCd);
-        }
-    }
-
-    function deliveryAjax(CNo, billId, mobile, oType, dispCounter, DCd){
         $.post('<?= base_url('restaurant/delivery_notification') ?>',{CNo:CNo, billId:billId, mobile:mobile, oType:oType, dispCounter:dispCounter, DCd:DCd},function(res){
             if(res.status == 'success'){
-              alert(res.response);
+                $('#del_cno').val(CNo);
+                $('#del_billid').val(billId);
+                $('#del_mobile').val(mobile);
+                $('#del_otype').val(oType);
+                $('#del_dispcounter').val(dispCounter);
+                $('#del_dcd').val(DCd);
+                $('#deliveryModal').modal("show");
             }else{
               alert(res.response);
             }
-            location.reload();
         });
     }
 
-    function checkDelOTP(){
+    
+    $('#otpForm').on('submit', function(e){
+        e.preventDefault();
+
         var del_otp = $('#delivery_otp').val();
-        var CNo = $('#del_cno').val();
-        var billId = $('#del_billid').val();
-        var mobile = $('#del_mobile').val();
-        var oType = $('#del_otype').val();
-        var dispCounter = $('#del_dispcounter').val();
-        var DCd = $('#del_dcd').val();
         if(del_otp.length >= 4 ){
-            $.post('<?= base_url('restaurant/verifyDelOTP') ?>',{otp:del_otp},function(res){
+            var data = $(this).serializeArray();
+            $.post('<?= base_url('restaurant/verifyDelOTP') ?>',data,function(res){
                 if(res.status == 'success'){
-                  
-                  $('#deliveryModal').modal("hide"); 
-                  deliveryAjax(CNo, billId, mobile, oType, dispCounter, DCd);
+                    $('#deliveryModal').modal("hide"); 
+                    alert(res.response);
+                    getTableView();
                 }else{
-                  $('.del_msg').html(res.response);
+                  $('.del_msg').html('Enter Valid OTP');
                 }
             });
         }else{
-            $('.del_msg').html('Enter OTP');
+            $('.del_msg').html('Enter Valid OTP');
         }
-    }         
+    });     
 
     function handleDetails(CNo) {
         

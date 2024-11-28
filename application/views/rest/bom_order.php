@@ -121,17 +121,20 @@
                                                 <?php 
                                                 if(!empty($orders)){
                                                     foreach ($orders as $key) {
-                                                    $type = ($key['BOMDishTyp']==1)?'Finish Goods':'Intermediate';                                                     
+                                                    $type = ($key['BOMDishTyp']==1)?'Finish Goods':'Intermediate';        
+                                                    $chk = ($key['Stat'] == 0)?'checked':'';                                             
                                                 ?>
                                                 <tr>
-                                                    <td><?= $key['itemname']." (<small>".$key['portion']."</small>)"; ?></td>
+                                                    <td><?= $key['itemname']." (<small>".$key['portions']."</small>)"; ?></td>
                                                     <td><?= $key['kitchen']; ?></td>
                                                     <td><?= $type; ?></td>
                                                     <td><?= $key['Qty']; ?></td>
                                                     <td>
                                                         <?php if($key['Stat'] < 1){ ?>
-                                                        <span class="badge badge-boxed badge-danger" onclick="changeStatus(<?= $key['BOrdNo']; ?>, <?= $key['Stat']; ?>);" style="cursor: pointer;"><?= $this->lang->line('inprocess'); ?></span>
+                                                        <input type="checkbox" id="switch4" switch="danger" onchange="changeStatus(<?= $key['BOrdNo']; ?>, <?= $key['Stat']; ?>)" <?= $chk; ?>>
+                                                        <label for="switch4" data-on-label="P" data-off-label="A" style="cursor: pointer;"></label>
                                                     <?php } ?>
+
                                                     </td>
                                                 </tr>
                                             <?php } } ?>
@@ -216,7 +219,7 @@
                 if(res.status == 'success'){
                     var temp = `<option value=""><?= $this->lang->line('select'); ?></option>`;
                     res.response.forEach((item) => {
-                        temp +=`<option value="${item.Itm_Portion}">${item.Portion}</option>`;
+                        temp +=`<option value="${item.Itm_Portion}">${item.Portions}</option>`;
                     });
                     $('#IPCd').html(temp);
                 }else{
@@ -236,7 +239,7 @@
                 if(res.status == 'success'){
                     var temp = `<option value=""><?= $this->lang->line('select'); ?></option>`;
                     res.response.forEach((item) => {
-                        temp +=`<option value="${item.IPCd}">${item.Portion}</option>`;
+                        temp +=`<option value="${item.IPCd}">${item.Portions}</option>`;
                     });
                     $('#IPCd').html(temp);
                 }else{
@@ -264,8 +267,8 @@
     function changeStatus(BOrdNo, stat){
         $.post('<?= base_url('restaurant/bom_order') ?>',{type:'update', BOrdNo:BOrdNo, stat:stat},function(res){
             if(res.status == 'success'){
-              alert(res.response);
-            location.reload();
+                alert(res.response);
+                location.reload();
             }else{
               alert(res.response);
             }

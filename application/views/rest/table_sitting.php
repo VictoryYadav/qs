@@ -329,16 +329,23 @@ width: 100%;*/
                                                     <i class="mdi mdi-speedometer-slow"></i>
                                                 </button>
                                             </div>
-                                            <div class="col-md-12 mt-2">
-                                                <span id="hlep_table_list"></span>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row" style="margin-top: 57px;">
+                        <div class="row assitBlock">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div id="hlep_table_list" style="height: 32px;overflow: auto;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row tableBlock" >
                             <div class="col-md-7 col-7">
                                 <div class="card">
                                     <div class="card-body">
@@ -628,53 +635,6 @@ width: 100%;*/
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="modal" id="help" style="width: 300px;height: 300px;position: absolute;left: 50%;top: 50%;margin-left: -150px; margin-top: -150px;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                
-                <div class="modal-header">
-                    <h4 class="modal-title">Table <button class="btn btn-sm btn-warning btn-rounded" id="help_table"></button> Need Assist</h4>
-                    
-                </div>
-               
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="assistModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Eatout&nbsp; &nbsp;&nbsp;[Table No. <span id="tbl_no"></span>]</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form id="assistForm">
-                <input type="hidden" id="help_table_text_id" name="help_table_text_id">
-                <input type="hidden" name="respond_call_help" value="1">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <select name="status" class="form-control" required="">
-                                <option value="">Select</option>
-                                <option value="1">Assign</option>
-                                <option value="3">Close</option>
-                                <option value="0">Pending</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <input type="submit" class="btn btn-sm btn-success" value="Submit">
-                </div>
-            </form>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- bill option model -->
@@ -1114,7 +1074,8 @@ width: 100%;*/
             $.post('<?= base_url('restaurant/updateMCNoForTable') ?>',{MergeNo:MergeNo,MCNo:MCNo},function(response){
 
                 if(response.status == 'success') {
-                    billCreate(MergeNo, custId, tableFilter, MCNo);
+                    // billCreate(MergeNo, custId, tableFilter, MCNo); //26-nav-24 comment code
+                    getTableView(); //26-nav-24 write code
                 }else {
                     alert(response.status);
                 }
@@ -1484,19 +1445,23 @@ width: 100%;*/
         var list_id = '';
         check_call_bell();
         function check_call_bell(){
+            var CCd = $(`#kitchen-code`).val();
             $.ajax({
                 url: "<?php echo base_url('restaurant/customer_landing_page_ajax'); ?>",
                 type: "post",
                 data: {
                     check_call_help: 1,
-                    list_id : list_id
+                    list_id : list_id, 
+                    CCd : CCd
                 },
                 success: function(data) {
                     
                     data = JSON.parse(data);
-                    console.log(data);
                     if(data != ''){
-
+                        
+                        $(".assitBlock").css({
+                            "margin-top" : "57px"
+                        });
                         var a = '';
                         for(var i=0; i<data.length; i++){
                             var sts = 'danger';
@@ -1511,50 +1476,25 @@ width: 100%;*/
                             // $('#help').modal('show');
                         }
                     }else{
-                        $('#help').modal('hide');
+                        $('.assitBlock').hide();
+                        $(".tableBlock").css({
+                            "margin-top" : "57px"
+                        });
                     }
                 }
             });
         }
 
-        function view_help(){
-            $.ajax({
-                url: "<?php echo base_url('restaurant/customer_landing_page_ajax'); ?>",
-                type: "post",
-                data: {
-                    view_call_help: 1,
-                    help_table_id :help_table_id
-                },
-                success: function(data) {
-                    if(data == 1){
-                        $('#help').modal('hide');
-                    }else{
-                        alert("Something went wrong");
-                    }
-                }
-            });
+
+        function respond_call_help(id, TableNo){
+            if (confirm(`Close All Assist Requests for Table No: ${TableNo}`)) {
+                $.post('<?= base_url('restaurant/customer_landing_page_ajax') ?>',{TableNo:TableNo, closeTable:1},function(res){
+                    
+                      location.reload();
+                    
+                });
+            }
         }
-
-        function respond_call_help(id, tblNo){
-            $('#assistModal').modal('show');
-            $('#help_table_text_id').val(id);
-            $('#tbl_no').html(tblNo);
-        }
-
-        $('#assistForm').on('submit', function(e){
-            e.preventDefault();
-            var id = $('#help_table_text_id').val();
-            var data = $(this).serializeArray();
-
-            $.ajax({
-                    url: "<?php echo base_url('restaurant/customer_landing_page_ajax'); ?>",
-                    type: "post",
-                    data: data,
-                    success: function(data) {
-                        $('#assistModal').modal('hide');
-                    }
-                });            
-        })
 
         function check_new_orders(){
             

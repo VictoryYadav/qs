@@ -1471,7 +1471,7 @@ class Customer extends CI_Controller {
         if($this->session->userdata('AutoSettle') > 0){
             autoSettlePayment($billId, $MergeNo, $MCNo);
         }else{
-            $this->db2->query("UPDATE KitchenMain km, Billing b SET km.custPymt = 1, km.payRest = 1 WHERE b.BillId = $billId and km.EID=b.EID and km.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo) and km.MergeNo = b.MergeNo");
+            $this->db2->query("UPDATE KitchenMain km, Billing b SET km.custPymt = 1, km.payRest = 1, km.CnfSettle = 1 WHERE b.BillId = $billId and km.EID=b.EID and km.EID = $EID and (km.CNo = b.CNo OR km.MCNo = b.CNo) and km.MergeNo = b.MergeNo");
         }
 
         if($this->session->userdata('splitType')==1){
@@ -3302,7 +3302,6 @@ class Customer extends CI_Controller {
               ));
              die;
         }
-
     }
 
     public function reorder(){
@@ -3352,6 +3351,31 @@ class Customer extends CI_Controller {
             }
 
             redirect(base_url('customer/cart'));
+        }
+    }
+
+    public function call_assist(){
+        $status = 'error';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        if($this->input->method(true)=='POST'){
+            $TableNo = $this->session->userdata('TableNo');
+            $MobileNo = $this->session->userdata('CellNo');
+
+            $status = 'success';
+            if($_POST['type'] == 'post'){
+                $call = array('table_no' => $TableNo, 'created_at' => date('Y-m-d H:i:s'), 'response_status' => 1, 'MobileNo' => $MobileNo);
+                $response = insertRecord('call_bell', $call);
+            }else if($_POST['type'] == 'get'){
+                $cl = getRecords('call_bell', array('table_no' => $TableNo, 'MobileNo' => $MobileNo, 'response_status' => 1));
+                $response = $cl['response_status'];
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
         }
     }
 

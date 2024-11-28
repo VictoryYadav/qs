@@ -2001,7 +2001,6 @@ class Restaurant extends CI_Controller {
 
         $data['items'] = $this->rest->getRMItemUOM();
         $data['trans_type'] = $this->rest->getTransactionType();
-        $data['eatary'] = $this->rest->getRestaurantList();
         $data['store'] = $this->rest->getFromMast(3);
         $data['suppliers'] = $this->rest->getFromMast(2);
         $data['kit'] = $this->rest->getFromMast(1);
@@ -2674,20 +2673,14 @@ class Restaurant extends CI_Controller {
         $EID = authuser()->EID;
         $EType = $this->session->userdata('EType');
 
-        if(isset($_POST['call_help'])){
-            
-            $dd['table_no'] = $_SESSION['TableNo'];
-            $insert_help = insertRecord('call_bell', $dd);
-            echo $insert_help;
-        }
-
         if(isset($_POST['check_call_help'])){
+            $CCd = $_POST['CCd'];
             $list_id = $_POST['list_id'];
             $check = '';
 
-            $q = "SELECT * from call_bell where response_status < 3";
+            $q = "SELECT c.* from call_bell c, Eat_tables et where c.response_status = 1 and et.TableNo = c.table_no and et.CCd = $CCd";
             if($list_id != ''){
-                $q.=" and id not in($list_id)";
+                $q.=" and c.id not in($list_id)";
             }
             $data = $this->db2->query($q)->result_array();
             
@@ -2699,26 +2692,10 @@ class Restaurant extends CI_Controller {
             echo json_encode($check);
         }
 
-        if(isset($_POST['view_call_help'])){
-            
-            $id = $_POST['help_table_id'];
-            $t = date('Y-m-d H:i:s');
-            $q = "UPDATE call_bell set viewed = 1, viewed_time='$t' where id = '$id'";
-            
-            $this->db2->query($q);
-            $check = 1;
-            echo $check;
-        }
-
-        if(isset($_POST['respond_call_help'])){
-
-            $datas['respond_time']    = date('Y-m-d H:i:s');
-            $datas['response_status'] = $_POST['status'];
-            $id                       = $_POST['help_table_text_id'];
-            updateRecord('call_bell', $datas, array('id' => $id) );
-
-            $check = 1;
-            echo $check;
+        if(isset($_POST['closeTable'])){
+            $TableNo = $_POST['TableNo'];
+            updateRecord('call_bell', array('response_status' => 0, 'respond_time' => date('Y-m-d H:i:s')), array('table_no' => $TableNo, 'response_status' => 1));
+            $res = "Closed TableNo : $TableNo";
         }
         
         if(!empty($_POST['set_lang']) && !empty($_POST['lang'])){
@@ -2887,18 +2864,21 @@ class Restaurant extends CI_Controller {
                 $itemKitCd = $itemKitCds[$i];
 
                     if ($MultiKitchen > 1) {
-                    } else {
-                        $fkotArray = $KOTNo;
+                    
+                        if ($oldKitCd != $itemKitCds[$i]) {
+                            // $itemKitCd = $itemKitCds[$i];
+                            $getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID=$EID AND KitCd = $itemKitCd and MergeNo = '$tableNo' and Stat = $stat")->result_array();
+                            $fKotNo = $getFKOT[0]['FKOTNO'];
+                            $fKotNo = $fKotNo + 1;
+                            
+                            $newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
+                            $this->session->set_userdata('oldKitCd', $itemKitCd);
+                        }else{
+                            // next ukot                    
+                            $newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
+                        }
                     }
-                    if ($oldKitCd != $itemKitCds[$i]) {
-                        // $itemKitCd = $itemKitCds[$i];
-                        $getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID=$EID AND KitCd = $itemKitCd and MergeNo = '$tableNo' and Stat = $stat")->result_array();
-                        $fKotNo = $getFKOT[0]['FKOTNO'];
-                        $fKotNo = $fKotNo + 1;
-                        $fkotArray[$i] = $fKotNo;
-                        $newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
-                    } 
-                    $oldKitCd = $itemKitCd;
+                    // $oldKitCd = $itemKitCd;
 
                 $kitchenObj['CNo'] = $CNo;
                 $kitchenObj['MCNo'] = $CNo;
@@ -3518,6 +3498,73 @@ class Restaurant extends CI_Controller {
         $data['intermediate'] = $this->rest->getIntermediatBom();
         $data['title'] = $this->lang->line('billOfMaterial');
         $this->load->view('rest/edit_bom_dish',$data);
+    }
+
+    public function bom_view($BOMNo){
+        $status = "error";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        $EID = authuser()->EID;
+        $data['BOMNo'] = $BOMNo;
+        if($this->input->method(true)=='POST'){
+
+            $bom['BOMDishTyp'] = $_POST['BOMDishTyp'];
+            if($bom['BOMDishTyp'] == 1){
+                $bom['ItemId'] = $_POST['ItemId'];
+                $bom['Name'] = $_POST['itemname'];
+            }else{
+                $bom['Name'] = $_POST['MItemId'];
+            }
+            $bom['IPCd'] = $_POST['IPCd'];
+            $bom['Qty'] = $_POST['Qty'];
+            $bom['Costing'] = $_POST['Costing'];
+
+            $BOMNo = $_POST['BOMNo'];
+            updateRecord('BOM_Dish', $bom, array('BOMNo' => $BOMNo, 'EID' => $EID));
+            if(!empty($BOMNo)){
+                $response = $this->lang->line('dataUpdated');
+                $status = 'success';
+                for ($i=0; $i < sizeof($_POST['RMCd']) ; $i++) { 
+                    $BNo = $_POST['BNo'][$i];
+                    $bomdet['BOMNo'] = $BOMNo;
+                    $bomdet['RMType'] = $_POST['itemtype'][$i];
+                    $bomdet['Costing'] = $_POST['itemCost'][$i];
+                    if($bomdet['RMType'] == 1){
+                        $bomdet['RMCd'] = $_POST['RMCd'][$i];
+                        $bomdet['RMQty'] = unicodeToEnglish($_POST['RMQty'][$i]);
+                        $bomdet['RMUOM'] = $_POST['RMUOM'][$i];
+                    }else if($bomdet['RMType'] == 2){
+                        $bomdet['RMCd'] = $_POST['BomNo'][$i];
+                        $bomdet['RMQty'] = unicodeToEnglish($_POST['RMQty'][$i]);
+                        $bomdet['RMUOM'] = $_POST['bomRMUOM'][$i];
+                    }else if($bomdet['RMType'] == 3){
+                        $bomdet['RMCd'] = $_POST['goods'][$i];
+                        $bomdet['RMQty'] = unicodeToEnglish($_POST['RMQty'][$i]);
+                        $bomdet['RMUOM'] = $_POST['RMUOM'][$i];
+                    }
+
+                    if($BNo > 0){
+                        updateRecord('BOM_DishDet', $bomdet, array('BNo' => $BNo));
+                    }else{
+                        insertRecord('BOM_DishDet', $bomdet);
+                    }
+                }
+            }
+            
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['boms'] = getRecords('BOM_Dish', array('BOMNo' => $BOMNo, 'EID' => $EID));
+        $data['bomDet'] = $this->rest->getBomDet($BOMNo, $EID);
+        $data['rm_items'] = $this->rest->getItemLists();
+        $data['items'] = $this->rest->getAllItemsList();
+        $data['intermediate'] = $this->rest->getIntermediatBom();
+        $data['title'] = $this->lang->line('billOfMaterial');
+        $this->load->view('rest/bom_dish_view',$data);
     }
 
     public function delete_bom(){
@@ -6641,21 +6688,16 @@ class Restaurant extends CI_Controller {
 
             $RestName = authuser()->RestName;
             $Dispense_OTP = $this->session->userdata('Dispense_OTP');
-
+            $EID = authuser()->EID;
             if($oType != 101){
                 $otpData['mobileNo'] = $mobile;
                 $otpData['otp'] = '';
                 $otpData['stat'] = 0;
                 $otpData['pageRequest'] = 'Dispense';
+                $otpData['EID'] = $EID;
 
                 if($mobile){
                     $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Please pick up from $dispCounter";
-
-                    if($Dispense_OTP > 0){
-                        $otp = generateOnlyOTP();
-                        $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Your OTP is $otp. Please pick up from $dispCounter";
-                        $otpData['otp'] = $otp;
-                    }
 
                     $smsRes = sendSMS($mobile, $msg);
                     
@@ -6685,19 +6727,26 @@ class Restaurant extends CI_Controller {
 
             $EID = authuser()->EID;
             $RestName = authuser()->RestName;
-            $Dispense_OTP = $this->session->userdata('Dispense_OTP');
+            $DeliveryOTP = $this->session->userdata('DeliveryOTP');
 
             if($oType != 101){
-
-                updateRecord('Kitchen', array('DStat' => 1), array('CNo' => $CNo, 'DCd' => $DCd, 'EID' => $EID));
 
                 $otpData['mobileNo'] = $mobile;
                 $otpData['otp'] = '';
                 $otpData['stat'] = 0;
+                $otpData['EID'] = $EID;
                 $otpData['pageRequest'] = 'Dispense';
 
                 if($mobile){
                     $msg = "Order of Bill No : $billId, Counter : $dispCounter from $RestName has been delivered.";
+
+                    if($DeliveryOTP > 0){
+                        $otp = generateOnlyOTP();
+                        $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Your OTP is $otp. Please pick up from $dispCounter";
+                        $otpData['otp'] = $otp;
+                    }else{
+                        updateRecord('Kitchen', array('DStat' => 1), array('CNo' => $CNo, 'DCd' => $DCd, 'EID' => $EID));
+                    }
 
                     $smsRes = sendSMS($mobile, $msg);
                     if($smsRes){
@@ -6722,11 +6771,17 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
-
+            $EID = authuser()->EID;
             $response = $this->lang->line('OTPNotVerified');
-            
-            $cust_otp = $this->session->userdata('cust_otp');
-            if($cust_otp == $_POST['otp']){
+
+            extract($_POST);
+            $checkOTP = $this->db2->select('*')
+                                ->order_by('id', 'DESC')
+                                ->get_where('OTP', array('EID' => $EID, 'mobileNo' => $_POST['del_mobile'], 'otp' => $_POST['otp']))
+                                ->row_array();
+
+            if(!empty($checkOTP)){
+                updateRecord('Kitchen', array('DStat' => 1), array('CNo' => $del_cno, 'DCd' => $del_dcd, 'EID' => $EID));
                 $status = "success";
                 $response = $this->lang->line('OTPVerified');
             }
@@ -9713,7 +9768,7 @@ class Restaurant extends CI_Controller {
 
             $langId = $this->session->userdata('site_lang');
             $ipname = "ip.Name$langId";
-            $response = $this->db2->select("ip.IPCd, (case when $ipname != '-' Then $ipname ELSE ip.Name1 end) as Portion")
+            $response = $this->db2->select("ip.IPCd, (case when $ipname != '-' Then $ipname ELSE ip.Name1 end) as Portions")
                             ->join('ItemPortions ip', 'ip.IPCd = bd.IPCd', 'inner')
                             ->get_where('BOM_Dish bd', array('BOMNo' => $_POST['BItemId']))
                             ->result_array();
