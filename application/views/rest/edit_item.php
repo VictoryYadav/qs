@@ -83,7 +83,7 @@
                                                     <div class="form-group">
                                                         <label for="item_desc"><?= $this->lang->line('description'); ?></label>
 
-                                                        <textarea class="form-control form-control-sm" required="" rows="3" name="ItmDesc"><?= $detail['ItmDesc']; ?></textarea>
+                                                        <textarea class="form-control form-control-sm" required="" rows="3" name="ItmDesc"><?= $detail['Descname']; ?></textarea>
                                                     </div>
                                                 </div>
                                                 

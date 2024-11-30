@@ -2,6 +2,7 @@
 
 $EID = authuser()->EID; 
 $folder = 'e'.$EID; 
+$logo = $this->session->userdata('Logo');
 
 ?>
 
@@ -79,7 +80,7 @@ $folder = 'e'.$EID;
                     </li>
                     <?php } ?>
                     <li class="list-inline-item">
-                        <img src="<?= base_url('uploads/'.$folder.'/'.$EID.'_logo.jpg') ?>" width="auto" height="28px;" alt="<?= $this->session->userdata('restName'); ?>">
+                        <img src="<?= base_url('uploads/'.$folder.'/'.$logo) ?>" width="auto" height="28px;" alt="<?= $this->session->userdata('restName'); ?>">
                     </li>
                 </ul>
             </div>

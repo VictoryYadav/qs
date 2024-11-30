@@ -55,6 +55,7 @@
                                                <tr>
                                                    <td>#</td>
                                                    <td>Image(s) Not Uploaded</td>
+                                                   <td>File Size</td>
                                                </tr>
                                                <tbody id="notUpload"></tbody>
                                            </table>
@@ -112,7 +113,8 @@ function callAjax(formData){
                         count++;
                         temp += `<tr>
                                     <td>${count}</td>
-                                    <td>${item}</td>
+                                    <td>${item.files}</td>
+                                    <td>${item.fileSize}</td>
                                  </tr>`;
                     });
                     $('#notUpload').html(temp);

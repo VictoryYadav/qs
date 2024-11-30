@@ -3,6 +3,8 @@
 $EID = $this->session->userdata('EID');
 $folderName = 'e'.$EID;
 
+$logo = $this->session->userdata('Logo');
+
 ?>
 
 <style type="text/css">
@@ -93,7 +95,7 @@ body[data-topbar=dark] .header-item {
                         <div class="dropdown d-inline-block">
                             <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="rounded-circle header-profile-user" src="<?= base_url('uploads/'.$folderName.'/'.$EID.'_logo.jpg') ?>"
+                                <img class="rounded-circle header-profile-user" src="<?= base_url('uploads/'.$folderName.'/'.$logo) ?>"
                                     alt="<?php echo authuser()->RestName; ?>" style="width: auto;">
                                 <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                             </button>
@@ -122,6 +124,9 @@ body[data-topbar=dark] .header-item {
                                 } ?>
 
                                 <a class="dropdown-item" href="<?php echo base_url('restaurant/change_password'); ?>"><i class="dripicons-lock d-inlne-block text-muted mr-2"></i><?= $this->lang->line('changePassword');?></a>
+
+                                <a class="dropdown-item" href="<?php echo base_url('restaurant/change_logo'); ?>"><i class="mdi mdi-album text-muted mr-2"></i><?= $this->lang->line('changeLogo');?></a>
+
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="<?php echo base_url('logout'); ?>"><i class="dripicons-exit d-inlne-block text-muted mr-2"></i> <?= $this->lang->line('logout');?></a>
                             </div>

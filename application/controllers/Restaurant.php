@@ -1716,7 +1716,7 @@ class Restaurant extends CI_Controller {
                         $this->session->set_userdata('new_pwd', $data['password']);
                         $this->session->set_userdata('old_pwd', $data['old_password']);
                         $otp = generateOTP(authuser()->mobile, 'Change Password');
-                        $res = $this->lang->line('OTPSentToYourMobileNo');
+                        $res = $this->lang->line('OTPSentToYourMobileNo').' : '.$check['MobileNo'];
                     }else{
                         $res = $this->lang->line('oldPasswordDoesNotMatch');
                     }
@@ -4612,7 +4612,7 @@ class Restaurant extends CI_Controller {
         $lname = "Name$langId";
         $Descname = "ItmDesc$langId";
         $Ingeredients = "Ingeredients$langId";
-        $data['detail'] = $this->db2->select("*, (case when $lname != '-' Then $lname ELSE m.Name1 end) as ItemNm, (case when $Descname != '-' Then $Descname ELSE ItmDesc1 end) as Descname, (case when $Ingeredients != '-' Then $Ingeredients ELSE Ingeredients1 end) as Ingeredients")->get_where('MenuItem', array('ItemId' => $ItemId))->row_array();
+        $data['detail'] = $this->db2->select("*, (case when $lname != '-' Then $lname ELSE Name1 end) as ItemNm, (case when $Descname != '-' Then $Descname ELSE ItmDesc1 end) as Descname, (case when $Ingeredients != '-' Then $Ingeredients ELSE Ingeredients1 end) as Ingeredients")->get_where('MenuItem', array('ItemId' => $ItemId))->row_array();
         $data['itmRates'] = $this->db2->select("*")->get_where('MenuItemRates', array('EID' => $EID,'ItemId' => $ItemId))->result_array();
 
         $this->load->view('rest/edit_item', $data);
@@ -8129,7 +8129,7 @@ class Restaurant extends CI_Controller {
                 $eName = "Name$langId";
                 foreach ($roles as $role) {
                     $temp['EID'] = $EID;
-                    $temp['SecId'] = $role;
+                    // $temp['SecId'] = $role;
                     $temp[$eName] = $this->rest->getSectionName($temp['SecId']);
                     $cui[] = $temp;
                 }
@@ -8477,14 +8477,29 @@ class Restaurant extends CI_Controller {
                         mkdir($folderPath, 0777, true);
                     }
 
-                    if($_FILES['files']['size'] < 1048576){
-                         $res = do_upload('files',$file,$folderPath,'*');
-                         $status = 'success';
-                         $response = 'File Uploaded';
+                    $allowed = array('jpg');
+                    $filename_c = $_FILES['files']['name'];
+                    $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                    if (in_array($ext, $allowed)) {
+                        if($_FILES['files']['size'] < 1048576){
+                             $res = do_upload('files',$file,$folderPath,'*');
+                             $status = 'success';
+                             $response = 'File Uploaded';
+                        }else{
+                            $temp['files']      = $file;
+                            $temp['fileSize']   = 'More than 1MB';
+                            $temp['EID']        = $EID;
+                            $temp['created_at'] = date('Y-m-d H:i:s'); 
+                            $notUpload[]        = $temp;
+                        }                     
                     }else{
-                        $temp = $file;
-                        $notUpload[] = $temp;
-                    }                     
+                        $temp['files']      = $file;
+                        $temp['fileSize']   = 'Not in jpg format';
+                        $temp['EID']        = $EID;
+                        $temp['created_at'] = date('Y-m-d H:i:s'); 
+                        $notUpload[]        = $temp;
+                    }
+
                 } 
             }
             $status = 'success';
@@ -8492,10 +8507,7 @@ class Restaurant extends CI_Controller {
             if(!empty($notUpload)){
                 $status = 'pending';
                 $response = $notUpload;
-                $fd['files'] = implode(",",$notUpload);
-                $fd['EID'] = $EID;
-                $fd['created_at'] = date('Y-m-d H:i:s'); 
-                insertRecord('fileNotUploaded', $fd);
+                $this->db2->insert_batch('fileNotUploaded', $notUpload);
             }
 
             header('Content-Type: application/json');
@@ -10931,6 +10943,59 @@ class Restaurant extends CI_Controller {
               ));
              die;
         }
+    }
+
+    public function change_logo(){
+        $status = 'error';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+
+        if($this->input->method(true)=='POST'){
+
+            $EID = authuser()->EID;
+
+            if(isset($_FILES['logo_file']['name']) && !empty($_FILES['logo_file']['name'])){ 
+                $files = $_FILES['logo_file'];
+                $allowed = array('jpg', 'jpeg', 'png');
+                $filename_c = $_FILES['logo_file']['name'];
+                $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                if (in_array($ext, $allowed)) {
+                    if($files['size'] < 1048576){
+                        $status = 'success';
+                        $response = 'Logo Uploaded.'; 
+                        // less than 1mb size upload
+                        $_FILES['logo_file']['name']= $files['name'];
+                        $_FILES['logo_file']['type']= $files['type'];
+                        $_FILES['logo_file']['tmp_name']= $files['tmp_name'];
+                        $_FILES['logo_file']['error']= $files['error'];
+                        $_FILES['logo_file']['size']= $files['size'];
+                        // $file = $files['name'];
+                        $file = $EID."_logo.$ext";
+                        if(is_file($file)) {
+                            unlink($file); 
+                        }
+
+                        $folderPath = 'uploads/e'.$EID.'/'; 
+
+                        $res = do_upload('logo_file',$file,$folderPath,'*');
+
+                        updateRecord('Eatary', array('Logo' => $file), array('EID' => $EID));
+                    }else{
+                        $response = 'File upload less than 1MB!';   
+                    }
+                }else{
+                    $response = 'File format is not correct!';
+                }
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        $data['title'] = 'Change Logo';
+        $this->load->view('rest/logo_change', $data);
     }
 
 
