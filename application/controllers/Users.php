@@ -166,8 +166,8 @@ class Users extends CI_Controller {
 
         $data['link'] = '';
 
-        $data['kitchenGetData'] = $this->db2->select("b.BillId,k.ItemId , m.UItmCd, m.ItemNm1, k.CustItemDesc")
-                                    ->order_by('m.ItemNm1','ASC')
+        $data['kitchenGetData'] = $this->db2->select("b.BillId,k.ItemId , m.UItmCd, m.Name1 as ItemName, k.CustItemDesc")
+                                    ->order_by('m.Name1','ASC')
                                     ->group_by('k.ItemId,k.MCNo')
                                     ->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
                                     ->join('Kitchen k', 'k.MCNo = km.MCNo', 'inner')

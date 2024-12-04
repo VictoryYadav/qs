@@ -389,7 +389,7 @@ $folder = 'e'.$EID;
                                 $count++;
                                 ?>
                                 <tr style="border-bottom: none;">
-                                    <td style='width: 35%;'><?= $value['ItemNm1']; ?></td>
+                                    <td style='width: 35%;'><?= $value['ItemName']; ?></td>
                                     <!-- Rating Slider -->
                                     <td>
                                         <div class="row">

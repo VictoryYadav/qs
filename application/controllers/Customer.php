@@ -47,7 +47,21 @@ class Customer extends CI_Controller {
     }
 
     public function index1(){
+        $EID = 51;
+        $CustId = 6;
+        
 
+        $response = $this->db2->select("AVG(rd.ItemRtng) rating, r.BillId, rd.ItemId, m.Name1 as ItemName, IFNULL((select avg(rd1.ItemRtng) from RatingDet rd1, Ratings r1 where rd1.ItemId = rd.ItemId and r1.BillId=r.BillId and r1.CustId != r.CustId), '-') as avgGRPRtng") 
+                                ->order_by('rating', 'DESC')
+                                ->group_by('rd.ItemId')
+                                ->join('RatingDet rd', 'rd.RCd = r.Rcd', 'inner')
+                                ->join('MenuItem m', 'm.ItemId = rd.ItemId', 'inner')
+                                ->limit(5)
+                                ->get_where('Ratings r', array('r.EID' => $EID, 'r.CustId' => $CustId))
+                                ->result_array();
+                                echo "<pre>";
+                                print_r($response);
+                                die;
         echo "<pre>";
         print_r($_SESSION);
         die;
@@ -3368,6 +3382,45 @@ class Customer extends CI_Controller {
             }else if($_POST['type'] == 'get'){
                 $cl = getRecords('call_bell', array('table_no' => $TableNo, 'MobileNo' => $MobileNo, 'response_status' => 1));
                 $response = $cl['response_status'];
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+    
+    public function get_rated_dishes(){
+        $status = 'error';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        if($this->input->method(true)=='POST'){
+            $CustId = $this->session->userdata('CustId');
+            $EID    = authuser()->EID;
+            $langId = $this->session->userdata('site_lang');
+            $lname = "m.Name$langId as ItemName";
+
+            $status = 'success';
+            if($_POST['type'] == 'most'){
+
+                $response = $this->db2->select("count(k.ItemId) as order_count, $lname, (select count(km.CNo) from KitchenMain km where km.EID = $EID and km.CustId = $CustId ) as siteVisit")
+                                ->order_by('order_count', 'DESC')
+                                ->group_by('k.ItemId')
+                                ->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
+                                ->limit(5)
+                                ->get_where('Kitchen k', array('k.EID' => $EID, 'k.CustId' => $CustId))
+                                ->result_array();
+            }else if($_POST['type'] == 'rated'){
+                $response = $this->db2->select("round(AVG(rd.ItemRtng), 2) myrating, r.BillId, rd.ItemId, $lname, IFNULL((select round(avg(rd1.ItemRtng), 2) from RatingDet rd1, Ratings r1 where rd1.ItemId = rd.ItemId and r1.BillId=r.BillId and r1.CustId != r.CustId), '-') as avgGRPRtng") 
+                                ->order_by('myrating', 'DESC')
+                                ->group_by('rd.ItemId')
+                                ->join('RatingDet rd', 'rd.RCd = r.Rcd', 'inner')
+                                ->join('MenuItem m', 'm.ItemId = rd.ItemId', 'inner')
+                                ->limit(5)
+                                ->get_where('Ratings r', array('r.EID' => $EID, 'r.CustId' => $CustId))
+                                ->result_array();
             }
 
             header('Content-Type: application/json');

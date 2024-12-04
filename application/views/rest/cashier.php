@@ -84,9 +84,9 @@
                                                 <tr >
                                                     <th>#</th>
                                                     <th><?= $this->lang->line('cashier'); ?></th>
-                                                    <th><?= $this->lang->line('action'); ?></th>
                                                     <th><?= $this->lang->line('printer'); ?></th>
                                                     <th><?= $this->lang->line('ip'); ?></th>
+                                                    <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
                                                 </thead>
             

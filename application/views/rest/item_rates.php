@@ -160,7 +160,7 @@
                   res.response.forEach((item, index) =>{
                     tbl += `<tr>
                                 <td>${item.Section}</td>
-                                <td>${item.Portion}</td>
+                                <td>${item.Portions}</td>
                                 <td>
                                 <input type="hidden" name="SecId[]" value="${item.SecId}" required />
                                 <input type="hidden" name="Itm_Portion[]" value="${item.Itm_Portion}" required />

@@ -12,6 +12,7 @@ $lang['print'] = 'Print';
 $lang['mergeorder'] = 'Merge Order';
 $lang['splitbill'] = 'Split Bill';
 $lang['rating'] = 'Rating';
+$lang['avgGroupRating'] = 'Avg Group Rating';
 $lang['sharerating'] = 'Share Rating';
 $lang['transactions'] = 'Transactions';
 $lang['reservetable'] = 'Reserve Table';
@@ -19,10 +20,10 @@ $lang['contact'] = 'Contact Us';
 $lang['privacyPolicy'] = 'Privacy Policy';
 $lang['termsConditions'] = 'Terms & Conditions';
 $lang['cookiePolicy'] = 'Cookie Policy';
-$lang['payNow'] = 'Pay Now';
-$lang['profile'] = 'Profile';
-$lang['currentorder'] = 'Current Order / Bill';
-$lang['current']      = 'Current';
+$lang['payNow'] 		= 'Pay Now';
+$lang['profile'] 		= 'Profile';
+$lang['currentorder'] 	= 'Current Order / Bill';
+$lang['current']      	= 'Current';
 
 $lang['account'] = 'Account';
 $lang['history'] = 'History';
@@ -614,9 +615,14 @@ $lang['fixed']		= 'Fixed';
 $lang['maxLimit']	= 'Max Limit';
 $lang['beforeCurrentTransaction']	= 'Before Current Transaction';
 
-$lang['prepaidAmount']	= 'Prepaid Amt';
-$lang['insufficentBalance']	= 'Insufficent Balance';
+$lang['prepaidAmount']			= 'Prepaid Amt';
+$lang['insufficentBalance']		= 'Insufficent Balance';
 $lang['selectedItemsDelivered']	= 'Selected Items Delivered';
+
+$lang['mostOrderDishes']		= 'Most Order Dishes';
+$lang['ratedDishes']			= 'Rated Dishes';
+$lang['noofTimesOrder']			= 'No of Times Order';
+$lang['top5']					= 'Top 5';
 
 
 

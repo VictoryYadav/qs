@@ -12,6 +12,7 @@ $lang['print'] 			= 'छपाई';
 $lang['mergeorder'] 	= 'मर्ज आदेश';
 $lang['splitbill'] 		= 'विभाजित बिल';
 $lang['rating'] 		= 'रेटिंग';
+$lang['avgGroupRating'] = 'Avg Group Rating';
 $lang['sharerating'] 	= 'शेयर रेटिंग';
 $lang['transactions'] 	= 'लेनदेन';
 $lang['reservetable'] 	= 'रिजर्व टेबल';
@@ -610,11 +611,16 @@ $lang['access']		= 'एक्सेस';
 $lang['multi']		= 'मल्टी';
 $lang['tableChanged']		= 'टेबल चेंज हुआ';
 
-$lang['fixed']		= 'फिक्स्ड';
-$lang['maxLimit']	= 'मैक्स लिमिट';
+$lang['fixed']					= 'फिक्स्ड';
+$lang['maxLimit']				= 'मैक्स लिमिट';
 $lang['beforeCurrentTransaction']	= 'वर्तमान लेनदेन से पहले';
-$lang['prepaidAmount']	= 'प्रीपेड अमाउंट';
-$lang['insufficentBalance']	= 'बैलेंस कम है';
+$lang['prepaidAmount']			= 'प्रीपेड अमाउंट';
+$lang['insufficentBalance']		= 'बैलेंस कम है';
 
 $lang['selectedItemsDelivered']	= 'चयनित वस्तुएँ वितरित की गईं';
+
+$lang['mostOrderDishes']		= 'मोस्ट आर्डर डिशेस';
+$lang['ratedDishes']			= 'रेटेड डिशेस';
+$lang['noofTimesOrder']			= 'No of Times Order';
+$lang['top5']					= 'Top 5';
  

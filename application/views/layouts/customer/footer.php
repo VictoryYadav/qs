@@ -78,6 +78,9 @@ h6{
             <a href="#news" class="dropdown-item" data-toggle="modal" data-target="#offers-modal"><?= $this->lang->line('offers'); ?></a>
         <?php } if($this->session->userdata('Ent') > 0){ ?>
             <a href="#" class="dropdown-item" data-toggle="modal" data-target="#Ent_modal" ><?= $this->lang->line('entertainment'); ?></a>
+            <?php } if($this->session->userdata('CustId') > 0){?>
+            <a href="#" class="dropdown-item" onclick="ratedDish()"><?= $this->lang->line('ratedDishes'); ?></a>
+            <a href="#" class="dropdown-item" onclick="mostOrderDish()"><?= $this->lang->line('mostOrderDishes'); ?></a>
             <?php } ?>
         </div>
     </div>
@@ -246,6 +249,57 @@ h6{
         </div>
       </div>
     </div>
+    
+    <div class="modal fade" id="mostOrderDishes_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background: #dbbd89;">
+                <p class="modal-title offers-txt text-white"><?= $this->lang->line('mostOrderDishes'); ?>  <?= $this->lang->line('visitNo'); ?><span id="siteVisits"></span></p>
+         </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th><?= $this->lang->line('item'); ?> <?= $this->lang->line('name'); ?> [<small><?= $this->lang->line('top5'); ?></small>]</th>
+                        <th><?= $this->lang->line('noofTimesOrder'); ?></th>
+                    </tr>
+                </thead>
+                <tbody id="orderBody">
+                    
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="ratedDishes_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background: #dbbd89;">
+                <p class="modal-title offers-txt text-white"><?= $this->lang->line('mostOrderDishes'); ?></p>
+         </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th><?= $this->lang->line('item'); ?> <?= $this->lang->line('name'); ?> [<small><?= $this->lang->line('top5'); ?></small>]</th>
+                        <th><?= $this->lang->line('rating'); ?></th>
+                        <th><?= $this->lang->line('avgGroupRating'); ?></th>
+                    </tr>
+                </thead>
+                <tbody id="ratedBody">
+                    
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script>
         function goCheckout(){
@@ -261,6 +315,52 @@ h6{
                     window.location = "<?php echo base_url('customer/cart'); ?>"; 
                 }
             });
+        }
+
+        function mostOrderDish(){
+            $.post('<?= base_url('customer/get_rated_dishes') ?>',{type:'most'}, function(res){
+                if(res.status == 'success'){
+                    var data = res.response;
+                    var temp = ``;
+                    if(data.length > 0){
+                        data.forEach((item, index) => {
+                            temp += `<tr>
+                                        <td>${item.ItemName}</td>
+                                        <td>${item.order_count}</td>
+                                    </tr>`;
+                        });
+                        $(`#siteVisits`).html(` (${data[0].siteVisit})`);
+                        $(`#orderBody`).html(temp);
+                        $(`#mostOrderDishes_modal`).modal('show');
+                    }           
+                }else{
+                    alert(res.response)
+                }
+            });
+            // 
+        }
+
+        function ratedDish(){
+            $.post('<?= base_url('customer/get_rated_dishes') ?>',{type:'rated'}, function(res){
+                if(res.status == 'success'){
+                    var data = res.response;
+                    var temp = ``;
+                    if(data.length > 0){
+                        data.forEach((item, index) => {
+                            temp += `<tr>
+                                        <td>${item.ItemName}</td>
+                                        <td>${item.myrating}</td>
+                                        <td>${item.avgGRPRtng}</td>
+                                    </tr>`;
+                        });
+                        $(`#ratedBody`).html(temp);
+                        $(`#ratedDishes_modal`).modal('show');
+                    }           
+                }else{
+                alert(res.response)    
+                }
+            });
+            // 
         }
 
     </script>

@@ -7102,6 +7102,9 @@ class Restaurant extends CI_Controller {
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
+            echo "<pre>";
+            print_r($_POST);die;
+
             $updateData['EID'] = authuser()->EID;
 
             if(!empty($data['languages'])){
@@ -8129,7 +8132,7 @@ class Restaurant extends CI_Controller {
                 $eName = "Name$langId";
                 foreach ($roles as $role) {
                     $temp['EID'] = $EID;
-                    // $temp['SecId'] = $role;
+                    $temp['SecId'] = $role;
                     $temp[$eName] = $this->rest->getSectionName($temp['SecId']);
                     $cui[] = $temp;
                 }
@@ -10665,6 +10668,7 @@ class Restaurant extends CI_Controller {
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         $EID = authuser()->EID;
         if($this->input->method(true)=='POST'){
+
             $langId = $this->session->userdata('site_lang');
             
             $status = 'success';

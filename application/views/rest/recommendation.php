@@ -121,7 +121,7 @@
                                                             <span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span>
                                                         </td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['RecNo'] ?>,<?= $row['ItemId'] ?>,<?= $row['RcItemId'] ?>, <?= $row['Stat'] ?>, <?= $row['Remarks'] ?>)">
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['RecNo'] ?>,<?= $row['ItemId'] ?>,<?= $row['RcItemId'] ?>, <?= $row['Stat'] ?>, '<?= $row['Remarks'] ?>')">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
