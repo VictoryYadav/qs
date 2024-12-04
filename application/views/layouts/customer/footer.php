@@ -78,8 +78,9 @@ h6{
             <a href="#news" class="dropdown-item" data-toggle="modal" data-target="#offers-modal"><?= $this->lang->line('offers'); ?></a>
         <?php } if($this->session->userdata('Ent') > 0){ ?>
             <a href="#" class="dropdown-item" data-toggle="modal" data-target="#Ent_modal" ><?= $this->lang->line('entertainment'); ?></a>
-            <?php } if($this->session->userdata('CustId') > 0){?>
+            <?php } if($this->session->userdata('ratingHistory') > 0){ ?>
             <a href="#" class="dropdown-item" onclick="ratedDish()"><?= $this->lang->line('ratedDishes'); ?></a>
+            <?php } if($this->session->userdata('favoriteItems') > 0){ ?>
             <a href="#" class="dropdown-item" onclick="mostOrderDish()"><?= $this->lang->line('mostOrderDishes'); ?></a>
             <?php } ?>
         </div>
@@ -105,9 +106,10 @@ h6{
              <a class="dropdown-item" href="#" onclick="goCheckout()"><?= $this->lang->line('checkout'); ?></a>
             <?php }else{ ?>
             <a class="dropdown-item" href="<?= base_url('customer/checkout'); ?>"><?= $this->lang->line('checkout'); ?></a>
-            <?php } ?>
-
+            <?php } 
+            if($this->session->userdata('reorder') > 0){ ?>
             <a class="dropdown-item" href="<?= base_url('customer/reorder'); ?>"><?= $this->lang->line('reOrder'); ?></a>
+            <?php } ?> 
         </div>
     </div>
 </div>
