@@ -123,6 +123,7 @@ $lang['kitchen_msg'] = 'Order Sent To Kitchen Successfully';
 // rest side
 $lang['customer'] 			= 'Customer';
 $lang['food'] 	  			= 'Food';
+$lang['bar'] 	  			= 'Bar';
 $lang['restaurant'] 		= 'Restaurant';
 $lang['lunch'] 				= 'Lunch';
 $lang['dinner'] 			= 'Dinner';
@@ -451,7 +452,7 @@ $lang['pub']				= 'pub';
 $lang['cafe']				= 'cafe';
 $lang['loungeBar']			= 'Lounge Bar';
 $lang['canteen']			= 'Canteen';
-$lang['sitInRestaurant']			= 'Sit In Restaurant';
+$lang['sitInRestaurant']	= 'Sit In Restaurant';
 
 $lang['east']			= 'East';
 $lang['west']			= 'West';
@@ -467,10 +468,11 @@ $lang['month']			= 'Month';
 $lang['week']			= 'Week';
 $lang['english']		= 'English';
 
-$lang['finish']		= 'Finish';
-$lang['goods']		= 'Goods';
-$lang['intermediate']		= 'Intermediate';
+$lang['finish']			= 'Finish';
+$lang['goods']			= 'Goods';
+$lang['intermediate']	= 'Intermediate';
 $lang['costing']		= 'Costing';
+$lang['chargedSeparately']		= 'Charged Separately';
 
 $lang['printer']		= 'Printer';
 $lang['ip']				= 'IP';

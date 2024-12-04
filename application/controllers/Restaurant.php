@@ -11002,5 +11002,40 @@ class Restaurant extends CI_Controller {
         $this->load->view('rest/logo_change', $data);
     }
 
+    public function tax(){
+        $status = 'error';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+
+        $EID = authuser()->EID;
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+
+            $TNo = $_POST['TNo'];
+            $taxes = $_POST;
+
+            if($TNo > 0){
+                updateRecord('Tax', $taxes, array('TNo' => $TNo));
+                $response = $this->lang->line('dataUpdated');
+            }else{
+                $id = insertRecord('Tax', $taxes);
+                if($id > 0){
+                    $response = $this->lang->line('dataAdded');                
+                }
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] = 'Tax';
+        $data['country']    = $this->rest->getCountries();
+        $data['taxList']    = $this->rest->getTaxList();
+        $this->load->view('rest/taxList', $data);
+    }
+
 
 }
