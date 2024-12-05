@@ -339,7 +339,7 @@
 
               $('.showBlock').hide();
               $('#loadBlock').show();
-              setInterval(function(){ updateData(EID, CatgId); }, 30000);
+              setInterval(function(){ updateData(EID, CatgId, EType); }, 30000);
               
             }else{
               alert(res.response);
@@ -347,14 +347,14 @@
         });
     });
 
-    function updateData(EID, CatgId){
+    function updateData(EID, CatgId, EType){
         $.post('<?= base_url('support/update_customer') ?>',{EID:EID},function(res){
             if(res.status == 'success'){
               alert(res.response);
               $('#loadBlock').hide();
               $('.showBlock').show();
 
-              window.location = '<?= base_url('support/config/') ?>'+EID;
+              window.location = '<?= base_url('support/config/') ?>'+EID+'/'+EType;
               
               // $('#signinurl').html("<?= base_url('login?o='); ?>"+EID+"&c="+CatgId);
               // document.getElementById("customerForm").reset();

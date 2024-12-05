@@ -333,8 +333,8 @@ class Support extends CI_Controller {
                 $this->genDB->update('EIDDet',$upData, array('CNo' => $CNo));
                 // db creation
                 $destDB = $dbName;
-                // $sourceDatabase = "eatout";
-                $sourceDatabase = "51e";
+                $sourceDatabase = "eatout";
+                // $sourceDatabase = "51e";
                 $destinationDatabase = $destDB;
                 
                 // Create connection
