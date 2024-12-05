@@ -56,7 +56,7 @@
                                                         <label for=""><?= $this->lang->line('payment').' '.$this->lang->line('type'); ?></label>
                                                         <select name="pymtENV" id="" class="form-control form-control-sm" required="">
                                                             <option value="0" <?php if($detail['pymtENV'] == 0){ echo 'selected'; } ?>><?= $this->lang->line('test'); ?></option>
-                                                            <option value="1" <?php if($detail['pymtENV'] == 1){ echo 'selected'; } ?>><?= $this->lang->line('online'); ?></option>
+                                                            <option value="1" <?php if($detail['pymtENV'] == 1){ echo 'selected'; } ?>><?= $this->lang->line('live'); ?></option>
                                                             <option value="2" <?php if($detail['pymtENV'] == 2){ echo 'selected'; } ?>><?= $this->lang->line('offline'); ?></option>
                                                         </select>
                                                     </div>
@@ -106,21 +106,21 @@
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox" >
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck03" data-parsley-multiple="groups" data-parsley-mincheck="2" name="EDT" <?php if($detail['EDT'] == 1){ echo 'checked'; } ?> value="<?= $detail['EDT'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck03" data-parsley-multiple="groups" data-parsley-mincheck="2" name="EDT" <?php if($detail['EDT'] == 1){ echo 'checked'; } ?> value="<?= $detail['EDT'];?>" <?= $EType5; ?> >
                                                             <label class="custom-control-label" for="customCheck03"><?= $this->lang->line('edt'); ?></label>
                                                         </div>
                                                     </div>
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck04" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Move" <?php if($detail['Move'] == 1){ echo 'checked'; } ?> value="<?= $detail['Move'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck04" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Move" <?php if($detail['Move'] == 1){ echo 'checked'; } ?> value="<?= $detail['Move'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck04"><?= $this->lang->line('move'); ?></label>
                                                         </div>
                                                     </div>
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck05" data-parsley-multiple="groups" data-parsley-mincheck="2" name="JoinTable" <?php if($detail['JoinTable'] == 1){ echo 'checked'; } ?> value="<?= $detail['JoinTable'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck05" data-parsley-multiple="groups" data-parsley-mincheck="2" name="JoinTable" <?php if($detail['JoinTable'] == 1){ echo 'checked'; } ?> value="<?= $detail['JoinTable'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck05"><?= $this->lang->line('join').' '.$this->lang->line('table'); ?></label>
                                                         </div>
                                                     </div>
@@ -134,14 +134,14 @@
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck07" data-parsley-multiple="groups" data-parsley-mincheck="2" name="TableReservation" <?php if($detail['TableReservation'] == 1){ echo 'checked'; } ?> value="<?= $detail['TableReservation'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck07" data-parsley-multiple="groups" data-parsley-mincheck="2" name="TableReservation" <?php if($detail['TableReservation'] == 1){ echo 'checked'; } ?> value="<?= $detail['TableReservation'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck07"><?= $this->lang->line('reservetable'); ?></label>
                                                         </div>
                                                     </div>
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck08" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Discount" <?php if($detail['Discount'] == 1){ echo 'checked'; } ?> value="<?= $detail['Discount'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck08" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Discount" <?php if($detail['Discount'] == 1){ echo 'checked'; } ?> value="<?= $detail['Discount'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck08"><?= $this->lang->line('discount'); ?></label>
                                                         </div>
                                                     </div>
@@ -162,7 +162,7 @@
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck27" data-parsley-multiple="groups" data-parsley-mincheck="2" name="tableSharing" <?php if($detail['tableSharing'] == 1){ echo 'checked'; } ?> value="<?= $detail['tableSharing'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck27" data-parsley-multiple="groups" data-parsley-mincheck="2" name="tableSharing" <?php if($detail['tableSharing'] == 1){ echo 'checked'; } ?> value="<?= $detail['tableSharing'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck27"><?= $this->lang->line('table').' '.$this->lang->line('share'); ?></label>
                                                         </div>
                                                     </div>
@@ -172,7 +172,7 @@
                                                 <div class="col-md-3 col-12">
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck09" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Tips" <?php if($detail['Tips'] == 1){ echo 'checked'; } ?> value="<?= $detail['Tips'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck09" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Tips" <?php if($detail['Tips'] == 1){ echo 'checked'; } ?> value="<?= $detail['Tips'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck09"><?= $this->lang->line('tips'); ?></label>
                                                         </div>
                                                     </div>
@@ -186,14 +186,14 @@
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck11" data-parsley-multiple="groups" data-parsley-mincheck="2" name="RtngDisc" <?php if($detail['RtngDisc'] == 1){ echo 'checked'; } ?> value="<?= $detail['RtngDisc'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck11" data-parsley-multiple="groups" data-parsley-mincheck="2" name="RtngDisc" <?php if($detail['RtngDisc'] == 1){ echo 'checked'; } ?> value="<?= $detail['RtngDisc'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck11"><?= $this->lang->line('rating').' '.$this->lang->line('discount'); ?></label>
                                                         </div>
                                                     </div>
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck12" data-parsley-multiple="groups" data-parsley-mincheck="2" name="TableAcceptReqd" <?php if($detail['TableAcceptReqd'] == 1){ echo 'checked'; } ?> value="<?= $detail['TableAcceptReqd'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck12" data-parsley-multiple="groups" data-parsley-mincheck="2" name="TableAcceptReqd" <?php if($detail['TableAcceptReqd'] == 1){ echo 'checked'; } ?> value="<?= $detail['TableAcceptReqd'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck12"><?= $this->lang->line('table').' '.$this->lang->line('accept').' '.$this->lang->line('required'); ?></label>
                                                         </div>
                                                     </div>
@@ -214,7 +214,7 @@
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck15" data-parsley-multiple="groups" data-parsley-mincheck="2" name="CustAssist" <?php if($detail['CustAssist'] == 1){ echo 'checked'; } ?> value="<?= $detail['CustAssist'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck15" data-parsley-multiple="groups" data-parsley-mincheck="2" name="CustAssist" <?php if($detail['CustAssist'] == 1){ echo 'checked'; } ?> value="<?= $detail['CustAssist'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck15"><?= $this->lang->line('customer').' '.$this->lang->line('assist'); ?></label>
                                                         </div>
                                                     </div>
@@ -242,7 +242,7 @@
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck32" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Seatwise" <?php if($detail['Seatwise'] == 1){ echo 'checked'; } ?> value="<?= $detail['Seatwise'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck32" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Seatwise" <?php if($detail['Seatwise'] == 1){ echo 'checked'; } ?> value="<?= $detail['Seatwise'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck32"><?= $this->lang->line('seatWise'); ?></label>
                                                         </div>
                                                     </div>
@@ -274,14 +274,14 @@
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck20" data-parsley-multiple="groups" data-parsley-mincheck="2" name="billPrintTableNo" <?php if($detail['billPrintTableNo'] == 1){ echo 'checked'; } ?> value="<?= $detail['billPrintTableNo'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck20" data-parsley-multiple="groups" data-parsley-mincheck="2" name="billPrintTableNo" <?php if($detail['billPrintTableNo'] == 1){ echo 'checked'; } ?> value="<?= $detail['billPrintTableNo'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck20"><?= $this->lang->line('bill').' '.$this->lang->line('print').' '.$this->lang->line('tableNo'); ?></label>
                                                         </div>
                                                     </div>
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck21" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Bill_KOT_Print" <?php if($detail['Bill_KOT_Print'] == 1){ echo 'checked'; } ?> value="<?= $detail['Bill_KOT_Print'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck21" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Bill_KOT_Print" <?php if($detail['Bill_KOT_Print'] == 1){ echo 'checked'; } ?> value="<?= $detail['Bill_KOT_Print'];?>" <?= $EType5; ?> >
                                                             <label class="custom-control-label" for="customCheck21"><?= $this->lang->line('bill').' '.$this->lang->line('kot').' '.$this->lang->line('print'); ?></label>
                                                         </div>
                                                     </div>
@@ -302,7 +302,7 @@
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck24" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Ent" <?php if($detail['Ent'] == 1){ echo 'checked'; } ?> value="<?= $detail['Ent'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck24" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Ent" <?php if($detail['Ent'] == 1){ echo 'checked'; } ?> value="<?= $detail['Ent'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck24"><?= $this->lang->line('entertainment'); ?></label>
                                                         </div>
                                                     </div>
@@ -316,14 +316,14 @@
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck31" data-parsley-multiple="groups" data-parsley-mincheck="2" name="BillMergeOpt" <?php if($detail['BillMergeOpt'] == 1){ echo 'checked'; } ?> value="<?= $detail['BillMergeOpt'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck31" data-parsley-multiple="groups" data-parsley-mincheck="2" name="BillMergeOpt" <?php if($detail['BillMergeOpt'] == 1){ echo 'checked'; } ?> value="<?= $detail['BillMergeOpt'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck31"><?= $this->lang->line('billMerge'); ?></label>
                                                         </div>
                                                     </div>
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck34" data-parsley-multiple="groups" data-parsley-mincheck="2" name="billSplitOpt" <?php if($detail['billSplitOpt'] == 1){ echo 'checked'; } ?> value="<?= $detail['billSplitOpt'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck34" data-parsley-multiple="groups" data-parsley-mincheck="2" name="billSplitOpt" <?php if($detail['billSplitOpt'] == 1){ echo 'checked'; } ?> value="<?= $detail['billSplitOpt'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck34"><?= $this->lang->line('splitbill'); ?></label>
                                                         </div>
                                                     </div>
@@ -369,13 +369,13 @@
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
                                                             <input type="checkbox" class="custom-control-input" id="customCheck41" data-parsley-multiple="groups" data-parsley-mincheck="2" name="kds" <?php if($detail['kds'] == 1){ echo 'checked'; } ?> value="<?= $detail['kds'];?>">
-                                                            <label class="custom-control-label" for="customCheck41"><?= $this->lang->line('kitchen'); ?></label>
+                                                            <label class="custom-control-label" for="customCheck41"><?= $this->lang->line('kitchenDisplaySystem'); ?></label>
                                                         </div>
                                                     </div>
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck42" data-parsley-multiple="groups" data-parsley-mincheck="2" name="reorder" <?php if($detail['reorder'] == 1){ echo 'checked'; } ?> value="<?= $detail['reorder'];?>">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck42" data-parsley-multiple="groups" data-parsley-mincheck="2" name="reorder" <?php if($detail['reorder'] == 1){ echo 'checked'; } ?> value="<?= $detail['reorder'];?>" <?= $EType1; ?> >
                                                             <label class="custom-control-label" for="customCheck42"><?= $this->lang->line('reOrder'); ?></label>
                                                         </div>
                                                     </div>

@@ -333,8 +333,10 @@
             if(res.status == 'success'){
               // alert(res.response);
               // location.reload();
-              var EID = res.response.EID;
-              var CatgId = res.response.CatgId;
+              var EID       = res.response.EID;
+              var CatgId    = res.response.CatgId;
+              var EType     = res.response.EType;
+
               $('.showBlock').hide();
               $('#loadBlock').show();
               setInterval(function(){ updateData(EID, CatgId); }, 30000);

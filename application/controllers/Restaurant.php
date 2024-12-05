@@ -9175,6 +9175,14 @@ class Restaurant extends CI_Controller {
     public function config(){
         $EID = authuser()->EID;
         $data['title'] = $this->lang->line('config');
+        $EType = $this->session->userdata('EType');
+
+        $data['EType5'] = '';
+        $data['EType1'] = '';
+
+        if($EType == 5){ $data['EType5'] =  'disabled'; }
+        if($EType == 1){ $data['EType1'] =  'disabled'; }
+
         $data['detail'] = getRecords('Config',array('EID' => $EID));
 
         if($this->input->method(true)=='POST'){

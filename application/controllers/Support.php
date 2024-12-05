@@ -386,9 +386,8 @@ class Support extends CI_Controller {
 
                 // create user in usersrest
                 
-                
                 $status = 'success';
-                $response = array('EID' =>$CNo, 'CatgId' => $_POST['CatgId']);
+                $response = array('EID' =>$CNo, 'CatgId' => $_POST['CatgId'], 'EType' => $_POST['EType']);
             }
 
             header('Content-Type: application/json');
@@ -1158,13 +1157,19 @@ class Support extends CI_Controller {
                             ->row_array();
     }
 
-    public function config($EID){
+    public function config($EID, $EType){
         $dbname = $EID."e";
         $this->localDB = $this->load->database($dbname, TRUE);
 
-        $data['title'] = $this->lang->line('config');
+        $data['title']  = $this->lang->line('config');
+        $data['EID']    = $EID;
         $data['detail'] = $this->localDB->get_where('Config', array('EID' => $EID))
                                         ->row_array();
+        $data['EType5'] = '';
+        $data['EType1'] = '';
+
+        if($EType == 5){ $data['EType5'] =  'disabled'; }
+        if($EType == 1){ $data['EType1'] =  'disabled'; }
 
         if($this->input->method(true)=='POST'){
             $status = "success";
@@ -1249,16 +1254,17 @@ class Support extends CI_Controller {
             if($data['detail']['EType'] == 1){
                 $this->localDB->update('UserRoles', array('Stat' => 1), array('RoleId' => 17) );
             }
-            
+
             $this->localDB->update('Config', $configDt, array('EID' => $EID) );
             
             $response = $this->lang->line('configUpdated');
-            header('Content-Type: application/json');
-            echo json_encode(array(
-                'status' => $status,
-                'response' => $response
-              ));
-             die;
+            // header('Content-Type: application/json');
+            // echo json_encode(array(
+            //     'status' => $status,
+            //     'response' => $response
+            //   ));
+            //  die;
+            redirect(base_url('support/config/'.$EID));
         }
         
         $this->load->view('support/config', $data);
