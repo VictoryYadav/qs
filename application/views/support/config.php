@@ -1,12 +1,12 @@
-<?php $this->load->view('layouts/admin/head'); ?>
-        <?php $this->load->view('layouts/admin/top'); ?>
+<?php $this->load->view('layouts/support/head'); ?>
+        <?php $this->load->view('layouts/support/top'); ?>
             <!-- ========== Left Sidebar Start ========== -->
             <div class="vertical-menu">
 
                 <div data-simplebar class="h-100">
 
                     <!--- Sidemenu -->
-                    <?php $this->load->view('layouts/admin/sidebar'); ?>
+                    <?php $this->load->view('layouts/support/sidebar'); ?>
                     <!-- Sidebar -->
                 </div>
             </div>
@@ -20,7 +20,7 @@
                 <div class="page-content">
                     <div class="container-fluid">
 
-                        <div class="row">
+                        <div class="row showBlock" >
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
@@ -405,16 +405,14 @@
                                         </form>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
-
                         
                     </div> <!-- container-fluid -->
                 </div>
                 <!-- End Page-content -->
 
-                <?php $this->load->view('layouts/admin/footer'); ?>
+                <?php $this->load->view('layouts/support/footer'); ?>
             </div>
             <!-- end main content-->
 
@@ -422,34 +420,37 @@
         <!-- END layout-wrapper -->
 
         <!-- Right Sidebar -->
-        <?php $this->load->view('layouts/admin/color'); ?>
+        <?php $this->load->view('layouts/support/color'); ?>
         <!-- /Right-bar -->
 
         <!-- Right bar overlay-->
         <div class="rightbar-overlay"></div>
         
-        <?php $this->load->view('layouts/admin/script'); ?>
-
+        <?php $this->load->view('layouts/support/script'); ?>
+<!-- loader -->
+<div class="container text-center" id="loadBlock" style="display: none;">
+    <img src="<?= base_url('assets/images/loader.gif'); ?>" alt="Eat Out">
+</div>
 
 <script type="text/javascript">
 
     $(document).ready(function () {
-        
+        $('#CountryCd').select2();
+        $('#langId').select2();
     });
 
-    $('#configForm').on('submit', function(e){
+    $('#signupForm').on('submit', function(e){
         e.preventDefault();
 
         var data = $(this).serializeArray();
-        $.post('<?= base_url('restaurant/config') ?>',data,function(res){
+        
+        $.post('<?= base_url('support/new_user') ?>',data,function(res){
             if(res.status == 'success'){
-              $('#msgText').html(res.response);
+               alert(res.response);
             }else{
-              $('#msgText').html(res.response);
+              alert(res.response);
             }
-            location.reload();
+            // location.reload();
         });
-
     });
-
 </script>

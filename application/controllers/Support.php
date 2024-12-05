@@ -1158,6 +1158,112 @@ class Support extends CI_Controller {
                             ->row_array();
     }
 
+    public function config($EID){
+        $dbname = $EID."e";
+        $this->localDB = $this->load->database($dbname, TRUE);
+
+        $data['title'] = $this->lang->line('config');
+        $data['detail'] = $this->localDB->get_where('Config', array('EID' => $EID))
+                                        ->row_array();
+
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+            
+            $configDt['MultiKitchen'] = $_POST['MultiKitchen'];
+            $configDt['SchType'] = $_POST['SchType'];
+            $configDt['pymtENV'] = $_POST['pymtENV'];
+            $configDt['ServChrg'] = $_POST['ServChrg'];
+            $configDt['DelCharge'] = $_POST['DelCharge'];
+            $configDt['restBilling'] = $_POST['restBilling'];
+
+            $configDt['AutoDeliver'] = !isset($_POST['AutoDeliver'])?0:1;
+            $configDt['EDT'] = !isset($_POST['EDT'])?0:1;
+            $configDt['Move'] = !isset($_POST['Move'])?0:1;
+            $configDt['JoinTable'] = !isset($_POST['JoinTable'])?0:1;
+            $configDt['TableReservation'] = !isset($_POST['TableReservation'])?0:1;
+            $configDt['MultiPayment'] = !isset($_POST['MultiPayment'])?0:1;
+            $configDt['Tips'] = !isset($_POST['Tips'])?0:1;
+
+            $configDt['RtngDisc'] = !isset($_POST['RtngDisc'])?0:1;
+            $configDt['TableAcceptReqd'] = !isset($_POST['TableAcceptReqd'])?0:1;
+            $configDt['AutoSettle'] = !isset($_POST['AutoSettle'])?0:1;
+            $configDt['AutoPrintKOT'] = !isset($_POST['AutoPrintKOT'])?0:1;
+            $configDt['CustAssist'] = !isset($_POST['CustAssist'])?0:1;
+            $configDt['Dispense_OTP'] = !isset($_POST['Dispense_OTP'])?0:1;
+            $configDt['Ingredients'] = !isset($_POST['Ingredients'])?0:1;
+            $configDt['NV'] = !isset($_POST['NV'])?0:1;
+            $configDt['WelcomeMsg'] = !isset($_POST['WelcomeMsg'])?0:1;
+            $configDt['billPrintTableNo'] = !isset($_POST['billPrintTableNo'])?0:1;
+            $configDt['Bill_KOT_Print'] = !isset($_POST['Bill_KOT_Print'])?0:1;
+            $configDt['sitinKOTPrint'] = !isset($_POST['sitinKOTPrint'])?0:1;
+            $configDt['Ing_Cals'] = !isset($_POST['Ing_Cals'])?0:1;
+
+            $configDt['GSTInclusiveRates'] = !isset($_POST['GSTInclusiveRates'])?0:1;
+            $configDt['Seatwise'] = !isset($_POST['Seatwise'])?0:1;
+            $configDt['BillMergeOpt'] = !isset($_POST['BillMergeOpt'])?0:1;
+            $configDt['billSplitOpt'] = !isset($_POST['billSplitOpt'])?0:1;
+            $configDt['DeliveryOTP'] = !isset($_POST['DeliveryOTP'])?0:1;
+            $configDt['Charity'] = !isset($_POST['Charity'])?0:1;
+            $configDt['IMcCdOpt'] = !isset($_POST['IMcCdOpt'])?0:1;
+            $configDt['tableSharing'] = !isset($_POST['tableSharing'])?0:1;
+            $configDt['addItemLock'] = !isset($_POST['addItemLock'])?0:1;
+            $configDt['BOMStore'] = !isset($_POST['BOMStore'])?0:1;
+
+            $configDt['reorder']        = !isset($_POST['reorder'])?0:1;
+            $configDt['ratingHistory']  = !isset($_POST['ratingHistory'])?0:1;
+            $configDt['favoriteItems']  = !isset($_POST['favoriteItems'])?0:1;
+            
+            $configDt['SchPop'] = !isset($_POST['SchPop'])?0:1;
+            $this->localDB->where_in('RoleId', array(31, 60));
+            $this->localDB->update('UserRoles', array('Stat' => $configDt['SchPop']) );
+
+            $configDt['MultiLingual'] = !isset($_POST['MultiLingual'])?0:1;
+            $this->localDB->where_in('RoleId', array(116));
+            $this->localDB->update('UserRoles', array('Stat' => $configDt['MultiLingual']) );
+
+            $configDt['Ent'] = !isset($_POST['Ent'])?0:1;
+            $this->localDB->where_in('RoleId', array(66, 107));
+            $this->localDB->update('UserRoles', array('Stat' => $configDt['Ent']) );
+
+            $configDt['recommend'] = !isset($_POST['recommend'])?0:1;
+            $this->localDB->update('UserRoles', array('Stat' => $configDt['recommend']), array('RoleId' => 61) );
+
+            $configDt['Discount'] = !isset($_POST['Discount'])?0:1;
+            $this->localDB->where_in('RoleId', array(73, 81));
+            $this->localDB->update('UserRoles', array('Stat' => $configDt['Discount']) );
+
+            $configDt['CustLoyalty'] = !isset($_POST['CustLoyalty'])?0:1;
+            $this->localDB->update('UserRoles', array('Stat' => $configDt['CustLoyalty']), array('RoleId' => 80) );
+
+            $configDt['BOM'] = !isset($_POST['BOM'])?0:1;
+            $this->localDB->where_in('RoleId', array(113, 35));
+            $this->localDB->update('UserRoles', array('Stat' => $configDt['BOM']) );
+
+            $configDt['kds'] = !isset($_POST['kds'])?0:1;
+            $this->localDB->where_in('RoleId', array(43, 44));
+            $this->localDB->update('UserRoles', array('Stat' => $configDt['kds']) );
+            
+            $configDt['custItems'] = !isset($_POST['custItems'])?0:1;
+            $this->localDB->where_in('RoleId', array(69, 70, 86));
+            $this->localDB->update('UserRoles', array('Stat' => $configDt['custItems']) );
+            if($data['detail']['EType'] == 1){
+                $this->localDB->update('UserRoles', array('Stat' => 1), array('RoleId' => 17) );
+            }
+            
+            $this->localDB->update('Config', $configDt, array('EID' => $EID) );
+            
+            $response = $this->lang->line('configUpdated');
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+        
+        $this->load->view('support/config', $data);
+    }
+
     public function test(){
         echo "<pre>";
         print_r($_SESSION);

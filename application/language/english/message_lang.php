@@ -127,12 +127,14 @@ $lang['bar'] 	  			= 'Bar';
 $lang['restaurant'] 		= 'Restaurant';
 $lang['lunch'] 				= 'Lunch';
 $lang['dinner'] 			= 'Dinner';
-$lang['customerFootfallsForLunchDinner'] 			= 'Customer footfalls for lunch / dinner';
-$lang['customerOrderValuesForLunchDinner'] 			= 'Customer order values for lunch / dinner';
-$lang['paymentModesUsedByCustomer'] 			= 'Payment modes used by customer';
+$lang['customerFootfallsForLunchDinner'] 	= 'Customer footfalls for lunch / dinner';
+$lang['customerOrderValuesForLunchDinner'] 	= 'Customer order values for lunch / dinner';
+$lang['paymentModesUsedByCustomer'] 		= 'Payment modes used by customer';
 $lang['revenueAndDiscounts'] 				= 'Revenue And Discounts';
 $lang['ordersByHour'] 						= 'Orders by Hour';
 $lang['billsAndRatings'] 					= 'Bills and Ratings';
+$lang['ratingHistory'] 						= 'Rating History';
+$lang['favouriteItems'] 					= 'Favourite Items';
 
 $lang['firstName'] 			= 'First Name';
 $lang['name']	 			= 'Name';
@@ -228,6 +230,7 @@ $lang['fromStallSeat']		= 'From Stall/Seat';
 $lang['toStallSeat']		= 'To Stall/Seat';
 $lang['offerList']			= 'Offer List';
 $lang['newOffer']			= 'New Offer';
+$lang['scheme']				= 'Scheme';
 $lang['schemeName']			= 'Scheme Name';
 $lang['schemeType']			= 'Scheme Type';
 $lang['schemeCategory']		= 'Scheme Category';
@@ -443,7 +446,7 @@ $lang['welcome']		= 'Welcome';
 $lang['ambience']		= 'Ambience';
 $lang['valueForMoney']	= 'Value For Money';
 $lang['share']			= 'Share';
-$lang['shareLinkWithPeople']			= 'Share link with people';
+$lang['shareLinkWithPeople']	= 'Share link with people';
 
 $lang['fastFood']			= 'Fast Food';
 $lang['fineDine']			= 'Fine Dine';
@@ -625,6 +628,26 @@ $lang['mostOrderDishes']		= 'Most Order Dishes';
 $lang['ratedDishes']			= 'Rated Dishes';
 $lang['noofTimesOrder']			= 'No of Times Order';
 $lang['top5']					= 'Top 5';
+
+$lang['no']						= 'No';
+$lang['based']					= 'Based';
+$lang['both']					= 'Both';
+$lang['online']					= 'Online';
+$lang['offline']				= 'Offline';
+$lang['autoDeliver']			= 'Auto Deliver';
+$lang['popup']					= 'Pop Up';
+$lang['IMcCdOption']			= 'IMcCd Option';
+$lang['accept']					= 'Accept';
+$lang['autoSettle']				= 'Auto Settle';
+$lang['autoPrintKOT']			= 'Auto Print KOT';
+$lang['assist']					= 'Assist';
+$lang['seatWise']				= 'Seat Wise';
+$lang['message']				= 'Message';
+$lang['bom']					= 'BOM';
+$lang['lock']					= 'Lock';
+$lang['billMerge']				= 'Bill Merge';
+$lang['GSTInclusiveRates']		= 'GST Inclusive Rates';
+$lang['calories']				= 'Calories';
 
 
 

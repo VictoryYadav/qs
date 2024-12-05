@@ -9219,6 +9219,10 @@ class Restaurant extends CI_Controller {
             $configDt['tableSharing'] = !isset($_POST['tableSharing'])?0:1;
             $configDt['addItemLock'] = !isset($_POST['addItemLock'])?0:1;
             $configDt['BOMStore'] = !isset($_POST['BOMStore'])?0:1;
+
+            $configDt['reorder']        = !isset($_POST['reorder'])?0:1;
+            $configDt['ratingHistory']  = !isset($_POST['ratingHistory'])?0:1;
+            $configDt['favoriteItems']  = !isset($_POST['favoriteItems'])?0:1;
             
             $configDt['SchPop'] = !isset($_POST['SchPop'])?0:1;
             $this->db2->where_in('RoleId', array(31, 60));

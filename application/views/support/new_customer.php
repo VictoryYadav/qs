@@ -351,12 +351,13 @@
               alert(res.response);
               $('#loadBlock').hide();
               $('.showBlock').show();
+
+              window.location = '<?= base_url('support/config/') ?>'+EID;
               
-              // $('#loginUrl').attr("href", "<?= base_url('login?o='); ?>"+EID+"&c="+CatgId);
-              $('#signinurl').html("<?= base_url('login?o='); ?>"+EID+"&c="+CatgId);
-              document.getElementById("customerForm").reset();
-              $('#btnBlock').show();
-              // location.reload();
+              // $('#signinurl').html("<?= base_url('login?o='); ?>"+EID+"&c="+CatgId);
+              // document.getElementById("customerForm").reset();
+              // $('#btnBlock').show();
+              
             }else{
               alert(res.response);
             }
