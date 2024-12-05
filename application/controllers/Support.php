@@ -1264,10 +1264,29 @@ class Support extends CI_Controller {
             //     'response' => $response
             //   ));
             //  die;
-            redirect(base_url('support/config/'.$EID));
+            redirect(base_url('support/config_print/'.$EID.'/'.$EType));
         }
         
         $this->load->view('support/config', $data);
+    }
+
+    public function config_print($EID, $EType){
+        $dbname = $EID."e";
+        $this->localDB = $this->load->database($dbname, TRUE);
+
+        $data['title']  = $this->lang->line('config');
+        $data['EID']    = $EID;
+        $data['detail'] = $this->localDB->get_where('Config', array('EID' => $EID))
+                                        ->row_array();
+        $data['RestDetail'] = $this->localDB->select("Name, LstModDt")->get_where('Eatary', array('EID' => $EID))
+                                        ->row_array();
+        $data['EType5'] = '';
+        $data['EType1'] = '';
+
+        if($EType == 5){ $data['EType5'] =  'disabled'; }
+        if($EType == 1){ $data['EType1'] =  'disabled'; }
+        
+        $this->load->view('support/config_print', $data);
     }
 
     public function test(){
