@@ -8736,7 +8736,7 @@ class Restaurant extends CI_Controller {
             $filesPath = glob($folderPath.'/*');
 
             $configDt = $this->db2->select('GSTInclusiveRates')
-                            ->get_where('Config' => array('EID' => $EID))->row_array();
+                            ->get_where('Config', array('EID' => $EID))->row_array();
 
             $flag = 0;
 
