@@ -473,6 +473,7 @@ class Support extends CI_Controller {
                     $eatry['LoginCd'] = $userId;
                     $eatry['EID'] = $EID;
                     $eatry['aggEID'] = $EID;
+                    $eatry['LstModDt'] = date('Y-m-d H:i:s');
                     $db3->update('Eatary', $eatry, array('EID' => 1));
 
                     $configDT['StTime']     = date('H:i:s', strtotime($EIDData['StTime']));

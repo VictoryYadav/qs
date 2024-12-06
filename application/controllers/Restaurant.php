@@ -1709,7 +1709,8 @@ class Restaurant extends CI_Controller {
             $res = '';
             $data = $_POST;
             if($data['password'] == $data['c_password']){
-                $check = $this->db2->select('Passwd')->get_where('UsersRest', array('RUserId' => authuser()->RUserId))->row_array();
+                $check = $this->db2->select('MobileNo, Passwd')->get_where('UsersRest', array('RUserId' => authuser()->RUserId))->row_array();
+                
                  if(!empty($check)){
                     if($check['Passwd'] == $data['old_password']){
                         $status = 'success';
@@ -8734,6 +8735,9 @@ class Restaurant extends CI_Controller {
 
             $filesPath = glob($folderPath.'/*');
 
+            $configDt = $this->db2->select('GSTInclusiveRates')
+                            ->get_where('Config' => array('EID' => $EID))->row_array();
+
             $flag = 0;
 
             switch ($_POST['type']) {
@@ -8799,6 +8803,11 @@ class Restaurant extends CI_Controller {
                                         $temp['Itm_Portion'] = $csv_data[24];
                                         $temp['LoginCd'] = authuser()->RUserId;
 
+                                        $temp['TaxType'] = 0;
+                                        if($configDt['GSTInclusiveRates'] > 0){
+                                          $temp['TaxType'] = ($temp['CTypUsedFor']=='Food')?2:1;
+                                        }
+
                                         $itemData[] = $temp;
                                     }
                                 }
@@ -8847,7 +8856,7 @@ class Restaurant extends CI_Controller {
 
                 $this->db2->query("INSERT INTO EatCuisine (CID, Name1, EID) SELECT DISTINCT c.CID, c.Name, $EID From Cuisines c, TempMenuItem t where c.Name = t.Cuisine");
 
-                $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, 0 From Cuisines c, TempMenuItem t, FoodType f where c.Name = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
+                $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, t.TaxType From Cuisines c, TempMenuItem t, FoodType f where c.Name = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
                 // t.DayNo = 
                 $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, Name1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink, ItemTyp)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, IFNULL((SELECT DayNo FROM WeekDays wd where wd.Name1 = t.DayNo),8), t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink,IFNULL((SELECT Tagid FROM MenuTags mt where mt.Name1 = t.ItemTyp),0)  From TempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
 
@@ -10986,6 +10995,7 @@ class Restaurant extends CI_Controller {
                         $_FILES['logo_file']['size']= $files['size'];
                         // $file = $files['name'];
                         $file = $EID."_logo.$ext";
+                        $this->session->set_userdata('Logo', $file);
                         if(is_file($file)) {
                             unlink($file); 
                         }

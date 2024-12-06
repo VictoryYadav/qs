@@ -236,6 +236,7 @@ socket.onopen = function(event) {
       }
 
     var regular_discount = 0;
+    var grand_total = 0;
 
     function getBillAmount() {
         $.ajax({
@@ -251,7 +252,6 @@ socket.onopen = function(event) {
                     var sub_total = 0;
                     var html = ``;
                     var html_body = ``;
-                    var grand_total = 0;
                     var initil_value = response.kitcheData[0]['TaxType'];
                     var del_charge = response.kitcheData[0]['DelCharge'];
                     var pck_charge = response.kitcheData[0]['TotPckCharge'];
@@ -549,9 +549,8 @@ socket.onopen = function(event) {
 
     function change_tip(){
         var tips = $("#tips").val();
-        var payableAmt  = $('#payableAmt').val();
         // tips = convertToUnicodeNo(tips);
-        var total =parseFloat( payableAmt ) + parseInt(tips);
+        var total =parseFloat( grand_total ) + parseInt(tips);
 
         $("#payable").text(convertToUnicodeNo(total));
         $("#payableAmt").val(total);

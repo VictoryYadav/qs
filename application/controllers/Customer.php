@@ -47,21 +47,6 @@ class Customer extends CI_Controller {
     }
 
     public function index1(){
-        $EID = 51;
-        $CustId = 6;
-        
-
-        $response = $this->db2->select("AVG(rd.ItemRtng) rating, r.BillId, rd.ItemId, m.Name1 as ItemName, IFNULL((select avg(rd1.ItemRtng) from RatingDet rd1, Ratings r1 where rd1.ItemId = rd.ItemId and r1.BillId=r.BillId and r1.CustId != r.CustId), '-') as avgGRPRtng") 
-                                ->order_by('rating', 'DESC')
-                                ->group_by('rd.ItemId')
-                                ->join('RatingDet rd', 'rd.RCd = r.Rcd', 'inner')
-                                ->join('MenuItem m', 'm.ItemId = rd.ItemId', 'inner')
-                                ->limit(5)
-                                ->get_where('Ratings r', array('r.EID' => $EID, 'r.CustId' => $CustId))
-                                ->result_array();
-                                echo "<pre>";
-                                print_r($response);
-                                die;
         echo "<pre>";
         print_r($_SESSION);
         die;
