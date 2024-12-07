@@ -29,7 +29,10 @@
                             <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-body">
-                                        <p>Note : <span class="text-danger">Only JPG files allowed (Each file less than 1MB)</span></p>
+                                        <p>Notes : <span class="text-danger"><br>
+                                          1) Only JPG files allowed<br>
+                                        2) Each file less than 1MB<br>
+                                      3) Maximum 100 files at a time</span></p>
                                     <h5 class="card-title mb-3"><?= $this->lang->line('menu'); ?> <?= $this->lang->line('item'); ?></h5>
                                         <form method="post" enctype="multipart/form-data" id="menu_form">
                                             <div class="row">

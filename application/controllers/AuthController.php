@@ -132,7 +132,7 @@ class AuthController extends CI_Controller {
                     
                 }else {
                         $this->session->set_flashdata('error','Password is incorrect!'); 
-                        $url = 'login?o='.$this->session->userdata('EID').'&c='.$this->session->userdata('ChainId');
+                        $url = 'login?o='.$this->session->userdata('EID');
                         redirect(base_url() . $url, 'refresh');
                     }
             }

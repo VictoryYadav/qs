@@ -6,6 +6,7 @@
 	<link rel="icon" href="assets_admin/img/favicon.png" type="image/x-icon" />
 	<meta name="robots" content="noindex, nofollow">
     <title>Login | Eat-Out</title>
+    <link href="<?= base_url(); ?>theme/images/Eat-Out-Icon.png" rel="shortcut icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" >
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" >
@@ -121,6 +122,9 @@
                         </div>
                             <div class="">
                                 <button type="submit" name="button" class="btn login_btn form-control">Login</button>
+                            	<?php if($this->session->flashdata('error')): ?>
+									<div class="alert alert-danger" role="alert"><?= $this->session->flashdata('error') ?></div>
+								<?php endif; ?>
                             </div>
                     </form>
                 </div>
@@ -137,6 +141,6 @@
         </div>
     </div>
     <script src="<?php echo base_url(); ?>assets_admin/js/jquery-3.1.1.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets_admin/js/bootstrap.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets_admin/js/bootstrap.js"></script>
 </body>
 </html>

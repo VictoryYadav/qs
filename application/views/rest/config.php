@@ -394,6 +394,13 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="checkbox my-2">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck45" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Rating" <?php if($detail['Rating'] == 1){ echo 'checked'; } ?> value="<?= $detail['Rating'];?>">
+                                                            <label class="custom-control-label" for="customCheck45"><?= $this->lang->line('rating'); ?></label>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
 
                                                 <div >

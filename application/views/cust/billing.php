@@ -379,9 +379,9 @@
                 <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="border-radius: 50px;width: 100%;"><?= $this->lang->line('menu'); ?></a>
             <?php }else{ ?>
                 <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="width: 50%;"><?= $this->lang->line('menu'); ?></a>
-
+                <?php if($this->session->userdata('Rating') > 0){ ?>
                 <a href="<?= base_url('customer/rating/'.$billId);?>" class="btn btn-sm paybtn" style="width: 50%;"><?= $this->lang->line('rating'); ?></a>
-            <?php } ?>
+            <?php } } ?>
 
             </div>
         </div>

@@ -51,7 +51,7 @@ $logo = $this->session->userdata('Logo');
                         </span>
                     </li>
                     <?php } ?>
-                    <?php if($this->session->userdata('MultiLingual') > 0){ ?>
+                    <?php if($this->session->userdata('MultiLingual') > 1){ ?>
                     <li class="list-inline-item">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#!">
                             <img src="<?= base_url() ?>assets/img/language1.png" style="height: 22px;">

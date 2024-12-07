@@ -1261,9 +1261,13 @@ class Cust extends CI_Model{
 	}
 
 	public function getPaymentModes(){
+
 		$langId = $this->session->userdata('site_lang');
-        $lname = "Name$langId";
-		return $this->db2->select("PymtMode, (case when $lname != '-' Then $lname ELSE Name1 end) as Name ,Company, CodePage1, repeatable")->get_where('ConfigPymt', array('Stat' => 1))->result_array();
+        $lname = "cp.Name$langId";
+		return $this->db2->select("cp.PymtMode, (case when $lname != '-' Then $lname ELSE cp.Name1 end) as Name, cp.Company, cp.CodePage1, cp.repeatable")
+						->order_by('cp.Rank', 'ASC')
+						->join('PymtModes pm', 'pm.PymtMode = cp.PymtMode', 'inner')
+						->get_where('ConfigPymt cp', array('cp.Stat' => 1))->result_array();
 	}
 
 	public function getSplitPayments($billId){

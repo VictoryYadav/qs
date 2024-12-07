@@ -1218,6 +1218,7 @@ class Support extends CI_Controller {
             $configDt['reorder']        = !isset($_POST['reorder'])?0:1;
             $configDt['ratingHistory']  = !isset($_POST['ratingHistory'])?0:1;
             $configDt['favoriteItems']  = !isset($_POST['favoriteItems'])?0:1;
+            $configDt['Rating']         = !isset($_POST['Rating'])?0:1;
             
             $configDt['SchPop'] = !isset($_POST['SchPop'])?0:1;
             $this->localDB->where_in('RoleId', array(31, 60));

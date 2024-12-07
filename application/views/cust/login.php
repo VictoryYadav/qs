@@ -133,7 +133,7 @@
                     <small id="loginMsg" class="text-danger" style="font-size: 10px;"></small>
                   </div>
                   
-                  <div class="d-flex justify-content-center mt-3 login_container">
+                  <div class="">
                       <input type="submit" class="btn btn-sm login_btn form-control" value="<?= $this->lang->line('log_in'); ?>" style="font-size: 12px !important;font-weight: bold;">
                   </div>
                 </form>

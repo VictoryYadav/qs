@@ -1,0 +1,2 @@
+http://socketo.me/docs/hello-world
+qs > php application/socket/chat_server.php
