@@ -675,6 +675,7 @@ class Customer extends CI_Controller {
                         $data1['DOB']       = $genData['DOB'];
                         $data1['Gender']    = $genData['Gender'];
                         $data1['PWDHash']   = md5('eatout246');
+                        $data1['EID']       = authuser()->EID;
                         insertRecord('Users',$data1);
                     }else{
                         $response = $this->lang->line('usernameNotFound');

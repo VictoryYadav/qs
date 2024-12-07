@@ -39,7 +39,7 @@ h6{
         <div class="dropdown-menu">
             <?php if(!empty($this->session->userdata('CustId'))){ ?>
             <a class="dropdown-item" href="<?= base_url('customer/profile'); ?>"><?= $this->lang->line('profile'); ?></a>
-            <a class="dropdown-item" href="<?= base_url('customer/current_order'); ?>"><?= $this->lang->line('currentorder'); ?></a>
+            <a class="dropdown-item" href="<?= base_url('customer/current_order'); ?>"><?= $this->lang->line('pendingBill'); ?></a>
             <a class="dropdown-item" href="<?= base_url('customer/loyalty'); ?>"><?= $this->lang->line('loyalty'); ?></a>
 
             <a class="dropdown-item" href="<?= base_url('customer/transactions'); ?>"><?= $this->lang->line('history'); ?></a>

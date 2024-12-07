@@ -31,15 +31,15 @@
 
                                         <div class="col-md-4 col-6">
                                             <div class="form-group">
-                                                <label for=""><?= $this->lang->line('english'); ?></label>
-                                                <input  type="text" class="form-control form-control-sm" name="Name1" id="name1" placeholder="Name">
+                                                <label for=""><?= $this->lang->line('category').' ('.$this->lang->line('english').')'; ?></label>
+                                                <input  type="text" class="form-control form-control-sm" name="Name1" id="name1" placeholder="<?= $this->lang->line('category'); ?>">
                                             </div>
                                        </div>
                                         <?php
                                         for ($i = 1; $i < sizeof($languages); $i++) { ?>
                                            <div class="col-md-4 col-6">
                                                 <div class="form-group">
-                                                    <label for=""><?= $languages[$i]['LngName']; ?></label>
+                                                    <label for=""><?= $this->lang->line('category').' ('.$languages[$i]['LngName'].')'; ?></label>
                                                     <input  type="text" class="form-control form-control-sm" name="Name<?= $languages[$i]['LCd']; ?>" id="name<?= $languages[$i]['LCd']; ?>" placeholder="Name">
                                                 </div>
                                            </div>
@@ -48,7 +48,7 @@
                                            <div class="col-md-4 col-6">
                                                 <div class="form-group">
                                                     <label for=""><?= $this->lang->line('percent'); ?></label>
-                                                    <input type="number" name="pcent" class="form-control form-control-sm" id="pcent" required="" autocomplete="off">
+                                                    <input type="number" name="pcent" class="form-control form-control-sm" id="pcent" required="" autocomplete="off" placeholder="<?= $this->lang->line('percent'); ?>">
                                                 </div>
                                            </div>
 

@@ -36,7 +36,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('restaurant'); ?></label>
-                                                        <select name="EID" id="EID" class="form-control form-control-sm" required="">
+                                                        <select name="EID" id="EID" class="form-control form-control-sm" required="" onchange="getTempData()">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php 
                                                             if(!empty($rests)){
@@ -48,7 +48,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-4 uploadBlock" style="display: none;">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
                                                         <input type="file" name="items_file" class="form-control form-control-sm" required="" accept=".csv" id="file">
@@ -56,14 +56,14 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-2">
+                                                <div class="col-md-2 uploadBlock" style="display: none;">
                                                     <div class="form-group">
                                                         <label>&nbsp;</label><br>
                                                         <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('upload'); ?>">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="text-center">
+                                            <div class="text-center btnBlock" style="display: none;">
 
                                                 <button type="button" class="btn btn-sm btn-primary" onclick="insertData()">Setup Menu</button>
                                             </div>
@@ -101,6 +101,28 @@
 
 
 <script type="text/javascript">
+
+
+function getTempData(){
+    var EID = $(`#EID`).val();
+    if(EID > 0){
+        $.post('<?= base_url('restaurant/get_temp_menu_item') ?>',{EID:EID},function(res){
+            if(res.status == 'success'){
+              var dt = res.response;
+              if(dt > 0){
+                $(`.uploadBlock`).hide();
+                $(`.btnBlock`).show();
+              }else{
+                $(`.btnBlock`).hide();
+                $(`.uploadBlock`).show();
+              }
+            }else{
+              alert(res.response);
+            }
+            
+        });
+    }
+}
 
 $('#items_form').on('submit', function(e){
     e.preventDefault();

@@ -24,6 +24,7 @@ $lang['payNow'] 		= 'अब भुगतान करें';
 $lang['profile'] 		= 'प्रोफ़ाइल';
 $lang['currentorder'] 	= 'वर्तमान आदेश/बिल';
 $lang['current'] 	  	= 'वर्तमान';
+$lang['pendingBill']    = 'पेंडिंग बिल';
 $lang['complete'] 		= 'कम्पलीट';
 $lang['inprocess'] 		= 'प्रोसेस में';
 

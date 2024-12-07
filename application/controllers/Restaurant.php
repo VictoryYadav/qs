@@ -8812,7 +8812,9 @@ class Restaurant extends CI_Controller {
                                     }
                                 }
                                 if(!empty($itemData)){
-                                    // print_r($itemData);die;
+                                    // echo "<pre>";
+                                    // print_r($itemData);
+                                    // die;
                                    $this->db2->query('TRUNCATE TempMenuItem');
                                    $this->db2->insert_batch('TempMenuItem', $itemData);
                                     
@@ -8849,6 +8851,7 @@ class Restaurant extends CI_Controller {
 
             $check = $this->db2->get('TempMenuItem')->row_array();
             if(!empty($check)){
+
                 $this->db2->query("DELETE From EatCuisine where EID=$EID");
                 $this->db2->query("DELETE From MenuCatg where EID=$EID");
                 $this->db2->query("DELETE From MenuItem where EID=$EID");
@@ -8860,7 +8863,7 @@ class Restaurant extends CI_Controller {
                 // t.DayNo = 
                 $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, Name1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink, ItemTyp)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, IFNULL((SELECT DayNo FROM WeekDays wd where wd.Name1 = t.DayNo),8), t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink,IFNULL((SELECT Tagid FROM MenuTags mt where mt.Name1 = t.ItemTyp),0)  From TempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
 
-                $this->db2->query("INSERT INTO MenuItemRates (EID, SecId, ItemId, Itm_Portion, ItmRate)  SELECT $EID,IFNULL((SELECT es.SecId From Eat_Sections es where es.Name1 = t.Section),1),  i.ItemId, ip.IPCd, t.Rate From TempMenuItem t, ItemPortions ip, MenuItem i where ip.Name1=t.Itm_Portion and i.Name1=t.ItemNm");
+                $this->db2->query("INSERT INTO MenuItemRates (EID, SecId, ItemId, Itm_Portion, ItmRate)  SELECT $EID,IFNULL((SELECT es.SecId From Eat_Sections es where es.Name1 = t.Section and es.EID=$EID),1),  i.ItemId, ip.IPCd, t.Rate From TempMenuItem t, ItemPortions ip, MenuItem i where ip.Name1=t.Itm_Portion and i.Name1=t.ItemNm");
                 $status = 'success';
                 $response = $this->lang->line('basicMenuItemSetup');
             }else{
@@ -8876,6 +8879,27 @@ class Restaurant extends CI_Controller {
              die;
         }
     }
+
+    public function get_temp_menu_item(){
+        $status = "error";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+            $response = 0;
+            $d = getRecords('TempMenuItem', array());
+            if(!empty($d)){
+                $response = 1;
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
     // onaccount , prepaid
     public function payment_collection_settled_bill(){
         // $this->check_access();

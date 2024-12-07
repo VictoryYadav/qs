@@ -13,11 +13,6 @@
         src: url(fonts/Montserrat-Regular.otf);
     }
 
-    .remove-margin {
-        margin-left: 0px;
-        margin-right: 0px;
-    }
-
     h3 {
         color: #fff;
         font-weight: bold;
@@ -40,8 +35,10 @@
 
 .payment-btns 
 {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
 
 .paybtn 
@@ -374,12 +371,15 @@
 
             <div id="editor"></div>
                 
-            <div class="row remove-margin payment-btns fixed-bottom" style=" width: 100%; margin-left: 1px;bottom: 60px !important;">
+            <div class="row container payment-btns fixed-bottom" style=" width: 100%;bottom: 53px !important;">
                 <?php if(isset($_GET['EID'])) { ?>
                 <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="border-radius: 50px;width: 100%;"><?= $this->lang->line('menu'); ?></a>
             <?php }else{ ?>
-                <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="width: 50%;"><?= $this->lang->line('menu'); ?></a>
                 <?php if($this->session->userdata('Rating') > 0){ ?>
+                <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="width: 50%;"><?= $this->lang->line('menu'); ?></a>
+                <?php }else{ ?>
+                    <a class="btn btn-sm backbtn" href="<?= base_url('customer'); ?>" style="width: 100%;border-radius: 50px;"><?= $this->lang->line('menu'); ?></a>
+                <?php } if($this->session->userdata('Rating') > 0){ ?>
                 <a href="<?= base_url('customer/rating/'.$billId);?>" class="btn btn-sm paybtn" style="width: 50%;"><?= $this->lang->line('rating'); ?></a>
             <?php } } ?>
 

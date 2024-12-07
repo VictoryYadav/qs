@@ -24,6 +24,7 @@ $lang['payNow'] 		= 'Pay Now';
 $lang['profile'] 		= 'Profile';
 $lang['currentorder'] 	= 'Current Order / Bill';
 $lang['current']      	= 'Current';
+$lang['pendingBill']    = 'Pending Bill';
 
 $lang['account'] = 'Account';
 $lang['history'] = 'History';
