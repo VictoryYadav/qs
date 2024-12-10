@@ -310,8 +310,8 @@ function goPay(val){
     }
 
     var payNo = 0;
-    // for cash
-    if(mode == 1){
+    // for cash, card, online
+    if(mode < 5){
         $.post('<?= base_url('users/multi_payment') ?>',{amount:amount,mode:mode, BillId:BillId,MCNo:MCNo,payable:payable},function(res){
             if(res.status == 'success'){
               // alert(res.response);
