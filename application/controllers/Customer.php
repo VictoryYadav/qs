@@ -2086,6 +2086,7 @@ class Customer extends CI_Controller {
             $CNo = $this->session->userdata('CNo');
             $CellNo = $this->session->userdata('CellNo');
             $MergeNo = $this->session->userdata('MergeNo');
+            $EType = $this->session->userdata('EType');
             $res = billCreate($EID, $CNo, $pData);
             
             if(!empty($res)){
@@ -2097,7 +2098,7 @@ class Customer extends CI_Controller {
                     $response = $dt;
 
                     $my_db = $this->session->userdata('my_db');
-                    $url = $EID . "_b_" . $res['billId'] . "_" .$my_db. "_" . $CNo. "_" . $CellNo. "_" . $MergeNo. "_" . $pData['orderAmount'];
+                    $url = $EID . "_b_" . $res['billId'] . "_" .$my_db. "_" . $CNo. "_" . $CellNo. "_" . $MergeNo. "_" . $pData['orderAmount']. "_" . $EType;
 
                     $url = base64_encode($url);
                     $url = rtrim($url, "=");

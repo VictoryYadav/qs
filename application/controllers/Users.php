@@ -36,7 +36,7 @@ class Users extends CI_Controller {
                     $this->session->set_userdata('payable', $req[7]);
                     $this->session->set_userdata('pymtENV',0);
                     $this->session->set_userdata('CNo',$MCNo);
-                    $this->session->set_userdata('EType',5);
+                    $this->session->set_userdata('EType',$req[8]);
                     redirect(base_url('users/pay/'.$billId.'/'.$MCNo));    
                 }
             }
@@ -366,9 +366,7 @@ class Users extends CI_Controller {
 
         $flag = 'rest';
         $res = getBillData($dbname, $EID, $billId, $CustId, $flag);
-        // echo "<pre>";
-        // print_r($res);
-        // die;
+
         if(!empty($res['billData'])){
 
             $billData = $res['billData'];
