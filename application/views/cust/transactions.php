@@ -71,7 +71,7 @@
                             if(!empty($custPymt)){
                                 foreach ($custPymt as $key ) {
                                 ?>
-                                <tr onclick="RedirectPage(<?php echo $key['BillId'] ?> , <?php echo $key['EID'] ?>,'<?php echo $key['DBName'] ?>','<?php echo $key['DBPasswd'] ?>')">
+                                <tr onclick="RedirectPage(<?php echo $key['BillId'] ?> , <?php echo $key['EID'] ?>,'<?php echo $key['DBName'] ?>','<?php echo $key['DBPasswd'] ?>')" style="cursor: pointer;">
                                     <td><?php echo date('d-M-y',strtotime($key['billdt'])); ?></td>
                                     <td><?php echo $key['Name'] ?></td>
                                     <td><?php echo $key['PaidAmt'] ?></td>

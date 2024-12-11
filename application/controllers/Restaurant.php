@@ -7943,7 +7943,7 @@ class Restaurant extends CI_Controller {
             $status = 'success';
 
             if (isset($_POST['getAvailableRoles']) && $_POST['getAvailableRoles']==1) {
-                $response = $this->db2->query("SELECT PymtMode, (case when $pname != '-' Then $pname ELSE Name1 end) as Name from ConfigPymt where Stat = 0 and PymtMode not in (select PymtMode from PymtModes where Stat = 0 and EID = $EID) ")->result_array();
+                $response = $this->db2->query("SELECT PymtMode, (case when $pname != '-' Then $pname ELSE Name1 end) as Name from ConfigPymt where Stat = 1 and PymtMode not in (select PymtMode from PymtModes where Stat = 0 and EID = $EID) ")->result_array();
             }
 
             if (isset($_POST['getAssignedRoles']) && $_POST['getAssignedRoles']==1) {

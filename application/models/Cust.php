@@ -593,6 +593,7 @@ class Cust extends CI_Model{
 
 						$childOrdNo = insertRecord('Kitchen', $kitchenObj);
 						updateRecord('Kitchen', array('childOrdNo' => $childOrdNo), array('OrdNo' => $childOrdNo, 'EID' => $EID));
+
 						// for offer 
 						$Disc_ItemId = $Offers['Disc_ItemId'];
 						$Disc_IPCd = $Offers['Disc_IPCd'];
@@ -642,7 +643,9 @@ class Cust extends CI_Model{
 							$kitchenObj['SchCd'] = $schcd;
 							$kitchenObj['SDetCd'] = $sdetcd;
 							$kitchenObj['childOrdNo'] = $childOrdNo;
+						
 							insertRecord('Kitchen', $kitchenObj);
+
 						}else if($Offers['DiscItemPcent'] > 0){
                             $perc_Amt = ($offerOrigRate * $Offers['DiscItemPcent'] / 100);
                             $perc_Amt = round($perc_Amt) * $Offers['Qty'];
@@ -663,6 +666,7 @@ class Cust extends CI_Model{
                         updateRecord('Kitchen', array('ItmRate' => $itmrate, 'tmpItmRate' => $itmrate), array('OrdNo' => $childOrdNo, 'EID' => $EID));
 
                         if($Offers['ItemTyp'] == 4){
+                        	
                         	$kt = getRecords('Kitchen', array('OrdNo' => $childOrdNo,  'EID' => $EID));
                         	
 	                        if($Offers['Qty'] > 1){
@@ -790,7 +794,7 @@ class Cust extends CI_Model{
     	$scName = "c.SchNm$langId";
     	$scDesc = "cod.SchDesc$langId";
 
-		return $this->db2->select("(case when $scName != '-' Then $scName ELSE c.SchNm1 end) as SchNm, c.SchCd, cod.SDetCd, (case when $scDesc != '-' Then $scDesc ELSE cod.SchDesc1 end) as SchDesc, c.PromoCode, c.SchTyp, c.SchCatg, c.Rank,cod.Disc_ItemId, cod.Qty,cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, cod.DiscItemPcent, cod.DiscMaxAmt")
+		return $this->db2->select("(case when $scName != '-' Then $scName ELSE c.SchNm1 end) as SchNm, c.SchCd, cod.SDetCd, (case when $scDesc != '-' Then $scDesc ELSE cod.SchDesc1 end) as SchDesc, c.PromoCode, c.SchTyp, c.SchCatg, c.Rank,cod.Disc_ItemId, cod.Qty, cod.Disc_Qty, cod.IPCd, cod.Disc_IPCd, cod.Rank, cod.Disc_pcent, cod.Disc_Amt, cod.CID, cod.MCatgId, cod.ItemTyp, cod.ItemId, cod.DiscItemPcent, cod.DiscMaxAmt")
 						->join('CustOffers c', 'c.SchCd = cod.SchCd', 'inner')
 						->get_where('CustOffersDet cod', array('c.SchCd' => $schcd,
 						 'cod.SDetCd' => $sdetcd,

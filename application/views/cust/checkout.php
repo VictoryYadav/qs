@@ -4,9 +4,6 @@
         position: absolute;
         height: 100%;
         width: 100%;
-    }
-
-    #myOverlay {
         background: #0a88ff;
         z-index: 2;
         display: none;
@@ -85,11 +82,10 @@
 
     .backbtn 
     {
-        margin-right: -5px !important;
+        margin-right: -4px !important;
         border-radius: 1.5rem 0 0 1.5rem;
         background-color: <?php echo $this->session->userdata('menuBtn'); ?>;
         color: <?php echo $this->session->userdata('menuBtnClr'); ?>;
-        /*width: 30%;*/
     }
 
     .backbtn:hover
@@ -100,10 +96,10 @@
 
     .orderbtn 
     {
+        border-radius: 0rem;
+        margin-right: -4px !important;
         background: <?php echo $this->session->userdata('orderBtn'); ?>;
         color: <?php echo $this->session->userdata('orderBtnClr'); ?>;
-        margin-left: 0px !important;
-        /*width: 33%;*/
     }
 
     .orderbtn:hover
@@ -117,9 +113,7 @@
     {
         background: <?php echo $this->session->userdata('successBtn'); ?>;
         color: <?php echo $this->session->userdata('successBtnClr'); ?>;
-        margin-left: -5px !important;
         border-radius: 0 1.5rem 1.5rem 0;
-        /*width: 32%;*/
     }
 
     .paybtn:hover
@@ -127,6 +121,14 @@
         background: #03bb2c;
         color: #fff;
         border-radius: 0 1.5rem 1.5rem 0;
+    }
+
+    .payment-btns 
+    {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 </style>
 </head>
@@ -160,32 +162,30 @@
 
                 <div style="border-bottom: 1px solid;margin-bottom:5px;color: #fff;"></div>
 
-                <div class="row" style="margin: 0px;">
-                    <div class="col-12 text-center" width="100%;">
-                        <?php 
-                            $width = "49%";
+            </div>
+
+            <div class="row fixed-bottom text-center" style=" width: 100%;bottom: 53px !important;margin-left: 5px;">
+                <div class="container">
+                    <?php $width = "49%";
                         if($this->session->userdata('BillMergeOpt') > 0 && ($EType == 5)){ 
                             $width = "33%";
-                        }
-                         ?>
+                        } ?>
 
-                        <a href="<?= base_url('customer'); ?>" class="btn btn-sm backbtn" style="width:<?= $width; ?>"><?php echo  $this->lang->line('menu'); ?></a>
-                         <?php 
-                         if($mergeCount <= 1){
-                         if($this->session->userdata('BillMergeOpt') > 0 && ($EType == 5)){ ?>
-                        <a href="<?= base_url('customer/merge_order/'.$MergeNo); ?>" class="btn orderbtn btn-sm" style="width:<?= $width; ?>"><?><?php echo  $this->lang->line('mergeorder'); ?></a>
-                        <?php } } ?>
-                        <button class="btn btn-sm paybtn" onclick="payNow()" style="width:<?= $width; ?>"><?php echo  $this->lang->line('payNow'); ?></button>
-                        
-                        <?php if($this->session->flashdata('error')): ?>
-                            <div class="">
-                                <span class="text-danger">
-                                    <?= $this->session->flashdata('error') ?>
-                                </span>
-                            </div>
-                        <?php endif; ?>
-                    </div>
+                    <a href="<?= base_url('customer'); ?>" class="btn btn-sm backbtn" style="width:<?= $width; ?>"><?php echo  $this->lang->line('menu'); ?></a>
+                     <?php if($mergeCount <= 1){
+                     if($this->session->userdata('BillMergeOpt') > 0 && ($EType == 5)){ ?>
+                    <a href="<?= base_url('customer/merge_order/'.$MergeNo); ?>" class="btn orderbtn btn-sm" style="width:<?= $width; ?>"><?><?php echo  $this->lang->line('mergeorder'); ?></a>
+                    <?php } } ?>
+                    <button class="btn btn-sm paybtn" onclick="payNow()" style="width:<?= $width; ?>"><?php echo  $this->lang->line('payNow'); ?></button>
                 </div>
+                    
+                    <?php if($this->session->flashdata('error')): ?>
+                        <div class="">
+                            <span class="text-danger">
+                                <?= $this->session->flashdata('error') ?>
+                            </span>
+                        </div>
+                    <?php endif; ?>
             </div>
 
             <div id="myOverlay"></div>
@@ -463,7 +463,7 @@ socket.onopen = function(event) {
                     html_body +=`<table style="width:100%;">`;
                     html_body +=`<tr class="">`;
                     html_body +=`   <th><?= $this->lang->line('grandTotal'); ?></th>`;
-                    html_body +=`   <td class="text-right"><strong>`+convertToUnicodeNo(grand_total)+`</strong></td>`;
+                    html_body +=`   <td class="text-right"><strong>`+convertToUnicodeNo(grand_total.toFixed(2))+`</strong></td>`;
                     html_body +=`</tr>`;
                     html_body +=`</table>`;
                     html_body +=`</div>`;

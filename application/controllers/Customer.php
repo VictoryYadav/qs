@@ -417,7 +417,7 @@ class Customer extends CI_Controller {
             $Ingeredients = "mi.Ingeredients$langId";
             $Rmks = "mi.Rmks$langId";
 
-            $select = "mc.TaxType, mc.KitCd, mi.ItemId, (case when $lname != '-' Then $lname ELSE mi.Name1 end) as ItemNm, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, (case when $ItmDesc != '-' Then $ItmDesc ELSE mi.ItmDesc1 end) as ItmDesc, (case when $ingeredients != '-' Then $ingeredients ELSE mi.Ingeredients1 end) as Ingeredients, (case when $Rmks != '-' Then $Rmks ELSE mi.Rmks1 end) as Rmks, mi.PrepTime, mi.AvgRtng, mi.FID, mi.Name1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
+            $select = "mc.TaxType, mc.KitCd, mi.ItemId, (case when $lname != '-' Then $lname ELSE mi.Name1 end) as ItemNm, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, (case when $ItmDesc != '-' Then $ItmDesc ELSE mi.ItmDesc1 end) as ItmDesc, (case when $Ingeredients != '-' Then $Ingeredients ELSE mi.Ingeredients1 end) as Ingeredients, (case when $Rmks != '-' Then $Rmks ELSE mi.Rmks1 end) as Rmks, mi.PrepTime, mi.AvgRtng, mi.FID, mi.Name1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
             $rec = $this->db2->select($select)
                             ->join('MenuItem mi','mi.ItemId = mr.RcItemId', 'inner')
                             ->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')
@@ -533,8 +533,6 @@ class Customer extends CI_Controller {
                             if($TableAcceptReqd > 0){
                                 $checkStat = $this->db2->select('Stat')->get_where('KitchenMain', array('CNo' => $CNo, 'EID' => $EID, 'BillStat' => 0))->row_array();
                                 $stat = $checkStat['Stat'];
-                            }else{
-                                $stat = 2;
                             }
 
                             // Check entry is already inserted in ETO
@@ -560,7 +558,7 @@ class Customer extends CI_Controller {
                         }else{
                             //For ETpye 1 Order Type Will Be 0 and Stat = 1
                             $OType = 0;
-                            $stat = 2;
+                            
                         }
                         $newUKOTNO = date('dmy_') . $KOTNo;
                         $prepration_time = $_POST['prepration_time'][$itemId][0];
@@ -610,7 +608,7 @@ class Customer extends CI_Controller {
                         $temp['CustRmks'] = '';
                         $temp['DelTime'] = date('Y-m-d H:i:s', $date);
                         $temp['TA'] = 0;
-                        $temp['Stat'] = $stat;
+                        $temp['Stat'] = ($EType == 5)?2:1;
                         $temp['LoginCd'] = 1;
                         $temp['SDetCd'] = 0;
                         $temp['SchCd'] = 0;
@@ -1967,14 +1965,6 @@ class Customer extends CI_Controller {
         }
         
         $data['custPymt'] = $genTblDb->query("SELECT DISTINCT cp.BillId, date(cp.BillDt) as billdt, `cp`.`BillNo`, `cp`.`EID`, `cp`.`PaidAmt`, `cp`.`CustId`, `ed`.`Name`, `ed1`.`DBName`, `ed`.`DBPasswd`, `rt`.`avgBillRtng` FROM `CustPymts` `cp` INNER JOIN `EIDDet` `ed` ON `ed`.`EID` = `cp`.`EID` INNER JOIN `EIDDet` `ed1` ON `ed1`.`EID` = `cp`.`aggEID` LEFT JOIN `Ratings` `rt` ON `rt`.`EID` = `cp`.`EID` WHERE `cp`.`CustId` = '6' AND `rt`.`CustId` = '6' $whr ORDER BY `cp`.`BNo` DESC")->result_array();
-        // $data['custPymt'] = $genTblDb->select("cp.BillId, date(cp.BillDt) as billdt , cp.BillNo, cp.EID , cp.PaidAmt , cp.CustId , ed.Name , ed1.DBName, ed.DBPasswd, rt.avgBillRtng")
-        //                     ->order_by('cp.BNo', 'DESC')
-        //                     ->join('EIDDet ed', 'ed.EID = cp.EID', 'inner')
-        //                     ->join('EIDDet ed1', 'ed1.EID = cp.aggEID', 'inner')
-        //                     ->join('Ratings rt', 'rt.EID = cp.EID', 'left')
-        //                     // ->where($whr)
-        //                     ->get_where('CustPymts cp', array('cp.CustId' => $CustId, 'rt.CustId' => $CustId))
-        //                     ->result_array();
         
         $data['country']    = $this->cust->getCountries();
         $data['CountryCd']    = $this->session->userdata('CountryCd');
@@ -3407,6 +3397,10 @@ class Customer extends CI_Controller {
                                 ->limit(5)
                                 ->get_where('Ratings r', array('r.EID' => $EID, 'r.CustId' => $CustId))
                                 ->result_array();
+            }else if($_POST['type'] == 'ent'){
+                $response = $this->cust->getEntertainmentList();
+            }else if($_POST['type'] == 'offers'){
+                $response = $this->cust->getOffers();
             }
 
             header('Content-Type: application/json');

@@ -74,10 +74,11 @@ h6{
             </h6>
         </a>
         <div class="dropdown-menu" style="right: 0; left: auto;">
+
             <?php if($this->session->userdata('SchPop') > 0){ ?>
-            <a href="#news" class="dropdown-item" data-toggle="modal" data-target="#offers-modal"><?= $this->lang->line('offers'); ?></a>
-        <?php } if($this->session->userdata('Ent') > 0){ ?>
-            <a href="#" class="dropdown-item" data-toggle="modal" data-target="#Ent_modal" ><?= $this->lang->line('entertainment'); ?></a>
+            <a href="#news" class="dropdown-item" onclick="getOffers()"><?= $this->lang->line('offers'); ?></a>
+            <?php } if($this->session->userdata('Ent') > 0){ ?>
+            <a href="#" class="dropdown-item" onclick="getEntertainment()"><?= $this->lang->line('entertainment'); ?></a>
             <?php } if($this->session->userdata('ratingHistory') > 0){ ?>
             <a href="#" class="dropdown-item" onclick="ratedDish()"><?= $this->lang->line('ratedDishes'); ?></a>
             <?php } if($this->session->userdata('favoriteItems') > 0){ ?>
@@ -125,46 +126,7 @@ h6{
                     </button>
                 </div>
 
-                <div class="modal-body" style="border: none;padding: 0px;overflow-y: scroll;height: 425px;">
-                    <?php 
-                    $offers = allOffers();
-
-                    if(!empty($offers)){?>
-                        <?php foreach($offers as $key){
-                            $name = '';
-                            $imgsrc = '';
-                            if(!empty($key['LngName'])){
-                                $name  .=  $key['LngName'];
-                            }
-                            if(!empty($key['portionName'])){
-                                $name  .=  ' ('.$key['portionName'].')';
-                            }
-                            if(!empty($key['mcName'])){
-                                $name  .=  ' - '.$key['mcName'];
-                            }
-                            if(!empty($key['cuiName'])){
-                                $name  .=  ' - '.$key['cuiName'];
-                            }
-                            if($key['SchImg'] != '-'){
-                                $imgsrc = $key['SchImg'];
-                            }else{
-                                $imgsrc = 'assets/img/special_offers.png';
-                            }
-                            ?>
-
-                            <div class="ad-listing-list mt-20" style="border:1px solid #ede8e8;">
-                                <div class="row p-1">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
-                                        <img src="<?= base_url($imgsrc); ?>" alt="<?= $name; ?>" style="height: 100px;width: 200px;background-size: cover;">
-                                        <h6 class="mt-1"><?= $key['SchNm'].' - '.$key['SchDesc'];?></h6>
-                                        <p class="pr-5"><?= $name; ?></p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        <?php }?>
-                            
-                    <?php }?>
+                <div class="modal-body" style="border: none;padding: 0px;overflow-y: scroll;height: 425px;" id="offersBody">
                 </div>
             </div>
         </div>
@@ -181,43 +143,8 @@ h6{
                     </button>
                 </div>
 
-                <div class="modal-body" style="border: none;padding: 0px;overflow-y: scroll;height: 425px;">
-                    <?php 
-                    $Ent = allEntertainments();
-                    if(!empty($Ent)){?>
-                        <?php foreach($Ent as $key){
-                            $name = '';
-                            $imgsrc = '';
-                            if(!empty($key['DayName'])){
-                                $name  .=  $key['DayName'];
-                            }
-                            if(!empty($key['Name'])){
-                                $name  .=  ' - '.$key['Name'];
-                            }
-                            
-                            if($key['PerImg'] != '-'){
-                                $imgsrc = $key['PerImg'];
-                            }else{
-                                $imgsrc = 'assets/img/entertainment.jpg';
-                            }
-
-                            ?>
-
-                            <div class="ad-listing-list mt-20">
-                                <div class="row p-1">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
-                                        <img src="<?= base_url($imgsrc); ?>" alt="<?= $name; ?>" style="height: 100px;width: 200px;background-size: cover;">
-                                        <h6 class="mt-1"><?= $name; ?></h6>
-                                        <p class="pr-5"><?php if($key['performBy'] != '-'){
-                                                echo $key['performBy'];
-                                            } ?></p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        <?php }?>
-                            
-                    <?php }?>
+                <div class="modal-body" style="border: none;padding: 0px;overflow-y: scroll;height: 425px;" id="entBody">
+                    
                 </div>
             </div>
         </div>
@@ -362,7 +289,93 @@ h6{
                 alert(res.response)    
                 }
             });
-            // 
+        }
+
+        function getOffers(){
+            $.post('<?= base_url('customer/get_rated_dishes') ?>',{type:'offers'}, function(res){
+                if(res.status == 'success'){
+                    var data = res.response;
+                    var temp = ``;
+                    if(data.length > 0){
+                        data.forEach((item, index) => {
+                            var name = '';
+                            var imgsrc = '';
+                            if(item.LngName != ''){
+                                name  +=  item.LngName;
+                            }
+                            if(item.portionName != ''){
+                                name  +=  ' ('+item.portionName+')';
+                            }
+                            if(item.mcName != ''){
+                                name  +=  ' - '+item.mcName;
+                            }
+                            if(item.cuiName != ''){
+                                name  +=  ' - '+item.cuiName;
+                            }
+                            if(item.SchImg != '-'){
+                                imgsrc = "<?= base_url(); ?>"+item.SchImg;
+                            }else{
+                                imgsrc = "<?= base_url(); ?>"+'assets/img/special_offers.png';
+                            }
+
+                            temp += `<div class="ad-listing-list mt-20" style="border:1px solid #ede8e8;">
+                                        <div class="row p-1">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                                                <img src="${imgsrc}" alt="${name}" style="height: 100px;width: 200px;background-size: cover;">
+                                                <h6 class="mt-1">${item.SchNm} - ${item.SchDesc}</h6>
+                                                <p class="pr-5">${name}</p>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                        });
+                        $(`#offersBody`).html(temp);
+                        $(`#offers-modal`).modal('show');
+                    }           
+                }else{
+                alert(res.response)    
+                }
+            });
+        }
+
+        function getEntertainment(){
+            $.post('<?= base_url('customer/get_rated_dishes') ?>',{type:'ent'}, function(res){
+                if(res.status == 'success'){
+                    var data = res.response;
+                    var temp = ``;
+                    if(data.length > 0){
+                        data.forEach((item, index) => {
+                            var name = '';
+                            var imgsrc = '';
+                            if(item.DayName != ''){
+                                name  +=  item.DayName;
+                            }
+                            if(item.Name != ''){
+                                name  +=  ' - '+item.Name;
+                            }
+                            
+                            if(item.PerImg != '-'){
+                                imgsrc = "<?= base_url(); ?>"+item.PerImg;
+                            }else{
+                                imgsrc = "<?= base_url(); ?>"+'assets/img/entertainment.jpg';
+                            }
+
+                            temp += `<div class="ad-listing-list mt-20">
+                                        <div class="row p-1">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                                                <img src="${imgsrc}" alt="${name}" style="height: 100px;width: 200px;background-size: cover;">
+                                                <h6 class="mt-1">${name}</h6>
+                                                <p class="pr-5">${item.performBy}</p>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                        });
+                        $(`#entBody`).html(temp);
+                        $(`#Ent_modal`).modal('show');
+                    }           
+                }else{
+                alert(res.response)    
+                }
+            });
         }
 
     </script>

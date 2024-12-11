@@ -241,7 +241,7 @@
                     if(cur_ipcd == item.Itm_Portion){
                         selc = 'selected';
                     }
-                    temp += `<option value="${item.Itm_Portion}" ${selc}>${item.Portion}</option>`;
+                    temp += `<option value="${item.Itm_Portion}" ${selc}>${item.Portions}</option>`;
                      selc = '';
                     if(cur_ipcd == item.SecId){
                         selc = 'selected';

@@ -691,6 +691,9 @@
     })
 
     function send_to_kitchen(data_type){
+        // for combo item
+        // checkComboItemSelection();
+
         var MergeNo = '';
         var tableNo = 0;
         MergeNo = $(`#table-id`).val();
@@ -1449,8 +1452,10 @@
                                 var details = customItem[i].Details;
                                 
                                 for(var r=0; r < details.length; r++){
+                                    // item type = 125 so price will be 0
+                                    var rate = (ItemTyp == 125)?0:details[r].Rate;
                                     var name = "'"+details[r].Name+"'";
-                                    tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+','+details[r].CalcType+', '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+details[r].Rate+')</span></li>';
+                                    tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+','+details[r].CalcType+', '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+rate+')</span></li>';
                                 }
                                 tempRadio += '</ul>';
 
@@ -1464,8 +1469,10 @@
                                 var details = customItem[i].Details;
                                 
                                 for(var c=0; c < details.length; c++){
+                                    // item type = 125 so price will be 0
+                                    var rate = (ItemTyp == 125)?0:details[r].Rate;
                                     var name = "'"+details[c].Name+"'";
-                                    tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+details[r].CalcType+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+details[c].Rate+')</span></li>';
+                                    tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+details[r].CalcType+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+rate+')</span></li>';
                                 }
                                 tempCHK += '</ul>';
                                 $('#checkboxOption').append(tempCHK);
@@ -1540,6 +1547,31 @@
             
             $('#custOfferAmountView').text(this.custOfferTotal);
             $('#custOfferOrigAmountView').val(this.OrigOfferTotal);
+        }
+
+        function checkComboItemSelection(){
+            // mandatory radio options
+            if(groupNameList.length > 0){
+                var mandatory = false;
+                
+                var counter = 0;
+                var totalGroup = groupNameList.length;
+                for(var g=0; g<groupNameList.length;g++){ 
+                    //comment on and check this code mandatory = false;
+                    var groupName = document.getElementsByName(groupNameList[g]); 
+                      for(var i=0; i<groupName.length;i++){ 
+                          if(groupName[i].checked == true){ 
+                              mandatory = true;
+                              counter++;     
+                          } 
+                      } 
+                }
+                   
+                if(totalGroup != counter){
+                    alert("Please Choose the Required Field!!"); 
+                    return false; 
+                }
+            }
         }
 
         $('#customOfferForm').on('submit', function(e){
