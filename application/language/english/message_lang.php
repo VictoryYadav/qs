@@ -650,6 +650,8 @@ $lang['billMerge']				= 'Bill Merge';
 $lang['GSTInclusiveRates']		= 'GST Inclusive Rates';
 $lang['calories']				= 'Calories';
 
+$lang['pleaseSelecttheOptionsForComboItem']	= 'Please select the options for Combo Item';
+
 
 
 

@@ -1008,29 +1008,44 @@ class Customer extends CI_Controller {
 
             if (isset($_POST['goBill']) && $_POST['goBill']) {
 
-                $SchType = $this->session->userdata('SchType');
-
-                if(in_array($SchType, array(1,3))){
-                    $this->cust->updateBillDiscountAmount($CNo);
-                }else{
-                    $kd = $this->db2->select("sum((OrigRate - ItmRate) * Qty) as ItmDiscount")->get_where('Kitchen', array('CNo' => $CNo, 'EID' => $EID, 'Stat' => $stat, 'BillStat' => 0))->row_array();
-
-                    updateRecord('KitchenMain', array('BillDiscAmt' => $kd['ItmDiscount']), array('CNo' => $CNo, 'EID' => $EID));
-                }
-
+                $ItemTypFlag = 1;
                 $i=0;
                 foreach ($_POST['OrdNo'] as $OrdNo ) {
-                    $temp['OrdNo'] = $OrdNo;
-                    $temp['qty'] = $_POST['qty'][$i];
-                    // $data[] = $temp;
-                    updateRecord('Kitchen', array('Qty' => $temp['qty'],'Stat' => $stat), array('OrdNo' => $OrdNo, 'EID' => $EID));
+                    if($_POST['ItemTyp'][$i] == 125 && $_POST['CustItemDesc'][$i] == ''){
+                        $ItemTypFlag = 0;
+                    }
                     $i++;
                 }
-                
-                $resp1 = '';
-                $statuss = 2;
-                $this->session->set_userdata('KOTNo', 0);
 
+                if($ItemTypFlag > 0){
+                    
+                    $SchType = $this->session->userdata('SchType');
+
+                    if(in_array($SchType, array(1,3))){
+                        $this->cust->updateBillDiscountAmount($CNo);
+                    }else{
+                        $kd = $this->db2->select("sum((OrigRate - ItmRate) * Qty) as ItmDiscount")->get_where('Kitchen', array('CNo' => $CNo, 'EID' => $EID, 'Stat' => $stat, 'BillStat' => 0))->row_array();
+
+                        updateRecord('KitchenMain', array('BillDiscAmt' => $kd['ItmDiscount']), array('CNo' => $CNo, 'EID' => $EID));
+                    }
+
+                    $i=0;
+                    foreach ($_POST['OrdNo'] as $OrdNo ) {
+                        $temp['OrdNo'] = $OrdNo;
+                        $temp['qty'] = $_POST['qty'][$i];
+                        
+                        updateRecord('Kitchen', array('Qty' => $temp['qty'],'Stat' => $stat), array('OrdNo' => $OrdNo, 'EID' => $EID));
+                        $i++;
+                    }
+                    
+                    $resp1 = $this->lang->line('kitchen_msg');
+                    $statuss = 2;
+                    $this->session->set_userdata('KOTNo', 0);
+                }else{
+                    $resp1 = $this->lang->line('pleaseSelecttheOptionsForComboItem');
+                    $statuss = 1;
+                }
+                
                 header('Content-Type: application/json');
                 echo json_encode(array(
                     'status' => $statuss,
@@ -2567,23 +2582,41 @@ class Customer extends CI_Controller {
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
+            $ItemTypFlag = 1;
             $i=0;
             foreach ($_POST['OrdNo'] as $OrdNo ) {
-                $temp['OrdNo'] = $OrdNo;
-                $temp['qty'] = $_POST['qty'][$i];
-                updateRecord('Kitchen', array('Qty' => $temp['qty']), array('OrdNo' => $OrdNo));
+                if($_POST['ItemTyp'][$i] == 125 && $_POST['CustItemDesc'][$i] == ''){
+                    $ItemTypFlag = 0;
+                }
                 $i++;
             }
-
-            updateRecord('Kitchen', array('Stat' => 3), array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 2, 'CNo' => $CNo));
-            // set Kot to 0
-            $this->session->set_userdata('KOTNo', 0);
             $status = 'success';
+
+            if($ItemTypFlag > 0){
+                $i=0;
+                foreach ($_POST['OrdNo'] as $OrdNo ) {
+                    $temp['OrdNo'] = $OrdNo;
+                    $temp['qty'] = $_POST['qty'][$i];
+                    updateRecord('Kitchen', array('Qty' => $temp['qty']), array('OrdNo' => $OrdNo));
+                    $i++;
+                }
+
+                updateRecord('Kitchen', array('Stat' => 3), array('CustId' => $CustId,'EID' => $EID , 'TableNo' => $TableNo, 'Stat' => 2, 'CNo' => $CNo));
+                // set Kot to 0
+                $this->session->set_userdata('KOTNo', 0);
+                $response = $this->lang->line('orderSentToKitchen');
+                $flag = 1;
+            }else{
+                $response = $this->lang->line('pleaseSelecttheOptionsForComboItem');
+                $flag = 2;
+            }
+
 
             header('Content-Type: application/json');
             echo json_encode(array(
-                'status' => $status,
-                'response' => $this->lang->line('orderSentToKitchen')
+                'status'    => $status,
+                'response'  => $response,
+                'flag'      => $flag
               ));
              die;
         }    

@@ -651,4 +651,6 @@ $lang['lock']					= 'ताला';
 $lang['billMerge']				= 'बिल मर्ज';
 $lang['GSTInclusiveRates']		= 'जीएसटी समावेशी दरें';
 $lang['calories']				= 'कैलोरी';
+
+$lang['pleaseSelecttheOptionsForComboItem']	= 'कृपया कॉम्बो आइटम के लिए विकल्प चुनें';
  

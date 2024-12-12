@@ -377,6 +377,8 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                                     <button type="button" id="minus-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 25px;"  onclick="decQty(${item.OrdNo})" ${btndisable}>-
                                     </button>
                                 </span>
+                                <input type="hidden" id="qty-val${item.OrdNo}" value="${item.ItemTyp}" name="ItemTyp[]">
+                                <input type="hidden" id="qty-val${item.OrdNo}" value="${item.CustItemDesc}" name="CustItemDesc[]">
                                 <input type="hidden" id="qty-val${item.OrdNo}" value="${item.Qty}" name="qty[]">
                                 <input type="text" readonly="" id="qty-valView${item.OrdNo}" class="form-control input-number" value="${convertToUnicodeNo(item.Qty)}" min="1" max="10" style="text-align: center; height:20px;">
                                 <span class="input-group-btn">
@@ -561,14 +563,18 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
             url: "<?php echo base_url('customer/order_details_ajax'); ?>",
             type: "post",
             data: data,
-            success: response => {
-                console.log(response);
+            success: resp => {
+                // console.log(resp.status);
                 Swal.fire({
-                  text: '<?= $this->lang->line('kitchen_msg'); ?>',
+                  text: resp.resp,
                   confirmButtonText: 'OK',
                   confirmButtonColor: "green",
                 });
-                window.location = "<?= base_url('customer/checkout'); ?>";
+                if(resp.status == 2){
+                    window.location = "<?= base_url('customer/checkout'); ?>";
+                }else{
+                    getSendToKitchenList();
+                }
             },
             error: (xhr, status, error) => {
                 console.log(xhr);
@@ -614,7 +620,10 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                       confirmButtonText: 'OK',
                       confirmButtonColor: "green",
                     });
-               window.location = "<?php echo base_url('customer'); ?>";
+                if(res.flag == 2){
+                    getSendToKitchenList();   
+                }
+                window.location = "<?php echo base_url('customer'); ?>";
             }else{
               alert(res.response);
             }
