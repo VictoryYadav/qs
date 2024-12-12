@@ -2495,6 +2495,7 @@ class Customer extends CI_Controller {
             
             $returnData = [];
             $customDetails = $this->cust->getCustomDetails($itemTyp, $itemId, $itemPortionCode, $FID);
+            
             if(!empty($customDetails)){
 
                 $grpType = $customDetails[0]['GrpType'];
@@ -2516,6 +2517,7 @@ class Customer extends CI_Controller {
                             "Name" => $value['Name'],
                             "Rate" => $value['Rate'],
                             "ItemOptCd" => $value['ItemOptCd'],
+                            "CalcType" => $value['CalcType'],
                         ];
                     } else {
                         $returnData[] = $temp;
@@ -2532,6 +2534,7 @@ class Customer extends CI_Controller {
                             "Name" => $value['Name'],
                             "Rate" => $value['Rate'],
                             "ItemOptCd" => $value['ItemOptCd'],
+                            "CalcType" => $value['CalcType'],
                         ];
                     }
                 }

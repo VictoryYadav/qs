@@ -2,6 +2,7 @@
 $EID = $this->session->userdata('EID'); 
 $folder = 'e'.$EID; 
  ?>
+
 <style>
     p{
         font-size: 12px !important;

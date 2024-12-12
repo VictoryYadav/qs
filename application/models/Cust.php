@@ -830,7 +830,7 @@ class Cust extends CI_Model{
         	$ItemGrpName = "mi.Name$langId as ItemGrpName";
         	$ItemNm = "mii.Name$langId as Name";
 
-            return $this->db2->select("itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, (case when $ItemGrpName != '-' Then $ItemGrpName ELSE mi.Name1 end) as ItemGrpName, itd.ItemId, (case when $ItemNm != '-' Then $ItemNm ELSE mii.Name1 end) as Name, mir.OrigRate as Rate, itg.Reqd")
+            return $this->db2->select("itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, (case when $ItemGrpName != '-' Then $ItemGrpName ELSE mi.Name1 end) as ItemGrpName, itd.ItemId, (case when $ItemNm != '-' Then $ItemNm ELSE mii.Name1 end) as Name, mir.OrigRate as Rate, itg.Reqd, itg.CalcType")
             		->order_by('itg.Rank, itd.Rank', 'ASC')
             		->join('ItemTypesDet itd', 'itg.ItemGrpCd = itd.ItemGrpCd', 'inner')
             		->join('MenuItem mi', 'mi.ItemId = itg.ItemId', 'inner')
@@ -847,7 +847,7 @@ class Cust extends CI_Model{
             		->result_array();
         }else{
             $ItemGrpName = "itg.Name$langId";
-            return $this->db2->select("itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, (case when $ItemGrpName != '-' Then $ItemGrpName ELSE itg.Name1 end) as ItemGrpName, itd.ItemId, $ItemNm, mir.OrigRate as Rate, itg.Reqd")
+            return $this->db2->select("itg.GrpType, itd.ItemGrpCd, itd.ItemOptCd, (case when $ItemGrpName != '-' Then $ItemGrpName ELSE itg.Name1 end) as ItemGrpName, itd.ItemId, $ItemNm, mir.OrigRate as Rate, itg.Reqd, itg.CalcType")
             		->order_by('itg.Rank, itd.Rank', 'ASC')
             		->join('ItemTypesDet itd', 'itg.ItemGrpCd = itd.ItemGrpCd', 'inner')
             		->join('MenuItem mi', 'mi.ItemId = itg.ItemId', 'left')

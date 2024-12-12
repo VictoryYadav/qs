@@ -668,8 +668,9 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                             var details = customItem[i].Details;
                             
                             for(var r=0; r < details.length; r++){
+                                var rate = (itemTyp == 125)?0:details[r].Rate;
                                 var name = "'"+details[r].Name+"'";
-                                tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+details[r].Rate+')</span></li>';
+                                tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+itemTyp+' , '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+rate+')</span></li>';
                             }
                             tempRadio += '</ul>';
                             $('#radioOption').append(tempRadio);
@@ -682,8 +683,9 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                             var details = customItem[i].Details;
                             
                             for(var c=0; c < details.length; c++){
+                                var rate = (itemTyp == 125)?0:details[r].Rate;
                                 var name = "'"+details[c].Name+"'";
-                                tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+details[c].Rate+')</span></li>';
+                                tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+itemTyp+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+rate+')</span></li>';
                             }
                             tempCHK += '</ul>';
                             $('#checkboxOption').append(tempCHK);
@@ -705,7 +707,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
         );
     }
 
-    function calculateTotalc(itemGrpCd, index, itemName, event) {
+    function calculateTotalc(itemGrpCd, itemTyp, index, itemName, event) {
 
         element = event.currentTarget;
         var rate = element.getAttribute('rate');
@@ -713,12 +715,18 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
         
         if (event.target.type == "radio") {
             this.radioRate[index] = parseInt(rate);
+            if(itemTyp == 125){
+                this.radioRate[index] = 0;
+            }
             this.raidoGrpCd[index] = itemGrpCd;
             this.radioName[index] = itemName;
         } else {
             // console.log(event.target.checked);
             if (event.target.checked) {
                 this.checkboxRate[index] = parseInt(rate);
+                if(itemTyp == 125){
+                    this.checkboxRate[index] = 0;
+                }
                 this.checkboxName[index] = itemName;
             } else {
                 this.checkboxRate[index] = 0;

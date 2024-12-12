@@ -260,7 +260,11 @@ class Users extends CI_Controller {
         $EID = $this->session->userdata('EID');
         
         $data['title'] = $this->lang->line('payNow');
-        $data["modes"] = $this->db2->select('PymtMode, Name1 as Name, Company, CodePage1')->get_where('ConfigPymt', array('Stat' => 1))->result_array();
+
+        $data["modes"] = $this->db2->select("cp.PymtMode, cp.Name1 as Name, cp.Company, cp.CodePage1")
+                        ->order_by('cp.Rank', 'ASC')
+                        ->join('PymtModes pm', 'pm.PymtMode = cp.PymtMode', 'inner')
+                        ->get_where('ConfigPymt cp', array('cp.Stat' => 1))->result_array();
 
         $data['payable'] = $this->session->userdata('payable');
         $data['BillId'] = $BillId;
@@ -269,9 +273,7 @@ class Users extends CI_Controller {
         $data['country']    = $this->db2->select('*')
                     ->order_by('country_name', 'ASC')
                     ->get_where('countries', array('Stat' => 0))->result_array();
-        // echo "<pre>";
-        // print_r($data);
-        // die;
+        
         $this->load->view('user/pay_now', $data);
     }
 
