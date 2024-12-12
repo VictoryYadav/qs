@@ -2763,312 +2763,324 @@ class Restaurant extends CI_Controller {
 
         if (isset($_POST['sendToKitchen']) && $_POST['sendToKitchen']) {
             // echo "<pre>";print_r($_POST);die;
-            $thirdParty = 0;
-            $thirdPartyRef = 0;
-
-            $orderType = $_POST['orderType'];
-            $tableNo = $_POST['tableNo'];
-            $MergeNo = $_POST['MergeNo'];
-            if($orderType == 101){
-                $thirdParty = !empty($_POST['thirdParty'])?$_POST['thirdParty']:0;
-                $thirdPartyRef = !empty($_POST['thirdParty'])?$_POST['thirdParty']:0;
-            }
-            $itemIds = !empty($_POST['itemIds'])?$_POST['itemIds']:array();
-            $itemKitCds = !empty($_POST['itemKitCds'])?$_POST['itemKitCds']:0;
-            $itemQty = !empty($_POST['itemQty'])?$_POST['itemQty']:0;
-            $Itm_Portion = !empty($_POST['Itm_Portion'])?$_POST['Itm_Portion']:0;
-            $ItmRate = !empty($_POST['ItmRates'])?$_POST['ItmRates']:0;
-            $origRates = !empty($_POST['origRates'])?$_POST['origRates']:0;
-            $itemRemarks = !empty($_POST['itemRemarks'])?$_POST['itemRemarks']:0;
-            $Stat = $_POST['Stat'];
-            $phone = $_POST['phone'];
-            $pckValue = !empty($_POST['pckValue'])?$_POST['pckValue']:0;
-            $data_type = $_POST['data_type'];
-            $CNo = $_POST['CNo'];
-            $taxtype = !empty($_POST['taxtype'])?$_POST['taxtype']:0;
-            $ItemTyp = !empty($_POST['ItemTyp'])?$_POST['ItemTyp']:0;
-            $take_away = !empty($_POST['take_away'])?$_POST['take_away']:0;
-            $prep_time = !empty($_POST['prep_time'])?$_POST['prep_time']:0;
-            $seatNo = !empty($_POST['seatNo'])?$_POST['seatNo']:1;
-            $DCd = !empty($_POST['DCd'])?$_POST['DCd']:0;
-            $customerAddress = !empty($_POST['customerAddress'])?$_POST['customerAddress']:'';
-            $CCd = !empty($_POST['CCd'])?$_POST['CCd']:0;
-
-            $SchCd = !empty($_POST['SchCd'])?$_POST['SchCd']:0;
-            $SDetCd = !empty($_POST['SDetCd'])?$_POST['SDetCd']:0;
-
-            $CustItem = !empty($_POST['CustItem'])?$_POST['CustItem']:0;
-            $CustItemDesc = !empty($_POST['CustItemDesc'])?$_POST['CustItemDesc']:'Std';
-            
-            $CountryCd = $_POST['CountryCd'];
-            if(!empty($CountryCd)){
-                $this->session->set_userdata('pCountryCd', $CountryCd);
+            $ItemTypFlag = 1;
+            for ($i = 0; $i < sizeof($_POST['itemIds']); $i++) {
+                if($_POST['ItemTyp'][$i] == 125 && $_POST['CustItemDesc'][$i] == 'Std'){
+                    $ItemTypFlag = 0;
+                }
             }
 
-            $CustId = 0;
-            if(!empty($phone)){
-                $CustId = createCustUser($phone);
-            }
-            
-            if ($CNo == 0) {
-                if(!empty($phone)){
+            if($ItemTypFlag > 0){
+                $thirdParty = 0;
+                $thirdPartyRef = 0;
 
-                    $this->db2->set('visit', 'visit+1', FALSE);
-                    $this->db2->set('DelAddress', $customerAddress);
-                    $this->db2->where('CustId', $CustId);
-                    $this->db2->update('Users');
+                $orderType = $_POST['orderType'];
+                $tableNo = $_POST['tableNo'];
+                $MergeNo = $_POST['MergeNo'];
+                if($orderType == 101){
+                    $thirdParty = !empty($_POST['thirdParty'])?$_POST['thirdParty']:0;
+                    $thirdPartyRef = !empty($_POST['thirdParty'])?$_POST['thirdParty']:0;
                 }
+                $itemIds = !empty($_POST['itemIds'])?$_POST['itemIds']:array();
+                $itemKitCds = !empty($_POST['itemKitCds'])?$_POST['itemKitCds']:0;
+                $itemQty = !empty($_POST['itemQty'])?$_POST['itemQty']:0;
+                $Itm_Portion = !empty($_POST['Itm_Portion'])?$_POST['Itm_Portion']:0;
+                $ItmRate = !empty($_POST['ItmRates'])?$_POST['ItmRates']:0;
+                $origRates = !empty($_POST['origRates'])?$_POST['origRates']:0;
+                $itemRemarks = !empty($_POST['itemRemarks'])?$_POST['itemRemarks']:0;
+                $Stat = $_POST['Stat'];
+                $phone = $_POST['phone'];
+                $pckValue = !empty($_POST['pckValue'])?$_POST['pckValue']:0;
+                $data_type = $_POST['data_type'];
+                $CNo = $_POST['CNo'];
+                $taxtype = !empty($_POST['taxtype'])?$_POST['taxtype']:0;
+                $ItemTyp = !empty($_POST['ItemTyp'])?$_POST['ItemTyp']:0;
+                $take_away = !empty($_POST['take_away'])?$_POST['take_away']:0;
+                $prep_time = !empty($_POST['prep_time'])?$_POST['prep_time']:0;
+                $seatNo = !empty($_POST['seatNo'])?$_POST['seatNo']:1;
+                $DCd = !empty($_POST['DCd'])?$_POST['DCd']:0;
+                $customerAddress = !empty($_POST['customerAddress'])?$_POST['customerAddress']:'';
+                $CCd = !empty($_POST['CCd'])?$_POST['CCd']:0;
+                $SchCd = !empty($_POST['SchCd'])?$_POST['SchCd']:0;
+                $SDetCd = !empty($_POST['SDetCd'])?$_POST['SDetCd']:0;
 
-                $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo, $MergeNo, $data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd);
-                if($orderType == 8){
-                    updateRecord('Eat_tables', array('Stat' => 1), array('TableNo' => $tableNo, 'EID' => $EID));
-                }
-            }else{
-                $oldSeatNo = getSeatNo($CNo);
-                if($oldSeatNo != $seatNo){
-                    $CNo = 0;
-                    $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo, $MergeNo, $data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd);
-                }    
-            }
-
-            if ($KOTNo == 0) {
-                // To generate new KOTNo
-                $kotNoCount = $this->db2->query("SELECT Max(KOTNo + 1) as tKot from Kitchen where DATE(LstModDt) = CURDATE() AND EID = $EID")->result_array();
-
-                if ($kotNoCount[0]['tKot'] == '') {
-                    $kotNo = 1;
-                } else {
-                    $kotNo = $kotNoCount[0]['tKot'];
-                }
-
-                $KOTNo = $kotNo;
-                $oldKitCd = 0;
-
-                $this->session->set_userdata('KOTNo', $kotNo);
-                $this->session->set_userdata('oldKitCd', 0);
-            }
-
-            $oldKitCd = $this->session->userdata('oldKitCd');
-            $fKotNo = $KOTNo;
-
-            $success = [];
-
-            $oldKitCd = 0;
-            
-            $orderAmount = 0;
-            $itemKitCd = 0;
-            $newUKOTNO = 0;
-
-            $stat = ($EType == 5)?3:2;
-
-            for ($i = 0; $i < sizeof($itemIds); $i++) {
-                $itemKitCd = $itemKitCds[$i];
-
-                    if ($MultiKitchen > 1) {
-                    
-                        if ($oldKitCd != $itemKitCds[$i]) {
-                            // $itemKitCd = $itemKitCds[$i];
-                            $getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID=$EID AND KitCd = $itemKitCd and MergeNo = '$tableNo' and Stat = $stat")->result_array();
-                            $fKotNo = $getFKOT[0]['FKOTNO'];
-                            $fKotNo = $fKotNo + 1;
-                            
-                            $newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
-                            $this->session->set_userdata('oldKitCd', $itemKitCd);
-                        }else{
-                            // next ukot                    
-                            $newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
-                        }
-                    }
-                    // $oldKitCd = $itemKitCd;
-
-                $kitchenObj['CNo'] = $CNo;
-                $kitchenObj['MCNo'] = $CNo;
-                $kitchenObj['CustId'] = $CustId;
-                $kitchenObj['EID'] = $EID;
-                $kitchenObj['ChainId'] = $ChainId;
-                $kitchenObj['OType'] = $orderType;
-                if ($orderType == 101) {
-                    $kitchenObj['TPRefNo'] = $thirdPartyRef;
-                    $kitchenObj['TPId'] = $thirdParty;
-                }
-                $kitchenObj['KitCd'] = $itemKitCd;        
-                $kitchenObj['FKOTNo'] = $fKotNo;          
-                $kitchenObj['KOTNo'] = $kotNo;
-                $kitchenObj['UKOTNo'] = $newUKOTNO;       
-                $kitchenObj['TableNo'] = $tableNo;
-                $kitchenObj['MergeNo'] = $this->rest->getMergeNoByCNo($CNo);
-
-                $text = $kitchenObj['MergeNo'];
-                $word = "~";
-                if (strpos($text, $word) !== false) {
-                    $mergeNo = $kitchenObj['MergeNo'];
-                    $whr = "MergeNo = '$mergeNo'";
-                    $kmd = $this->db2->select("CNo, MCNo")
-                                ->order_by('CNo', 'ASC')
-                                ->where($whr)
-                                ->get_where('KitchenMain', array('BillStat' => 0, 'EID' => $EID))
-                                ->row_array();
-                    if(!empty($kmd)){
-                        $kitchenObj['MCNo'] = $kmd['MCNo'];
-                    }
-                }
-
-                $kitchenObj['ItemId'] = $itemIds[$i];
-                $kitchenObj['Qty'] = $itemQty[$i];
-                $kitchenObj['TA'] = $take_away[$i];
-                $kitchenObj['PckCharge'] = 0;
-                if($kitchenObj['TA'] == 1){
-                    $kitchenObj['PckCharge'] = $pckValue[$i];
-                }
-                $kitchenObj['CustRmks'] = $itemRemarks[$i];
-                $kitchenObj['ItmRate'] = $ItmRate[$i];
-                $kitchenObj['OrigRate'] = $origRates[$i];
-                $kitchenObj['Stat'] = $stat;
-                if(!empty($phone)){
-                    $kitchenObj['CellNo'] = $CountryCd.$phone;
-                }else{
-                    $kitchenObj['CellNo'] = 0;
-                }
-                $kitchenObj['Itm_Portion'] = $Itm_Portion[$i];
-                $kitchenObj['TaxType'] = $taxtype[$i];
-                $kitchenObj['ItemTyp'] = $ItemTyp[$i];
-                $kitchenObj['SeatNo'] = $seatNo;
-                $kitchenObj['DCd'] = $DCd[$i];
-                $kitchenObj['SchCd'] = $SchCd[$i];
-                $kitchenObj['SDetCd'] = $SDetCd[$i];
-                $kitchenObj['CustItem'] = $CustItem[$i];
-                $kitchenObj['CustItemDesc'] = $CustItemDesc[$i];
-                $kitchenObj['langId'] =$this->session->userdata('site_lang');
-                // edt
-                $date = date("Y-m-d H:i:s");
-                $date = strtotime($date);
-                $time = $prep_time[$i];
-                $date = strtotime("+" . $time . " minute", $date);
-                $edtTime = date('H:i', $date);
-                // edt
-                $kitchenObj['EDT'] = $edtTime;
-                $kitchenObj['LoginCd'] = authuser()->RUserId;
+                $CustItem = !empty($_POST['CustItem'])?$_POST['CustItem']:0;
+                $CustItemDesc = !empty($_POST['CustItemDesc'])?$_POST['CustItemDesc']:'Std';
                 
-                insertRecord('Kitchen', $kitchenObj);
-
-                $orderAmount = $orderAmount + $ItmRate[$i];
-            }
-            // billbased offer
-            $SchType = $this->session->userdata('SchType');
-            if(in_array($SchType, array(1,3))){
-                $billOffer = billBasedOffer();
-                if(!empty($billOffer)){
-                    $dis = 0;
-                    if($orderAmount >= $billOffer['MinBillAmt']){
-                        if($billOffer['Disc_pcent'] > 0){
-                            $dis = ($orderAmount * $billOffer['Disc_pcent']) / 100;
-                            $dis = round($dis);
-                        }else{
-                             if($billOffer['Disc_Amt'] > 0){
-                                $dis = $billOffer['Disc_Amt'];
-                            }   
-                        }
-                    }
-                    updateRecord('KitchenMain', array('BillDiscAmt' => $dis), array('CNo' => $CNo, 'EID' => $EID));
+                $CountryCd = $_POST['CountryCd'];
+                if(!empty($CountryCd)){
+                    $this->session->set_userdata('pCountryCd', $CountryCd);
                 }
-            }
-            // end of billbased offer
 
-            // delete from temp kitchen
-            // deleteRecord('tempKitchen', array('TableNo' => $tableNo, 'EID' => $EID));
-            $this->db2->query("DELETE FROM tempKitchen where TableNo = '$tableNo' or MergeNo = '$MergeNo' and EID = '$EID'");
-            // end delete from temp kitchen
+                $CustId = 0;
+                if(!empty($phone)){
+                    $CustId = createCustUser($phone);
+                }
 
-            $url = base_url('restaurant/kot_print/').$CNo.'/'.$tableNo.'/'.$fKotNo.'/'.$kotNo;
-            $dArray = array('MCNo' => $CNo, 'MergeNo' => $tableNo,'FKOTNo' => $fKotNo,'KOTNo' => $kotNo,'sitinKOTPrint' => $this->session->userdata('sitinKOTPrint'), 'url' => $url);
+                if ($CNo == 0) {
+                    if(!empty($phone)){
 
-            if ($data_type == 'bill' || $data_type == 'kot_bill') {
-
-                $MergeNo = $tableNo;
-
-                $lname = "m.Name$langId";
-                $ipName = "ip.Name$langId";
-
-                $kitcheData = $this->db2->query("SELECT (case when $lname != '-' Then $lname ELSE m.Name1 end) as ItemNm, sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt, k.CustItemDesc, km.MCNo, km.MergeNo, k.FKOTNo, k.KOTNo, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotItemDisc,(SELECT sum(k1.PckCharge*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotPckCharge, (case when $ipName != '-' Then $ipName ELSE ip.Name1 end) as Portions, km.CNo,km.MergeNo, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.CustId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.MCNo AND km.MCNo IN (Select km1.MCNo from KitchenMain km1 where km1.MergeNo=$MergeNo group by km1.MergeNo) group by km.MCNo, k.ItemId, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.Name1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by k.TaxType, m.Name1 Asc")->result_array();
-
-                $taxDataArray = array();
-
-                if(!empty($kitcheData)){
-                    $initil_value = $kitcheData[0]['TaxType'];
-                    $orderAmt = 0;
-                    $discount = 0;
-                    $charge = 0;
-                    $total = 0;
-                    $SubAmtTax = 0;
-                    $MergeNo = $kitcheData[0]['MergeNo'];
-                    $CNo = $kitcheData[0]['CNo'];
-
-                    $per_cent = 1;
-                    $TaxRes = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo, $per_cent);
-
-                    $taxDataArray = $TaxRes['taxDataArray'];
-
-                    foreach ($kitcheData as $kit ) {
-
-                        $orderAmt = $orderAmt + $kit['OrdAmt'];
-                        
+                        $this->db2->set('visit', 'visit+1', FALSE);
+                        $this->db2->set('DelAddress', $customerAddress);
+                        $this->db2->where('CustId', $CustId);
+                        $this->db2->update('Users');
                     }
 
-                    foreach ($taxDataArray as $tax) {
-                        foreach ($tax as $key) {
-                            if($key['Included'] >= 5){
-                                $SubAmtTax = $SubAmtTax + round($key['SubAmtTax'], 2);
+                    $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo, $MergeNo, $data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd);
+                    if($orderType == 8){
+                        updateRecord('Eat_tables', array('Stat' => 1), array('TableNo' => $tableNo, 'EID' => $EID));
+                    }
+                }else{
+                    $oldSeatNo = getSeatNo($CNo);
+                    if($oldSeatNo != $seatNo){
+                        $CNo = 0;
+                        $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo, $MergeNo, $data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd);
+                    }    
+                }
+
+                if ($KOTNo == 0) {
+                    // To generate new KOTNo
+                    $kotNoCount = $this->db2->query("SELECT Max(KOTNo + 1) as tKot from Kitchen where DATE(LstModDt) = CURDATE() AND EID = $EID")->result_array();
+
+                    if ($kotNoCount[0]['tKot'] == '') {
+                        $kotNo = 1;
+                    } else {
+                        $kotNo = $kotNoCount[0]['tKot'];
+                    }
+
+                    $KOTNo = $kotNo;
+                    $oldKitCd = 0;
+
+                    $this->session->set_userdata('KOTNo', $kotNo);
+                    $this->session->set_userdata('oldKitCd', 0);
+                }
+
+                $oldKitCd = $this->session->userdata('oldKitCd');
+                $fKotNo = $KOTNo;
+
+                $success = [];
+
+                $oldKitCd = 0;
+                
+                $orderAmount = 0;
+                $itemKitCd = 0;
+                $newUKOTNO = 0;
+
+                $stat = ($EType == 5)?3:2;
+
+                for ($i = 0; $i < sizeof($itemIds); $i++) {
+                    $itemKitCd = $itemKitCds[$i];
+
+                        if ($MultiKitchen > 1) {
+                        
+                            if ($oldKitCd != $itemKitCds[$i]) {
+                                // $itemKitCd = $itemKitCds[$i];
+                                $getFKOT = $this->db2->query("SELECT max(FKOTNO) as FKOTNO FROM Kitchen WHERE EID=$EID AND KitCd = $itemKitCd and MergeNo = '$tableNo' and Stat = $stat")->result_array();
+                                $fKotNo = $getFKOT[0]['FKOTNO'];
+                                $fKotNo = $fKotNo + 1;
+                                
+                                $newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
+                                $this->session->set_userdata('oldKitCd', $itemKitCd);
+                            }else{
+                                // next ukot                    
+                                $newUKOTNO = date('dmy_') . $itemKitCd . "_" . $KOTNo . "_" . $fKotNo;
                             }
                         }
+                        // $oldKitCd = $itemKitCd;
+
+                    $kitchenObj['CNo'] = $CNo;
+                    $kitchenObj['MCNo'] = $CNo;
+                    $kitchenObj['CustId'] = $CustId;
+                    $kitchenObj['EID'] = $EID;
+                    $kitchenObj['ChainId'] = $ChainId;
+                    $kitchenObj['OType'] = $orderType;
+                    if ($orderType == 101) {
+                        $kitchenObj['TPRefNo'] = $thirdPartyRef;
+                        $kitchenObj['TPId'] = $thirdParty;
+                    }
+                    $kitchenObj['KitCd'] = $itemKitCd;        
+                    $kitchenObj['FKOTNo'] = $fKotNo;          
+                    $kitchenObj['KOTNo'] = $kotNo;
+                    $kitchenObj['UKOTNo'] = $newUKOTNO;       
+                    $kitchenObj['TableNo'] = $tableNo;
+                    $kitchenObj['MergeNo'] = $this->rest->getMergeNoByCNo($CNo);
+
+                    $text = $kitchenObj['MergeNo'];
+                    $word = "~";
+                    if (strpos($text, $word) !== false) {
+                        $mergeNo = $kitchenObj['MergeNo'];
+                        $whr = "MergeNo = '$mergeNo'";
+                        $kmd = $this->db2->select("CNo, MCNo")
+                                    ->order_by('CNo', 'ASC')
+                                    ->where($whr)
+                                    ->get_where('KitchenMain', array('BillStat' => 0, 'EID' => $EID))
+                                    ->row_array();
+                        if(!empty($kmd)){
+                            $kitchenObj['MCNo'] = $kmd['MCNo'];
+                        }
                     }
 
-                    $orderAmt = $orderAmt + $SubAmtTax;
-
-                    $this->session->set_userdata('TipAmount', 0);
-                    $this->session->set_userdata('itemTotalGross', $orderAmt);
-
-                    $this->session->set_userdata('ONo', 0);
-                    $this->session->set_userdata('CustNo', 0);
-                    $this->session->set_userdata('COrgId', 0);
-                    $this->session->set_userdata('CellNo', '-');
-                    
-                    $charge =  $kitcheData[0]['TotPckCharge'] + $kitcheData[0]['DelCharge'];
-                    $discount = $kitcheData[0]['TotItemDisc'] + $kitcheData[0]['RtngDiscAmt'] + $kitcheData[0]['BillDiscAmt']; 
-                    // grand total
-                    $srvCharg = ($orderAmt * $kitcheData[0]['ServChrg']) / 100;
-                    $total = $orderAmt + $srvCharg + $charge - $discount;
-
-                    $postData["orderAmount"] = $total;
-                    $postData["paymentMode"] = 'RCash';
-                    $postData["MergeNo"] = $MergeNo;
-                    $postData["TableNo"] = $MergeNo;
-                    $postData["cust_discount"] = 0;
-
-                    $custId = $kitcheData[0]['CustId'];
-                    $this->session->set_userdata('CustId', $custId);
-                    $res = billCreate($EID, $CNo, $postData);
-                    if($res['status'] > 0){  
-                        $response = [
-                            "status" => 1,
-                            "msg" => "Bill Created.",
-                            "data" => array('billId' => $res['billId'], 'MergeNo' => $kitcheData[0]['MergeNo'], 'MCNo' => $kitcheData[0]['MCNo'], 'FKOTNo' => $kitcheData[0]['FKOTNo'], 'KOTNo' => $kitcheData[0]['KOTNo'])
-                        ];      
+                    $kitchenObj['ItemId'] = $itemIds[$i];
+                    $kitchenObj['Qty'] = $itemQty[$i];
+                    $kitchenObj['TA'] = $take_away[$i];
+                    $kitchenObj['PckCharge'] = 0;
+                    if($kitchenObj['TA'] == 1){
+                        $kitchenObj['PckCharge'] = $pckValue[$i];
+                    }
+                    $kitchenObj['CustRmks'] = $itemRemarks[$i];
+                    $kitchenObj['ItmRate'] = $ItmRate[$i];
+                    $kitchenObj['OrigRate'] = $origRates[$i];
+                    $kitchenObj['Stat'] = $stat;
+                    if(!empty($phone)){
+                        $kitchenObj['CellNo'] = $CountryCd.$phone;
                     }else{
-                        $response = [
-                            "status" => 0,
-                            "msg" => $this->lang->line('billingError')
-                        ];
+                        $kitchenObj['CellNo'] = 0;
+                    }
+                    $kitchenObj['Itm_Portion'] = $Itm_Portion[$i];
+                    $kitchenObj['TaxType'] = $taxtype[$i];
+                    $kitchenObj['ItemTyp'] = $ItemTyp[$i];
+                    $kitchenObj['SeatNo'] = $seatNo;
+                    $kitchenObj['DCd'] = $DCd[$i];
+                    $kitchenObj['SchCd'] = $SchCd[$i];
+                    $kitchenObj['SDetCd'] = $SDetCd[$i];
+                    $kitchenObj['CustItem'] = $CustItem[$i];
+                    $kitchenObj['CustItemDesc'] = $CustItemDesc[$i];
+                    $kitchenObj['langId'] =$this->session->userdata('site_lang');
+                    // edt
+                    $date = date("Y-m-d H:i:s");
+                    $date = strtotime($date);
+                    $time = $prep_time[$i];
+                    $date = strtotime("+" . $time . " minute", $date);
+                    $edtTime = date('H:i', $date);
+                    // edt
+                    $kitchenObj['EDT'] = $edtTime;
+                    $kitchenObj['LoginCd'] = authuser()->RUserId;
+                    
+                    insertRecord('Kitchen', $kitchenObj);
+
+                    $orderAmount = $orderAmount + $ItmRate[$i];
+                }
+                // billbased offer
+                $SchType = $this->session->userdata('SchType');
+                if(in_array($SchType, array(1,3))){
+                    $billOffer = billBasedOffer();
+                    if(!empty($billOffer)){
+                        $dis = 0;
+                        if($orderAmount >= $billOffer['MinBillAmt']){
+                            if($billOffer['Disc_pcent'] > 0){
+                                $dis = ($orderAmount * $billOffer['Disc_pcent']) / 100;
+                                $dis = round($dis);
+                            }else{
+                                 if($billOffer['Disc_Amt'] > 0){
+                                    $dis = $billOffer['Disc_Amt'];
+                                }   
+                            }
+                        }
+                        updateRecord('KitchenMain', array('BillDiscAmt' => $dis), array('CNo' => $CNo, 'EID' => $EID));
                     }
                 }
-                
+                // end of billbased offer
+                // delete from temp kitchen
+                // deleteRecord('tempKitchen', array('TableNo' => $tableNo, 'EID' => $EID));
+                $this->db2->query("DELETE FROM tempKitchen where TableNo = '$tableNo' or MergeNo = '$MergeNo' and EID = '$EID'");
+                // end delete from temp kitchen
+
+                $url = base_url('restaurant/kot_print/').$CNo.'/'.$tableNo.'/'.$fKotNo.'/'.$kotNo;
+                $dArray = array('MCNo' => $CNo, 'MergeNo' => $tableNo,'FKOTNo' => $fKotNo,'KOTNo' => $kotNo,'sitinKOTPrint' => $this->session->userdata('sitinKOTPrint'), 'url' => $url);
+
+                if ($data_type == 'bill' || $data_type == 'kot_bill') {
+
+                    $MergeNo = $tableNo;
+
+                    $lname = "m.Name$langId";
+                    $ipName = "ip.Name$langId";
+
+                    $kitcheData = $this->db2->query("SELECT (case when $lname != '-' Then $lname ELSE m.Name1 end) as ItemNm, sum(k.Qty) as Qty ,k.ItmRate,  (k.OrigRate*sum(k.Qty)) as OrdAmt, k.CustItemDesc, km.MCNo, km.MergeNo, k.FKOTNo, k.KOTNo, (SELECT sum(k1.OrigRate-k1.ItmRate) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotItemDisc,(SELECT sum(k1.PckCharge*k1.Qty) from Kitchen k1 where (k1.CNo=km.CNo or k1.CNo=km.MCNo) and k1.MCNo=km.MCNo and k1.EID=km.EID AND (k1.Stat = 3) GROUP BY k1.EID, k1.MCNo) as TotPckCharge, (case when $ipName != '-' Then $ipName ELSE ip.Name1 end) as Portions, km.CNo,km.MergeNo, km.BillDiscAmt, km.DelCharge, km.RtngDiscAmt, date(km.LstModDt) as OrdDt, k.Itm_Portion, k.TaxType,  c.ServChrg, c.Tips,e.Name,km.CustId  from Kitchen k, KitchenMain km, MenuItem m, Config c, Eatary e, ItemPortions ip where k.Itm_Portion = ip.IPCd and e.EID = c.EID AND c.EID = km.EID AND k.ItemId=m.ItemId and ( k.Stat = $stat) and km.EID = k.EID and km.EID = $EID And k.BillStat = 0 and km.BillStat = 0 and k.CNo = km.MCNo AND km.MCNo IN (Select km1.MCNo from KitchenMain km1 where km1.MergeNo=$MergeNo group by km1.MergeNo) group by km.MCNo, k.ItemId, k.ItmRate,k.ItemTyp,k.CustItemDesc, k.Itm_Portion, m.Name1, date(km.LstModDt), k.TaxType, ip.Name1, c.ServChrg, c.Tips  order by k.TaxType, m.Name1 Asc")->result_array();
+
+                    $taxDataArray = array();
+
+                    if(!empty($kitcheData)){
+                        $initil_value = $kitcheData[0]['TaxType'];
+                        $orderAmt = 0;
+                        $discount = 0;
+                        $charge = 0;
+                        $total = 0;
+                        $SubAmtTax = 0;
+                        $MergeNo = $kitcheData[0]['MergeNo'];
+                        $CNo = $kitcheData[0]['CNo'];
+
+                        $per_cent = 1;
+                        $TaxRes = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo, $per_cent);
+
+                        $taxDataArray = $TaxRes['taxDataArray'];
+
+                        foreach ($kitcheData as $kit ) {
+
+                            $orderAmt = $orderAmt + $kit['OrdAmt'];
+                            
+                        }
+
+                        foreach ($taxDataArray as $tax) {
+                            foreach ($tax as $key) {
+                                if($key['Included'] >= 5){
+                                    $SubAmtTax = $SubAmtTax + round($key['SubAmtTax'], 2);
+                                }
+                            }
+                        }
+
+                        $orderAmt = $orderAmt + $SubAmtTax;
+
+                        $this->session->set_userdata('TipAmount', 0);
+                        $this->session->set_userdata('itemTotalGross', $orderAmt);
+
+                        $this->session->set_userdata('ONo', 0);
+                        $this->session->set_userdata('CustNo', 0);
+                        $this->session->set_userdata('COrgId', 0);
+                        $this->session->set_userdata('CellNo', '-');
+                        
+                        $charge =  $kitcheData[0]['TotPckCharge'] + $kitcheData[0]['DelCharge'];
+                        $discount = $kitcheData[0]['TotItemDisc'] + $kitcheData[0]['RtngDiscAmt'] + $kitcheData[0]['BillDiscAmt']; 
+                        // grand total
+                        $srvCharg = ($orderAmt * $kitcheData[0]['ServChrg']) / 100;
+                        $total = $orderAmt + $srvCharg + $charge - $discount;
+
+                        $postData["orderAmount"] = $total;
+                        $postData["paymentMode"] = 'RCash';
+                        $postData["MergeNo"] = $MergeNo;
+                        $postData["TableNo"] = $MergeNo;
+                        $postData["cust_discount"] = 0;
+
+                        $custId = $kitcheData[0]['CustId'];
+                        $this->session->set_userdata('CustId', $custId);
+                        $res = billCreate($EID, $CNo, $postData);
+                        if($res['status'] > 0){  
+                            $response = [
+                                "status" => 1,
+                                "msg" => "Bill Created.",
+                                "data" => array('billId' => $res['billId'], 'MergeNo' => $kitcheData[0]['MergeNo'], 'MCNo' => $kitcheData[0]['MCNo'], 'FKOTNo' => $kitcheData[0]['FKOTNo'], 'KOTNo' => $kitcheData[0]['KOTNo'])
+                            ];      
+                        }else{
+                            $response = [
+                                "status" => 0,
+                                "msg" => $this->lang->line('billingError')
+                            ];
+                        }
+                    }
+                    
+                }else{
+                    $response = [
+                            "status" => 1,
+                            "msg" => "success",
+                            "data" => $dArray 
+                        ];
+                }
             }else{
-                $response = [
-                        "status" => 1,
-                        "msg" => "success",
-                        "data" => $dArray 
-                    ];
+                $response = array(
+                            "status" => 2,
+                            "msg" => $this->lang->line('pleaseSelecttheOptionsForComboItem')
+                        );
             }
-            
+
             $CNo = 0;
             $KOTNo = 0;
             echo json_encode($response);

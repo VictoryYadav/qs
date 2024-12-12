@@ -916,7 +916,7 @@
                 dataType: "json",
                 success: (response) => {
                     console.log(response);
-                    if (response.status) {
+                    if (response.status == 1) {
 
                         alert("<?= $this->lang->line('orderPlacedSuccessfully'); ?>");
                         
@@ -942,7 +942,10 @@
                             }
                         }
                         
-                    } else {
+                    } else if(response.status == 2){
+                        alert(response.msg);
+                        $(`#btnOrder`).attr('disabled', false);
+                    }else {
                         alert("Failed To Place Order");
                         location.reload();
                     }

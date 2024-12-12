@@ -622,8 +622,9 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                     });
                 if(res.flag == 2){
                     getSendToKitchenList();   
+                }else{
+                    window.location = "<?php echo base_url('customer'); ?>";
                 }
-                window.location = "<?php echo base_url('customer'); ?>";
             }else{
               alert(res.response);
             }
