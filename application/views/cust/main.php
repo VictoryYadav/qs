@@ -1184,7 +1184,7 @@
                                     var details = customItem[i].Details;
                                     
                                     for(var c=0; c < details.length; c++){
-                                        var rate = (itemTyp == 125)?0:details[r].Rate;
+                                        var rate = (itemTyp == 125)?0:details[c].Rate;
                                         var name = "'"+details[c].Name+"'";
                                         tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+itemTyp+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+rate+')</span></li>';
                                     }
