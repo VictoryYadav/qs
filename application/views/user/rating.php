@@ -259,7 +259,12 @@ $folder = 'e'.$EID;
                         </li>
                     </ul>
                 </div>
-                <div class="col-md-8 col-sm-8 col-8 text-right">
+
+                <div class="col-md-4 col-sm-4 col-4 text-right">
+                    <h3> <?= $this->session->userdata('restName'); ?></h3>
+                </div>
+                
+                <div class="col-md-4 col-sm-4 col-4 text-right">
                     <ul class="list-inline product-meta">
 
                         <li class="list-inline-item">

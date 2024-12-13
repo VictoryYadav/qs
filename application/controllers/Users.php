@@ -39,6 +39,7 @@ class Users extends CI_Controller {
                     $this->session->set_userdata('EType',$req[8]);
                     $this->session->set_userdata('CustId',$req[9]);
                     $this->session->set_userdata('restName',$req[10]);
+                    $this->session->set_userdata('Rating',$req[11]);
                     redirect(base_url('users/pay/'.$billId.'/'.$MCNo));    
                 }
             }
@@ -364,7 +365,6 @@ class Users extends CI_Controller {
         $CustId = $this->session->userdata('CustId');
 
         $data['CustNo'] = 0;
-        $data['CellNo'] = $this->session->userdata('CellNo');
 
         $dbname = $this->session->userdata('my_db');
 
@@ -384,6 +384,7 @@ class Users extends CI_Controller {
             $data['gstno'] = $billData[0]['GSTno'];
             $data['fssaino'] = $billData[0]['FSSAINo'];
             $data['cinno'] = $billData[0]['CINNo'];
+            $data['CellNo'] = $billData[0]['CellNo'];
             $data['billno'] = $billData[0]['BillNo'];
             $data['dateOfBill'] = date('d-m-Y @ H:i', strtotime($billData[0]['BillDt']));
             $data['address'] = $billData[0]['Addr'];
@@ -406,6 +407,7 @@ class Users extends CI_Controller {
             $data['total_delivery_charge_amount'] = $billData[0]['DelCharge'];
 
             $data['billData'] = $res['billData'];
+
             $this->load->view('user/billing', $data);
         }else{
             $this->load->view('cust/billing_not', $data);

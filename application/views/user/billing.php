@@ -25,11 +25,6 @@ $folder = 'e'.$EID;
             font-family: Montserrat Regular;
         }
 
-        .remove-margin {
-            margin-left: 0px;
-            margin-right: 0px;
-        }
-
         .img-category {
             height: 95px;
             width: 125px;
@@ -260,8 +255,10 @@ $folder = 'e'.$EID;
 
 .payment-btns 
 {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
 
 .paybtn 
@@ -317,7 +314,12 @@ $folder = 'e'.$EID;
                         </li>
                     </ul>
                 </div>
-                <div class="col-md-8 col-sm-8 col-8 text-right">
+
+                <div class="col-md-4 col-sm-4 col-4 text-right">
+                    <h3> <?= $this->session->userdata('restName'); ?></h3>
+                </div>
+
+                <div class="col-md-4 col-sm-4 col-4 text-right">
                     <ul class="list-inline product-meta">
 
                         <li class="list-inline-item">
@@ -546,13 +548,13 @@ $folder = 'e'.$EID;
                                     </tr>
                             <?php   }?>
 
-                            <?php
-                                if($total_discount_amount != 0 || $total_packing_charge_amount || $total_delivery_charge_amount){?>
-                                <tr style=" border-bottom: 1px solid;">
-                                    <th></th>
-                                    <td></td>
-                                </tr>
-                            <?php   } ?>
+                            <?php  
+                            if($billData[0]['discId'] > 0) { ?>
+                            <tr style="border-bottom: 1px solid black;">
+                                <td><?= $billData[0]['discountName']; ?> Discount @ <?= $billData[0]['discPcent']; ?>%</td>
+                                <td style="text-align: right;"><?= $billData[0]['autoDiscAmt']; ?></td>
+                            </tr>
+                            <?php } ?>
                         
                             <tr>
                                 <td style="font-weight: bold;">GRAND TOTAL</td>
@@ -566,12 +568,13 @@ $folder = 'e'.$EID;
             </div>
 
             <div id="editor"></div>
-                
-            <div class="row remove-margin payment-btns fixed-bottom" style=" width: 100%; margin-left: 1px;bottom: 60px !important;">
+            <?php if($this->session->userdata('Rating') > 0){ ?>    
+            <div class="row container payment-btns fixed-bottom" style=" width: 100%; margin-left: 1px;bottom: 60px !important;">
 
                 <a href="<?= base_url('users/rating/'.$billId);?>" class="btn btn-sm paybtn">Rating</a>
-
             </div>
+            <?php } ?>    
+
         </div>
     </section>
 
