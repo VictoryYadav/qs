@@ -1028,12 +1028,12 @@ class Customer extends CI_Controller {
 
                         updateRecord('KitchenMain', array('BillDiscAmt' => $kd['ItmDiscount']), array('CNo' => $CNo, 'EID' => $EID));
                     }
-
+                    
                     $i=0;
                     foreach ($_POST['OrdNo'] as $OrdNo ) {
                         $temp['OrdNo'] = $OrdNo;
                         $temp['qty'] = $_POST['qty'][$i];
-                        
+   
                         updateRecord('Kitchen', array('Qty' => $temp['qty'],'Stat' => $stat), array('OrdNo' => $OrdNo, 'EID' => $EID));
                         $i++;
                     }
@@ -1657,6 +1657,7 @@ class Customer extends CI_Controller {
         $res = array();
         $CellNo = $this->session->userdata('CellNo');
         $EType = $this->session->userdata('EType');
+        $restName = $this->session->userdata('restName');
         $pMCNo = 0;
         $pBillId = 0;
         $linkData = array();
@@ -1705,7 +1706,7 @@ class Customer extends CI_Controller {
                     if($res['status'] == 1){
                         $billId = $res['billId'];
                         $my_db = $this->session->userdata('my_db');
-                        $url = $EID . "_b_" . $billId . "_" .$my_db. "_" . $CNo. "_" . $pData['CellNo']. "_" . $pData['MergeNo']. "_" . $pData['orderAmount'];
+                        $url = $EID . "_b_" . $billId . "_" .$my_db. "_" . $CNo. "_" . $pData['CellNo']. "_" . $pData['MergeNo']. "_" . $pData['orderAmount']. "_" . $EType. "_" . $pData['CustId']. "_" . $restName;
 
                         $url = base64_encode($url);
                         $url = rtrim($url, "=");
@@ -2100,8 +2101,11 @@ class Customer extends CI_Controller {
             $EID = authuser()->EID;
             $CNo = $this->session->userdata('CNo');
             $CellNo = $this->session->userdata('CellNo');
-            $MergeNo = $this->session->userdata('MergeNo');
+            $CustId = $this->session->userdata('CustId');
+            $restName = $this->session->userdata('restName');
             $EType = $this->session->userdata('EType');
+            
+            $MergeNo = $this->session->userdata('MergeNo');
             $res = billCreate($EID, $CNo, $pData);
             
             if(!empty($res)){
@@ -2113,7 +2117,7 @@ class Customer extends CI_Controller {
                     $response = $dt;
 
                     $my_db = $this->session->userdata('my_db');
-                    $url = $EID . "_b_" . $res['billId'] . "_" .$my_db. "_" . $CNo. "_" . $CellNo. "_" . $MergeNo. "_" . $pData['orderAmount']. "_" . $EType;
+                    $url = $EID . "_b_" . $res['billId'] . "_" .$my_db. "_" . $CNo. "_" . $CellNo. "_" . $MergeNo. "_" . $pData['orderAmount']. "_" . $EType. "_" . $CustId. "_" . $restName;
 
                     $url = base64_encode($url);
                     $url = rtrim($url, "=");

@@ -371,14 +371,13 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                             template += ` <td>${italicItem}</td> `;
                         }
 
-                        template += ` <input type="hidden" name="OrdNo[]" value="${item.OrdNo}" /><input type="hidden" id="tmp_itmrate_${item.OrdNo}" value="${item.tmpItmRate}" /><input type="hidden" id="tmp_origrate_${item.OrdNo}" value="${item.tmpOrigRate}" /><td >
+                        template += ` <input type="hidden" name="OrdNo[]" value="${item.OrdNo}" /><input type="hidden" id="tmp_itmrate_${item.OrdNo}" value="${item.tmpItmRate}" /><input type="hidden" id="tmp_origrate_${item.OrdNo}" value="${item.tmpOrigRate}" /><input type="hidden" value="${item.ItemTyp}" name="ItemTyp[]"><input type="hidden"  value="${item.CustItemDesc}" name="CustItemDesc[]"><td >
                             <div class="input-group" style="width: 94px;height: 23px;margin-left: 5px;">
                                 <span class="input-group-btn">
                                     <button type="button" id="minus-qty${item.OrdNo}" class="btn btn-default btn-number" data-type="minus" style="background-color: #0a88ff;color: #fff;    border-radius: 0px; padding: 1px 7px;height: 25px;"  onclick="decQty(${item.OrdNo})" ${btndisable}>-
                                     </button>
                                 </span>
-                                <input type="hidden" id="qty-val${item.OrdNo}" value="${item.ItemTyp}" name="ItemTyp[]">
-                                <input type="hidden" id="qty-val${item.OrdNo}" value="${item.CustItemDesc}" name="CustItemDesc[]">
+                                
                                 <input type="hidden" id="qty-val${item.OrdNo}" value="${item.Qty}" name="qty[]">
                                 <input type="text" readonly="" id="qty-valView${item.OrdNo}" class="form-control input-number" value="${convertToUnicodeNo(item.Qty)}" min="1" max="10" style="text-align: center; height:20px;">
                                 <span class="input-group-btn">

@@ -14,29 +14,21 @@ $folder = 'e'.$EID;
         height: -webkit-fill-available;
     }
 
-    .payment-btns {
-        padding-left: 10px;
-        padding-right: 10px;
+    .payment-btns 
+    {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 
     .order-list {
-        padding-left: 15px;
-        padding-right: 15px;
-        overflow: scroll;
-        height: 350px;
+        /*padding-left: 15px;
+        padding-right: 15px;*/
+        height: 400px;
+        overflow: auto;
+        overflow-x: hidden;
         /*cursor: all-scroll;*/
-    }
-
-    .order-list::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    .order-list::-webkit-scrollbar-track {
-        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
-    }
-    .order-list::-webkit-scrollbar-thumb {
-        background-color: white;
-        /*outline: 1px solid slategrey;*/
     }
 
     .order-list tr {
@@ -408,7 +400,7 @@ $folder = 'e'.$EID;
                     </table>
                 </div>
 
-                <div class="row remove-margin payment-btns">
+                <div class="row container payment-btns fixed-bottom">
                         <!-- hidden field -->
                         <input type="hidden" id="mobileR" value="0">
                         <input type="hidden" id="custidR" value="0">
@@ -416,7 +408,7 @@ $folder = 'e'.$EID;
                         <button id="SubmitRating" type="button" class="btn btn-sm paybtn" onclick="SubmitRating()">Submit</button>
                         
                 </div>
-                <!-- <div class="sharethis-inline-share-buttons"></div> -->
+                
             </div>
 
         </div>

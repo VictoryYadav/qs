@@ -37,6 +37,8 @@ class Users extends CI_Controller {
                     $this->session->set_userdata('pymtENV',0);
                     $this->session->set_userdata('CNo',$MCNo);
                     $this->session->set_userdata('EType',$req[8]);
+                    $this->session->set_userdata('CustId',$req[9]);
+                    $this->session->set_userdata('restName',$req[10]);
                     redirect(base_url('users/pay/'.$billId.'/'.$MCNo));    
                 }
             }
@@ -196,7 +198,7 @@ class Users extends CI_Controller {
             $status = 'success';
             $response = "Your otp is ";
             $this->session->set_userdata('CellNo', $mobile);
-            $this->session->set_userdata('CustId', $CustId);
+            // $this->session->set_userdata('CustId', $CustId);
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -366,7 +368,7 @@ class Users extends CI_Controller {
 
         $dbname = $this->session->userdata('my_db');
 
-        $flag = 'rest';
+        $flag = 'cust';
         $res = getBillData($dbname, $EID, $billId, $CustId, $flag);
 
         if(!empty($res['billData'])){
@@ -416,6 +418,7 @@ class Users extends CI_Controller {
     }
 
     public function test(){
+        // $this->session->set_userdata('EType',5);
         echo "<pre>";
         print_r($_SESSION);
         die;

@@ -691,8 +691,6 @@
     })
 
     function send_to_kitchen(data_type){
-        // for combo item
-        // checkComboItemSelection();
 
         var MergeNo = '';
         var tableNo = 0;
@@ -1458,7 +1456,7 @@
                                     // item type = 125 so price will be 0
                                     var rate = (ItemTyp == 125)?0:details[r].Rate;
                                     var name = "'"+details[r].Name+"'";
-                                    tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+','+details[r].CalcType+', '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+rate+')</span></li>';
+                                    tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+','+ItemTyp+', '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+rate+')</span></li>';
                                 }
                                 tempRadio += '</ul>';
 
@@ -1475,7 +1473,7 @@
                                     // item type = 125 so price will be 0
                                     var rate = (ItemTyp == 125)?0:details[r].Rate;
                                     var name = "'"+details[c].Name+"'";
-                                    tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+details[r].CalcType+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+rate+')</span></li>';
+                                    tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+ItemTyp+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+rate+')</span></li>';
                                 }
                                 tempCHK += '</ul>';
                                 $('#checkboxOption').append(tempCHK);
@@ -1499,25 +1497,24 @@
             });
         }
 
-        function calculateTotalc(itemGrpCd, CalcType, index, itemName, event) {
+        function calculateTotalc(itemGrpCd, ItemTyp, index, itemName, event) {
             
             element = event.currentTarget;
             var rate = element.getAttribute('rate');
             // console.log('calc '+index, event.target.type, rate, itemName);
             if (event.target.type == "radio") {
-                if(CalcType == 0){
-                    this.radioRate[index] = parseInt(rate);
-                }else{
-                    this.checkboxRate[index] = 0;
+                this.radioRate[index] = parseInt(rate);
+                if(ItemTyp == 125){
+                    this.radioRate[index] = 0;
                 }
                 this.raidoGrpCd[index] = itemGrpCd;
                 this.radioName[index] = itemName;
             } else {
                 // console.log(event.target.checked);
                 if (event.target.checked) {
-                    if(CalcType == 0){
-                        this.checkboxRate[index] = parseInt(rate);
-                    }else{
+                    this.checkboxRate[index] = parseInt(rate);
+                    
+                    if(ItemTyp == 125){
                         this.checkboxRate[index] = 0;
                     }
                     this.checkboxName[index] = itemName;
@@ -1552,31 +1549,6 @@
             $('#custOfferOrigAmountView').val(this.OrigOfferTotal);
         }
 
-        function checkComboItemSelection(){
-            // mandatory radio options
-            if(groupNameList.length > 0){
-                var mandatory = false;
-                
-                var counter = 0;
-                var totalGroup = groupNameList.length;
-                for(var g=0; g<groupNameList.length;g++){ 
-                    //comment on and check this code mandatory = false;
-                    var groupName = document.getElementsByName(groupNameList[g]); 
-                      for(var i=0; i<groupName.length;i++){ 
-                          if(groupName[i].checked == true){ 
-                              mandatory = true;
-                              counter++;     
-                          } 
-                      } 
-                }
-                   
-                if(totalGroup != counter){
-                    alert("Please Choose the Required Field!!"); 
-                    return false; 
-                }
-            }
-        }
-
         $('#customOfferForm').on('submit', function(e){
             e.preventDefault();
             // mandatory radio options
@@ -1584,6 +1556,7 @@
                 var mandatory = false;
                 
                 var counter = 0;
+                var notSelect = '';
                 var totalGroup = groupNameList.length;
                 for(var g=0; g<groupNameList.length;g++){ 
                     //comment on and check this code mandatory = false;
@@ -1592,7 +1565,9 @@
                           if(groupName[i].checked == true){ 
                               mandatory = true;
                               counter++;     
-                          } 
+                          }else{
+                                notSelect = groupNameList[g];
+                              }
                       } 
                   }
                    
@@ -1601,7 +1576,7 @@
                   //     return false; 
                   // } 
                 if(totalGroup != counter){
-                    alert("Please Choose the Required Field!!"); 
+                    alert("Please Choose the Required Field "+notSelect); 
                     return false; 
                 }
             }

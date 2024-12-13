@@ -166,6 +166,13 @@
 
             <div class="row fixed-bottom text-center" style=" width: 100%;bottom: 53px !important;margin-left: 5px;">
                 <div class="container">
+                    <?php if($this->session->flashdata('error')): ?>
+                        <div class="">
+                            <span class="text-danger">
+                                <?= $this->session->flashdata('error') ?>
+                            </span>
+                        </div>
+                    <?php endif; ?>
                     <?php $width = "49%";
                         if($this->session->userdata('BillMergeOpt') > 0 && ($EType == 5)){ 
                             $width = "33%";
@@ -178,14 +185,6 @@
                     <?php } } ?>
                     <button class="btn btn-sm paybtn" onclick="payNow()" style="width:<?= $width; ?>"><?php echo  $this->lang->line('payNow'); ?></button>
                 </div>
-                    
-                    <?php if($this->session->flashdata('error')): ?>
-                        <div class="">
-                            <span class="text-danger">
-                                <?= $this->session->flashdata('error') ?>
-                            </span>
-                        </div>
-                    <?php endif; ?>
             </div>
 
             <div id="myOverlay"></div>

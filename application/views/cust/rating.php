@@ -6,29 +6,22 @@
         height: -webkit-fill-available;
     }
 
-    .payment-btns {
-        padding-left: 10px;
-        padding-right: 10px;
+    .payment-btns 
+    {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 
     .order-list {
-        padding-left: 15px;
-        padding-right: 15px;
-        overflow: scroll;
-        height: 350px;
+        /*padding-left: 15px;
+        padding-right: 15px;*/
+        height: 400px;
+        overflow: auto;
+        overflow-x: hidden;
+        /*scrollbar-color: #c1c1c1 #ededed;*/
         /*cursor: all-scroll;*/
-    }
-
-    .order-list::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    .order-list::-webkit-scrollbar-track {
-        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
-    }
-    .order-list::-webkit-scrollbar-thumb {
-        background-color: white;
-        /*outline: 1px solid slategrey;*/
     }
 
     .order-list tr {
@@ -249,19 +242,20 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
 
-                <div class="row remove-margin payment-btns">
-                        <input type="hidden" id="mobileR" value="0">
-                        <input type="hidden" id="custidR" value="0">
-                        <?php if(isset($_GET['rat'])){ ?>
-                        <button id="SubmitRating" type="button" class="btn btn-sm paybtn" style="width:50%;" onclick="SubmitRating()" disabled><?= $this->lang->line('submit'); ?></button>
-                        <?php }else{ ?>
-                        <a id="MenuBackButton"  class="btn btn-sm backbtn" width="50%" href="<?= base_url('customer'); ?>"><?= $this->lang->line('menu'); ?></a>
-                        <button id="SubmitRating" type="button" class="btn btn-sm paybtn" style="width:50%;" onclick="SubmitRating()"><?= $this->lang->line('submit'); ?></button>
-                        <?php } ?>
+            <div class="row container payment-btns fixed-bottom" style=" width: 100%;bottom: 53px !important;">
+
+                    <input type="hidden" id="mobileR" value="0">
+                    <input type="hidden" id="custidR" value="0">
+
+                    <?php if(isset($_GET['rat'])){ ?>
+                    <button id="SubmitRating" type="button" class="btn btn-sm paybtn" style="width:50%;" onclick="SubmitRating()" disabled><?= $this->lang->line('submit'); ?></button>
+                    <?php }else{ ?>
+                    <a id="MenuBackButton"  class="btn btn-sm backbtn" width="50%" href="<?= base_url('customer'); ?>"><?= $this->lang->line('menu'); ?></a>
+                    <button id="SubmitRating" type="button" class="btn btn-sm paybtn" style="width:50%;" onclick="SubmitRating()"><?= $this->lang->line('submit'); ?></button>
+                    <?php } ?>
                     <button id="shareRating" type="button" class="btn btn-sm paybtn" data-toggle="modal" data-target="#exampleModal" style="width:50%;display: none;" onclick=""><?= $this->lang->line('share'); ?></button>
-                </div>
-                
             </div>
 
         </div>

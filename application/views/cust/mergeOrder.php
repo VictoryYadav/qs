@@ -130,7 +130,7 @@
                                     $split_mobile[] = $ord['CellNo'];
                             ?>
 
-                            <tr onclick="getOrderDetails(<?= $ord['CNo']; ?>)" style="cursor: pointer;">
+                            <tr onclick="getOrderDetails(<?= $ord['CNo']; ?>, '<?= getName($ord['CustId']); ?>')" style="cursor: pointer;">
                                 <input type="hidden" name="mobile[]" value="<?= $ord['CellNo']; ?>">
                                 <input type="hidden" name="cust_id[]" value="<?= $ord['CustId']; ?>">
                                 <td>
@@ -234,9 +234,6 @@
             <div class="modal-content">
                 <div class="modal-header" style="background: #dbbd89;">
                     <p class="modal-title offers-txt text-white">Orders</p>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <i class="fa fa-times text-danger" aria-hidden="true"></i>
-                    </button>
                 </div>
 
                 <div class="modal-body">
@@ -249,7 +246,7 @@
                                     <th><?= $this->lang->line('value'); ?></th>
                                 </tr>
                             </thead>
-                            <tbody id="orderBody">
+                            <tbody id="orderBody1">
                             </tbody>
                       </table>
                     </div>
@@ -563,23 +560,33 @@
         $("#tips").val(convertToUnicodeNo(tips));
     }
 
-   function getOrderDetails(CNo){
+   function getOrderDetails(CNo, fullname){
     console.log('ff '+CNo);
         $.post('<?= base_url('customer/get_merge_order') ?>',{CNo:CNo},function(res){
             if(res.status == 'success'){
               
               var data = res.response;
-              var temp = '';
+              var temp = ``;
               var total = 0;
               var totalText = "<?= $this->lang->line('total'); ?>";
-              for (var i = 0; i < data.length; i++) {
-                total = parseInt(total) + parseInt(data[i].Qty * data[i].ItmRate);
-                  temp += '<tr><td>'+data[i].ItemNm+'</td><td>'+convertToUnicodeNo(data[i].Qty)+'</td><td>'+convertToUnicodeNo(data[i].Qty * data[i].ItmRate)+'</td></tr>';
+              // for (var i = 0; i < data.length; i++) {
+              //   total = parseInt(total) + parseInt(data[i].Qty * data[i].ItmRate);
+              //     temp += '<tr><td>'+data[i].ItemNm+'</td><td>'+convertToUnicodeNo(data[i].Qty)+'</td><td>'+convertToUnicodeNo(data[i].Qty * data[i].ItmRate)+'</td></tr>';
+              // }
+              // temp +='<tr><td></td><td>'+totalText+'</td><td><b>'+convertToUnicodeNo(total)+'</b></td></tr>';
+
+              if(data.length > 0){
+                data.forEach((item, index) => {
+                    total = parseInt(total) + parseInt(item.Qty * item.ItmRate);
+                    temp += `<tr><td>${item.ItemNm}</td><td>${item.Qty}</td><td>${item.Qty * item.ItmRate}</td></tr>`;     
+                });
+
+                temp += `<tr><td></td><td>${totalText}</td><td><b>${total}</b></td></tr>`;
               }
-              temp +='<tr><td></td><td>'+totalText+'</td><td><b>'+convertToUnicodeNo(total)+'</b></td></tr>';
-              $('#orderBody').html(temp);
+
+              $(`#orderBody1`).html(temp);
               $('#orderDetails').modal('show');
-              $('.offers-txt').html(data[0].CellNo);
+              $('.offers-txt').html(data[0].CellNo+' '+fullname);
             }else{
             }
         });
