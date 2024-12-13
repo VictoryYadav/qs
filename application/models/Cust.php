@@ -1232,9 +1232,10 @@ class Cust extends CI_Model{
                 	$this->session->set_userdata('billFlag',1);
                 }
                 $response = [
-                    "status" => 1,
-                    "msg" => "Bill Generated",
-                    "billId" => $lastInsertBillId
+                    "status" 	=> 1,
+                    "msg" 		=> "Bill Generated",
+                    "billId" 	=> $lastInsertBillId,
+                    "paidAmt" 	=> $billingObj['PaidAmt']
                 ];
 
             }

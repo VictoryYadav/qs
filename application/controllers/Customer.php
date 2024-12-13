@@ -2119,7 +2119,7 @@ class Customer extends CI_Controller {
                     $response = $dt;
 
                     $my_db = $this->session->userdata('my_db');
-                    $url = $EID . "_b_" . $res['billId'] . "_" .$my_db. "_" . $CNo. "_" . $CellNo. "_" . $MergeNo. "_" . $pData['orderAmount']. "_" . $EType. "_" . $CustId. "_" . $restName. "_" . $Rating;
+                    $url = $EID . "_b_" . $res['billId'] . "_" .$my_db. "_" . $CNo. "_" . $CellNo. "_" . $MergeNo. "_" . $res['PaidAmt']. "_" . $EType. "_" . $CustId. "_" . $restName. "_" . $Rating;
 
                     $url = base64_encode($url);
                     $url = rtrim($url, "=");
