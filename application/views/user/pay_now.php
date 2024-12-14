@@ -417,12 +417,10 @@ function goToBill(){
 
     if(payable == total){
         $.post('<?= base_url('users/updateCustPayment') ?>',{BillId:BillId, MCNo:MCNo},function(res){
-        
         });
         
-     window.location = '<?= base_url();?>users/bill/'+BillId;   
+        window.location = '<?= base_url();?>users/bill/'+BillId;
     }
-
     // setInterval(function(){ goToBill(); }, 3000);
 }
 

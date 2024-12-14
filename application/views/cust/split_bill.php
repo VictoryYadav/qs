@@ -112,7 +112,7 @@ body{
                                     <input type="text" placeholder="Percent" class="form-control percentRow" id="percentRow_<?php echo $count; ?>" onchange="calcPerAmt(<?php echo $count; ?>)" name="percent[]">
                                 </td>
                                 <td>
-                                    <input type="text" placeholder="Amount" class="form-control amountRow" id="amountRow_<?php echo $count; ?>" onchange="calcAmt(<?php echo $count; ?>)" required name="amount[]">
+                                    <input type="text" placeholder="Amount" class="form-control amountRow" id="amountRow_<?php echo $count; ?>" onchange="calcAmt(<?php echo $count; ?>)" required name="amount[]" value="0">
                                 </td>
                                 <td>
                                     <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>
@@ -122,7 +122,7 @@ body{
                         </tbody>
                     </table>
                 </div>
-                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('splitbill'); ?>">
+                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('splitbill'); ?>" id="btnBill">
             </form>
             
         </div>
@@ -156,13 +156,13 @@ body{
                     </select></td>
                     <td><input type="text" placeholder="Mobile" class="form-control" required name="mobile[]"><input type="hidden" value="0" class="form-control" name="custid[]"></td>
                     <td>
-                        <input type="text" class="form-control grossAmtRow" readonly="" name="totItemAmt[]" id="grossAmtRow_'+rowCount+'">
+                        <input type="text" class="form-control grossAmtRow" readonly="" name="totItemAmt[]" id="grossAmtRow_${rowCount}">
                     </td>
                     <td>
-                        <input type="number" name="percent[]" placeholder="Percent" class="form-control percentRow" id="percentRow_'+rowCount+'" onchange="calcPerAmt('+rowCount+')">
+                        <input type="number" name="percent[]" placeholder="Percent" class="form-control percentRow" id="percentRow_${rowCount}" onchange="calcPerAmt(${rowCount})">
                     </td>
                     <td>
-                        <input type="number" name="amount[]" placeholder="Amount" class="form-control amountRow" id="amountRow_'+rowCount+'" onchange="calcAmt('+rowCount+')" required>
+                        <input type="number" name="amount[]" placeholder="Amount" class="form-control amountRow" id="amountRow_${rowCount}" onchange="calcAmt(${rowCount})" required value="0">
                     </td>
                     <td>
                         <button class="btn btn btn-sm btn-danger removeRow"><i class="fa fa-trash"></i></button>
@@ -197,7 +197,7 @@ body{
 
         var rowCount = $('#splitTable tr').length - 1;
         var val = $('#splitType').val();
-        console.log(val+' ,row '+rowCount+', amt= '+totalAmt);
+        // console.log(val+' ,row '+rowCount+', amt= '+totalAmt);
         if(val > 0){
             if(val == 1){
                     var CellNo = "<?php echo $this->session->userdata('CellNo'); ?>";
@@ -233,6 +233,7 @@ body{
                     $('.percentRow').val(100);
                     $('.amountRow').val(totalAmt);
                     $('.grossAmtRow').val(grossAmt);
+                    calculateGrandTotal();
                 
             }else if(val == 2){
                 var per = 0;
@@ -250,6 +251,7 @@ body{
                 $('.percentRow').val(convertToUnicodeNo(per.toFixed(2)));
                 $('.amountRow').val(convertToUnicodeNo(amt.toFixed(2)));
                 $('.grossAmtRow').val(convertToUnicodeNo(grsAmt.toFixed(2)));
+                calculateGrandTotal();
             }else if(val == 3){
                 $('.percentRow').removeAttr("readonly");
                 $('.amountRow').attr("readonly", ""); 
@@ -285,6 +287,7 @@ body{
     $('#amountRow_'+rowCount).val(convertToUnicodeNo(amt.toFixed(2)));
 
     $('#percentRow_'+rowCount).val(convertToUnicodeNo(val));
+    calculateGrandTotal();
    }
 
    function calcAmt(rowCount){
@@ -299,6 +302,8 @@ body{
     $('#grossAmtRow_'+rowCount).val(convertToUnicodeNo(grossVal.toFixed(2)));
 
     $('#amountRow_'+rowCount).val(convertToUnicodeNo(val));
+
+    calculateGrandTotal();
    }
 
    $('#billForm').on('submit', function(e){
@@ -334,6 +339,23 @@ body{
             }
         });
    }
+
+   function calculateGrandTotal() {
+        $(`#btnBill`).prop('disabled', true);
+
+        var payable = "<?= $payable; ?>";
+        var grandTotal = 0;
+
+        $(".amountRow").each(function(index, el) {
+            val = $(this).val();
+            grandTotal = parseFloat(grandTotal) + parseFloat(val);
+        
+        });
+
+        if(grandTotal >= payable){
+            $(`#btnBill`).prop('disabled', false);
+        }
+    }
 
 </script>
 

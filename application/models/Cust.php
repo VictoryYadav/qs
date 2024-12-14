@@ -1248,11 +1248,13 @@ class Cust extends CI_Model{
 		$stat = ($EType == 5)?3:2;
 
 		$whr = " k.CNo = km.CNo ";
-		return $this->db2->select('km.CustId, m.ItemId,m.Name1,k.Qty ,k.ItmRate,  sum(k.OrigRate*k.Qty) as OrdAmt,km.CNo,km.CellNo, km.BillStat, k.Stat, km.MergeNo')
+		return $this->db2->select("km.CustId, m.ItemId,m.Name1,k.Qty ,k.ItmRate,  sum(k.OrigRate*k.Qty) as OrdAmt,km.CNo,km.CellNo, km.BillStat, k.Stat, km.MergeNo, CONCAT_WS(' ', u.FName, u.LName) as Fullname, dis.pcent")
 						->order_by('km.CNo', 'asc')
 						->group_by('km.CNo, km.CellNo')
 						->join('Kitchen k', 'k.MergeNo = km.MergeNo', 'inner')
 						->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
+						->join('Users u', 'u.CustId = km.CustId', 'inner')
+						->join('discounts dis', 'dis.discId = u.discId', 'left')
 						->where($whr)
 						->get_where('KitchenMain km', array('km.MergeNo' => $MergeNo, 
 							'km.EID' => $this->EID,

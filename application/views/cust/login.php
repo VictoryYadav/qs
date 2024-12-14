@@ -192,8 +192,8 @@
         <p>Your earlier visits to this outlet : <b><span id="lableVisit">0</span></b></p>
         <p>Your average rating for this outlet  : <b><span id="lableRating">-</span></b></p>
       </div>
-      <div class="modal-footer" style="background: #efebeb;">
-        <button type="button" class="btn btn-success btn-sm" onclick="goHome()" style="font-size: 12px;border-radius: 50px;"><?= $this->lang->line('ok'); ?></button>
+      <div class="modal-footer" style="background: #e9d2b6;">
+        <button type="button" class="btn btn-success btn-sm" onclick="goHome()" style="font-size: 12px;"><?= $this->lang->line('ok'); ?></button>
       </div>
     </div>
   </div>

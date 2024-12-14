@@ -1368,6 +1368,10 @@ class Customer extends CI_Controller {
         $flag = 'cust';
         $res = getBillData($dbname, $EID, $billId, $CustId, $flag);
 
+        // echo "<pre>";
+        // print_r($res);
+        // die;
+
         if(!empty($res['billData'])){
 
             $billData = $res['billData'];
@@ -1704,10 +1708,11 @@ class Customer extends CI_Controller {
                     $pData['CellNo'] = $_POST['CountryCd'][$i].$pData['CellNo'];
 
                     $res = billCreate($EID, $CNo, $pData);
+                    
                     if($res['status'] == 1){
                         $billId = $res['billId'];
                         $my_db = $this->session->userdata('my_db');
-                        $url = $EID . "_b_" . $billId . "_" .$my_db. "_" . $CNo. "_" . $pData['CellNo']. "_" . $pData['MergeNo']. "_" . $pData['orderAmount']. "_" . $EType. "_" . $pData['CustId']. "_" . $restName. "_" . $Rating;
+                        $url = $EID . "_b_" . $billId . "_" .$my_db. "_" . $CNo. "_" . $pData['CellNo']. "_" . $pData['MergeNo']. "_" . $res['paidAmt']. "_" . $EType. "_" . $pData['CustId']. "_" . $restName. "_" . $Rating;
 
                         $url = base64_encode($url);
                         $url = rtrim($url, "=");
@@ -2119,7 +2124,7 @@ class Customer extends CI_Controller {
                     $response = $dt;
 
                     $my_db = $this->session->userdata('my_db');
-                    $url = $EID . "_b_" . $res['billId'] . "_" .$my_db. "_" . $CNo. "_" . $CellNo. "_" . $MergeNo. "_" . $res['PaidAmt']. "_" . $EType. "_" . $CustId. "_" . $restName. "_" . $Rating;
+                    $url = $EID . "_b_" . $res['billId'] . "_" .$my_db. "_" . $CNo. "_" . $CellNo. "_" . $MergeNo. "_" . $pData['orderAmount']. "_" . $EType. "_" . $CustId. "_" . $restName. "_" . $Rating;
 
                     $url = base64_encode($url);
                     $url = rtrim($url, "=");

@@ -130,7 +130,7 @@
                                     $split_mobile[] = $ord['CellNo'];
                             ?>
 
-                            <tr onclick="getOrderDetails(<?= $ord['CNo']; ?>, '<?= getName($ord['CustId']); ?>')" style="cursor: pointer;">
+                            <tr onclick="getOrderDetails(<?= $ord['CNo']; ?>, '<?= $ord['Fullname']; ?>')" style="cursor: pointer;">
                                 <input type="hidden" name="mobile[]" value="<?= $ord['CellNo']; ?>">
                                 <input type="hidden" name="cust_id[]" value="<?= $ord['CustId']; ?>">
                                 <td>
@@ -139,7 +139,7 @@
 
                                 </td>
                                 <td>
-                                    <?= $ord['CellNo']; ?> <small>(<?= getName($ord['CustId']); ?>)</small>
+                                    <?= $ord['CellNo']; ?> <small>(<?= $ord['Fullname']; ?>) <?php if(!empty($ord['pcent'])){ echo 'Disc @ '. $ord['pcent'].'%'; } ?></small>
                                 </td>
                                 <td>
                                     <?= convertToUnicodeNumber($ord['OrdAmt']); ?>
