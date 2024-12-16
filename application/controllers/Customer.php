@@ -735,8 +735,7 @@ class Customer extends CI_Controller {
                         $visit = $visited['counts'];
                         if($visit > 0){
                             $rating1 = $this->db2->select('avg(avgBillRtng) as rtng')->get_where('Ratings', array('EID' => $EID, 'CustId' => $CustId))->row_array();
-
-                            $rating = $rating1['rtng'];
+                            $rating = ($rating1['rtng'] > 0)?$rating1['rtng']:'-';
                         }
                     }
                 }

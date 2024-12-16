@@ -204,7 +204,7 @@
 
                 <div style="border-bottom: 1px solid;margin-bottom:5px;color: #fff;"></div>
 
-                <div class="row">
+                <div class="row fixed-bottom" style=" width: 100%;bottom: 53px !important;">
                     <div class="col-12 text-center">
                         <?php if($this->session->userdata('billSplitOpt') > 0 && ($EType == 5)){ ?>
                         <button class="btn btn-sm backbtn" type="submit" name="btnName" value="splitBill">
