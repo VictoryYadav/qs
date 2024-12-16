@@ -952,7 +952,7 @@ width: 100%;*/
             }else{
                 
                 if(tableFilter == 'tableWise'){
-                    // $('#billCreatebtn').attr('onclick', "billMerge('"+mergeNo+"',"+custId+", '"+tableFilter+"')");
+                    $('#billCreatebtn').attr('onclick', "billCreate('"+mergeNo+"',"+custId+", '"+tableFilter+"', '"+MCNo+"')");  
                     if (mergeNo.includes('~')) {
                         checkCNoForTable(mergeNo, tableFilter, MCNo, custId);
                     }
@@ -1075,6 +1075,7 @@ width: 100%;*/
 
                 if(response.status == 'success') {
                     // billCreate(MergeNo, custId, tableFilter, MCNo); //26-nav-24 comment code
+                    $('#combine_modal').modal('toggle');
                     getTableView(); //26-nav-24 write code
                 }else {
                     alert(response.status);
