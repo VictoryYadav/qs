@@ -4953,15 +4953,15 @@ class Restaurant extends CI_Controller {
         $this->check_access();
         $EID = authuser()->EID;
         $data['EID'] = $EID;
+        $data['OType'] = 101;
         $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
         $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
-        $data['bills'] = $this->rest->getTAPendingBills();
+        $data['bills'] = $this->rest->getTAPendingBills($data['OType']);
         $data['cashier'] = $this->rest->getCasherList();
         $data['payModes'] = $this->rest->getPaymentModes();
         $data['country']    = $this->rest->getCountries();
         $data['CountryCd']    = $this->session->userdata('CountryCd');
         $data['title'] = $this->lang->line('thirdParty');
-        $data['OType'] = 101;
 
         $currentTable = $this->rest->getTablesDetails($EID, $data['OType']);
         $data['currentTableOffer'] = $currentTable['offerValid'];
@@ -4979,7 +4979,7 @@ class Restaurant extends CI_Controller {
 
         $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
         $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
-        $data['bills'] = $this->rest->getTAPendingBills();
+        $data['bills'] = $this->rest->getTAPendingBills($data['OType']);
         $data['payModes'] = $this->rest->getPaymentModes();
         $data['cashier'] = $this->rest->getCasherList();
         $data['country']    = $this->rest->getCountries();
@@ -4992,15 +4992,15 @@ class Restaurant extends CI_Controller {
         $this->check_access();
         $EID = authuser()->EID;
         $data['EID'] = $EID;
+        $data['OType'] = 110;
         $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
         $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
-        $data['bills'] = $this->rest->getTAPendingBills();
+        $data['bills'] = $this->rest->getTAPendingBills($data['OType']);
         $data['cashier'] = $this->rest->getCasherList();
         $data['payModes'] = $this->rest->getPaymentModes();
         $data['country']    = $this->rest->getCountries();
         $data['CountryCd']    = $this->session->userdata('CountryCd');
         $data['title'] = $this->lang->line('deliver');
-        $data['OType'] = 110;
 
         $currentTable = $this->rest->getTablesDetails($EID, $data['OType']);
         $data['currentTableOffer'] = $currentTable['offerValid'];
@@ -5011,15 +5011,15 @@ class Restaurant extends CI_Controller {
         $this->check_access();
         $EID = authuser()->EID;
         $data['EID'] = $EID;
+        $data['OType'] = 100;
         $data['thirdOrdersData'] = $this->rest->getThirdOrderData();
         $data['tablesAlloted'] = $this->rest->getTablesAllotedData($EID);
-        $data['bills'] = $this->rest->getTAPendingBills();
+        $data['bills'] = $this->rest->getTAPendingBills($data['OType']);
         $data['cashier'] = $this->rest->getCasherList();
         $data['payModes'] = $this->rest->getPaymentType();
         $data['country']    = $this->rest->getCountries();
         $data['CountryCd']    = $this->session->userdata('CountryCd');
         $data['title'] = $this->lang->line('McDonalds');
-        $data['OType'] = 100;
 
         $currentTable = $this->rest->getTablesDetails($EID, $data['OType']);
         $data['currentTableOffer'] = $currentTable['offerValid'];
