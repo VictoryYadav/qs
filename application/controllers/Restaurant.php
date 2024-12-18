@@ -2007,7 +2007,7 @@ class Restaurant extends CI_Controller {
         $data['kit'] = $this->rest->getFromMast(1);
         $data['bomStore'] = $this->rest->getFromMast(4);
         $data['wasteStore'] = $this->rest->getFromMast(5);
-        $data['menuItems'] = $this->rest->getAllItemsList();
+        $data['menuItems'] = $this->rest->getRMItemsList();
 
         $this->load->view('rest/stock_add',$data);
     }

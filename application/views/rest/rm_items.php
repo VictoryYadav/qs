@@ -108,6 +108,7 @@
                                                     <th>#</th>
                                                     <th><?= $this->lang->line('RMName'); ?></th>
                                                     <th><?= $this->lang->line('RMCat'); ?></th>
+                                                    <th><?= $this->lang->line('mode'); ?></th>
                                                     <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
                                                 </thead>
@@ -116,11 +117,16 @@
                                                     <?php
                                                     if(!empty($rm_items)){
                                                         $i = 1;
-                                                        foreach ($rm_items as $row) { ?>
+                                                        foreach ($rm_items as $row) {
+                                                            $sts = ($row['Stat'] == 0)? $this->lang->line('active'):$this->lang->line('inactive');
+
+                                                            $clr = ($row['Stat'] == 0)?'success':'danger';
+                                                         ?>
                                                     <tr>
                                                         <td><?= $i++; ?></td>
                                                         <td><?= $row['RMName']; ?></td>
                                                         <td><?= $row['RMCatgName']; ?></td>
+                                                        <td><span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span></td>
                                                         <td>
                                                             <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['RMCd'] ?>,<?= $row['RMCatg'] ?>, '<?= $row['RMName'] ?>', <?= $row['ItemId'] ?>, <?= $row['Stat'] ?>)">
                                                                 <i class="fas fa-edit"></i>
@@ -200,7 +206,7 @@
         $('#RMName').val(rmname);   
         $("#ItemId").val(ItemId).trigger('change');
         $(`#Stat`).val(Stat);
-        
+
         $(`#type`).val(1);
         $(`#ItemId`).prop('disabled', true);
         if(ItemId > 0){
