@@ -182,10 +182,10 @@ $RestName = authuser()->RestName;
                                                                         </select>
                                                                     </td>
                                                                     <td id="menuTD1" style="display: none;">
-                                                                        <select name="MItemId[]" class="items form-control form-control-sm select2 custom-select" id="mitems1" onchange="getPortionItem(this, 1)" >
+                                                                        <select name="MItemId[]" class="items form-control form-control-sm select2 custom-select" id="mitems1" onchange="getUOMFG(this, 1)" >
                                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                                             <?php foreach($menuItems as $key){?>
-                                                                                <option value="<?= $key['ItemId']?>"><?= $key['Name']?></option>
+                                                                                <option value="<?= $key['RMCd']?>"><?= $key['RMName']?></option>
                                                                             <?php }?>
                                                                         </select>
                                                                     </td>
@@ -285,21 +285,32 @@ function getUOM(el, n){
         });
 }
 
-function getPortionItem(el, n){
-    var ItemId = el.value;
-    if(ItemId > 0){
-        $.post('<?= base_url('restaurant/get_item_portion_by_itemId') ?>',{ItemId:ItemId},function(res){
-            if(res.status == 'success'){
-                var temp = `<option value=""><?= $this->lang->line('select'); ?></option>`;
-                res.response.forEach((item) => {
-                    temp +=`<option value="${item.Itm_Portion}">${item.Portions}</option>`;
-                });
-                $(`#uom${n}`).html(temp);
-            }else{
-              alert(res.response);
+function getUOMFG(el, n){
+    var item_id = el.value;
+    $.ajax({
+            url: "<?php echo base_url('restaurant/rm_ajax'); ?>",
+            type: "post",
+            data: {'getUOM':1, 'RMCd':item_id},
+            success: response => {
+                
+                var data = JSON.parse(response);
+                var b = '<option value="">SELECT UOM</option>';
+                
+                if (data != '') {
+                    for(i = 0;i<data.length;i++){
+                        
+                        b+='<option value="'+data[i].UOMCd+'">'+data[i].Name+'</option>';
+                    }
+                    
+                    $('#uom'+n).html(b);
+                } else {
+                    alert(response);
+                }
+            },
+            error: (xhr, status, error) => {
+                
             }
         });
-    }
 }
 
 function add_row(){
@@ -320,10 +331,10 @@ function add_row(){
                     </select>\
                 </td>\
                 <td id="menuTD'+cntr+'" style="display: none;">\
-                    <select name="MItemId[]" class="items form-control form-control-sm select2 custom-select" id="mitems'+cntr+'" onchange="getPortionItem(this, '+cntr+')" >\
+                    <select name="MItemId[]" class="items form-control form-control-sm select2 custom-select" id="mitems'+cntr+'" onchange="getUOMFG(this, '+cntr+')" >\
                         <option value=""><?= $this->lang->line('select'); ?></option>\
                         <?php foreach($menuItems as $key){?>
-                            <option value="<?= $key['ItemId']?>"><?= $key['Name']?></option>\
+                            <option value="<?= $key['RMCd']?>"><?= $key['RMName']?></option>\
                         <?php }?>
                     </select>\
                 </td>\
