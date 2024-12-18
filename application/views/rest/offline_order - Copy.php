@@ -729,7 +729,7 @@
         var prep_time = [];
         var dcd_value = [];
         var SchCd = []; var SDetCd = [];
-        var CustItem = []; var CustItemDesc =[]; var CustItemId = [];
+        var CustItem = []; var CustItemDesc =[];var CustItmId =[];
 
         var dataType = data_type;
         // Page Validation
@@ -863,7 +863,7 @@
             });
 
             $(".CustItemId").each(function(index, el) {
-                CustItemId.push( $(this).val() );
+                CustItmId.push( $(this).val() );
             });
 
             var Uphone = $('#phone').val();
@@ -911,7 +911,7 @@
                     SDetCd : SDetCd,
                     CustItem : CustItem,
                     CustItemDesc : CustItemDesc,
-                    CustItemId : CustItemId
+                    CustItemId:CustItmId
                 },
 
                 dataType: "json",
@@ -1013,6 +1013,10 @@
     var checkboxItemCd= [];
     var checkboxGrpCd= "";
     var checkboxName= [];
+    var custOfferName = [];
+    var custItemIds = [];
+    var itemIdRadio = [];
+    var itemIdCheck = [];
 
     var OType = $('#order-type').val();
         var cno = 0;
@@ -1071,6 +1075,10 @@
                     $('#cust-address').val(data[0]['custAddr']);
 
                     data.forEach((item, index) => {
+                        var CustItemId = '';
+                        if(item.CustItemId != '-'){
+                            CustItemId = item.CustItemId;
+                        }
                         trow++;
                         if(item.CellNo != ''){
                             phoneNo = item.CellNo.substr(item.CellNo.length - 10);
@@ -1169,8 +1177,7 @@
                                     <input type="hidden" value="${item.SDetCd}" class="SDetCd" id="SDetCd_${trow}_${item.ItemId}">
                                     <input type="hidden" value="${item.CustItem}" class="CustItem" id="CustItem_${trow}_${item.ItemId}">
                                     <input type="hidden" value="${item.CustItemDesc}" class="CustItemDesc" id="CustItemDesc_${trow}_${item.ItemId}">
-
-                                    <input type="hidden" value="${item.CustItemId}" class="CustItemId" id="CustItemDesc_${trow}_${item.ItemId}">
+                                    <input type="hidden" value="${ CustItemId }" class="CustItemId" id="CustItemId_${trow}_${item.ItemId}">
                                     
                                     </td>
                                 </tr>`; 
@@ -1430,22 +1437,25 @@
         var groupNameList = [];
         getCustomItems = (trow, ItemId, ItemTyp, Itm_Portion, FID, OrdNo) =>{
             // 10-june
-            this.radioName      = [];
-            this.checkboxName   = [];
-            this.radioRate      = [];
-            this.checkboxRate   = [];
+            this.radioName = [];
+            this.checkboxName = [];
+            custOfferName = [];
+            this.radioRate = [];
+            this.checkboxRate= [];
 
-            custOfferTotal      = 0;
-            OrigOfferTotal      = 0;
+            this.itemIdRadio = [];
+            this.itemIdCheck = [];
+            custOfferTotal = 0;
+            OrigOfferTotal = 0;
             // 10-june
 
             $.post('<?= base_url('restaurant/get_custom_items') ?>',{ItemId:ItemId, ItemTyp:ItemTyp, Itm_Portion:Itm_Portion, FID:FID, OrdNo:OrdNo},function(res){
                 if(res.status == 'success'){
 
-                    var customItem = res.response.customItem;
-                        radioList = customItem;
-                    var customize = res.response.customize;
+                  var customItem = res.response.customItem;
+                  var customize = res.response.customize;
 
+                        radioList = customItem;
                         $('#radioOption').html('');
                         $('#checkboxOption').html('');
                         groupNameList = [];
@@ -1468,11 +1478,12 @@
                                         customize.forEach((item, index) =>{
                                             if(item == details[r].ItemId){
                                                 chk = 'checked';
+                                                calculateTotalLoad(customItem[i].ItemGrpCd,ItemTyp, i, name, 'radio', rate, details[r].ItemId);
                                             }
                                         })
                                     }
 
-                                    tempRadio += '<li><input type="radio" class="chk" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" itemid="'+details[r].ItemId+'" itemname="'+details[r].Name+'" itemtype="'+ItemTyp+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+','+ItemTyp+', '+i+', '+name+', event)" '+chk+' /> '+details[r].Name+' <span class="float-right">('+rate+')</span></li>';
+                                    tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" itemid="'+details[r].ItemId+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+','+ItemTyp+', '+i+', '+name+', event)" '+chk+' /> '+details[r].Name+' <span class="float-right">('+rate+')</span></li>';
                                 }
                                 tempRadio += '</ul>';
 
@@ -1495,11 +1506,12 @@
                                         customize.forEach((item, index) =>{
                                             if(item == details[c].ItemId){
                                                 chk = 'checked';
+                                                calculateTotalLoad(customItem[i].ItemGrpCd,ItemTyp, i, name, 'checkbox', rate, details[c].ItemId);
                                             }
                                         })
                                     }
 
-                                    tempCHK += '<li><input type="checkbox" class="chk" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" itemid="'+details[c].ItemId+'" itemname="'+details[c].Name+'" itemtype="'+ItemTyp+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+ItemTyp+', '+c+', '+name+', event)" '+chk+' /> '+details[c].Name+' <span class="float-right">('+rate+')</span></li>';
+                                    tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" itemid="'+details[c].ItemId+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+ItemTyp+', '+c+', '+name+', event)" '+chk+' /> '+details[c].Name+' <span class="float-right">('+rate+')</span></li>';
                                 }
                                 tempCHK += '</ul>';
                                 $('#checkboxOption').append(tempCHK);
@@ -1515,7 +1527,6 @@
                 $('#custOfferOrigAmountView').val($(`#tmp_Origrate_${trow}_${ItemId}`).val());
                 $('#custOfferAmount').val($(`#tmp_rate_${trow}_${ItemId}`).val());
                 $('#custOfferAmountView').text($(`#tmp_rate_${trow}_${ItemId}`).val());
-                        getTotalc();
                 $('.customOfferModal').modal('show');
                   
                 }else{
@@ -1524,13 +1535,36 @@
             });
         }
 
+        function calculateTotalLoad(itemGrpCd, ItemTyp, index, itemName, inputType, rate, itemid)
+        {
+            // console.log(`name ${itemName} ,rate ${rate}`);
+            if (inputType == "radio") {
+                this.radioRate[index] = parseInt(rate);
+                if(ItemTyp == 125){
+                    this.radioRate[index] = 0;
+                }
+                this.raidoGrpCd[index] = itemGrpCd;
+                this.radioName[index] = itemName;
+                this.itemIdRadio[index] = itemid;
+            } else {
+                    this.checkboxRate[index] = parseInt(rate);
+                    
+                    if(ItemTyp == 125){
+                        this.checkboxRate[index] = 0;
+                    }
+                    this.checkboxName[index] = itemName;
+                    this.itemIdCheck[index] = itemid;
+            }
+            
+            getTotalc();
+        }
+
         function calculateTotalc(itemGrpCd, ItemTyp, index, itemName, event) {
             
-            element     = event.currentTarget;
-            var rate    = element.getAttribute('rate');
-            var itemid  = element.getAttribute('itemid');
+            element = event.currentTarget;
+            var rate = element.getAttribute('rate');
+            var itemid = element.getAttribute('itemid');
             // console.log('calc '+index, event.target.type, rate, itemName);
-
             if (event.target.type == "radio") {
                 this.radioRate[index] = parseInt(rate);
                 if(ItemTyp == 125){
@@ -1538,15 +1572,17 @@
                 }
                 this.raidoGrpCd[index] = itemGrpCd;
                 this.radioName[index] = itemName;
+                this.itemIdRadio[index] = itemid;
             } else {
                 // console.log(event.target.checked);
                 if (event.target.checked) {
-                    this.checkboxRate[index] = parseInt(rate);
+                    this.checkboxRate.push( parseInt(rate));
                     
                     if(ItemTyp == 125){
                         this.checkboxRate[index] = 0;
                     }
                     this.checkboxName[index] = itemName;
+                    this.itemIdCheck[index] = itemid;
                 } else {
                     this.checkboxRate[index] = 0;
                     this.checkboxName[index] = 0;
@@ -1560,31 +1596,19 @@
         getTotalc = () =>{            
             var itemAmount =  $('#custOfferAmount').val();
             var itemOrigAmount =  $('#custOfferOrigAmount').val();
-            var Total = 0;
-            // this.radioRate.forEach(item => {
-            //     radioTotal += parseInt(item);
-            // });
-
-            // var checkTotal = 0;
-            // this.checkboxRate.forEach(item => {
-            //     checkTotal += parseInt(item);
-            // });
-
-            $('.chk:checked').each(function () {
-                var itemtype = $(this).attr('itemtype');
-                if(itemtype == 125){
-                    Total = parseInt(Total) + 0 ;    
-                }else{
-                    Total = parseInt(Total) + parseInt($(this).attr('rate'));
-                }
+            var radioTotal = 0;
+            this.radioRate.forEach(item => {
+                radioTotal += parseInt(item);
             });
 
-            // this.custOfferTotal = parseInt(itemAmount) + parseInt(radioTotal) + parseInt(checkTotal);
+            var checkTotal = 0;
+            this.checkboxRate.forEach(item => {
+                checkTotal += parseInt(item);
+            });
 
-            // this.OrigOfferTotal = parseInt(itemOrigAmount) + parseInt(radioTotal) + parseInt(checkTotal);
+            this.custOfferTotal = parseInt(itemAmount) + parseInt(radioTotal) + parseInt(checkTotal);
 
-            this.custOfferTotal = parseInt(itemAmount) + parseInt(Total);
-            this.OrigOfferTotal = parseInt(itemOrigAmount) + parseInt(Total);
+            this.OrigOfferTotal = parseInt(itemOrigAmount) + parseInt(radioTotal) + parseInt(checkTotal);
             
             $('#custOfferAmountView').text(this.custOfferTotal);
             $('#custOfferOrigAmountView').val(this.OrigOfferTotal);
@@ -1631,26 +1655,29 @@
             $(`#select_${trow}_${ItemId}`).attr('disabled', 'true');
             $(`#rate_${trow}_${ItemId}`).text(custOfferAmountView);
 
-            // if(radioName.length > 0){
-            //     radioName.forEach(item =>{
-            //         custOfferName.push(item);
-            //     });
-            // }
+            if(radioName.length > 0){
+                radioName.forEach(item =>{
+                    custOfferName.push(item);
+                });
+            }
 
-            // if(checkboxName.length > 0){
-            //     checkboxName.forEach(item =>{
-            //         custOfferName.push(item);
-            //     });
-            // }
+            if(checkboxName.length > 0){
+                checkboxName.forEach(item =>{
+                    custOfferName.push(item);
+                });
+            }
 
-            var custItemIds     = [];
-            var custOfferName   = [];
-            $('.chk:checked').each(function () {
-                // input[type=checkbox]
-                // dd.push($(this).val());
-                custItemIds.push($(this).attr('itemid'));
-                custOfferName.push($(this).attr('itemname'));
-            });
+            if(itemIdRadio.length > 0){
+                itemIdRadio.forEach(item =>{
+                    custItemIds.push(item);
+                });
+            }
+
+            if(itemIdCheck.length > 0){
+                itemIdCheck.forEach(item =>{
+                    custItemIds.push(item);
+                });
+            }
 
             var itemName = $(`#itemName_${trow}_${ItemId}`).text();
             // convert array to string
@@ -1659,6 +1686,7 @@
 
             $(`#CustItem_${trow}_${ItemId}`).val(1);
             $(`#CustItemDesc_${trow}_${ItemId}`).val(custOfferName.join(", "));
+            $(`#CustItemId_${trow}_${ItemId}`).val(custItemIds.join(", "));
             
             customCalculateValue(trow, ItemId);
 

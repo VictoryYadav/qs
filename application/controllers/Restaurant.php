@@ -2806,6 +2806,7 @@ class Restaurant extends CI_Controller {
 
                 $CustItem = !empty($_POST['CustItem'])?$_POST['CustItem']:0;
                 $CustItemDesc = !empty($_POST['CustItemDesc'])?$_POST['CustItemDesc']:'Std';
+                $CustItemId = !empty($_POST['CustItemId'])?$_POST['CustItemId']:'0';
                 
                 $CountryCd = $_POST['CountryCd'];
                 if(!empty($CountryCd)){
@@ -2936,15 +2937,17 @@ class Restaurant extends CI_Controller {
                     }else{
                         $kitchenObj['CellNo'] = 0;
                     }
-                    $kitchenObj['Itm_Portion'] = $Itm_Portion[$i];
-                    $kitchenObj['TaxType'] = $taxtype[$i];
-                    $kitchenObj['ItemTyp'] = $ItemTyp[$i];
-                    $kitchenObj['SeatNo'] = $seatNo;
-                    $kitchenObj['DCd'] = $DCd[$i];
-                    $kitchenObj['SchCd'] = $SchCd[$i];
-                    $kitchenObj['SDetCd'] = $SDetCd[$i];
-                    $kitchenObj['CustItem'] = $CustItem[$i];
+                    $kitchenObj['Itm_Portion']  = $Itm_Portion[$i];
+                    $kitchenObj['TaxType']      = $taxtype[$i];
+                    $kitchenObj['ItemTyp']      = $ItemTyp[$i];
+                    $kitchenObj['SeatNo']       = $seatNo;
+                    $kitchenObj['DCd']          = $DCd[$i];
+                    $kitchenObj['SchCd']        = $SchCd[$i];
+                    $kitchenObj['SDetCd']       = $SDetCd[$i];
+                    $kitchenObj['CustItem']     = $CustItem[$i];
                     $kitchenObj['CustItemDesc'] = $CustItemDesc[$i];
+                    $kitchenObj['CustItemId']   = $CustItemId[$i];
+                    
                     $kitchenObj['langId'] =$this->session->userdata('site_lang');
                     // edt
                     $date = date("Y-m-d H:i:s");
@@ -3878,7 +3881,7 @@ class Restaurant extends CI_Controller {
 
             $pay = $_POST;
 
-            $pay['PaymtMode'] = 1;
+            $pay['PaymtMode'] = $_POST['PymtType'];
             $pay['SplitTyp'] = 0;
             $pay['SplitAmt'] = 0;
             $pay['PymtId'] = 0;
@@ -5454,6 +5457,7 @@ class Restaurant extends CI_Controller {
         if($this->input->method(true)=='POST'){
 
             $customDetails = $this->rest->getCustomItemsList($_POST);
+            // echo "<pre>";print_r($customDetails);die;
 
             if(!empty($customDetails)){
                 $status = "success";
@@ -5474,10 +5478,11 @@ class Restaurant extends CI_Controller {
                 foreach ($customDetails as $key => $value) {
                     if ($value['ItemGrpName'] == $itemGroup) {
                         $temp['Details'][] = [
-                            "Name" => $value['Name'],
-                            "Rate" => $value['Rate'],
+                            "ItemId"    => $value['ItemId'],
+                            "Name"      => $value['Name'],
+                            "Rate"      => $value['Rate'],
                             "ItemOptCd" => $value['ItemOptCd'],
-                            "CalcType" => $value['CalcType'],
+                            "CalcType"  => $value['CalcType'],
                         ];
                     } else {
                         $returnData[] = $temp;
@@ -5491,17 +5496,26 @@ class Restaurant extends CI_Controller {
                         $temp['Reqd'] = $itemReq;
                         $temp['Details'] = [];
                         $temp['Details'][] = [
-                            "Name" => $value['Name'],
-                            "Rate" => $value['Rate'],
+                            "ItemId"    => $value['ItemId'],
+                            "Name"      => $value['Name'],
+                            "Rate"      => $value['Rate'],
                             "ItemOptCd" => $value['ItemOptCd'],
-                            "CalcType" => $value['CalcType'],
+                            "CalcType"  => $value['CalcType'],
                         ];
                     }
                 }
 
                 $returnData[] = $temp;
                 
-                $response =  $returnData;
+                $res['customItem'] =  $returnData;
+                $res['customize'] = array();
+                $customize  =  $this->db2->select("CustItemId")->get_where('tempKitchen', array('OrdNo' => $_POST['OrdNo']))->row_array();
+                if(!empty($customize)){
+                    if($customize['CustItemId'] != '-'){
+                        $res['customize'] = explode(',', $customize['CustItemId']);
+                    }
+                }
+                $response = $res;
             }else{
               $response =  $this->lang->line('noCustomizationAvailable');  
             }
@@ -5519,12 +5533,16 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
-            
-            $updateData['CustItem'] = 1;
-            $updateData['CustItemDesc'] = $_POST['CustItemDesc'];
-            $updateData['ItmRate'] = $_POST['ItemRates'];
-            $updateData['OrigRate'] = $_POST['OrigRates'];
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
 
+            $updateData['CustItem']     = 1;
+            $updateData['CustItemDesc'] = $_POST['CustItemDesc'];
+            $updateData['ItmRate']      = $_POST['ItemRates'];
+            $updateData['OrigRate']     = $_POST['OrigRates'];
+            $updateData['CustItemId']   = implode(',', $_POST['custItemIds']);
+            
             updateRecord('tempKitchen', $updateData, array('EID' => authuser()->EID, 'OrdNo' => $_POST['OrdNo'], 'ItemId' => $_POST['ItemId']));
             $status = 'success';
             $response = $this->lang->line('itemRateUpdated');

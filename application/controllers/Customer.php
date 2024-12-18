@@ -2539,10 +2539,11 @@ class Customer extends CI_Controller {
                 foreach ($customDetails as $key => $value) {
                     if ($value['ItemGrpName'] == $itemGroup) {
                         $temp['Details'][] = [
-                            "Name" => $value['Name'],
-                            "Rate" => $value['Rate'],
+                            "ItemId"    => $value['ItemId'],
+                            "Name"      => $value['Name'],
+                            "Rate"      => $value['Rate'],
                             "ItemOptCd" => $value['ItemOptCd'],
-                            "CalcType" => $value['CalcType'],
+                            "CalcType"  => $value['CalcType'],
                         ];
                     } else {
                         $returnData[] = $temp;
@@ -2556,10 +2557,11 @@ class Customer extends CI_Controller {
                         $temp['Reqd'] = $itemReq;
                         $temp['Details'] = [];
                         $temp['Details'][] = [
-                            "Name" => $value['Name'],
-                            "Rate" => $value['Rate'],
+                            "ItemId"    => $value['ItemId'],
+                            "Name"      => $value['Name'],
+                            "Rate"      => $value['Rate'],
                             "ItemOptCd" => $value['ItemOptCd'],
-                            "CalcType" => $value['CalcType'],
+                            "CalcType"  => $value['CalcType'],
                         ];
                     }
                 }
@@ -2572,6 +2574,95 @@ class Customer extends CI_Controller {
                 $response =  $returnData;
                 // $response =  'No customization available!!';  
             }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }   
+    }
+
+    public function get_custom_item_cart(){
+        $status = "error";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        if($this->input->method(true)=='POST'){
+            // echo "<pre>";
+            // print_r($_POST);
+            // die;
+            $status = "success";
+            $itemId = $_POST['itemId'];
+            $itemTyp = $_POST['itemTyp'];
+            $itemPortionCode = $_POST['itemPortionCode'];
+            $FID = $_POST['FID'];
+            
+            $returnData = [];
+            $customDetails = $this->cust->getCustomDetails($itemTyp, $itemId, $itemPortionCode, $FID);
+            
+            if(!empty($customDetails)){
+
+                $grpType = $customDetails[0]['GrpType'];
+                $itemGroupCd = $customDetails[0]['ItemGrpCd'];
+                $itemGroup = $customDetails[0]['ItemGrpName'];
+                $itemReq = $customDetails[0]['Reqd'];
+
+                $returnData = [];
+
+                $temp['GrpType'] = $grpType;
+                $temp['ItemGrpCd'] = $itemGroupCd;
+                $temp['ItemGrpName'] = $itemGroup;
+                $temp['Reqd'] = $itemReq;
+                $temp['Details'] = [];
+                // unique id logic
+                foreach ($customDetails as $key => $value) {
+                    if ($value['ItemGrpName'] == $itemGroup) {
+                        $temp['Details'][] = [
+                            "ItemId"    => $value['ItemId'],
+                            "Name"      => $value['Name'],
+                            "Rate"      => $value['Rate'],
+                            "ItemOptCd" => $value['ItemOptCd'],
+                            "CalcType"  => $value['CalcType'],
+                        ];
+                    } else {
+                        $returnData[] = $temp;
+                        $grpType = $value['GrpType'];
+                        $itemGroupCd = $value['ItemGrpCd'];
+                        $itemGroup = $value['ItemGrpName'];
+                        $itemReq = $value['Reqd'];
+                        $temp['GrpType'] = $grpType;
+                        $temp['ItemGrpCd'] = $itemGroupCd;
+                        $temp['ItemGrpName'] = $itemGroup;
+                        $temp['Reqd'] = $itemReq;
+                        $temp['Details'] = [];
+                        $temp['Details'][] = [
+                            "ItemId"    => $value['ItemId'],
+                            "Name"      => $value['Name'],
+                            "Rate"      => $value['Rate'],
+                            "ItemOptCd" => $value['ItemOptCd'],
+                            "CalcType"  => $value['CalcType'],
+                        ];
+                    }
+                }
+
+                $returnData[] = $temp;
+                
+                $res['customItem'] =  $returnData;
+            }
+            else{
+                $res['customItem'] =  $returnData;
+                // $response =  'No customization available!!';  
+            }
+
+            $res['customize'] = array();
+            $customize  =  $this->db2->select("CustItemId")->get_where('Kitchen', array('OrdNo' => $_POST['OrdNo']))->row_array();
+            
+            if(!empty($customize)){
+                $status = 'success';
+                $res['customize'] = explode(',', $customize['CustItemId']);
+            }
+
+            $response = $res;
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -3179,11 +3270,12 @@ class Customer extends CI_Controller {
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
-            
             $updateData['CustItem'] = 1;
-            $updateData['CustItemDesc'] = $_POST['CustItemDesc'];
             $updateData['ItmRate'] = $_POST['ItemRates'];
             $updateData['OrigRate'] = $_POST['OrigRates'];
+
+            $updateData['CustItemDesc'] = implode(',', $_POST['CustItemDesc']);
+            $updateData['CustItemId']   = implode(',', $_POST['custItemIds']);
 
             updateRecord('Kitchen', $updateData, array('EID' => authuser()->EID, 'OrdNo' => $_POST['OrdNo'], 'ItemId' => $_POST['ItemId']));
             $status = 'success';
@@ -3458,5 +3550,6 @@ class Customer extends CI_Controller {
              die;
         }
     }
+
 
 }

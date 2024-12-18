@@ -481,6 +481,7 @@
         <div class="modal-footer" style="bottom: 0px;background-color: #ffffff;padding: 3px;padding-left: 15px;right: 0px;bottom: 0px;left: 0px;z-index: 1050;outline: 0px;position: fixed; width: 100%;">
             <button type="button" class="btn col-5 modal-back" data-dismiss="modal" style="padding: 5px 5px 5px; font-size: 12px;"><?php echo  $this->lang->line('back'); ?></button>
             <label class="col-2" style="padding: 3px;height: 25px;text-align: center;">
+                <input type="hidden" value="0" name="tmpOrigRate" id="tmpOrigRate">
                 <input type="hidden" value="0" id="totalAmount">
                 <b id="totalAmountView">0</b>
             </label>
@@ -972,6 +973,7 @@
             $("#product-price").val(' ' + $(item).attr('item-value') );
 
             $("#product-priceView").text(' ' + convertToUnicodeNo($(item).attr('item-value')) );
+            $("#tmpOrigRate").val(' ' + $(item).attr('item-value') );
 
             $("#nvRating").text(' ' + convertToUnicodeNo($(item).attr('item-NV')) );
             $('#totalAmount').val($(item).attr('item-value') );
@@ -1171,7 +1173,7 @@
                                     for(var r=0; r < details.length; r++){
                                         var rate = (itemTyp == 125)?0:details[r].Rate;
                                         var name = "'"+details[r].Name+"'";
-                                        tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+itemTyp+', '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+rate+')</span></li>';
+                                        tempRadio += '<li><input type="radio" class="chk" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" itemid="'+details[r].ItemId+'" itemname="'+details[r].Name+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+itemTyp+', '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+rate+')</span></li>';
                                     }
                                     tempRadio += '</ul>';
                                     $('#radioOption').append(tempRadio);
@@ -1186,7 +1188,7 @@
                                     for(var c=0; c < details.length; c++){
                                         var rate = (itemTyp == 125)?0:details[c].Rate;
                                         var name = "'"+details[c].Name+"'";
-                                        tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+itemTyp+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+rate+')</span></li>';
+                                        tempCHK += '<li><input type="checkbox" class="chk" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" itemid="'+details[c].ItemId+'" itemname="'+details[c].Name+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+itemTyp+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+rate+')</span></li>';
                                     }
                                     tempCHK += '</ul>';
                                     $('#checkboxOption').append(tempCHK);
@@ -1297,14 +1299,15 @@
         var checkboxItemCd= [];
         var checkboxGrpCd= "";
         var checkboxName= [];
+
         var total= 0;
 
         function calculateTotalc(itemGrpCd, itemTyp, index, itemName, event) {
 
             element = event.currentTarget;
             var rate = element.getAttribute('rate');
-            console.log('calc '+index, event.target.type, rate);
-            
+            var itemid = element.getAttribute('itemid');
+            // console.log('calc '+index, event.target.type, rate);
             if (event.target.type == "radio") {
                 this.radioRate[index] = parseInt(rate);
                 if(itemTyp == 125){
@@ -1424,6 +1427,13 @@
             var itemTyp = $('#itemTyp').val();
             var total = $('#totalAmount').val();
 
+            var custItemIds = [];
+            var CustItemDesc = [];
+            $('.chk:checked').each(function () {
+                custItemIds.push($(this).attr('itemid'));
+                CustItemDesc.push($(this).attr('itemname'));
+            });
+
             takeAway = $("#take-away").val();
             var PckCharge = $('#confirm-order').attr('pck');
             
@@ -1454,7 +1464,10 @@
                     radioRate:this.radioRate,
                     raidoGrpCd: this.raidoGrpCd,
                     radioName: this.radioName,
-                    customizeItemId:customizeItemId
+                    customizeItemId:customizeItemId,
+                    CustItemDesc:CustItemDesc,
+                    custItemIds: custItemIds,
+                    tmpOrigRate : $(`#tmpOrigRate`).val()
                 },
                 dataType: "json",
                 beforeSend: function() {

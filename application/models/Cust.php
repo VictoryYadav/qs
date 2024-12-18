@@ -302,6 +302,7 @@ class Cust extends CI_Model{
 				$CustNo = $this->session->userdata('CustNo');
 				$CustId = $this->session->userdata('CustId');
 				$itmrate = str_replace(" ", "", $postData['itmrate']);
+				$tmpOrigRate = str_replace(" ", "", $postData['tmpOrigRate']);
 				$serveTime = 0;
 				$newServeTime = 0;
 				$postData['prepration_time'] = (!empty($postData['prepration_time'])?$postData['prepration_time']:'00');
@@ -511,6 +512,8 @@ class Cust extends CI_Model{
 				$kitchenObj['TA'] = $postData['takeAway'];
 				$kitchenObj['PckCharge'] = 0;
 				$kitchenObj['langId'] =$this->session->userdata('site_lang');
+				$kitchenObj['tmpOrigRate'] = $tmpOrigRate;
+				$kitchenObj['tmpItmRate'] = $tmpOrigRate;
 				if($kitchenObj['TA'] == 1){
 					$kitchenObj['PckCharge'] = $postData['PckCharge'];
 				}
@@ -555,13 +558,14 @@ class Cust extends CI_Model{
 						}
 
 						if(!empty($custItemDescArray)){
-							$custItemDesc = implode(',', $custItemDescArray);
-							$kitchenObj['CustItemDesc'] = $custItemDesc;
+							// $custItemDesc = implode(',', $custItemDescArray);
+							$kitchenObj['CustItemDesc'] = implode(',', $_POST['CustItemDesc']);
+							$kitchenObj['CustItemId'] 	= implode(',', $_POST['custItemIds']);
 						}
 					}
 				}
 				//end custom offers
-
+				
 				$schcd = !empty($postData['schcd'])?$postData['schcd']:0;
 				$sdetcd = 0;
 				$childOrdNo = 0;
@@ -688,8 +692,8 @@ class Cust extends CI_Model{
 					$kitchenObj['ItmRate'] = $itmrate;
 					$kitchenObj['OrigRate'] = $itmrate; 
 
-					$kitchenObj['tmpOrigRate'] = $itmrate;
-					$kitchenObj['tmpItmRate'] = $itmrate;
+					// $kitchenObj['tmpOrigRate'] = $itmrate;
+					// $kitchenObj['tmpItmRate'] = $itmrate;
 
 					$kitchenObj['Itm_Portion'] = $postData['itemPortionText'];
 					

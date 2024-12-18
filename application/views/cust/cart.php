@@ -640,27 +640,27 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
     var checkboxItemCd= [];
     var checkboxGrpCd= "";
     var total= 0;
-    var custOfferName = [];
 
     function getCustomItems(itemId, itemTyp, itemPortionCode, FID, OrdNo){
-        custOfferName = [];
-        checkboxName = [];
-        radioName = [];
+        checkboxName    = [];
+        radioName       = [];
+        custItemIds     = [];
 
-        $.post('<?= base_url('customer/get_custom_item') ?>',
+        $.post('<?= base_url('customer/get_custom_item_cart') ?>',
             {
                 getCustomItem:1,
                 itemId:itemId,
                 itemTyp:itemTyp,
                 itemPortionCode:itemPortionCode,
-                FID:FID
+                FID:FID,
+                OrdNo:OrdNo
             },
             function(res){
 
                 if(res.status == 'success'){
-
-                    var customItem = res.response;
+                    var customItem = res.response.customItem;
                     radioList = customItem;
+                    var customize = res.response.customize;
 
                     $('#radioOption').html('');
                     $('#checkboxOption').html('');
@@ -679,7 +679,17 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                             for(var r=0; r < details.length; r++){
                                 var rate = (itemTyp == 125)?0:details[r].Rate;
                                 var name = "'"+details[r].Name+"'";
-                                tempRadio += '<li><input type="radio" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+itemTyp+' , '+i+', '+name+', event)" /> '+details[r].Name+' <span class="float-right">('+rate+')</span></li>';
+
+                                var chk = '';
+                                if(customize.length > 0){
+                                    customize.forEach((item, index) =>{
+                                        if(item == details[r].ItemId){
+                                            chk = 'checked';
+                                        }
+                                    })
+                                }
+
+                                tempRadio += '<li><input type="radio" class="chk" name="'+customItem[i].ItemGrpName+'" value="'+details[r].ItemOptCd+'" rate="'+details[r].Rate+'" itemid="'+details[r].ItemId+'" itemname="'+details[r].Name+'" itemtype="'+itemTyp+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+itemTyp+' , '+i+', '+name+', event)" '+chk+' /> '+details[r].Name+' <span class="float-right">('+rate+')</span></li>';
                             }
                             tempRadio += '</ul>';
                             $('#radioOption').append(tempRadio);
@@ -694,7 +704,17 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                             for(var c=0; c < details.length; c++){
                                 var rate = (itemTyp == 125)?0:details[c].Rate;
                                 var name = "'"+details[c].Name+"'";
-                                tempCHK += '<li><input type="checkbox" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+itemTyp+', '+c+', '+name+', event)" /> '+details[c].Name+' <span class="float-right">('+rate+')</span></li>';
+
+                                var chk = '';
+                                if(customize.length > 0){
+                                    customize.forEach((item, index) =>{
+                                        if(item == details[c].ItemId){
+                                            chk = 'checked';
+                                        }
+                                    })
+                                }
+
+                                tempCHK += '<li><input type="checkbox" class="chk" name="'+customItem[i].ItemGrpName+'" value="'+details[c].ItemOptCd+'" rate="'+details[c].Rate+'" itemid="'+details[c].ItemId+'" itemname="'+details[c].Name+'" itemtype="'+itemTyp+'" onclick="calculateTotalc('+customItem[i].ItemGrpCd+', '+itemTyp+', '+c+', '+name+', event)" '+chk+' /> '+details[c].Name+' <span class="float-right">('+rate+')</span></li>';
                             }
                             tempCHK += '</ul>';
                             $('#checkboxOption').append(tempCHK);
@@ -708,6 +728,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                     $(`#origTotal`).val($(`#tmp_origrate_${OrdNo}`).val());
 
                     $(`#itmTotalView`).text($(`#tmp_itmrate_${OrdNo}`).val());
+                    getTotalc();
                     $(`#customOfferModal`).modal('show')
                 }else{
                     alert(res.response);
@@ -716,53 +737,75 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
         );
     }
 
+    function customized(OrdNo){
+        var dd = 'f';
+        $.post('<?= base_url('customer/get_customized_items') ?>',{OrdNo:OrdNo},function(res){
+            if(res.status == 'success'){
+                dd = 'vijay';
+            }else{
+              alert(res.response);
+            }
+        });
+        return dd;
+    }
+
     function calculateTotalc(itemGrpCd, itemTyp, index, itemName, event) {
 
         element = event.currentTarget;
         var rate = element.getAttribute('rate');
-        console.log('calc '+index, event.target.type, rate);
+        var itemid = element.getAttribute('itemid');
+        // console.log('calc '+index, event.target.type, rate);
         
-        if (event.target.type == "radio") {
-            this.radioRate[index] = parseInt(rate);
-            if(itemTyp == 125){
-                this.radioRate[index] = 0;
-            }
-            this.raidoGrpCd[index] = itemGrpCd;
-            this.radioName[index] = itemName;
-        } else {
-            // console.log(event.target.checked);
-            if (event.target.checked) {
-                this.checkboxRate[index] = parseInt(rate);
-                if(itemTyp == 125){
-                    this.checkboxRate[index] = 0;
-                }
-                this.checkboxName[index] = itemName;
-            } else {
-                this.checkboxRate[index] = 0;
-                this.checkboxName[index] = 0;
-                // console.log(index);
-            }
-        }
+        // if (event.target.type == "radio") {
+        //     this.radioRate[index] = parseInt(rate);
+        //     if(itemTyp == 125){
+        //         this.radioRate[index] = 0;
+        //     }
+        //     this.raidoGrpCd[index] = itemGrpCd;
+        //     this.radioName[index] = itemName;
+        // } else {
+            
+        //     if (event.target.checked) {
+        //         this.checkboxRate[index] = parseInt(rate);
+        //         if(itemTyp == 125){
+        //             this.checkboxRate[index] = 0;
+        //         }
+        //         this.checkboxName[index] = itemName;
+        //     } else {
+        //         this.checkboxRate[index] = 0;
+        //         this.checkboxName[index] = 0;
+                
+        //     }
+        // }
         getTotalc();
     }
 
     function getTotalc() {
         var tmpItemRate =  $('#itemTotal').val();
         var tmpOrigRate =  $('#origTotal').val();
-        var tmpOrigRateTotal = 0;
+        var tmpOrigRateTotal = 0
+        var Total = 0;
+        // var radioTotal = 0;
+        // this.radioRate.forEach(item => {
+        //     radioTotal += parseInt(item);
+        // });
 
-        var radioTotal = 0;
-        this.radioRate.forEach(item => {
-            radioTotal += parseInt(item);
+        // var checkTotal = 0;
+        // this.checkboxRate.forEach(item => {
+        //     checkTotal += parseInt(item);
+        // });
+
+        $('.chk:checked').each(function () {
+            var itemtype = $(this).attr('itemtype');
+            if(itemtype == 125){
+                Total = parseInt(Total) + 0 ;    
+            }else{
+                Total = parseInt(Total) + parseInt($(this).attr('rate'));
+            }
         });
 
-        var checkTotal = 0;
-        this.checkboxRate.forEach(item => {
-            checkTotal += parseInt(item);
-        });
-
-        this.total = parseInt(tmpItemRate) + parseInt(radioTotal) + parseInt(checkTotal);
-        tmpOrigRateTotal = parseInt(tmpOrigRate) + parseInt(radioTotal) + parseInt(checkTotal);
+        this.total = parseInt(tmpItemRate) + parseInt(Total);
+        tmpOrigRateTotal = parseInt(tmpOrigRate) + parseInt(Total);
 
         $('#origTotalView').val(tmpOrigRateTotal);
         $('#itmTotalView').text(this.total);
@@ -802,19 +845,27 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
         var kitItemRate = $('#itmTotalView').text();
         var kitOrigRate  = $(`#origTotalView`).val();
 
-        if(radioName.length > 0){
-            radioName.forEach(item =>{
-                custOfferName.push(item);
-            });
-        }
+        // if(radioName.length > 0){
+        //     radioName.forEach(item =>{
+        //         custOfferName.push(item);
+        //     });
+        // }
 
-        if(checkboxName.length > 0){
-            checkboxName.forEach(item =>{
-                custOfferName.push(item);
-            });
-        }
+        // if(checkboxName.length > 0){
+        //     checkboxName.forEach(item =>{
+        //         custOfferName.push(item);
+        //     });
+        // }
 
-        $.post('<?= base_url('customer/update_customItem_onKitchen') ?>',{ItemId:ItemId, OrdNo:ordNo, CustItemDesc:custOfferName.join(", "), ItemRates:kitItemRate, OrigRates:kitOrigRate},function(res){
+        var custItemIds     = [];
+        var custOfferName   = [];
+
+        $('.chk:checked').each(function () {
+            custItemIds.push($(this).attr('itemid'));
+            custOfferName.push($(this).attr('itemname'));
+        });
+
+        $.post('<?= base_url('customer/update_customItem_onKitchen') ?>',{ItemId:ItemId, OrdNo:ordNo, CustItemDesc:custOfferName, ItemRates:kitItemRate, OrigRates:kitOrigRate, custItemIds:custItemIds},function(res){
             if(res.status == 'success'){
                 $('#customOfferModal').modal('hide');
                 getSendToKitchenList();
