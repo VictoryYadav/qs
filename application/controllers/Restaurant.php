@@ -3344,8 +3344,17 @@ class Restaurant extends CI_Controller {
                 $RMCd = $_POST['RMCd'];
             }
 
+            $cat['ItemId']  = 0;
+            $cat["$RMName"] = $_POST['RMName'];
+            $cat['RMCatg']  = $_POST['RMCatg'];
+            if($_POST['type'] == 2){
+                $cat['ItemId'] = $_POST['ItemId'];
+            }
+            $cat['Stat']    = $_POST['Stat'];
+            $cat['EID']     = $EID;
+
             if(!empty($RMCd)){
-                updateRecord('RMItems', array("$RMName" => $_POST['RMName']), array('RMCd' => $RMCd, 'EID' => $EID));
+                updateRecord('RMItems', $cat , array('RMCd' => $RMCd, 'EID' => $EID));
                 $status = 'success';
                 $response = $this->lang->line('RMItemUpdated');
             }else{
@@ -3354,14 +3363,6 @@ class Restaurant extends CI_Controller {
                 if(!empty($check)){
                     $response = $this->lang->line('RMItemAlreadyExists');
                 }else{
-                    $cat['ItemId']  = 0;
-                    $cat["$RMName"] = $_POST['RMName'];
-                    $cat['RMCatg']  = $_POST['RMCatg'];
-                    if($_POST['type'] == 2){
-                        $cat['ItemId'] = $_POST['ItemId'];
-                    }
-                    $cat['Stat'] = 0;
-                    $cat['EID'] = $EID;
                     insertRecord('RMItems', $cat);
                     $status = 'success';
                     $response = $this->lang->line('RMItemAdded');

@@ -45,7 +45,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-3 col-4">
+                                                <div class="col-md-2 col-4">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('category'); ?></label>
                                                         <select name="RMCatg" id="RMCatg" class="form-control form-control-sm" required="">
@@ -59,7 +59,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-3 col-5">
+                                                <div class="col-md-2 col-5">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('item'); ?></label>
                                                         <select name="ItemId" id="ItemId" class="form-control form-control-sm select2 custom-select" >
@@ -72,6 +72,18 @@
                                                         </select>
                                                     </div>
                                                 </div>
+
+                                                <div class="col-md-2 col-5">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('mode'); ?></label>
+                                                        <select name="Stat" id="Stat" class="form-control form-control-sm" >
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                            <option value="0"><?= $this->lang->line('active'); ?></option>
+                                                            <option value="1"><?= $this->lang->line('inactive'); ?></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-md-2 col-3">
                                                     <div class="form-group">
                                                         <label for="">&nbsp;</label>
@@ -110,7 +122,7 @@
                                                         <td><?= $row['RMName']; ?></td>
                                                         <td><?= $row['RMCatgName']; ?></td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['RMCd'] ?>,<?= $row['RMCatg'] ?>, '<?= $row['RMName'] ?>', <?= $row['ItemId'] ?>)">
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['RMCd'] ?>,<?= $row['RMCatg'] ?>, '<?= $row['RMName'] ?>', <?= $row['ItemId'] ?>, <?= $row['Stat'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
@@ -182,11 +194,13 @@
 
     });
 
-    function editData(itemid,catid, rmname, ItemId){
+    function editData(itemid,catid, rmname, ItemId, Stat){
         $('#RMCd').val(itemid);
         $('#RMCatg').val(catid);
         $('#RMName').val(rmname);   
         $("#ItemId").val(ItemId).trigger('change');
+        $(`#Stat`).val(Stat);
+        
         $(`#type`).val(1);
         $(`#ItemId`).prop('disabled', true);
         if(ItemId > 0){
