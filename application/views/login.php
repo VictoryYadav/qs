@@ -57,15 +57,16 @@
         }
         .login_btn {
             /*width: 100%;*/
-            background: #2f2b2b !important;
+            background: #00c602 !important;
             color: white !important;
+            font-weight: 500;
         }
         .login_btn:focus {
             box-shadow: none !important;
             outline: 0px !important;
         }
         .login_btn:hover {
-          background-color: #494545 !important;
+          background-color: #2ce72e !important;
           color: white;
         }
 
@@ -79,7 +80,7 @@
 
         .input-group-text {
             background: #fff !important;
-            color: #000 !important;
+            color: #4f5153 !important;
             border: 0 !important;
             border-radius: 0.25rem 0 0 0.25rem !important;
         }

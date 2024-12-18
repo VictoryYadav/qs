@@ -3337,6 +3337,7 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
+
             $RMName = "Name$langId";
             $RMCd = 0;
             if(isset($_POST['RMCd']) && !empty($_POST['RMCd'])){
@@ -3353,9 +3354,12 @@ class Restaurant extends CI_Controller {
                 if(!empty($check)){
                     $response = $this->lang->line('RMItemAlreadyExists');
                 }else{
+                    $cat['ItemId']  = 0;
                     $cat["$RMName"] = $_POST['RMName'];
-                    $cat['RMCatg'] = $_POST['RMCatg'];
-                    $cat['ItemId'] = $_POST['ItemId'];
+                    $cat['RMCatg']  = $_POST['RMCatg'];
+                    if($_POST['type'] == 2){
+                        $cat['ItemId'] = $_POST['ItemId'];
+                    }
                     $cat['Stat'] = 0;
                     $cat['EID'] = $EID;
                     insertRecord('RMItems', $cat);

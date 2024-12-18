@@ -27,7 +27,18 @@
                                         <form method="post" id="catForm">
                                             <input type="hidden" id="RMCd" name="RMCd">
                                             <div class="row">
-                                                <div class="col-md-3 col-5">
+                                                <div class="col-md-2 col-5">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('type'); ?></label>
+                                                        <select class="form-control form-control-sm" name="type" required="" id="type" onclick="changeType()">
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                            <option value="1">RM</option>
+                                                            <option value="2">FG</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-5">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('name'); ?></label>
                                                         <input type="text" class="form-control form-control-sm" name="RMName" placeholder="<?= $this->lang->line('name'); ?>" required="" id="RMName" autocomplete="off">
@@ -51,7 +62,7 @@
                                                 <div class="col-md-3 col-5">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('item'); ?></label>
-                                                        <select name="ItemId" id="ItemId" class="form-control form-control-sm select2 custom-select">
+                                                        <select name="ItemId" id="ItemId" class="form-control form-control-sm select2 custom-select" >
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php
                                                             foreach ($itemList as $key) {
@@ -61,7 +72,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3 col-3">
+                                                <div class="col-md-2 col-3">
                                                     <div class="form-group">
                                                         <label for="">&nbsp;</label>
                                                         <br>
@@ -144,6 +155,18 @@
         $('#ItemId').select2();
     });
 
+    function changeType() {
+        var type = $(`#type`).val();
+        if(type > 0){
+            if(type == 1){
+                $(`#ItemId`).val('').trigger('change')
+                $(`#ItemId`).prop('disabled', true);
+            }else{
+                $(`#ItemId`).prop('disabled', false);
+            }
+        }
+    }
+
     $('#catForm').on('submit', function(e){
         e.preventDefault();
 
@@ -164,5 +187,11 @@
         $('#RMCatg').val(catid);
         $('#RMName').val(rmname);   
         $("#ItemId").val(ItemId).trigger('change');
+        $(`#type`).val(1);
+        $(`#ItemId`).prop('disabled', true);
+        if(ItemId > 0){
+            $(`#type`).val(2);
+            $(`#ItemId`).prop('disabled', false);
+        }
     }
 </script>
