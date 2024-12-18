@@ -375,11 +375,11 @@ class Cust extends CI_Model{
 						// 	$orderType = 0;
 						// }
 
-						
 						if ($EType == 5) {
-
 							$tblData = getTableDetail($TableNo);
 							$kitchenMainObj['CCd'] = $tblData['CCd'];
+						}else{
+							$kitchenMainObj['CCd'] = 0;
 						}
 
 						if($TableNo == $MergeNo){

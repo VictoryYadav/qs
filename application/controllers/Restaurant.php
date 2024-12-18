@@ -2762,7 +2762,7 @@ class Restaurant extends CI_Controller {
         }
 
         if (isset($_POST['sendToKitchen']) && $_POST['sendToKitchen']) {
-            echo "<pre>";print_r($_POST);die;
+            // echo "<pre>";print_r($_POST);die;
             $ItemTypFlag = 1;
             for ($i = 0; $i < sizeof($_POST['itemIds']); $i++) {
                 if($_POST['ItemTyp'][$i] == 125 && $_POST['CustItemDesc'][$i] == 'Std'){
