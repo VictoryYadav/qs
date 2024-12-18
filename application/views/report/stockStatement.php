@@ -38,7 +38,7 @@
                                                             if(!empty($stores)){
                                                                 foreach ($stores as $key) { ?>
                                                             ?>
-                                                            <option value="<?= $key['KitCd']; ?>"><?= $key['KitName']; ?></option>
+                                                            <option value="<?= $key['MCd']; ?>"><?= $key['Name']; ?></option>
                                                         <?php } } ?>
                                                         </select>
                                                     </div>

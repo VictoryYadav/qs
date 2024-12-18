@@ -1998,7 +1998,7 @@ class Restaurant extends CI_Controller {
             }
 
         }
-        $data['title'] = $this->lang->line('addStock');
+        $data['title'] = $this->lang->line('stock').' '.$this->lang->line('transactions');
 
         $data['items'] = $this->rest->getRMItemUOM();
         $data['trans_type'] = $this->rest->getTransactionType();
@@ -8712,7 +8712,7 @@ class Restaurant extends CI_Controller {
         }
 
         $data['title'] = $this->lang->line('stock').' '.$this->lang->line('statement');
-        $data['stores'] = $this->rest->getKitchenList();
+        $data['stores'] = $this->rest->getFromMastIn();
         $this->load->view('report/stockStatement', $data);    
     }
 

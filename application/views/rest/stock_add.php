@@ -185,7 +185,7 @@ $RestName = authuser()->RestName;
                                                                         <select name="MItemId[]" class="items form-control form-control-sm select2 custom-select" id="mitems1" onchange="getUOMFG(this, 1)" >
                                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                                             <?php foreach($menuItems as $key){?>
-                                                                                <option value="<?= $key['RMCd']?>"><?= $key['RMName']?></option>
+                                                                                <option value="<?= $key['RMCd']?>"><?= $key['Name']?></option>
                                                                             <?php }?>
                                                                         </select>
                                                                     </td>
@@ -334,7 +334,7 @@ function add_row(){
                     <select name="MItemId[]" class="items form-control form-control-sm select2 custom-select" id="mitems'+cntr+'" onchange="getUOMFG(this, '+cntr+')" >\
                         <option value=""><?= $this->lang->line('select'); ?></option>\
                         <?php foreach($menuItems as $key){?>
-                            <option value="<?= $key['RMCd']?>"><?= $key['RMName']?></option>\
+                            <option value="<?= $key['RMCd']?>"><?= $key['Name']?></option>\
                         <?php }?>
                     </select>\
                 </td>\

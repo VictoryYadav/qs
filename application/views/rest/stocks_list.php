@@ -58,11 +58,11 @@ $RestName = authuser()->RestName;
                                                 <div class="col-md-3 col-10">
                                                     <div class="d-none d-sm-block">
                                                     <label>&nbsp;</label><br>
-                                                    <a href="<?php echo base_url('restaurant/add_stock'); ?>" class="btn btn-primary btn-sm"><?= $this->lang->line('addStock'); ?></a>
+                                                    <a href="<?php echo base_url('restaurant/add_stock'); ?>" class="btn btn-primary btn-sm"><?= $this->lang->line('stock').' '.$this->lang->line('transactions'); ?></a>
                                                 </div>
                                                     <div class="d-sm-block d-md-none text-right">
                                                         <label>&nbsp;</label><br>
-                                                    <a href="<?php echo base_url('restaurant/add_stock'); ?>" class="btn btn-primary btn-sm"><?= $this->lang->line('addStock'); ?></a>
+                                                    <a href="<?php echo base_url('restaurant/add_stock'); ?>" class="btn btn-primary btn-sm"><?= $this->lang->line('stock').' '.$this->lang->line('transactions'); ?></a>
                                                     </div>
                                                 </div>
                                             </div>
