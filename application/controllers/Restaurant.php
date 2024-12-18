@@ -2762,7 +2762,7 @@ class Restaurant extends CI_Controller {
         }
 
         if (isset($_POST['sendToKitchen']) && $_POST['sendToKitchen']) {
-            // echo "<pre>";print_r($_POST);die;
+            echo "<pre>";print_r($_POST);die;
             $ItemTypFlag = 1;
             for ($i = 0; $i < sizeof($_POST['itemIds']); $i++) {
                 if($_POST['ItemTyp'][$i] == 125 && $_POST['CustItemDesc'][$i] == 'Std'){
@@ -2983,9 +2983,9 @@ class Restaurant extends CI_Controller {
                     }
                 }
                 // end of billbased offer
+                
                 // delete from temp kitchen
-                // deleteRecord('tempKitchen', array('TableNo' => $tableNo, 'EID' => $EID));
-                $this->db2->query("DELETE FROM tempKitchen where TableNo = '$tableNo' or MergeNo = '$MergeNo' and EID = '$EID'");
+                $this->db2->query("DELETE FROM tempKitchen where TableNo = '$tableNo' or MergeNo = '$MergeNo' and EID = '$EID' and CCd = $CCd");
                 // end delete from temp kitchen
 
                 $url = base_url('restaurant/kot_print/').$CNo.'/'.$tableNo.'/'.$fKotNo.'/'.$kotNo;
@@ -5107,7 +5107,7 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
-
+            // echo "<pre>";print_r($_POST);die;
             $thirdParty = 0;
             $thirdPartyRef = 0;
             $orderType = $_POST['orderType'];
@@ -5159,15 +5159,16 @@ class Restaurant extends CI_Controller {
                 $kitchenObj['CellNo'] = '';
             }
                 
-            $kitchenObj['Qty'] = $Qty;
-            $kitchenObj['FID'] = $_POST['FID'];
-            $kitchenObj['SchCd'] = $SchCd;
-            $kitchenObj['SDetCd'] = $SDetCd;
+            $kitchenObj['Qty']      = $Qty;
+            $kitchenObj['FID']      = $_POST['FID'];
+            $kitchenObj['SchCd']    = $SchCd;
+            $kitchenObj['SDetCd']   = $SDetCd;
 
             $kitchenObj['CustItem'] = $CustItem;
             $kitchenObj['CustItemDesc'] = $CustItemDesc;
             $kitchenObj['custAddr'] = $customerAddress;
             $kitchenObj['ItemSale'] = $_POST['ItemSale'];
+            $kitchenObj['CCd']      = $_POST['CCd'];
 
             $kitchenObj['FKOTNo'] = 0;         
             $kitchenObj['KOTNo'] = 0;
@@ -6759,7 +6760,7 @@ class Restaurant extends CI_Controller {
             $EID = authuser()->EID;
             $RestName = authuser()->RestName;
             $DeliveryOTP = $this->session->userdata('DeliveryOTP');
-
+            // 101 => thirdparty
             if($oType != 101){
 
                 $otpData['mobileNo'] = $mobile;

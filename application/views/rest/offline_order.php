@@ -1211,6 +1211,7 @@
             var CellNo = $('#phone').val();
             var customerAddress = $('#cust-address').val();
             var orderType = $('#order-type').val();
+            var CCd = $('#ccd').val();
 
             if(orderType == 8){
                 TableNo = $('#table-id').val();
@@ -1218,7 +1219,7 @@
                 TableNo = orderType;
             }
 
-            $.post('<?= base_url('restaurant/insert_temp_kitchen') ?>',{ ItemId:itemId, itemName:itemName, OrigRate:origValue, ItmRate:origValue, KitCd:itemKitCd,  ItemTyp:ItemTyp, PckCharge:PckCharge, Itm_Portion:Itm_Portion, TaxType:TaxType, PrepTime:PrepTime, DCd:DCd, CID:CID, MCatgId:MCatgId , TableNo:TableNo, CellNo:CellNo, orderType:orderType, FID:FID, Qty:Qty, SchCd:SchCd, SDetCd:SDetCd, OrdNo:OrdNo,customerAddress:customerAddress, ItemSale:ItemSale, customizeItemId:customizeItemId},function(res){
+            $.post('<?= base_url('restaurant/insert_temp_kitchen') ?>',{ ItemId:itemId, itemName:itemName, OrigRate:origValue, ItmRate:origValue, KitCd:itemKitCd,  ItemTyp:ItemTyp, PckCharge:PckCharge, Itm_Portion:Itm_Portion, TaxType:TaxType, PrepTime:PrepTime, DCd:DCd, CID:CID, MCatgId:MCatgId , TableNo:TableNo, CellNo:CellNo, orderType:orderType, FID:FID, Qty:Qty, SchCd:SchCd, SDetCd:SDetCd, OrdNo:OrdNo,customerAddress:customerAddress, ItemSale:ItemSale, customizeItemId:customizeItemId, CCd:CCd},function(res){
                 if(res.status == 'success'){
                   
                   getTableData();
