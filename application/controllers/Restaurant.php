@@ -6483,6 +6483,95 @@ class Restaurant extends CI_Controller {
                         }
                       }
                 break;
+
+                case 'rmitems':
+                    if(isset($_FILES['rm_file']['name']) && !empty($_FILES['rm_file']['name'])){ 
+                        $files = $_FILES['rm_file'];
+                        $allowed = array('csv');
+                        $filename_c = $_FILES['rm_file']['name'];
+                        $ext = pathinfo($filename_c, PATHINFO_EXTENSION);
+                        if (!in_array($ext, $allowed)) {
+                            $flag = 1;
+                            $this->session->set_flashdata('error','Support only CSV format!');
+                        }
+                        // less than 1mb size upload
+                        if($files['size'] > 1048576){
+                            $flag = 1;
+                            $this->session->set_flashdata('error','File upload less than 1MB!');   
+                        }
+                        $_FILES['rm_file']['name']= $files['name'];
+                        $_FILES['rm_file']['type']= $files['type'];
+                        $_FILES['rm_file']['tmp_name']= $files['tmp_name'];
+                        $_FILES['rm_file']['error']= $files['error'];
+                        $_FILES['rm_file']['size']= $files['size'];
+                        $file = $files['name'];
+
+                        if($flag == 0){
+                            $res = do_upload('rm_file',$file,$folderPath,'*');
+                            if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
+
+                                $cashierData = [];
+                                
+                                $count = 1;
+                                $checker = 0;
+
+                                while (($csv_data = fgetcsv($open, 1000, ",")) !== false) {
+                                
+                                    if($csv_data[0] !='RestName'){
+                                        $checker = 1;
+                                        $rm['EID'] = $this->checkEatary($csv_data[0]);
+
+                                        if($rm['EID'] < 1){
+                                          $response = $csv_data[0]. $this->lang->line('notFoundinRowNo')." $count";
+                                          $checker = 0;
+                                        }
+
+                                        $rmtype =  $csv_data[1];
+                                        if(strtolower($rmtype) == 'rm'){
+                                            $rm['ItemId'] = 0;
+                                        }else if(strtolower($rmtype) == 'fg'){
+                                            // finished goods
+                                            $rm['ItemId'] = $this->getItemId($rm['EID'], $csv_data[5]);
+                                        }
+
+                                        $rm['RMCatg'] = $this->checkRMCatg($rm['EID'], $csv_data[2]);
+
+                                        $rm['Name1']  =  $csv_data[3];
+                                        $UOMCd        =  $this->checkRMUOM($csv_data[4]);
+                                        $rm['Stat'] = 0;
+
+                                        if($checker == 1){
+                                            $RMCd = insertRecord('RMItems', $rm);
+
+                                            $rmuom['RMCd'] = $RMCd;
+                                            $rmuom['UOMCd'] = $UOMCd;
+                                            $rmuom['Stat'] = 0;
+
+                                            insertRecord('RMItemsUOM', $rmuom);
+                                        }
+
+                                    }
+                                }
+                                $status     = 'success';
+                                $response   = 'Data inserted';
+
+                                if($checker == 0){
+                                    $status     = 'error';
+                                    $response   = 'Data not inserted';
+                                }
+
+                                fclose($open);
+
+                                header('Content-Type: application/json');
+                                echo json_encode(array(
+                                    'status' => $status,
+                                    'response' => $response
+                                  ));
+                                 die; 
+                            }
+                        }
+                      }
+                break;
             }
             
             header('Content-Type: application/json');
@@ -6693,6 +6782,30 @@ class Restaurant extends CI_Controller {
               ));
              die;
         }
+    }
+
+    private function checkRMCatg($EID, $name){
+        $RMCatgCd = 0;
+        $data = $this->db2->select('RMCatgCd')->like('Name1', $name)->get_where('RMCatg', array('EID' => $EID))->row_array();
+        if(!empty($data)){
+            $RMCatgCd = $data['RMCatgCd'];
+        }else{
+            $cat['Name1']   = $name;
+            $cat['Stat']    = 0;
+            $cat['EID']     = $EID;
+            $RMCatgCd       = insertRecord('RMCatg', $cat);
+        }
+        return $RMCatgCd;
+    }
+
+    private function checkRMUOM($name){
+        $UOMCd = 0;
+        $data = $this->db2->select('UOMCd')->like('Name1', $name)->get('RMUOM')->row_array();
+        if(!empty($data)){
+            $UOMCd = $data['UOMCd'];
+        }
+
+        return $UOMCd;
     }
 
     public function updateMCNoForTable(){
@@ -11118,6 +11231,44 @@ class Restaurant extends CI_Controller {
         $data['country']    = $this->rest->getCountries();
         $data['taxList']    = $this->rest->getTaxList();
         $this->load->view('rest/taxList', $data);
+    }
+
+    public function rm_items_uom(){
+        $status = 'error';
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+
+        $EID = authuser()->EID;
+        if($this->input->method(true)=='POST'){
+            $status = 'success';
+
+            $RCd = $_POST['RCd'];
+            $rms = $_POST;
+
+            if($RCd > 0){
+                updateRecord('RMItemsUOM', $rms, array('RCd' => $RCd));
+                $response = $this->lang->line('dataUpdated');
+            }else{
+                unset($rms['RCd']);
+                $id = insertRecord('RMItemsUOM', $rms);
+                if($id > 0){
+                    $response = $this->lang->line('dataAdded');                
+                }
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+
+        $data['title'] = 'RM Items UOM';
+        $data['items']    = $this->rest->getAllRMItemsList();
+        $data['uomList']    = $this->rest->getUOMlist();
+        $data['rmUOMs']    = $this->rest->getRMUOMlisting();
+        // echo "<pre>";print_r($data);die;
+        $this->load->view('rest/rm_items_uom', $data);
     }
 
 

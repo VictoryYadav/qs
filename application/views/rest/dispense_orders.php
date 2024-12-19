@@ -120,7 +120,7 @@
                                             </div>
                                             <div class="col-6">
                                                 <div class="text-right" id="showActionBtn">
-                                                    
+                                                    <button class="btn btn-sm btn-danger btn-rounded tippy-btn" title="Refresh" data-tippy-placement="top" onclick="refreshPage()" > <i class="mdi mdi-speedometer-slow"></i></button>
                                                 </div>
                                             </div>
                                         </div>
@@ -239,7 +239,7 @@
     }
 
     function getTableView() {
-        $('#showActionBtn').hide();
+        // $('#showActionBtn').hide();
         $('#item-view-tbody1').empty();
         
         var DispCd = $('#kitchen-code').val();
