@@ -95,6 +95,7 @@
                                                     <th><?= $this->lang->line('menu'); ?></th>
                                                     <th><?= $this->lang->line('url'); ?></th>
                                                     <th><?= $this->lang->line('rank'); ?></th>
+                                                    <th><?= $this->lang->line('role'); ?></th>
                                                     <th><?= $this->lang->line('mode'); ?></th>
                                                     <th><?= $this->lang->line('action'); ?></th>
                                                 </tr>
@@ -115,12 +116,22 @@
                                                                 $clr = 'danger';
                                                             }
 
+                                                            $role = 'Not Defined';
+                                                            if($row['roleGroup'] == 1){
+                                                                $role = 'Master';
+                                                            }else if($row['roleGroup'] == 2){
+                                                                $role = 'Operation';
+                                                            }else if($row['roleGroup'] == 3){
+                                                                $role = 'Report';
+                                                            }
+
                                                          ?>
                                                     <tr>
                                                         <td><?= $i++; ?></td>
                                                         <td><?= $row['LngName']; ?></td>
                                                         <td><?= $row['pageUrl']; ?></td>
                                                         <td><?= $row['Rank']; ?></td>
+                                                        <td><?= $role; ?></td>
                                                         <td>
                                                             <span class="badge badge-boxed  badge-<?= $clr; ?>"><?= $sts; ?></span>
                                                         </td>

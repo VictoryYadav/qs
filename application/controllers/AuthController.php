@@ -40,7 +40,7 @@ class AuthController extends CI_Controller {
 
                 if (!empty($login_check)) {
 
-                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.MultiLingual, c.kds,  c.TableReservation, c.Ops, c.CustAddr, e.EType, e.aggEID, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, e.CountryCd, e.Logo, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt, c.billSplitOpt, c.AutoSettle,c.Dispense_OTP,c.DelCharge,c.DeliveryOTP, c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint, c.JoinTable, c.tableSharing, c.Bill_KOT_Print, c.SchType, c.restBilling, c.recommend, c.addItemLock, c.AutoPrintKOT')
+                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.MultiLingual, c.kds,  c.TableReservation, c.Ops, c.CustAddr, e.EType, e.aggEID, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, e.CountryCd, e.Logo, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt, c.billSplitOpt, c.AutoSettle,c.Dispense_OTP,c.DelCharge, c.Charity, c.CharityCharge, c.DeliveryOTP, c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint, c.JoinTable, c.tableSharing, c.Bill_KOT_Print, c.SchType, c.restBilling, c.recommend, c.addItemLock, c.AutoPrintKOT')
                             ->join('Eatary e',' u.EID = e.EID', 'inner')
                             ->join('Config c','u.EID = c.EID','inner')
                             // u.ChainId = c.ChainId 
@@ -77,6 +77,9 @@ class AuthController extends CI_Controller {
                         $this->session->set_userdata('Dispense_OTP', $checkNumber['Dispense_OTP']);
                         $this->session->set_userdata('DelCharge', $checkNumber['DelCharge']);
                         $this->session->set_userdata('DeliveryOTP', $checkNumber['DeliveryOTP']);
+                        $this->session->set_userdata('Charity', $checkNumber['Charity']);
+                        $this->session->set_userdata('CharityCharge', $checkNumber['CharityCharge']);
+                        
                         $this->session->set_userdata('EDT', $checkNumber['EDT']);
                         $this->session->set_userdata('billFlag',0);
                         $this->session->set_userdata('Discount',$checkNumber['Discount']);

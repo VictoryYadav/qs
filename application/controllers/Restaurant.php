@@ -5570,7 +5570,7 @@ class Restaurant extends CI_Controller {
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
-            $folderPath = 'uploads/e'.$EID.'/csv';
+            $folderPath = "/var/www/html/eat_out_app/uploads/e$EID/csv";
             if (!file_exists($folderPath)) {
                 // Create the directory
                 mkdir($folderPath, 0777, true);
@@ -6584,12 +6584,16 @@ class Restaurant extends CI_Controller {
                                 if(!empty($rmData)){
 
                                     $EID = $_POST['EID'];
-                                    
-                                    $this->db2->insert_batch('tempInventory', $rmData);
 
+                                    $this->db2->query('TRUNCATE tempInventory');
+                                    $this->db2->query('DELETE FROM RMCatg WHERE EID = $EID');
+                                    $this->db2->query('DELETE FROM RMItems WHERE EID = $EID');
+                                    $this->db2->query('DELETE FROM RMItemsUOM WHERE EID = $EID');
+                                    $this->db2->insert_batch('tempInventory', $rmData);
+                                    
                                     $this->db2->query("INSERT INTO RMCatg (Name1, RMCatTyp, EID, Stat)  SELECT DISTINCT t.RMCategory , (case when t.RMCatType = 'Stock' Then 1 ELSE 2 end), $EID,  0 From tempInventory t");
 
-                                    $this->db2->query("INSERT INTO RMItems (Name1, EID, RMCatg, ItemId, Stat)  SELECT t.RMName , $EID, (select rc.RMCatgCd from  RMCatg rc, tempInventory t1 where t1.RMCategory=rc.Name1 and rc.EID=$EID and t1.RMName = t.RMName ), ifnull((select mi.ItemId from MenuItem mi, tempInventory tt where mi.Name1 =tt.ItemName and mi.EID=$EID and tt.ItemName !='-'),0), 0 From tempInventory t ");
+                                    $this->db2->query("INSERT INTO RMItems (Name1, EID, RMCatg, ItemId, Stat)  SELECT t.RMName , $EID, (select rc.RMCatgCd from  RMCatg rc, tempInventory t1 where t1.RMCategory=rc.Name1 and rc.EID=$EID and t1.RMName = t.RMName ), ifnull((select mi.ItemId from MenuItem mi, tempInventory tt where mi.Name1 =tt.ItemName and mi.EID=$EID and tt.ItemName !='-' and t.RMName=tt.RMName),0), 0 From tempInventory t ");
 
                                     $this->db2->query("INSERT INTO RMItemsUOM (RMCd, UOMCd, Stat) Select (SELECT rm.RMCd from RMItems rm where rm.Name1 = t.RMName and rm.EID = $EID ), (SELECT u.UOMCd from RMUOM u , RMItems rm1 where u.Name1 = t.UOM and rm1.Name1 = t.RMName ) ,0 from tempInventory t");
 
@@ -10975,16 +10979,16 @@ class Restaurant extends CI_Controller {
                 $selectedItem = $_POST['Item'];
                 $FrmId = $_POST['FrmId'];
                 $uom = $_POST['uom'];
+                // query is not working properly
+                // $dt  = $this->db2->query("SELECT sum(case when rs.TransType < 10 && rs.ToID= $FrmId Then rsd.Qty ELSE 0 end) as issued, sum(case when rs.TransType >= 10 && rs.ToID= $FrmId Then rsd.Qty else 0 end) as rcvd FROM RMStockDet as rsd, RMStock as rs where rsd.TransId = rs.TransId and  rsd.RMCd = $selectedItem and rsd.UOMCd = $uom and rsd.Stat = 0 and rs.Stat = 0 group by rs.FrmID, rs.ToId ")
+                //     ->row_array();
 
-                $dt  = $this->db2->query("SELECT sum(case when rs.TransType < 10 && rs.ToID= $FrmId Then rsd.Qty ELSE 0 end) as issued, sum(case when rs.TransType >= 10 && rs.ToID= $FrmId Then rsd.Qty else 0 end) as rcvd FROM RMStockDet as rsd, RMStock as rs where rsd.TransId = rs.TransId and  rsd.RMCd = $selectedItem and rsd.UOMCd = $uom and rsd.Stat = 0 and rs.Stat = 0 group by rs.FrmID, rs.ToId ")
-                    ->row_array();
-
-                if(!empty($dt)){
-                    $total = $dt['rcvd'] - $dt['issued'];
-                    if($_POST['Qty'] >= $total){
-                        $response = 1;
-                    }
-                }
+                // if(!empty($dt)){
+                //     $total = $dt['rcvd'] - $dt['issued'];
+                //     if($_POST['Qty'] >= $total){
+                //         $response = 1;
+                //     }
+                // }
 
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -11272,8 +11276,9 @@ class Restaurant extends CI_Controller {
         if($this->input->method(true)=='POST'){
             $status = 'success';
 
-            $RCd = $_POST['RCd'];
-            $rms = $_POST;
+            $RCd        = $_POST['RCd'];
+            $rms        = $_POST;
+            $rms['EID'] = $EID;
 
             if($RCd > 0){
                 updateRecord('RMItemsUOM', $rms, array('RCd' => $RCd));

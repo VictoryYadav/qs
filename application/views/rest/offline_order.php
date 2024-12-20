@@ -1,4 +1,6 @@
-<?php $this->load->view('layouts/admin/head'); ?>
+<?php $this->load->view('layouts/admin/head'); 
+$Charity = $this->session->userdata('Charity');
+?>
 <style>
     .addcss{
         z-index: 999;position: absolute;overflow: scroll;height: 170px;background: #fff;
@@ -819,11 +821,7 @@
             });
 
             $(".is_take_away").each(function(index, el) {
-                var ch = 0;
-                if(el.checked){
-                    ch = 1;
-                }
-                take_away.push(ch);
+                take_away.push($(this).val());
             });
 
             $(".item-rate").each(function(index, el) {
@@ -1104,7 +1102,14 @@
                         if(item.CNo > 0){
                             readonly = 'readonly';
                             disabled = 'disabled';
-                             if(orderType != 8){
+                            var TA = 'SitIn';
+                            if(item.TA == 1){
+                                TA = 'TA';
+                            }else if(item.TA == 2){
+                                TA = 'Charity';
+                            }
+
+                            if(orderType != 8){
                                 ch = 'checked disabled';
                             }else{
                                 ch = 'disabled';
@@ -1122,7 +1127,7 @@
                                     <td style="width:50px;"><input type="text" class="form-control form-control-sm item-qty" min="1" value="${convertToUnicodeNo(item.Qty)}" onblur="calculateValue(this)" style="width:50px;" id="qty_${trow}_${item.ItemId}" ${readonly}></td>
                                     <td class="item-rate" id="rate_${trow}_${item.ItemId}">${convertToUnicodeNo(item.ItmRate)}</td>
                                     <td class="item-value" id="value_${trow}_${item.ItemId}">${convertToUnicodeNo(item.ItmRate * item.Qty)}</td>
-                                    <td><input type="checkbox" value="1" class="is_take_away" ${ch}></td>
+                                    <td><input type="hidden" value="1" class="is_take_away"> ${TA}</td>
                                     <td>${item.CustRmks}</td>
                                     <td style=" text-align: center; ">
                                     
@@ -1152,7 +1157,14 @@
                                     <td style="width:50px;"><input type="text" class="form-control form-control-sm item-qty" min="1" value="${convertToUnicodeNo(item.Qty)}" onblur="calculateValue(this)" style="width:50px;" id="qty_${trow}_${item.ItemId}" ${readonly}></td>
                                     <td class="item-rate" id="rate_${trow}_${item.ItemId}">${convertToUnicodeNo(item.ItmRate)}</td>
                                     <td class="item-value" id="value_${trow}_${item.ItemId}">${convertToUnicodeNo(item.ItmRate * item.Qty)}</td>
-                                    <td><input type="checkbox" value="1" class="is_take_away" ${ch}></td>
+                                    <td><select class="form-control is_take_away" style="font-size: 13px; height: 30px; padding: 4px;width: 103px;" id="take-away">
+                                        <option value="0"><?= $this->lang->line('sitIn'); ?></option>
+                                        <option value="1"><?= $this->lang->line('takeAway'); ?></option>
+                                        <?php if($Charity == 1){ ?>
+                                        <option value="2"><?= $this->lang->line('charity'); ?></option>
+                                        <?php } ?>
+                                        </select>
+                                    </td>
                                     <td><input type="text" class="form-control form-control-sm item-remarks" style="width:100%;"></td>
                                     <td style=" text-align: center; ">
                                     ${customOfferBtn}
