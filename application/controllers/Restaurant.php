@@ -5569,6 +5569,7 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
+
             $folderPath = 'uploads/e'.$EID.'/csv';
             if (!file_exists($folderPath)) {
                 // Create the directory
@@ -6470,6 +6471,7 @@ class Restaurant extends CI_Controller {
                                         }
                                         $tableData[] = $temp;
                                     }
+                                    $count++;
                                 }
 
                                 if(!empty($tableData)){
@@ -6510,7 +6512,7 @@ class Restaurant extends CI_Controller {
                             $res = do_upload('rm_file',$file,$folderPath,'*');
                             if (($open = fopen($folderPath.'/'.$file, "r")) !== false) {
 
-                                $cashierData = [];
+                                $rmData = [];
                                 
                                 $count = 1;
                                 $checker = 0;
@@ -6519,55 +6521,83 @@ class Restaurant extends CI_Controller {
                                 
                                     if($csv_data[0] !='RestName'){
                                         $checker = 1;
-                                        $rm['EID'] = $this->checkEatary($csv_data[0]);
+                                        $rm['RestName'] = $csv_data[0];
 
-                                        if($rm['EID'] < 1){
+                                        if(empty($rm['RestName'])){
                                           $response = $csv_data[0]. $this->lang->line('notFoundinRowNo')." $count";
                                           $checker = 0;
                                         }
 
-                                        $rmtype =  $csv_data[1];
-                                        if(strtolower($rmtype) == 'rm'){
-                                            $rm['ItemId'] = 0;
-                                        }else if(strtolower($rmtype) == 'fg'){
-                                            // finished goods
-                                            $rm['ItemId'] = $this->getItemId($rm['EID'], $csv_data[5]);
+                                        $rm['RMType'] =  $csv_data[1];
+                                        if(empty($rm['RMType'])){
+                                          $response = $csv_data[1]. $this->lang->line('notFoundinRowNo')." $count";
+                                          $checker = 0;
+                                        }                                        
+
+                                        $rm['RMCategory'] = $csv_data[2];
+                                        if(empty($rm['RMCategory'])){
+                                          $response = $csv_data[2]. $this->lang->line('notFoundinRowNo')." $count";
+                                          $checker = 0;
                                         }
 
-                                        $rm['RMCatg'] = $this->checkRMCatg($rm['EID'], $csv_data[2]);
-
-                                        $rm['Name1']  =  $csv_data[3];
-                                        $UOMCd        =  $this->checkRMUOM($csv_data[4]);
-                                        $rm['Stat'] = 0;
-
-                                        if($checker == 1){
-                                            $RMCd = insertRecord('RMItems', $rm);
-
-                                            $rmuom['RMCd'] = $RMCd;
-                                            $rmuom['UOMCd'] = $UOMCd;
-                                            $rmuom['Stat'] = 0;
-
-                                            insertRecord('RMItemsUOM', $rmuom);
+                                        $rm['RMCatType'] = $csv_data[3];
+                                        if(empty($rm['RMCatType'])){
+                                          $response = $csv_data[3]. $this->lang->line('notFoundinRowNo')." $count";
+                                          $checker = 0;
                                         }
 
+                                        $rm['RMName']  =  $csv_data[4];
+                                        if(empty($rm['RMName'])){
+                                          $response = $csv_data[4]. $this->lang->line('notFoundinRowNo')." $count";
+                                          $checker = 0;
+                                        }
+                                        
+                                        $rm['UOM'] = $csv_data[5];
+                                        if(empty($rm['UOM'])){
+                                          $response = $csv_data[5]. $this->lang->line('notFoundinRowNo')." $count";
+                                          $checker = 0;
+                                        }
+
+                                        $rm['ItemName'] = '-';
+                                        if(strtolower($rm['RMType']) == 'fg'){
+                                            $rm['ItemName'] = $csv_data[6];
+                                            if(empty($rm['ItemName'])){
+                                              $response = $csv_data[6]. $this->lang->line('notFoundinRowNo')." $count";
+                                              $checker = 0;
+                                            }
+                                        }
+
+                                        if($checker == 0){
+                                            $$rmData = [];
+                                            header('Content-Type: application/json');
+                                            echo json_encode(array(
+                                                'status' => $status,
+                                                'response' => $response
+                                              ));
+                                             die; 
+                                        }
+                                        $rmData[] = $rm;
                                     }
+                                    $count++;
                                 }
-                                $status     = 'success';
-                                $response   = 'Data inserted';
 
-                                if($checker == 0){
-                                    $status     = 'error';
-                                    $response   = 'Data not inserted';
+                                if(!empty($rmData)){
+
+                                    $EID = $_POST['EID'];
+                                    
+                                    $this->db2->insert_batch('tempInventory', $rmData);
+
+                                    $this->db2->query("INSERT INTO RMCatg (Name1, RMCatTyp, EID, Stat)  SELECT DISTINCT t.RMCategory , (case when t.RMCatType = 'Stock' Then 1 ELSE 2 end), $EID,  0 From tempInventory t");
+
+                                    $this->db2->query("INSERT INTO RMItems (Name1, EID, RMCatg, ItemId, Stat)  SELECT t.RMName , $EID, (select rc.RMCatgCd from  RMCatg rc, tempInventory t1 where t1.RMCategory=rc.Name1 and rc.EID=$EID and t1.RMName = t.RMName ), ifnull((select mi.ItemId from MenuItem mi, tempInventory tt where mi.Name1 =tt.ItemName and mi.EID=$EID and tt.ItemName !='-'),0), 0 From tempInventory t ");
+
+                                    $this->db2->query("INSERT INTO RMItemsUOM (RMCd, UOMCd, Stat) Select (SELECT rm.RMCd from RMItems rm where rm.Name1 = t.RMName and rm.EID = $EID ), (SELECT u.UOMCd from RMUOM u , RMItems rm1 where u.Name1 = t.UOM and rm1.Name1 = t.RMName ) ,0 from tempInventory t");
+
+                                    $status = 'success';
+                                    $response = $this->lang->line('dataAdded');
                                 }
 
                                 fclose($open);
-
-                                header('Content-Type: application/json');
-                                echo json_encode(array(
-                                    'status' => $status,
-                                    'response' => $response
-                                  ));
-                                 die; 
                             }
                         }
                       }
@@ -6582,6 +6612,7 @@ class Restaurant extends CI_Controller {
              die;    
         }
         $data['title'] = 'CSV '.$this->lang->line('file').' '.$this->lang->line('upload');
+        $data['rests'] = $this->rest->getRestaurantList();
         
         $this->load->view('rest/csv_file', $data);   
     }

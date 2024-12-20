@@ -283,15 +283,27 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-body">
-                                    <h5 class="card-title mb-3">RM <?= $this->lang->line('item'); ?></h5>
+                                    <h5 class="card-title mb-3">Inventory</h5>
                                         <a href="<?= base_url('uploads/common/cashier.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="rmitems_form">
                                             <input type="hidden" name="type" value="rmitems">
                                             <div class="row">
-                                                <div class="col-md-12">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('restaurant'); ?></label>
+                                                        <select name="EID" class="form-control" required="" >
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                            <?php foreach ($rests as $key) { ?>
+                                                                <option value="<?= $key['EID'] ?>"><?= $key['Name'] ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('file'); ?> <?= $this->lang->line('upload'); ?></label>
                                                         <input type="file" name="rm_file" class="form-control" required="" accept=".csv">
@@ -427,7 +439,7 @@ function callAjax(formData){
            contentType: false,  
            success : function(data) {
                alert(data.response);
-               location.reload();
+               // location.reload();
            }
     }); 
 }
