@@ -720,7 +720,7 @@ width: 100%;*/
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <input type="submit" class="btn btn-sm btn-success" value="Verify">
-                                        <button type="button" class="btn btn-sm btn-danger" onclick="sendOTP()"><?= $this->lang->line('send'); ?></button>
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="sendOTP()"><?= $this->lang->line('resendOTP'); ?></button>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -1927,15 +1927,16 @@ function cashCollect(custId, MCNo, mergeNo, oType){
             $('#paymentMCNo').val(MCNo);
             $(`#cashBtn_${billId}`).prop("disabled", true);
             sendOTP();
-            $('.OTPBlock').show();
         }
 }
 
 function sendOTP(){
     var mobile = $('#paymentMobile').val();
-    $.post('<?= base_url('restaurant/send_payment_otp') ?>',{mobile:mobile},function(res){
+    var pmode = $('#PymtType').val();
+    $.post('<?= base_url('restaurant/send_payment_otp') ?>',{mobile:mobile, pmode:pmode},function(res){
             if(res.status == 'success'){
-              $('#paymentSMS').html(res.response);  
+                $('.OTPBlock').show();
+                $('#paymentSMS').html(res.response);  
             }else{ 
               alert(res.response);  
             }

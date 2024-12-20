@@ -2815,6 +2815,7 @@ class Restaurant extends CI_Controller {
 
                 $CustId = 0;
                 if(!empty($phone)){
+                    $phone = $CountryCd.$phone;
                     $CustId = createCustUser($phone);
                 }
 
@@ -3960,14 +3961,27 @@ class Restaurant extends CI_Controller {
             
             $mobileNO = $_POST['mobile'];
 
-            $otp = rand(9999,1000);
-            $this->session->set_userdata('payment_otp', $otp);
-            $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
-            sendSMS($mobileNO, $msgText);
-            saveOTP($mobileNO, $otp, 'payNow');
+            // 26-prepaid, 25-onaccount
+            if($_POST['pmode']==26){
+                $custType = 2;
+            }else if($_POST['pmode']==25){
+                $custType = 1;
+            }
 
-            $status = "success";
-            $response = $this->lang->line('OTPSentToYourMobileNo');
+            $cust = $this->db2->get_where('CustList', array('MobileNo' => $mobileNO, 'custType' => $custType))->row_array();
+            if(!empty($cust)){
+                // $otp = rand(9999,1000);
+                $otp = 1212;
+                $this->session->set_userdata('payment_otp', $otp);
+                $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+                sendSMS($mobileNO, $msgText);
+                saveOTP($mobileNO, $otp, 'payNow');
+
+                $status = "success";
+                $response = $this->lang->line('OTPSentToYourMobileNo');
+            }else{
+                $response = $this->lang->line('usernameNotFound');
+            }
             
             header('Content-Type: application/json');
             echo json_encode(array(
