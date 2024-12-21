@@ -1911,6 +1911,7 @@ function cashCollect(custId, MCNo, mergeNo, oType){
  function changeModes(billId, custId, billAmount, mobile, MergeNo, MCNo){
 
     var pmode = $('#PymtType').val();
+    $(`#cashBtn_${billId}`).prop("disabled", false);
 
     if( mobile.toString().length < 10 && (pmode >= 20 && pmode <= 30)){
         alert(`You can not select payment ${pmode} mode because invalid mobile no`);
@@ -1926,8 +1927,35 @@ function cashCollect(custId, MCNo, mergeNo, oType){
             $('#paymentMergeNo').val(MergeNo);
             $('#paymentMCNo').val(MCNo);
             $(`#cashBtn_${billId}`).prop("disabled", true);
-            sendOTP();
+            // sendOTP();
+            if(pmode == 25){
+                checkOnaccount(mobile, custId, pmode, billAmount, billId);
+            }else if(pmode == 26){
+                checkPrepaid(mobile, custId, pmode, billAmount, billId);
+            }
         }
+}
+
+function checkOnaccount(mobileNO, CustId, mode, amount, billId) {
+    $(`#cashBtn_${billId}`).prop("disabled", true);
+    $.post('<?= base_url('restaurant/check_onaccount_cust') ?>',{mobileNO:mobileNO, CustId:CustId,mode:mode, amount:amount},function(res){
+        if(res.status == 'success'){
+            $('.OTPBlock').show();
+        }else{ 
+            alert(res.response);  
+        }
+    });
+}
+
+function checkPrepaid(mobileNO, CustId, mode, amount, billId) {
+    $(`#cashBtn_${billId}`).prop("disabled", true);
+    $.post('<?= base_url('restaurant/check_prepaid_cust') ?>',{mobileNO:mobileNO, CustId:CustId,mode:mode, amount:amount},function(res){
+        if(res.status == 'success'){
+            $('.OTPBlock').show();
+        }else{ 
+            alert(res.response);  
+        }
+    });
 }
 
 function sendOTP(){
@@ -1938,7 +1966,8 @@ function sendOTP(){
                 $('.OTPBlock').show();
                 $('#paymentSMS').html(res.response);  
             }else{ 
-              alert(res.response);  
+                $('.OTPBlock').hide();
+                alert(res.response);  
             }
     });
 }
@@ -1969,21 +1998,22 @@ function cashCollectData(){
     
     PaidAmt = convertDigitToEnglish(PaidAmt);
     data[9].value = PaidAmt;
-  if(parseFloat(PaidAmt) >= parseFloat(TotBillAmt)){
-    $.post('<?= base_url('restaurant/collect_payment') ?>',data,function(res){
-        if(res.status == 'success'){
-          alert(res.response);
+
+    if(parseFloat(PaidAmt) >= parseFloat(TotBillAmt)){
+        $.post('<?= base_url('restaurant/collect_payment') ?>',data,function(res){
+            if(res.status == 'success'){
+              alert(res.response);
+                getTableView();
+            }else{
+              alert(res.response);
+            }
+            // location.reload();
+            $('#cashCollectModel').modal('hide');
             getTableView();
-        }else{
-          alert(res.response);
-        }
-        // location.reload();
-        $('#cashCollectModel').modal('hide');
-        getTableView();
-    });
-  }else{
-    alert('Amount has to be greater than or equal to Bill Amount.');
-  }
+        });
+    }else{
+        alert('Amount has to be greater than or equal to Bill Amount.');
+    }
 }
 
 function changeValue(input) {

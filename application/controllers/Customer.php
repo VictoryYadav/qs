@@ -2300,7 +2300,8 @@ class Customer extends CI_Controller {
                     $total = $custAcc['billAmount'] + $_POST['amount'];
                     
                     if($total <= $onAccount['MaxLimit']){
-                        $otp = rand(9999,1000);
+                        // $otp = rand(9999,1000);
+                        $otp = 1212;
                         $this->session->set_userdata('payment_otp', $otp);
                         $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
                         sendSMS($mobileNO, $msgText);
@@ -2313,7 +2314,8 @@ class Customer extends CI_Controller {
                 }else{
                     $total = $_POST['amount'];
                     if($total <= $onAccount['MaxLimit']){
-                        $otp = rand(9999,1000);
+                        // $otp = rand(9999,1000);
+                        $otp = 1212;
                         $this->session->set_userdata('payment_otp', $otp);
                         $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
                         sendSMS($mobileNO, $msgText);
@@ -2375,42 +2377,35 @@ class Customer extends CI_Controller {
                 $custAcc = $this->cust->getPrepaidDetails($CustId, $mode);
                 
                 if(!empty($custAcc)){
-                    
-                    $total = $custAcc['balance'] + $_POST['amount'];
-                    
-                    if($total <= $onAccount['MaxLimit']){
 
-                        $balance = $custAcc['prePaidAmt'] - $custAcc['PaidAmt'];
-                        
-                        if($balance >= $_POST['amount']){
-                            
-                            $otp = rand(9999,1000);
-                            $this->session->set_userdata('payment_otp', $otp);
-                            $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
-                            sendSMS($mobileNO, $msgText);
-                            saveOTP($mobileNO, $otp, 'payNow');
-                            $status = "success";
-                            $response = $this->lang->line('OTPSentToYourMobileNo');
-                        }else{
-                            $response = $this->lang->line('insufficentBalance');    
-                        }
+                    $balance = $custAcc['balance'];
+                    
+                    if($balance >= $_POST['amount']){
+                        $otp = 1212;
+                        // $otp = rand(9999,1000);
+                        $this->session->set_userdata('payment_otp', $otp);
+                        $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+                        sendSMS($mobileNO, $msgText);
+                        saveOTP($mobileNO, $otp, 'payNow');
+                        $status = "success";
+                        $response = $this->lang->line('OTPSentToYourMobileNo');
                     }else{
-                        $response = $this->lang->line('outOfLimit');
+                        $response = $this->lang->line('insufficentBalance');    
                     }
+                    
                 }else{
                     $total = $_POST['amount'];
-                    if($total <= $onAccount['MaxLimit']){
-                        if($custAcc['prePaidAmt'] >= $_POST['amount']){
-                            $otp = rand(9999,1000);
-                            $this->session->set_userdata('payment_otp', $otp);
-                            $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
-                            sendSMS($mobileNO, $msgText);
-                            saveOTP($mobileNO, $otp, 'payNow');
-                            $status = "success";
-                            $response = $this->lang->line('OTPSentToYourMobileNo');
-                        }
+                    if($custAcc['prePaidAmt'] >= $_POST['amount']){
+                        // $otp = rand(9999,1000);
+                        $otp = 1212;
+                        $this->session->set_userdata('payment_otp', $otp);
+                        $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+                        sendSMS($mobileNO, $msgText);
+                        saveOTP($mobileNO, $otp, 'payNow');
+                        $status = "success";
+                        $response = $this->lang->line('OTPSentToYourMobileNo');
                     }else{
-                        $response = $this->lang->line('outOfLimit');
+                        $response = $this->lang->line('insufficentBalance');    
                     }
                 }
             }else{
@@ -2473,13 +2468,18 @@ class Customer extends CI_Controller {
 
                 $caId = insertRecord('custAccounts', $ca);
                 if(!empty($caId)){
+                    $PaidAmt = 0;
+                    // prePaid
+                    if($_POST['paymentMode'] == 26){
+                        $PaidAmt = $ca['billAmount'];
+                    }
 
                     $pay = array('BillId' => $billId,'MCNo' => $MCNo,
                                 'MergeNo' => $MergeNo,
                                 'TotBillAmt' => $ca['billAmount'],
                                 'CellNo' => $this->session->userdata('CellNo'),
                                 'SplitTyp' => 0 ,'SplitAmt' => 0,'PymtId' => 0,
-                                'PaidAmt' => 0 ,'OrderRef' => 0,
+                                'PaidAmt' => $PaidAmt ,'OrderRef' => 0,
                                 'PaymtMode'=> $_POST['paymentMode'],'PymtType' => 0,
                                 'PymtRef'=>  0, 'Stat'=>  1 ,'EID'=>  $EID,
                                 'billRef' => 0);

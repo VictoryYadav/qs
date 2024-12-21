@@ -1546,19 +1546,27 @@ class Cust extends CI_Model{
 		$data['BillAmt'] = 0;
 		$data['PaidAmt'] = 0;
 
-		$billDt = $this->db2->select("IFNULL(c.MaxLimit, 0) as MaxLimit, sum(b.PaidAmt) as BillAmt")
-								->join('CustList c', 'c.EID = b.EID', 'left')
-								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'c.CustId' => $CustId, 'b.Stat' => 25))
+		$custDt = $this->db2->select("IFNULL(c.MaxLimit, 0) as MaxLimit")
+								->get_where('CustList c', array('c.CustId' => $CustId, 'c.custType' => 1))
 								->row_array();
+
+		$billDt = $this->db2->select("sum(b.PaidAmt) as BillAmt")
+								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'b.Stat' => 25))
+								->row_array();
+
 		$paymentDt = $this->db2->select("IFNULL(sum(bp.PaidAmt),0) as PaidAmt")
 								->join('BillPayments bp', 'bp.BillId = b.BillId', 'inner')
 								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'bp.EID' => $EID, 'b.Stat' => 25))
 								->row_array();
-		if(!empty($billDt)){
-			$data['MaxLimit'] 	= $billDt['MaxLimit'];
-			$data['balance'] 	= $billDt['BillAmt'] - $paymentDt['PaidAmt'];
-			$data['BillAmt'] 	= $billDt['BillAmt'];
-			$data['PaidAmt'] 	= $paymentDt['PaidAmt'];
+		if(!empty($custDt)){
+			$data['MaxLimit'] 	= $custDt['MaxLimit'];
+			if(!empty($billDt)){
+					$data['BillAmt'] 	= $billDt['BillAmt'];
+				if(!empty($paymentDt)){
+					$data['balance'] 	= $billDt['BillAmt'] - $paymentDt['PaidAmt'];
+					$data['PaidAmt'] 	= $paymentDt['PaidAmt'];
+				}
+			}
 		}
 		return $data;
 	}
@@ -1572,26 +1580,27 @@ class Cust extends CI_Model{
 		$data['prePaidAmt'] = 0;
 
 		$custDT = $this->db2->select("IFNULL(MaxLimit, 0) as MaxLimit, IFNULL(prePaidAmt, 0) as prePaidAmt")
-			->get_where('CustList', array('CustId' => $CustId, 'custType' => 2))
+			->get_where('CustList', array('CustId' => $CustId, 'custType' => $CustType))
 			->row_array();
 		if(!empty($custDT)){
 			$data['prePaidAmt'] = $custDT['prePaidAmt'];
 			$data['MaxLimit'] 	= $custDT['MaxLimit'];
+
+			$billDt = $this->db2->select("IFNULL(sum(b.PaidAmt),0) as BillAmt")
+									->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'b.Stat' => 26))
+									->row_array();
+
+			$paymentDt = $this->db2->select("IFNULL(sum(bp.PaidAmt),0) as PaidAmt")
+									->join('BillPayments bp', 'bp.BillId = b.BillId', 'inner')
+									->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'bp.EID' => $EID, 'b.Stat' => 26))
+									->row_array();
+			if(!empty($billDt)){
+				$data['balance'] 	= $data['prePaidAmt'] - $paymentDt['PaidAmt'];
+				$data['BillAmt'] 	= $billDt['BillAmt'];
+				$data['PaidAmt'] 	= $paymentDt['PaidAmt'];
+			}
 		}
 
-		$billDt = $this->db2->select("IFNULL(sum(b.PaidAmt),0) as BillAmt")
-								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'b.Stat' => 26))
-								->row_array();
-
-		$paymentDt = $this->db2->select("IFNULL(sum(bp.PaidAmt),0) as PaidAmt")
-								->join('BillPayments bp', 'bp.BillId = b.BillId', 'inner')
-								->get_where('Billing b', array('b.EID' => $EID, 'b.CustId' => $CustId, 'bp.EID' => $EID, 'b.Stat' => 26))
-								->row_array();
-		if(!empty($billDt)){
-			$data['balance'] 	= $billDt['BillAmt'] - $paymentDt['PaidAmt'];
-			$data['BillAmt'] 	= $billDt['BillAmt'];
-			$data['PaidAmt'] 	= $paymentDt['PaidAmt'];
-		}
 		return $data;
 	}
 

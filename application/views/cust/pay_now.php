@@ -253,15 +253,14 @@ body{
     <div class="modal" id="onaccountModal">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title"><?= $this->lang->line('beforeCurrentTransaction'); ?></h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <div class="modal-header" style="background: #e1af75;">
+            <h4 class="modal-title" style="color:#fff;font-size: 14px;line-height: 5px !important;"><?= $this->lang->line('beforeCurrentTransaction'); ?></h4>
           </div>
           <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="table-responsive">
-                        <table class="table order-list" id="splitTable">
+                        <table class="table table-sm order-list" id="splitTable">
                             <thead>
                                 <tr>
                                     <th><?= $this->lang->line('maxLimit'); ?></th>
@@ -282,15 +281,14 @@ body{
     <div class="modal" id="prepaidModal">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title"><?= $this->lang->line('beforeCurrentTransaction'); ?></h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <div class="modal-header" style="background: #e1af75;">
+            <h4 class="modal-title" style="color:#fff;font-size: 14px;line-height: 5px !important;"><?= $this->lang->line('beforeCurrentTransaction'); ?></h4>
           </div>
           <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="table-responsive">
-                        <table class="table order-list" id="splitTable">
+                        <table class="table table-sm order-list" id="splitTable">
                             <thead>
                                 <tr>
                                     <th><?= $this->lang->line('prepaidAmount'); ?></th>
@@ -438,8 +436,8 @@ function changeMode(serialNo){
 
                var temp =  `<tr>
                                 <td>${res.response.prePaidAmt}</td>
+                                <td>${res.response.PaidAmt}</td>
                                 <td>${res.response.balance}</td>
-                                <td>${parseInt(res.response.prePaidAmt) - parseInt(res.response.balance)}</td>
                             </tr>`;
                 $('#prepaidBody').html(temp);
                 $('#prepaidModal').modal('show');
@@ -543,6 +541,7 @@ function goPay(val){
                 
             }else{ 
               alert(res.response);  
+              $('.btngo').attr("disabled", false);
             }
         });
     }
@@ -559,6 +558,7 @@ function goPay(val){
                 
             }else{ 
               alert(res.response);  
+              $('.btngo').attr("disabled", false);
             }
         });
     }

@@ -2815,7 +2815,6 @@ class Restaurant extends CI_Controller {
 
                 $CustId = 0;
                 if(!empty($phone)){
-                    $phone = $CountryCd.$phone;
                     $CustId = createCustUser($phone);
                 }
 
@@ -2828,7 +2827,7 @@ class Restaurant extends CI_Controller {
                         $this->db2->update('Users');
                     }
 
-                    $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo, $MergeNo, $data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd);
+                    $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo, $MergeNo, $data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd, $CountryCd);
                     if($orderType == 8){
                         updateRecord('Eat_tables', array('Stat' => 1), array('TableNo' => $tableNo, 'EID' => $EID));
                     }
@@ -2836,7 +2835,7 @@ class Restaurant extends CI_Controller {
                     $oldSeatNo = getSeatNo($CNo);
                     if($oldSeatNo != $seatNo){
                         $CNo = 0;
-                        $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo, $MergeNo, $data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd);
+                        $CNo = $this->insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $phone, $EID, $ChainId, $ONo, $tableNo, $MergeNo, $data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd, $CountryCd);
                     }    
                 }
 
@@ -3217,7 +3216,7 @@ class Restaurant extends CI_Controller {
         }
     }
 
-    private function insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $CellNo, $EID, $ChainId, $ONo, $TableNo, $MergeNo, $data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd)
+    private function insertKitchenMain($CNo, $EType, $CustId, $COrgId, $CustNo, $CellNo, $EID, $ChainId, $ONo, $TableNo, $MergeNo, $data_type, $orderType, $seatNo, $thirdParty, $thirdPartyRef, $CCd, $CountryCd)
     {
         if ($CNo == 0) {
 
@@ -3226,7 +3225,7 @@ class Restaurant extends CI_Controller {
             $kitchenMainObj['CustId'] = $CustId;
             $kitchenMainObj['COrgId'] = $COrgId;
             $kitchenMainObj['CustNo'] = $CustNo;
-            $kitchenMainObj['CellNo'] = $CellNo;
+            $kitchenMainObj['CellNo'] = $CountryCd.$CellNo;
             if(empty($CellNo)){
                 $kitchenMainObj['CellNo'] = 0;
             }
@@ -3819,23 +3818,137 @@ class Restaurant extends CI_Controller {
         }   
     }
 
+    public function check_onaccount_cust(){
+        $status = "error";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        if($this->input->method(true)=='POST'){
+
+            $mode       = $_POST['mode'];
+            $custType   = 1;   
+            
+            $mobileNO   = $_POST['mobileNO'];
+            $CustId     = $_POST['CustId'];
+            $onAccount  = checkOnAccountCust($CustId, $custType);
+
+            if(!empty($onAccount)){
+                $custAcc = $this->rest->getCustAccount($CustId);
+                if(!empty($custAcc)){
+                    $total = $custAcc['billAmount'] + $_POST['amount'];
+                    
+                    if($total <= $onAccount['MaxLimit']){
+                        // $otp = rand(9999,1000);
+                        $otp = 1212;
+                        $this->session->set_userdata('payment_otp', $otp);
+                        $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+                        sendSMS($mobileNO, $msgText);
+                        saveOTP($mobileNO, $otp, 'TableView');
+                        $status = "success";
+                        $response = $this->lang->line('OTPSentToYourMobileNo');
+                    }else{
+                        $response = $this->lang->line('outOfLimit');
+                    }
+                }else{
+                    $total = $_POST['amount'];
+                    if($total <= $onAccount['MaxLimit']){
+                        // $otp = rand(9999,1000);
+                        $otp = 1212;
+                        $this->session->set_userdata('payment_otp', $otp);
+                        $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+                        sendSMS($mobileNO, $msgText);
+                        saveOTP($mobileNO, $otp, 'TableView');
+                        $status = "success";
+                        $response = $this->lang->line('OTPSentToYourMobileNo');
+                    }else{
+                        $response = $this->lang->line('outOfLimit');
+                    }
+                }
+            }else{
+                $response = $this->lang->line('accountNotCreated');
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
+    public function check_prepaid_cust(){
+        $status = "error";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        if($this->input->method(true)=='POST'){
+            
+            $mode       = $_POST['mode'];
+            $custType   = 2;   
+            $mobileNO   = $_POST['mobileNO'];
+            $CustId     = $_POST['CustId'];
+
+            $onAccount = checkOnAccountCust($CustId, $custType);
+
+            if(!empty($onAccount)){
+                $custAcc = $this->rest->getPrepaidDetails($CustId, $mode);
+                
+                if(!empty($custAcc)){
+
+                    $balance = $custAcc['balance'];
+                    
+                    if($balance >= $_POST['amount']){
+                        $otp = 1212;
+                        // $otp = rand(9999,1000);
+                        $this->session->set_userdata('payment_otp', $otp);
+                        $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+                        sendSMS($mobileNO, $msgText);
+                        saveOTP($mobileNO, $otp, 'TableView');
+                        $status = "success";
+                        $response = $this->lang->line('OTPSentToYourMobileNo');
+                    }else{
+                        $response = $this->lang->line('insufficentBalance');    
+                    }
+                    
+                }else{
+                    $total = $_POST['amount'];
+                    if($custAcc['prePaidAmt'] >= $_POST['amount']){
+                        // $otp = rand(9999,1000);
+                        $otp = 1212;
+                        $this->session->set_userdata('payment_otp', $otp);
+                        $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+                        sendSMS($mobileNO, $msgText);
+                        saveOTP($mobileNO, $otp, 'TableView');
+                        $status = "success";
+                        $response = $this->lang->line('OTPSentToYourMobileNo');
+                    }else{
+                        $response = $this->lang->line('insufficentBalance');    
+                    }
+                }
+            }else{
+                $response = $this->lang->line('accountNotCreated');
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die;
+        }
+    }
+
     public function settle_bill_without_payment(){
         $EID = authuser()->EID;
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
-            $otp = $this->session->userdata('payment_otp');
-            $MergeNo = $_POST['paymentMergeNo'];
-            $MCNo = $_POST['paymentMCNo'];
-            $billId = $_POST['billId'];
+            $otp        = $this->session->userdata('payment_otp');
+            $MergeNo    = $_POST['paymentMergeNo'];
+            $MCNo       = $_POST['paymentMCNo'];
+            $billId     = $_POST['billId'];
+            $CustId     = $_POST['paymentCustId'];
 
             if($_POST['otp'] == $otp){
-                if(empty($_POST['paymentCustId'])){
-                    $CustId = createCustUser($_POST['paymentMobile']);
-                }else{
-                    $CustId = createCustUser($_POST['paymentCustId']);
-                }
+                
                 $ca['custId']       = $CustId;
                 $ca['MobileNo']     = $_POST['paymentMobile'];
                 $ca['OTP']          = $_POST['otp'];
@@ -3846,17 +3959,23 @@ class Restaurant extends CI_Controller {
 
                 $caId = insertRecord('custAccounts', $ca);
                 if(!empty($caId)){
+                    // 25 => onaccount
+                    $PaidAmt = 0;
+                    if($_POST['paymentMode'] == 26){
+                        // prePaid
+                        $PaidAmt = $ca['billAmount'];
+                    }
 
-                    $pay = array('BillId' => $billId,
-                                'MCNo' => $MCNo,
-                                'MergeNo' => $MergeNo,
+                    $pay = array('BillId'   => $billId,
+                                'MCNo'      => $MCNo,
+                                'MergeNo'   => $MergeNo,
                                 'TotBillAmt' => $ca['billAmount'],
-                                'CellNo' => $_POST['paymentMobile'],
-                                'SplitTyp' => 0 ,'SplitAmt' => 0,'PymtId' => 0,
-                                'PaidAmt' => 0 ,'OrderRef' => 0,
-                                'PaymtMode'=> $_POST['paymentMode'],'PymtType' => 0,
-                                'PymtRef'=>  0, 'Stat'=>  1 ,'EID'=>  $EID,
-                                'billRef' => 0);
+                                'CellNo'    => $_POST['paymentMobile'],
+                                'SplitTyp'  => 0 ,'SplitAmt' => 0,'PymtId' => 0,
+                                'PaidAmt'   => $PaidAmt ,'OrderRef' => 0,
+                                'PaymtMode' => $_POST['paymentMode'],'PymtType' => 0,
+                                'PymtRef'   =>  0, 'Stat'=>  1 ,'EID'=>  $EID,
+                                'billRef'   => 0);
 
                     insertRecord('BillPayments', $pay);
 
@@ -9107,8 +9226,7 @@ class Restaurant extends CI_Controller {
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $status = 'success';
-        $response = $this->rest->getSettledBillNotCollectPymnt($_POST);
-            
+            $response = $this->rest->getSettledBillNotCollectPymnt($_POST);
             header('Content-Type: application/json');
             echo json_encode(array(
                 'status' => $status,
