@@ -566,6 +566,12 @@ function getMultiLangName($id_in){
     return $CI->Supp->getingMultiLangName($id_in);	
 }
 
+function getAccount($CustId){
+	$CI = & get_instance();
+    $CI->load->model('User');
+    return $CI->User->checkAccount($CustId);	
+}
+
 
 
 

@@ -1942,6 +1942,7 @@ function checkOnaccount(mobileNO, CustId, mode, amount, billId) {
         if(res.status == 'success'){
             $('.OTPBlock').show();
         }else{ 
+            $('.OTPBlock').hide();
             alert(res.response);  
         }
     });
@@ -1953,6 +1954,7 @@ function checkPrepaid(mobileNO, CustId, mode, amount, billId) {
         if(res.status == 'success'){
             $('.OTPBlock').show();
         }else{ 
+            $('.OTPBlock').hide();
             alert(res.response);  
         }
     });

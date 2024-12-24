@@ -576,6 +576,7 @@ $lang['basicMenuItemSetup'] = 'Basic Menu Item Setup';
 $lang['prepaidAccountUpdated'] 	= 'Prepaid Account Updated';
 $lang['prepaidAccountAdded'] 	= 'Prepaid Account Added';
 $lang['prepaidRechargeAdded'] 	= 'Prepaid Recharge Added';
+$lang['prepaidRechargeReturn'] 	= 'Prepaid Recharge Return';
 $lang['prepaidRecharge'] 	= 'Prepaid Recharge';
 $lang['mobileNoUpdated'] = 'Mobile No Updated';
 $lang['loyaltyAdded'] 	= 'Loyalty Added';
@@ -651,6 +652,8 @@ $lang['GSTInclusiveRates']		= 'GST Inclusive Rates';
 $lang['calories']				= 'Calories';
 
 $lang['pleaseSelecttheOptionsForComboItem']	= 'Please select the options for Combo Item';
+$lang['Prepaid']				= 'Prepaid';
+$lang['Onaccount']				= 'OnAccount';
 
 
 

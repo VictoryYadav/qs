@@ -291,9 +291,8 @@ body{
                         <table class="table table-sm order-list" id="splitTable">
                             <thead>
                                 <tr>
-                                    <th><?= $this->lang->line('prepaidAmount'); ?></th>
+                                    <th><?= $this->lang->line('available').' '.$this->lang->line('amount'); ?></th>
                                     <th><?= $this->lang->line('used').' '.$this->lang->line('amount'); ?></th>
-                                    <th><?= $this->lang->line('available'); ?></th>
                                 </tr>
                             </thead>
                             <tbody id="prepaidBody">
@@ -437,7 +436,6 @@ function changeMode(serialNo){
                var temp =  `<tr>
                                 <td>${res.response.prePaidAmt}</td>
                                 <td>${res.response.PaidAmt}</td>
-                                <td>${res.response.balance}</td>
                             </tr>`;
                 $('#prepaidBody').html(temp);
                 $('#prepaidModal').modal('show');

@@ -28,16 +28,28 @@
                                             <input type="hidden" name="type" value="pdata">
                                             <input type="hidden" id="acNo" name="acNo" value="0">
                                             <div class="row">
+
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('type'); ?></label>
+                                                        <select class="form-control form-control-sm" name="Remarks" id="Remarks" required="" onchange="changeRemarks()">
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                            <option value="Added">Added</option>
+                                                            <option value="Return">Return</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('mobile'); ?></label>
-                                                        <select class="form-control form-control-sm select2 custom-select" name="CustId" id="CustId" required="">
+                                                        <select class="form-control form-control-sm select2 custom-select" name="CustId" id="CustId" required="" onchange="getAmt()">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php 
                                                             if(!empty($users)){
                                                                 foreach ($users as $key) {
                                                             ?>
-                                                            <option value="<?= $key['CustId']; ?>"><?= $key['MobileNo']; ?></option>
+                                                            <option value="<?= $key['CustId']; ?>" prepaidamt="<?= $key['prePaidAmt']; ?>" ><?= $key['MobileNo'].' ('.$key['Fullname'].')'; ?></option>
                                                         <?php } } ?>
                                                         </select>
                                                     </div>
@@ -100,13 +112,43 @@
         var data = $(this).serializeArray();
         $.post('<?= base_url('restaurant/prepaid_recharge') ?>',data,function(res){
             if(res.status == 'success'){
-              $('#msgText').html(res.response);
+              alert(res.response);
             }else{
-              $('#msgText').html(res.response);
+              alert(res.response);
             }
             location.reload();
         });
 
     });
+
+    function getAmt(){
+        var CustId = $(`#CustId`).val();
+        var Remarks = $(`#Remarks`).val();
+        $(`#prePaidAmt`).prop('readonly', false);
+        if(Remarks.length > 0){
+            if(CustId.length > 0){
+                if(Remarks == 'Return'){
+                    var prepaidamt = $('option:selected', $('#CustId')).attr('prepaidamt');
+                    $(`#prePaidAmt`).val(prepaidamt);
+                    $(`#prePaidAmt`).prop('readonly', true);
+                }else{
+                    $(`#prePaidAmt`).val(0);
+                    $(`#prePaidAmt`).prop('readonly', false);
+                }
+            }else{
+                alert('Please Select MobileNo');    
+                $(`#prePaidAmt`).prop('readonly', false);
+            }
+
+        }else{
+            alert('Please Select Type');
+            $(`#prePaidAmt`).prop('readonly', false);
+        }
+    }
+
+    function changeRemarks(){
+        $(`#CustId`).val('').trigger('change');
+        $(`#prePaidAmt`).val('');
+    }
 
 </script>

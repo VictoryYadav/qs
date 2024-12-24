@@ -136,7 +136,7 @@
                                         <span>Prepaid : <b><span id="prepaid_amt">0</span></b></span>
                                     </div>
                                     <div class="col-md-3">
-                                        <input type="number" class="form-control form-control-sm" name="amount" required="" placeholder="Bill Amount" id="paid_amt">
+                                        <input type="number" class="form-control form-control-sm" name="amount" required="" placeholder="Bill Amount" id="paid_amt" onchange="totalAmount()">
                                     </div>
                                     <div class="col-md-3">
                                         <select name="PaymtMode" id="PaymtMode" class="form-control form-control-sm" required="">
@@ -205,7 +205,7 @@
                                 <td>${item.CellNo} <span class="badge badge-boxed  badge-success">${custType}</span></td>
                                 <td>${item.TotalAmt}</td>
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-primary" onclick="getDetail(${item.CustId}, ${item.custType})">Detail</button>
+                                    <button type="button" class="btn btn-sm btn-primary" onclick="getDetail(${item.CustId}, ${item.custType})">Payment</button>
                                 </td>
                             <tr>`;
                 });
@@ -267,5 +267,18 @@
             alert('Please fill up required field!');
         }
     });
+
+    function totalAmount(){
+        var paid_amt = $(`#paid_amt`).val();
+        var outstanding = $(`#outstanding`).text();
+        if(paid_amt > 0){
+            if(paid_amt <= outstanding){
+
+            }else{
+                alert('Excess Payment not accepted for OnAccount Customers');
+                $(`#paid_amt`).val(outstanding);
+            }
+        }
+    }
 </script>
 

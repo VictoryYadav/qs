@@ -41,7 +41,16 @@ h6{
             <a class="dropdown-item" href="<?= base_url('customer/profile'); ?>"><?= $this->lang->line('profile'); ?></a>
             <a class="dropdown-item" href="<?= base_url('customer/current_order'); ?>"><?= $this->lang->line('pendingBill'); ?></a>
             <a class="dropdown-item" href="<?= base_url('customer/loyalty'); ?>"><?= $this->lang->line('loyalty'); ?></a>
-
+            <?php 
+                $CustId = $this->session->userdata('CustId');
+            if($CustId > 0){
+                $check = getAccount($CustId);
+                if(!empty($check)){ 
+                    if($check['custType'] == 1){ ?>
+                        <a class="dropdown-item" href="<?= base_url('customer/onaccount'); ?>"><?= $this->lang->line('Onaccount'); ?></a>
+                    <?php }else{ ?>
+                    <a class="dropdown-item" href="<?= base_url('customer/prepaid'); ?>"><?= $this->lang->line('Prepaid'); ?></a>
+            <?php } } } ?>
             <a class="dropdown-item" href="<?= base_url('customer/transactions'); ?>"><?= $this->lang->line('history'); ?></a>
             <a class="dropdown-item" href="#"><?= $this->lang->line('username'); ?>(<?= $_SESSION['signup']['MobileNo']; ?>)</a>
             <a class="dropdown-item" href="<?= base_url('customer/logout'); ?>"><?= $this->lang->line('logout'); ?></a>

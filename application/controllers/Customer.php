@@ -2378,26 +2378,9 @@ class Customer extends CI_Controller {
                 
                 if(!empty($custAcc)){
 
-                    $balance = $custAcc['balance'];
-                    
-                    if($balance >= $_POST['amount']){
-                        $otp = 1212;
-                        // $otp = rand(9999,1000);
-                        $this->session->set_userdata('payment_otp', $otp);
-                        $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
-                        sendSMS($mobileNO, $msgText);
-                        saveOTP($mobileNO, $otp, 'payNow');
-                        $status = "success";
-                        $response = $this->lang->line('OTPSentToYourMobileNo');
-                    }else{
-                        $response = $this->lang->line('insufficentBalance');    
-                    }
-                    
-                }else{
-                    $total = $_POST['amount'];
                     if($custAcc['prePaidAmt'] >= $_POST['amount']){
-                        // $otp = rand(9999,1000);
                         $otp = 1212;
+                        // $otp = rand(9999,1000);
                         $this->session->set_userdata('payment_otp', $otp);
                         $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
                         sendSMS($mobileNO, $msgText);
@@ -2407,6 +2390,8 @@ class Customer extends CI_Controller {
                     }else{
                         $response = $this->lang->line('insufficentBalance');    
                     }
+                }else{
+                    $response = $this->lang->line('accountNotCreated'); 
                 }
             }else{
                 $response = $this->lang->line('accountNotCreated');
@@ -2447,9 +2432,9 @@ class Customer extends CI_Controller {
     }
     
     public function settle_bill_without_payment(){
-        $EID = authuser()->EID;
-        $status = "error";
-        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        $EID        = authuser()->EID;
+        $status     = "error";
+        $response   = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
 
             $otp = $this->session->userdata('payment_otp');
@@ -2466,32 +2451,44 @@ class Customer extends CI_Controller {
                 $ca['EID']          = $EID;
                 $ca['mode']         = $_POST['paymentMode'];
 
-                $caId = insertRecord('custAccounts', $ca);
-                if(!empty($caId)){
-                    $PaidAmt = 0;
-                    // prePaid
-                    if($_POST['paymentMode'] == 26){
-                        $PaidAmt = $ca['billAmount'];
-                    }
+                $PaidAmt = 0;
+                // 26 =>prepaid 
+                if($_POST['paymentMode'] == 26){
+                    $PaidAmt = $ca['billAmount'];
 
-                    $pay = array('BillId' => $billId,'MCNo' => $MCNo,
-                                'MergeNo' => $MergeNo,
-                                'TotBillAmt' => $ca['billAmount'],
-                                'CellNo' => $this->session->userdata('CellNo'),
-                                'SplitTyp' => 0 ,'SplitAmt' => 0,'PymtId' => 0,
-                                'PaidAmt' => $PaidAmt ,'OrderRef' => 0,
-                                'PaymtMode'=> $_POST['paymentMode'],'PymtType' => 0,
-                                'PymtRef'=>  0, 'Stat'=>  1 ,'EID'=>  $EID,
-                                'billRef' => 0);
+                    $RC['CustId']   = $this->session->userdata('CustId');
+                    $RC['Amount']   = $PaidAmt;
+                    $RC['Remarks']  = 'Adjust';
+                    $RC['BillId']   = $billId;
+                    rechargeHistory($RC);
 
-                    insertRecord('BillPayments', $pay);
+                    $this->db2->set('prePaidAmt', ("prePaidAmt - $PaidAmt"), FALSE);
+                    $this->db2->where('CustId', $this->session->userdata('CustId'));
+                    $this->db2->where('EID', $EID);
+                    $this->db2->update('CustList');
+                }else{
+                    $caId = insertRecord('custAccounts', $ca);
+                }
 
-                    autoSettlePayment($billId, $MergeNo, $MCNo);
-                    updateRecord('Billing', array('Stat' => $_POST['paymentMode']), array('BillId' => $billId, 'EID' => $EID));
+                $pay = array('BillId' => $billId,
+                            'MCNo' => $MCNo,
+                            'MergeNo' => $MergeNo,
+                            'TotBillAmt' => $ca['billAmount'],
+                            'CellNo' => $this->session->userdata('CellNo'),
+                            'SplitTyp' => 0 ,'SplitAmt' => 0,'PymtId' => 0,
+                            'PaidAmt' => $PaidAmt ,'OrderRef' => 0,
+                            'PaymtMode'=> $_POST['paymentMode'],'PymtType' => 0,
+                            'PymtRef'=>  0, 'Stat'=>  1 ,'EID'=>  $EID,
+                            'billRef' => 0);
+
+                insertRecord('BillPayments', $pay);
+
+                autoSettlePayment($billId, $MergeNo, $MCNo);
+                updateRecord('Billing', array('Stat' => $_POST['paymentMode']), array('BillId' => $billId, 'EID' => $EID));
 
                     $status = "success";
                     $response = $this->lang->line('billSettled');
-                }
+                
             }else{
                 $response = $this->lang->line('OTPDoesNotMatch');
             }
@@ -3549,6 +3546,45 @@ class Customer extends CI_Controller {
               ));
              die;
         }
+    }
+
+    public function onaccount(){
+        
+        $EID = authuser()->EID;
+        $EType = $this->session->userdata('EType');
+        $CustId = $this->session->userdata('CustId');
+        $data['cId'] = $this->session->userdata('cId');
+        $data['mCatgId'] = $this->session->userdata('mCatgId');
+        $data['cType'] = $this->session->userdata('cType');
+        $data['EID'] = $EID;
+        $data['EType'] = $EType;
+
+        $data['details'] = $this->cust->getOnAccountHistory($CustId);
+
+        $data['title'] = $this->lang->line('Onaccount');
+        $this->load->view('cust/onaccount_history', $data);
+    }
+
+    public function prepaid(){
+        
+        $EID = authuser()->EID;
+        $EType = $this->session->userdata('EType');
+        $CustId = $this->session->userdata('CustId');
+        $data['cId'] = $this->session->userdata('cId');
+        $data['mCatgId'] = $this->session->userdata('mCatgId');
+        $data['cType'] = $this->session->userdata('cType');
+        $data['EID'] = $EID;
+        $data['EType'] = $EType;
+
+        $data['details'] = $this->cust->getRechargeHistory($CustId);
+
+        $data['title'] = $this->lang->line('Prepaid');
+        $this->load->view('cust/prepaid_history', $data);
+    }
+
+    public function demo()
+    {
+        $this->load->view('demo');
     }
 
 

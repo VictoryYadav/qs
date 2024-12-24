@@ -3845,7 +3845,7 @@ class Restaurant extends CI_Controller {
                         $status = "success";
                         $response = $this->lang->line('OTPSentToYourMobileNo');
                     }else{
-                        $response = $this->lang->line('outOfLimit');
+                        $response = $this->lang->line('outOfLimit')." (Max Limit ".$onAccount['MaxLimit'].")";
                     }
                 }else{
                     $total = $_POST['amount'];
@@ -3859,7 +3859,7 @@ class Restaurant extends CI_Controller {
                         $status = "success";
                         $response = $this->lang->line('OTPSentToYourMobileNo');
                     }else{
-                        $response = $this->lang->line('outOfLimit');
+                        $response = $this->lang->line('outOfLimit')." (Max Limit ".$onAccount['MaxLimit'].")";
                     }
                 }
             }else{
@@ -9267,48 +9267,17 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
-
             $totalAmount = $_POST['amount'];
             $bData = $this->rest->getBillingByCustId($_POST['CustId']);
 
             if(!empty($bData)){
-                $extraAmount = 0;
-                $counter = 1;
                 foreach ($bData as $bill) {
-                    $onAccDetail = checkOnAccountCust($_POST['CustId'], $_POST['custType']);
-                    if(!empty($onAccDetail)){
-                        if($onAccDetail['prePaidAmt'] > 0){
-                            $totalAmount = $totalAmount + $onAccDetail['prePaidAmt'];
-                            $RC['CustId'] = $_POST['CustId'];
-                            $RC['Amount'] = $onAccDetail['prePaidAmt'];
-                            $RC['Remarks'] = 'Adjust';
-                            rechargeHistory($RC);
-                            $cusList['prePaidAmt'] = 0;
-                            updateRecord('CustList', $cusList, array('CustId' => $_POST['CustId']));
-                        }
-
-                        if($totalAmount >= $bill['totalBillPaidAmt']){
-                            $extraAmount = ($totalAmount - $bill['totalBillPaidAmt']);
-                            if($counter == 1){
-                                if($extraAmount > 0){
-                                    $cusList['prePaidAmt']  = $extraAmount;
-
-                                    $RC['CustId'] = $_POST['CustId'];
-                                    $RC['Amount'] = $extraAmount;
-                                    $RC['Remarks'] = 'Added';
-                                    rechargeHistory($RC);
-                                    updateRecord('CustList', $cusList, array('CustId' => $_POST['CustId']));
-                                }
-                            }
-                            $counter++;
-                        }
-                    }
 
                     if($totalAmount > 0){
                         if($totalAmount >= $bill['totalBillPaidAmt']){
 
-                            $bpAmount = $bill['totalBillPaidAmt'];
-                            $totalAmount = $totalAmount - $bill['totalBillPaidAmt'];
+                            $bpAmount       = $bill['totalBillPaidAmt'];
+                            $totalAmount    = $totalAmount - $bill['totalBillPaidAmt'];
 
                             updateRecord('Billing', array('Stat' => 1), array('EID' => $EID, 'BillId' => $bill['BillId']));
                             $pymt_rcpt = 1;
@@ -9663,9 +9632,10 @@ class Restaurant extends CI_Controller {
                         if(empty($chk)){
                             insertRecord('CustList', $cusList);
                             $response = $this->lang->line('prepaidAccountAdded');
-                            $RC['CustId'] = $cusList['CustId'];
-                            $RC['Amount'] = $cusList['prePaidAmt'];
-                            $RC['Remarks'] = 'Added';
+                            $RC['CustId']   = $cusList['CustId'];
+                            $RC['Amount']   = $cusList['prePaidAmt'];
+                            $RC['Remarks']  = 'Added';
+                            $RC['BillId']   = 0;
                             rechargeHistory($RC);
                         }else{
                             $status = 'error';
@@ -9838,18 +9808,33 @@ class Restaurant extends CI_Controller {
             $EID = authuser()->EID;
             $CountryCd = $this->session->userdata('CountryCd');
             $this->session->set_userdata('pCountryCd', $CountryCd);
-            $status = "success";        
 
             $RC['CustId']   = $_POST['CustId'];
             $RC['Amount']   = $_POST['prePaidAmt'];
-            $RC['Remarks']  = 'Added';
-            rechargeHistory($RC);
-            $response = $this->lang->line('prepaidRechargeAdded');
+            $RC['Remarks']  = $_POST['Remarks'];
+            $RC['BillId']   = 0;
 
             $acc = $this->db2->get_where('CustList', array('CustId' => $_POST['CustId']))->row_array();
-            
-            $dt['prePaidAmt'] = $acc['prePaidAmt'] + $_POST['prePaidAmt'];
-            updateRecord('CustList', $dt, array('CustId' => $_POST['CustId']));
+
+            if($_POST['Remarks'] == 'Added'){
+                $status = "success";
+                rechargeHistory($RC);
+                $response = $this->lang->line('prepaidRechargeAdded');
+
+                $dt['prePaidAmt'] = $acc['prePaidAmt'] + $_POST['prePaidAmt'];
+                updateRecord('CustList', $dt, array('CustId' => $_POST['CustId']));
+            }else if($_POST['Remarks'] == 'Return'){
+                if($acc['prePaidAmt'] == $_POST['prePaidAmt']){
+                    $status = "success";
+                    rechargeHistory($RC);
+                    $response = $this->lang->line('prepaidRechargeReturn');
+
+                    $dt['prePaidAmt'] = $acc['prePaidAmt'] - $_POST['prePaidAmt'];
+                    updateRecord('CustList', $dt, array('CustId' => $_POST['CustId']));
+                }else{
+                    $response = $this->lang->line('insufficentBalance');
+                }
+            }
             
             header('Content-Type: application/json');
             echo json_encode(array(
@@ -9860,7 +9845,10 @@ class Restaurant extends CI_Controller {
         }
 
         $data['title'] = $this->lang->line('prepaidRecharge');
-        $data['users'] = $this->db2->get('CustList')->result_array();
+        $data['users'] = $this->db2->select("c.*, CONCAT_WS(' ', u.FName, u.LName) as Fullname")
+                                    ->join('Users u', 'u.CustId = c.CustId', 'inner')
+                                    ->get_where('CustList c', array('c.custType' => 2, 'c.EID' => authuser()->EID))
+                                    ->result_array();
         $this->load->view('rest/prepaid_recharge', $data);
     }
 

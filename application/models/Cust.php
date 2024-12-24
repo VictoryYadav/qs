@@ -1580,8 +1580,9 @@ class Cust extends CI_Model{
 		$data['prePaidAmt'] = 0;
 
 		$custDT = $this->db2->select("IFNULL(MaxLimit, 0) as MaxLimit, IFNULL(prePaidAmt, 0) as prePaidAmt")
-			->get_where('CustList', array('CustId' => $CustId, 'custType' => $CustType))
+			->get_where('CustList', array('CustId' => $CustId, 'custType' => 2, 'EID' => authuser()->EID ))
 			->row_array();
+
 		if(!empty($custDT)){
 			$data['prePaidAmt'] = $custDT['prePaidAmt'];
 			$data['MaxLimit'] 	= $custDT['MaxLimit'];
@@ -1637,6 +1638,36 @@ class Cust extends CI_Model{
 					->where($whr)
 					->get_where('KitchenMain km', array('k.Stat' => $stat, 'k.BillStat' => 0, 'km.BillStat' => 0, 'k.EID' => $EID, 'km.EID' => $EID, 'km.CustId' => $CustId, 'km.CNo' => $CNo, 'k.SchCd' => $SchCd, 'k.SDetCd' => $SDetCd, 'k.OrdNo !=' => $OrdNo))
 					->result_array();	
+	}
+
+	public function getOnAccountHistory($CustId)
+	{
+		$data['custType'] 		= 0;
+		$data['custTypeName'] 	= 0;
+		$data['lists'] 			= [];
+
+		$EID = authuser()->EID;
+		$custType = $this->db2->select("custType")
+							->get_where('CustList', array('CustId' => $CustId, 'EID' => $EID))
+							->row_array();
+
+		if(!empty($custType)){
+			$data['custType'] = $custType['custType'];
+			$data['custTypeName'] 	= ($custType['custType'] == 1)?'Onaccount':'Prepaid';
+			$custType = ($custType['custType'] == 1)?25:26;
+
+			$data['lists'] = $this->db2->select("billId, billDate, billAmount, receivedAmount, receivedDate, pymt_rcpt, mode")
+										->get_where('custAccounts', array('mode' => $custType, 'custId' => $CustId))
+										->result_array();
+		}
+
+		return $data;
+	}
+
+	public function getRechargeHistory($CustId)
+	{
+		return  $this->db2->get_where('rechargeHist', array('EID' => authuser()->EID, 'CustId' => $CustId))
+							->result_array();
 	}
 	
 
