@@ -226,56 +226,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		return $CI->Cust->getEntertainmentList();
 	}
 
-	// sendgrid email
-	function send_email($to, $subject, $msg){
-
-		$apiKey = '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';
-        $url = 'https://api.sendgrid.com/v3/mail/send';
-
-        $to = 'vijayyadav132200@gmail.com';
-        $from = 'sanjayn@gmail.com';
-        $subject = 'Sendgrid testing email email';
-
-        $body = 'You will be prompted to choose the level of access or permissions for this API key. Select the appropriate permissions based on what you need. Typically';
-
-        $data = [
-            'personalizations' => [
-                [
-                    'to' => [
-                        ['email' => $to]
-                    ],
-                    'subject' => $subject,
-                ]
-            ],
-            'from' => [
-                'email' => $from
-            ],
-            'content' => [
-                [
-                    'type' => 'text/html',
-                    'value' => $body
-                ]
-            ]
-        ];
-
-        $headers = [
-            'Authorization: Bearer ' . $apiKey,
-            'Content-Type: application/json'
-        ];
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $response = curl_exec($ch);
-        curl_close($ch);
-        echo $response;
-
-	}
-
 	function sendSMS($mobileNO, $msgText)
     {
 		$apikey = '7652383520739183947';//if you use apikey then userid and password is not required
