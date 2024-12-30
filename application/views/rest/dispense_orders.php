@@ -122,6 +122,10 @@
                                                 <div class="text-right" id="showActionBtn">
                                                     <button class="btn btn-sm btn-danger btn-rounded tippy-btn" title="Refresh" data-tippy-placement="top" onclick="refreshPage()" > <i class="mdi mdi-speedometer-slow"></i></button>
                                                 </div>
+
+                                                <div class="text-right" id="showActionBtn2" style="display: none;">
+                                                    <button class="btn btn-sm btn-danger btn-rounded tippy-btn" title="Refresh" data-tippy-placement="top" onclick="refreshPage()" > <i class="mdi mdi-speedometer-slow"></i></button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -241,6 +245,8 @@
     function getTableView() {
         // $('#showActionBtn').hide();
         $('#item-view-tbody1').empty();
+        $('#showActionBtn').show();
+        $('#showActionBtn2').hide();
         
         var DispCd = $('#kitchen-code').val();
         var dispMode = $('#dispMode').val();
@@ -304,8 +310,11 @@
             | <a href="'+url+'" class="btn btn-sm btn-warning btn-rounded" title="Print"><i class="fa fa-print" aria-hidden="true"></i></a>\
             | <button class="btn btn-sm btn-danger btn-rounded tippy-btn" title="Refresh" data-tippy-placement="top" onclick="refreshPage()" > <i class="mdi mdi-speedometer-slow"></i></button>';
 
-        $('#showActionBtn').html(btn);
-        $('#showActionBtn').show();
+        // $('#showActionBtn').html(btn);
+        $('#showActionBtn').hide();
+
+        $('#showActionBtn2').html(btn);
+        $('#showActionBtn2').show();
         handleDetails(CNo);   
     }
 
@@ -325,6 +334,8 @@
     }
 
     function deliveryNotification(CNo, billId, mobile, oType, dispCounter, DCd){
+        var Dispense_OTP = "<?php echo $this->session->userdata('Dispense_OTP'); ?>";
+
         $.post('<?= base_url('restaurant/delivery_notification') ?>',{CNo:CNo, billId:billId, mobile:mobile, oType:oType, dispCounter:dispCounter, DCd:DCd},function(res){
             if(res.status == 'success'){
                 $('#del_cno').val(CNo);
@@ -333,7 +344,11 @@
                 $('#del_otype').val(oType);
                 $('#del_dispcounter').val(dispCounter);
                 $('#del_dcd').val(DCd);
-                $('#deliveryModal').modal("show");
+                if(Dispense_OTP > 0){
+                    $('#deliveryModal').modal("show");
+                }else{
+                    alert(res.response);      
+                }
             }else{
               alert(res.response);
             }

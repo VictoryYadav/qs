@@ -464,12 +464,12 @@ class Support extends CI_Controller {
                     $eatry['ChainId'] = $EIDData['ChainId'];
                     $eatry['Addr'] = $EIDData['Area'];
                     $eatry['Suburb'] = $EIDData['Suburb'];
-                    $eatry['City'] = $EIDData['City'];
+                    $eatry['CountryCd'] = $EIDData['CountryCd'];
+                    $eatry['city_id'] = $EIDData['City'];
                     $eatry['Pincode'] = $EIDData['PIN'];
                     $eatry['ContactAddr'] = $EIDData['HOAddress'];
                     $eatry['lat'] = $EIDData['Lat'];
                     $eatry['lng'] = $EIDData['Lng'];
-                    $eatry['CountryCd'] = $EIDData['CountryCd'];
                     $eatry['LoginCd'] = $userId;
                     $eatry['EID'] = $EID;
                     $eatry['aggEID'] = $EID;

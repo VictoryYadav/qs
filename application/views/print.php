@@ -237,7 +237,7 @@
                         $newTaxType .= ' <tr style="border-top: 1px solid;" class="service"> ';
                         $newTaxType .= ' <td></td> <td></td> <td></td> <td></td>';
                         $newTaxType .= ' </tr> ';
-                        $newTaxType .= ' <tr> ';
+                        $newTaxType .= ' <tr class="service"> ';
                         $newTaxType .= ' <td style="text-align: left;" class="tableitem">Group Total</td> ';
                         $newTaxType .= ' <td></td> <td></td>';
                         $newTaxType .= ' <td class="tableitem">'.$itemTotal.'</td> ';
@@ -286,8 +286,8 @@
                         <table style="width:100%">
                         
                             <?php if ($bservecharge > 0) : ?>
-                                <tr>
-                                    <td style="font-weight: bold;">Service Charges @ <?= $bservecharge ?></td>
+                                <tr class="service">
+                                    <td>Service Charges @ <?= $bservecharge ?></td>
                                     <td><?= $SerChargeAmt; ?></td>
                                 </tr>
                             <?php endif; ?>
@@ -309,8 +309,8 @@
                             <!-- Total Discount section -->
                             <?php
                                 if ($total_discount_amount != 0) {?>
-                                    <tr>
-                                        <td>Total Discounts</td>
+                                    <tr class="service">
+                                        <td style="font-weight: bold;">Total Savings</td>
                                         <td><?= $total_discount_amount; ?></td>
                                     </tr>
                             <?php   }?>
@@ -318,7 +318,7 @@
                             <!-- Packing Charges section -->
                             <?php
                                 if ($total_packing_charge_amount > 0) { ?>
-                                    <tr>
+                                    <tr class="service">
                                         <td>Packing Charges</td>
                                         <td><?= $total_packing_charge_amount; ?></td>
                                     </tr>
@@ -327,7 +327,7 @@
                             <!-- Delivery Charges section -->
                             <?php
                                 if ($total_delivery_charge_amount > 0) { ?>
-                                    <tr>
+                                    <tr class="service">
                                         <td>Delivery Charge</td>
                                         <td><?= $total_delivery_charge_amount; ?></td>
                                     </tr>
@@ -335,13 +335,13 @@
 
                             <!-- regular discount section -->
                             <?php if($billData[0]['discId'] > 0) { ?>
-                              <tr>
-                                  <td><?= $billData[0]['discountName']; ?> Discount @ <?= $billData[0]['discPcent']; ?>%</td>
+                              <tr class="service">
+                                  <td style="font-weight: bold;"><?= $billData[0]['discountName']; ?> Discount @ <?= $billData[0]['discPcent']; ?>%</td>
                                   <td><?= $billData[0]['autoDiscAmt']; ?></td>
                               </tr>
                             <?php } ?>
                         
-                            <tr>
+                            <tr class="service">
                                 <td><b>Grand Total</b> (<?= $this->lang->line('roundedoff'); ?>)</td>
                                 <td style="font-weight: bold;"><?= $billData[0]['PaidAmt'] ?></td>
                             </tr>

@@ -7005,26 +7005,19 @@ class Restaurant extends CI_Controller {
             extract($_POST);
 
             $RestName = authuser()->RestName;
-            $Dispense_OTP = $this->session->userdata('Dispense_OTP');
+            
             $EID = authuser()->EID;
             if($oType != 101){
-                $otpData['mobileNo'] = $mobile;
-                $otpData['otp'] = '';
-                $otpData['stat'] = 0;
-                $otpData['pageRequest'] = 'Dispense';
-                $otpData['EID'] = $EID;
-
                 if($mobile){
                     $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Please pick up from $dispCounter";
 
                     $smsRes = sendSMS($mobile, $msg);
                     
                     if($smsRes){
-                        $otpData['stat'] = 1;
                         $status = 'success';
                         $response = $this->lang->line('messageSent');
                     }
-                    insertRecord('OTP', $otpData);
+                    
                 }
             }
 
@@ -7045,7 +7038,7 @@ class Restaurant extends CI_Controller {
 
             $EID = authuser()->EID;
             $RestName = authuser()->RestName;
-            $DeliveryOTP = $this->session->userdata('DeliveryOTP');
+            $Dispense_OTP = $this->session->userdata('Dispense_OTP');
             // 101 => thirdparty
             if($oType != 101){
 
@@ -7058,7 +7051,7 @@ class Restaurant extends CI_Controller {
                 if($mobile){
                     $msg = "Order of Bill No : $billId, Counter : $dispCounter from $RestName has been delivered.";
 
-                    if($DeliveryOTP > 0){
+                    if($Dispense_OTP > 0){
                         $otp = generateOnlyOTP();
                         $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Your OTP is $otp. Please pick up from $dispCounter";
                         $otpData['otp'] = $otp;
@@ -8015,7 +8008,7 @@ class Restaurant extends CI_Controller {
             $ingeredients = "mi.Ingeredients$langId";
             $Rmks = "mi.Rmks$langId";
 
-            $select = "mc.TaxType, mc.KitCd, mi.ItemId, (case when $lname != '-' Then $lname ELSE mi.Name1 end) as ItemNm, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, (case when $iDesc != '-' Then $iDesc ELSE mi.ItmDesc1 end) as ItmDesc, (case when $ingeredients != '-' Then $ingeredients ELSE mi.Ingeredients1 end) as Ingeredients, (case when $Rmks != '-' Then $Rmks ELSE mi.Rmks1 end) as Rmks, mi.PrepTime, mi.AvgRtng, mi.FID, mi.Name1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
+            $select = "mc.TaxType, mi.KitCd, mi.ItemId, (case when $lname != '-' Then $lname ELSE mi.Name1 end) as ItemNm, mi.ItemTag, mi.ItemTyp, mi.NV, mi.PckCharge, (case when $iDesc != '-' Then $iDesc ELSE mi.ItmDesc1 end) as ItmDesc, (case when $ingeredients != '-' Then $ingeredients ELSE mi.Ingeredients1 end) as Ingeredients, (case when $Rmks != '-' Then $Rmks ELSE mi.Rmks1 end) as Rmks, mi.PrepTime, mi.AvgRtng, mi.FID, mi.Name1 as imgSrc, mi.UItmCd,mi.CID ,mi.MCatgId,  (select mir.ItmRate FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as ItmRate,(select mir.Itm_Portion FROM MenuItemRates mir, Eat_tables et where et.SecId = mir.SecId and et.TableNo = '$TableNo' AND et.EID = '$EID' AND mir.EID = '$EID' AND mir.ItemId = mi.ItemId ORDER BY mir.ItmRate ASC LIMIT 1) as Itm_Portions, (select et1.TblTyp from Eat_tables et1 where et1.EID = '$EID' and et1.TableNo = '$TableNo') as TblTyp";
             $rec = $this->db2->select($select)
                             ->join('MenuItem mi','mi.ItemId = mr.RcItemId', 'inner')
                             ->join('MenuCatg mc', 'mc.MCatgId = mi.MCatgId', 'inner')
@@ -8039,7 +8032,7 @@ class Restaurant extends CI_Controller {
         $status = 'error';
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
-
+            
             $EID = authuser()->EID;
             $TableNo = $this->session->userdata('TableNo');            
             $temp = array();
@@ -8994,7 +8987,7 @@ class Restaurant extends CI_Controller {
 
         $data['title'] = $this->lang->line('stock').' '.$this->lang->line('statement');
         $data['stores'] = $this->rest->getFromMastIn();
-        $this->load->view('report/stockStatement', $data);    
+        $this->load->view('report/stockStatement', $data);
     }
 
     public function discount_user(){
@@ -9093,14 +9086,14 @@ class Restaurant extends CI_Controller {
                                     
                                     if($csv_data[0] !='RestName'){
 
-                                        $temp['RestName'] = $csv_data[0];
-                                        $temp['Cuisine'] = $csv_data[1];
-                                        $temp['FID'] = $csv_data[2];
-                                        $temp['IMcCd'] = $csv_data[3];
+                                        $temp['RestName']   = $csv_data[0];
+                                        $temp['Cuisine']    = $csv_data[1];
+                                        $temp['FID']        = $csv_data[2];
+                                        $temp['IMcCd']      = $csv_data[3];
                                         $temp['MenuCatgNm'] = $csv_data[4];
                                         $temp['CTypUsedFor'] = $csv_data[5];
-                                        $temp['ItemNm'] = $csv_data[6];
-                                        $temp['ItemTyp'] = $csv_data[7];
+                                        $temp['ItemNm']      = $csv_data[6];
+                                        $temp['ItemTyp']    = $csv_data[7];
                                         $temp['NV'] = $csv_data[8];
                                         $temp['Section'] = $csv_data[9];
                                         $temp['PckCharge'] = $csv_data[10];
@@ -9118,6 +9111,7 @@ class Restaurant extends CI_Controller {
                                         $temp['AltToTime'] = $csv_data[22];
                                         $temp['videoLink'] = $csv_data[23];
                                         $temp['Itm_Portion'] = $csv_data[24];
+                                        $temp['KitCd'] = $csv_data[25];
                                         $temp['LoginCd'] = authuser()->RUserId;
 
                                         $temp['TaxType'] = 0;
@@ -9178,7 +9172,7 @@ class Restaurant extends CI_Controller {
 
                 $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, t.TaxType From Cuisines c, TempMenuItem t, FoodType f where c.Name = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
                 // t.DayNo = 
-                $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, Name1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink, ItemTyp)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, IFNULL((SELECT DayNo FROM WeekDays wd where wd.Name1 = t.DayNo),8), t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink,IFNULL((SELECT Tagid FROM MenuTags mt where mt.Name1 = t.ItemTyp),0)  From TempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
+                $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, Name1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink, ItemTyp, KitCd)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, IFNULL((SELECT DayNo FROM WeekDays wd where wd.Name1 = t.DayNo),8), t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink,IFNULL((SELECT Tagid FROM MenuTags mt where mt.Name1 = t.ItemTyp),0), IFNULL((SELECT et.KitCd FROM Eat_Kit et where et.Name1 = t.KitCd and et.EID = $EID),0)  From TempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
 
                 $this->db2->query("INSERT INTO MenuItemRates (EID, SecId, ItemId, Itm_Portion, ItmRate)  SELECT $EID,IFNULL((SELECT es.SecId From Eat_Sections es where es.Name1 = t.Section and es.EID=$EID),1),  i.ItemId, ip.IPCd, t.Rate From TempMenuItem t, ItemPortions ip, MenuItem i where ip.Name1=t.Itm_Portion and i.Name1=t.ItemNm");
                 $status = 'success';

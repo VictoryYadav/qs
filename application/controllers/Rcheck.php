@@ -34,11 +34,11 @@ class Rcheck extends CI_Controller {
                                 $this->session->set_userdata('qr_code', $_REQUEST['qr_data']);
                             }
                         }else{
-                            redirect(base_url('/page_not_found'));
+                            redirect(base_url('general'));
                         }
                     }
                 }else{
-                    redirect(base_url('/page_not_found'));
+                    redirect(base_url('general'));
                 }
                 
                 if(isset($req[2])){
@@ -46,7 +46,7 @@ class Rcheck extends CI_Controller {
                     if($t_data[0] == 't'){
                         $_REQUEST['t'] = $t_data[1];
                     }else{
-                        redirect(base_url('/page_not_found'));
+                        redirect(base_url('general'));
                     }
                 }
                 
@@ -55,13 +55,13 @@ class Rcheck extends CI_Controller {
                     if($o_data[0] == 'o'){
                         $_REQUEST['o'] = $o_data[1];
                     }else{
-                        redirect(base_url('/page_not_found'));
+                        redirect(base_url('general'));
                     }
                 }else{
-                    redirect(base_url('/page_not_found'));
+                    redirect(base_url('general'));
                 }
             }else{
-                redirect(base_url('/page_not_found'));
+                redirect(base_url('general'));
             }
 
             if (!isset($_REQUEST['e']) && !isset($_REQUEST['c']) && !isset($_REQUEST['t']) && !isset($_REQUEST['o'])) {
@@ -72,7 +72,7 @@ class Rcheck extends CI_Controller {
         }else{
             // echo "<h1>Please Scan QR Code again.</h1>";
             // die;
-            redirect(base_url('/page_not_found'));
+            redirect(base_url('general'));
         }
 
         $this->session->set_userdata('EID', $_REQUEST['e']);

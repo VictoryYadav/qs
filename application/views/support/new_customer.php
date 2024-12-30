@@ -55,7 +55,7 @@
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
                                                     <label><?= $this->lang->line('country'); ?></label>
-                                                    <select  name="CountryCd" id="CountryCd" class="form-control form-control-sm select2 custom-select" required="">
+                                                    <select  name="CountryCd" id="CountryCd" class="form-control form-control-sm select2 custom-select" required="" onchange="getCity()">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php 
                                                         foreach ($country as $key) { ?>
@@ -155,7 +155,9 @@
                                             <div class="col-md-3 col-6">
                                                 <div class="form-group">
                                                     <label><?= $this->lang->line('city'); ?></label>
-                                                    <input type="text" name="City" id="City" class="form-control form-control-sm" >
+                                                    <select name="City" id="City" class="form-control form-control-sm" required="">
+                                                        <option value=""><?= $this->lang->line('select'); ?></option>
+                                                    </select>
                                                 </div>
                                             </div>
 
@@ -364,6 +366,26 @@
               alert(res.response);
             }
         });
+    }
+
+    function getCity(){
+
+        var CountryCd = $('#CountryCd').val();
+        if(CountryCd > 0){
+            $.post('<?= base_url('support/get_city_by_country') ?>',{phone_code:CountryCd},function(res){
+                if(res.status == 'success'){
+                  var cities = res.response;
+                  $('#City').empty();
+                  var temp = `<option value=""><?= $this->lang->line('select');?></option>`;
+                  cities.forEach((ct) => {
+                      temp += `<option value="${ct.city_id}">${ct.city_name}</option>`;
+                  });
+                  $('#City').html(temp);     
+                }else{
+                  alert(res.response);
+                }
+            });
+        }
     }
     
 </script>

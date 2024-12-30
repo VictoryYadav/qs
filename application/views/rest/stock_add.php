@@ -62,7 +62,7 @@ $RestName = authuser()->RestName;
                                                     <select class="form-control form-control-sm" id="from_kitchen" name="FrmKit">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
                                                         <?php foreach($kit as $key){?>
-                                                            <option value="<?= $key['EID']?>"><?= $key['Name']?></option>
+                                                            <option value="<?= $key['MCd']?>"><?= $key['Name']?></option>
                                                         <?php }?>
                                                     </select>
                                                 </div>

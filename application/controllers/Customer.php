@@ -801,25 +801,30 @@ class Customer extends CI_Controller {
         }else{
             $status = 'error';
             $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+            $flag = 0;
             if($this->input->method(true)=='POST'){
+                $status = 'success';
                 $this->session->set_userdata('signup', $_POST);
 
+                $MobileNo = $_POST['CountryCd'].$_POST['MobileNo'];
                 $checkUser = $this->db2->select('MobileNo')
-                                ->where('MobileNo', $_POST['MobileNo'])
+                                ->where('MobileNo', $MobileNo)
                                 ->get('Users')
                                 ->row_array();
                 if(!empty($checkUser)){
+                    $flag = 1;
                     $response = $this->lang->line('userAlreadyExists');
                 }else{
-                    $otp = generateOTP($_POST['MobileNo'], 'signup');
-                    $status = 'success';
+                    $flag = 2;
+                    $otp = generateOTP($MobileNo, 'signup');
                     $response = $this->lang->line('yourOTPIs');
                 }
 
                 header('Content-Type: application/json');
                 echo json_encode(array(
-                    'status' => $status,
-                    'response' => $response
+                    'status'    => $status,
+                    'response'  => $response,
+                    'flag'      => $flag
                   ));
                  die;
             }
@@ -1985,7 +1990,7 @@ class Customer extends CI_Controller {
          $whr .= " and ed.city_id = ".$data['city'];
         }
         
-        $data['custPymt'] = $genTblDb->query("SELECT DISTINCT cp.BillId, date(cp.BillDt) as billdt, `cp`.`BillNo`, `cp`.`EID`, `cp`.`PaidAmt`, `cp`.`CustId`, `ed`.`Name`, `ed1`.`DBName`, `ed`.`DBPasswd`, `rt`.`avgBillRtng` FROM `CustPymts` `cp` INNER JOIN `EIDDet` `ed` ON `ed`.`EID` = `cp`.`EID` INNER JOIN `EIDDet` `ed1` ON `ed1`.`EID` = `cp`.`aggEID` LEFT JOIN `Ratings` `rt` ON `rt`.`EID` = `cp`.`EID` WHERE `cp`.`CustId` = '6' AND `rt`.`CustId` = '6' $whr ORDER BY `cp`.`BNo` DESC")->result_array();
+        $data['custPymt'] = $genTblDb->query("SELECT DISTINCT cp.BillId, date(cp.BillDt) as billdt, `cp`.`BillNo`, `cp`.`EID`, `cp`.`PaidAmt`, `cp`.`CustId`, `ed`.`Name`, `ed1`.`DBName`, `ed`.`DBPasswd`, `rt`.`avgBillRtng` FROM `CustPymts` `cp` INNER JOIN `EIDDet` `ed` ON `ed`.`EID` = `cp`.`EID` INNER JOIN `EIDDet` `ed1` ON `ed1`.`EID` = `cp`.`aggEID` LEFT JOIN `Ratings` `rt` ON `rt`.`EID` = `cp`.`EID` WHERE `cp`.`CustId` = $CustId AND `rt`.`CustId` = $CustId $whr ORDER BY `cp`.`BNo` DESC")->result_array();
         
         $data['country']    = $this->cust->getCountries();
         $data['CountryCd']    = $this->session->userdata('CountryCd');

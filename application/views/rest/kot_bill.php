@@ -290,13 +290,13 @@
                         <table style="width:100%">
                         
                             <?php if ($bservecharge > 0) : ?>
-                                <tr>
-                                    <td style="font-weight: bold;">Service Charges @ <?= $bservecharge ?></td>
+                                <tr class="service">
+                                    <td>Service Charges @ <?= $bservecharge ?></td>
                                     <td><?= $SerChargeAmt; ?></td>
                                 </tr>
                             <?php endif; ?>
                             <?php if ($tipamt > 0) : ?>
-                                <tr>
+                                <tr class="service">
                                     <td>TIP Amount</td>
                                     <td><?= $tipamt ?></td>
                                 </tr>
@@ -313,8 +313,8 @@
                             <!-- Total Discount section -->
                             <?php
                                 if ($total_discount_amount != 0) {?>
-                                    <tr>
-                                        <td>Total Discounts</td>
+                                    <tr class="service">
+                                        <td style="font-weight: bold;">Total Savings</td>
                                         <td><?= $total_discount_amount; ?></td>
                                     </tr>
                             <?php   }?>
@@ -322,7 +322,7 @@
                             <!-- Packing Charges section -->
                             <?php
                                 if ($total_packing_charge_amount > 0) { ?>
-                                    <tr>
+                                    <tr class="service">
                                         <td>Packing Charges</td>
                                         <td><?= $total_packing_charge_amount; ?></td>
                                     </tr>
@@ -331,7 +331,7 @@
                             <!-- Delivery Charges section -->
                             <?php
                                 if ($total_delivery_charge_amount > 0) { ?>
-                                    <tr>
+                                    <tr class="service">
                                         <td>Delivery Charge</td>
                                         <td><?= $total_delivery_charge_amount; ?></td>
                                     </tr>
@@ -344,8 +344,16 @@
                                     <td></td>
                                 </tr>
                             <?php   } ?>
+
+                            <!-- regular discount section -->
+                            <?php if($billData[0]['discId'] > 0) { ?>
+                              <tr class="service">
+                                  <td style="font-weight: bold;"><?= $billData[0]['discountName']; ?> Discount @ <?= $billData[0]['discPcent']; ?>%</td>
+                                  <td><?= $billData[0]['autoDiscAmt']; ?></td>
+                              </tr>
+                            <?php } ?>
                         
-                            <tr>
+                            <tr class="service">
                                 <td style="font-weight: bold;">GRAND TOTAL</td>
                                 <td style="font-weight: bold;"><?= $billData[0]['PaidAmt'] ?></td>
                             </tr>

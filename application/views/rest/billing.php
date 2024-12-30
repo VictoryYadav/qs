@@ -228,7 +228,7 @@
                                                     
                                                         <?php if ($bservecharge > 0) : ?>
                                                             <tr>
-                                                                <td style="font-weight: bold;">Service Charges @ <?= $bservecharge ?></td>
+                                                                <td >Service Charges @ <?= $bservecharge ?></td>
                                                                 <td style="text-align: right;"><?= $SerChargeAmt; ?></td>
                                                             </tr>
                                                         <?php endif; ?>
@@ -251,7 +251,7 @@
                                                         <?php
                                                             if ($total_discount_amount != 0) {?>
                                                                 <tr>
-                                                                    <td>Total Discounts</td>
+                                                                    <td style="font-weight: bold;">Total Savings</td>
                                                                     <td style="text-align: right;"><?= $total_discount_amount; ?></td>
                                                                 </tr>
                                                         <?php   }?>
@@ -277,7 +277,7 @@
                                                         <?php  
                                                         if($billData[0]['discId'] > 0) { ?>
                                                         <tr style="border-bottom: 1px solid black;">
-                                                            <td><?= $billData[0]['discountName']; ?> Discount @ <?= $billData[0]['discPcent']; ?>%</td>
+                                                            <td style="font-weight: bold;"><?= $billData[0]['discountName']; ?> Discount @ <?= $billData[0]['discPcent']; ?>%</td>
                                                             <td style="text-align: right;"><?= $billData[0]['autoDiscAmt']; ?></td>
                                                         </tr>
                                                         <?php } ?>

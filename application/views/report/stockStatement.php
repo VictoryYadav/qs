@@ -32,13 +32,13 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('store'); ?></label>
-                                                        <select name="KitCd" id="KitCd" class="form-control form-control-sm" onchange="stockData()">
+                                                        <select name="MCd" id="MCd" class="form-control form-control-sm" onchange="stockData()">
                                                             <!-- <option value=""><?= $this->lang->line('select'); ?></option> -->
                                                             <?php 
                                                             if(!empty($stores)){
                                                                 foreach ($stores as $key) { ?>
                                                             ?>
-                                                            <option value="<?= $key['MCd']; ?>"><?= $key['Name']; ?></option>
+                                                            <option value="<?= $key['MCd']; ?>" msttype="<?= $key['MstTyp']; ?>"><?= $key['Name']; ?></option>
                                                         <?php } } ?>
                                                         </select>
                                                     </div>
@@ -47,7 +47,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('toDate'); ?></label>
-                                                        <input type="date" name="TransDt" id="TransDt" class="form-control form-control-sm" onchange="stockData()" value="<?= $yesterday; ?>"/>
+                                                        <input type="date" name="TransDt" id="TransDt" class="form-control form-control-sm" onchange="stockData()" value="<?= date('Y-m-d'); ?>"/>
                                                     </div>
                                                 </div>
 
@@ -123,8 +123,11 @@ $(document).ready(function () {
 }); 
 
     stockData = () => {
-        var data = $('#reportForm').serializeArray();
-        $.post('<?= base_url('restaurant/stock_statement') ?>',data,function(res){
+        var MCd = $(`#MCd`).val();
+        var TransDt = $(`#TransDt`).val();
+        var MstTyp = $('option:selected', $('#MCd')).attr('msttype');
+
+        $.post('<?= base_url('restaurant/stock_statement') ?>',{MCd:MCd, MstTyp:MstTyp, TransDt:TransDt},function(res){
             if(res.status == 'success'){
               var report = res.response;
               
@@ -159,8 +162,6 @@ $(document).ready(function () {
                             );
 
                     }
-
-              
 
             }else{
               alert(res.response);

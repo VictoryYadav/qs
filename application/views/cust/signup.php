@@ -240,6 +240,10 @@
         
         $.post('<?= base_url('customer/signup') ?>',data,function(res){
             if(res.status == 'success'){
+              if(res.flag == 1){
+                alert(res.response);
+                window.location = '<?= base_url('customer/login'); ?>';
+              }
               $('#otpBlock').show();
               $('#signupBlock').hide();
             }else{

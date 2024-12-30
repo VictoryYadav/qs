@@ -834,6 +834,7 @@ width: 100%;*/
         }
 
         function getTableView() {
+            $(`#item-detail-body1`).empty();
             var CCd = $('#kitchen-code').val();
             $.ajax({
                 url: "<?php echo base_url('restaurant/sittin_table_view_ajax'); ?>",
