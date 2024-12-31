@@ -67,7 +67,7 @@ class Generals extends CI_Model{
          $whr .= " and ed.city_id = ".$city;
         }
         
-        return $this->genDB->query("SELECT DISTINCT cp.BillId, date(cp.BillDt) as billdt, `cp`.`BillNo`, `cp`.`EID`, `cp`.`PaidAmt`, `cp`.`CustId`, `ed`.`Name`, `ed1`.`DBName`, `ed`.`DBPasswd`, `rt`.`avgBillRtng` FROM `CustPymts` `cp` INNER JOIN `EIDDet` `ed` ON `ed`.`EID` = `cp`.`EID` INNER JOIN `EIDDet` `ed1` ON `ed1`.`EID` = `cp`.`aggEID` LEFT JOIN `Ratings` `rt` ON `rt`.`EID` = `cp`.`EID` WHERE `cp`.`CustId` = $CustId AND `rt`.`CustId` = $CustId $whr ORDER BY `cp`.`BNo` DESC")->result_array();
+        return $this->genDB->query("SELECT DISTINCT cp.BillId, date(cp.BillDt) as billdt, `cp`.`BillNo`, `cp`.`EID`, `cp`.`PaidAmt`, `cp`.`CustId`, `ed`.`Name`, `ed1`.`DBName`, `ed`.`DBPasswd`, `rt`.`avgBillRtng` FROM `CustPymts` `cp` INNER JOIN `EIDDet` `ed` ON `ed`.`EID` = `cp`.`EID` INNER JOIN `EIDDet` `ed1` ON `ed1`.`EID` = `cp`.`aggEID` LEFT JOIN `Ratings` `rt` ON `rt`.`EID` = `cp`.`EID` WHERE `cp`.`CustId` = $CustId AND `rt`.`CustId` = $CustId $whr ORDER BY `cp`.`BillDt` DESC")->result_array();
     }
 
     public function gettingBiliingData($dbname, $EID, $billId, $CustId, $flag){

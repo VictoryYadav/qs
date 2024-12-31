@@ -118,7 +118,7 @@
                                 <option value="">Select</option>
                                 <?php 
                                 foreach ($country as $key) { ?>
-                                    <option value="<?= $key['phone_code']; ?>" ><?= $key['country_name']; ?></option>
+                                    <option value="<?= $key['phone_code']; ?>" <?php if($key['phone_code'] == 91){ echo 'selected'; } ?>><?= $key['country_name']; ?></option>
                                 <?php } ?>  
                             </select>
                         </div>

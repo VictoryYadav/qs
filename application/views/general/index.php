@@ -1,7 +1,7 @@
 <?php $this->load->view('layouts/gen/head'); ?>
 <style>
     .fixedHeight{
-        max-height: 555px;
+        max-height: 480px;
         overflow-x: hidden;
     }
 </style>
@@ -10,17 +10,18 @@
 
         <!-- Begin page -->
         <div id="layout-wrapper">           
-
-            <div class="container mt-4">
+            <?php $this->load->view('layouts/gen/top'); ?>
+            <div class="container" style="margin-top: 80px !important;">
 
                 <div class="row">
                 
                     <div class="col-xl-12">
-                        <div class="card fixedHeight">
+                        <!-- <div class="card fixedHeight">
                             <div class="card-body">
-                                Welcome Eatout
+                                
+                                
                             </div>
-                        </div>
+                        </div> -->
                     </div>                                                              
                 </div><!--end row-->
                 

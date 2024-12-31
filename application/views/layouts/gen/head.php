@@ -11,7 +11,7 @@
         <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
         <meta content="Themesbrand" name="author" />
         <!-- App favicon -->
-        <link rel="shortcut icon" href="<?= base_url('assets_admin'); ?>/images/favicon.ico">
+        <link href="<?= base_url(); ?>theme/images/Eat-Out-Icon.png" rel="shortcut icon">
 
         <link href="<?= base_url('assets_admin'); ?>/libs/metrojs/release/MetroJs.Full/MetroJs.min.css" rel="stylesheet" type="text/css" />
 

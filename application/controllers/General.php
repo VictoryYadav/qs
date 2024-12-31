@@ -20,7 +20,7 @@ class General extends CI_Controller {
 	}
 
 	public function index(){
-
+    
         $data['title'] = 'Home';
         $this->load->view('general/index', $data);
     }
@@ -71,7 +71,7 @@ class General extends CI_Controller {
                 if(!empty($genData)){
                     $this->session->set_userdata('GenCustId', $genData['CustId']);
                     $this->session->set_userdata('GenMobile', $genData['MobileNo']);
-                    $this->session->set_userdata('GenFullname', $genData['FName'].' '.$genData['LName']);
+                    $this->session->set_userdata('GenFullname', $genData['FName']);
                     $this->session->set_userdata('CountryCd', $genData['CountryCd']);
                 }
 
@@ -252,6 +252,11 @@ class General extends CI_Controller {
             'response' => $response
           ));
          die;
+    }
+
+    public function qrscan(){
+        $this->session->sess_destroy();
+        redirect(base_url('qr_scanner'));
     }
 
     public function logout(){
