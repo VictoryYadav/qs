@@ -150,11 +150,16 @@ class Generals extends CI_Model{
     }
 
     public function get_rest_detail($EID){
-        return $this->genDB->select("ed.*, c.country_name, ct.city_name")
+        $data['details']  = $this->genDB->select("ed.*, c.country_name, ct.city_name")
                     ->join('countries c', 'c.phone_code = ed.CountryCd', 'inner')
                     ->join('city ct', 'ct.city_id = ed.city_id', 'inner')
                     ->get_where('EIDDet ed', array('ed.EID' => $EID))
                     ->row_array();
+
+        $data['configs'] = $this->genDB->select("*")
+                    ->get_where('Config', array('EID' => $EID))
+                    ->row_array();
+        return $data;
     }
 
 

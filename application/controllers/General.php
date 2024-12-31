@@ -14,13 +14,14 @@ class General extends CI_Controller {
 
         $this->load->model('Generals', 'gen');
         $this->output->delete_cache();
+        // $this->output->nocache();
 
         $this->response = [];
 
 	}
 
 	public function index(){
-    
+
         $data['title'] = 'Home';
         $this->load->view('general/index', $data);
     }
@@ -255,8 +256,9 @@ class General extends CI_Controller {
     }
 
     public function qrscan(){
+
         $this->session->sess_destroy();
-        redirect(base_url('qr_scanner'));
+        redirect(base_url('q'));
     }
 
     public function logout(){

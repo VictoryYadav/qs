@@ -63,7 +63,62 @@
                 if(EID > 0){
                     $.post('<?= base_url('general/get_rest_details') ?>',{EID:EID},function(res){
                         if(res.status == 'success'){
-                            var data = res.response;
+                            var data    = res.response.details;
+                            var configs = res.response.configs;
+                            var list = ``;
+
+                            if(configs.EDT > 0){
+                                list += `<li class="list-inline-item"><span>EDT</span></li>`;
+                            }
+                            if(configs.JoinTable > 0){
+                                list += `<li class="list-inline-item"><span>Join Table</span></li>`;
+                            }
+                            if(configs.SchPop > 0){
+                                list += `<li class="list-inline-item"><span>Scheme Pop Up</span></li>`;
+                            }
+                            if(configs.TableReservation > 0){
+                                list += `<li class="list-inline-item"><span>Reserve Table</span></li>`;
+                            }
+                            if(configs.tableSharing > 0){
+                                list += `<li class="list-inline-item"><span>Table Share</span></li>`;
+                            }
+                            if(configs.CustLoyalty > 0){
+                                list += `<li class="list-inline-item"><span>Customer Loyalty</span></li>`;
+                            }
+                            if(configs.CustAssist > 0){
+                                list += `<li class="list-inline-item"><span>Customer Assist</span></li>`;
+                            }
+                            if(configs.Charity > 0){
+                                list += `<li class="list-inline-item"><span>Charity</span></li>`;
+                            }
+                            if(configs.NV > 0){
+                                list += `<li class="list-inline-item"><span>NV</span></li>`;
+                            }
+                            if(configs.Ent > 0){
+                                list += `<li class="list-inline-item"><span>Entertainment</span></li>`;
+                            }
+                            if(configs.recommend > 0){
+                                list += `<li class="list-inline-item"><span>Recommendation</span></li>`;
+                            }
+                            if(configs.addItemLock > 0){
+                                list += `<li class="list-inline-item"><span>Add Item Lock</span></li>`;
+                            }
+                            if(configs.custItems > 0){
+                                list += `<li class="list-inline-item"><span>Custom Item</span></li>`;
+                            }
+                            if(configs.reorder > 0){
+                                list += `<li class="list-inline-item"><span>Reorder</span></li>`;
+                            }
+                            if(configs.Rating > 0){
+                                list += `<li class="list-inline-item"><span>Rating</span></li>`;
+                            }
+                            if(configs.ServChrg > 0){
+                                list += `<li class="list-inline-item"><span>Service Charge</span></li>`;
+                            }
+                            if(configs.DelCharge > 0){
+                                list += `<li class="list-inline-item"><span>Delivery Charge</span></li>`;
+                            }
+
                             var temp = `<div class="col-md-4">
                                             <div class="card">
                                                 <div class="card-body">
@@ -98,6 +153,17 @@
                                                         <i>${data.HOAddress}, ${data.Area}<br>
                                                         ${data.Suburb}, ${data.city_name} ${data.PIN} (${data.country_name})<br></i>
                                                     </address>                                            
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5 class="mt-0">Features</h5>
+                                                    <ul class="list-unstyled list-inline language-skill mb-0">
+                                                        ${list}
+                                                    </ul>                                         
                                                 </div>
                                             </div>
                                         </div>`;

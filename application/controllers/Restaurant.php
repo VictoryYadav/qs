@@ -9582,6 +9582,15 @@ class Restaurant extends CI_Controller {
                 updateRecord('UserRoles', array('Stat' => 1), array('RoleId' => 17));
             }
             updateRecord('Config', $configDt, array('EID' => $EID) );
+
+            $genDB = $this->load->database('GenTableData', TRUE);
+            $checkConfig = $genDB->get_where('Config', array('EID' => $EID))
+                                ->row_array();
+            if(!empty($checkConfig)){
+                $genDB->update('Config', $configDt, array('EID' => $EID));
+            }else{
+                $genDB->insert('Config', $configDt);
+            }
             
             $response = $this->lang->line('configUpdated');
             header('Content-Type: application/json');

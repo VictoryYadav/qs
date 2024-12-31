@@ -1258,6 +1258,15 @@ class Support extends CI_Controller {
             }
 
             $this->localDB->update('Config', $configDt, array('EID' => $EID) );
+
+            $configDt['EID'] = $EID;
+            $checkConfig = $this->genDB->get_where('Config', array('EID' => $EID))
+                                ->row_array();
+            if(!empty($checkConfig)){
+                $this->genDB->update('Config', $configDt, array('EID' => $EID));
+            }else{
+                $this->genDB->insert('Config', $configDt);
+            }
             
             $response = $this->lang->line('configUpdated');
             // header('Content-Type: application/json');
