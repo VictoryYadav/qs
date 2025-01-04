@@ -72,7 +72,7 @@
                                                 <div class="col-md-3 col-5">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('fromDate'); ?></label>
-                                                        <input type="date" name="fromDt" id="fromDt" class="form-control form-control-sm" required="" value="<?= date('Y-m-d'); ?>" />
+                                                        <input type="text" name="fromDt" id="fromDt" class="form-control form-control-sm" required="" value="<?= date('d-M-Y'); ?>" />
                                                         
                                                     </div>
                                                 </div>
@@ -80,7 +80,7 @@
                                                 <div class="col-md-3 col-5">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('toDate'); ?></label>
-                                                        <input type="date" name="toDt" id="toDt" class="form-control form-control-sm" required="" value="<?= date('Y-m-d'); ?>" />
+                                                        <input type="text" name="toDt" id="toDt" class="form-control form-control-sm" required="" value="<?= date('d-M-Y'); ?>" />
                                                         
                                                     </div>
                                                 </div>
@@ -180,6 +180,16 @@
 
     $(document).ready(function () {
         $('#TableData').DataTable();
+
+        $("#fromDt").datepicker({  
+            dateFormat: "dd-M-yy",
+            defaultDate: new Date() 
+        });
+        $("#toDt").datepicker({  
+            dateFormat: "dd-M-yy",
+            defaultDate: new Date() 
+        });
+        
     });
 
     $('#entForm').on('submit', function(e){

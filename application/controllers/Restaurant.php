@@ -1853,13 +1853,13 @@ class Restaurant extends CI_Controller {
 
     public function stock_list(){
         $this->check_access();
-        $data['trans_id'] = 0;
-        $data['trans_type_id'] = 0;
-        $data['from_date'] = date('Y-m-d');
-        $data['to_date'] = date('Y-m-d');
-        $data['stock'] = $this->rest->getStockList();
+        $data['trans_id']       = 0;
+        $data['trans_type_id']  = 0;
+        $data['from_date']      = date('d-M-Y');
+        $data['to_date']        = date('d-M-Y');
+        $data['stock']          = $this->rest->getStockList();
         if($this->input->method(true)=='POST'){
-            $data['stock'] = $this->rest->getStockList($_POST);
+            $data['stock']      = $this->rest->getStockList($_POST);
         }
         
         $data['title'] = $this->lang->line('stockList');

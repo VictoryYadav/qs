@@ -24,12 +24,12 @@
                                         <div class="row">
                                             <div class="col-md-4 col-6">
                                                 <div class="form-group">
-                                                    <input type="date" class="form-control form-control-sm" name="from_date" required="" value="<?php echo date('Y-m-d', strtotime($from_date)); ?>">
+                                                    <input type="text" class="form-control form-control-sm" name="from_date" required="" value="<?php echo date('d-M-Y', strtotime($from_date)); ?>" id="fromDt">
                                                 </div>
                                             </div>
                                             <div class="col-md-4 col-6">
                                                 <div class="form-group">
-                                                    <input type="date" class="form-control form-control-sm" name="to_date" required="" value="<?php echo date('Y-m-d', strtotime($to_date)); ?>">
+                                                    <input type="text" class="form-control form-control-sm" name="to_date" required="" value="<?php echo date('d-M-Y', strtotime($to_date)); ?>" id="toDt">
                                                 </div>
                                             </div>
                                             <div class="col-md-4 col-4">
@@ -107,6 +107,16 @@
 <script>
     $(document).ready(function () {
         $('#billViewTbl').DataTable();
+
+        $("#fromDt").datepicker({  
+            dateFormat: "dd-M-yy",
+            defaultDate: new Date() 
+        });
+
+        $("#toDt").datepicker({  
+            dateFormat: "dd-M-yy",
+            defaultDate: new Date() 
+        });
     });
 
 </script>

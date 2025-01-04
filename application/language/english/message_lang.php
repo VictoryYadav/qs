@@ -654,7 +654,7 @@ $lang['calories']				= 'Calories';
 $lang['pleaseSelecttheOptionsForComboItem']	= 'Please select the options for Combo Item';
 $lang['Prepaid']				= 'Prepaid';
 $lang['Onaccount']				= 'OnAccount';
-
+$lang['inventory']				= 'Inventory';
 
 
 

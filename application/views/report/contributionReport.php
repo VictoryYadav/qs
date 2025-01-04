@@ -86,19 +86,19 @@
                                                 </div>
 
                                                 <?php
-                                                $fromDate = date('Y-m-d', strtotime("-7 day", strtotime(date('Y-m-d'))));
+                                                $fromDate = date('d-M-Y', strtotime("-7 day", strtotime(date('Y-m-d'))));
                                                 ?>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('fromDate'); ?></label>
-                                                        <input type="date" name="fromDate" id="fromDate" class="form-control form-control-sm" onchange="abcData()" value="<?= $fromDate; ?>" />
+                                                        <input type="text" name="fromDate" id="fromDate" class="form-control form-control-sm" onchange="abcData()" value="<?= $fromDate; ?>" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('toDate'); ?></label>
-                                                        <input type="date" name="toDate" id="toDate" class="form-control form-control-sm" onchange="abcData()" value="<?= date('Y-m-d'); ?>" />
+                                                        <input type="text" name="toDate" id="toDate" class="form-control form-control-sm" onchange="abcData()" value="<?= date('d-M-Y'); ?>" />
                                                     </div>
                                                 </div>
 
@@ -177,6 +177,17 @@
 $(document).ready(function () {
     $('#menucat').select2();
     $('#itemId').select2();
+
+    $("#fromDate").datepicker({  
+        dateFormat: "dd-M-yy",
+        defaultDate: new Date() 
+    });
+
+    $("#toDate").datepicker({  
+        dateFormat: "dd-M-yy",
+        defaultDate: new Date() 
+    });
+
     abcData();
 }); 
 

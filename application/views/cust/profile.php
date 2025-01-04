@@ -56,11 +56,11 @@ body{
                         <?php
                         $dob = '';
                         if(!empty($detail['DOB'])){
-                            $dob = date('Y-m-d', strtotime($detail['DOB']));
+                            $dob = date('d-M-Y', strtotime($detail['DOB']));
                         }
                          ?>
                           <div class="form-group">
-                              <input type="date" name="DOB" class="form-control" placeholder="Enter DOB" value="<?= $dob; ?>">
+                              <input type="text" id="DOB" name="DOB" class="form-control" placeholder="Enter DOB" value="<?= $dob; ?>">
                           </div>
                       </div>
                   </div>
@@ -82,9 +82,16 @@ body{
 
 </body>
 
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
 <script type="text/javascript">
    $(document).ready(function() {
-        
+        $("#DOB").datepicker({  
+            dateFormat: "dd-M-yy",
+            defaultDate: new Date() 
+        });
     });
 
 </script>

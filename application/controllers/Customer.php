@@ -641,16 +641,34 @@ class Customer extends CI_Controller {
             $status = 'error';
             $response = $this->lang->line('SomethingSentWrongTryAgainLater');
             if($this->input->method(true)=='POST'){
+                $email      = checkValidEmail($_POST['emailMobile']);
+                if($email > 0){
+                    $emailMobile = $_POST['emailMobile'];
+                }else{
+                    $emailMobile = $_POST['emailMobile'];
+                    $emailMobile = $_POST['CountryCd'].$_POST['emailMobile'];
+                }
                 
-                $emailMobile = $_POST['emailMobile'];
-                $emailMobile = $_POST['CountryCd'].$_POST['emailMobile'];
                 $check = $this->db2->select('MobileNo')
-                                ->where('MobileNo', $emailMobile)
-                                ->get('Users')
-                                ->row_array();
+                                    ->group_start() 
+                                        ->where('email', $emailMobile)
+                                        ->or_where('MobileNo', $emailMobile)
+                                    ->group_end()
+                                    ->get('Users')
+                                    ->row_array();
+
                 if(!empty($check)){
+                    if($email > 0){
+                        $otp    = generateOnlyOTP();
+                        $to     = $emailMobile;
+                        $subject = 'OTP';
+                        $msg    = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
+                        send_email($to, $subject, $msg);
+
+                    }else{
                     // $otp = 1;
-                    $otp = generateOTP($emailMobile, 'login');
+                        $otp = generateOTP($emailMobile, 'login');
+                    }
                     $status = 'success';
                     $response = $this->lang->line('yourOTPIs');
                     $this->session->set_userdata('emailMobile', $emailMobile);

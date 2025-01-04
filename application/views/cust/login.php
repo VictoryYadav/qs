@@ -127,7 +127,7 @@
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-user"></i></span>
                     </div>
-                    <input type="number" name="emailMobile" class="form-control input_user" placeholder="<?= $this->lang->line('enterMobile'); ?>" required="" maxlength="10" id="emailMobile">
+                    <input type="text" name="emailMobile" class="form-control input_user" placeholder="<?= $this->lang->line('enterMobile'); ?>" required=""  id="emailMobile">
                   </div>
                   <div>
                     <small id="loginMsg" class="text-danger" style="font-size: 10px;"></small>

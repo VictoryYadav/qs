@@ -35,13 +35,13 @@
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('fromDate'); ?></label>
-                                                        <input type="date" class="form-control form-control-sm" name="fdate" value="<?= $fdate; ?>">
+                                                        <input type="text" class="form-control form-control-sm" name="fdate" value="<?= date('d-M-Y', strtotime($fdate)); ?>" id="fromDt">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('toDate'); ?></label>
-                                                        <input type="date" class="form-control form-control-sm" name="tdate" value="<?= $tdate; ?>">
+                                                        <input type="text" class="form-control form-control-sm" name="tdate" value="<?= date('d-M-Y', strtotime($tdate)); ?>" id="toDt">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 col-6">
@@ -132,6 +132,17 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('#paymentTBL').DataTable();
+
+        $("#fromDt").datepicker({  
+            dateFormat: "dd-M-yy",
+            defaultDate: new Date() 
+        });
+
+        $("#toDt").datepicker({  
+            dateFormat: "dd-M-yy",
+            defaultDate: new Date() 
+        });
+
     });
 
 </script>

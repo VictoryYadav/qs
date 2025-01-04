@@ -43,11 +43,11 @@ $RestName = authuser()->RestName;
                                                 </div>
                                                 <div class="col-md-2 col-6">
                                                     <label><?= $this->lang->line('fromDate'); ?></label>
-                                                    <input type="date" name="from_date" class="form-control form-control-sm" value="<?php if($from_date){echo $from_date;}?>">
+                                                    <input type="text" name="from_date" class="form-control form-control-sm" value="<?php if($from_date){echo $from_date;}?>" id="fromDt">
                                                 </div>
                                                 <div class="col-md-2 col-6">
                                                     <label><?= $this->lang->line('toDate'); ?></label>
-                                                    <input type="date" name="to_date" class="form-control form-control-sm" value="<?php if($to_date){echo $to_date;}?>">
+                                                    <input type="text" name="to_date" class="form-control form-control-sm" value="<?php if($to_date){echo $to_date;}?>" id="toDt">
                                                 </div>
                                                 <div class="col-md-1 col-2">
                                                     <label>&nbsp;</label><br>
@@ -134,6 +134,16 @@ $RestName = authuser()->RestName;
 <script type="text/javascript">
     $(document).ready(function () {
         $('#stock_list_table').DataTable();
+
+        $("#fromDt").datepicker({  
+            dateFormat: "dd-M-yy",
+            defaultDate: new Date() 
+        });
+
+        $("#toDt").datepicker({  
+            dateFormat: "dd-M-yy",
+            defaultDate: new Date() 
+        });
     });
 
     function edit(id){

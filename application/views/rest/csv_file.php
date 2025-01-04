@@ -286,8 +286,8 @@
                             <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-body">
-                                    <h5 class="card-title mb-3">Inventory</h5>
-                                        <a href="<?= base_url('uploads/common/cashier.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
+                                    <h5 class="card-title mb-3"><?= $this->lang->line('inventory'); ?></h5>
+                                        <a href="<?= base_url('uploads/common/rm_items.csv'); ?>" class="btn btn-sm btn-info" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
                                         <form method="post" enctype="multipart/form-data" id="rmitems_form">
                                             <input type="hidden" name="type" value="rmitems">
                                             <div class="row">

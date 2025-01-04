@@ -462,7 +462,7 @@ function checkOnAccountCust($CustId, $custType){
     return $CI->User->getOnAccountCust($CustId, $custType);	
 }
 
-function checkValidEmail($str){
+function checkValidEmail($email){
 	if (filter_var($email, FILTER_VALIDATE_EMAIL)) { 
 	    // echo("$email is a valid email address"); 
 	    return 1;

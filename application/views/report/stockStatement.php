@@ -47,7 +47,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('toDate'); ?></label>
-                                                        <input type="date" name="TransDt" id="TransDt" class="form-control form-control-sm" onchange="stockData()" value="<?= date('Y-m-d'); ?>"/>
+                                                        <input type="text" name="TransDt" id="TransDt" class="form-control form-control-sm" onchange="stockData()" value="<?= date('d-M-Y'); ?>"/>
                                                     </div>
                                                 </div>
 
@@ -120,6 +120,11 @@
 <script type="text/javascript">
 $(document).ready(function () {
     stockData();
+
+    $("#TransDt").datepicker({  
+        dateFormat: "dd-M-yy",
+        defaultDate: new Date() 
+    });
 }); 
 
     stockData = () => {

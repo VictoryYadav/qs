@@ -25,14 +25,14 @@
                                                 <div class="col-md-3">
                                                     <label for=""><?= $this->lang->line('fromDate'); ?></label>
                                                     <div class="form-group">
-                                                        <input type="date" class="form-control form-control-sm" value="<?= date('Y-m-d');?>" name="from_date" required>
+                                                        <input type="text" class="form-control form-control-sm" value="<?= date('d-M-Y');?>" name="from_date" required id="fromDt">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3">
                                                     <label for=""><?= $this->lang->line('toDate'); ?></label>
                                                     <div class="form-group">
-                                                        <input type="date" class="form-control form-control-sm" value="<?= date('Y-m-d');?>" name="to_date" required>
+                                                        <input type="text" class="form-control form-control-sm" value="<?= date('d-M-Y');?>" name="to_date" required id="toDt">
                                                     </div>
                                                 </div>
 
@@ -149,6 +149,16 @@
     $(document).ready(function () {
         $('#rmcd').select2();
         $('#stock_report_table').DataTable();
+
+        $("#fromDt").datepicker({  
+            dateFormat: "dd-M-yy",
+            defaultDate: new Date() 
+        });
+
+        $("#toDt").datepicker({  
+            dateFormat: "dd-M-yy",
+            defaultDate: new Date() 
+        });
     });
 
 </script>

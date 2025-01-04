@@ -59,9 +59,9 @@
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('dob'); ?></label>
                                                         <?php 
-                                                        $dateP = date('Y-m-d', strtotime("-20 years", strtotime(date('Y-m-d'))));
+                                                        $dateP = date('d-M-Y', strtotime("-20 years", strtotime(date('Y-m-d'))));
                                                         ?>
-                                                        <input type="date" name="DOB" class="form-control form-control-sm" value="<?php echo $dateP; ?>" required id="DOB">
+                                                        <input type="text" name="DOB" class="form-control form-control-sm" value="<?= $dateP; ?>" required id="DOB">
                                                     </div>
                                                 </div>
 
@@ -212,13 +212,17 @@
         
         <?php $this->load->view('layouts/admin/script'); ?>
 
-
 <script type="text/javascript">
 $(document).ready(function () {
     $('#usersTBL').DataTable();
     $('#MobileNo').prop('readonly', false);
     $('#PEmail').prop('readonly', false); 
     // $('#CountryCd').select2();
+
+    $("#DOB").datepicker({  
+        dateFormat: "dd-M-yy",
+        defaultDate: new Date() 
+    });
 });
 
 $('#userForm').on('submit', function(e){
