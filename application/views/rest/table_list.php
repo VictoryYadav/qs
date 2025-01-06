@@ -109,6 +109,18 @@
 
                                                 <div class="col-md-4 col-6">
                                                     <div class="form-group">
+                                                        <label><?= $this->lang->line('offers'); ?></label>
+                                                        <select name="offerValid" id="offerValid" class="form-control form-control-sm" required="">
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+
+                                                            <option value="0"><?= $this->lang->line('no'); ?></option>
+                                                            <option value="1"><?= $this->lang->line('yes'); ?></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
                                                         <label><?= $this->lang->line('mode'); ?></label>
                                                         <select name="Stat" id="Stat" class="form-control form-control-sm" required="">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
@@ -156,7 +168,7 @@
                                                         <td><?= $row['sectionName']; ?></td>
                                                         <td><?= $row['cashierName']; ?></td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['TId'] ?>, <?= $row['TableNo'] ?>,<?= $row['MergeNo'] ?>,<?= $row['TblTyp'] ?>,<?= $row['Capacity'] ?>,<?= $row['SecId'] ?>,<?= $row['CCd'] ?>, <?= $row['Stat'] ?>)">
+                                                            <button class="btn btn-sm btn-rounded btn-warning" onclick="editData(<?= $row['TId'] ?>, <?= $row['TableNo'] ?>,<?= $row['MergeNo'] ?>,<?= $row['TblTyp'] ?>,<?= $row['Capacity'] ?>,<?= $row['SecId'] ?>,<?= $row['CCd'] ?>, <?= $row['offerValid'] ?>, <?= $row['Stat'] ?>)">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         </td>
@@ -215,7 +227,7 @@
 
     });
 
-    function editData(tid, tableNo, mergeNo, TblTyp, capacity, SecId, CCd, stat){
+    function editData(tid, tableNo, mergeNo, TblTyp, capacity, SecId, CCd, offerValid, stat){
         
         $('#TId').val(tid);
         $('#TableNo').val(tableNo);
@@ -223,6 +235,7 @@
         $('#Capacity').val(capacity);
         $('#SecId').val(SecId);
         $('#CCd').val(CCd);
+        $('#offerValid').val(offerValid);
         $('#Stat').val(stat);   
 
         $('#saveBtn').hide();

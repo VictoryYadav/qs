@@ -16,12 +16,11 @@
 
         <script src="<?= base_url() ?>assets_admin/js/app.js"></script>
 
-        
-
         <script src="<?= base_url() ?>assets_admin/libs/select2/js/select2.min.js"></script>
+        <!-- datepicker -->
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
-
-            <!-- Required datatable js -->
+        <!-- Required datatable js -->
     <script src="<?= base_url() ?>assets_admin/libs/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url() ?>assets_admin/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
     <!-- Buttons examples -->

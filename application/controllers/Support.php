@@ -280,11 +280,11 @@ class Support extends CI_Controller {
             // print_r($_POST);
             // die;
 
-            $pData = $_POST;
-            $pData['StTime'] = date('H:i:s', strtotime($pData['StTime'])); 
-            $pData['EndTime'] = date('H:i:s', strtotime($pData['EndTime']));
-            $pData['Stat'] = 1;
-            unset($pData['DOB']);
+            $pData              = $_POST;
+            $pData['StTime']    = date('H:i:s', strtotime($pData['StTime'])); 
+            $pData['EndTime']   = date('H:i:s', strtotime($pData['EndTime']));
+            $pData['Stat']      = 1;
+            $pData['DOB']       = date('Y-m-d', strtotime($pData['DOB']));
             $this->genDB->insert('EIDDet',$pData);
             $CNo = $this->genDB->insert_id();
 
@@ -513,6 +513,41 @@ class Support extends CI_Controller {
               ));
              die; 
         }
+    }
+
+    public function edit($EID){
+        $status = "error";
+        $response = "Something went wrong! Try again later.";
+        
+        if($this->input->method(true)=='POST'){
+
+            $status = 'success';
+
+            $pData = $_POST;
+            $pData['StTime'] = date('H:i:s', strtotime($pData['StTime'])); 
+            $pData['EndTime'] = date('H:i:s', strtotime($pData['EndTime']));
+            $pData['Stat'] = 1;
+            
+            $this->genDB->update('EIDDet',$pData, array('CNo' => $_POST['EID']));
+            $response = "Details Updated";
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $response
+              ));
+             die; 
+        }
+
+        $data['title']      = 'Edit Details';
+        $data['EID']        = $EID;
+        $data['country']    = $this->genDB->get_where('countries', array('Stat' => 0))->result_array();
+        $data['ECategory']  = $this->genDB->get('ECategory')->result_array();
+        $data['Category']   = $this->genDB->get('Category')->result_array();
+        $data['languages']  = $this->genDB->get_where('Languages', array('Stat' => 0))->result_array();
+        $data['details']  = $this->genDB->get_where('EIDDet', array('CNo' => $EID))->row_array();
+        
+        $this->load->view('support/edit_rest', $data); 
     }
 
     public function loyality(){

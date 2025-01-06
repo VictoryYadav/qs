@@ -657,3 +657,4 @@ $lang['pleaseSelecttheOptionsForComboItem']	= 'कृपया कॉम्ब�
 $lang['Prepaid']				= 'प्रीपेड';
 $lang['Onaccount']				= 'आन अकाउंट';
 $lang['inventory']				= 'इन्वेंटरी';
+$lang['location']				= 'लोकेशन';

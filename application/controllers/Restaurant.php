@@ -5899,8 +5899,7 @@ class Restaurant extends CI_Controller {
                                             $mc['Name1'] = $csv_data[2];
                                             $mc['CTyp'] = $this->checkCTyp($csv_data[3]);
                                             $mc['Rank'] = $csv_data[4];
-                                            $mc['KitCd'] = $this->checkKitchen($csv_data[5], $mc['EID']);
-                                            $checker = 1;
+                                            $checker    = 1;
                                             
                                             if($mc['EID'] == 0){
                                               $response = $csv_data[0]. $this->lang->line('notFoundinRowNo')." $count";
@@ -5917,13 +5916,8 @@ class Restaurant extends CI_Controller {
                                               $checker = 0;
                                             }
 
-                                            if($mc['KitCd'] == 0){
-                                              $response = $csv_data[5]. $this->lang->line('notFoundinRowNo')." $count";
-                                              $checker = 0;
-                                            }
-
-                                            $mc['TaxType']  = $this->checkTaxType($csv_data[6]);
-                                            $mc['DCd']      = $this->checkDCdCode($csv_data[7]);
+                                            $mc['TaxType']  = $this->checkTaxType($csv_data[5]);
+                                            $mc['DCd']      = $this->checkDCdCode($csv_data[6]);
 
                                             if($checker == 0){
                                                 $mcData = [];
@@ -6590,8 +6584,9 @@ class Restaurant extends CI_Controller {
                                           $checker = 0;
                                         }
 
-                                        $temp['Stat'] = 0;
-                                        $temp['LoginCd'] = authuser()->RUserId;
+                                        $temp['offerValid'] = $csv_data[6];
+                                        $temp['Stat']       = 0;
+                                        $temp['LoginCd']    = authuser()->RUserId;
 
                                         if($checker == 0){
                                             $tableData = [];
@@ -7354,6 +7349,9 @@ class Restaurant extends CI_Controller {
                         $updateData = $_POST;
                         unset($updateData['type']);
                         updateRecord('Eatary', $updateData, array('EID' => $_POST['EID']));
+
+                        $genDB = $this->load->database('GenTableData', TRUE);
+                        $genDB->update('EIDDet', array('GSTNo' => $_POST['GSTNo'], 'CINNo' => $_POST['CINNo'], 'FSSAINo' => $_POST['FSSAINo'], 'Website' => $_POST['Website'], 'BillerName' => $_POST['BillerName'], 'BillerGSTNo' => $_POST['BillerGSTNo'], 'BTyp' => $_POST['BTyp'], 'VFM' => $_POST['VFM']), array('CNo' => $_POST['EID']));
                         $res = $this->lang->line('dataUpdated');
                     break;
             }
@@ -7692,8 +7690,9 @@ class Restaurant extends CI_Controller {
                 $check = getRecords('Eat_tables', array('EID' => $EID, 'TableNo' => $updateData['TableNo']));
                 if(empty($check)){
                     unset($updateData['TId']);
-                    $updateData['EID'] = $EID;
-                    $updateData['LoginCd'] = authuser()->RUserId;
+                    $updateData['EID']      = $EID;
+                    $updateData['LoginCd']  = authuser()->RUserId;
+                    $updateData['TblTyp']   = 7;
                     insertRecord('Eat_tables', $updateData);
                     $response = $this->lang->line('dataAdded');
                 }else{
@@ -9094,25 +9093,26 @@ class Restaurant extends CI_Controller {
                                         $temp['CTypUsedFor'] = $csv_data[5];
                                         $temp['ItemNm']      = $csv_data[6];
                                         $temp['ItemTyp']    = $csv_data[7];
-                                        $temp['NV'] = $csv_data[8];
-                                        $temp['Section'] = $csv_data[9];
-                                        $temp['PckCharge'] = $csv_data[10];
-                                        $temp['Rate'] = $csv_data[11];
-                                        $temp['Rank'] = $csv_data[12];
-                                        $temp['ItmDesc'] = $csv_data[13];
+                                        $temp['NV']         = $csv_data[8];
+                                        $temp['Section']    = $csv_data[9];
+                                        $temp['PckCharge']  = $csv_data[10];
+                                        $temp['Rate']       = $csv_data[11];
+                                        $temp['Rank']       = $csv_data[12];
+                                        $temp['ItmDesc']    = $csv_data[13];
                                         $temp['Ingeredients'] = $csv_data[14];
-                                        $temp['MaxQty'] = $csv_data[15];
-                                        $temp['Rmks'] = $csv_data[16];
-                                        $temp['PrepTime'] = $csv_data[17];
-                                        $temp['DayNo'] = $csv_data[18];
-                                        $temp['FrmTime'] = $csv_data[19];
-                                        $temp['ToTime'] = $csv_data[20];
+                                        $temp['MaxQty']     = $csv_data[15];
+                                        $temp['Rmks']       = $csv_data[16];
+                                        $temp['PrepTime']   = $csv_data[17];
+                                        $temp['DayNo']      = $csv_data[18];
+                                        $temp['FrmTime']    = $csv_data[19];
+                                        $temp['ToTime']     = $csv_data[20];
                                         $temp['AltFrmTime'] = $csv_data[21];
-                                        $temp['AltToTime'] = $csv_data[22];
-                                        $temp['videoLink'] = $csv_data[23];
+                                        $temp['AltToTime']  = $csv_data[22];
+                                        $temp['videoLink']  = $csv_data[23];
                                         $temp['Itm_Portion'] = $csv_data[24];
-                                        $temp['KitCd'] = $csv_data[25];
-                                        $temp['LoginCd'] = authuser()->RUserId;
+                                        $temp['KitCd']      = $csv_data[25];
+                                        $temp['dispense']   = $csv_data[26];
+                                        $temp['LoginCd']    = authuser()->RUserId;
 
                                         $temp['TaxType'] = 0;
                                         if($configDt['GSTInclusiveRates'] > 0){
@@ -9170,7 +9170,8 @@ class Restaurant extends CI_Controller {
 
                 $this->db2->query("INSERT INTO EatCuisine (CID, Name1, EID) SELECT DISTINCT c.CID, c.Name, $EID From Cuisines c, TempMenuItem t where c.Name = t.Cuisine");
 
-                $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, t.TaxType From Cuisines c, TempMenuItem t, FoodType f where c.Name = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
+                // dispense code is missing
+                $this->db2->query("INSERT INTO MenuCatg (Name1, CID, CTyp,EID, TaxType, DCd)  SELECT DISTINCT t.MenuCatgNm , c.CID, f.CTyp, $EID, t.TaxType, IFNULL((SELECT ed.DCd FROM Eat_DispOutlets ed where ed.Name1 = t.dispense and ed.EID = $EID),0) From Cuisines c, TempMenuItem t, FoodType f where c.Name = t.Cuisine and f.Usedfor1 = t.CTypUsedFor");
                 // t.DayNo = 
                 $this->db2->query("INSERT INTO MenuItem (IMcCd, EID, MCatgId, CID, CTyp,  FID, Name1, NV, PckCharge, ItmDesc1, Ingeredients1, MaxQty, Rmks1, PrepTime, DayNo, FrmTime, ToTime, AltFrmTime, AltToTime, videoLink, ItemTyp, KitCd)  SELECT DISTINCT t.IMcCd, $EID, m.MCatgId, m.CID, m.CTyp, f.FID, t.ItemNm, t.NV, t.PckCharge,t.ItmDesc, t.Ingeredients, t.MaxQty, t.Rmks, t.PrepTime, IFNULL((SELECT DayNo FROM WeekDays wd where wd.Name1 = t.DayNo),8), t.FrmTime, t.ToTime, t.AltFrmTime, t.AltToTime, t.videoLink,IFNULL((SELECT Tagid FROM MenuTags mt where mt.Name1 = t.ItemTyp),0), IFNULL((SELECT et.KitCd FROM Eat_Kit et where et.Name1 = t.KitCd and et.EID = $EID),0)  From TempMenuItem t, FoodType f, MenuCatg m where f.Name1=t.FID and t.MenuCatgNm=m.Name1");
 

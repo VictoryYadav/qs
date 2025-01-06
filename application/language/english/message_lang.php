@@ -655,6 +655,7 @@ $lang['pleaseSelecttheOptionsForComboItem']	= 'Please select the options for Com
 $lang['Prepaid']				= 'Prepaid';
 $lang['Onaccount']				= 'OnAccount';
 $lang['inventory']				= 'Inventory';
+$lang['location']				= 'Location';
 
 
 
