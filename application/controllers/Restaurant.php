@@ -2022,11 +2022,18 @@ class Restaurant extends CI_Controller {
             for($i = 0;$i<$num;$i++){
                 $RMStockDet['TransId'] = $TransId;
                 $detid = !empty($_POST['RMDetId'][$i])?$_POST['RMDetId'][$i]:0;
-                $RMStockDet['RMCd'] = !empty($_POST['ItemId'][$i])?$_POST['ItemId'][$i]:0;
+                // $RMStockDet['RMCd'] = !empty($_POST['ItemId'][$i])?$_POST['ItemId'][$i]:0;
                 $RMStockDet['UOMCd'] = !empty($_POST['UOM'][$i])?$_POST['UOM'][$i]:0;
                 $RMStockDet['Qty'] = !empty($_POST['Qty'][$i])?$_POST['Qty'][$i]:0;
                 $RMStockDet['Rate'] = !empty($_POST['Rate'][$i])?$_POST['Rate'][$i]:0;
                 $RMStockDet['Rmks'] = !empty($_POST['Rate'][$i])?$_POST['Remarks'][$i]:'';
+
+                $RMStockDet['ItemType'] = $_POST['itemtype'][$i];
+                if($RMStockDet['ItemType']==1){
+                    $RMStockDet['RMCd'] = !empty($_POST['ItemId'][$i])?$_POST['ItemId'][$i]:0;
+                }else{
+                    $RMStockDet['RMCd'] = !empty($_POST['MItemId'][$i])?$_POST['MItemId'][$i]:0;
+                }
                 
                 updateRecord('RMStockDet', $RMStockDet, array('TransId' =>$TransId, 'RMDetId ' => $detid ));
             }
@@ -2045,6 +2052,7 @@ class Restaurant extends CI_Controller {
             $this->session->set_flashdata('error','No records found!');
             redirect(base_url('restaurant/stock_list'));   
         }
+        $data['menuItems'] = $this->rest->getRMItemsList();
 
         $data['title'] = $this->lang->line('editStock');
         $this->load->view('rest/stock_edit',$data);    
@@ -8970,18 +8978,25 @@ class Restaurant extends CI_Controller {
 
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        $data['report'] = [];
+        $data['s_MCd'] = 0;
+        $data['sTransDt'] = date('d-M-Y');
+        $data['MstTyp'] = 0;
         
         if($this->input->method(true)=='POST'){
             $status = "success";
 
-            $response = $this->rest->getStockStatementRepots($_POST);
+            $data['report']     = $this->rest->getStockStatementRepots($_POST);
+            $data['s_MCd']      = $_POST['MCd'];
+            $data['sTransDt']   = date('d-M-Y', strtotime($_POST['TransDt']));
+            $data['MstTyp']     = $_POST['MstTyp'];
 
-            header('Content-Type: application/json');
-            echo json_encode(array(
-                'status' => $status,
-                'response' => $response
-              ));
-             die;
+            // header('Content-Type: application/json');
+            // echo json_encode(array(
+            //     'status' => $status,
+            //     'response' => $response
+            //   ));
+            //  die;
         }
 
         $data['title'] = $this->lang->line('stock').' '.$this->lang->line('statement');

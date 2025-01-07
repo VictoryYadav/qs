@@ -24,30 +24,38 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form id="reportForm">
+                                        <!-- id="reportForm" -->
+                                        <form  method="post">
+                                            <input type="hidden" name="MstTyp" id="MstTyp" value="<?= $MstTyp; ?>">
                                             <div class="row">
-                                                <?php
-                                                $yesterday = date('Y-m-d', strtotime("-1 day", strtotime(date('Y-m-d'))));
-                                                ?>
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('store'); ?></label>
+                                                        
                                                         <select name="MCd" id="MCd" class="form-control form-control-sm" onchange="stockData()">
-                                                            <!-- <option value=""><?= $this->lang->line('select'); ?></option> -->
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <?php 
                                                             if(!empty($stores)){
                                                                 foreach ($stores as $key) { ?>
                                                             ?>
-                                                            <option value="<?= $key['MCd']; ?>" msttype="<?= $key['MstTyp']; ?>"><?= $key['Name']; ?></option>
+                                                            <option value="<?= $key['MCd']; ?>" msttype="<?= $key['MstTyp']; ?>" <?php if($key['MCd'] == $s_MCd){ echo 'selected'; } ?> ><?= $key['Name']; ?></option>
                                                         <?php } } ?>
                                                         </select>
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
+                                                    <!-- onchange="stockData()"  -->
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('toDate'); ?></label>
-                                                        <input type="text" name="TransDt" id="TransDt" class="form-control form-control-sm" onchange="stockData()" value="<?= date('d-M-Y'); ?>"/>
+                                                        <input type="text" name="TransDt" id="TransDt" class="form-control form-control-sm" value="<?= $sTransDt; ?>"/>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="">&nbsp;</label><br>
+                                                        <input type="submit" class="btn btn-sm btn-success" />
                                                     </div>
                                                 </div>
 
@@ -67,6 +75,7 @@
                                                 <thead id="incomeHeader">
                                                     <tr>
                                                         <th><?= $this->lang->line('item'); ?></th>
+                                                        <th><?= $this->lang->line('uom'); ?></th>
                                                         <th><?= $this->lang->line('opening'); ?></th>
                                                         <th><?= $this->lang->line('received'); ?></th>
                                                         <th><?= $this->lang->line('issued'); ?></th>
@@ -75,7 +84,21 @@
                                                     </tr>
                                                 </thead>
             
-                                                <tbody id="incomeBody"></tbody>
+                                                <tbody id="incomeBody">
+                                                    <?php
+                                                    if(!empty($report)){
+                                                        foreach ($report as $key) { ?>
+                                                        <tr>
+                                                            <td><?= $key['ItemNm']; ?></td>
+                                                            <td><?= $key['opening']; ?></td>
+                                                            <td><?= $key['opening']; ?></td>
+                                                            <td><?= $key['received']; ?></td>
+                                                            <td><?= $key['issued']; ?></td>
+                                                            <td><?= $key['consumed']; ?></td>
+                                                            <td><?= $key['closed']; ?></td>
+                                                         </tr>
+                                                <?php } }?>
+                                                </tbody>
                                             </table>
                                         </div>
                                     </div>
@@ -119,8 +142,8 @@
 
 <script type="text/javascript">
 $(document).ready(function () {
-    stockData();
-
+    // stockData();
+$('#taxTBL').DataTable();
     $("#TransDt").datepicker({  
         dateFormat: "dd-M-yy",
         defaultDate: new Date() 
@@ -131,47 +154,51 @@ $(document).ready(function () {
         var MCd = $(`#MCd`).val();
         var TransDt = $(`#TransDt`).val();
         var MstTyp = $('option:selected', $('#MCd')).attr('msttype');
+        $(`#MstTyp`).val(MstTyp);
 
-        $.post('<?= base_url('restaurant/stock_statement') ?>',{MCd:MCd, MstTyp:MstTyp, TransDt:TransDt},function(res){
-            if(res.status == 'success'){
-              var report = res.response;
+        return false;
+
+        // $.post('<?= base_url('restaurant/stock_statement') ?>',{MCd:MCd, MstTyp:MstTyp, TransDt:TransDt},function(res){
+        //     if(res.status == 'success'){
+        //       var report = res.response;
               
-              var temp = ``;
-              if(report.length > 0){
-                for(var i=0; i<report.length; i++) {
-                        temp += `<tr>
-                                    <td>${report[i].ItemNm}</td>
-                                    <td>${report[i].opening}</td>
-                                    <td>${report[i].received}</td>
-                                    <td>${report[i].issued}</td>
-                                    <td>${report[i].consumed}</td>
-                                    <td>${report[i].closed}</td>
-                                 </tr>`;
-                    };
-              }else{
-                // temp += `Data Not Found!!`;
-              }
+        //       var temp = ``;
+        //       if(report.length > 0){
+        //         for(var i=0; i<report.length; i++) {
+        //                 temp += `<tr>
+        //                             <td>${report[i].ItemNm}</td>
+        //                             <td>${report[i].opening}</td>
+        //                             <td>${report[i].received}</td>
+        //                             <td>${report[i].issued}</td>
+        //                             <td>${report[i].consumed}</td>
+        //                             <td>${report[i].closed}</td>
+        //                          </tr>`;
+        //             };
+        //       }else{
+        //         // temp += `Data Not Found!!`;
+        //       }
               
-              $('#incomeBody').html(temp);
+        //       $('#incomeBody').html(temp);
+        //       $('#taxTBL').DataTable();
 
-              if ( $.fn.dataTable.isDataTable( '#taxTBL' ) ) {
-                        table = $('#taxTBL').DataTable();
-                    }
-                    else {
+        //       // if ( $.fn.dataTable.isDataTable( '#taxTBL' ) ) {
+        //       //           table = $('#taxTBL').DataTable();
+        //       //       }
+        //       //       else {
 
-                        $('#taxTBL').DataTable(
-                            {
-                                lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
-                                  dom: 'lBfrtip',
-                              }
-                            );
+        //       //           $('#taxTBL').DataTable(
+        //       //               {
+        //       //                   lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+        //       //                     dom: 'lBfrtip',
+        //       //                 }
+        //       //               );
 
-                    }
+        //       //       }
 
-            }else{
-              alert(res.response);
-            }
-        });
+        //     }else{
+        //       alert(res.response);
+        //     }
+        // });
     }
 
 </script>

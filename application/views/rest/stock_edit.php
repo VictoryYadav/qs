@@ -69,6 +69,7 @@ $RestName = authuser()->RestName;
                                                     <table class="table table-bordered">
                                                         <thead>
                                                             <tr>
+                                                                <th><?= $this->lang->line('type'); ?></th>
                                                                 <th><?= $this->lang->line('item'); ?></th>
                                                                 <th><?= $this->lang->line('uom'); ?></th>
                                                                 <th><?= $this->lang->line('rate'); ?></th>
@@ -81,10 +82,24 @@ $RestName = authuser()->RestName;
                                                                 <input type="hidden" name="RMDetId[]" value="<?= $sd['RMDetId']?>">
                                                                 <tr>
                                                                     <td>
+                                                                        <select name="itemtype[]" id="itemtype_<?= $n?>" class="form-control form-control-sm" required="" onchange="changeItemType(1)">
+                                                                            <option value="1" <?php if($sd['ItemType'] == 1){ echo 'selected'; } ?> >RM</option>
+                                                                            <option value="2" <?php if($sd['ItemType'] == 2){ echo 'selected'; } ?> >Finish Goods</option>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td id="rmTD<?= $n?>">
                                                                         <select name="ItemId[]" class="items form-control form-control-sm" id="items<?= $n?>" onchange="getUOM(this, <?= $n?>)">
                                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                                             <?php foreach($items as $key){?>
                                                                                 <option value="<?= $key['RMCd']?>" <?php if($key['RMCd'] == $sd['RMCd']){echo 'selected';}?>><?= $key['RMName']?></option>
+                                                                            <?php }?>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td id="menuTD<?= $n?>" style="display: none;">
+                                                                        <select name="MItemId[]" class="items form-control form-control-sm select2 custom-select" id="mitems<?= $n?>" onchange="getUOMFG(this, <?= $n?>)" >
+                                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                                            <?php foreach($menuItems as $key){?>
+                                                                                <option value="<?= $key['RMCd']?>" <?php if($key['RMCd'] == $sd['RMCd']){echo 'selected';}?> ><?= $key['Name']?></option>
                                                                             <?php }?>
                                                                         </select>
                                                                     </td>
@@ -144,10 +159,31 @@ var cntr = <?= sizeof($stock_details)?>;
 var temp =1;
 for(k = 1; k<=cntr; k++){
     var item_id = $('#items'+temp).val();
+    var mitemsid = $(`#mitems${temp}`).val();
     var uom = $('#uomcd'+temp).val();
 
-    set_uom( item_id, uom, temp);
+    var type = $(`#itemtype_${temp}`).val();
+    if(type==1){
+        set_uom( item_id, uom, temp);
+    }else if(type == 2){
+        setUOMFG( mitemsid, uom, temp);
+    }
+
+    changeItemType(temp);
     temp++;
+}
+
+function changeItemType(counter){
+    var type = $(`#itemtype_${counter}`).val();
+    if(type==1){
+        // RM
+        $(`#menuTD${counter}`).hide();
+        $(`#rmTD${counter}`).show();
+    }else if(type == 2){
+        // finish goods
+        $(`#rmTD${counter}`).hide();
+        $(`#menuTD${counter}`).show();
+    }
 }
 
 function set_uom( item_id, uom, temp){
@@ -177,6 +213,39 @@ function set_uom( item_id, uom, temp){
     });      
 }
 
+function setUOMFG(item_id, uom, n){
+    
+    $.ajax({
+        url: "<?php echo base_url('restaurant/rm_ajax'); ?>",
+        type: "post",
+        data: {'getUOM':1, 'RMCd':item_id},
+        success: response => {
+            
+            var data = JSON.parse(response);
+            var b = '<option value="">SELECT UOM</option>';
+            
+            if (data != '') {
+                for(i = 0;i<data.length;i++){
+
+                    var c = '';
+                    if(data[i].UOMCd == uom){
+                        c='selected';
+                    }
+                    
+                    b+='<option value="'+data[i].UOMCd+'" '+c+'>'+data[i].Name+'</option>';
+                }
+                
+                $('#uom'+n).html(b);
+            } else {
+                alert(response);
+            }
+        },
+        error: (xhr, status, error) => {
+            
+        }
+    });
+}
+
 function getUOM(el, n){
     var item_id = el.value;
     $.ajax({
@@ -190,6 +259,34 @@ function getUOM(el, n){
                 for(i = 0;i<data.length;i++){
                     b+='<option value="'+data[i].UOMCd+'">'+data[i].Name+'</option>';
                 }
+                $('#uom'+n).html(b);
+            } else {
+                alert(response);
+            }
+        },
+        error: (xhr, status, error) => {
+            
+        }
+    });
+}
+
+function getUOMFG(el, n){
+    var item_id = el.value;
+    $.ajax({
+        url: "<?php echo base_url('restaurant/rm_ajax'); ?>",
+        type: "post",
+        data: {'getUOM':1, 'RMCd':item_id},
+        success: response => {
+            
+            var data = JSON.parse(response);
+            var b = '<option value="">SELECT UOM</option>';
+            
+            if (data != '') {
+                for(i = 0;i<data.length;i++){
+                    
+                    b+='<option value="'+data[i].UOMCd+'">'+data[i].Name+'</option>';
+                }
+                
                 $('#uom'+n).html(b);
             } else {
                 alert(response);
