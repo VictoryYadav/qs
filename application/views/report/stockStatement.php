@@ -47,7 +47,7 @@
                                                 <div class="col-md-4">
                                                     <!-- onchange="stockData()"  -->
                                                     <div class="form-group">
-                                                        <label for=""><?= $this->lang->line('toDate'); ?></label>
+                                                        <label for=""><?= $this->lang->line('date'); ?></label>
                                                         <input type="text" name="TransDt" id="TransDt" class="form-control form-control-sm" value="<?= $sTransDt; ?>"/>
                                                     </div>
                                                 </div>
@@ -90,7 +90,7 @@
                                                         foreach ($report as $key) { ?>
                                                         <tr>
                                                             <td><?= $key['ItemNm']; ?></td>
-                                                            <td><?= $key['opening']; ?></td>
+                                                            <td><?= $key['uom_name']; ?></td>
                                                             <td><?= $key['opening']; ?></td>
                                                             <td><?= $key['received']; ?></td>
                                                             <td><?= $key['issued']; ?></td>

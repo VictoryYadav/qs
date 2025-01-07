@@ -73,7 +73,7 @@ $RestName = authuser()->RestName;
                                     <div class="card-body">
                                         
                                         <div class="table-responsive">
-                                            <table id="stock_list_table" class="table table-bordered table-hover">
+                                            <table id="stock_list_table" class="table table-bordered topics">
                                                 <thead>
                                                 <tr>
                                                     <th><?= $this->lang->line('transactionNo'); ?></th>

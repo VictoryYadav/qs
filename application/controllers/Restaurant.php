@@ -1864,6 +1864,7 @@ class Restaurant extends CI_Controller {
         
         $data['title'] = $this->lang->line('stockList');
         $data['trans_type'] = $this->rest->getTransactionType();
+        
         $this->load->view('rest/stocks_list',$data);     
     }
 
@@ -11115,19 +11116,19 @@ class Restaurant extends CI_Controller {
             $status = 'success';
             $response = 0;
 
-                $selectedItem = $_POST['Item'];
+                $rmcd = $_POST['Item'];
                 $FrmId = $_POST['FrmId'];
                 $uom = $_POST['uom'];
-                // query is not working properly
-                // $dt  = $this->db2->query("SELECT sum(case when rs.TransType < 10 && rs.ToID= $FrmId Then rsd.Qty ELSE 0 end) as issued, sum(case when rs.TransType >= 10 && rs.ToID= $FrmId Then rsd.Qty else 0 end) as rcvd FROM RMStockDet as rsd, RMStock as rs where rsd.TransId = rs.TransId and  rsd.RMCd = $selectedItem and rsd.UOMCd = $uom and rsd.Stat = 0 and rs.Stat = 0 group by rs.FrmID, rs.ToId ")
-                //     ->row_array();
+                $EID = authuser()->EID;
 
-                // if(!empty($dt)){
-                //     $total = $dt['rcvd'] - $dt['issued'];
-                //     if($_POST['Qty'] >= $total){
-                //         $response = 1;
-                //     }
-                // }
+                $dt = $this->db2->query("SELECT  ifnull((SELECT sum(rsd1.Qty) FROM RMStockDet as rsd1, RMStock as rs1 WHERE rs1.EID = $EID and rs1.TransType >=10 and rs1.ToID= $FrmId and rsd1.Ttyp = 2 and rs1.TransId= rsd1.TransId and rsd1.RMCd= $rmcd ), 0) - ifnull((SELECT sum(rsd1.Qty) FROM RMStockDet as rsd1, RMStock as rs1 WHERE rs1.EID = $EID and rs1.TransType <10 and rs1.FrmId = $FrmId and rsd1.Ttyp = 1 and rs1.TransId= rsd1.TransId and rsd1.RMCd= $rmcd ), 0) as total")
+                    ->row_array();
+
+                if(!empty($dt)){
+                    if($_POST['Qty'] > $dt['total']){
+                        $response = 1;
+                    }
+                }
 
             header('Content-Type: application/json');
             echo json_encode(array(

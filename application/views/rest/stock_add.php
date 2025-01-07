@@ -376,13 +376,21 @@ function add_row(){
     var qty = e.value;
     var trans_type = $(`#trans_type`).val();
     var uom = $(`#uom${inc}`).val();
+    var itemtype = $(`#itemtype_${inc}`).val();
+    var item = 0;
+    if(itemtype == 1){
+        item = $(`#items${inc}`).val();
+    }else if(itemtype == 2){
+        item = $(`#mitems${inc}`).val();
+    }
+    
     if(uom > 0){
         if(trans_type > 0){
             if(trans_type == 1 || trans_type == 2 || trans_type == 12){
                 if(trans_type == 1){
                     var frmId = $(`#from_store`).val();
                     if(frmId > 0){
-                        var item = $(`#items${inc}`).val();
+                        // var item = $(`#items${inc}`).val();
                         var uom = $(`#uom${inc}`).val();
                         calltoAjax(trans_type, frmId, item, uom, qty, inc);
                     }else{
@@ -393,7 +401,7 @@ function add_row(){
                 if(trans_type == 2){
                     var frmId = $(`#from_store`).val();
                     if(frmId > 0){
-                        var item = $(`#items${inc}`).val();
+                        // var item = $(`#items${inc}`).val();
                         var uom = $(`#uom${inc}`).val();
                         calltoAjax(trans_type, frmId, item, uom, qty, inc);
                     }else{
@@ -404,7 +412,7 @@ function add_row(){
                 if(trans_type == 12){
                     var frmId = $(`#from_kitchen`).val();
                     if(frmId > 0){
-                        var item = $(`#items${inc}`).val();
+                        // var item = $(`#items${inc}`).val();
                         var uom = $(`#uom${inc}`).val();
                         calltoAjax(trans_type, frmId, item, uom, qty, inc);
                     }else{
