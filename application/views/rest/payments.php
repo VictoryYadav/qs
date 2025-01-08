@@ -93,7 +93,7 @@
                                                     <td><?= $key['BillPrefix'].' '.$key['BillNo'].''.$key['BillSuffix']; ?></td>
                                                     <td><?= $key['PaidAmt']; ?></td>
                                                     <td><?= $key['OrderRef']; ?></td>
-                                                    <td><?= payMode($key['PaymtMode']); ?></td>
+                                                    <td><?= $key['paymentName']; ?></td>
                                                     <td><?= date('d-M-Y', strtotime($key['PymtDate'])); ?></td>
                                                 </tr>
                                                 <?php }

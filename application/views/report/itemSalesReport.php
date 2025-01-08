@@ -24,33 +24,30 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form id="reportForm">
+                                        <form id="reportForm" method="post">
                                             <div class="row">
 
-                                                <?php
-                                                $fromDate = date('d-M-Y', strtotime("-7 day", strtotime(date('Y-m-d'))));
-                                                ?>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('fromDate'); ?></label>
-                                                        <input type="text" name="fromDate" id="fromDate" class="form-control form-control-sm" onchange="saleReport()" value="<?= $fromDate; ?>" />
+                                                        <input type="text" name="fromDate" id="fromDate" class="form-control form-control-sm" value="<?= $fromDate; ?>" required />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('toDate'); ?></label>
-                                                        <input type="text" name="toDate" id="toDate" class="form-control form-control-sm" onchange="saleReport()" value="<?= date('d-M-Y'); ?>" />
+                                                        <input type="text" name="toDate" id="toDate" class="form-control form-control-sm" required="" value="<?= $toDate; ?>" />
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="">Order By</label>
-                                                        <select name="orderBy" id="orderBy" class="form-control form-control-sm" onchange="saleReport()">
+                                                        <select name="orderBy" id="orderBy" class="form-control form-control-sm" >
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <option value="qty">Quantity</option>
-                                                            <option value="value">Value</option>
+                                                            <option value="qty" <?php if($orderBy == 'qty'){ echo 'selected'; } ?>>Quantity</option>
+                                                            <option value="value" <?php if($orderBy == 'value'){ echo 'selected'; } ?>>Value</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -69,15 +66,16 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="">Mode</label>
-                                                        <select name="modes" id="modes" class="form-control form-control-sm" onchange="saleReport()">
+                                                        <select name="modes" id="modes" class="form-control form-control-sm" >
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <option value="full_menu">Full Menu</option>
-                                                            <option value="traded_goods"> Traded Goods</option>
+                                                            <option value="full_menu" <?php if($modes == 'full_menu'){ echo 'selected'; } ?>>Full Menu</option>
+                                                            <option value="traded_goods" <?php if($modes == 'traded_goods'){ echo 'selected'; } ?>> Traded Goods</option>
                                                         </select>
                                                     </div>
                                                 </div>
 
                                             </div>
+                                            <input type="submit" class="btn btn-sm btn-success" value="Search">
                                         </form>
                                     </div>
                                 </div>
@@ -100,7 +98,16 @@
                                                 </thead>
             
                                                 <tbody id="abcBody">
-                                                    
+                                                    <?php 
+                                                    if(!empty($report)){
+                                                        foreach ($report as $key) {?>
+                                                        <tr>
+                                                            <td><?= $key['menuItem']; ?></td>
+                                                            <td><?= $key['Qty']; ?></td>
+                                                            <td><?= $key['itemValue']; ?></td>
+                                                         </tr>
+
+                                                 <?php  } } ?>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -128,24 +135,15 @@
         <div class="rightbar-overlay"></div>
         
         <?php $this->load->view('layouts/admin/script'); ?>
-<!-- data for bttons -->
-<link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.dataTables.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.0/css/buttons.dataTables.css">
-
-<!-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script> -->
-<script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.dataTables.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.print.min.js"></script>
-<!-- end of data for bttons -->
 
 <script type="text/javascript">
     $(document).ready(function () {
-        saleReport();
+        $('#abcTBL').DataTable({
+            destroy: true, // Allows reinitialization
+            order: [[0, "desc"]],
+            lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+            dom: 'lBfrtip',
+        });
 
         $("#fromDate").datepicker({  
             dateFormat: "dd-M-yy",
@@ -158,51 +156,5 @@
         });
 
     }); 
-
-    saleReport = () => {
-        var data = $('#reportForm').serializeArray();
-        $.post('<?= base_url('restaurant/item_sales_report') ?>',data,function(res){
-            if(res.status == 'success'){
-              var data = res.response;
-              var temp = ``;
-              if(data.length > 0){
-                data.forEach((item, index) => {
-                        temp += `<tr>
-                                    <td>${item.menuItem}</td>
-                                    <td>${item.Qty}</td>
-                                    <td>${item.itemValue}</td>
-                                 </tr>`;
-                    });
-              }else{
-                // temp += `Data Not Found!!`;
-              }
-              $('#abcBody').html(temp);
-
-              if ( $.fn.dataTable.isDataTable( '#abcTBL' ) ) {
-                        table = $('#abcTBL').DataTable();
-                    }
-                    else {
-
-                        $('#abcTBL').DataTable( {
-                                    layout: {
-                                        topStart: {
-                                            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-                                        }
-                                    }
-                                },{"lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
-                                    }
-                                );
-
-                        // table = $('#tableData').DataTable(    {"lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
-                        //             } );
-                    }
-
-              
-
-            }else{
-              alert(res.response);
-            }
-        });
-    }
 
 </script>

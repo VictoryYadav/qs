@@ -73,7 +73,7 @@ $RestName = authuser()->RestName;
                                     <div class="card-body">
                                         
                                         <div class="table-responsive">
-                                            <table id="stock_list_table" class="table table-bordered topics">
+                                            <table id="stock_list_table11" class="table table-striped table-bordered w-100">
                                                 <thead>
                                                 <tr>
                                                     <th><?= $this->lang->line('transactionNo'); ?></th>
@@ -133,7 +133,12 @@ $RestName = authuser()->RestName;
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#stock_list_table').DataTable();
+        $('#stock_list_table11').DataTable({
+            destroy: true, // Allows reinitialization
+            order: [[0, "desc"]],
+            lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+            dom: 'lBfrtip',
+        });
 
         $("#fromDt").datepicker({  
             dateFormat: "dd-M-yy",

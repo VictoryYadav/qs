@@ -24,23 +24,27 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <form id="reportForm">
+                                        <form id="reportForm" method="post">
                                             <div class="row">
                                                 
-                                                <?php
-                                                $fromDate = date('d-M-Y', strtotime("-7 day", strtotime(date('Y-m-d'))));
-                                                ?>
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('fromDate'); ?></label>
-                                                        <input type="text" name="fromDate" id="fromDate" class="form-control form-control-sm" onchange="saleSummary()" value="<?= $fromDate; ?>" />
+                                                        <input type="text" name="fromDate" id="fromDate" class="form-control form-control-sm" required="" value="<?= $fromDate; ?>" />
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('toDate'); ?></label>
-                                                        <input type="text" name="toDate" id="toDate" class="form-control form-control-sm" onchange="saleSummary()" value="<?= date('d-M-Y'); ?>" />
+                                                        <input type="text" name="toDate" id="toDate" class="form-control form-control-sm" required="" value="<?= $toDate; ?>" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="">&nbsp;</label><br>
+                                                        <input type="submit" class="btn btn-sm btn-success" value="Search" />
                                                     </div>
                                                 </div>
 
@@ -72,7 +76,20 @@
                                                 </thead>
             
                                                 <tbody id="abcBody">
-                                                    
+                                                    <?php 
+                                                    if(!empty($report)){
+                                                        foreach ($report as $key) { ?>
+                                                            <tr>
+                                                                <td><?= $key['dayName']; ?></td>
+                                                                <td><?= $key['billTime']; ?></td>
+                                                                <td><?= $key['billAmt']; ?></td>
+                                                                <td><?= $key['TotPckCharge']; ?></td>
+                                                                <td><?= $key['SerCharge']; ?></td>
+                                                                <td><?= $key['DelCharge']; ?></td>
+                                                                <td><?= $key['Discounts']; ?></td>
+                                                                <td><?= $key['tips']; ?></td>
+                                                             </tr>
+                                                    <?php } } ?>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -100,24 +117,15 @@
         <div class="rightbar-overlay"></div>
         
         <?php $this->load->view('layouts/admin/script'); ?>
-<!-- data for bttons -->
-<link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.dataTables.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.0/css/buttons.dataTables.css">
-
-<!-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script> -->
-<script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.dataTables.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.print.min.js"></script>
-<!-- end of data for bttons -->
 
 <script type="text/javascript">
     $(document).ready(function () {
-        saleSummary();
+        $('#abcTBL').DataTable({
+            destroy: true, // Allows reinitialization
+            order: [[0, "desc"]],
+            lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+            dom: 'lBfrtip',
+        });
 
         $("#fromDate").datepicker({  
             dateFormat: "dd-M-yy",
@@ -130,57 +138,5 @@
         });
 
     }); 
-
-    saleSummary = () => {
-        var data = $('#reportForm').serializeArray();
-        $.post('<?= base_url('restaurant/sale_summary') ?>',data,function(res){
-            if(res.status == 'success'){
-              var data = res.response;
-              var temp = ``;
-              if(data.length > 0){
-                data.forEach((item, index) => {
-                        temp += `<tr>
-                                    <td>${item.dayName}</td>
-                                    <td>${item.billTime}</td>
-                                    <td>${item.billAmt}</td>
-                                    <td>${item.TotPckCharge}</td>
-                                    <td>${item.SerCharge}</td>
-                                    <td>${item.DelCharge}</td>
-                                    <td>${item.Discounts}</td>
-                                    <td>${item.tips}</td>
-                                 </tr>`;
-                    });
-              }else{
-                
-                temp += `<tr><td colspan="8" class="text-danger text-center">Data Not Found!!</td></tr>`;
-              }
-              $('#abcBody').html(temp);
-
-              if ( $.fn.dataTable.isDataTable( '#abcTBL' ) ) {
-                        table = $('#abcTBL').DataTable();
-                    }
-                    else {
-
-                        $('#abcTBL').DataTable( {
-                                    layout: {
-                                        topStart: {
-                                            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-                                        }
-                                    }
-                                },{"lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
-                                    }
-                                );
-
-                        // table = $('#tableData').DataTable(    {"lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
-                        //             } );
-                    }
-
-              
-
-            }else{
-              alert(res.response);
-            }
-        });
-    }
 
 </script>

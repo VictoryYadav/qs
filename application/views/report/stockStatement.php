@@ -125,25 +125,17 @@
         <div class="rightbar-overlay"></div>
         
         <?php $this->load->view('layouts/admin/script'); ?>
-<!-- data for bttons -->
-<link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.dataTables.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.0/css/buttons.dataTables.css">
-
-<!-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script> -->
-<script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.dataTables.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.print.min.js"></script>
-<!-- end of data for bttons -->
 
 <script type="text/javascript">
 $(document).ready(function () {
     // stockData();
-$('#taxTBL').DataTable();
+    $('#taxTBL').DataTable({
+            destroy: true, // Allows reinitialization
+            order: [[0, "desc"]],
+            lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+            dom: 'lBfrtip',
+        });
+
     $("#TransDt").datepicker({  
         dateFormat: "dd-M-yy",
         defaultDate: new Date() 
@@ -158,47 +150,47 @@ $('#taxTBL').DataTable();
 
         return false;
 
-        // $.post('<?= base_url('restaurant/stock_statement') ?>',{MCd:MCd, MstTyp:MstTyp, TransDt:TransDt},function(res){
-        //     if(res.status == 'success'){
-        //       var report = res.response;
+        $.post('<?= base_url('restaurant/stock_statement') ?>',{MCd:MCd, MstTyp:MstTyp, TransDt:TransDt},function(res){
+            if(res.status == 'success'){
+              var report = res.response;
               
-        //       var temp = ``;
-        //       if(report.length > 0){
-        //         for(var i=0; i<report.length; i++) {
-        //                 temp += `<tr>
-        //                             <td>${report[i].ItemNm}</td>
-        //                             <td>${report[i].opening}</td>
-        //                             <td>${report[i].received}</td>
-        //                             <td>${report[i].issued}</td>
-        //                             <td>${report[i].consumed}</td>
-        //                             <td>${report[i].closed}</td>
-        //                          </tr>`;
-        //             };
-        //       }else{
-        //         // temp += `Data Not Found!!`;
-        //       }
+              var temp = ``;
+              if(report.length > 0){
+                for(var i=0; i<report.length; i++) {
+                        temp += `<tr>
+                                    <td>${report[i].ItemNm}</td>
+                                    <td>${report[i].opening}</td>
+                                    <td>${report[i].received}</td>
+                                    <td>${report[i].issued}</td>
+                                    <td>${report[i].consumed}</td>
+                                    <td>${report[i].closed}</td>
+                                 </tr>`;
+                    };
+              }else{
+                // temp += `Data Not Found!!`;
+              }
               
-        //       $('#incomeBody').html(temp);
-        //       $('#taxTBL').DataTable();
+              $('#incomeBody').html(temp);
+              $('#taxTBL').DataTable();
 
-        //       // if ( $.fn.dataTable.isDataTable( '#taxTBL' ) ) {
-        //       //           table = $('#taxTBL').DataTable();
-        //       //       }
-        //       //       else {
+              if ( $.fn.dataTable.isDataTable( '#taxTBL' ) ) {
+                        table = $('#taxTBL').DataTable();
+                    }
+                    else {
 
-        //       //           $('#taxTBL').DataTable(
-        //       //               {
-        //       //                   lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
-        //       //                     dom: 'lBfrtip',
-        //       //                 }
-        //       //               );
+                        $('#taxTBL').DataTable(
+                            {
+                                lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+                                  dom: 'lBfrtip',
+                              }
+                            );
 
-        //       //       }
+                    }
 
-        //     }else{
-        //       alert(res.response);
-        //     }
-        // });
+            }else{
+              alert(res.response);
+            }
+        });
     }
 
 </script>

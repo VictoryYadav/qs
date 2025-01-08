@@ -8958,17 +8958,16 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
+        $data['report'] = array();
+        $data['fromDate'] = date('d-M-Y', strtotime("-7 day", strtotime(date('Y-m-d'))));
+        $data['toDate'] = date('d-M-Y');
         if($this->input->method(true)=='POST'){
             $status = "success";
+            $response = 'Data Found';
 
-            $response = $this->rest->getIncomeRepots($_POST);
-
-            header('Content-Type: application/json');
-            echo json_encode(array(
-                'status' => $status,
-                'response' => $response
-              ));
-             die;
+            $data['fromDate'] = date('d-M-Y', strtotime($_POST['fromDate']));
+            $data['toDate'] = date('d-M-Y', strtotime($_POST['toDate']));
+            $data['report'] = $this->rest->getIncomeRepots($_POST);
         }
 
         $data['title'] = $this->lang->line('income').' '.$this->lang->line('report');
@@ -8992,12 +8991,6 @@ class Restaurant extends CI_Controller {
             $data['sTransDt']   = date('d-M-Y', strtotime($_POST['TransDt']));
             $data['MstTyp']     = $_POST['MstTyp'];
 
-            // header('Content-Type: application/json');
-            // echo json_encode(array(
-            //     'status' => $status,
-            //     'response' => $response
-            //   ));
-            //  die;
         }
 
         $data['title'] = $this->lang->line('stock').' '.$this->lang->line('statement');
@@ -9356,17 +9349,22 @@ class Restaurant extends CI_Controller {
 
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+
+        $data['fromDate']   = date('d-M-Y', strtotime("-7 day", strtotime(date('Y-m-d'))));
+        $data['toDate']     = date('d-M-Y');
+        $data['modes']      = '';
+        $data['orderBy']    = '';
+        $data['report']     = array();
         
         if($this->input->method(true)=='POST'){
-            $status = "success";
-            $response = $this->rest->getSalesRepots($_POST);
+            $data['fromDate']   = date('d-M-Y', strtotime($_POST['fromDate']));
+            $data['toDate']     = date('d-M-Y',strtotime($_POST['toDate']));
+            $data['modes']      = $_POST['modes'];
+            $data['orderBy']    = $_POST['orderBy'];
 
-            header('Content-Type: application/json');
-            echo json_encode(array(
-                'status' => $status,
-                'response' => $response
-              ));
-             die;
+            $status             = "success";
+            $response           = 'Data Found';
+            $data['report']     = $this->rest->getSalesRepots($_POST);
         }
 
         $data['title'] = 'Date Wise Detailed Sales '.$this->lang->line('report');
@@ -9377,17 +9375,23 @@ class Restaurant extends CI_Controller {
         $this->check_access();
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+
+        $data['fromDate']   = date('d-M-Y', strtotime("-7 day", strtotime(date('Y-m-d'))));
+        $data['toDate']     = date('d-M-Y');
+        $data['modes']      = '';
+        $data['orderBy']    = '';
+        $data['report']     = array();
         
         if($this->input->method(true)=='POST'){
-            $status = "success";
-            $response = $this->rest->getItemSalesRepots($_POST);
+            $data['fromDate']   = date('d-M-Y', strtotime($_POST['fromDate']));
+            $data['toDate']     = date('d-M-Y',strtotime($_POST['toDate']));
+            $data['modes']      = $_POST['modes'];
+            $data['orderBy']    = $_POST['orderBy'];
 
-            header('Content-Type: application/json');
-            echo json_encode(array(
-                'status' => $status,
-                'response' => $response
-              ));
-             die;
+            $status             = "success";
+            $response           = 'Data Found';
+
+            $data['report'] = $this->rest->getItemSalesRepots($_POST);
         }
 
         $data['title'] = $this->lang->line('itemSale').' '.$this->lang->line('report');
@@ -9398,19 +9402,25 @@ class Restaurant extends CI_Controller {
         $this->check_access();
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+
+        $data['report']     = array();
+        $data['fromDate']   = date('d-M-Y', strtotime("-7 day", strtotime(date('Y-m-d'))));
+        $data['toDate']     = date('d-M-Y');
+        $data['modes']      = '';
+        $data['orderBy']    = '';
         
         if($this->input->method(true)=='POST'){
-            $status = "success";
+            $status             = "success";
+            $response           = 'Data Found';
 
-            $response = $this->rest->getContributionRepots($_POST);
+            $data['fromDate']   = date('d-M-Y', strtotime($_POST['fromDate']));
+            $data['toDate']     = date('d-M-Y',strtotime($_POST['toDate']));
+            $data['modes']      = $_POST['modes'];
+            $data['orderBy']    = $_POST['orderBy'];
 
-            header('Content-Type: application/json');
-            echo json_encode(array(
-                'status' => $status,
-                'response' => $response
-              ));
-             die;
+            $data['report'] = $this->rest->getContributionRepots($_POST);
         }
+
         $data['cuisine'] = $this->rest->getCuisineList();
         $data['otypes'] = $this->rest->getOTypeList();
         $data['title'] = $this->lang->line('contribution').' '.$this->lang->line('report');
@@ -9422,17 +9432,18 @@ class Restaurant extends CI_Controller {
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         
+        
+        $data['fromDate']   = date('d-M-Y', strtotime("-7 day", strtotime(date('Y-m-d'))));
+        $data['toDate']     = date('d-M-Y');
+        $data['report']     = array();
+                                                
         if($this->input->method(true)=='POST'){
             $status = "success";
-            $response = $this->rest->getSalesSummary($_POST);
-
-            header('Content-Type: application/json');
-            echo json_encode(array(
-                'status' => $status,
-                'response' => $response
-              ));
-             die;
+            $data['fromDate']   = date('d-M-Y', strtotime($_POST['fromDate']));
+            $data['toDate']     = date('d-M-Y', strtotime($_POST['toDate']));
+            $data['report']     = $this->rest->getSalesSummary($_POST);
         }
+
         $data['cuisine'] = $this->rest->getCuisineList();
         $data['title'] = $this->lang->line('sale').' '.$this->lang->line('summary');
         $this->load->view('report/saleSummary', $data);    
