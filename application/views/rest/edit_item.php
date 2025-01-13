@@ -83,16 +83,36 @@
                                                     <div class="form-group">
                                                         <label for="item_desc"><?= $this->lang->line('description'); ?></label>
 
-                                                        <textarea class="form-control form-control-sm" required="" rows="3" name="ItmDesc"><?= $detail['Descname']; ?></textarea>
+                                                        <textarea class="form-control form-control-sm" required="" rows="3" name="ItmDesc1"><?= $detail['ItmDesc1']; ?></textarea>
                                                     </div>
                                                 </div>
+
+                                                <?php
+                                                for ($i = 1; $i < sizeof($languages); $i++) { ?>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="item_ingredients"><?= $this->lang->line('description'); ?> <?= $languages[$i]['LngName']; ?></label>
+                                                            <textarea class="form-control form-control-sm" name="ItmDesc<?= $languages[$i]['LCd']; ?>" rows="3"><?= $detail['ItmDesc'.$languages[$i]['LCd']]; ?></textarea>
+                                                        </div>
+                                                    </div>
+                                               <?php } ?>
                                                 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="item_ingredients"><?= $this->lang->line('ingredients'); ?></label>
-                                                        <textarea class="form-control form-control-sm" name="Ingeredients" rows="3"><?= $detail['Ingeredients']; ?></textarea>
+                                                        <textarea class="form-control form-control-sm" name="Ingeredients1" rows="3"><?= $detail['Ingeredients1']; ?></textarea>
                                                     </div>
                                                 </div>
+
+                                                <?php
+                                                for ($i = 1; $i < sizeof($languages); $i++) { ?>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="item_ingredients"><?= $this->lang->line('ingredients'); ?> <?= $languages[$i]['LngName']; ?></label>
+                                                            <textarea class="form-control form-control-sm" name="Ingeredients<?= $languages[$i]['LCd']; ?>" rows="3"><?= $detail['Ingeredients'.$languages[$i]['LCd']]; ?></textarea>
+                                                        </div>
+                                                    </div>
+                                               <?php } ?>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
@@ -297,6 +317,13 @@
                                                     <div class="form-group">
                                                         <label for="sale_period"><?= $this->lang->line('nutritionValue'); ?></label>
                                                         <input type="number" name="NV" required="" class="form-control form-control-sm" value="<?= $detail['NV']; ?>">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label for="sale_period">IMcCd</label>
+                                                        <input type="number" name="IMcCd" class="form-control form-control-sm" value="<?= $detail['IMcCd']; ?>">
                                                     </div>
                                                 </div>
 

@@ -41,7 +41,7 @@
                                     <div class="card-body">
                                         <div class="text-danger text-center">
                                           <h2><?= $title; ?> not provided...</h2>
-                                          <p>Speak to admin!</p>
+                                          <p>Speak to admin !</p>
                                         </div>
                                     </div>
                                 </div>

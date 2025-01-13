@@ -106,13 +106,12 @@ $(document).ready(function () {
 
     taxData = () => {
         var data = $('#reportForm').serializeArray();
-        $.post('<?= base_url('restaurant/tax_report') ?>',data,function(res){
+        $.post('<?= base_url('restaurant/summary_tax_report') ?>',data,function(res){
             if(res.status == 'success'){
               var data1 = res.response.res;
               var header = res.response.headers;
 
               var head = `<tr>
-                            <th><?= $this->lang->line('bilNo'); ?></th>
                             <th><?= $this->lang->line('date'); ?></th>
                             <th>${header[0].header}%</th>
                             <th>${header[1].header}%</th>
@@ -128,7 +127,6 @@ $(document).ready(function () {
                     cgstT = parseFloat(cgstT) + parseFloat(data1[i].CGST);
                     sgstT = parseFloat(sgstT) + parseFloat(data1[i].SGST);
                         temp += `<tr>
-                                    <td>${data1[i].BillPrefix} ${data1[i].BillNo} ${data1[i].BillSuffix}</td>
                                     <td>${data1[i].Date}</td>
                                     <td>${data1[i].VAT}</td>
                                     <td>${data1[i].CGST}</td>
@@ -136,7 +134,6 @@ $(document).ready(function () {
                                  </tr>`;
                     };
                     temp += `<tr>
-                                <td></td>
                                 <td></td>
                                 <td><b>${vatT.toFixed(2)}</b></td>
                                 <td><b>${cgstT.toFixed(2)}</b></td>

@@ -45,6 +45,11 @@
                                                         <label for=""><?= $this->lang->line('menuCategory'); ?></label>
                                                         <select name="menucat" id="menucat" class="form-control form-control-sm select2 custom-select" onchange="getItemList()">
                                                             <option value=""><?= $this->lang->line('all'); ?></option>
+                                                            <?php 
+                                                            foreach ($mCat as $key) {
+                                                            ?>
+                                                            <option value="<?= $key['MCatgId']; ?>"><?= $key['MCatgNm']; ?></option>
+                                                        <?php } ?>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -94,8 +99,6 @@
                                             <table id="abcTBL" class="table table-bordered ">
                                                 <thead>
                                                 <tr>
-                                                    <!-- <th>#</th> -->
-                                                    <th><?= $this->lang->line('item'); ?></th>
                                                     <th><?= $this->lang->line('cuisine'); ?></th>
                                                     <th><?= $this->lang->line('menuCategory'); ?></th>
                                                     <th><?= $this->lang->line('item'); ?> <?= $this->lang->line('name'); ?></th>
@@ -196,7 +199,6 @@ $(document).ready(function () {
               if(data.length > 0){
                 data.forEach((item, index) => {
                         temp += `<tr>
-                                    <td>${item.ItemId}</td>
                                     <td>${item.CuisineName}</td>
                                     <td>${item.menuCatName}</td>
                                     <td>${item.ItemName}</td>

@@ -2116,7 +2116,7 @@ class Restaurant extends CI_Controller {
             $data['toDate'] = date('d-M-Y', strtotime($_POST['to_date']));
 
         }
-        $data['title'] = $this->lang->line('detailStockReport');
+        $data['title'] = 'Item Transaction Report';
         $data['stores'] = $this->rest->getFromMast(3);
         $data['items'] =  $this->rest->getRMItemUOM();
         $this->load->view('rest/detailstockreports',$data); 
@@ -3386,9 +3386,7 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        $RMCatgName = "Name$langId";
-
-        $data['catList'] = $this->db2->select("*, (case when $RMCatgName != '-' Then $RMCatgName ELSE Name1 end) as RMCatgName")->get('RMCatg')->result_array();
+        $data['catList'] = $this->rest->getRMCatList();
         $data['rm_items'] = $this->rest->getItemLists();
         $data['itemList'] = $this->rest->getAllItemsList();
         $data['title'] = $this->lang->line('RMItemLists');
@@ -4353,7 +4351,7 @@ class Restaurant extends CI_Controller {
 
     public function payments(){
         $this->check_access();
-        $data['title'] = $this->lang->line('customerPayments');
+        $data['title'] = 'Customer Receipts';
         $data['fdate'] = date('Y-m-d');
         $data['tdate'] = date('Y-m-d');
         $data['pmode'] = '';
@@ -4372,6 +4370,30 @@ class Restaurant extends CI_Controller {
         $data['details'] = $this->rest->getPaymentList($pdata);
         $data['modes'] = $this->rest->getPaymentModes();
         $this->load->view('rest/payments', $data);
+    }
+
+    public function payment_summary(){
+        // $this->check_access();
+        $data['title'] = 'Summary of Receipts';
+        $data['fdate'] = date('Y-m-d');
+        $data['tdate'] = date('Y-m-d');
+        $data['pmode'] = '';
+        $pdata = array
+                    (
+                        'fdate' => $data['fdate'],
+                        'tdate' => $data['tdate'],
+                        'pmode' => $data['pmode']
+                    );
+        if($this->input->method(true)=='POST'){
+            $pdata = $_POST;
+            $data['fdate'] = date('Y-m-d', strtotime($pdata['fdate']));
+            $data['tdate'] = date('Y-m-d', strtotime($pdata['tdate']));
+            $data['pmode'] = $pdata['pmode'];
+        }
+        $data['data'] = $this->rest->getPaymentSummary($pdata);
+
+        $data['modes'] = $this->rest->getPaymentModes();
+        $this->load->view('report/summary_payment', $data);
     }
 
     public function feedback(){
@@ -4557,6 +4579,8 @@ class Restaurant extends CI_Controller {
     public function add_item(){
         $this->check_access();
 
+        $data['languages'] = langMenuList();
+
         if($this->input->method(true)=='POST'){
 
             $getItem = $this->db2->select('UItmCd, Rank')->order_by('ItemId', 'DESC')->get('MenuItem')->row_array();
@@ -4566,19 +4590,19 @@ class Restaurant extends CI_Controller {
             $langId = $this->session->userdata('site_lang');
 
             $iname = "Name$langId";
-            $descname = "ItmDesc$langId";
-            $ingname = "Ingeredients$langId";
+            // $descname = "ItmDesc$langId";
+            // $ingname = "Ingeredients$langId";
 
             $data[$iname] = $data['ItemNm'];
-            $data[$descname] = $data['ItmDesc'];
-            $data[$ingname] = $data['Ingeredients'];
+            // $data[$descname] = $data['ItmDesc'];
+            // $data[$ingname] = $data['Ingeredients'];
 
             unset($data['sections']);
             unset($data['portions']);
             unset($data['price']);
             unset($data['ItemNm']);
-            unset($data['ItmDesc']);
-            unset($data['Ingeredients']);
+            // unset($data['ItmDesc']);
+            // unset($data['Ingeredients']);
 
             $data['UItmCd'] = $getItem['UItmCd']+1;
             $data['Rank'] = $getItem['Rank']+1;
@@ -4677,19 +4701,21 @@ class Restaurant extends CI_Controller {
     public function edit_item($ItemId){
         // $this->check_access();
         $EID = authuser()->EID;
+        $data['languages'] = langMenuList();
+
         if($this->input->method(true)=='POST'){
  
             $updateData = $_POST;
-
+echo "<pre>";print_r($_POST);die;
             $langId = $this->session->userdata('site_lang');
 
             $iname = "Name$langId";
-            $descname = "ItmDesc$langId";
-            $ingname = "Ingeredients$langId";
+            // $descname = "ItmDesc$langId";
+            // $ingname = "Ingeredients$langId";
 
             $updateData[$iname] = $updateData['ItemNm'];
-            $updateData[$descname] = $updateData['ItmDesc'];
-            $updateData[$ingname] = $updateData['Ingeredients'];
+            // $updateData[$descname] = $updateData['ItmDesc'];
+            // $updateData[$ingname] = $updateData['Ingeredients'];
 
             $flag = 0;
 
@@ -4738,8 +4764,8 @@ class Restaurant extends CI_Controller {
                 unset($updateData['portions']);
                 unset($updateData['price']);
                 unset($updateData['ItemNm']);
-                unset($updateData['ItmDesc']);
-                unset($updateData['Ingeredients']);
+                // unset($updateData['ItmDesc']);
+                // unset($updateData['Ingeredients']);
 
                 updateRecord('MenuItem', $updateData, array('ItemId' => $ItemId));
                 $this->db2->delete('MenuItemRates', array('ItemId' => $ItemId, 'EID' => $EID));
@@ -8864,7 +8890,9 @@ class Restaurant extends CI_Controller {
               ));
              die;
         }
-        $data['cuisine'] = $this->rest->getCuisineList();
+        $data['cuisine']    = $this->rest->getCuisineList();
+        $data['mCat']       = $this->rest->get_MCatgId();
+        $data['menuItem']   = $this->rest->getAllItemsList();
         $data['title'] = $this->lang->line('abc').' '.$this->lang->line('report');
         $this->load->view('report/abcReport', $data);    
     }
@@ -8902,7 +8930,9 @@ class Restaurant extends CI_Controller {
             $new_response = [];
             foreach ($response as $key ) {
                 $new_response[$key['BillId']]['BillId'] = $key['BillId'];
-                // $new_response[$key['BillId']]['TaxPcent'] = $key['TaxPcent'];
+                $new_response[$key['BillId']]['BillNo'] = $key['BillNo'];
+                $new_response[$key['BillId']]['BillPrefix'] = $key['BillPrefix'];
+                $new_response[$key['BillId']]['BillSuffix'] = $key['BillSuffix'];
                 $new_response[$key['BillId']]['Date'] = $key['Date'];
 
                 if($key['TaxName'] == 'VAT'){
@@ -8924,15 +8954,17 @@ class Restaurant extends CI_Controller {
 
             $res = [];
             foreach ($new_response as $key) {
-                $temp['BillId'] = $key['BillId'];
-                // $temp['TaxPcent'] = $key['TaxPcent'];
-                $temp['Date'] = $key['Date'];
+                $temp['BillId']     = $key['BillId'];
+                $temp['BillNo']     = $key['BillNo'];
+                $temp['BillPrefix'] = $key['BillPrefix'];
+                $temp['BillSuffix'] = $key['BillSuffix'];
+                $temp['Date']       = $key['Date'];
 
-                $temp['VAT'] = !empty($key['VAT'])?$key['VAT']:0;
-                $temp['CGST'] = !empty($key['CGST'])?$key['CGST']:0;
-                $temp['SGST'] = !empty($key['SGST'])?$key['SGST']:0;
+                $temp['VAT']        = !empty($key['VAT'])?$key['VAT']:0;
+                $temp['CGST']       = !empty($key['CGST'])?$key['CGST']:0;
+                $temp['SGST']       = !empty($key['SGST'])?$key['SGST']:0;
 
-                $temp['VAT_Pcent'] = !empty($key['VAT_Pcent'])?$key['VAT_Pcent']:0;
+                $temp['VAT_Pcent']  = !empty($key['VAT_Pcent'])?$key['VAT_Pcent']:0;
                 $temp['CGST_Pcent'] = !empty($key['CGST_Pcent'])?$key['CGST_Pcent']:0;
                 $temp['SGST_Pcent'] = !empty($key['SGST_Pcent'])?$key['SGST_Pcent']:0;
 
@@ -9353,48 +9385,72 @@ class Restaurant extends CI_Controller {
         $data['fromDate']   = date('d-M-Y', strtotime("-7 day", strtotime(date('Y-m-d'))));
         $data['toDate']     = date('d-M-Y');
         $data['modes']      = '';
-        $data['orderBy']    = '';
+        $data['rmcat']      = '';
         $data['report']     = array();
         
         if($this->input->method(true)=='POST'){
             $data['fromDate']   = date('d-M-Y', strtotime($_POST['fromDate']));
             $data['toDate']     = date('d-M-Y',strtotime($_POST['toDate']));
             $data['modes']      = $_POST['modes'];
-            $data['orderBy']    = $_POST['orderBy'];
+            $data['rmcat']      = $_POST['rmcat'];
 
             $status             = "success";
             $response           = 'Data Found';
-            $data['report']     = $this->rest->getSalesRepots($_POST);
+            $data['report'] = $this->rest->getPurchaseSalesRepots($_POST);
         }
 
-        $data['title'] = 'Date Wise Detailed Sales '.$this->lang->line('report');
+        $data['title']      = 'Purchase '.$this->lang->line('report');
+        $data['catList']    = $this->rest->getRMCatList();
         $this->load->view('report/salesReport', $data);    
     }
 
-    public function item_sales_report(){
-        $this->check_access();
+    public function bar_sales_report(){
+        // $this->check_access();
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
 
         $data['fromDate']   = date('d-M-Y', strtotime("-7 day", strtotime(date('Y-m-d'))));
         $data['toDate']     = date('d-M-Y');
-        $data['modes']      = '';
         $data['orderBy']    = '';
         $data['report']     = array();
         
         if($this->input->method(true)=='POST'){
             $data['fromDate']   = date('d-M-Y', strtotime($_POST['fromDate']));
             $data['toDate']     = date('d-M-Y',strtotime($_POST['toDate']));
-            $data['modes']      = $_POST['modes'];
             $data['orderBy']    = $_POST['orderBy'];
 
             $status             = "success";
             $response           = 'Data Found';
 
-            $data['report'] = $this->rest->getItemSalesRepots($_POST);
+            $data['report']     = $this->rest->getItemSalesRepots($_POST);
         }
 
-        $data['title'] = $this->lang->line('itemSale').' '.$this->lang->line('report');
+        $data['title'] = 'Bar '.$this->lang->line('sale').' '.$this->lang->line('report');
+        $this->load->view('report/itemSalesReport', $data);    
+    }
+
+    public function food_sales_report(){
+        // $this->check_access();
+        $status = "error";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+
+        $data['fromDate']   = date('d-M-Y', strtotime("-7 day", strtotime(date('Y-m-d'))));
+        $data['toDate']     = date('d-M-Y');
+        $data['orderBy']    = '';
+        $data['report']     = array();
+        
+        if($this->input->method(true)=='POST'){
+            $data['fromDate']   = date('d-M-Y', strtotime($_POST['fromDate']));
+            $data['toDate']     = date('d-M-Y',strtotime($_POST['toDate']));
+            $data['orderBy']    = $_POST['orderBy'];
+
+            $status             = "success";
+            $response           = 'Data Found';
+
+            $data['report']     = $this->rest->getFoodSalesRepots($_POST);
+        }
+
+        $data['title'] = 'Food '.$this->lang->line('sale').' '.$this->lang->line('report');
         $this->load->view('report/itemSalesReport', $data);    
     }
 
@@ -9408,6 +9464,9 @@ class Restaurant extends CI_Controller {
         $data['toDate']     = date('d-M-Y');
         $data['modes']      = '';
         $data['orderBy']    = '';
+        $data['cuisine']    = '';
+        $data['menucat']    = '';
+        $data['OType']      = '';
         
         if($this->input->method(true)=='POST'){
             $status             = "success";
@@ -9417,8 +9476,13 @@ class Restaurant extends CI_Controller {
             $data['toDate']     = date('d-M-Y',strtotime($_POST['toDate']));
             $data['modes']      = $_POST['modes'];
             $data['orderBy']    = $_POST['orderBy'];
+            $data['cuisine']    = $_POST['cuisine'];
+            $data['menucat']    = $_POST['menucat'];
+            $data['OType']      = $_POST['OType'];
 
             $data['report'] = $this->rest->getContributionRepots($_POST);
+            // echo "<pre>";
+            // print_r($data['report']);die;
         }
 
         $data['cuisine'] = $this->rest->getCuisineList();
@@ -9466,7 +9530,7 @@ class Restaurant extends CI_Controller {
              die;
         }
 
-        $data['title'] = $this->lang->line('pendingCollectionReports');
+        $data['title'] = $this->lang->line('OnAccountReceiptsDueReport');
         $this->load->view('report/onAccountSaleSummary', $data);    
     }
 
@@ -9572,6 +9636,11 @@ class Restaurant extends CI_Controller {
             $configDt['ratingHistory']  = !isset($_POST['ratingHistory'])?0:1;
             $configDt['favoriteItems']  = !isset($_POST['favoriteItems'])?0:1;
             $configDt['Rating']         = !isset($_POST['Rating'])?0:1;
+            $configDt['custType']       = !isset($_POST['custType'])?0:1;
+
+            $rls = ($configDt['custType'] > 0)?0:1;
+            $this->db2->where_in('RoleId', array(78));
+            $this->db2->update('UserRoles', array('Stat' => $rls) );
             
             $configDt['SchPop'] = !isset($_POST['SchPop'])?0:1;
             $this->db2->where_in('RoleId', array(31, 60));
@@ -9596,16 +9665,20 @@ class Restaurant extends CI_Controller {
             updateRecord('UserRoles', array('Stat' => $configDt['CustLoyalty']), array('RoleId' => 80));
 
             $configDt['BOM'] = !isset($_POST['BOM'])?0:1;
-            $this->db2->where_in('RoleId', array(113, 35));
+            $this->db2->where_in('RoleId', array(35));
             $this->db2->update('UserRoles', array('Stat' => $configDt['BOM']) );
+            // bom order
+            $this->db2->where_in('RoleId', array(113));
+            $this->db2->update('UserRoles', array('Stat' => $configDt['BOMStore']) );
 
             $configDt['kds'] = !isset($_POST['kds'])?0:1;
             $this->db2->where_in('RoleId', array(43, 44));
             $this->db2->update('UserRoles', array('Stat' => $configDt['kds']) );
             
             $configDt['custItems'] = !isset($_POST['custItems'])?0:1;
-            $this->db2->where_in('RoleId', array(69, 70, 86));
+            $this->db2->where_in('RoleId', array(69, 70, 86, 120));
             $this->db2->update('UserRoles', array('Stat' => $configDt['custItems']) );
+
             if($data['detail']['EType'] == 1){
                 updateRecord('UserRoles', array('Stat' => 1), array('RoleId' => 17));
             }
@@ -11456,6 +11529,71 @@ class Restaurant extends CI_Controller {
         $data['rmUOMs']    = $this->rest->getRMUOMlisting();
         // echo "<pre>";print_r($data);die;
         $this->load->view('rest/rm_items_uom', $data);
+    }
+
+    public function summary_tax_report(){
+        // $this->check_access();
+
+        $status = "error";
+        $response = $this->lang->line('SomethingSentWrongTryAgainLater');
+        
+        if($this->input->method(true)=='POST'){
+            $status = "success";
+
+            $response = $this->rest->getTaxRepots($_POST);
+            
+            $new_response = [];
+            foreach ($response as $key ) {
+                $new_response[$key['BillId']]['BillId'] = $key['BillId'];
+                // $new_response[$key['BillId']]['TaxPcent'] = $key['TaxPcent'];
+                $new_response[$key['BillId']]['Date'] = $key['Date'];
+
+                if($key['TaxName'] == 'VAT'){
+                    
+                    $new_response[$key['BillId']]['VAT'] = $key['TaxAmt'];
+                    $new_response[$key['BillId']]['VAT_Pcent'] = $key['TaxPcent'];
+                }
+
+                if($key['TaxName'] == 'SGST'){
+                    $new_response[$key['BillId']]['SGST'] = $key['TaxAmt'];
+                    $new_response[$key['BillId']]['SGST_Pcent'] = $key['TaxPcent'];
+                }
+
+                if($key['TaxName'] == 'CGST'){
+                    $new_response[$key['BillId']]['CGST'] = $key['TaxAmt'];
+                    $new_response[$key['BillId']]['CGST_Pcent'] = $key['TaxPcent'];
+                }
+            }
+
+            $res = [];
+            foreach ($new_response as $key) {
+                $temp['BillId'] = $key['BillId'];
+                // $temp['TaxPcent'] = $key['TaxPcent'];
+                $temp['Date'] = $key['Date'];
+
+                $temp['VAT'] = !empty($key['VAT'])?$key['VAT']:0;
+                $temp['CGST'] = !empty($key['CGST'])?$key['CGST']:0;
+                $temp['SGST'] = !empty($key['SGST'])?$key['SGST']:0;
+
+                $temp['VAT_Pcent'] = !empty($key['VAT_Pcent'])?$key['VAT_Pcent']:0;
+                $temp['CGST_Pcent'] = !empty($key['CGST_Pcent'])?$key['CGST_Pcent']:0;
+                $temp['SGST_Pcent'] = !empty($key['SGST_Pcent'])?$key['SGST_Pcent']:0;
+
+                $res[] = $temp;
+            }
+            $data['res'] = $res;
+            $data['headers'] = $this->rest->getTaxHead();
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'status' => $status,
+                'response' => $data
+              ));
+             die;
+        }
+
+        $data['title'] = 'Summary '.$this->lang->line('tax').' '.$this->lang->line('report');
+        $this->load->view('report/summaryTaxReport', $data);    
     }
 
 

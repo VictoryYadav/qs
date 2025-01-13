@@ -70,16 +70,36 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="item_desc"><?= $this->lang->line('description'); ?></label>
-                                                        <textarea class="form-control form-control-sm" required="" rows="3" name="ItmDesc">-</textarea>
+                                                        <textarea class="form-control form-control-sm" required="" rows="3" name="ItmDesc1">-</textarea>
                                                     </div>
                                                 </div>
+
+                                                <?php
+                                                for ($i = 1; $i < sizeof($languages); $i++) { ?>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="item_ingredients"><?= $this->lang->line('description'); ?> <?= $languages[$i]['LngName']; ?></label>
+                                                            <textarea class="form-control form-control-sm" name="ItmDesc<?= $languages[$i]['LCd']; ?>" rows="3">-</textarea>
+                                                        </div>
+                                                    </div>
+                                               <?php } ?>
                                                 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="item_ingredients"><?= $this->lang->line('ingredients'); ?></label>
-                                                        <textarea class="form-control form-control-sm" name="Ingeredients" rows="3">-</textarea>
+                                                        <textarea class="form-control form-control-sm" name="Ingeredients1" rows="3">-</textarea>
                                                     </div>
                                                 </div>
+
+                                                <?php
+                                                for ($i = 1; $i < sizeof($languages); $i++) { ?>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="item_ingredients"><?= $this->lang->line('ingredients'); ?> <?= $languages[$i]['LngName']; ?></label>
+                                                            <textarea class="form-control form-control-sm" name="Ingeredients<?= $languages[$i]['LCd']; ?>" rows="3">-</textarea>
+                                                        </div>
+                                                    </div>
+                                               <?php } ?>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">

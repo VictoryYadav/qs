@@ -65,8 +65,14 @@
                                                     <tr>
                                                         <th><?= $this->lang->line('date'); ?></th>
                                                         <th><?= $this->lang->line('day'); ?></th>
-                                                        <th><?= $this->lang->line('invoice'); ?></th>
+                                                        <th><?= $this->lang->line('invoices'); ?></th>
+                                                        <?php if($this->session->userdata('ServChrg') > 0){ ?>
+                                                        <th><?= $this->lang->line('serviceCharge'); ?></th>
+                                                        <?php } ?> 
                                                         <th><?= $this->lang->line('discount'); ?></th>
+                                                        <?php if($this->session->userdata('Tips') > 0){ ?>
+                                                        <th><?= $this->lang->line('tips'); ?></th>
+                                                        <?php } ?> 
                                                         <th><?= $this->lang->line('amount'); ?></th>
                                                     </tr>
                                                 </thead>
@@ -74,15 +80,44 @@
                                                 <tbody id="incomeBody">
                                                     <?php 
                                                     if(!empty($report)){
-                                                        foreach ($report as $key) { ?>
+                                                        $tservice   = 0;
+                                                        $ttip       = 0;
+                                                        $tdiscount  = 0;
+                                                        $tamount    = 0;
+                                                        foreach ($report as $key) {
+                                                            $tservice  = $tservice + $key['serviceCharge'];
+                                                            $ttip      = $ttip + $key['tips'];
+                                                            $tdiscount = $tdiscount + $key['totalDiscount'];
+                                                            $tamount   = $tamount + $key['totalAmount'];
+                                                         ?>
                                                             <tr>
                                                                 <td><?= $key['Date']; ?></td>
                                                                 <td><?= $key['dayName']; ?></td>
                                                                 <td><?= $key['totalInvoice']; ?></td>
+                                                                <?php if($this->session->userdata('ServChrg') > 0){ ?>
+                                                                <td><?= $key['serviceCharge']; ?></td>
+                                                                <?php } ?>
                                                                 <td><?= $key['totalDiscount']; ?></td>
+                                                                <?php if($this->session->userdata('Tips') > 0){ ?>
+                                                                <td><?= $key['tips']; ?></td>
+                                                                <?php } ?>
                                                                 <td><?= $key['totalAmount']; ?></td>
                                                              </tr>
-                                                    <?php } } ?>
+                                                    <?php } ?>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <?php if($this->session->userdata('ServChrg') > 0){ ?>
+                                                                <td><b><?= $tservice; ?></b></td>
+                                                                <?php } ?>
+                                                                <td><b><?= $tdiscount; ?></b></td>
+                                                                <?php if($this->session->userdata('Tips') > 0){ ?>
+                                                                <td><b><?= $ttip; ?></b></td>
+                                                                <?php } ?>
+                                                                <td><b><?= $tamount; ?></b></td>
+                                                             </tr>
+                                                    <?php }  ?>
                                                 </tbody>
                                             </table>
                                         </div>

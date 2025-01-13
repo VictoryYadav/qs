@@ -221,7 +221,7 @@
         changeType();
         getPortion();
 
-        var num_desc = <?= sizeof($bomDet)?>;
+        var num_desc = "<?= sizeof($bomDet); ?>";
         for(i=1;i<=num_desc;i++){
             changeItemType(i);
         }
@@ -292,7 +292,7 @@
                 if(res.status == 'success'){
                     var temp = `<option value=""><?= $this->lang->line('select'); ?></option>`;
                     res.response.forEach((item) => {
-                        temp +=`<option value="${item.Itm_Portion}">${item.Portion}</option>`;
+                        temp +=`<option value="${item.Itm_Portion}">${item.Portions}</option>`;
                     });
                     $(`#RMUOM_${counter}`).html(temp);
                 }else{
@@ -325,6 +325,7 @@
     function getGoodPortionE(counter){
         var ItemId = $(`#goods_${counter}`).val();
         var rmuom = $('option:selected', $(`#goods_${counter}`)).attr('rmuom');
+        
         if(ItemId > 0){
 
             $.post('<?= base_url('restaurant/get_item_portion_by_itemId') ?>',{ItemId:ItemId},function(res){
@@ -335,8 +336,9 @@
                         if(item.Itm_Portion == rmuom){
                             slct = 'selected';
                         }
-                        temp +=`<option value="${item.Itm_Portion}" ${slct}>${item.Portion}</option>`;
+                        temp +=`<option value="${item.Itm_Portion}" ${slct}>${item.Portions}</option>`;
                     });
+
                     $(`#RMUOM_${counter}`).html(temp);
                 }else{
                   alert(res.response);
@@ -348,29 +350,31 @@
     function getRMItemsUOME(count){
         var RMCd = $('#RMCd_'+count).val();
         var rmuom = $('option:selected', $(`#RMCd_${count}`)).attr('rmuom');
-        $.ajax({
-            url: "<?php echo base_url('restaurant/getRMItemsUOMList'); ?>",
-            type: "post",
-            data:{'RMCd': RMCd},
-            success: function(data){
-                // alert(data);
-                data = JSON.parse(data);
-                var selectUOM = "<?= $this->lang->line('selectRUOM'); ?>";
-                var b = '<option value = "">'+selectUOM+'</option>';
-                for(i = 0;i<data.length;i++){
-                    var slct = '';
-                    if(data[i].UOMCd == rmuom){
-                        slct = 'selected';
+        if(RMCd > 0){
+            $.ajax({
+                url: "<?php echo base_url('restaurant/getRMItemsUOMList'); ?>",
+                type: "post",
+                data:{'RMCd': RMCd},
+                success: function(data){
+                    // alert(data);
+                    data = JSON.parse(data);
+                    var selectUOM = "<?= $this->lang->line('selectRUOM'); ?>";
+                    var b = '<option value = "">'+selectUOM+'</option>';
+                    for(i = 0;i<data.length;i++){
+                        var slct = '';
+                        if(data[i].UOMCd == rmuom){
+                            slct = 'selected';
+                        }
+                        b = b+'<option value="'+data[i].UOMCd+'" '+slct+' >'+data[i].Name+'</option>';
                     }
-                    b = b+'<option value="'+data[i].UOMCd+'" '+slct+' >'+data[i].Name+'</option>';
+                    // alert(b);
+                    $('#RMUOM_'+count).html(b);
                 }
-                // alert(b);
-                $('#RMUOM_'+count).html(b);
-            }
-        });
+            });
+        }
     }
 
-    var count = 0;
+    var count = "<?= sizeof($bomDet); ?>";
     function addRow(){
         count++;
         console.log(count);

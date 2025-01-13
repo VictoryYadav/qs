@@ -40,43 +40,36 @@
                                                         <input type="text" name="toDate" id="toDate" class="form-control form-control-sm" required="" value="<?= $toDate; ?>" />
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <label for="">Order By</label>
-                                                        <select name="orderBy" id="orderBy" class="form-control form-control-sm" >
-                                                            <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <option value="qty" <?php if($orderBy == 'qty'){ echo 'selected'; } ?>>Quantity</option>
-                                                            <option value="value" <?php if($orderBy == 'value'){ echo 'selected'; } ?>>Value</option>
+                                                        <label for=""><?= $this->lang->line('mode'); ?></label>
+                                                        <select name="modes" id="modes" class="form-control form-control-sm" >
+                                                            <option value=""><?= $this->lang->line('all'); ?></option>
+                                                            <option value="full_menu" <?php if($modes == 'full_menu'){ echo 'selected'; } ?>><?= $this->lang->line('rawMaterial'); ?></option>
+                                                            <option value="traded_goods" <?php if($modes == 'traded_goods'){ echo 'selected'; } ?>><?= $this->lang->line('finish'); ?> <?= $this->lang->line('goods'); ?></option>
                                                         </select>
                                                     </div>
                                                 </div>
 
-                                                <!-- <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="">List</label>
-                                                        <select name="Listing" id="Listing" class="form-control form-control-sm" onchange="saleReport()">
-                                                            <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <option value="top">Top 10</option>
-                                                            <option value="bottom">Bottom 10</option>
-                                                        </select>
-                                                    </div>
-                                                </div> -->
-
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <label for="">Mode</label>
-                                                        <select name="modes" id="modes" class="form-control form-control-sm" >
-                                                            <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <option value="full_menu" <?php if($modes == 'full_menu'){ echo 'selected'; } ?>>Full Menu</option>
-                                                            <option value="traded_goods" <?php if($modes == 'traded_goods'){ echo 'selected'; } ?>> Traded Goods</option>
+                                                        <label for=""><?= $this->lang->line('category'); ?></label>
+                                                        <select name="rmcat" id="rmcat" class="form-control form-control-sm" >
+                                                            <option value=""><?= $this->lang->line('all'); ?></option>
+                                                            <?php
+                                                            if(!empty($catList)){
+                                                                foreach ($catList as $key) {
+                                                             ?>
+                                                            <option value="<?= $key['RMCatgCd'] ?>" <?php if($rmcat == $key['RMCatgCd']){ echo 'selected'; } ?> ><?= $key['RMCatgName'] ?></option>
+                                                        <?php } } ?>
                                                         </select>
                                                     </div>
                                                 </div>
 
                                             </div>
 
-                                            <input type="submit" class="btn btn-sm btn-success" value="Search">
+                                            <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('search'); ?>">
                                         </form>
                                     </div>
                                 </div>
@@ -91,8 +84,6 @@
                                             <table id="abcTBL" class="table table-bordered ">
                                                 <thead>
                                                 <tr>
-                                                    <!-- <th>#</th> -->
-                                                    <th><?= $this->lang->line('date'); ?></th>
                                                     <th><?= $this->lang->line('name'); ?></th>
                                                     <th><?= $this->lang->line('quantity'); ?></th>
                                                     <th><?= $this->lang->line('amount'); ?></th>
@@ -104,7 +95,6 @@
                                                     if(!empty($report)){
                                                         foreach ($report as $key) {?>
                                                         <tr>
-                                                            <td><?= $key['billTime']; ?></td>
                                                             <td><?= $key['menuItem']; ?></td>
                                                             <td><?= $key['Qty']; ?></td>
                                                             <td><?= $key['itemValue']; ?></td>

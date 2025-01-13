@@ -43,39 +43,23 @@
                                                 
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <label for="">Order By</label>
+                                                        <label for=""><?= $this->lang->line('orderWise'); ?></label>
                                                         <select name="orderBy" id="orderBy" class="form-control form-control-sm" >
-                                                            <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <option value="qty" <?php if($orderBy == 'qty'){ echo 'selected'; } ?>>Quantity</option>
-                                                            <option value="value" <?php if($orderBy == 'value'){ echo 'selected'; } ?>>Value</option>
+                                                            <option value=""><?= $this->lang->line('item').' '.$this->lang->line('name'); ?></option>
+                                                            <option value="qty" <?php if($orderBy == 'qty'){ echo 'selected'; } ?>><?= $this->lang->line('qty'); ?></option>
+                                                            <option value="value" <?php if($orderBy == 'value'){ echo 'selected'; } ?>><?= $this->lang->line('value'); ?></option>
                                                         </select>
                                                     </div>
                                                 </div>
 
-                                                <!-- <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="">List</label>
-                                                        <select name="Listing" id="Listing" class="form-control form-control-sm" onchange="saleReport()">
-                                                            <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <option value="top">Top 10</option>
-                                                            <option value="bottom">Bottom 10</option>
-                                                        </select>
-                                                    </div>
-                                                </div> -->
-
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <label for="">Mode</label>
-                                                        <select name="modes" id="modes" class="form-control form-control-sm" >
-                                                            <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <option value="full_menu" <?php if($modes == 'full_menu'){ echo 'selected'; } ?>>Full Menu</option>
-                                                            <option value="traded_goods" <?php if($modes == 'traded_goods'){ echo 'selected'; } ?>> Traded Goods</option>
-                                                        </select>
+                                                        <label for="">&nbsp;</label><br>
+                                                <input type="submit" class="btn btn-sm btn-success" value="<?= $this->lang->line('search'); ?>">
                                                     </div>
                                                 </div>
 
                                             </div>
-                                            <input type="submit" class="btn btn-sm btn-success" value="Search">
                                         </form>
                                     </div>
                                 </div>
@@ -92,6 +76,7 @@
                                                 <tr>
                                                     <!-- <th>#</th> -->
                                                     <th><?= $this->lang->line('name'); ?></th>
+                                                    <th><?= $this->lang->line('portion'); ?></th>
                                                     <th><?= $this->lang->line('quantity'); ?></th>
                                                     <th><?= $this->lang->line('amount'); ?></th>
                                                 </tr>
@@ -103,7 +88,8 @@
                                                         foreach ($report as $key) {?>
                                                         <tr>
                                                             <td><?= $key['menuItem']; ?></td>
-                                                            <td><?= $key['Qty']; ?></td>
+                                                            <td><?= $key['rportionName']; ?></td>
+                                                            <td><?= $key['Qty'] / $key['rAQty']; ?></td>
                                                             <td><?= $key['itemValue']; ?></td>
                                                          </tr>
 

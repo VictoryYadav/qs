@@ -91,7 +91,7 @@ $lang['packingCharge'] = 'Packing Charge';
 $lang['deliveryCharge'] = 'Delivery Charge';
 $lang['totalDiscount'] = 'Total Discount';
 $lang['tips'] = 'Tips';
-$lang['billNo'] = 'BillId';
+$lang['billNo'] = 'Bill No';
 $lang['mobile'] = 'Mobile';
 $lang['link'] = 'Link';
 $lang['chooseMode'] = 'Choose Mode';
@@ -182,6 +182,7 @@ $lang['value'] 				= 'Value';
 $lang['remarks'] 			= 'Remarks';
 $lang['bilNo'] 				= 'Bill No';
 $lang['invoice'] 			= 'Invoice';
+$lang['invoices'] 		= 'Invoices';
 $lang['discount'] 			= 'Discount';
 $lang['billDate'] 			= 'Bill Date';
 $lang['billAmount'] 		= 'Bill Amt';
@@ -613,7 +614,7 @@ $lang['filesUploaded']		= 'Files Uploaded';
 $lang['itemUpload']		= 'Item Upload';
 $lang['contribution']		= 'Contribution';
 $lang['sale']		= 'Sale';
-$lang['pendingCollectionReports']		= 'Pending Collection Reports';
+$lang['OnAccountReceiptsDueReport']		= 'OnAccount Receipts Due Report';
 $lang['access']		= 'Access';
 $lang['multi']		= 'Multi';
 $lang['tableChanged']		= 'Table Changed';
@@ -654,8 +655,11 @@ $lang['calories']				= 'Calories';
 $lang['pleaseSelecttheOptionsForComboItem']	= 'Please select the options for Combo Item';
 $lang['Prepaid']				= 'Prepaid';
 $lang['Onaccount']				= 'OnAccount';
+$lang['Corporate']				= 'Corporate';
 $lang['inventory']				= 'Inventory';
 $lang['location']				= 'Location';
+
+$lang['rawMaterial']			= 'Raw Material';
 
 
 

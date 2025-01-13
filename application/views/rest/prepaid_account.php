@@ -76,33 +76,42 @@
 
                                                 <div class="col-md-3 col-4">
                                                     <div class="form-group">
-                                                        <label>Max Limit</label>
-                                                        <input type="number" class="form-control form-control-sm" name="MaxLimit" placeholder="MaxLimit" id="MaxLimit" required="">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3 col-4">
-                                                    <div class="form-group">
-                                                        <label>Pre Paidamount</label>
-                                                        <input type="number" class="form-control form-control-sm" name="prePaidAmt" placeholder="prePaidAmt" id="prePaidAmt" required="">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3 col-4">
-                                                    <div class="form-group">
-                                                        <label>Cust Type</label>
-                                                        <select name="custType" class="form-control form-control-sm" id="custType" required="">
+                                                        <label><?= $this->lang->line('customer').' '.$this->lang->line('type'); ?></label>
+                                                        <select name="custType" class="form-control form-control-sm" id="custType" required="" onchange="changeType()">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
-                                                            <option value="1">OnAccount</option>
-                                                            <option value="2">Prepaid</option>
-                                                            <option value="3">Corporate</option>
+                                                            <?php
+                                                            if($this->session->userdata('custType')== 5){
+                                                             ?>
+                                                            
+                                                            <option value="1"><?= $this->lang->line('Onaccount'); ?></option>
+                                                            <option value="2"><?= $this->lang->line('Prepaid'); ?></option>
+                                                        <?php }else if($this->session->userdata('custType')== 1){ ?>
+                                                            <option value="1"><?= $this->lang->line('Onaccount'); ?></option>
+                                                        <?php }else if($this->session->userdata('custType')== 2){ ?>
+                                                            <option value="2"><?= $this->lang->line('Prepaid'); ?></option>
+                                                        <?php } ?>
+                                                            <option value="3"><?= $this->lang->line('Corporate'); ?></option>
                                                         </select>
                                                     </div>
                                                 </div>
 
+                                                <div class="col-md-3 col-4 limitBlock" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('maxLimit'); ?></label>
+                                                        <input type="number" class="form-control form-control-sm" name="MaxLimit" placeholder="MaxLimit" id="MaxLimit" >
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-4 preBlock" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('prepaidAmount'); ?></label>
+                                                        <input type="number" class="form-control form-control-sm" name="prePaidAmt" placeholder="prePaidAmt" id="prePaidAmt" >
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-md-3 col-4">
                                                     <div class="form-group">
-                                                        <label>Mode</label>
+                                                        <label><?= $this->lang->line('mode'); ?></label>
                                                         <select name="Stat" class="form-control form-control-sm" id="Stat" required="">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <option value="0"><?= $this->lang->line('active'); ?></option>
@@ -201,6 +210,21 @@
         $('#prepaidTbl').DataTable();
         $('#countryCd').select2();
     });
+
+    function changeType(){
+        var custType = $(`#custType`).val();
+        $(`.limitBlock`).hide();
+        $(`.preBlock`).hide();
+        if(custType > 0){
+            if(custType == 1){
+                $(`.preBlock`).hide();
+                $(`.limitBlock`).show();
+            }else if(custType == 2){
+                $(`.limitBlock`).hide();
+                $(`.preBlock`).show();
+            }
+        }
+    }
 
     $('#prepaidForm').on('submit', function(e){
         e.preventDefault();

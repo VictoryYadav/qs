@@ -49,7 +49,7 @@
 
                                                             <option value="1"><?= $this->lang->line('master'); ?></option>
                                                             <option value="2"><?= $this->lang->line('operation'); ?></option>
-                                                            <option value="2"><?= $this->lang->line('report'); ?></option>
+                                                            <option value="3"><?= $this->lang->line('report'); ?></option>
                                                         </select>
                                                     </div>
                                                 </div>

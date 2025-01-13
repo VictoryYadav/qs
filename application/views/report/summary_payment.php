@@ -67,34 +67,61 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table id="paymentTBL" class="table table-bordered topics">
-                                                <thead>
-                                                <tr>
+                                            <?php 
+                                            if(!empty($data)){
+                                                // Prepare the structure
+                                                $transformedData = [];
+                                                $paymentTypes = []; // To keep track of all dynamic payment types
+
+                                                foreach ($data as $row) {
+                                                    $date = date('Y-m-d', strtotime($row['PymtDate'])); // Extract date only
+                                                    $paymentName = $row['paymentName'];
+                                                    $amount = $row['Amount'];
                                                     
-                                                    <th><?= $this->lang->line('billNo'); ?></th>
-                                                    <th><?= $this->lang->line('paymentDate'); ?></th>
-                                                    <th><?= $this->lang->line('paidAmount'); ?></th>
-                                                    <th><?= $this->lang->line('mode'); ?></th>
-                                                </tr>
-                                                </thead>
-            
-                                                <tbody>
-                                                    <?php
-                                                    if(!empty($details)){
-                                                        foreach ($details as $key) {
-                                                     ?>
+                                                    if (!isset($transformedData[$date])) {
+                                                        $transformedData[$date] = [];
+                                                    }
                                                     
-                                                <tr>
-                                                    <td><?= $key['BillPrefix'].' '.$key['BillNo'].''.$key['BillSuffix']; ?></td>
-                                                    <td><?= date('d-M-Y', strtotime($key['PymtDate'])); ?></td>
-                                                    <td><?= $key['PaidAmt']; ?></td>
-                                                    <td><?= $key['paymentName']; ?></td>
-                                                </tr>
-                                                <?php }
-                                                 }
-                                                ?>
-                                                </tbody>
-                                            </table>
+                                                    // Ensure this payment type is tracked
+                                                    if (!in_array($paymentName, $paymentTypes)) {
+                                                        $paymentTypes[] = $paymentName;
+                                                    }
+                                                    
+                                                    // Assign amount to the payment name for the specific date
+                                                    $transformedData[$date][$paymentName] = $amount;
+                                                }
+
+                                                // Ensure all dates have all payment types (fill missing with 0)
+                                                foreach ($transformedData as $date => &$payments) {
+                                                    foreach ($paymentTypes as $type) {
+                                                        if (!isset($payments[$type])) {
+                                                            $payments[$type] = 0;
+                                                        }
+                                                    }
+                                                }
+                                                unset($payments); // Break reference
+
+                                    // Display the table
+                                    echo "<table id='paymentTBL' class='table table-bordered topics'>";
+                                    echo "<thead><tr><th>PymtDate</th>";
+
+                                    // Add dynamic headers
+                                    foreach ($paymentTypes as $type) {
+                                        echo "<th>$type</th>";
+                                    }
+                                    echo "</tr></thead><tbody>";
+
+                                    foreach ($transformedData as $date => $payments) {
+                                        echo "<tr>";
+                                        echo "<td>$date</td>";
+                                        foreach ($paymentTypes as $type) {
+                                            echo "<td>{$payments[$type]}</td>";
+                                        }
+                                        echo "</tr>";
+                                    }
+                                    echo "</tbody></table>";
+                                            }
+                                            ?>
                                         </div>
                                     </div>
                                 </div>

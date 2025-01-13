@@ -86,6 +86,19 @@
                                                     </div>
                                                 </div>
 
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('customer').' '.$this->lang->line('type'); ?></label>
+                                                        <select name="custType" id="custType" class="form-control form-control-sm">
+
+                                                        <option value="0" <?php if($detail['custType'] == 0){ echo 'selected'; } ?>><?= $this->lang->line('disabled'); ?></option>
+                                                            <option value="1" <?php if($detail['custType'] == 1){ echo 'selected'; } ?>><?= $this->lang->line('Onaccount'); ?></option>
+                                                            <option value="2" <?php if($detail['custType'] == 2){ echo 'selected'; } ?>><?= $this->lang->line('Prepaid'); ?></option>
+                                                            <option value="5" <?php if($detail['custType'] == 5){ echo 'selected'; } ?>><?= $this->lang->line('both'); ?></option>
+                                                    </select>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                             <hr>
                                             <div class="row">

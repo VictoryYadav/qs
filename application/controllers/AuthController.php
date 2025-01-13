@@ -40,7 +40,7 @@ class AuthController extends CI_Controller {
 
                 if (!empty($login_check)) {
 
-                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.MultiLingual, c.kds,  c.TableReservation, c.Ops, c.CustAddr, e.EType, e.aggEID, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, e.CountryCd, e.Logo, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt, c.billSplitOpt, c.AutoSettle,c.Dispense_OTP,c.DelCharge, c.Charity, c.CharityCharge, c.DeliveryOTP, c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint, c.JoinTable, c.tableSharing, c.Bill_KOT_Print, c.SchType, c.restBilling, c.recommend, c.addItemLock, c.AutoPrintKOT')
+                        $checkNumber = $db2->select('u.Passwd, u.RUserId, u.EID, u.ChainId, u.UTyp, c.AutoAllot, c.AutoDeliver, c.MultiKitchen, c.multiCustTable, c.MultiLingual, c.kds,  c.TableReservation, c.Ops, c.CustAddr, e.EType, e.aggEID, c.AutoAllot, c.AutoDeliver, c.Decline, c.Move,e.Name, e.CountryCd, e.Logo, c.CustAssist, c.TableAcceptReqd,c.BillMergeOpt, c.billSplitOpt, c.AutoSettle,c.Dispense_OTP,c.DelCharge, c.Charity, c.CharityCharge, c.DeliveryOTP, c.ServChrg, c.Tips,c.EDT ,c.Discount, c.IMcCdOpt, c.billPrintTableNo,c.sitinKOTPrint, c.JoinTable, c.tableSharing, c.Bill_KOT_Print, c.SchType, c.restBilling, c.recommend, c.addItemLock, c.AutoPrintKOT, c.custItems, c.custType, c.BOMStore')
                             ->join('Eatary e',' u.EID = e.EID', 'inner')
                             ->join('Config c','u.EID = c.EID','inner')
                             // u.ChainId = c.ChainId 
@@ -100,6 +100,11 @@ class AuthController extends CI_Controller {
                         $this->session->set_userdata('addItemLock',$checkNumber['addItemLock']);
                         $this->session->set_userdata('kds',$checkNumber['kds']);
                         $this->session->set_userdata('Logo',$checkNumber['Logo']);
+                        $this->session->set_userdata('ServChrg',$checkNumber['ServChrg']);
+                        $this->session->set_userdata('Tips',$checkNumber['Tips']);
+                        $this->session->set_userdata('custItems',$checkNumber['custItems']);
+                        $this->session->set_userdata('custType',$checkNumber['custType']);
+                        $this->session->set_userdata('BOMStore',$checkNumber['BOMStore']);
                         
                         $session_data = array(
                         'EID' => $checkNumber['EID'],

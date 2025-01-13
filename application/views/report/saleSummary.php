@@ -63,9 +63,9 @@
                                             <table id="abcTBL" class="table table-bordered " style="width: 100%;">
                                                 <thead>
                                                 <tr>
-                                                    <!-- <th>#</th> -->
-                                                    <th><?= $this->lang->line('day'); ?></th>
+                                                    
                                                     <th><?= $this->lang->line('billDate'); ?></th>
+                                                    <th><?= $this->lang->line('day'); ?></th>
                                                     <th><?= $this->lang->line('billAmount'); ?></th>
                                                     <th><?= $this->lang->line('packingCharge'); ?></th>
                                                     <th><?= $this->lang->line('serviceCharge'); ?></th>
@@ -80,8 +80,8 @@
                                                     if(!empty($report)){
                                                         foreach ($report as $key) { ?>
                                                             <tr>
-                                                                <td><?= $key['dayName']; ?></td>
                                                                 <td><?= $key['billTime']; ?></td>
+                                                                <td><?= $key['dayName']; ?></td>
                                                                 <td><?= $key['billAmt']; ?></td>
                                                                 <td><?= $key['TotPckCharge']; ?></td>
                                                                 <td><?= $key['SerCharge']; ?></td>
