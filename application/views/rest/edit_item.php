@@ -322,13 +322,6 @@
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label for="sale_period">IMcCd</label>
-                                                        <input type="number" name="IMcCd" class="form-control form-control-sm" value="<?= $detail['IMcCd']; ?>">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3 col-6">
-                                                    <div class="form-group">
                                                         <label for="videoLInk"><?= $this->lang->line('videoLink'); ?></label>
                                                         <input type="text" name="videoLink" class="form-control form-control-sm" value="<?= $detail['videoLink']; ?>">
                                                     </div>

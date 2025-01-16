@@ -157,7 +157,7 @@ class Rcheck extends CI_Controller {
         $this->session->set_userdata('ratingHistory', $orgCheck['ratingHistory']);
         $this->session->set_userdata('Rating', $orgCheck['Rating']);
         $this->session->set_userdata('recommend', $orgCheck['recommend']);
-        $this->session->set_userdata('custType',$checkNumber['custType']);
+        $this->session->set_userdata('custType',$orgCheck['custType']);
             
         // set site_lang = 1 => english
         $this->session->set_userdata('site_lang', 1);

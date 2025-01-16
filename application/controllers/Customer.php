@@ -3605,6 +3605,36 @@ class Customer extends CI_Controller {
         $this->load->view('cust/prepaid_history', $data);
     }
 
+    public function favourate_item_list(){
+        $EID  = authuser()->EID;
+        $TableNo = $this->session->userdata('TableNo');
+        $CNo = $this->session->userdata('CNo');
+        $CustId = $this->session->userdata('CustId');
+        
+        if($CustId > 0){
+            $data['orders'] = $this->cust->getFavourateItemList($CustId);
+
+            // echo "<pre>";print_r($orders);die;
+        }
+
+        $data['title'] = $this->lang->line('favouriteItems');
+        $this->load->view('cust/favourate_item', $data);
+    }
+
+    public function rating_history(){
+        $EID  = authuser()->EID;
+        $TableNo = $this->session->userdata('TableNo');
+        $CNo = $this->session->userdata('CNo');
+        $CustId = $this->session->userdata('CustId');
+        
+        if($CustId > 0){
+            $data['orders'] = $this->cust->getRatingHistory($CustId);
+        }
+
+        $data['title'] = $this->lang->line('ratingHistory');
+        $this->load->view('cust/rating_history', $data);
+    }
+
     public function demo()
     {
         $this->load->view('demo');

@@ -60,47 +60,20 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
                         <table class="table table-hover table-sm">
                         <thead>
                           <tr>
-                            <th class="text-center"><?= $this->lang->line('billNo'); ?></th>
-                            <th class="text-center"><?= $this->lang->line('billDate'); ?></th>
-                            <th class="text-center"><?= $this->lang->line('billAmount'); ?></th>
-                            <th class="text-center"><?= $this->lang->line('paidAmount'); ?></th>
+                            <th class="text-left"><?= $this->lang->line('item'); ?></th>
+                            <th class=""><?= $this->lang->line('quantity'); ?></th>
                           </tr>
                         </thead>
                         <tbody id="order-details-table-body">
                             <?php 
-                            if(!empty($details)){
-                                $Pretotal   = 0;                               
-                                $Billtotal  = 0;
-                                foreach ($details as $key) {
-                                    $BillAmount = 0;
-                                    $PreAmount = 0;
-                                    if($key['BillId'] > 0){
-                                        $BillAmount = $key['Amount'];
-                                    }else{
-                                        $PreAmount = $key['Amount'];
-                                    }
-
-                                    $Pretotal   = $Pretotal + $PreAmount;
-                                    $Billtotal  = $Billtotal + $BillAmount;
+                            if(!empty($orders)){
+                                foreach ($orders as $key) {
                                  ?>
                                  <tr>
-                                    <td><?= $key['BillId']; ?></td>
-                                    <td><?= date('d-M-Y', strtotime($key['Created_at'])); ?></td>
-                                    <td><?= $BillAmount; ?></td>
-                                    <td><?= $PreAmount; ?></td>
+                                    <td class="text-left"><?= $key['ItemName']; ?></td>
+                                    <td><?= $key['avgRating']; ?></td>
                                 </tr>
-                            <?php } ?>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td><b><?= $Billtotal; ?></b></td>
-                                <td><b><?= $Pretotal; ?></b></td>
-                            </tr>
-                            <?php }else{ ?>
-                                <tr>
-                                    <td>No Records Found!!</td>
-                                </tr>
-                        <?php } ?>
+                            <?php } } ?>
                         </tbody>
                       </table>
                   </div>

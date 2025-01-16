@@ -1275,6 +1275,17 @@ class Cust extends CI_Model{
 
 		$langId = $this->session->userdata('site_lang');
         $lname = "cp.Name$langId";
+
+        if($this->session->userdata('custType') == 0){
+        	$this->db2->where_not_in('cp.PymtMode', array(25, 26));
+        }else if($this->session->userdata('custType') == 1){
+        	// 1=onaacount
+        	$this->db2->where_not_in('cp.PymtMode', array(26));
+        }else if($this->session->userdata('custType') == 2){
+        	// 1=prepaid
+        	$this->db2->where_not_in('cp.PymtMode', array(26));
+        }
+        
 		return $this->db2->select("cp.PymtMode, (case when $lname != '-' Then $lname ELSE cp.Name1 end) as Name, cp.Company, cp.CodePage1, cp.repeatable")
 						->order_by('cp.Rank', 'ASC')
 						->join('PymtModes pm', 'pm.PymtMode = cp.PymtMode', 'inner')
@@ -1668,6 +1679,37 @@ class Cust extends CI_Model{
 	{
 		return  $this->db2->get_where('rechargeHist', array('EID' => authuser()->EID, 'CustId' => $CustId))
 							->result_array();
+	}
+
+	public function getFavourateItemList($CustId){
+		$langId = $this->session->userdata('site_lang');
+        $iname = "mi.Name$langId as ItemName";
+
+		$EID = authuser()->EID;
+		
+		return $this->db2->select("sum(k.Qty) as Total, k.ItemId, $iname")
+					->order_by("Total", "DESC")
+					->group_by('k.ItemId')
+					->join('KitchenMain km', 'km.MCNo = k.MCNo', 'inner')
+					->join('MenuItem mi', 'mi.ItemId = k.ItemId', 'inner')
+					->get_where('Kitchen k', array('k.EID' => $EID, 'km.EID' => $EID, 'mi.EID' => $EID, 'k.Stat' => 3, 'k.CustId' => $CustId))
+					->result_array();
+	}
+
+	public function getRatingHistory($CustId){
+		$langId = $this->session->userdata('site_lang');
+        $iname = "mi.Name$langId as ItemName";
+
+		$EID = authuser()->EID;
+		
+		return $this->db2->select("avg(rd.ItemRtng) as avgRating, $iname")
+					->order_by("avgRating", "DESC")
+					->group_by('rd.ItemId')
+					->join('Ratings r', 'r.BillId = b.BillId', 'inner')
+					->join('RatingDet rd', 'rd.RCd = r.RCd', 'inner')
+					->join('MenuItem mi', 'mi.ItemId = rd.ItemId', 'inner')
+					->get_where('Billing b', array('b.EID' => $EID, 'r.EID' => $EID, 'mi.EID' => $EID, 'b.CustId' => $CustId))
+					->result_array();	
 	}
 	
 

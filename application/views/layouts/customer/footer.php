@@ -90,8 +90,10 @@ h6{
             <a href="#" class="dropdown-item" onclick="getEntertainment()"><?= $this->lang->line('entertainment'); ?></a>
             <?php } if($this->session->userdata('ratingHistory') > 0){ ?>
             <a href="#" class="dropdown-item" onclick="ratedDish()"><?= $this->lang->line('ratedDishes'); ?></a>
+            <a href="<?= base_url('customer/rating_history'); ?>" class="dropdown-item" ><?= $this->lang->line('ratingHistory'); ?></a>
             <?php } if($this->session->userdata('favoriteItems') > 0){ ?>
             <a href="#" class="dropdown-item" onclick="mostOrderDish()"><?= $this->lang->line('mostOrderDishes'); ?></a>
+            <a href="<?= base_url('customer/favourate_item_list'); ?>" class="dropdown-item" ><?= $this->lang->line('favouriteItems'); ?></a>
             <?php } ?>
         </div>
     </div>
