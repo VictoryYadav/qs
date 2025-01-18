@@ -191,7 +191,7 @@ $Charity = $this->session->userdata('Charity');
                                                             <a href="<?php echo base_url('restaurant/print/'.$key['BillId']); ?>" class='btn btn-warning btn-sm tippy-btn' title=" Print" data-tippy-placement="top">
                                                                 <i class="fas fa-print"></i>
                                                             </a>
-                                                            <button class="btn btn-sm btn-info tippy-btn" title="Cash Collect" data-tippy-placement="top" id="btnCash" onclick="cashCollect(<?= $key['BillId']; ?>,<?= $key['OType']; ?>,<?= $key['TableNo']; ?>,<?= $key['MergeNo']; ?>,'<?= $key['CellNo']; ?>',<?= $key['PaidAmt']; ?>,<?= $key['CNo']; ?>,<?= $key['EID']; ?>)"><i class="fas fa-money-check"></i>
+                                                            <button class="btn btn-sm btn-info tippy-btn" title="Cash Collect" data-tippy-placement="top" id="btnCash" onclick="cashCollect(<?= $key['BillId']; ?>,<?= $key['OType']; ?>,<?= $key['TableNo']; ?>,<?= $key['MergeNo']; ?>,'<?= $key['CellNo']; ?>',<?= $key['PaidAmt']; ?>,<?= $key['CNo']; ?>,<?= $key['EID']; ?>, '<?= $key['BillNo']; ?>')"><i class="fas fa-money-check"></i>
                                                             </button>
 
                                                 <?php if($this->session->userdata('AutoSettle') == 0){ ?>
@@ -237,7 +237,7 @@ $Charity = $this->session->userdata('Charity');
         <div class="modal-dialog">
             <div class="modal-content" >
                 <div class="modal-header">
-                    <h6><?= $this->lang->line('paymentCollection'); ?></h6>
+                    <h6><?= $this->lang->line('paymentCollection'); ?> [ <?= $this->lang->line('billNo'); ?> : <span id="billNo"></span> ]</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
@@ -1787,9 +1787,9 @@ $Charity = $this->session->userdata('Charity');
             });
         }
 
-        function cashCollect(billId, oType, tableNo, mergeNo, cellNo, paidAmt, MCNo,EID){
+        function cashCollect(billId, oType, tableNo, mergeNo, cellNo, paidAmt, MCNo,EID, billNo){
             var tbl = '<input type="hidden" id="cashBillId" name="BillId" value="'+billId+'" /><input type="hidden"  id="cashoType" name="oType" value="'+oType+'"/><input type="hidden" id="cashTableNo" name="TableNo" value="'+tableNo+'"/><input type="hidden" id="cashMCNo" name="MCNo" value="'+MCNo+'"/><input type="hidden" id="cashEID" name="EID" value="'+EID+'"/><input type="hidden" id="cashMergeNo" name="MergeNo" value="'+mergeNo+'"/><input type="hidden" id="cashCellNo" name="CellNo" value="'+cellNo+'"/><input type="hidden" id="cashTotBillAmt" name="TotBillAmt" value="'+paidAmt+'"/><input type="text" name="PaidAmt" value="'+convertToUnicodeNo(paidAmt)+'" required class="form-control form-control-sm" onblur="changeValue(this)" />';
-
+            $(`#billNo`).html(billNo);
             $('#cashBodyTd').html(tbl);
 
             $('#cashCollectModel').modal('show');

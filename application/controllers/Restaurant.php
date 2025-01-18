@@ -1641,7 +1641,7 @@ die;
                 $partyName = "p.Name$langId";
                 $kstat = ($this->session->userdata('kds') > 0)?5:0; 
 
-                $kitchenData = $this->db2->select("b.BillId, b.BillNo, sum(k.Qty) as Qty, k.OType, k.TPRefNo, k.TPId, km.CustId, k.CellNo, k.EID, k.DCd, km.CNo, (case when $partyName != '-' Then $partyName ELSE p.Name1 end) as thirdPartyName, k.KStat")
+                $kitchenData = $this->db2->select("b.BillId, concat(b.BillPrefix, b.BillNo, b.BillSuffix) as BillNo, sum(k.Qty) as Qty, k.OType, k.TPRefNo, k.TPId, km.CustId, k.CellNo, k.EID, k.DCd, km.CNo, (case when $partyName != '-' Then $partyName ELSE p.Name1 end) as thirdPartyName, k.KStat")
                                     ->order_by('b.BillId', 'Asc')
                                     ->group_by('b.BillId, k.DCd')
                                     ->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
@@ -3825,7 +3825,7 @@ die;
             
             $bill = array();
             $EID = authuser()->EID;
-             $bills = $this->db2->query("SELECT b.TableNo, b.MergeNo, b.BillId, b.BillNo, b.CNo, b.TotAmt, b.PaidAmt, b.CustId, b.EID, b.MergeNo, b.CellNo, b.CustId from Billing b where b.EID = $EID and b.MergeNo = '$mergeNo' and b.CNo = $MCNo $whr and b.payRest = 0")->result_array();
+             $bills = $this->db2->query("SELECT b.TableNo, b.MergeNo, b.BillId, concat(b.BillPrefix, b.BillNo, b.BillSuffix) as BillNo, b.CNo, b.TotAmt, b.PaidAmt, b.CustId, b.EID, b.MergeNo, b.CellNo, b.CustId from Billing b where b.EID = $EID and b.MergeNo = '$mergeNo' and b.CNo = $MCNo $whr and b.payRest = 0")->result_array();
 
             $data['sts'] = 0;
             if(!empty($bills)){
@@ -4344,7 +4344,7 @@ die;
             $data['gstno'] = $billData[0]['GSTno'];
             $data['fssaino'] = $billData[0]['FSSAINo'];
             $data['cinno'] = $billData[0]['CINNo'];
-            $data['billno'] = $billData[0]['BillNo'];
+            $data['billno'] = $billData[0]['BillPrefix'].$billData[0]['BillNo'].$billData[0]['BillSuffix'];
             $data['OType'] = $billData[0]['OType'];
             $data['dateOfBill'] = date('d-m-Y @ H:i', strtotime($billData[0]['BillDt']));
             $data['address'] = $billData[0]['Addr'];
@@ -4973,7 +4973,7 @@ echo "<pre>";print_r($_POST);die;
     public function print_pdf(){
         // https://stackoverflow.com/questions/37831516/dompdf-with-codeigniter
         $this->load->library('pdf');
-         $billId =17;
+        $billId =17;
         $data['billId'] = $billId;
 
         $EID = authuser()->EID;
@@ -9708,7 +9708,7 @@ echo "<pre>";print_r($_POST);die;
             $this->db2->where_in('RoleId', array(69, 70, 86, 120));
             $this->db2->update('UserRoles', array('Stat' => $configDt['custItems']) );
 
-            if($data['detail']['EType'] == 1){
+            if($EType == 1){
                 updateRecord('UserRoles', array('Stat' => 1), array('RoleId' => 17));
             }
             updateRecord('Config', $configDt, array('EID' => $EID) );
@@ -10377,11 +10377,58 @@ echo "<pre>";print_r($_POST);die;
 
                 $res = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo, $per_cent);
 
-                $lastBillNo = $this->db2->query("SELECT max(BillNo) as BillNo from Billing where EID = $EID")->row_array();
+                $lastBillNo = $this->db2->query("SELECT BillNo from Billing where EID = $EID order by BillId DESC limit 1")->row_array();
 
-                if ($lastBillNo['BillNo'] == '') {
-                    $newBillNo = 1;
-                } else {
+                $resetBillNo    = $kitcheData[0]['resetBillNo'];
+                $resetBillMonth = $kitcheData[0]['resetBillMonth'];
+                $resetBillFlag  = $kitcheData[0]['resetBillFlag'];
+                
+                // set bill no
+                if($resetBillFlag == 0){
+                // yearly
+                    if($resetBillNo == 3 && $resetBillMonth > 0)
+                    {
+                        $cur_month = date('m');
+                        
+                        if($cur_month == $resetBillMonth){
+                            $checkBill = $this->checkBillCurrentMonth();
+                            if(empty($checkBill)){
+                                $newBillNo = 1; 
+                                updateRecord('Config', array('resetBillFlag' => 1), array('EID' => $EID) );                     
+                            }else{
+                                $newBillNo = $lastBillNo['BillNo'] + 1;
+                            }
+                        }else{
+                            $newBillNo = $lastBillNo['BillNo'] + 1;
+                        }
+                    }else{
+                        // monthly
+                        if($resetBillNo == 2)
+                        {
+                            $checkBill = $this->checkBillCurrentMonth();
+                            if(empty($checkBill)){
+                                $newBillNo = 1; 
+                                updateRecord('Config', array('resetBillFlag' => 1, array('EID' => $EID)));                      
+                            }else{
+                                $newBillNo = $lastBillNo['BillNo'] + 1;
+                            }
+                        }else{
+                            // daily
+                            if($resetBillNo == 1)
+                            {
+                                $checkBill = $this->checkBillCurrentDay();
+                                if(empty($checkBill)){
+                                    $newBillNo = 1; 
+                                    updateRecord('Config', array('resetBillFlag' => 1, array('EID' => $EID)));                      
+                                }else{
+                                    $newBillNo = $lastBillNo['BillNo'] + 1;
+                                }
+                            }else{
+                                $newBillNo = $lastBillNo['BillNo'] + 1;
+                            }
+                        }
+                    }
+                }else{
                     $newBillNo = $lastBillNo['BillNo'] + 1;
                 }
 
@@ -10553,6 +10600,19 @@ echo "<pre>";print_r($_POST);die;
             }
         } // end for loop
         // redirect(base_url('restaurant/split_bills'));
+    }
+
+    public function checkBillCurrentMonth(){
+        $EID = authuser()->EID;
+        $year = date('Y');
+        $month = date('m');
+        return $this->db2->query("SELECT BillId FROM `Billing` WHERE year(billTime) = '$year' and month(billTime) = '$month' and EID = $EID ")->row_array();
+    }
+    
+    public function checkBillCurrentDay(){
+        $EID = authuser()->EID;
+        $today = date('Y-m-d');
+        return $this->db2->query("SELECT BillId FROM `Billing` WHERE date(billTime) = '$today' and EID = $EID ")->row_array();
     }
 
     public function get_portion_itemtype(){

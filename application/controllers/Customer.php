@@ -1410,7 +1410,7 @@ class Customer extends CI_Controller {
             $data['gstno'] = $billData[0]['GSTno'];
             $data['fssaino'] = $billData[0]['FSSAINo'];
             $data['cinno'] = $billData[0]['CINNo'];
-            $data['billno'] = $billData[0]['BillNo'];
+            $data['billno'] = $billData[0]['BillPrefix'].$billData[0]['BillNo'].$billData[0]['BillSuffix'];
             $data['dateOfBill'] = date('d-M-Y @ H:i', strtotime($billData[0]['BillDt']));
             $data['address'] = $billData[0]['Addr'];
             $data['pincode'] = $billData[0]['Pincode'];
@@ -3104,11 +3104,58 @@ class Customer extends CI_Controller {
 
                 $res = taxCalculateData($kitcheData, $EID, $CNo, $MergeNo, $per_cent);
 
-                $lastBillNo = $this->db2->query("SELECT max(BillNo) as BillNo from Billing where EID = $EID")->row_array();
+                $lastBillNo = $this->db2->query("SELECT BillNo from Billing where EID = $EID order by BillId DESC limit 1")->row_array();
 
-                if ($lastBillNo['BillNo'] == '') {
-                    $newBillNo = 1;
-                } else {
+                $resetBillNo    = $kitcheData[0]['resetBillNo'];
+                $resetBillMonth = $kitcheData[0]['resetBillMonth'];
+                $resetBillFlag  = $kitcheData[0]['resetBillFlag'];
+                
+                // set bill no
+                if($resetBillFlag == 0){
+                // yearly
+                    if($resetBillNo == 3 && $resetBillMonth > 0)
+                    {
+                        $cur_month = date('m');
+                        
+                        if($cur_month == $resetBillMonth){
+                            $checkBill = $this->checkBillCurrentMonth();
+                            if(empty($checkBill)){
+                                $newBillNo = 1; 
+                                updateRecord('Config', array('resetBillFlag' => 1), array('EID' => $EID) );                     
+                            }else{
+                                $newBillNo = $lastBillNo['BillNo'] + 1;
+                            }
+                        }else{
+                            $newBillNo = $lastBillNo['BillNo'] + 1;
+                        }
+                    }else{
+                        // monthly
+                        if($resetBillNo == 2)
+                        {
+                            $checkBill = $this->checkBillCurrentMonth();
+                            if(empty($checkBill)){
+                                $newBillNo = 1; 
+                                updateRecord('Config', array('resetBillFlag' => 1, array('EID' => $EID)));                      
+                            }else{
+                                $newBillNo = $lastBillNo['BillNo'] + 1;
+                            }
+                        }else{
+                            // daily
+                            if($resetBillNo == 1)
+                            {
+                                $checkBill = $this->checkBillCurrentDay();
+                                if(empty($checkBill)){
+                                    $newBillNo = 1; 
+                                    updateRecord('Config', array('resetBillFlag' => 1, array('EID' => $EID)));                      
+                                }else{
+                                    $newBillNo = $lastBillNo['BillNo'] + 1;
+                                }
+                            }else{
+                                $newBillNo = $lastBillNo['BillNo'] + 1;
+                            }
+                        }
+                    }
+                }else{
                     $newBillNo = $lastBillNo['BillNo'] + 1;
                 }
 
