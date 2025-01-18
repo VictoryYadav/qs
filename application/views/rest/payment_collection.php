@@ -97,11 +97,8 @@
         <div class="modal fade bs-example-modal-center billingModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header" style="background: #e1af75;color: #fff;">
                     <h5 class="modal-title align-self-center mt-0" id="exampleModalLabel"><?= $this->lang->line('bill'); ?> <?= $this->lang->line('details'); ?></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="row">

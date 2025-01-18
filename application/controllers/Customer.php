@@ -2186,6 +2186,7 @@ class Customer extends CI_Controller {
         $data['MCNo'] = $MCNo;
         $data['billAmt'] = 0;
         $bills = getRecords('Billing', array('BillId' => $BillId, 'EID' => $EID));
+        $data['billNo'] = $bills['BillPrefix'].$bills['BillNo'].$bills['BillSuffix'];
         if(!empty($bills)){
             $data['payable'] = $bills['PaidAmt'];
             $data['billAmt'] = $bills['PaidAmt'];

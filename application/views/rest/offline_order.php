@@ -236,11 +236,8 @@ $Charity = $this->session->userdata('Charity');
     <div class="modal" id="cashCollectModel">
         <div class="modal-dialog">
             <div class="modal-content" >
-                <div class="modal-header">
+                <div class="modal-header" style="background: #e1af75;color: #fff;">
                     <h6><?= $this->lang->line('paymentCollection'); ?> [ <?= $this->lang->line('billNo'); ?> : <span id="billNo"></span> ]</h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body" style="max-height: 500px;overflow: auto;">
                     <div class="row">
@@ -319,7 +316,7 @@ $Charity = $this->session->userdata('Charity');
     <div class="modal fade bs-example-modal-center offersModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header" style="background: #e1af75;color: #000;">
+                <div class="modal-header" style="background: #e1af75;color: #fff;">
                     <h5 class="modal-title align-self-center mt-0" id="exampleModalLabel"><?= $this->lang->line('offers'); ?></h5>
                 </div>
                 <div class="modal-body">
@@ -345,7 +342,7 @@ $Charity = $this->session->userdata('Charity');
     <div class="modal fade bs-example-modal-center customOfferModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header" style="background: #e1af75;">
+                <div class="modal-header" style="background: #e1af75;color: #fff;">
                     <h5 class="modal-title align-self-center mt-0" id="exampleModalLabel"><?= $this->lang->line('customization'); ?></h5>
                 </div>
                 <div class="modal-body">
@@ -378,7 +375,7 @@ $Charity = $this->session->userdata('Charity');
     <div class="modal fade bs-example-modal-center mobileModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header" style="background: #e1af75;">
+                <div class="modal-header" style="background: #e1af75;color: #fff;">
                     <h5 class="modal-title align-self-center mt-0" id="exampleModalLabel"><?= $this->lang->line('mobile'); ?></h5>
                 </div>
                 <div class="modal-body">
@@ -412,7 +409,7 @@ $Charity = $this->session->userdata('Charity');
     <div class="modal" id="billBasedModal">
         <div class="modal-dialog">
             <div class="modal-content" >
-                <div class="modal-header" style="background: #e1af75;">
+                <div class="modal-header" style="background: #e1af75;color: #fff;">
                     <h6><?= $this->lang->line('bill'); ?> <?= $this->lang->line('offers'); ?></h6>
                 </div>
                 <div class="modal-body" style="max-height: 500px;overflow: auto;">
@@ -447,7 +444,7 @@ $Charity = $this->session->userdata('Charity');
     <div class="modal" id="RecommendationModal">
         <div class="modal-dialog">
             <div class="modal-content" >
-                <div class="modal-header" style="background: #e1af75;color: #000;">
+                <div class="modal-header" style="background: #e1af75;color: #fff;">
                     <h6 id="recomTitle"><?= $this->lang->line('recommendation'); ?></h6>
                 </div>
                 <div class="modal-body" style="max-height: 500px;overflow: auto;">

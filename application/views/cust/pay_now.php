@@ -30,7 +30,7 @@ body{
 
             <div class="row">
                 <div class="col-md-4 col-10">
-                    <span><?php echo  $this->lang->line('bilNo'); ?> : <b><?= convertToUnicodeNumber($BillId); ?></b> &nbsp;<?php echo  $this->lang->line('billDate'); ?> : <b><?= date('d-M-Y'); ?></b> </span><span></span><?php echo  $this->lang->line('payable'); ?>: <b id="payable"><?= convertToUnicodeNumber(round($payable)); ?></b>
+                    <span><?php echo  $this->lang->line('bilNo'); ?> : <b><?= convertToUnicodeNumber($billNo); ?></b> &nbsp;<?php echo  $this->lang->line('billDate'); ?> : <b><?= date('d-M-Y'); ?></b> </span><span></span><?php echo  $this->lang->line('payable'); ?>: <b id="payable"><?= convertToUnicodeNumber(round($payable)); ?></b>
                     </span>
                     
                     <input type="hidden" id="payableAmt" value="<?= round($payable); ?>">

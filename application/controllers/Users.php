@@ -385,7 +385,7 @@ class Users extends CI_Controller {
             $data['fssaino'] = $billData[0]['FSSAINo'];
             $data['cinno'] = $billData[0]['CINNo'];
             $data['CellNo'] = $billData[0]['CellNo'];
-            $data['billno'] = $billData[0]['BillNo'];
+            $data['billno'] = $billData[0]['BillPrefix'].$billData[0]['BillNo'].$billData[0]['BillSuffix'];
             $data['dateOfBill'] = date('d-m-Y @ H:i', strtotime($billData[0]['BillDt']));
             $data['address'] = $billData[0]['Addr'];
             $data['pincode'] = $billData[0]['Pincode'];

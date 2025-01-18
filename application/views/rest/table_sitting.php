@@ -457,7 +457,7 @@ width: 100%;*/
         <div class="modal-dialog">
             <div class="modal-content">
                 <!-- Modal Header -->
-                <div class="modal-header text-center" style="background-color: #51519a !important;color: #FFF;">
+                <div class="modal-header text-center" style="background: #e1af75;color: #fff;">
                     <h6>NEW ORDERS</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true" style="color: #FFF;">&times;</span>
@@ -487,7 +487,7 @@ width: 100%;*/
     <div class="modal" id="merge_table_modal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header text-center">
+                <div class="modal-header text-center" style="background: #e1af75;color: #fff;">
                     <h6><?= $this->lang->line('tableJoinUnjoin'); ?></h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
@@ -554,7 +554,7 @@ width: 100%;*/
     <div class="modal" id="move_table_modal">
         <div class="modal-dialog">
             <div class="modal-content" >
-                <div class="modal-header">
+                <div class="modal-header" style="background: #e1af75;color: #fff;">
                     <h6><?= $this->lang->line('moveTable'); ?></h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
@@ -603,11 +603,8 @@ width: 100%;*/
     <div class="modal" id="combine_modal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header text-center">
+                <div class="modal-header text-center" style="background: #e1af75;color: #fff;">
                     <h6><?= $this->lang->line('tableAmount'); ?></h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body" style="max-height: 500px;overflow: auto;">
                     <div class="table-responsive">
@@ -641,11 +638,8 @@ width: 100%;*/
     <div class="modal" id="billModel">
         <div class="modal-dialog">
             <div class="modal-content" >
-                <div class="modal-header">
+                <div class="modal-header" style="background: #e1af75;color: #fff;">
                     <h6><?= $this->lang->line('billOptions'); ?></h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body" style="max-height: 500px;overflow: auto;">
                     <div class="table-responsive">
@@ -671,11 +665,8 @@ width: 100%;*/
     <div class="modal" id="cashCollectModel">
         <div class="modal-dialog">
             <div class="modal-content" >
-                <div class="modal-header">
+                <div class="modal-header" style="background: #e1af75;color: #fff;">
                     <h6><?= $this->lang->line('paymentCollection'); ?></h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body" style="max-height: 500px;overflow: auto;">
                     <div class="row mb-2">
@@ -738,11 +729,8 @@ width: 100%;*/
     <div class="modal" id="billDiscountModel">
         <div class="modal-dialog">
             <div class="modal-content" >
-                <div class="modal-header">
+                <div class="modal-header" style="background: #e1af75;color: #fff;">
                     <h6><?= $this->lang->line('bill'); ?> <?= $this->lang->line('discount'); ?></h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body" style="max-height: 500px;overflow: auto;">
                     <form method="post" id="billDiscForm">
@@ -765,11 +753,8 @@ width: 100%;*/
     <div class="modal" id="billBasedModal">
         <div class="modal-dialog">
             <div class="modal-content" >
-                <div class="modal-header">
+                <div class="modal-header" style="background: #e1af75;color: #fff;">
                     <h6><?= $this->lang->line('bill'); ?> <?= $this->lang->line('offers'); ?></h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body" style="max-height: 500px;overflow: auto;">
                     <form method="post" id="billBasedForm">

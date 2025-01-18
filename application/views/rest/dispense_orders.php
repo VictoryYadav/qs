@@ -200,9 +200,9 @@
     <div class="modal fade" id="deliveryModal" role="dialog">
         <div class="modal-dialog modal-sm">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header" style="background: #e1af75;color: #fff;">
             <h4 class="modal-title order_deliver_header"><?= $this->lang->line('deliveryOTP'); ?></h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            
             </div>
             <div class="modal-body" style="padding: 1.3rem;">
             <form style="margin-bottom: 1px;place-content: center;" method="post" id="otpForm">
