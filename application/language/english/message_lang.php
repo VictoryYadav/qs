@@ -12,7 +12,7 @@ $lang['print'] = 'Print';
 $lang['mergeorder'] = 'Merge Order';
 $lang['splitbill'] = 'Split Bill';
 $lang['rating'] = 'Rating';
-$lang['avgGroupRating'] = 'Avg Group Rating';
+$lang['avgRating'] = 'Avg Rating';
 $lang['sharerating'] = 'Share Rating';
 $lang['transactions'] = 'Transactions';
 $lang['reservetable'] = 'Reserve Table';
@@ -193,7 +193,7 @@ $lang['del'] 				= 'Del';
 $lang['tableView'] 			= 'Table View';
 $lang['qqty'] 				= 'OQty';
 $lang['edt'] 				= 'EDT';
-$lang['visitNo'] 			= 'Vist No';
+$lang['visitNo'] 			= 'Visit(s)';
 $lang['fromTime'] 			= 'From Time';
 $lang['tableJoinUnjoin'] 	= 'TABLE - JOIN/UNJOIN';
 $lang['join'] 				= 'Join';
@@ -628,9 +628,10 @@ $lang['insufficentBalance']		= 'Insufficent Balance';
 $lang['selectedItemsDelivered']	= 'Selected Items Delivered';
 
 $lang['mostOrderDishes']		= 'Most Order Dishes';
-$lang['ratedDishes']			= 'Rated Dishes';
+$lang['ratedDishes']			= 'Highest Rated Dishes';
 $lang['noofTimesOrder']			= 'No of Times Order';
 $lang['top5']					= 'Top 5';
+$lang['top10']					= 'Top 10';
 
 $lang['no']						= 'No';
 $lang['based']					= 'Based';
@@ -660,6 +661,19 @@ $lang['inventory']				= 'Inventory';
 $lang['location']				= 'Location';
 
 $lang['rawMaterial']			= 'Raw Material';
+
+$lang['daily']					= 'Daily';
+$lang['monthly']				= 'Monthly';
+$lang['yearly']					= 'Yearly';
+$lang['none']					= 'None';
+$lang['BillPrefix']				= 'Bill Prefix';
+$lang['BillSuffix']				= 'Bill Suffix';
+$lang['resetKOT']				= 'Reset KOT';
+$lang['resetBillNo']			= 'Reset BillNo';
+$lang['resetBillMonth']			= 'Bill Reset Month';
+
+$lang['january']				= 'January';
+$lang['april']					= 'April';
 
 
 

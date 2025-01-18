@@ -90,10 +90,9 @@ h6{
             <a href="#" class="dropdown-item" onclick="getEntertainment()"><?= $this->lang->line('entertainment'); ?></a>
             <?php } if($this->session->userdata('ratingHistory') > 0){ ?>
             <a href="#" class="dropdown-item" onclick="ratedDish()"><?= $this->lang->line('ratedDishes'); ?></a>
-            <a href="<?= base_url('customer/rating_history'); ?>" class="dropdown-item" ><?= $this->lang->line('ratingHistory'); ?></a>
+            <!-- <a href="<?= base_url('customer/rating_history'); ?>" class="dropdown-item" ><?= $this->lang->line('ratingHistory'); ?></a> -->
             <?php } if($this->session->userdata('favoriteItems') > 0){ ?>
             <a href="#" class="dropdown-item" onclick="mostOrderDish()"><?= $this->lang->line('mostOrderDishes'); ?></a>
-            <a href="<?= base_url('customer/favourate_item_list'); ?>" class="dropdown-item" ><?= $this->lang->line('favouriteItems'); ?></a>
             <?php } ?>
         </div>
     </div>
@@ -194,14 +193,14 @@ h6{
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header" style="background: #dbbd89;">
-                <p class="modal-title offers-txt text-white"><?= $this->lang->line('mostOrderDishes'); ?>  <?= $this->lang->line('visitNo'); ?><span id="siteVisits"></span></p>
+                <p class="modal-title offers-txt text-white"><?= $this->lang->line('mostOrderDishes'); ?> <span id="siteVisits"></span></p>
          </div>
           <div class="modal-body">
             <div class="table-responsive">
               <table class="table table-sm">
                 <thead>
                     <tr>
-                        <th><?= $this->lang->line('item'); ?> <?= $this->lang->line('name'); ?> [<small><?= $this->lang->line('top5'); ?></small>]</th>
+                        <th><?= $this->lang->line('item'); ?> <?= $this->lang->line('name'); ?> [<small><?= $this->lang->line('top10'); ?></small>]</th>
                         <th><?= $this->lang->line('noofTimesOrder'); ?></th>
                     </tr>
                 </thead>
@@ -219,16 +218,16 @@ h6{
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header" style="background: #dbbd89;">
-                <p class="modal-title offers-txt text-white"><?= $this->lang->line('mostOrderDishes'); ?></p>
+                <p class="modal-title offers-txt text-white"><?= $this->lang->line('ratedDishes'); ?></p>
          </div>
           <div class="modal-body">
             <div class="table-responsive">
               <table class="table table-sm">
                 <thead>
                     <tr>
-                        <th><?= $this->lang->line('item'); ?> <?= $this->lang->line('name'); ?> [<small><?= $this->lang->line('top5'); ?></small>]</th>
+                        <th><?= $this->lang->line('item'); ?> <?= $this->lang->line('name'); ?> [<small><?= $this->lang->line('top10'); ?></small>]</th>
                         <th><?= $this->lang->line('rating'); ?></th>
-                        <th><?= $this->lang->line('avgGroupRating'); ?></th>
+                        <th><?= $this->lang->line('avgRating'); ?></th>
                     </tr>
                 </thead>
                 <tbody id="ratedBody">
@@ -258,6 +257,7 @@ h6{
         }
 
         function mostOrderDish(){
+            var visit = "<?= $this->lang->line('visitNo'); ?>";
             $.post('<?= base_url('customer/get_rated_dishes') ?>',{type:'most'}, function(res){
                 if(res.status == 'success'){
                     var data = res.response;
@@ -266,10 +266,10 @@ h6{
                         data.forEach((item, index) => {
                             temp += `<tr>
                                         <td>${item.ItemName}</td>
-                                        <td>${item.order_count}</td>
+                                        <td>${item.Total}</td>
                                     </tr>`;
                         });
-                        $(`#siteVisits`).html(` (${data[0].siteVisit})`);
+                        $(`#siteVisits`).html(` (${data[0].siteVisit} ${visit})`);
                         $(`#orderBody`).html(temp);
                         $(`#mostOrderDishes_modal`).modal('show');
                     }           

@@ -231,7 +231,7 @@ class Customer extends CI_Controller {
             $Rmks = "mi.Rmks$langId";
             $ipname = "ip.Name$langId";
            
-            $items = $this->db2->query("SELECT mc.TaxType, mc.DCd, mi.KitCd, mc.CTyp, mi.ItemId, mi.ItemTyp, mi.NV, mi.PckCharge, (case when $lname != '-' Then $lname ELSE mi.Name1 end) as ItemNm, (case when $ItmDesc != '-' Then $ItmDesc ELSE mi.ItmDesc1 end) as ItmDesc , (case when $ingeredients != '-' Then $ingeredients ELSE mi.Ingeredients1 end) as Ingeredients, (case when $Rmks != '-' Then $Rmks ELSE mi.Rmks1 end) as Rmks, (case when $ipname != '-' Then $ipname ELSE ip.Name1 end) as portionName, mir.Itm_Portion, mi.PrepTime, mi.AvgRtng, mi.FID, mi.ItemAttrib, mi.ItemSale, mi.ItemTag, mi.Name1 as imgSrc, mi.UItmCd, mi.CID, mi.MCatgId, mi.videoLink, mir.OrigRate,  et.TblTyp FROM MenuItem mi, MenuCatg mc, ItemPortions ip, MenuItemRates mir, Eat_tables et  where  mi.MCatgId = mc.MCatgId and ip.IPCd = mir.Itm_Portion and mir.ItemId = mi.ItemId and et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = $tableNo AND et.EID = $EID AND mir.EID = $EID AND mir.ItemId = mi.ItemId and mi.Stat = 0 and mi.Name1 like '%$itemName%'  and (DAYOFWEEK(CURDATE()) = mi.DayNo OR mi.DayNo = 8)  AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) AND mc.EID= $EID AND mi.EID=$EID ORDER BY mi.Name1 ASC,mir.OrigRate ASC")->result_array();
+            $items = $this->db2->query("SELECT mc.TaxType, mc.DCd, mi.KitCd, mc.CTyp, mi.ItemId, mi.ItemTyp, mi.NV, mi.PckCharge, (case when $lname != '-' Then $lname ELSE mi.Name1 end) as ItemNm, (case when $ItmDesc != '-' Then $ItmDesc ELSE mi.ItmDesc1 end) as ItmDesc , (case when $ingeredients != '-' Then $ingeredients ELSE mi.Ingeredients1 end) as Ingeredients, (case when $Rmks != '-' Then $Rmks ELSE mi.Rmks1 end) as Rmks, (case when $ipname != '-' Then $ipname ELSE ip.Name1 end) as portionName, mir.Itm_Portion, mi.PrepTime,  IFNULL((select round(avg(rd1.ItemRtng), 1)  from RatingDet rd1 where rd1.ItemId = mi.ItemId ), mi.avgRtng) as AvgRtng, mi.FID, mi.ItemAttrib, mi.ItemSale, mi.ItemTag, mi.Name1 as imgSrc, mi.UItmCd, mi.CID, mi.MCatgId, mi.videoLink, mir.OrigRate,  et.TblTyp FROM MenuItem mi, MenuCatg mc, ItemPortions ip, MenuItemRates mir, Eat_tables et  where  mi.MCatgId = mc.MCatgId and ip.IPCd = mir.Itm_Portion and mir.ItemId = mi.ItemId and et.SecId = mir.SecId and mir.OrigRate > 0 and et.TableNo = $tableNo AND et.EID = $EID AND mir.EID = $EID AND mir.ItemId = mi.ItemId and mi.Stat = 0 and mi.Name1 like '%$itemName%'  and (DAYOFWEEK(CURDATE()) = mi.DayNo OR mi.DayNo = 8)  AND (IF(ToTime < FrmTime, (CURRENT_TIME() >= FrmTime OR CURRENT_TIME() <= ToTime) ,(CURRENT_TIME() >= FrmTime AND CURRENT_TIME() <= ToTime)) OR IF(AltToTime < AltFrmTime, (CURRENT_TIME() >= AltFrmTime OR CURRENT_TIME() <= AltToTime) ,(CURRENT_TIME() >= AltFrmTime AND CURRENT_TIME() <= AltToTime))) AND mc.EID= $EID AND mi.EID=$EID ORDER BY mi.Name1 ASC,mir.OrigRate ASC")->result_array();
             
             if (!empty($items)) {
 
@@ -3539,23 +3539,18 @@ class Customer extends CI_Controller {
 
             $status = 'success';
             if($_POST['type'] == 'most'){
-
-                $response = $this->db2->select("count(k.ItemId) as order_count, $lname, (select count(km.CNo) from KitchenMain km where km.EID = $EID and km.CustId = $CustId ) as siteVisit")
-                                ->order_by('order_count', 'DESC')
-                                ->group_by('k.ItemId')
-                                ->join('MenuItem m', 'm.ItemId = k.ItemId', 'inner')
-                                ->limit(5)
-                                ->get_where('Kitchen k', array('k.EID' => $EID, 'k.CustId' => $CustId))
-                                ->result_array();
+                $response = $this->cust->getFavourateItemList($CustId);
             }else if($_POST['type'] == 'rated'){
-                $response = $this->db2->select("round(AVG(rd.ItemRtng), 2) myrating, r.BillId, rd.ItemId, $lname, IFNULL((select round(avg(rd1.ItemRtng), 2) from RatingDet rd1, Ratings r1 where rd1.ItemId = rd.ItemId and r1.BillId=r.BillId and r1.CustId != r.CustId), '-') as avgGRPRtng") 
+                $response = $this->db2->select("rd.ItemId, round(AVG(rd.ItemRtng), 2) myrating, r.BillId, rd.ItemId, $lname, IFNULL((select round(avg(rd1.ItemRtng), 2) from RatingDet rd1, Ratings r1 where rd1.ItemId = rd.ItemId and r1.EID=51 and r1.RCd =r.RCd  ), 0) as avgGRPRtng") 
                                 ->order_by('myrating', 'DESC')
                                 ->group_by('rd.ItemId')
-                                ->join('RatingDet rd', 'rd.RCd = r.Rcd', 'inner')
+                                ->join('Ratings r', 'r.BillId = b.BillId', 'inner')
+                                ->join('RatingDet rd', 'rd.RCd = r.RCd', 'inner')
                                 ->join('MenuItem m', 'm.ItemId = rd.ItemId', 'inner')
-                                ->limit(5)
-                                ->get_where('Ratings r', array('r.EID' => $EID, 'r.CustId' => $CustId))
+                                ->limit(10)
+                                ->get_where('Billing b', array('b.EID' => $EID, 'r.EID' => $EID, 'b.CustId' => $CustId))
                                 ->result_array();
+
             }else if($_POST['type'] == 'ent'){
                 $response = $this->cust->getEntertainmentList();
             }else if($_POST['type'] == 'offers'){

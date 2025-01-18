@@ -22,6 +22,8 @@
     $fssaino = $billData[0]['FSSAINo'];
     $cinno = $billData[0]['CINNo'];
     $billno = $billData[0]['BillNo'];
+    $BillPrefix = $billData[0]['BillPrefix'];
+    $BillSuffix = $billData[0]['BillSuffix'];
     $orderdate = $billData[0]['BillDt'];
     $date = new DateTime($orderdate);
     $dateOfBill = $date->format('d-M-Y @ H:i');
@@ -97,7 +99,7 @@
 
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <p style="margin-bottom: unset;font-size: 15px !important;">Bill No: <b><?= $billno ?></b></p>
+                                                        <p style="margin-bottom: unset;font-size: 15px !important;">Bill No: <b><?= $BillPrefix.$billno.$BillSuffix; ?></b></p>
                                                     </div>
                                                     <?php if($this->session->userdata('billPrintTableNo') > 0 && $TableNo < 100 && ($this->session->userdata('EType') == 5)) { ?>
                                                     <div class="col-6" style="text-align: right;">

@@ -98,6 +98,58 @@
                                                     </select>
                                                     </div>
                                                 </div>
+                                                <?php
+                                                $ar = array(0 => $this->lang->line('none'),1 => $this->lang->line('daily'),2 => $this->lang->line('monthly'),3 => $this->lang->line('yearly'));
+                                                 ?>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('resetKOT'); ?></label>
+                                                        <select name="ResetKOT" id="ResetKOT" class="form-control form-control-sm">
+                                                            <?php
+                                                            foreach ($ar as $key => $value) { ?>
+                                                                <option value="<?= $key; ?>" <?php if($detail['ResetKOT'] == $key){ echo 'selected'; } ?> ><?= $value; ?></option>
+                                                           <?php  } ?>
+                                                    </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('resetBillNo'); ?></label>
+                                                        <select name="resetBillNo" id="resetBillNo" class="form-control form-control-sm" onchange="setPrefix()">
+
+                                                            <?php
+                                                            foreach ($ar as $key => $value) { ?>
+                                                                <option value="<?= $key; ?>" <?php if($detail['resetBillNo'] == $key){ echo 'selected'; } ?> ><?= $value; ?></option>
+                                                           <?php  } ?>
+                                                    </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('BillPrefix'); ?></label>
+                                                        <input type="text" name="BillPrefix" id="BillPrefix" class="form-control form-control-sm" value="<?= $detail['BillPrefix']; ?>" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('BillSuffix'); ?></label>
+                                                        <input type="text" name="BillSuffix" id="BillSuffix" class="form-control form-control-sm" value="<?= $detail['BillSuffix']; ?>" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('resetBillMonth'); ?></label>
+                                                        <select name="resetBillMonth" id="resetBillMonth" class="form-control form-control-sm" >
+                                                            <option value="0"><?= $this->lang->line('none'); ?></option>
+                                                            <option value="1" <?php if($detail['resetBillMonth'] == 1){ echo 'selected'; } ?>><?= $this->lang->line('january'); ?></option>
+                                                            <option value="4" <?php if($detail['resetBillMonth'] == 4){ echo 'selected'; } ?>><?= $this->lang->line('april'); ?></option>
+                                                    </select>
+                                                    </div>
+                                                </div>
 
                                             </div>
                                             <hr>
@@ -456,6 +508,24 @@
     $(document).ready(function () {
         
     });
+
+    function setPrefix(){
+        var resetBillNo = $(`#resetBillNo`).val();
+        if(resetBillNo > 0){
+            $(`#BillPrefix`).prop('required', true);
+            // $(`#BillSuffix`).prop('required', true);
+            if(resetBillNo == 3){
+                $(`#resetBillMonth`).prop('required', true);    
+            }else{
+                $(`#resetBillMonth`).prop('required', false);
+            }
+        }else{
+            $(`#BillPrefix`).prop('required', false);
+            // $(`#BillSuffix`).prop('required', false);
+            $(`#resetBillMonth`).prop('required', false);
+            
+        }
+    }
 
     $('#configForm').on('submit', function(e){
         e.preventDefault();

@@ -27,7 +27,29 @@ class Restaurant extends CI_Controller {
 	}
 
     public function index1(){
+
+        $resetBillNo = 3;
+        $resetBillMonth = 1;
+        // set bill no
+        if($resetBillNo == 3 && $resetBillMonth > 0)
+        {
+            $today = date('Y-m-d');
+            $cur_month = date('m');
+            $cur_day = date('d');
+            if($cur_month == $resetBillMonth){
+
+            }
+            echo "<pre>";
+            print_r($cur_month);
+            echo "<br>";
+            print_r($cur_day);
+            echo "<br>";
+            print_r($today);
+        }
+
+die;
         // $folderPath = '/var/www/eo.vtrend.org/public_html/uploads/e'.authuser()->EID;
+
         $d = FCPATH.'public_html\uploads\e51';
         print_r($d);
         echo "<br>";
@@ -4837,7 +4859,7 @@ echo "<pre>";print_r($_POST);die;
             $data['gstno'] = $billData[0]['GSTno'];
             $data['fssaino'] = $billData[0]['FSSAINo'];
             $data['cinno'] = $billData[0]['CINNo'];
-            $data['billno'] = $billData[0]['BillNo'];
+            $data['billno'] = $billData[0]['BillPrefix'].$billData[0]['BillNo'].$billData[0]['BillSuffix'];
             $data['dateOfBill'] = date('d-M-Y @ H:i', strtotime($billData[0]['BillDt']));
             $data['address'] = $billData[0]['Addr'];
             $data['pincode'] = $billData[0]['Pincode'];
@@ -9588,6 +9610,7 @@ echo "<pre>";print_r($_POST);die;
         if($EType == 1){ $data['EType1'] =  'disabled'; }
 
         $data['detail'] = getRecords('Config',array('EID' => $EID));
+        $data['months'] = $this->rest->getMonthList();
 
         if($this->input->method(true)=='POST'){
             $status = "success";
@@ -9636,8 +9659,14 @@ echo "<pre>";print_r($_POST);die;
             $configDt['ratingHistory']  = !isset($_POST['ratingHistory'])?0:1;
             $configDt['favoriteItems']  = !isset($_POST['favoriteItems'])?0:1;
             $configDt['Rating']         = !isset($_POST['Rating'])?0:1;
-            $configDt['custType']       = !isset($_POST['custType'])?0:1;
+            $configDt['custType']       = $_POST['custType'];
 
+            $configDt['ResetKOT']       = $_POST['ResetKOT'];
+            $configDt['resetBillNo']    = $_POST['resetBillNo'];
+            $configDt['BillPrefix']     = !empty($_POST['BillPrefix'])?$_POST['BillPrefix']:0;
+            $configDt['BillSuffix']     = !empty($_POST['BillSuffix'])?$_POST['BillSuffix']:0;
+            $configDt['resetBillMonth'] = !empty($_POST['resetBillMonth'])?$_POST['resetBillMonth']:0;
+            
             $rls = ($configDt['custType'] > 0)?0:1;
             $this->db2->where_in('RoleId', array(78));
             $this->db2->update('UserRoles', array('Stat' => $rls) );

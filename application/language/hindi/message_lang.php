@@ -12,7 +12,7 @@ $lang['print'] 			= 'छपाई';
 $lang['mergeorder'] 	= 'मर्ज आदेश';
 $lang['splitbill'] 		= 'विभाजित बिल';
 $lang['rating'] 		= 'रेटिंग';
-$lang['avgGroupRating'] = 'Avg Group Rating';
+$lang['avgRating'] = 'Avg Rating';
 $lang['sharerating'] 	= 'शेयर रेटिंग';
 $lang['transactions'] 	= 'लेनदेन';
 $lang['reservetable'] 	= 'रिजर्व टेबल';
@@ -195,7 +195,7 @@ $lang['del'] 				= 'डिल';
 $lang['tableView'] 			= 'टेबल व्यू';
 $lang['qqty'] 				= 'क्यू मात्रा';
 $lang['edt'] 				= 'इडीटी';
-$lang['visitNo'] 			= 'विजिट न.';
+$lang['visitNo'] 			= 'विजिट';
 $lang['fromTime'] 			= 'फ्रॉम टाइम';
 $lang['tableJoinUnjoin'] 	= 'टेबल - ज्वाइन/अनज्वाइन';
 $lang['join'] 				= 'ज्वाइन';
@@ -633,6 +633,7 @@ $lang['mostOrderDishes']		= 'मोस्ट आर्डर डिशेस';
 $lang['ratedDishes']			= 'रेटेड डिशेस';
 $lang['noofTimesOrder']			= 'टाइम्स ऑर्डर की संख्या';
 $lang['top5']					= 'टॉप पांच';
+$lang['top10']					= 'टॉप दस';
 
 $lang['no']						= 'नहीं';
 $lang['based']					= 'बेस्ड';
@@ -662,3 +663,16 @@ $lang['inventory']				= 'इन्वेंटरी';
 $lang['location']				= 'लोकेशन';
 
 $lang['rawMaterial']			= 'रॉ मटेरियल';
+
+$lang['daily']					= 'डेली';
+$lang['monthly']				= 'मंथली';
+$lang['yearly']					= 'इयरली ';
+$lang['none']					= 'कभी नहीं';
+$lang['BillPrefix']				= 'बिल प्रीफिक्स';
+$lang['BillSuffix']				= 'बिल सफिक्स ';
+$lang['resetKOT']				= 'रिसेट केवोटी';
+$lang['resetBillNo']			= 'रिसेट बिल न';
+$lang['resetBillMonth']			= 'बिल रिसेट माह';
+
+$lang['january']				= 'जनवरी';
+$lang['april']					= 'अप्रैल';
