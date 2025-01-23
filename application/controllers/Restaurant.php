@@ -3865,8 +3865,8 @@ die;
                     $total = $custAcc['billAmount'] + $_POST['amount'];
                     
                     if($total <= $onAccount['MaxLimit']){
-                        // $otp = rand(9999,1000);
-                        $otp = 1212;
+                        $otp = rand(9999,1000);
+                        // $otp = 1212;
                         $this->session->set_userdata('payment_otp', $otp);
                         $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
                         sendSMS($mobileNO, $msgText);
@@ -3879,8 +3879,8 @@ die;
                 }else{
                     $total = $_POST['amount'];
                     if($total <= $onAccount['MaxLimit']){
-                        // $otp = rand(9999,1000);
-                        $otp = 1212;
+                        $otp = rand(9999,1000);
+                        // $otp = 1212;
                         $this->session->set_userdata('payment_otp', $otp);
                         $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
                         sendSMS($mobileNO, $msgText);
@@ -3924,8 +3924,8 @@ die;
                     $balance = $custAcc['balance'];
                     
                     if($balance >= $_POST['amount']){
-                        $otp = 1212;
-                        // $otp = rand(9999,1000);
+                        // $otp = 1212;
+                        $otp = rand(9999,1000);
                         $this->session->set_userdata('payment_otp', $otp);
                         $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
                         sendSMS($mobileNO, $msgText);
@@ -3939,8 +3939,8 @@ die;
                 }else{
                     $total = $_POST['amount'];
                     if($custAcc['prePaidAmt'] >= $_POST['amount']){
-                        // $otp = rand(9999,1000);
-                        $otp = 1212;
+                        $otp = rand(9999,1000);
+                        // $otp = 1212;
                         $this->session->set_userdata('payment_otp', $otp);
                         $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
                         sendSMS($mobileNO, $msgText);
@@ -4118,8 +4118,8 @@ die;
 
             $cust = $this->db2->get_where('CustList', array('MobileNo' => $mobileNO, 'custType' => $custType))->row_array();
             if(!empty($cust)){
-                // $otp = rand(9999,1000);
-                $otp = 1212;
+                $otp = rand(9999,1000);
+                // $otp = 1212;
                 $this->session->set_userdata('payment_otp', $otp);
                 $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
                 sendSMS($mobileNO, $msgText);
@@ -7061,7 +7061,9 @@ echo "<pre>";print_r($_POST);die;
             $EID = authuser()->EID;
             if($oType != 101){
                 if($mobile){
-                    $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Please pick up from $dispCounter";
+                    // $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Please pick up from $dispCounter";
+
+                    $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Please pick up from $dispCounter :Vtrend";
 
                     $smsRes = sendSMS($mobile, $msg);
                     
@@ -7103,9 +7105,12 @@ echo "<pre>";print_r($_POST);die;
                 if($mobile){
                     $msg = "Order of Bill No : $billId, Counter : $dispCounter from $RestName has been delivered.";
 
+                    $msg = "Order of Bill No :$billId at $RestName from Counter : $dispCounter has been delivered :Vtrend";
+
                     if($Dispense_OTP > 0){
                         $otp = generateOnlyOTP();
-                        $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Your OTP is $otp. Please pick up from $dispCounter";
+                        // $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Your OTP is $otp. Please pick up from $dispCounter";
+                        $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Please pick up from $dispCounter :Vtrend";
                         $otpData['otp'] = $otp;
                     }else{
                         updateRecord('Kitchen', array('DStat' => 1), array('CNo' => $CNo, 'DCd' => $DCd, 'EID' => $EID));

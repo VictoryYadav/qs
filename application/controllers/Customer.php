@@ -2324,8 +2324,8 @@ class Customer extends CI_Controller {
                     $total = $custAcc['billAmount'] + $_POST['amount'];
                     
                     if($total <= $onAccount['MaxLimit']){
-                        // $otp = rand(9999,1000);
-                        $otp = 1212;
+                        $otp = rand(9999,1000);
+                        // $otp = 1212;
                         $this->session->set_userdata('payment_otp', $otp);
                         $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
                         sendSMS($mobileNO, $msgText);
@@ -2338,8 +2338,8 @@ class Customer extends CI_Controller {
                 }else{
                     $total = $_POST['amount'];
                     if($total <= $onAccount['MaxLimit']){
-                        // $otp = rand(9999,1000);
-                        $otp = 1212;
+                        $otp = rand(9999,1000);
+                        // $otp = 1212;
                         $this->session->set_userdata('payment_otp', $otp);
                         $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
                         sendSMS($mobileNO, $msgText);
@@ -2403,8 +2403,8 @@ class Customer extends CI_Controller {
                 if(!empty($custAcc)){
 
                     if($custAcc['prePaidAmt'] >= $_POST['amount']){
-                        $otp = 1212;
-                        // $otp = rand(9999,1000);
+                        // $otp = 1212;
+                        $otp = rand(9999,1000);
                         $this->session->set_userdata('payment_otp', $otp);
                         $msgText = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
                         sendSMS($mobileNO, $msgText);
