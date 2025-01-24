@@ -413,6 +413,7 @@ class Cust extends CI_Model{
 						
 						$kitchenMainObj['LoginCd'] = 0;
 						$kitchenMainObj['payRest'] = 0;
+						$kitchenMainObj['loggedIn'] = $this->session->userdata('loggedIn');
 						// echo "<pre>";
 						// print_r($kitchenMainObj);die;
 						$CNo = insertRecord('KitchenMain', $kitchenMainObj);

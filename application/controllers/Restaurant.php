@@ -1641,7 +1641,7 @@ die;
                 $partyName = "p.Name$langId";
                 $kstat = ($this->session->userdata('kds') > 0)?5:0; 
 
-                $kitchenData = $this->db2->select("b.BillId, concat(b.BillPrefix, b.BillNo, b.BillSuffix) as BillNo, sum(k.Qty) as Qty, k.OType, k.TPRefNo, k.TPId, km.CustId, k.CellNo, k.EID, k.DCd, km.CNo, (case when $partyName != '-' Then $partyName ELSE p.Name1 end) as thirdPartyName, k.KStat")
+                $kitchenData = $this->db2->select("b.BillId, concat(b.BillPrefix, b.BillNo, b.BillSuffix) as BillNo, sum(k.Qty) as Qty, k.OType, k.TPRefNo, k.TPId, km.CustId, k.CellNo, k.EID, k.DCd, km.CNo, (case when $partyName != '-' Then $partyName ELSE p.Name1 end) as thirdPartyName, k.KStat, km.loggedIn")
                                     ->order_by('b.BillId', 'Asc')
                                     ->group_by('b.BillId, k.DCd')
                                     ->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
@@ -7054,6 +7054,7 @@ echo "<pre>";print_r($_POST);die;
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
+
             extract($_POST);
 
             $RestName = authuser()->RestName;
@@ -7063,7 +7064,7 @@ echo "<pre>";print_r($_POST);die;
                 if($mobile){
                     // $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Please pick up from $dispCounter";
 
-                    $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Please pick up from $dispCounter :Vtrend";
+                    $msg = "EAT-OUT: Order of Bill No: $BillNo from $RestName is ready. Please pick up from $dispCounter :Vtrend";
 
                     $smsRes = sendSMS($mobile, $msg);
                     
@@ -7103,9 +7104,9 @@ echo "<pre>";print_r($_POST);die;
                 $otpData['pageRequest'] = 'Dispense';
 
                 if($mobile){
-                    $msg = "Order of Bill No : $billId, Counter : $dispCounter from $RestName has been delivered.";
+                    // $msg = "Order of Bill No : $BillNo, Counter : $dispCounter from $RestName has been delivered.";
 
-                    $msg = "Order of Bill No :$billId at $RestName from Counter : $dispCounter has been delivered :Vtrend";
+                    $msg = "Order of Bill No :$BillNo at $RestName from Counter : $dispCounter has been delivered :Vtrend";
 
                     if($Dispense_OTP > 0){
                         $otp = generateOnlyOTP();

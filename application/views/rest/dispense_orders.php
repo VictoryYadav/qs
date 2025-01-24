@@ -303,6 +303,7 @@
 
     function showAction(CNo, CustId, BillId, mobile, oType, dispCounter, DCd, BillNo){
         dispCounter = "'"+dispCounter+"'";
+        BillNo      = "'"+BillNo+"'";
         var btn = '';
         var url = "<?= base_url('restaurant/print/');?>"+BillId;
         btn += '<button onclick="dispenseNotification('+CNo+', '+BillId+','+mobile+','+oType+','+dispCounter+', '+DCd+', '+BillNo+')" class="btn btn-sm btn-danger btn-rounded tippy-btn" title="Dispense" data-tippy-placement="top"><i class="fa fa-bullhorn"></i></button>\
@@ -322,8 +323,8 @@
         getTableView();
     }
 
-    function dispenseNotification(CNo, billId, mobile, oType, dispCounter, DCd){
-        $.post('<?= base_url('restaurant/dispense_notification') ?>',{billId:billId, mobile:mobile, oType:oType, dispCounter:dispCounter},function(res){
+    function dispenseNotification(CNo, billId, mobile, oType, dispCounter, DCd, BillNo){
+        $.post('<?= base_url('restaurant/dispense_notification') ?>',{billId:billId, mobile:mobile, oType:oType, dispCounter:dispCounter, BillNo:BillNo},function(res){
             if(res.status == 'success'){
                 alert(res.response);
                 getTableView();
@@ -333,10 +334,10 @@
         });
     }
 
-    function deliveryNotification(CNo, billId, mobile, oType, dispCounter, DCd){
+    function deliveryNotification(CNo, billId, mobile, oType, dispCounter, DCd, BillNo){
         var Dispense_OTP = "<?php echo $this->session->userdata('Dispense_OTP'); ?>";
 
-        $.post('<?= base_url('restaurant/delivery_notification') ?>',{CNo:CNo, billId:billId, mobile:mobile, oType:oType, dispCounter:dispCounter, DCd:DCd},function(res){
+        $.post('<?= base_url('restaurant/delivery_notification') ?>',{CNo:CNo, billId:billId, mobile:mobile, oType:oType, dispCounter:dispCounter, DCd:DCd, BillNo:BillNo},function(res){
             if(res.status == 'success'){
                 $('#del_cno').val(CNo);
                 $('#del_billid').val(billId);
@@ -347,10 +348,12 @@
                 if(Dispense_OTP > 0){
                     $('#deliveryModal').modal("show");
                 }else{
-                    alert(res.response);      
+                    alert(res.response); 
+                    getTableView();     
                 }
             }else{
               alert(res.response);
+              getTableView();
             }
         });
     }

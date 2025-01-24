@@ -47,6 +47,15 @@ class Customer extends CI_Controller {
     }
 
     public function index1(){
+        $today = date('Y-m-d');
+
+
+        $CellNo = '7869068343';
+        $link = 'https://eo.vtrend.org/users?eatout=NTFfYl8zN181MWU';
+        $restName = 'tq';
+        $msg = "EATOUT: Payment link for your bill at $restName on $today is $link  :Vtrend";
+        sendSMS($CellNo, $msg);
+
         echo "<pre>";
         print_r($_SESSION);
         die;
@@ -659,7 +668,17 @@ class Customer extends CI_Controller {
 
                 if(!empty($check)){
                     if($email > 0){
+                        $this->session->set_userdata('loggedIn', 1);
                         $otp    = generateOnlyOTP();
+
+                        $otpData['mobileNo']    = 0;
+                        $otpData['email']       = $emailMobile;
+                        $otpData['otp']         = $otp;
+                        $otpData['stat']        = 0;
+                        $otpData['EID']         = $this->session->userdata('EID');
+                        $otpData['pageRequest'] = 'login';
+                        insertRecord('OTP', $otpData);
+
                         $to     = $emailMobile;
                         $subject = 'OTP';
                         $msg    = "$otp is the OTP for EATOUT, valid for 45 seconds - powered by Vtrend Services";
@@ -1748,6 +1767,10 @@ class Customer extends CI_Controller {
                         $temp['MCNo'] = $CNo;
                         $linkData[] = $temp;
                         $this->session->set_userdata('blink', $link);
+                        $today = date('Y-m-d');
+                        
+                        $msg = "EATOUT: Payment link for your bill at $restName on $today is $link  :Vtrend";
+                        sendSMS($pData['CellNo'], $msg);
                     // link send with bill no, sms or email => pending status
                         // for send to pay now to current customer
                         if($CellNo == $pData['CellNo']){
@@ -2146,7 +2169,9 @@ class Customer extends CI_Controller {
                     $response = $dt;
 
                     $my_db = $this->session->userdata('my_db');
-                    $url = $EID . "_b_" . $res['billId'] . "_" .$my_db. "_" . $CNo. "_" . $CellNo. "_" . $MergeNo. "_" . $pData['orderAmount']. "_" . $EType. "_" . $CustId. "_" . $restName. "_" . $Rating;
+                    $url = $EID . "_b_" . $res['billId'] . "_" .$my_db;
+
+                    // $url = $EID . "_b_" . $res['billId'] . "_" .$my_db. "_" . $CNo. "_" . $CellNo. "_" . $MergeNo. "_" . $pData['orderAmount']. "_" . $EType. "_" . $CustId. "_" . $restName. "_" . $Rating;
 
                     $url = base64_encode($url);
                     $url = rtrim($url, "=");
@@ -2158,6 +2183,12 @@ class Customer extends CI_Controller {
                     $linkData['EID'] = $EID;
                     $linkData['created_by'] = $CellNo;
                     $linkData['MCNo'] = $CNo;
+
+                    $today = date('Y-m-d');
+                    // $link = 'jj';
+                    $msg = "EATOUT: Payment link for your bill at $restName on $today is $link  :Vtrend";
+                    sendSMS($CellNo, $msg);
+
                     $this->session->set_userdata('billSplit', 1);
                     $this->db2->insert('BillingLinks', $linkData);
                 }
