@@ -280,7 +280,7 @@
                                 }
                                     template += `
                         <tr cno="${item.CNo}" style="background:${bcolor};">
-                            <td><input type="radio" name="selectOption" onchange="showAction('${item.CNo}', ${item.CustId},${item.BillId}, ${CellNo}, ${item.OType}, ${dispText}, ${item.DCd}, '${item.BillNo}')" /> &nbsp;${convertToUnicodeNo(item.BillNo)}</td>
+                            <td><input type="radio" name="selectOption" onchange="showAction('${item.CNo}', ${item.CustId},${item.BillId}, ${CellNo}, ${item.OType}, ${dispText}, ${item.DCd}, '${item.BillNo}', ${item.loggedIn})" /> &nbsp;${convertToUnicodeNo(item.BillNo)}</td>
                             <td>${convertToUnicodeNo(item.Qty)}</td>
                             <td>${convertToUnicodeNo(item.CellNo)}</td>
                             <td>${convertToUnicodeNo(item.thirdPartyName)}</td>
@@ -301,13 +301,13 @@
         }
     }
 
-    function showAction(CNo, CustId, BillId, mobile, oType, dispCounter, DCd, BillNo){
+    function showAction(CNo, CustId, BillId, mobile, oType, dispCounter, DCd, BillNo, loggedIn){
         dispCounter = "'"+dispCounter+"'";
         BillNo      = "'"+BillNo+"'";
         var btn = '';
         var url = "<?= base_url('restaurant/print/');?>"+BillId;
-        btn += '<button onclick="dispenseNotification('+CNo+', '+BillId+','+mobile+','+oType+','+dispCounter+', '+DCd+', '+BillNo+')" class="btn btn-sm btn-danger btn-rounded tippy-btn" title="Dispense" data-tippy-placement="top"><i class="fa fa-bullhorn"></i></button>\
-            | <button onclick="deliveryNotification('+CNo+','+BillId+','+mobile+','+oType+','+dispCounter+', '+DCd+', '+BillNo+')" class="btn btn-sm btn-primary btn-rounded" title="Deliver"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>\
+        btn += '<button onclick="dispenseNotification('+CNo+', '+BillId+','+mobile+','+oType+','+dispCounter+', '+DCd+', '+BillNo+', '+CustId+', '+loggedIn+')" class="btn btn-sm btn-danger btn-rounded tippy-btn" title="Dispense" data-tippy-placement="top"><i class="fa fa-bullhorn"></i></button>\
+            | <button onclick="deliveryNotification('+CNo+','+BillId+','+mobile+','+oType+','+dispCounter+', '+DCd+', '+BillNo+', '+CustId+', '+loggedIn+')" class="btn btn-sm btn-primary btn-rounded" title="Deliver"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>\
             | <a href="'+url+'" class="btn btn-sm btn-warning btn-rounded" title="Print"><i class="fa fa-print" aria-hidden="true"></i></a>\
             | <button class="btn btn-sm btn-danger btn-rounded tippy-btn" title="Refresh" data-tippy-placement="top" onclick="refreshPage()" > <i class="mdi mdi-speedometer-slow"></i></button>';
 
@@ -323,8 +323,8 @@
         getTableView();
     }
 
-    function dispenseNotification(CNo, billId, mobile, oType, dispCounter, DCd, BillNo){
-        $.post('<?= base_url('restaurant/dispense_notification') ?>',{billId:billId, mobile:mobile, oType:oType, dispCounter:dispCounter, BillNo:BillNo},function(res){
+    function dispenseNotification(CNo, billId, mobile, oType, dispCounter, DCd, BillNo, CustId, loggedIn){
+        $.post('<?= base_url('restaurant/dispense_notification') ?>',{billId:billId, mobile:mobile, oType:oType, dispCounter:dispCounter, BillNo:BillNo, CustId:CustId, loggedIn:loggedIn},function(res){
             if(res.status == 'success'){
                 alert(res.response);
                 getTableView();
@@ -334,10 +334,10 @@
         });
     }
 
-    function deliveryNotification(CNo, billId, mobile, oType, dispCounter, DCd, BillNo){
+    function deliveryNotification(CNo, billId, mobile, oType, dispCounter, DCd, BillNo, CustId, loggedIn){
         var Dispense_OTP = "<?php echo $this->session->userdata('Dispense_OTP'); ?>";
 
-        $.post('<?= base_url('restaurant/delivery_notification') ?>',{CNo:CNo, billId:billId, mobile:mobile, oType:oType, dispCounter:dispCounter, DCd:DCd, BillNo:BillNo},function(res){
+        $.post('<?= base_url('restaurant/delivery_notification') ?>',{CNo:CNo, billId:billId, mobile:mobile, oType:oType, dispCounter:dispCounter, DCd:DCd, BillNo:BillNo, CustId:CustId, loggedIn:loggedIn},function(res){
             if(res.status == 'success'){
                 $('#del_cno').val(CNo);
                 $('#del_billid').val(billId);

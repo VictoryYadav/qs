@@ -1641,11 +1641,11 @@ die;
                 $partyName = "p.Name$langId";
                 $kstat = ($this->session->userdata('kds') > 0)?5:0; 
 
-                $kitchenData = $this->db2->select("b.BillId, concat(b.BillPrefix, b.BillNo, b.BillSuffix) as BillNo, sum(k.Qty) as Qty, k.OType, k.TPRefNo, k.TPId, km.CustId, k.CellNo, k.EID, k.DCd, km.CNo, (case when $partyName != '-' Then $partyName ELSE p.Name1 end) as thirdPartyName, k.KStat, km.loggedIn")
+                $kitchenData = $this->db2->select("b.BillId, concat(b.BillPrefix, b.BillNo, b.BillSuffix) as BillNo, sum(k.Qty) as Qty, k.OType, k.TPRefNo, k.TPId, km.CustId, k.CellNo, k.EID, k.DCd, km.MCNo as CNo, (case when $partyName != '-' Then $partyName ELSE p.Name1 end) as thirdPartyName, k.KStat, km.loggedIn")
                                     ->order_by('b.BillId', 'Asc')
                                     ->group_by('b.BillId, k.DCd')
                                     ->join('KitchenMain km', 'km.MCNo = b.CNo', 'inner')
-                                    ->join('Kitchen k', 'k.CNo = km.CNo', 'inner')
+                                    ->join('Kitchen k', 'k.MCNo = km.MCNo', 'inner')
                                     ->join('MenuItem i', 'i.ItemId = k.ItemId', 'inner')
                                     ->join('3POrders p', 'p.3PId = km.TPId', 'left')
                                     ->get_where('Billing b', array(
@@ -7066,13 +7066,23 @@ echo "<pre>";print_r($_POST);die;
 
                     $msg = "EAT-OUT: Order of Bill No: $BillNo from $RestName is ready. Please pick up from $dispCounter :Vtrend";
 
-                    $smsRes = sendSMS($mobile, $msg);
-                    
-                    if($smsRes){
-                        $status = 'success';
-                        $response = $this->lang->line('messageSent');
+                    if($loggedIn > 0){
+                        $user = $this->db2->select("email")
+                                    ->get_where('Users', array('CustId' => $CustId, 'EID' => $EID))
+                                    ->row_array();
+
+                        $to     = $user['email'];
+                        $subject = 'Order Ready';
+                        send_email($to, $subject, $msg);
+                    }else{
+
+                        $smsRes = sendSMS($mobile, $msg);
+                        
+                        if($smsRes){
+                            $status = 'success';
+                            $response = $this->lang->line('messageSent');
+                        }
                     }
-                    
                 }
             }
 
@@ -7106,24 +7116,48 @@ echo "<pre>";print_r($_POST);die;
                 if($mobile){
                     // $msg = "Order of Bill No : $BillNo, Counter : $dispCounter from $RestName has been delivered.";
 
-                    $msg = "Order of Bill No :$BillNo at $RestName from Counter : $dispCounter has been delivered :Vtrend";
-
                     if($Dispense_OTP > 0){
                         $otp = generateOnlyOTP();
-                        // $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Your OTP is $otp. Please pick up from $dispCounter";
+                       
+                        // $msg = "Order of Bill No :$BillNo at $RestName from Counter : $dispCounter has been delivered. OTP for order pickup is $OTP :Vtrend";
                         $msg = "EAT-OUT: Order of Bill No: $billId from $RestName is ready. Please pick up from $dispCounter :Vtrend";
                         $otpData['otp'] = $otp;
-                    }else{
-                        updateRecord('Kitchen', array('DStat' => 1), array('CNo' => $CNo, 'DCd' => $DCd, 'EID' => $EID));
-                    }
 
-                    $smsRes = sendSMS($mobile, $msg);
-                    if($smsRes){
-                        $otpData['stat'] = 1;
-                        $status = 'success';
-                        $response = $this->lang->line('deliveredSuccessfully');
+                        if($loggedIn > 0){
+                            $user = $this->db2->select("email")
+                                        ->get_where('Users', array('CustId' => $CustId, 'EID' => $EID))
+                                        ->row_array();
+
+                            $to     = $user['email'];
+                            $subject = 'Order Pickup with OTP';
+                            send_email($to, $subject, $msg);
+                        }else{
+                            $smsRes = sendSMS($mobile, $msg);
+                            if($smsRes){
+                                $otpData['stat'] = 1;
+                                $status = 'success';
+                                $response = $this->lang->line('deliveredSuccessfully');
+                            }
+                        }
+
+                        insertRecord('OTP', $otpData);
+                    }else{
+                        $msg = "Order of Bill No :$BillNo at $RestName from Counter : $dispCounter has been delivered :Vtrend";
+
+                        if($loggedIn > 0){
+                            $user = $this->db2->select("email")
+                                        ->get_where('Users', array('CustId' => $CustId, 'EID' => $EID))
+                                        ->row_array();
+
+                            $to     = $user['email'];
+                            $subject = 'Order Delivered';
+                            send_email($to, $subject, $msg);
+                        }else{
+                            sendSMS($mobile, $msg);
+                        }
+
+                        updateRecord('Kitchen', array('DStat' => 1), array('MCNo' => $CNo, 'DCd' => $DCd, 'EID' => $EID));
                     }
-                    insertRecord('OTP', $otpData);
                 }
             }
 
@@ -7141,6 +7175,7 @@ echo "<pre>";print_r($_POST);die;
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
             $EID = authuser()->EID;
+            $RestName = authuser()->RestName;
             $response = $this->lang->line('OTPNotVerified');
 
             extract($_POST);
@@ -7150,7 +7185,22 @@ echo "<pre>";print_r($_POST);die;
                                 ->row_array();
 
             if(!empty($checkOTP)){
-                updateRecord('Kitchen', array('DStat' => 1), array('CNo' => $del_cno, 'DCd' => $del_dcd, 'EID' => $EID));
+
+                $msg = "Order of Bill No :$BillNo at $RestName from Counter : $dispCounter has been delivered :Vtrend";
+
+                if($loggedIn > 0){
+                    $user = $this->db2->select("email")
+                                ->get_where('Users', array('CustId' => $CustId, 'EID' => $EID))
+                                ->row_array();
+
+                    $to     = $user['email'];
+                    $subject = 'Order Delivered';
+                    send_email($to, $subject, $msg);
+                }else{
+                    sendSMS($mobile, $msg);
+                }
+                
+                updateRecord('Kitchen', array('DStat' => 1), array('MCNo' => $del_cno, 'DCd' => $del_dcd, 'EID' => $EID));
                 $status = "success";
                 $response = $this->lang->line('OTPVerified');
             }

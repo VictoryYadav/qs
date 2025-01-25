@@ -12,8 +12,9 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script>
-    // const socket = new WebSocket('ws://ws.eo.vtrend.org');
-    const socket = new WebSocket('ws://localhost:8080');
+    const socket = new WebSocket('wss://ws.eo.vtrend.org');
+    // const socket = new WebSocket('wss://eo.vtrend.org');
+    // const socket = new WebSocket('ws://localhost:8080');
 
 socket.onopen = function(event) {
     console.log("Connected to WebSocket server");
