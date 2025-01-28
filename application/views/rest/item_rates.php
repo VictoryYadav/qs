@@ -20,39 +20,81 @@
                 <div class="page-content">
                     <div class="container-fluid">
 
+                        <div class="text-right mb-2">
+                            <?php if(empty($counter)){ ?>
+                                    <a href="<?= base_url('restaurant/payment_mode_access'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
+                                    <a href="<?= base_url('restaurant/item_list'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
+                                
+                              <?php } ?>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-12">
 
                                 <div class="card">
                                     <div class="card-body">
-                                        <form method="post" id="ratesFileForm" enctype="multipart/form-data">
-                                            <input type="hidden" name="type" value="rates_file">
-                                            <div class="row">
-                                                <div class="col-md-3 col-3">
-                                                    <div class="form-group">
-                                                        <label for="">&nbsp;</label>
-                                                        <br>
-                                                    <a href="<?= base_url('uploads/common/menu_item_rates.csv') ?>" class="btn btn-info btn-sm" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="row">
+                                                    <div class="col-md-3 col-3">
+                                                        <div class="form-group">
+                                                            <label for="">&nbsp;</label>
+                                                            <br>
+                                                        <a href="<?= base_url('uploads/common/menu_item_rates.csv') ?>" class="btn btn-info btn-sm" download><?= $this->lang->line('download'); ?> <?= $this->lang->line('format'); ?></a>
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                                <div class="col-md-3 col-5">
-                                                    <div class="form-group">
-                                                        <label><?= $this->lang->line('file'); ?></label>
-                                                        <input type="file" name="itmRates" class="form-control form-control-sm" required="" accept=".csv" id="file">
+                                                    <div class="col-md-3 col-3">
+                                                        <div class="form-group">
+                                                            <label for=""><?= $this->lang->line('section'); ?></label>
+                                                            <select name="SecId" id="SecId" class="form-control form-control-sm">
+                                                                <option value=""><?= $this->lang->line('new').' '.$this->lang->line('menu'); ?></option>
+                                                                <?php
+                                                                foreach ($sections as $key) { ?>
+                                                                    <option value="<?= $key['SecId']; ?>"><?= $key['Name']; ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                                <div class="col-md-3 col-3">
-                                                    <div class="form-group">
-                                                        <label for="">&nbsp;</label>
-                                                        <br>
-                                                    <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('upload'); ?>">
+                                                    <div class="col-md-4 col-3">
+                                                        <div class="form-group">
+                                                            <label for="">&nbsp;</label>
+                                                            <br>
+                                                        <button class="btn btn-warning btn-sm" onclick="downloadFormat()"><?= $this->lang->line('downloadFormatWithItem'); ?> </button>
+                                                        </div>
                                                     </div>
-                                                </div>
 
+                                                    <?php if($this->session->flashdata('error')): ?>
+                                                        <span class="alert alert-danger" role="alert"><?= $this->session->flashdata('error') ?></span>
+                                                    <?php endif; ?>
+                                                </div>
                                             </div>
-                                        </form>
+
+                                            <div class="col-md-4">
+                                                <form method="post" id="ratesFileForm" enctype="multipart/form-data">
+                                                <input type="hidden" name="type" value="rates_file">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-5">
+                                                        <div class="form-group">
+                                                            <label><?= $this->lang->line('file'); ?></label>
+                                                            <input type="file" name="itmRates" class="form-control form-control-sm" required="" accept=".csv" id="file">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-2 col-3">
+                                                        <div class="form-group">
+                                                            <label for="">&nbsp;</label>
+                                                            <br>
+                                                        <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('upload'); ?>">
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                                </form>
+                                                
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -191,5 +233,11 @@
         });
 
     });
+
+    function downloadFormat(){
+        var SecId = $(`#SecId`).val();
+        window.location = "<?= base_url('restaurant/download_item_rates_format/') ?>"+SecId;
+        
+    }
 
 </script>

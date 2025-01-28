@@ -59,6 +59,33 @@
                                                 </div>
 
                                                 <div class="form-group col-md-3 col-6">
+                                                    <label for=""><?= $this->lang->line('offers');?> <?= $this->lang->line('type');?></label>
+                                                    <select name="offerType" class="form-control form-control-sm" id="offerType" required="">
+                                                        <option value=""><?= $this->lang->line('select');?></option>
+                                                        <option value="1" <?php if(($scheme['offerType'] == 1)){ echo 'selected'; } ?> ><?= $this->lang->line('only').' '.$this->lang->line('food'); ?></option>
+                                                        <option value="2" <?php if(($scheme['offerType'] == 2)){ echo 'selected'; } ?>><?= $this->lang->line('food').' & '.$this->lang->line('bar'); ?></option>
+                                                        <option value="3" <?php if(($scheme['offerType'] == 3)){ echo 'selected'; } ?>><?= $this->lang->line('only').' '.$this->lang->line('bar'); ?></option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-5 col-6">
+                                                    <div class="form-group">
+
+                                                        <label><?= $this->lang->line('day');?></label>
+                                                        <select class="form-control form-control-sm select2 mb-3 select2-multiple" id="days" name="days[]" required="" style="width: 100%;" multiple="">
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                            <?php 
+                                                            $selectedValues =  
+                                                            explode(',', $scheme['days']);
+                                                                foreach ($weekDay as $key) {?>
+                                                                    <option value="<?= $key['DayNo']; ?>" <?php echo in_array($key['DayNo'], $selectedValues) ? 'selected' : ''; ?> ><?= $key['Name'];?></option>
+                                                            <?php }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group col-md-3 col-6">
                                                     <label for="from_date"><?= $this->lang->line('fromDate');?></label>
                                                     <input type="date" name="FrmDt" class="form-control form-control-sm" id="from_date" <?php if(!empty($scheme['FrmDt'])){?> value="<?= $scheme['FrmDt']?>" <?php }?> />
                                                 </div>
@@ -67,7 +94,7 @@
                                                     <input type="date" name="ToDt" class="form-control form-control-sm" id="to_date" <?php if(!empty($scheme['ToDt'])){?> value="<?= $scheme['ToDt']?>" <?php }?> />
                                                 </div>
                                                 
-                                                <div class="form-group col-md-3 col-6">
+                                                <!-- <div class="form-group col-md-3 col-6">
                                                     <label for="from_day"><?= $this->lang->line('fromDay');?></label>
                                                     <select class="form-control form-control-sm" id="from_day" name="FromDayNo" required="">
                                                         <option value=""><?= $this->lang->line('select'); ?></option>
@@ -89,7 +116,8 @@
                                                         <?php }
                                                         ?>
                                                     </select>
-                                                </div>
+                                                </div> -->
+                                                
                                                 <div class="form-group col-md-3 col-6">
                                                     <label for="from_time"><?= $this->lang->line('fromTime');?></label>
                                                     <input type="time" name="FrmTime" class="form-control form-control-sm" id="from_time" <?php if(!empty($scheme['FrmTime'])){?> value="<?= $scheme['FrmTime']?>" <?php }?> />
@@ -105,16 +133,6 @@
                                                 <div class="form-group col-md-3 col-6">
                                                     <label for="alt_to_time"><?= $this->lang->line('alternateToTime');?></label>
                                                     <input type="time" name="AltToTime" class="form-control form-control-sm" id="alt_to_time" <?php if(!empty($scheme['ToTime'])){?> value="<?= $scheme['ToTime']?>" <?php }?> />
-                                                </div>
-
-                                                <div class="form-group col-md-3 col-6">
-                                                    <label for=""><?= $this->lang->line('offers');?> <?= $this->lang->line('type');?></label>
-                                                    <select name="offerType" class="form-control form-control-sm" id="offerType" required="">
-                                                        <option value=""><?= $this->lang->line('select');?></option>
-                                                        <option value="1" <?php if(($scheme['offerType'] == 1)){ echo 'selected'; } ?> >Only Food</option>
-                                                        <option value="2" <?php if(($scheme['offerType'] == 2)){ echo 'selected'; } ?>>Food & Bar</option>
-                                                        <option value="3" <?php if(($scheme['offerType'] == 3)){ echo 'selected'; } ?>>Only Bar</option>
-                                                    </select>
                                                 </div>
 
                                                 <div class="form-group col-md-3 col-6">
@@ -347,6 +365,7 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
+        $('#days').select2();
         // itemPortion
         $('.discountItems, .menuCategory, .discmenuCategory, .items, .itemPortion, .discountItemPortion').select2();
     });

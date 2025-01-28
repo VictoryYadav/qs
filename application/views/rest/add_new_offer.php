@@ -61,6 +61,33 @@
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
+                                                        <label><?= $this->lang->line('offers');?> <?= $this->lang->line('type');?></label>
+                                                        <select name="offerType" class="form-control form-control-sm">
+                                                            <option value=""><?= $this->lang->line('select');?></option>
+                                                            <option value="1"><?= $this->lang->line('only').' '.$this->lang->line('food'); ?></option>
+                                                            <option value="2"><?= $this->lang->line('food').' & '.$this->lang->line('bar'); ?></option>
+                                                            <option value="3"><?= $this->lang->line('only').' '.$this->lang->line('bar'); ?></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-5 col-6">
+                                                    <div class="form-group">
+                                                        <label><?= $this->lang->line('day');?></label>
+                                                        <select class="form-control form-control-sm select2 mb-3 select2-multiple" id="days" name="days[]" required="" style="width: 100%;" multiple="">
+                                                            <option value=""><?= $this->lang->line('select'); ?></option>
+                                                            <?php 
+
+                                                                foreach ($weekDay as $key) {?>
+                                                                    <option value="<?= $key['DayNo']; ?>" <?php if(in_array($key['DayNo'], array(1,2,3,4,5,6,7))){ echo 'selected'; } ?> ><?= $key['Name'];?></option>
+                                                            <?php }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
                                                         <label><?= $this->lang->line('fromDate');?></label>
                                                         <input type="date" name="FrmDt" class="form-control form-control-sm" id="from_date" value="<?php echo date('Y-m-d'); ?>" />
                                                     </div>
@@ -73,7 +100,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-3 col-6">
+                                                <!-- <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('fromDay');?></label>
                                                         <select class="form-control form-control-sm" id="from_day" name="FromDayNo" required="">
@@ -85,9 +112,9 @@
                                                             ?>
                                                         </select>
                                                     </div>
-                                                </div>
+                                                </div> -->
 
-                                                <div class="col-md-3 col-6">
+                                                <!-- <div class="col-md-3 col-6">
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('toDay');?></label>
                                                         <select class="form-control form-control-sm" id="to_day" name="ToDayNo" required="">
@@ -99,7 +126,7 @@
                                                             ?>
                                                         </select>
                                                     </div>
-                                                </div>
+                                                </div> -->
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
@@ -126,18 +153,6 @@
                                                     <div class="form-group">
                                                         <label><?= $this->lang->line('alternateToTime');?></label>
                                                         <input type="time" name="AltToTime" class="form-control form-control-sm" id="alt_to_time" />
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3 col-6">
-                                                    <div class="form-group">
-                                                        <label><?= $this->lang->line('offers');?> <?= $this->lang->line('type');?></label>
-                                                        <select name="offerType" class="form-control form-control-sm">
-                                                            <option value=""><?= $this->lang->line('select');?></option>
-                                                            <option value="1">Only Food</option>
-                                                            <option value="2">Food & Bar</option>
-                                                            <option value="3">Only Bar</option>
-                                                        </select>
                                                     </div>
                                                 </div>
 
@@ -181,6 +196,7 @@
 
 
 <script type="text/javascript">
+    $('#days').select2();
 
     var num_desc = 0;
     function add_description(){

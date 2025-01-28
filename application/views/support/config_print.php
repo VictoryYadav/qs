@@ -27,9 +27,10 @@
                                         </div>
                                         <form method="post" id="configForm">
                                             <input type="hidden" name="EID" id="EID" value="<?= $EID; ?>">
+                                            
                                             <div class="row">
 
-                                                <div class="col-md-2 col-4">
+                                                <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('multi').' '.$this->lang->line('kitchen'); ?></label>
                                                         <select name="MultiKitchen" id="" class="form-control form-control-sm" required="">
@@ -40,7 +41,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-2 col-4">
+                                                <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('schemeType'); ?></label>
                                                         <select name="SchType" id="" class="form-control form-control-sm" required="">
@@ -52,7 +53,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-2 col-4">
+                                                <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('payment').' '.$this->lang->line('type'); ?></label>
                                                         <select name="pymtENV" id="" class="form-control form-control-sm" required="">
@@ -63,21 +64,21 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-2 col-4">
+                                                <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('serviceCharge'); ?></label>
                                                         <input type="number" name="ServChrg" id="" class="form-control form-control-sm" required="" value="<?= $detail['ServChrg']; ?>" />
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-2 col-4">
+                                                <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('deliveryCharge'); ?></label>
                                                         <input type="number" name="DelCharge" id="" class="form-control form-control-sm" required="" value="<?= $detail['DelCharge']; ?>" />
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-2 col-4">
+                                                <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label for=""><?= $this->lang->line('restaurant').' '.$this->lang->line('billing'); ?></label>
                                                         <select name="restBilling" id="" class="form-control form-control-sm">
@@ -87,10 +88,75 @@
                                                     </div>
                                                 </div>
 
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('customer').' '.$this->lang->line('type'); ?></label>
+                                                        <select name="custType" id="custType" class="form-control form-control-sm">
+
+                                                        <option value="0" <?php if($detail['custType'] == 0){ echo 'selected'; } ?>><?= $this->lang->line('disabled'); ?></option>
+                                                            <option value="1" <?php if($detail['custType'] == 1){ echo 'selected'; } ?>><?= $this->lang->line('Onaccount'); ?></option>
+                                                            <option value="2" <?php if($detail['custType'] == 2){ echo 'selected'; } ?>><?= $this->lang->line('Prepaid'); ?></option>
+                                                            <option value="5" <?php if($detail['custType'] == 5){ echo 'selected'; } ?>><?= $this->lang->line('both'); ?></option>
+                                                    </select>
+                                                    </div>
+                                                </div>
+                                                <?php
+                                                $ar = array(0 => $this->lang->line('none'),1 => $this->lang->line('daily'),2 => $this->lang->line('monthly'),3 => $this->lang->line('yearly'));
+                                                 ?>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('resetKOT'); ?></label>
+                                                        <select name="ResetKOT" id="ResetKOT" class="form-control form-control-sm">
+                                                            <?php
+                                                            foreach ($ar as $key => $value) { ?>
+                                                                <option value="<?= $key; ?>" <?php if($detail['ResetKOT'] == $key){ echo 'selected'; } ?> ><?= $value; ?></option>
+                                                           <?php  } ?>
+                                                    </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('resetBillNo'); ?></label>
+                                                        <select name="resetBillNo" id="resetBillNo" class="form-control form-control-sm" onchange="setPrefix()">
+
+                                                            <?php
+                                                            foreach ($ar as $key => $value) { ?>
+                                                                <option value="<?= $key; ?>" <?php if($detail['resetBillNo'] == $key){ echo 'selected'; } ?> ><?= $value; ?></option>
+                                                           <?php  } ?>
+                                                    </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('BillPrefix'); ?></label>
+                                                        <input type="text" name="BillPrefix" id="BillPrefix" class="form-control form-control-sm" value="<?= $detail['BillPrefix']; ?>" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('BillSuffix'); ?></label>
+                                                        <input type="text" name="BillSuffix" id="BillSuffix" class="form-control form-control-sm" value="<?= $detail['BillSuffix']; ?>" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('resetBillMonth'); ?></label>
+                                                        <select name="resetBillMonth" id="resetBillMonth" class="form-control form-control-sm" >
+                                                            <option value="0"><?= $this->lang->line('none'); ?></option>
+                                                            <option value="1" <?php if($detail['resetBillMonth'] == 1){ echo 'selected'; } ?>><?= $this->lang->line('january'); ?></option>
+                                                            <option value="4" <?php if($detail['resetBillMonth'] == 4){ echo 'selected'; } ?>><?= $this->lang->line('april'); ?></option>
+                                                    </select>
+                                                    </div>
+                                                </div>
+
                                             </div>
-                                            
+                                            <hr>
                                             <div class="row">
-                                                <div class="col-md-3 col-3">
+                                                <div class="col-md-3 col-12">
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
                                                             <input type="checkbox" class="custom-control-input" id="customCheck01" data-parsley-multiple="groups" data-parsley-mincheck="2" name="MultiLingual" <?php if($detail['MultiLingual'] == 1){ echo 'checked'; } ?>  value="<?= $detail['MultiLingual'];?>">
@@ -170,7 +236,7 @@
 
                                                 </div>
 
-                                                <div class="col-md-3 col-3">
+                                                <div class="col-md-3 col-12">
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
                                                             <input type="checkbox" class="custom-control-input" id="customCheck09" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Tips" <?php if($detail['Tips'] == 1){ echo 'checked'; } ?> value="<?= $detail['Tips'];?>" <?= $EType1; ?> >
@@ -250,7 +316,7 @@
 
                                                 </div>
 
-                                                <div class="col-md-3 col-3">
+                                                <div class="col-md-3 col-12">
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
@@ -330,7 +396,7 @@
                                                     </div>
 
                                                 </div>
-                                                <div class="col-md-3 col-3">
+                                                <div class="col-md-3 col-12">
 
                                                     <div class="checkbox my-2">
                                                         <div class="custom-control custom-checkbox">
@@ -395,9 +461,20 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="checkbox my-2">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck45" data-parsley-multiple="groups" data-parsley-mincheck="2" name="Rating" <?php if($detail['Rating'] == 1){ echo 'checked'; } ?> value="<?= $detail['Rating'];?>">
+                                                            <label class="custom-control-label" for="customCheck45"><?= $this->lang->line('rating'); ?></label>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
 
-                                                
+                                                <div >
+                                                    <!-- <input type="submit" class="btn btn-success btn-sm" value="<?= $this->lang->line('submit'); ?>" id="saveBtn"> -->
+
+                                                    <div class="text-success" id="msgText"></div>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>

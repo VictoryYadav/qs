@@ -1237,6 +1237,8 @@ die;
             $CustOffers['FrmDt'] = $_POST['FrmDt'];
             $CustOffers['ToDt'] = $_POST['ToDt'];
             $CustOffers['offerType'] = $_POST['offerType'];
+
+            $CustOffers['days'] = implode(",", $_POST['days']);
             
             $SchCd = insertRecord('CustOffers', $CustOffers);
             
@@ -1359,6 +1361,7 @@ die;
             $CustOffers['EID'] = authuser()->EID;
             $CustOffers['Stat'] = $_POST['Stat'];
             $CustOffers['offerType'] = $_POST['offerType'];
+            $CustOffers['days'] = implode(",", $_POST['days']);
 
             updateRecord('CustOffers',$CustOffers, array('SchCd' => $SchCd, 'EID' => $EID));
             if(!empty($_POST['SchDesc1'])){
@@ -1587,7 +1590,7 @@ die;
         $data['menuItemData'] = $menuItemData;
         $data['sections'] = $this->rest->getSectionList();
     	$data['title'] = $this->lang->line('menuList');
-        $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0))->row_array();
+        $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0, 'EID' => $EID))->row_array();
 
 		$this->load->view('rest/item_lists',$data);	
     }
@@ -7174,6 +7177,7 @@ echo "<pre>";print_r($_POST);die;
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
+
             $EID = authuser()->EID;
             $RestName = authuser()->RestName;
             $response = $this->lang->line('OTPNotVerified');
@@ -7185,10 +7189,13 @@ echo "<pre>";print_r($_POST);die;
                                 ->row_array();
 
             if(!empty($checkOTP)){
+                $dispCounter    = $del_dispcounter;
+                $BillNo         = $del_BillNo;
+                $CustId         = $del_CustId;
 
                 $msg = "Order of Bill No :$BillNo at $RestName from Counter : $dispCounter has been delivered :Vtrend";
 
-                if($loggedIn > 0){
+                if($del_loggedIn > 0){
                     $user = $this->db2->select("email")
                                 ->get_where('Users', array('CustId' => $CustId, 'EID' => $EID))
                                 ->row_array();
@@ -7197,7 +7204,7 @@ echo "<pre>";print_r($_POST);die;
                     $subject = 'Order Delivered';
                     send_email($to, $subject, $msg);
                 }else{
-                    sendSMS($mobile, $msg);
+                    sendSMS($del_mobile, $msg);
                 }
                 
                 updateRecord('Kitchen', array('DStat' => 1), array('MCNo' => $del_cno, 'DCd' => $del_dcd, 'EID' => $EID));
@@ -7218,7 +7225,7 @@ echo "<pre>";print_r($_POST);die;
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
-            $response = $this->lang->line('noRecordFound');
+            $response = $this->lang->line('new').' '.$this->lang->line('customer');
             $mobile = $_POST['CountryCd'].$_POST['phone'];
             $data = $this->db2->select("uId, FName, LName, DelAddress")->get_where('Users', array('MobileNo' => $mobile))->row_array();
             if(!empty($data)){
@@ -7987,9 +7994,9 @@ echo "<pre>";print_r($_POST);die;
                                           $checker = 0;
                                         }
 
-                                        $temp['SecId'] = $this->checkSection($csv_data[2]);
+                                        $temp['Itm_Portion'] =$this->checkPortion($csv_data[2]);
 
-                                        $temp['Itm_Portion'] =$this->checkPortion($csv_data[3]);
+                                        $temp['SecId'] = $this->checkSection($csv_data[3]);
 
                                         $temp['ItmRate']    = $csv_data[4];
                                         $temp['OrigRate']   = 0;
@@ -8051,7 +8058,7 @@ echo "<pre>";print_r($_POST);die;
                 $response = $this->lang->line('dataUpdated'); 
             }else{
                 unset($updateData['KitCd']);
-                $updateData['EID'] = authuser()->EID;
+                $updateData['EID'] = $EID;
                 insertRecord('Eat_Kit', $updateData);
                 $response = $this->lang->line('dataAdded');
             }
@@ -8067,7 +8074,42 @@ echo "<pre>";print_r($_POST);die;
         
         $data['title'] = $this->lang->line('menuItemRates');
         $data['itemList'] = $this->rest->getAllItemsList();
+        $data['sections'] = $this->rest->getSectionList();
+        $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0, 'EID' => $EID))->row_array();
         $this->load->view('rest/item_rates', $data);    
+    }
+
+    public function download_item_rates_format($secId=null){
+        $EID = authuser()->EID;
+
+        $langId = $this->session->userdata('site_lang');
+        $itemname = "mi.Name$langId as ItemName";
+        $portionname = "ip.Name$langId as PortionName";
+
+        $sectionName = "'-' as Section";
+        $itemRate = "0 as ItmRate";
+        if(!empty($secId)){
+            $this->db2->where('mir.SecId', $secId);
+            $sectionName = "es.Name$langId as Section";
+            $itemRate = "mir.OrigRate as ItmRate";
+        }
+
+        $data = $this->db2->select("e.Name as RestName, $itemname, $portionname, $sectionName, $itemRate")
+                        ->join('MenuItemRates mir', 'mir.ItemId = mi.ItemId', 'inner')
+                        ->join('ItemPortions ip', 'ip.IPCd = mir.Itm_Portion', 'inner')
+                        ->join('Eatary e', 'e.EID = mi.EID', 'inner')
+                        ->join('Eat_Sections es', 'es.SecId = mir.SecId', 'inner')
+                        ->get_where('MenuItem mi', array('mi.Stat' => 0, 'mi.EID' => $EID))
+                        ->result_array();
+                        
+        if(!empty($data)){
+            $this->export_csv($data);
+        }else{
+            $msg = $this->lang->line('noDataFound');
+            $this->session->set_flashdata('error', $msg);
+        }
+
+        redirect(base_url('restaurant/menu_item_rates'));
     }
 
     public function recommendation(){
@@ -8418,7 +8460,7 @@ echo "<pre>";print_r($_POST);die;
         }
         
         $data['title'] = $this->lang->line('payment').' '.$this->lang->line('mode');
-        $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0))->row_array();
+        $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0, 'EID' => $EID))->row_array();
 
         $this->load->view('rest/payment_access', $data);    
     }
@@ -8944,7 +8986,7 @@ echo "<pre>";print_r($_POST);die;
              die;
         }
         $data['title'] = $this->lang->line('item');
-        $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0))->row_array();
+        $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0, 'EID' => $EID))->row_array();
 
         $this->load->view('rest/item_files', $data);    
     }
@@ -9234,7 +9276,7 @@ echo "<pre>";print_r($_POST);die;
                                         $temp['LoginCd']    = authuser()->RUserId;
 
                                         $temp['TaxType'] = 0;
-                                        if($configDt['GSTInclusiveRates'] > 0){
+                                        if($configDt['GSTInclusiveRates'] == 0){
                                           $temp['TaxType'] = ($temp['CTypUsedFor']=='Food')?2:1;
                                         }
 
@@ -9267,7 +9309,7 @@ echo "<pre>";print_r($_POST);die;
         }
         $data['title'] = $this->lang->line('itemUpload');
         $data['rests'] = $this->rest->getRestaurantList();
-        $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0))->row_array();
+        $data['counter'] = $this->db2->select('ItemId')->get_where('MenuItemRates', array('OrigRate !=' => 0, 'EID' => authuser()->EID))->row_array();
 
         $this->load->view('rest/item_upload', $data);    
     }
@@ -9670,7 +9712,7 @@ echo "<pre>";print_r($_POST);die;
 
         if($this->input->method(true)=='POST'){
             $status = "success";
-            
+            // echo "<pre>";print_r($_POST);die;
             $configDt['MultiKitchen'] = $_POST['MultiKitchen'];
             $configDt['SchType'] = $_POST['SchType'];
             $configDt['pymtENV'] = $_POST['pymtENV'];
@@ -9742,9 +9784,10 @@ echo "<pre>";print_r($_POST);die;
             $configDt['recommend'] = !isset($_POST['recommend'])?0:1;
             updateRecord('UserRoles', array('Stat' => $configDt['recommend']), array('RoleId' => 61));
 
-            $configDt['Discount'] = !isset($_POST['Discount'])?0:1;
+            $configDt['Discount'] = isset($_POST['Discount'])?1:0;
+            $dStat = ($configDt['Discount'] == 1)?0:1;
             $this->db2->where_in('RoleId', array(73, 81));
-            $this->db2->update('UserRoles', array('Stat' => $configDt['Discount']) );
+            $this->db2->update('UserRoles', array('Stat' => $dStat) );
 
             $configDt['CustLoyalty'] = !isset($_POST['CustLoyalty'])?0:1;
             updateRecord('UserRoles', array('Stat' => $configDt['CustLoyalty']), array('RoleId' => 80));
@@ -9760,9 +9803,10 @@ echo "<pre>";print_r($_POST);die;
             $this->db2->where_in('RoleId', array(43, 44));
             $this->db2->update('UserRoles', array('Stat' => $configDt['kds']) );
             
-            $configDt['custItems'] = !isset($_POST['custItems'])?0:1;
+            $configDt['custItems'] = isset($_POST['custItems'])?1:0;
+            $CustStat = ($configDt['Discount'] == 1)?0:1;
             $this->db2->where_in('RoleId', array(69, 70, 86, 120));
-            $this->db2->update('UserRoles', array('Stat' => $configDt['custItems']) );
+            $this->db2->update('UserRoles', array('Stat' => $CustStat) );
 
             if($EType == 1){
                 updateRecord('UserRoles', array('Stat' => 1), array('RoleId' => 17));
@@ -10675,6 +10719,7 @@ echo "<pre>";print_r($_POST);die;
         $status = "error";
         $response = $this->lang->line('SomethingSentWrongTryAgainLater');
         if($this->input->method(true)=='POST'){
+
             $status = "success";
             $response = $this->rest->get_portion_item_type($_POST);
 

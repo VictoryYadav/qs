@@ -23,6 +23,7 @@
                                     <div class="card-body">
                                         <form method="post" id="configForm">
                                             <input type="hidden" name="EID" id="EID" value="<?= $EID; ?>">
+                                            
                                             <div class="row">
 
                                                 <div class="col-md-2 col-12">
@@ -79,6 +80,71 @@
                                                         <select name="restBilling" id="" class="form-control form-control-sm">
                                                         <option value="1" <?php if($detail['restBilling'] == 1){ echo 'selected'; } ?> ><?= $this->lang->line('bill'); ?></option>
                                                         <option value="2" <?php if($detail['restBilling'] == 2){ echo 'selected'; } ?> ><?= $this->lang->line('bill').' & '.$this->lang->line('kot'); ?> </option>
+                                                    </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('customer').' '.$this->lang->line('type'); ?></label>
+                                                        <select name="custType" id="custType" class="form-control form-control-sm">
+
+                                                        <option value="0" <?php if($detail['custType'] == 0){ echo 'selected'; } ?>><?= $this->lang->line('disabled'); ?></option>
+                                                            <option value="1" <?php if($detail['custType'] == 1){ echo 'selected'; } ?>><?= $this->lang->line('Onaccount'); ?></option>
+                                                            <option value="2" <?php if($detail['custType'] == 2){ echo 'selected'; } ?>><?= $this->lang->line('Prepaid'); ?></option>
+                                                            <option value="5" <?php if($detail['custType'] == 5){ echo 'selected'; } ?>><?= $this->lang->line('both'); ?></option>
+                                                    </select>
+                                                    </div>
+                                                </div>
+                                                <?php
+                                                $ar = array(0 => $this->lang->line('none'),1 => $this->lang->line('daily'),2 => $this->lang->line('monthly'),3 => $this->lang->line('yearly'));
+                                                 ?>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('resetKOT'); ?></label>
+                                                        <select name="ResetKOT" id="ResetKOT" class="form-control form-control-sm">
+                                                            <?php
+                                                            foreach ($ar as $key => $value) { ?>
+                                                                <option value="<?= $key; ?>" <?php if($detail['ResetKOT'] == $key){ echo 'selected'; } ?> ><?= $value; ?></option>
+                                                           <?php  } ?>
+                                                    </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('resetBillNo'); ?></label>
+                                                        <select name="resetBillNo" id="resetBillNo" class="form-control form-control-sm" onchange="setPrefix()">
+
+                                                            <?php
+                                                            foreach ($ar as $key => $value) { ?>
+                                                                <option value="<?= $key; ?>" <?php if($detail['resetBillNo'] == $key){ echo 'selected'; } ?> ><?= $value; ?></option>
+                                                           <?php  } ?>
+                                                    </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('BillPrefix'); ?></label>
+                                                        <input type="text" name="BillPrefix" id="BillPrefix" class="form-control form-control-sm" value="<?= $detail['BillPrefix']; ?>" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('BillSuffix'); ?></label>
+                                                        <input type="text" name="BillSuffix" id="BillSuffix" class="form-control form-control-sm" value="<?= $detail['BillSuffix']; ?>" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label for=""><?= $this->lang->line('resetBillMonth'); ?></label>
+                                                        <select name="resetBillMonth" id="resetBillMonth" class="form-control form-control-sm" >
+                                                            <option value="0"><?= $this->lang->line('none'); ?></option>
+                                                            <option value="1" <?php if($detail['resetBillMonth'] == 1){ echo 'selected'; } ?>><?= $this->lang->line('january'); ?></option>
+                                                            <option value="4" <?php if($detail['resetBillMonth'] == 4){ echo 'selected'; } ?>><?= $this->lang->line('april'); ?></option>
                                                     </select>
                                                     </div>
                                                 </div>

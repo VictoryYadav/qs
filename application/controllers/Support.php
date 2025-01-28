@@ -1254,6 +1254,17 @@ class Support extends CI_Controller {
             $configDt['ratingHistory']  = !isset($_POST['ratingHistory'])?0:1;
             $configDt['favoriteItems']  = !isset($_POST['favoriteItems'])?0:1;
             $configDt['Rating']         = !isset($_POST['Rating'])?0:1;
+            $configDt['custType']       = $_POST['custType'];
+
+            $configDt['ResetKOT']       = $_POST['ResetKOT'];
+            $configDt['resetBillNo']    = $_POST['resetBillNo'];
+            $configDt['BillPrefix']     = !empty($_POST['BillPrefix'])?$_POST['BillPrefix']:0;
+            $configDt['BillSuffix']     = !empty($_POST['BillSuffix'])?$_POST['BillSuffix']:0;
+            $configDt['resetBillMonth'] = !empty($_POST['resetBillMonth'])?$_POST['resetBillMonth']:0;
+            
+            $rls = ($configDt['custType'] > 0)?0:1;
+            $this->localDB->where_in('RoleId', array(78));
+            $this->localDB->update('UserRoles', array('Stat' => $rls) );
             
             $configDt['SchPop'] = !isset($_POST['SchPop'])?0:1;
             $this->localDB->where_in('RoleId', array(31, 60));
@@ -1270,27 +1281,33 @@ class Support extends CI_Controller {
             $configDt['recommend'] = !isset($_POST['recommend'])?0:1;
             $this->localDB->update('UserRoles', array('Stat' => $configDt['recommend']), array('RoleId' => 61) );
 
-            $configDt['Discount'] = !isset($_POST['Discount'])?0:1;
+            $configDt['Discount'] = isset($_POST['Discount'])?1:0;
+            $dStat = ($configDt['Discount'] == 1)?0:1;
             $this->localDB->where_in('RoleId', array(73, 81));
-            $this->localDB->update('UserRoles', array('Stat' => $configDt['Discount']) );
+            $this->localDB->update('UserRoles', array('Stat' => $dStat) );
 
             $configDt['CustLoyalty'] = !isset($_POST['CustLoyalty'])?0:1;
             $this->localDB->update('UserRoles', array('Stat' => $configDt['CustLoyalty']), array('RoleId' => 80) );
 
             $configDt['BOM'] = !isset($_POST['BOM'])?0:1;
-            $this->localDB->where_in('RoleId', array(113, 35));
+            $this->localDB->where_in('RoleId', array(35));
             $this->localDB->update('UserRoles', array('Stat' => $configDt['BOM']) );
+
+            $this->localDB->where_in('RoleId', array(113));
+            $this->localDB->update('UserRoles', array('Stat' => $configDt['BOMStore']) );
 
             $configDt['kds'] = !isset($_POST['kds'])?0:1;
             $this->localDB->where_in('RoleId', array(43, 44));
             $this->localDB->update('UserRoles', array('Stat' => $configDt['kds']) );
             
-            $configDt['custItems'] = !isset($_POST['custItems'])?0:1;
-            $this->localDB->where_in('RoleId', array(69, 70, 86));
-            $this->localDB->update('UserRoles', array('Stat' => $configDt['custItems']) );
-            if($data['detail']['EType'] == 1){
-                $this->localDB->update('UserRoles', array('Stat' => 1), array('RoleId' => 17) );
-            }
+            $configDt['custItems'] = isset($_POST['custItems'])?1:0;
+            $CustStat = ($configDt['Discount'] == 1)?0:1;
+            $this->localDB->where_in('RoleId', array(69, 70, 86, 120));
+            $this->localDB->update('UserRoles', array('Stat' => $CustStat) );
+            
+            // if($data['detail']['EType'] == 1){
+            //     $this->localDB->update('UserRoles', array('Stat' => 1), array('RoleId' => 17) );
+            // }
 
             $this->localDB->update('Config', $configDt, array('EID' => $EID) );
 

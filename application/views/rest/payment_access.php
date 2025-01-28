@@ -28,7 +28,7 @@
                         <div class="text-right mb-2">
                             <?php if(empty($counter)){ ?>
                                     <a href="<?= base_url('restaurant/item_files_upload'); ?>" class="btn btn-sm btn-danger"><i class="fas fa-arrow-left"></i></a>&nbsp;&nbsp;
-                                    <a href="<?= base_url('restaurant/item_list'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
+                                    <a href="<?= base_url('restaurant/menu_item_rates'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right"></i></a>
                                 
                               <?php } ?>
                         </div>

@@ -215,6 +215,9 @@
                 <input type="hidden" name="del_otype" id="del_otype">
                 <input type="hidden" name="del_dispcounter" id="del_dispcounter">
                 <input type="hidden" name="del_dcd" id="del_dcd">
+                <input type="hidden" name="del_CustId" id="del_CustId">
+                <input type="hidden" name="del_BillNo" id="del_BillNo">
+                <input type="hidden" name="del_loggedIn" id="del_loggedIn">
 
                 <div class="text-center mb-4">
                 <input type="submit" class="btn btn-primary btn-sm form-control" value="<?= $this->lang->line('verifyOTP'); ?>" />
@@ -341,7 +344,10 @@
             if(res.status == 'success'){
                 $('#del_cno').val(CNo);
                 $('#del_billid').val(billId);
-                $('#del_mobile').val(mobile);
+                $('#del_CustId').val(CustId);
+                $('#del_BillNo').val(BillNo);
+                $('#del_BillNo').val(BillNo);
+                $('#del_loggedIn').val(loggedIn);
                 $('#del_otype').val(oType);
                 $('#del_dispcounter').val(dispCounter);
                 $('#del_dcd').val(DCd);

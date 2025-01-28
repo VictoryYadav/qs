@@ -1,0 +1,685 @@
+RestName,ItemName,PortionName,Section,ItmRate
+"TQ Sunrise","Tortilla Soup Veg",Std,Std,250
+"TQ Sunrise","Tortilla Soup Chicken",Std,Std,290
+"TQ Sunrise","Roasted Bell Pepper Tomato Soup",Std,Std,270
+"TQ Sunrise","Mushroom Cappuccino",Std,Std,270
+"TQ Sunrise","Broccoli Halloumi Cheese Soup",Std,Std,270
+"TQ Sunrise","Mexicano Soup Veg",Std,Std,250
+"TQ Sunrise","Mexicano Soup Chicken",Std,Std,280
+"TQ Sunrise","Mexicano Soup Prawn",Std,Std,320
+"TQ Sunrise","Tomato Basil Soup",Std,Std,240
+"TQ Sunrise","Caesar Salad Veg",Std,Std,270
+"TQ Sunrise","Caesar Salad Chicken",Std,Std,280
+"TQ Sunrise","Greek Salad",Std,Std,280
+"TQ Sunrise","Mexican Nachos Salad",Std,Std,270
+"TQ Sunrise","Roast Chicken Salad",Std,Std,300
+"TQ Sunrise","Pasta Salad Veg",Std,Std,280
+"TQ Sunrise","Pasta Salad Chicken",Std,Std,320
+"TQ Sunrise","Seafood Salad",Std,Std,410
+"TQ Sunrise","Nachos with Salsa",Std,Std,225
+"TQ Sunrise","Classic Nachos Veg",Std,Std,300
+"TQ Sunrise","Classic Nachos Chicken",Std,Std,370
+"TQ Sunrise","Mexican Skin Veg",Std,Std,300
+"TQ Sunrise","Mexican Skin Chicken",Std,Std,370
+"TQ Sunrise","Tacos Veg",Std,Std,340
+"TQ Sunrise","Tacos Chicken",Std,Std,370
+"TQ Sunrise","Tacos Prawns",Std,Std,470
+"TQ Sunrise","Grilled Paneer  Peri Peri",Std,Std,370
+"TQ Sunrise","Grilled Chicken Peri Peri",Std,Std,410
+"TQ Sunrise","Baked Mushroom",Std,Std,370
+"TQ Sunrise","Corn Spinach Snow Ball",Std,Std,350
+"TQ Sunrise","Jalapeno Poppers",Std,Std,350
+"TQ Sunrise","Garlic Bread with Cheese",Std,Std,220
+"TQ Sunrise","French Fries",Std,Std,160
+"TQ Sunrise","Loaded Fries ",Std,Std,240
+"TQ Sunrise","Tequila Sunrise Bruschetta Veg",Std,Std,210
+"TQ Sunrise","Tequila Sunrise Bruschetta Chicken",Std,Std,250
+"TQ Sunrise","Spicy Cajun Chicken",Std,Std,410
+"TQ Sunrise","Rosemary Chicken with Grilled Potato",Std,Std,430
+"TQ Sunrise","Thyme Chicken",Std,Std,430
+"TQ Sunrise","Chicken Garlic Nuggets",Std,Std,410
+"TQ Sunrise","Chicken Jalapeno",Std,Std,430
+"TQ Sunrise","Fish Jalapeno (Rawas)",Std,Std,570
+"TQ Sunrise","Chicken Paprika",Std,Std,410
+"TQ Sunrise","Chicken Fingers ",Std,Std,370
+"TQ Sunrise","Fish Fingers Basa",Std,Std,520
+"TQ Sunrise","Lamb Ball in BBQ Sauce",Std,Std,510
+"TQ Sunrise","Fish Lemon Caper Sauce (Rawas)",Std,Std,570
+"TQ Sunrise","King Prawns Lemon Caper Sauce",Std,Std,870
+"TQ Sunrise","Fish Tempura Basa",Std,Std,570
+"TQ Sunrise","King Prawns Tempura",Std,Std,870
+"TQ Sunrise","Fish n Chips (Basa)",Std,Std,570
+"TQ Sunrise","Baked Vegetable",Std,Std,400
+"TQ Sunrise","Paneer Steak",Std,Std,470
+"TQ Sunrise","Grilled Chicken Breast",Std,Std,400
+"TQ Sunrise","Stuff Chicken Breast",Std,Std,470
+"TQ Sunrise","Chicken Steak with Red Wine Sauce",Std,Std,480
+"TQ Sunrise","Grilled Herb Fish (Rawas)",Std,Std,670
+"TQ Sunrise","Grilled Herb King Prawns",Std,Std,920
+"TQ Sunrise","Fish Peri Peri (Rawas)",Std,Std,670
+"TQ Sunrise","King Prawns Peri Peri",Std,Std,920
+"TQ Sunrise","Chimichangas Veg",Std,Std,370
+"TQ Sunrise","Chimichangas Chicken",Std,Std,430
+"TQ Sunrise","Chimichangas Lamb",Std,Std,500
+"TQ Sunrise","Burritos Veg",Std,Std,340
+"TQ Sunrise","Burritos Chicken",Std,Std,400
+"TQ Sunrise","Mexican Rice Veg",Std,Std,370
+"TQ Sunrise","Mexican Rice Chicken",Std,Std,430
+"TQ Sunrise","Baked Enchilada Veg",Std,Std,370
+"TQ Sunrise","Baked Enchilada Chicken",Std,Std,430
+"TQ Sunrise","Quesadilla Veg",Std,Std,340
+"TQ Sunrise","Quesadilla Chicken",Std,Std,400
+"TQ Sunrise","Margarita Pizza","Small 8""",Std,300
+"TQ Sunrise","Garden Fresh Pizza","Small 8""",Std,370
+"TQ Sunrise","Paneer Tikka Pizza","Small 8""",Std,390
+"TQ Sunrise","Chicken Tikka Pizza","Small 8""",Std,430
+"TQ Sunrise","Pesto Pizza Veg","Small 8""",Std,380
+"TQ Sunrise","Pesto Pizza Chicken","Small 8""",Std,430
+"TQ Sunrise","BBQ Chicken Pizza","Small 8""",Std,430
+"TQ Sunrise","Mexicano Chicken Pizza","Small 8""",Std,450
+"TQ Sunrise","Spicy Italian Pizza Chicken","Small 8""",Std,470
+"TQ Sunrise","Seafood Pizza","Small 8""",Std,570
+"TQ Sunrise","Three Cheese Pizza Veg","Small 8""",Std,500
+"TQ Sunrise","Three Cheese Pizza Chicken","Small 8""",Std,570
+"TQ Sunrise","One Pot Macaroni Mushroom Sauce",Std,Std,450
+"TQ Sunrise","Penne Arrabiata Veg",Std,Std,420
+"TQ Sunrise","Penne Arrabiata Chicken",Std,Std,470
+"TQ Sunrise","Creamy Herb Penne Veg",Std,Std,430
+"TQ Sunrise","Creamy Herb Penne Chicken",Std,Std,480
+"TQ Sunrise","Macaroni Pesto Veg",Std,Std,420
+"TQ Sunrise","Macaroni Pesto Chicken",Std,Std,470
+"TQ Sunrise","Spaghetti Carbonara",Std,Std,480
+"TQ Sunrise","Spaghetti Aglio Olio Veg",Std,Std,420
+"TQ Sunrise","Spaghetti Aglio Olio Chicken",Std,Std,470
+"TQ Sunrise","Lasagne Veg",Std,Std,420
+"TQ Sunrise","Lasagne Chicken",Std,Std,470
+"TQ Sunrise","Mac & Cheese",Std,Std,430
+"TQ Sunrise","Butter Chicken Pasta",Std,Std,470
+"TQ Sunrise","Spaghetti Bolognese",Std,Std,540
+"TQ Sunrise","Sicilian Pasta Veg",Std,Std,430
+"TQ Sunrise","Sicilian Pasta Chicken",Std,Std,470
+"TQ Sunrise","Veg Sizzler",Std,Std,520
+"TQ Sunrise","Fajitas Veg",Std,Std,420
+"TQ Sunrise","Fajitas Chicken",Std,Std,470
+"TQ Sunrise","Paneer Shaslik Sizzler",Std,Std,520
+"TQ Sunrise","Chicken Pepper Steak Sizzler",Std,Std,600
+"TQ Sunrise","Two Meat Sizzler",Std,Std,670
+"TQ Sunrise","Sea Food Sizzler",Std,Std,1170
+"TQ Sunrise","Custom Veg Sizzler (Veg Patty-Exotic Vegetables)",Std,Std,270
+"TQ Sunrise","Custom Veg Sizzler (Paneer-Steak-Shashlik-Patty)",Std,Std,320
+"TQ Sunrise","Custom Non-Veg Sizzler (Chicken Breast-Shashlik-Leg)",Std,Std,370
+"TQ Sunrise","Custom Mutton Sizzler",Std,Std,420
+"TQ Sunrise","Corn And Vegetable Dhania Ka Shorba",Std,Std,250
+"TQ Sunrise","Dal-E-Veg Shorba",Std,Std,260
+"TQ Sunrise","Murg Yakhni Shorba",Std,Std,260
+"TQ Sunrise","Mutton Yakhni Shorba",Std,Std,300
+"TQ Sunrise","Chicken Zafrani Shorba",Std,Std,270
+"TQ Sunrise","Vegetable Sikkimpuri Tikki",Std,Std,370
+"TQ Sunrise","Cheesy Paneer  Tikki",Std,Std,370
+"TQ Sunrise","Paneer  Papadi",Std,Std,370
+"TQ Sunrise","Magazee Chicken",Std,Std,420
+"TQ Sunrise","Masaledar Murg",Std,Std,380
+"TQ Sunrise","Chicken Pahadi Twist",Std,Std,470
+"TQ Sunrise","Vegetable Makhmali  Kabab",Std,Std,320
+"TQ Sunrise","Paneer Tikka  Lahori",Std,Std,370
+"TQ Sunrise","Burnt Garlic Paneer Tikka",Std,Std,400
+"TQ Sunrise","Burnt Garlic Chicken Tikka",Std,Std,450
+"TQ Sunrise","Paneer Hill Top",Std,Std,400
+"TQ Sunrise","Chicken Hill Top",Std,Std,470
+"TQ Sunrise","Paneer Kachha Nimbu Ka Kabab",Std,Std,370
+"TQ Sunrise","Chicken Kachha Nimbu Ka Kabab",Std,Std,430
+"TQ Sunrise","Murg Jalwa",Std,Std,380
+"TQ Sunrise","Murg Santacruz Express",Std,Std,400
+"TQ Sunrise","Murg Bamboo Kabab",Std,Std,420
+"TQ Sunrise","Murg Rozali Kabab",Std,Std,430
+"TQ Sunrise","Bhatti Ka Murg",Std,Std,400
+"TQ Sunrise","Chilly Milly Chicken Kabab",Std,Std,370
+"TQ Sunrise","Dum Ka Murg",Std,Std,430
+"TQ Sunrise","Karela Chicken Kabab",Std,Std,490
+"TQ Sunrise","Tehzeeb Kabab",Std,Std,490
+"TQ Sunrise","Gumnam Kabab",Std,Std,470
+"TQ Sunrise","Mutton Galouti Kabab",Std,Std,470
+"TQ Sunrise","Mutton Sheekh Kabab",Std,Std,440
+"TQ Sunrise","Agri Tandoori Half ",Std,Std,270
+"TQ Sunrise","Agri Tandoori Full ",Std,Std,440
+"TQ Sunrise","Hyderabadi Tandoori Half ",Std,Std,270
+"TQ Sunrise","Hyderabadi Tandoori Full",Std,Std,440
+"TQ Sunrise","Tandoori Chicken Half",Std,Std,250
+"TQ Sunrise","Tandoori Chicken Full",Std,Std,410
+"TQ Sunrise","Veg Begum Bahar",Std,Std,280
+"TQ Sunrise","Tikhe Swad Ki Sabzi",Std,Std,350
+"TQ Sunrise","Vegetable Lajawab",Std,Std,350
+"TQ Sunrise","Stuff Tomato",Std,Std,310
+"TQ Sunrise","Stuff Simla-Mirch",Std,Std,310
+"TQ Sunrise","Bhindi Tomato Rassewala",Std,Std,320
+"TQ Sunrise","Multani Mushroom",Std,Std,370
+"TQ Sunrise","Paneer Lazeez",Std,Std,370
+"TQ Sunrise","Paneer Pasanda",Std,Std,400
+"TQ Sunrise","Bhatti Ka Paneer Masala",Std,Std,340
+"TQ Sunrise","Dal Tadka",Std,Std,220
+"TQ Sunrise","Dal Kolhapuri",Std,Std,270
+"TQ Sunrise","Toofani Paneer",Std,Std,370
+"TQ Sunrise","Toofani Chicken",Std,Std,410
+"TQ Sunrise","Chicken Lababdar",Std,Std,410
+"TQ Sunrise","Chicken Tangdi Masala",Std,Std,490
+"TQ Sunrise","Chicken Rassewala",Std,Std,430
+"TQ Sunrise","Lemon Chicken",Std,Std,400
+"TQ Sunrise","Chicken Zafrani",Std,Std,395
+"TQ Sunrise","Mutton Zafrani",Std,Std,450
+"TQ Sunrise","Chicken Baghdadi",Std,Std,395
+"TQ Sunrise","Mutton Baghdadi",Std,Std,450
+"TQ Sunrise","Chicken Ball Hyderabadi",Std,Std,370
+"TQ Sunrise","Mutton Ball Hyderabadi",Std,Std,470
+"TQ Sunrise","Pahadi Chicken Curry",Std,Std,400
+"TQ Sunrise","Mutton Lasooni Masala",Std,Std,470
+"TQ Sunrise","Mutton Dahiwala",Std,Std,490
+"TQ Sunrise","Mutton Roganjosh",Std,Std,450
+"TQ Sunrise","Nalli Nihari",Std,Std,470
+"TQ Sunrise","Murg Mussallam Half",Std,Std,500
+"TQ Sunrise","Murg Mussallam Full",Std,Std,840
+"TQ Sunrise","Mallipuram Chicken",Std,Std,380
+"TQ Sunrise","Mallipuram Mutton",Std,Std,470
+"TQ Sunrise","Cyloni Curry Chicken",Std,Std,380
+"TQ Sunrise","Chettinad Chicken",Std,Std,380
+"TQ Sunrise","Chettinad Mutton",Std,Std,470
+"TQ Sunrise","Gassi Chicken",Std,Std,380
+"TQ Sunrise","Gassi Mutton",Std,Std,470
+"TQ Sunrise","Pulimunchi Chicken",Std,Std,380
+"TQ Sunrise","Pulimunchi Mutton",Std,Std,470
+"TQ Sunrise","Sukka Chicken",Std,Std,380
+"TQ Sunrise","Sukka Mutton",Std,Std,470
+"TQ Sunrise","Ghee Roast Chicken",Std,Std,380
+"TQ Sunrise","Ghee Roast Mutton",Std,Std,450
+"TQ Sunrise","Mangalorean Curry Chicken",Std,Std,380
+"TQ Sunrise","Mangalorean Curry Mutton",Std,Std,470
+"TQ Sunrise","Goan Curry Chicken",Std,Std,380
+"TQ Sunrise","Malvani Curry Chicken",Std,Std,350
+"TQ Sunrise","Malvani Curry Mutton",Std,Std,450
+"TQ Sunrise","Malbari Curry Chicken",Std,Std,350
+"TQ Sunrise","Agri Curry Chicken",Std,Std,350
+"TQ Sunrise","Agri Curry Mutton",Std,Std,450
+"TQ Sunrise",Roti,Std,Std,45
+"TQ Sunrise",Paratha,Std,Std,55
+"TQ Sunrise",Naan,Std,Std,60
+"TQ Sunrise",Kulcha,Std,Std,60
+"TQ Sunrise","Butter Roti",Std,Std,50
+"TQ Sunrise","Butter Paratha",Std,Std,60
+"TQ Sunrise","Butter Naan",Std,Std,65
+"TQ Sunrise","Butter Kulcha",Std,Std,70
+"TQ Sunrise","Missi Roti",Std,Std,90
+"TQ Sunrise","Khasta Roti",Std,Std,70
+"TQ Sunrise","Lachedar Paratha",Std,Std,80
+"TQ Sunrise","Garlic Naan",Std,Std,90
+"TQ Sunrise","Stuff Naan",Std,Std,140
+"TQ Sunrise","Cheese Naan",Std,Std,140
+"TQ Sunrise","Cheese Garlic Naan",Std,Std,165
+"TQ Sunrise","Cheese Stuff Naan",Std,Std,190
+"TQ Sunrise","Roti Ki Tokri",Std,Std,405
+"TQ Sunrise","Roomali Roti",Std,Std,105
+"TQ Sunrise","Butter Roomali",Std,Std,120
+"TQ Sunrise","Butter Crispy Masala Roomali",Std,Std,205
+"TQ Sunrise","Mexicano Crispy Roomali",Std,Std,340
+"TQ Sunrise","Kheema Paratha Chicken",Std,Std,190
+"TQ Sunrise","Kheema Paratha Mutton",Std,Std,260
+"TQ Sunrise","Neer Dosa",Std,Std,140
+"TQ Sunrise","Chicken Hyderabadi Biryani",Std,Std,320
+"TQ Sunrise","Mutton Hyderabadi Biryani",Std,Std,440
+"TQ Sunrise","Prawns Hyderabadi Biryani",Std,Std,470
+"TQ Sunrise","Chicken Dum Biryani",Std,Std,340
+"TQ Sunrise","Mutton Dum Biryani",Std,Std,440
+"TQ Sunrise","Prawns Dum Biryani",Std,Std,470
+"TQ Sunrise","Chicken Tikka Biryani",Std,Std,350
+"TQ Sunrise","Chicken Pyaaz Ka Pulao",Std,Std,290
+"TQ Sunrise","Mutton Pyaaz Ka Pulao",Std,Std,430
+"TQ Sunrise","Prawns Pyaaz Ka Pulao",Std,Std,450
+"TQ Sunrise","Veg Hyderabadi Biryani",Std,Std,260
+"TQ Sunrise","Paneer Hyderabadi Biryani",Std,Std,300
+"TQ Sunrise","Kerala Style Veg Biryani",Std,Std,340
+"TQ Sunrise","Kerala Style Chicken Biryani",Std,Std,370
+"TQ Sunrise","Kerala Style Mutton Biryani",Std,Std,470
+"TQ Sunrise","Kerala Style Prawns Biryani",Std,Std,470
+"TQ Sunrise","Tequila Sunrise Veg Biryani",Std,Std,390
+"TQ Sunrise","Tequila Sunrise Chicken Biryani",Std,Std,450
+"TQ Sunrise","Tequila Sunrise Mutton Biryani",Std,Std,530
+"TQ Sunrise","Tequila Sunrise Prawns Biryani",Std,Std,550
+"TQ Sunrise","Jeera Rice",Std,Std,190
+"TQ Sunrise","Steam Rice",Std,Std,140
+"TQ Sunrise","Lemon Coriander Veg Soup ",Std,Std,200
+"TQ Sunrise","Lemon Coriander Chicken Soup ",Std,Std,230
+"TQ Sunrise","Beijing Veg Soup",Std,Std,240
+"TQ Sunrise","Beijing Chicken Soup",Std,Std,270
+"TQ Sunrise","Beijing Prawns Soup",Std,Std,350
+"TQ Sunrise","Chicken Corn Egg Drop Soup",Std,Std,240
+"TQ Sunrise","Chicken Spinach Soup",Std,Std,240
+"TQ Sunrise","Tom Yum Veg Soup",Std,Std,230
+"TQ Sunrise","Tom Yum Chicken Soup",Std,Std,260
+"TQ Sunrise","Tom Yum Prawns Soup",Std,Std,280
+"TQ Sunrise","Thai Cream Chicken Soup ",Std,Std,270
+"TQ Sunrise","Thai Cream Prawn Soup ",Std,Std,300
+"TQ Sunrise","Cheese Chilly Stuffed Mushroom",Std,Std,370
+"TQ Sunrise","Paneer Sotoyam ",Std,Std,380
+"TQ Sunrise","Chicken Sotoyam ",Std,Std,420
+"TQ Sunrise","Indonesian Style veg",Std,Std,370
+"TQ Sunrise","Indonesian Style Paneer",Std,Std,370
+"TQ Sunrise","Indonesian Style Chicken",Std,Std,400
+"TQ Sunrise","Lemon Grass Chilly Chicken",Std,Std,420
+"TQ Sunrise","Lemon Grass Chilly Fish (Rawas)",Std,Std,520
+"TQ Sunrise","Lemon Grass Chilly Prawns",Std,Std,520
+"TQ Sunrise","Balineese Chicken",Std,Std,450
+"TQ Sunrise","Fresh Turmeric Roasted Chicken",Std,Std,400
+"TQ Sunrise","Fresh Turmeric Roasted Fish (Rawas)",Std,Std,520
+"TQ Sunrise","Chicken Ulam Lumpia",Std,Std,450
+"TQ Sunrise","Pan Fried Chicken",Std,Std,420
+"TQ Sunrise","Sriracha Chicken",Std,Std,490
+"TQ Sunrise","Chicken In Chinese Parsley",Std,Std,400
+"TQ Sunrise","Apple Chicken",Std,Std,480
+"TQ Sunrise","Burnt Garlic Veg Fried  Rice",Std,Std,370
+"TQ Sunrise","Burnt Garlic Chicken Fried Rice",Std,Std,400
+"TQ Sunrise","Singapore Veg Rice",Std,Std,370
+"TQ Sunrise","Singapore Chicken Rice",Std,Std,400
+"TQ Sunrise","Bamboo Veg Rice",Std,Std,400
+"TQ Sunrise","Bamboo Chicken Rice",Std,Std,450
+"TQ Sunrise","Chicken Basket Rice",Std,Std,450
+"TQ Sunrise","Mongolian Veg Hot Pot Rice",Std,Std,400
+"TQ Sunrise","Mongolian Chicken Hot Pot Rice",Std,Std,450
+"TQ Sunrise","Yang Chow Rice Chicken",Std,Std,430
+"TQ Sunrise","Ginger Smoked Veg Rice",Std,Std,400
+"TQ Sunrise","Ginger Smoked Chicken Rice",Std,Std,450
+"TQ Sunrise","Chinese Veg Pot Rice",Std,Std,400
+"TQ Sunrise","Chinese Chicken Pot Rice",Std,Std,450
+"TQ Sunrise","Mee Goreng Chicken",Std,Std,450
+"TQ Sunrise","Mee Goreng Prawns",Std,Std,570
+"TQ Sunrise","Nasi Goreng Chicken Rice",Std,Std,470
+"TQ Sunrise","Nasi Goreng Prawns Rice",Std,Std,570
+"TQ Sunrise","Tom Yum Veg Noodles",Std,Std,400
+"TQ Sunrise","Tom Yum Chicken Noodles",Std,Std,450
+"TQ Sunrise","Cashew Nut Veg Sauce ",Std,Std,370
+"TQ Sunrise","Cashew Nut Chicken Sauce ",Std,Std,400
+"TQ Sunrise","Hot Garlic Veg Sauce",Std,Std,340
+"TQ Sunrise","Hot Garlic Chicken Sauce",Std,Std,380
+"TQ Sunrise","Blackbean Chicken Sauce",Std,Std,380
+"TQ Sunrise","Blackbean Fish (Basa) Sauce",Std,Std,570
+"TQ Sunrise","Blackbean Prawns Sauce",Std,Std,520
+"TQ Sunrise","Oyster Chicken Sauce",Std,Std,400
+"TQ Sunrise","Oyster Prawns Sauce",Std,Std,520
+"TQ Sunrise","Oyster Fish (Basa) Sauce",Std,Std,570
+"TQ Sunrise","Buffalo Wings",Std,Std,370
+"TQ Sunrise","Hot Pepper Chicken Wings",Std,Std,400
+"TQ Sunrise","Oven Roast Sriracha Chicken Wings",Std,Std,430
+"TQ Sunrise","Chicken Wings (Choice Of Your Sauce)",Std,Std,370
+"TQ Sunrise","Wings Chatpata",Std,Std,370
+"TQ Sunrise","Masala Tandoori Chicken Wings",Std,Std,370
+"TQ Sunrise","Sizzling Brownie",Std,Std,320
+"TQ Sunrise","Caramel Custard",Std,Std,170
+"TQ Sunrise",Mousse,Std,Std,170
+"TQ Sunrise","Banana Flambe",Std,Std,300
+"TQ Sunrise","Gulab Jamun",Std,Std,170
+"TQ Sunrise",Gadbad,Std,Std,300
+"TQ Sunrise","Ice Cream",Std,Std,170
+"TQ Sunrise","Gulab Jamun With Ice Cream",Std,Std,240
+"TQ Sunrise","Glen Fiddich (12 Years)","30 ml",Std,700
+"TQ Sunrise","Jack Daniel","30 ml",Std,500
+"TQ Sunrise","Black Label","30 ml",Std,570
+"TQ Sunrise","Chivas Regal (12 Years)","30 ml",Std,570
+"TQ Sunrise","Red Label","30 ml",Std,320
+"TQ Sunrise",BallantineS,"30 ml",Std,320
+"TQ Sunrise","Amrut Fusion","30 ml",Std,570
+"TQ Sunrise","Paul John","30 ml",Std,340
+"TQ Sunrise","Ice Tea (Peach)",Std,Std,230
+"TQ Sunrise","Cold Coffee",Std,Std,260
+"TQ Sunrise","Fresh Juice",Std,Std,180
+"TQ Sunrise","Can Juice",Std,Std,140
+"TQ Sunrise","Buttermilk (Chaas)",Std,Std,110
+"TQ Sunrise","Fresh Lime Water",Std,Std,90
+"TQ Sunrise",Tea,Std,Std,90
+"TQ Sunrise",Coffee,Std,Std,90
+"TQ Sunrise","Mineral Water",Std,Std,70
+"TQ Sunrise","Red Bull",Std,Std,240
+"TQ Sunrise","Tonic Water",Std,Std,140
+"TQ Sunrise","Diet Coke",Std,Std,100
+"TQ Sunrise",Coke,"300 ml",Std,70
+"TQ Sunrise",Soda,"500 ml",Std,70
+"TQ Sunrise","Potato Wedges",Std,Std,240
+"TQ Sunrise","Fish Fingers Rawas",Std,Std,520
+"TQ Sunrise","Vegetable Khasta Tikki",Std,Std,400
+"TQ Sunrise","Cyloni Curry Mutton",Std,Std,470
+"TQ Sunrise","Ice Tea (Lemon)",Std,Std,230
+"TQ Sunrise","Fresh Lime Soda",Std,Std,90
+"TQ Sunrise","Lemon Grass Chilly Fish (Basa)",Std,Std,520
+"TQ Sunrise","Fish Lemon Caper Sauce (Basa)",Std,Std,570
+"TQ Sunrise","Fish n Chips (Rawas)",Std,Std,570
+"TQ Sunrise","Grilled Herb Fish (Basa)",Std,Std,670
+"TQ Sunrise","Fish Peri Peri (Basa)",Std,Std,670
+"TQ Sunrise","Fresh Turmeric Roasted Fish (Basa)",Std,Std,520
+"TQ Sunrise","Reshmi Paratha",Std,Std,130
+"TQ Sunrise","Makai Roti",Std,Std,90
+"TQ Sunrise","Saute Vegetable",Std,Std,120
+"TQ Sunrise","Thumbs Up","300 ml",Std,70
+"TQ Sunrise",Sprite,"300 ml",Std,70
+"TQ Sunrise",Limca,"300 ml",Std,70
+"TQ Sunrise",Mazza,"300 ml",Std,70
+"TQ Sunrise","Fish Tempura Rawas",Std,Std,570
+"TQ Sunrise","Singapore Veg Noodles",Std,Std,370
+"TQ Sunrise","Singapore Chicken Noodles",Std,Std,400
+"TQ Sunrise","Bamboo Veg Noodles",Std,Std,400
+"TQ Sunrise","Bamboo Chicken Noodles",Std,Std,450
+"TQ Sunrise","Ginger Smoked Veg Noodles",Std,Std,400
+"TQ Sunrise","Ginger Smoked Chicken Noodles",Std,Std,450
+"TQ Sunrise","Oyster Fish (Rawas) Sauce",Std,Std,570
+"TQ Sunrise","Blackbean Fish (Rawas) Sauce",Std,Std,570
+"TQ Sunrise","Brownie Shake",Std,Std,310
+"TQ Sunrise","Kit Kat Shake",Std,Std,310
+"TQ Sunrise","Snickers Shake",Std,Std,310
+"TQ Sunrise","Oreo Shake",Std,Std,310
+"TQ Sunrise","Chocolate Shake",Std,Std,310
+"TQ Sunrise","Strawberry Shake",Std,Std,310
+"TQ Sunrise","Stuffed Paratha (Aloo)",Std,Std,130
+"TQ Sunrise","Stuffed Paratha (Mix Veg)",Std,Std,130
+"TQ Sunrise","Glen Fiddich (12 Years)","60 ml",Std,1170
+"TQ Sunrise","Jack Daniel","60 ml",Std,850
+"TQ Sunrise","Black Label","60 ml",Std,920
+"TQ Sunrise","Chivas Regal (12 Years)","60 ml",Std,920
+"TQ Sunrise","Red Label","60 ml",Std,500
+"TQ Sunrise",BallantineS,"60 ml",Std,500
+"TQ Sunrise","Amrut Fusion","60 ml",Std,920
+"TQ Sunrise","Paul John","60 ml",Std,560
+"TQ Sunrise","Black Dog Triple Gold","30 ml",Std,290
+"TQ Sunrise","Black Dog Triple Gold","60 ml",Std,520
+"TQ Sunrise","Black Dog Triple Gold","90 ml",Std,740
+"TQ Sunrise","Black Dog Triple Gold","180 ml",Std,1400
+"TQ Sunrise","Black Dog Triple Gold","750 ml",Std,5420
+"TQ Sunrise","Black & White","30 ml",Std,290
+"TQ Sunrise","Black & White","60 ml",Std,480
+"TQ Sunrise","Black & White","90 ml",Std,680
+"TQ Sunrise","Black & White","180 ml",Std,1170
+"TQ Sunrise","Black & White","750 ml",Std,4580
+"TQ Sunrise","100 Pipers","30 ml",Std,300
+"TQ Sunrise","100 Pipers","60 ml",Std,480
+"TQ Sunrise","100 Pipers","90 ml",Std,680
+"TQ Sunrise","100 Pipers","180 ml",Std,1170
+"TQ Sunrise","100 Pipers","750 ml",Std,4580
+"TQ Sunrise","Jim Beam","30 ml",Std,310
+"TQ Sunrise","Jim Beam","60 ml",Std,490
+"TQ Sunrise","Jim Beam","90 ml",Std,700
+"TQ Sunrise","Jim Beam","180 ml",Std,1280
+"TQ Sunrise","Jim Beam","750 ml",Std,4820
+"TQ Sunrise","Teachers 50 ","30 ml",Std,340
+"TQ Sunrise","Teachers 50 ","60 ml",Std,560
+"TQ Sunrise","Teachers 50 ","90 ml",Std,740
+"TQ Sunrise","Teachers 50 ","180 ml",Std,1400
+"TQ Sunrise","Teachers 50 ","750 ml",Std,5620
+"TQ Sunrise","Teachers (Highland Cream)","30 ml",Std,290
+"TQ Sunrise","Teachers (Highland Cream)","60 ml",Std,480
+"TQ Sunrise","Teachers (Highland Cream)","90 ml",Std,680
+"TQ Sunrise","Teachers (Highland Cream)","180 ml",Std,1170
+"TQ Sunrise","Teachers (Highland Cream)","750 ml",Std,4520
+"TQ Sunrise","Vat 69","30 ml",Std,270
+"TQ Sunrise","Vat 69","60 ml",Std,450
+"TQ Sunrise","Vat 69","90 ml",Std,600
+"TQ Sunrise","Vat 69","180 ml",Std,1120
+"TQ Sunrise","Vat 69","750 ml",Std,4220
+"TQ Sunrise","Blenders Pride Reserve","30 ml",Std,180
+"TQ Sunrise","Blenders Pride Reserve","60 ml",Std,300
+"TQ Sunrise","Blenders Pride Reserve","90 ml",Std,380
+"TQ Sunrise","Blenders Pride Reserve","180 ml",Std,690
+"TQ Sunrise","Blenders Pride Reserve","750 ml",Std,2670
+"TQ Sunrise","Antiquity Blue","30 ml",Std,180
+"TQ Sunrise","Antiquity Blue","60 ml",Std,290
+"TQ Sunrise","Antiquity Blue","90 ml",Std,370
+"TQ Sunrise","Antiquity Blue","180 ml",Std,680
+"TQ Sunrise","Antiquity Blue","750 ml",Std,2620
+"TQ Sunrise","Blenders Pride","30 ml",Std,150
+"TQ Sunrise","Blenders Pride","60 ml",Std,250
+"TQ Sunrise","Blenders Pride","90 ml",Std,330
+"TQ Sunrise","Blenders Pride","180 ml",Std,610
+"TQ Sunrise","Blenders Pride","750 ml",Std,2300
+"TQ Sunrise",Signature,"30 ml",Std,150
+"TQ Sunrise",Signature,"60 ml",Std,250
+"TQ Sunrise",Signature,"90 ml",Std,330
+"TQ Sunrise",Signature,"180 ml",Std,610
+"TQ Sunrise",Signature,"750 ml",Std,2300
+"TQ Sunrise","Royal Challenge","30 ml",Std,140
+"TQ Sunrise","Royal Challenge","60 ml",Std,190
+"TQ Sunrise","Royal Challenge","90 ml",Std,250
+"TQ Sunrise","Royal Challenge","180 ml",Std,430
+"TQ Sunrise","Royal Challenge","750 ml",Std,1650
+"TQ Sunrise","Royal Stag Barrel","30 ml",Std,140
+"TQ Sunrise","Royal Stag Barrel","60 ml",Std,190
+"TQ Sunrise","Royal Stag Barrel","90 ml",Std,250
+"TQ Sunrise","Royal Stag Barrel","180 ml",Std,430
+"TQ Sunrise","Royal Stag Barrel","750 ml",Std,1650
+"TQ Sunrise","Royal Stag","30 ml",Std,120
+"TQ Sunrise","Royal Stag","60 ml",Std,180
+"TQ Sunrise","Royal Stag","90 ml",Std,230
+"TQ Sunrise","Royal Stag","180 ml",Std,410
+"TQ Sunrise","Royal Stag","750 ml",Std,1520
+"TQ Sunrise","Mcdowells No 1","30 ml",Std,110
+"TQ Sunrise","Mcdowells No 1","60 ml",Std,170
+"TQ Sunrise","Mcdowells No 1","90 ml",Std,220
+"TQ Sunrise","Mcdowells No 1","180 ml",Std,390
+"TQ Sunrise","Mcdowells No 1","750 ml",Std,1430
+"TQ Sunrise","Mcdowells No 1 Luxury","30 ml",Std,110
+"TQ Sunrise","Mcdowells No 1 Luxury","60 ml",Std,170
+"TQ Sunrise","Mcdowells No 1 Luxury","90 ml",Std,220
+"TQ Sunrise","Mcdowells No 1 Luxury","180 ml",Std,390
+"TQ Sunrise","Mcdowells No 1 Luxury","750 ml",Std,1430
+"TQ Sunrise","Imperial Blue","30 ml",Std,100
+"TQ Sunrise","Imperial Blue","60 ml",Std,150
+"TQ Sunrise","Imperial Blue","90 ml",Std,200
+"TQ Sunrise","Imperial Blue","180 ml",Std,360
+"TQ Sunrise","Imperial Blue","750 ml",Std,1240
+"TQ Sunrise","Dsp Black ","30 ml",Std,100
+"TQ Sunrise","Dsp Black ","60 ml",Std,150
+"TQ Sunrise","Dsp Black ","90 ml",Std,200
+"TQ Sunrise","Dsp Black ","180 ml",Std,360
+"TQ Sunrise","Dsp Black ","750 ml",Std,1240
+"TQ Sunrise","Directors Special","30 ml",Std,100
+"TQ Sunrise","Directors Special","60 ml",Std,150
+"TQ Sunrise","Directors Special","90 ml",Std,200
+"TQ Sunrise","Directors Special","180 ml",Std,360
+"TQ Sunrise","Directors Special","750 ml",Std,1240
+"TQ Sunrise","Mansion House ","30 ml",Std,130
+"TQ Sunrise","Mansion House ","60 ml",Std,200
+"TQ Sunrise","Mansion House ","90 ml",Std,260
+"TQ Sunrise","Mansion House ","180 ml",Std,470
+"TQ Sunrise","Mansion House ","750 ml",Std,1700
+"TQ Sunrise","Honey Bee ","30 ml",Std,100
+"TQ Sunrise","Honey Bee ","60 ml",Std,150
+"TQ Sunrise","Honey Bee ","90 ml",Std,200
+"TQ Sunrise","Honey Bee ","180 ml",Std,360
+"TQ Sunrise","Honey Bee ","750 ml",Std,1240
+"TQ Sunrise","Bombay Sapphire","30 ml",Std,310
+"TQ Sunrise","Bombay Sapphire","60 ml",Std,560
+"TQ Sunrise","Bombay Sapphire","90 ml",Std,810
+"TQ Sunrise","Bombay Sapphire","180 ml",Std,1520
+"TQ Sunrise","Bombay Sapphire","750 ml",Std,5770
+"TQ Sunrise","Blue Riband Duet","30 ml",Std,110
+"TQ Sunrise","Blue Riband Duet","60 ml",Std,150
+"TQ Sunrise","Blue Riband Duet","90 ml",Std,210
+"TQ Sunrise","Blue Riband Duet","180 ml",Std,380
+"TQ Sunrise","Blue Riband Duet","750 ml",Std,1240
+"TQ Sunrise","Blue Riband","30 ml",Std,110
+"TQ Sunrise","Blue Riband","60 ml",Std,150
+"TQ Sunrise","Blue Riband","90 ml",Std,210
+"TQ Sunrise","Blue Riband","180 ml",Std,380
+"TQ Sunrise","Blue Riband","750 ml",Std,1240
+"TQ Sunrise","Gray Goose","30 ml",Std,600
+"TQ Sunrise","Gray Goose","60 ml",Std,1040
+"TQ Sunrise",Absolut,"30 ml",Std,300
+"TQ Sunrise",Absolut,"60 ml",Std,470
+"TQ Sunrise",Skyy,"30 ml",Std,300
+"TQ Sunrise",Skyy,"60 ml",Std,470
+"TQ Sunrise","Stolichnaya ","30 ml",Std,300
+"TQ Sunrise","Stolichnaya ","60 ml",Std,470
+"TQ Sunrise","Smirnoff Green Apple","30 ml",Std,160
+"TQ Sunrise","Smirnoff Green Apple","60 ml",Std,280
+"TQ Sunrise","Smirnoff Green Apple","90 ml",Std,370
+"TQ Sunrise","Smirnoff Green Apple","180 ml",Std,710
+"TQ Sunrise","Smirnoff Green Apple","750 ml",Std,2770
+"TQ Sunrise",Smirnoff,"30 ml",Std,160
+"TQ Sunrise",Smirnoff,"60 ml",Std,280
+"TQ Sunrise",Smirnoff,"90 ml",Std,370
+"TQ Sunrise",Smirnoff,"180 ml",Std,710
+"TQ Sunrise",Smirnoff,"750 ml",Std,2770
+"TQ Sunrise","Smirnoff Espresso","30 ml",Std,160
+"TQ Sunrise","Smirnoff Espresso","60 ml",Std,280
+"TQ Sunrise","Smirnoff Espresso","90 ml",Std,370
+"TQ Sunrise","Smirnoff Espresso","180 ml",Std,710
+"TQ Sunrise","Smirnoff Espresso","750 ml",Std,2770
+"TQ Sunrise",Romanov,"30 ml",Std,110
+"TQ Sunrise",Romanov,"60 ml",Std,170
+"TQ Sunrise",Romanov,"90 ml",Std,220
+"TQ Sunrise",Romanov,"180 ml",Std,390
+"TQ Sunrise",Romanov,"750 ml",Std,1430
+"TQ Sunrise","Romanov Apple Thrill","30 ml",Std,110
+"TQ Sunrise","Romanov Apple Thrill","60 ml",Std,170
+"TQ Sunrise","Romanov Apple Thrill","90 ml",Std,220
+"TQ Sunrise","Romanov Apple Thrill","180 ml",Std,390
+"TQ Sunrise","Romanov Apple Thrill","750 ml",Std,1430
+"TQ Sunrise","White Mischief","30 ml",Std,110
+"TQ Sunrise","White Mischief","60 ml",Std,170
+"TQ Sunrise","White Mischief","90 ml",Std,220
+"TQ Sunrise","White Mischief","180 ml",Std,390
+"TQ Sunrise","White Mischief","750 ml",Std,1430
+"TQ Sunrise","Magic Moments ","30 ml",Std,110
+"TQ Sunrise","Magic Moments ","60 ml",Std,170
+"TQ Sunrise","Magic Moments ","90 ml",Std,220
+"TQ Sunrise","Magic Moments ","180 ml",Std,390
+"TQ Sunrise","Magic Moments ","750 ml",Std,1430
+"TQ Sunrise","Magic Moments Apple","30 ml",Std,110
+"TQ Sunrise","Magic Moments Apple","60 ml",Std,170
+"TQ Sunrise","Magic Moments Apple","90 ml",Std,220
+"TQ Sunrise","Magic Moments Apple","180 ml",Std,390
+"TQ Sunrise","Magic Moments Apple","750 ml",Std,1430
+"TQ Sunrise","Bacardi Superior ","30 ml",Std,160
+"TQ Sunrise","Bacardi Superior ","60 ml",Std,280
+"TQ Sunrise","Bacardi Superior ","90 ml",Std,370
+"TQ Sunrise","Bacardi Superior ","180 ml",Std,710
+"TQ Sunrise","Bacardi Superior ","750 ml",Std,2770
+"TQ Sunrise","Bacardi Limon","30 ml",Std,160
+"TQ Sunrise","Bacardi Limon","60 ml",Std,280
+"TQ Sunrise","Bacardi Limon","90 ml",Std,370
+"TQ Sunrise","Bacardi Limon","180 ml",Std,710
+"TQ Sunrise","Bacardi Limon","750 ml",Std,2770
+"TQ Sunrise","Bacardi Black","30 ml",Std,110
+"TQ Sunrise","Bacardi Black","60 ml",Std,150
+"TQ Sunrise","Bacardi Black","90 ml",Std,210
+"TQ Sunrise","Bacardi Black","180 ml",Std,380
+"TQ Sunrise","Bacardi Black","750 ml",Std,1320
+"TQ Sunrise","Captain Morgan Dark","30 ml",Std,110
+"TQ Sunrise","Captain Morgan Dark","60 ml",Std,150
+"TQ Sunrise","Captain Morgan Dark","90 ml",Std,210
+"TQ Sunrise","Captain Morgan Dark","180 ml",Std,380
+"TQ Sunrise","Captain Morgan Dark","750 ml",Std,1320
+"TQ Sunrise","Old Monk","30 ml",Std,100
+"TQ Sunrise","Old Monk","60 ml",Std,150
+"TQ Sunrise","Old Monk","90 ml",Std,190
+"TQ Sunrise","Old Monk","180 ml",Std,350
+"TQ Sunrise","Old Monk","750 ml",Std,1280
+"TQ Sunrise","Bacardi Breezer",Pint,Std,300
+"TQ Sunrise",Corona,"330 ml",Std,580
+"TQ Sunrise",Hoegaarden,"330 ml",Std,580
+"TQ Sunrise","Kingfisher Ultra","330 ml",Std,210
+"TQ Sunrise","Kingfisher Ultra","650 ml",Std,400
+"TQ Sunrise",Kingfisher,"330 ml",Std,190
+"TQ Sunrise",Kingfisher,"650 ml",Std,330
+"TQ Sunrise",Budweiser,"330 ml",Std,260
+"TQ Sunrise",Budweiser,"650 ml",Std,400
+"TQ Sunrise",Carlsberg,"330 ml",Std,200
+"TQ Sunrise",Carlsberg,"650 ml",Std,370
+"TQ Sunrise",Tubourg,"330 ml",Std,190
+"TQ Sunrise",Tubourg,"650 ml",Std,330
+"TQ Sunrise","Bira Blonde","330 ml",Std,220
+"TQ Sunrise","Bira Blonde","650 ml",Std,400
+"TQ Sunrise","Bira White","330 ml",Std,280
+"TQ Sunrise",Heineken,"330 ml",Std,270
+"TQ Sunrise",Heineken,"650 ml",Std,420
+"TQ Sunrise","Kingfisher Ultra Max","650 ml",Std,400
+"TQ Sunrise","Kingfisher Storm","650 ml",Std,380
+"TQ Sunrise","Budweiser Magnum","650 ml",Std,420
+"TQ Sunrise","London Pilsner","650 ml",Std,320
+"TQ Sunrise","Draught Beer",Tower,Std,1170
+"TQ Sunrise","Draught Beer",Pitcher,Std,670
+"TQ Sunrise","Draught Beer",Mug,Std,180
+"TQ Sunrise","Jose Cuervo",Silver,Std,370
+"TQ Sunrise","Jose Cuervo",Gold,Std,400
+"TQ Sunrise",Sauza,Silver,Std,370
+"TQ Sunrise",Camino,Silver,Std,370
+"TQ Sunrise",Camino,Gold,Std,400
+"TQ Sunrise","Don Angle",Silver,Std,370
+"TQ Sunrise",Mexicat,Silver,Std,370
+"TQ Sunrise",Agavita,Silver,Std,370
+"TQ Sunrise",Desmondji,Silver,Std,260
+"TQ Sunrise","Kahlua (Coffee)","30 ml",Std,370
+"TQ Sunrise","Malibu (Coconut)","30 ml",Std,370
+"TQ Sunrise","Cointreau (Orange)","30 ml",Std,370
+"TQ Sunrise","Baileys (Irish Cream)","30 ml",Std,370
+"TQ Sunrise","Sambuca (Fennel)","30 ml",Std,370
+"TQ Sunrise","Jagermeister (Herbs)","30 ml",Std,470
+"TQ Sunrise","Sula Brut",Pint,Std,1220
+"TQ Sunrise","Sula Chenin Blanc",Glass,Std,300
+"TQ Sunrise","Sula Chenin Blanc",Pint,Std,710
+"TQ Sunrise","Sula Chenin Blanc",Bottle,Std,1400
+"TQ Sunrise","Sula Sauvignon Blanc",Pint,Std,720
+"TQ Sunrise","Sula Sauvignon Blanc",Bottle,Std,1420
+"TQ Sunrise","Sula Satori",Glass,Std,300
+"TQ Sunrise","Sula Satori",Pint,Std,710
+"TQ Sunrise","Sula Satori",Bottle,Std,1400
+"TQ Sunrise","Sula Cabernet Shiraz",Pint,Std,940
+"TQ Sunrise","Sula Cabernet Shiraz",Bottle,Std,1670
+"TQ Sunrise","Sula Mosaic ",Glass,Std,300
+"TQ Sunrise","Sula Mosaic ",Bottle,Std,1320
+"TQ Sunrise","Sula Zinfandel (Rose-Red)",Glass,Std,320
+"TQ Sunrise","Sula Zinfandel (Rose-Red)",Pint,Std,750
+"TQ Sunrise","Sula Zinfandel (Rose-Red)",Bottle,Std,1470
+"TQ Sunrise","Sula Dindori Chardonnay",Glass,Std,390
+"TQ Sunrise","Sula Dindori Chardonnay",Bottle,Std,1870
+"TQ Sunrise","Sula Dindori Shiraz",Glass,Std,440
+"TQ Sunrise","Sula Dindori Shiraz",Pint,Std,1070
+"TQ Sunrise","Sula Dindori Shiraz",Bottle,Std,2120
+"TQ Sunrise",Rhytham,Glass,Std,220
+"TQ Sunrise",Rhytham,Pint,Std,550
+"TQ Sunrise",Rhytham,Bottle,Std,1010
+"TQ Sunrise",Port,Glass,Std,160
+"TQ Sunrise",Port,Pint,Std,320
+"TQ Sunrise",Port,Bottle,Std,500
+"TQ Sunrise","Screw Driver",Glass,Std,380
+"TQ Sunrise",Mojito,Glass,Std,440
+"TQ Sunrise",Caipiroska,Glass,Std,440
+"TQ Sunrise","Pina Colada",Glass,Std,440
+"TQ Sunrise","Bloody Mary",Glass,Std,380
+"TQ Sunrise","Whisky Sour",Glass,Std,380
+"TQ Sunrise","Blue Lagoon",Glass,Std,380
+"TQ Sunrise",Cosmopolitan,Glass,Std,440
+"TQ Sunrise","Rum Punch",Glass,Std,380
+"TQ Sunrise","Tequila Sunrise",Glass,Std,420
+"TQ Sunrise","Tequila Boom",Glass,Std,380
+"TQ Sunrise","Long Island Ice Tea",Glass,Std,520
+"TQ Sunrise","Mai Tai",Glass,Std,420
+"TQ Sunrise","Hot Toddy",Glass,Std,370
+"TQ Sunrise",Margarita,Glass,Std,470
+"TQ Sunrise",Sangria,Glass,Std,470
+"TQ Sunrise","Fruit Punch",Glass,Std,300
+"TQ Sunrise","Sun Set",Glass,Std,300
+"TQ Sunrise","Golden Nectar",Glass,Std,310
+"TQ Sunrise","Minty Mango",Glass,Std,310
+"TQ Sunrise","Guava Island",Glass,Std,310
+"TQ Sunrise","Green Cooler",Glass,Std,310
+"TQ Sunrise","Virgin Blue Lagoon",Glass,Std,310
+"TQ Sunrise","Bacardi Breezer Cranberry",Pint,Std,300
+"TQ Sunrise","Bacardi Breezer Blackberry",Pint,Std,300
+"TQ Sunrise","Bacardi Breezer Blueberry",Pint,Std,300
+"TQ Sunrise","Bacardi Breezer Jamaican Passion",Pint,Std,300
+"TQ Sunrise",Coke,"500 ml",Std,100
+"TQ Sunrise","Thumbs Up","500 ml",Std,100
+"TQ Sunrise",Sprite,"500 ml",Std,100
+"TQ Sunrise",Limca,"500 ml",Std,100
+"TQ Sunrise",Mazza,"500 ml",Std,100
+"TQ Sunrise",Soda,"300 ml",Std,50
+"TQ Sunrise","Garden Fresh Pizza","Medium 10""",Std,470
+"TQ Sunrise","Garden Fresh Pizza","Large 12""",Std,570
+"TQ Sunrise","Butter Chicken",Std,Std,375
+"TQ Sunrise","Rice Combo",Std,Std,250
+"TQ Sunrise","Indian Buffet",Std,Std,450
+"TQ Sunrise",abc,"30 ml",Std,0
+"TQ Sunrise",dd,"750 ml",Std,0

@@ -676,3 +676,6 @@ $lang['resetBillMonth']			= 'बिल रिसेट माह';
 
 $lang['january']				= 'जनवरी';
 $lang['april']					= 'अप्रैल';
+
+$lang['only']					= 'सिर्फ';
+$lang['downloadFormatWithItem'] 	= 'डाटा फॉर्मेट विथ आइटम';

@@ -36,14 +36,14 @@
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label><?= $this->lang->line('percent'); ?> </label>
+                                                        <label><?= $this->lang->line('tax').' '.$this->lang->line('percent'); ?> </label>
                                                         <input type="text" class="form-control form-control-sm" name="TaxPcent" placeholder="<?= $this->lang->line('percent'); ?>" required="" id="TaxPcent" autocomplete="off">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-6">
                                                     <div class="form-group">
-                                                        <label><?= $this->lang->line('included'); ?></label>
+                                                        <label><?= $this->lang->line('tax').' '.$this->lang->line('included'); ?></label>
                                                         <select class="form-control form-control-sm" name="Included" required="" id="Included">
                                                             <option value=""><?= $this->lang->line('select'); ?></option>
                                                             <option value="1"><?= $this->lang->line('included').' '.$this->lang->line('tax'); ?></option>

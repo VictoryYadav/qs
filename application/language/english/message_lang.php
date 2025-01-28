@@ -504,7 +504,7 @@ $lang['OTPNotSent'] = 'OTP Not Sent';
 $lang['OTPSentToYourMobileNo'] = 'OTP Sent To Your Mobile No.';
 $lang['usernameNotFound'] = 'Username Not Found';
 $lang['userAlreadyExists'] = 'User Already Exists';
-$lang['userCreate'] = 'User Create';
+$lang['userCreate'] = 'User Created';
 $lang['outOfLimit'] = 'Out of Limit';
 $lang['billSettled'] = 'Bill Settled';
 $lang['loyaltyPointsAdded'] = 'Loyalty Points Added';
@@ -674,6 +674,9 @@ $lang['resetBillMonth']			= 'Bill Reset Month';
 
 $lang['january']				= 'January';
 $lang['april']					= 'April';
+
+$lang['only']					= 'Only';
+$lang['downloadFormatWithItem'] 	= 'Download Format With Item';
 
 
 
